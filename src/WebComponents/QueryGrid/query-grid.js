@@ -8,7 +8,6 @@ var Vidyano;
 (function (Vidyano) {
     var WebComponents;
     (function (WebComponents) {
-        var transformCssProperty = 'WebkitTransform' in document.body.style ? "-webkit-transform" : "transform";
         var QueryGrid = (function (_super) {
             __extends(QueryGrid, _super);
             function QueryGrid() {
@@ -447,7 +446,6 @@ var Vidyano;
                 this._lastKnownMouseYPosition = -1;
                 this._data = this.grid.$["data"];
                 this._verticalSpacer = this.grid.$["verticalSpacer"];
-                this._columnHost = this._verticalSpacer.querySelector(".columnHost");
             }
             QueryGridItems.prototype.detached = function () {
                 this._items.forEach(function (item) {
@@ -545,8 +543,7 @@ var Vidyano;
                         var numberOfItemRows = Math.min(this._rowsStartIndex + this._items.length, this.grid.query.totalItems);
                         this._items.slice(0, numberOfItemRows).forEach(function (row, i) { return row.item = items[i]; });
                         this._items.slice(numberOfItemRows, this._items.length).forEach(function (row) { return row.item = null; });
-                        this._dataTop = newStartIndex * this._rowHeight;
-                        this._columnHost.style[transformCssProperty] = "translate3D(0px, " + this._dataTop + "px, 0px)";
+                        this.grid.$["topSpacer"].style.height = (this._dataTop = newStartIndex * this._rowHeight) + "px";
                         this.updateHoverRow();
                     }
                     else if (!skipSearch) {

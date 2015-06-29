@@ -15,8 +15,6 @@
         height: number;
     }
 
-    var transformCssProperty = 'WebkitTransform' in document.body.style ? "-webkit-transform" : "transform";
-
     export class QueryGrid extends WebComponent {
         public static _isChrome: boolean = /chrome/i.test(navigator.userAgent);
         public static _isSafari: boolean = /safari/i.test(navigator.userAgent) && !/chrome/i.test(navigator.userAgent);
@@ -516,7 +514,6 @@
         private _rowsStartIndex: number;
         private _virtualHeight: number;
         private _dataTop: number = 0;
-        private _columnHost: HTMLElement;
         private _currentHoverRowIndex: number = -1;
         private _lastKnownMouseYPosition: number = -1;
         private _debouncedGetItems: Function;
@@ -528,7 +525,6 @@
 
             this._data = this.grid.$["data"];
             this._verticalSpacer = <HTMLDivElement>this.grid.$["verticalSpacer"];
-            this._columnHost = <HTMLElement>this._verticalSpacer.querySelector(".columnHost");
         }
 
         detached() {
@@ -641,8 +637,7 @@
                     this._items.slice(0, numberOfItemRows).forEach((row, i) => row.item = items[i]);
                     this._items.slice(numberOfItemRows, this._items.length).forEach(row => row.item = null);
 
-                    this._dataTop = newStartIndex * this._rowHeight;
-                    this._columnHost.style[transformCssProperty] = "translate3D(0px, " + this._dataTop + "px, 0px)";
+                    this.grid.$["topSpacer"].style.height = (this._dataTop = newStartIndex * this._rowHeight) + "px";
 
                     this.updateHoverRow();
                 }
