@@ -193,4 +193,7 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
+# Project files
 .vs/config/applicationhost.config
+project.lock.json

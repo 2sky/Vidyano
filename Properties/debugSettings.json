@@ -1,9 +1,0 @@
-{
-  "profiles": [
-    {
-      "name": "IIS Express",
-      "launchBrowser": true,
-      "launchUrl": "http://localhost/VidyanoWeb2"
-    }
-  ]
-}
