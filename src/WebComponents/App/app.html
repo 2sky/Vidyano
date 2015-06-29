@@ -1,0 +1,42 @@
+﻿<dom-module id="vi-app">
+    <template>
+        <template is="dom-if" if="{{initializing}}" restamp>
+            <vi-spinner></vi-spinner>
+        </template>
+        <template is="dom-if" if="{{!initializing}}">
+            <div class="fit layout horizontal">
+                <template is="dom-if" if="{{service.isSignedIn}}" restamp>
+                    <vi-menu menu label="{{label}}" items="{{service.application.programUnits}}" program-unit="{{programUnit}}">
+                        <content select="[menu-element]"></content>
+                    </vi-menu>
+                </template>
+                <content select="vi-app-route"></content>
+                <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
+                <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
+                <vi-app-route route="PersistentObject.:id(/:objectId)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
+                <content select="[dialog]"></content>
+            </div>
+        </template>
+        <vi-app-route class="fit" route="SignIn(/:returnUrl)">
+            <vi-sign-in label="{{label}}" image="{{signInImage}}"></vi-sign-in>
+        </vi-app-route>
+        <vi-app-config>
+            <vi-persistent-object-attribute-config type="CommonMark" height="6" wrap-around></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="MultiLineString" height="4" wrap-around></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="MultiString" height="4" wrap-around></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="Image" height="4" wrap-around></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="TranslatedString" height="attr.getTypeHint('MultiLine') == 'True' ? 3 : 2" wrap-around></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="AsDetail" height="6" width="4"></vi-persistent-object-attribute-config>
+            <content select="vi-persistent-object-attribute-config"></content>
+        </vi-app-config>
+    </template>
+</dom-module>
+
+<dom-module id="vi-app-route"></dom-module>
+
+<link rel="stylesheet" href="app.css" />
+<script src="app.js"></script>
+<script src="app-config.js"></script>

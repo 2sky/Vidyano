@@ -1,0 +1,29 @@
+vi-checkbox {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+vi-checkbox:not([disabled]) {
+  cursor: pointer;
+}
+[theme-color-1] vi-checkbox:not([disabled])[checked] {
+  fill: #126790;
+}
+[theme-color-2] vi-checkbox:not([disabled])[checked] {
+  fill: #009688;
+}
+vi-checkbox[disabled] vi-resource {
+  fill: #aaa;
+}
+vi-checkbox > span {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  padding-left: 6px;
+}
+vi-checkbox:not([checked]) #check {
+  display: none;
+}

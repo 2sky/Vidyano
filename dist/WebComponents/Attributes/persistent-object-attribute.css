@@ -1,0 +1,341 @@
+vi-persistent-object-attribute-edit {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  position: relative;
+}
+vi-persistent-object-attribute-edit .box {
+  position: relative;
+  min-height: 28px;
+  line-height: 28px;
+  overflow: hidden;
+  border: 1px solid #dddddd;
+  -moz-transition: border-color 0.2s ease-in-out;
+  -o-transition: border-color 0.2s ease-in-out;
+  -webkit-transition: border-color 0.2s ease-in-out;
+  transition: border-color 0.2s ease-in-out;
+}
+vi-persistent-object-attribute-edit #errorIndicator {
+  display: none;
+}
+vi-persistent-object-attribute-edit[has-error] .box {
+  background-color: #fbf3f3 !important;
+  border-color: #a80511 !important;
+}
+vi-persistent-object-attribute-edit[has-error] #errorIndicator {
+  display: block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  padding: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
+vi-persistent-object-attribute-edit[has-error] #errorIndicator vi-resource[icon] {
+  width: 30px;
+  height: 30px;
+}
+vi-persistent-object-attribute-edit[has-error] #errorIndicator vi-resource[icon] svg {
+  width: 22px;
+  height: 22px;
+  fill: #a80511;
+}
+vi-persistent-object-attribute-edit[has-error] #errorIndicator pre[content] {
+  padding: 6px;
+  border: 1px solid #a80511;
+}
+vi-persistent-object-attribute-edit[has-error] #errorIndicator #content.vi-popup.top {
+  -moz-transform: translateY(12px);
+  -ms-transform: translateY(12px);
+  -o-transform: translateY(12px);
+  -webkit-transform: translateY(12px);
+  transform: translateY(12px);
+}
+vi-persistent-object-attribute-edit[has-error] #errorIndicator #content.vi-popup.bottom {
+  -moz-transform: translateY(-12px);
+  -ms-transform: translateY(-12px);
+  -o-transform: translateY(-12px);
+  -webkit-transform: translateY(-12px);
+  transform: translateY(-12px);
+}
+vi-persistent-object-attribute-edit [content] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+vi-persistent-object-attribute-edit textarea {
+  overflow: auto;
+  resize: none;
+}
+vi-persistent-object-attribute-edit input,
+vi-persistent-object-attribute-edit textarea {
+  font-size: 13px;
+  background-color: transparent;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 6px;
+  line-height: 28px;
+  border: none;
+  outline: none;
+  color: #333;
+}
+vi-persistent-object-attribute-edit vi-select[content] {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border: none;
+}
+vi-persistent-object-attribute-edit vi-select[content] vi-popup > #content {
+  -moz-transform: translateY(1px);
+  -ms-transform: translateY(1px);
+  -o-transform: translateY(1px);
+  -webkit-transform: translateY(1px);
+  transform: translateY(1px);
+}
+vi-persistent-object-attribute-edit vi-select[content] + .buttons {
+  z-index: 2;
+}
+vi-persistent-object-attribute-edit .buttons {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+vi-persistent-object-attribute-edit .buttons > button,
+vi-persistent-object-attribute-edit .buttons > .button,
+vi-persistent-object-attribute-edit .buttons > [button],
+vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header] {
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  padding: 0;
+  box-sizing: content-box;
+  text-align: center;
+  -moz-transition: background-color 0.1s ease-out;
+  -o-transition: background-color 0.1s ease-out;
+  -webkit-transition: background-color 0.1s ease-out;
+  transition: background-color 0.1s ease-out;
+}
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > button,
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > .button,
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > [button],
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header] {
+  background-color: transparent;
+  color: #043d59;
+  fill: #595959;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -moz-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > button:hover,
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > .button:hover,
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > [button]:hover,
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header]:hover {
+  background-color: #f0f0f0;
+}
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > button:active,
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > .button:active,
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > [button]:active,
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header]:active {
+  background-color: #095072;
+  fill: white !important;
+  color: white !important;
+}
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > button[disabled],
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > .button[disabled],
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > [button][disabled],
+[theme-color-1] vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header][disabled] {
+  fill: #e7f0f4;
+  color: rgba(0, 0, 0, 0.5);
+}
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > button,
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > .button,
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > [button],
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header] {
+  background-color: transparent;
+  color: #005d53;
+  fill: #595959;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -moz-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > button:hover,
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > .button:hover,
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > [button]:hover,
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header]:hover {
+  background-color: #f0f0f0;
+}
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > button:active,
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > .button:active,
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > [button]:active,
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header]:active {
+  background-color: #00776a;
+  fill: white !important;
+  color: white !important;
+}
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > button[disabled],
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > .button[disabled],
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > [button][disabled],
+[theme-color-2] vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header][disabled] {
+  fill: #e5f4f2;
+  color: rgba(0, 0, 0, 0.5);
+}
+vi-persistent-object-attribute-edit .buttons > button::after,
+vi-persistent-object-attribute-edit .buttons > .button::after,
+vi-persistent-object-attribute-edit .buttons > [button]::after,
+vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header]::after {
+  position: absolute;
+  bottom: -1px;
+  left: 3px;
+  right: 4px;
+  content: " ";
+  border-bottom: 1px solid #dddddd;
+  -moz-transition: all 0.1s ease-in-out;
+  -o-transition: all 0.1s ease-in-out;
+  -webkit-transition: all 0.1s ease-out;
+  transition: all 0.1s ease-in-out;
+}
+vi-persistent-object-attribute-edit .buttons > button::before,
+vi-persistent-object-attribute-edit .buttons > .button::before,
+vi-persistent-object-attribute-edit .buttons > [button]::before,
+vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header]::before {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  content: " ";
+  border-left: 1px solid #dddddd;
+  -moz-transition: all 0.1s ease-in-out;
+  -o-transition: all 0.1s ease-in-out;
+  -webkit-transition: all 0.1s ease-out;
+  transition: all 0.1s ease-in-out;
+}
+vi-persistent-object-attribute-edit .buttons > button vi-resource[icon],
+vi-persistent-object-attribute-edit .buttons > .button vi-resource[icon],
+vi-persistent-object-attribute-edit .buttons > [button] vi-resource[icon],
+vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header] vi-resource[icon] {
+  width: 28px;
+  height: 28px;
+}
+vi-persistent-object-attribute-edit .buttons > button vi-resource[icon] svg,
+vi-persistent-object-attribute-edit .buttons > .button vi-resource[icon] svg,
+vi-persistent-object-attribute-edit .buttons > [button] vi-resource[icon] svg,
+vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header] vi-resource[icon] svg {
+  -moz-transition: fill 0.1s ease-out;
+  -o-transition: fill 0.1s ease-out;
+  -webkit-transition: fill 0.1s ease-out;
+  transition: fill 0.1s ease-out;
+}
+vi-persistent-object-attribute-edit .buttons:hover > button::after,
+vi-persistent-object-attribute-edit .buttons:hover > .button::after,
+vi-persistent-object-attribute-edit .buttons:hover > [button]::after,
+vi-persistent-object-attribute-edit .buttons:hover > vi-popup:not([content]) button[header]::after {
+  left: 0;
+  right: 0;
+}
+vi-persistent-object-attribute-edit .buttons:hover > button::before,
+vi-persistent-object-attribute-edit .buttons:hover > .button::before,
+vi-persistent-object-attribute-edit .buttons:hover > [button]::before,
+vi-persistent-object-attribute-edit .buttons:hover > vi-popup:not([content]) button[header]::before {
+  top: 0;
+  bottom: 0;
+}
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box {
+  border-color: #5c9bba;
+}
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box {
+  border-color: #42b2a6;
+}
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > button::after,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > .button::after,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > [button]::after,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header]::after,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > button::before,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > .button::before,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > [button]::before,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header]::before {
+  border-color: #5c9bba;
+}
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > button::after,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > .button::after,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > [button]::after,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header]::after,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > button::before,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > .button::before,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > [button]::before,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header]::before {
+  border-color: #42b2a6;
+}
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > button svg,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > .button svg,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > [button] svg,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header] svg {
+  fill: #367ea0;
+}
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > button svg,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > .button svg,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > [button] svg,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header] svg {
+  fill: #20a294;
+}
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > button:active,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > .button:active,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > [button]:active,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header]:active {
+  background-color: #126790 !important;
+}
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > button:active,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > .button:active,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > [button]:active,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header]:active {
+  background-color: #009688 !important;
+}
+vi-persistent-object-attribute-edit[focus] .box > .buttons > button:active svg,
+vi-persistent-object-attribute-edit[focus] .box > .buttons > .button:active svg,
+vi-persistent-object-attribute-edit[focus] .box > .buttons > [button]:active svg,
+vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header]:active svg {
+  fill: white !important;
+}
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > button:hover,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > .button:hover,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > [button]:hover,
+[theme-color-1] vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header]:hover {
+  background-color: #e7f0f4;
+}
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > button:hover,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > .button:hover,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > [button]:hover,
+[theme-color-2] vi-persistent-object-attribute-edit[focus] .box > .buttons > vi-popup:not([content]) button[header]:hover {
+  background-color: #e5f4f2;
+}

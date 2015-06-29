@@ -1,0 +1,53 @@
+@import (reference) "../vidyano.less";
+
+vi-popup-menu {
+    #popup {
+        line-height: @h2;
+
+        [content] {
+            background-color: white;
+        }
+    }
+
+    &[context-menu-only] {
+        #popup {
+            position: fixed;
+            z-index: 1000000;
+
+            #contextHeader {
+                visibility: hidden;
+            }
+        }
+    }
+}
+
+vi-popup-menu-item {
+    .layout-horizontal();
+    height: @h1;
+    line-height: @h1;
+    height: @h1;
+    cursor: pointer;
+    .colorize({
+        color: @@color;
+        fill: @@color;
+    });
+
+    > vi-resource {
+        padding-left: @h5;
+
+        &:not([has-resource]) {
+            display: none;
+        }
+    }
+
+    > span {
+        .flex();
+        padding: 0 @h5;
+    }
+
+    &:hover {
+        .colorize({
+            background-color: @@color-faint;
+        });
+    }
+}

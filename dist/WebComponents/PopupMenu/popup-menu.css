@@ -1,0 +1,50 @@
+vi-popup-menu #popup {
+  line-height: 30px;
+}
+vi-popup-menu #popup [content] {
+  background-color: white;
+}
+vi-popup-menu[context-menu-only] #popup {
+  position: fixed;
+  z-index: 1000000;
+}
+vi-popup-menu[context-menu-only] #popup #contextHeader {
+  visibility: hidden;
+}
+vi-popup-menu-item {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  line-height: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+[theme-color-1] vi-popup-menu-item {
+  color: #126790;
+  fill: #126790;
+}
+[theme-color-2] vi-popup-menu-item {
+  color: #009688;
+  fill: #009688;
+}
+vi-popup-menu-item > vi-resource {
+  padding-left: 6px;
+}
+vi-popup-menu-item > vi-resource:not([has-resource]) {
+  display: none;
+}
+vi-popup-menu-item > span {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  padding: 0 6px;
+}
+[theme-color-1] vi-popup-menu-item:hover {
+  background-color: #e7f0f4;
+}
+[theme-color-2] vi-popup-menu-item:hover {
+  background-color: #e5f4f2;
+}

@@ -1,0 +1,26 @@
+vi-query-grid-item-actions,
+.vi-query-grid-item-actions-proxy {
+  display: block;
+  width: 30px;
+  height: 30px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+vi-query-grid-item-actions > vi-resource,
+.vi-query-grid-item-actions-proxy > vi-resource,
+vi-query-grid-item-actions #toggle,
+.vi-query-grid-item-actions-proxy #toggle {
+  fill: #333;
+  height: 30px;
+}
+[theme-color-1] vi-query-grid-item-actions:hover,
+[theme-color-1] .vi-query-grid-item-actions-proxy:hover {
+  background-color: #d6e5ec;
+}
+[theme-color-2] vi-query-grid-item-actions:hover,
+[theme-color-2] .vi-query-grid-item-actions-proxy:hover {
+  background-color: #d3ece9;
+}

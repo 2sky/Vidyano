@@ -1,0 +1,23 @@
+﻿@import (reference) "query-grid.less";
+
+.cell {
+	&[data-vi-column-type='Boolean'], &[data-vi-column-type='NullableBoolean'], &[data-vi-column-type='YesNo'] {
+        vi-resource.unchecked {
+            #check {
+                display: none;
+            }
+        }
+	}
+
+	&[data-vi-column-type='Image'] {
+		padding: 1px;
+		overflow: hidden;
+
+		.image {
+			height: @h2;
+			background-position: center center;
+			background-size: contain;
+			background-repeat: no-repeat;
+		}
+	}
+}

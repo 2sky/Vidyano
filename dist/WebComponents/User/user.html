@@ -1,0 +1,24 @@
+<dom-module id="vi-user">
+    <template>
+        <template is="dom-if" if="{{isSignedIn}}">
+            <div id="signedIn" class="horizontal layout center-justified flex">
+                <span>{{userName}}</span>
+            </div>
+            <vi-popup-menu right-align>
+                <button id="settings" header>
+                    <vi-resource source="Icon_Up"></vi-resource>
+                </button>
+                <vi-popup-menu-item icon="Icon_SignOut" label="{{translations.SignOut}}" on-tap="signOut"></vi-popup-menu-item>
+            </vi-popup-menu>
+        </template>
+        <template is="dom-if" if="{{!isSignedIn}}">
+            <button id="signIn" class="flex" on-tap="signIn">
+                <span>{{translations.SignIn}}</span>
+                <vi-resource source="Icon_SignIn"></vi-resource>
+            </button>
+        </template>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="user.css" />
+<script src="user.js"></script>

@@ -1,0 +1,39 @@
+﻿@import (reference) "query-grid.less";
+
+vi-query-grid-item-selector, .vi-query-grid-item-selector-proxy {
+    display: block;
+    width: @cell-width;
+    height: @cell-line-height;
+    padding-left: @h5;
+    box-sizing: border-box;
+    text-align: center;
+    fill: #bbb;
+
+    vi-resource {
+        height: @cell-line-height;
+    }
+
+    &:not([is-selected]) {
+        #check {
+            display: none;
+        }
+    }
+
+	&[is-selected] {
+		.colorize( {
+			vi-resource {
+				fill: #888;
+
+				#check {
+					fill: @@color;
+				}
+			}
+		});
+	}
+
+    &:hover {
+        .colorize({
+            background-color: darken(@@color-faint, 5%);
+        });
+    }
+}

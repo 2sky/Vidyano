@@ -1,0 +1,31 @@
+vi-persistent-object-group {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  position: relative;
+  padding-top: 12px;
+}
+vi-persistent-object-group label {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 18px;
+  min-height: 18px;
+  text-transform: uppercase;
+  padding-right: 12px;
+}
+[theme-color-1] vi-persistent-object-group label {
+  color: #126790;
+}
+[theme-color-2] vi-persistent-object-group label {
+  color: #009688;
+}

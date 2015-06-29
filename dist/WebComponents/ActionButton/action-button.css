@@ -1,0 +1,86 @@
+vi-action-button {
+  display: block;
+  box-sizing: border-box;
+}
+vi-action-button button {
+  display: block;
+  text-align: left;
+  cursor: pointer;
+  background-color: transparent;
+  line-height: 40px;
+  padding: 0 12px;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+[theme-color-1] vi-action-button button {
+  color: #126790;
+  fill: #126790;
+}
+[theme-color-2] vi-action-button button {
+  color: #009688;
+  fill: #009688;
+}
+vi-action-button button:not([can-execute]) {
+  opacity: 0.5;
+  cursor: default;
+}
+vi-action-button button > vi-resource[icon] {
+  height: 40px;
+}
+vi-action-button button > vi-resource[icon].options {
+  margin-left: 6px;
+}
+vi-action-button button > vi-resource[icon].options svg {
+  width: 12px;
+  height: 12px;
+}
+vi-action-button[overflow] vi-resource.options {
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+[theme-color-1] vi-action-button:hover button[can-execute] {
+  background-color: #e7f0f4;
+}
+[theme-color-2] vi-action-button:hover button[can-execute] {
+  background-color: #e5f4f2;
+}
+vi-action-button[no-label] button > span,
+vi-action-button[pinned] button > span {
+  display: none;
+}
+vi-action-button:not([no-label]):not([pinned]) button > vi-resource[icon][has-resource]:first-of-type {
+  margin-right: 6px;
+}
+vi-action-button[no-icon] button > vi-resource[icon] {
+  display: none;
+}
+vi-action-button(:focus) {
+  outline: none;
+}
+vi-action-button ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  line-height: 40px;
+}
+vi-action-button ul li {
+  cursor: pointer;
+  padding: 0 12px;
+  font-size: 13px;
+}
+[theme-color-1] vi-action-button ul li {
+  color: #126790;
+}
+[theme-color-1] vi-action-button ul li:hover {
+  background-color: #e7f0f4;
+}
+[theme-color-2] vi-action-button ul li {
+  color: #009688;
+}
+[theme-color-2] vi-action-button ul li:hover {
+  background-color: #e5f4f2;
+}

@@ -1,0 +1,57 @@
+@import (reference) "../vidyano.less";
+
+@footerHeight: @h1;
+
+vi-user {
+    border-top: 1px solid transparent;
+    .layout-horizontal();
+
+    .colorize( {
+        background-color: fadeout(desaturate(@@color-dark, 70%), 50%);
+        border-top-color: fadeout(desaturate(@@color, 70%), 50%);
+    }
+
+    );
+
+    > span {
+        line-height: @footerHeight;
+        height: @footerHeight;
+    }
+
+    button {
+        height: @footerHeight !important;
+        line-height: @footerHeight !important;
+        cursor: pointer;
+
+        &#signIn {
+            .colorize( {
+                .colorize-button(@@color);
+            });
+
+            > vi-resource {
+                height: @footerHeight !important;
+                margin-left: @h5;
+            }
+        }
+
+        &#settings {
+            width: @footerHeight;
+            box-sizing: border-box;
+
+            .colorize( {
+                .colorize-button(fadeout(desaturate(@@color-dark, 70%), 40%));
+                border-left: 1px solid fadeout(desaturate(@@color, 70%), 20%);
+            });
+        }
+
+        > vi-resource {
+            fill: white;
+        }
+    }
+
+    &:not([is-signed-in]) {
+        button {
+            cursor: pointer;
+        }
+    }
+}

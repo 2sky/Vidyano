@@ -1,0 +1,60 @@
+@import (reference) "../vidyano.less";
+
+@border-color: #ddd;
+@non-edit-line-height: 16px;
+
+vi-persistent-object-attribute-presenter {
+    .layout-vertical();
+    position: relative;
+    font-size: 13px;
+    white-space: nowrap;
+    padding-top: @h5;
+    font-size: 13px;
+    color: #333;
+
+    label {
+        display: block;
+        font-size: 11px;
+        min-height: @h2 - @h5;
+        line-height: @h2 - @h5;
+        font-weight: 400;
+        color: #888;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        letter-spacing: 0.5px;
+    }
+
+    label + * {
+        .flex();
+        .layout-horizontal();
+    }
+
+    &[nolabel] {
+        label {
+            display: none;
+        }
+    }
+
+    a {
+        text-decoration: none;
+
+        .colorize( {
+            color: @@color;
+            fill: @@color;
+
+            &:visited {
+                color: @@color;
+                fill: @@color;
+            }
+
+            &:hover {
+                color: @@color-light;
+                fill: @@color-light;
+            }
+        });
+
+        &[disabled] {
+            color: #333 !important;
+        }
+    }
+}

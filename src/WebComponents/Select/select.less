@@ -1,0 +1,96 @@
+@import (reference) "../vidyano.less";
+
+@border-color: #ddd;
+
+vi-select {
+    display: block;
+    position: relative;
+    border: 1px solid @border-color;
+    .layout-horizontal();
+
+    vi-popup {
+        .flex();
+
+        #content {
+            -moz-transform: translate(0, 1px);
+            -ms-transform: translate(0, 1px);
+            -o-transform: translate(0, 1px);
+            -webkit-transform: translate(0, 1px);
+            transform: translate(0, 1px);
+        }
+
+        [header] {
+            .flex();
+            .layout-horizontal();
+            .relative();
+
+            .suggestions {
+                z-index: 1;
+                padding-left: @h5;
+                position: absolute;
+                left: 0;
+                height: @h2 - 2px;
+                line-height: @h2 - 2px;
+
+                span {
+                    float: left;
+                    font-size: 13px;
+
+                    &:first-child {
+                        color: transparent;
+                    }
+
+                    &:nth-child(2) {
+                        color: #CCC;
+                    }
+                }
+            }
+
+            input {
+                .flex();
+                z-index: 2;
+                border: none;
+                height: @h2 - 2px;
+                line-height: @h2 - 2px;
+                padding-left: @h5;
+                background-color: transparent;
+                font-size: 13px;
+
+                &[disabled] {
+                    color: inherit !important;
+                }
+            }
+        }
+
+        [content] {
+            max-height: @h2 * 5;
+            overflow-y: auto;
+
+            .option {
+                padding-left: @h5;
+                line-height: @h2 - 2px;
+                height: @h2 - 2px;
+                cursor: pointer;
+
+                &:hover {
+                    .colorize( {
+                        background-color: @@color-faint;
+                    });
+                }
+            }
+
+            .option[suggested], &:not([filtering]) .option[selected] {
+                .colorize( {
+                    background-color: @@color;
+                    color: white;
+                });
+
+                &:hover {
+                    .colorize( {
+                        background-color: @@color-light;
+                    });
+                }
+            }
+        }
+    }
+}

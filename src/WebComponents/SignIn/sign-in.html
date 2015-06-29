@@ -1,0 +1,43 @@
+﻿<dom-module id="vi-sign-in">
+    <template>
+        <div id="image">
+            <span class="flex">No image found</span>
+        </div>
+        <div id="side">
+            <h1>{{label}}</h1>
+            <h2>{{translations.SignInDescription}}</h2>
+            <ul>
+                <content></content>
+            </ul>
+        </div>
+    </template>
+</dom-module>
+
+<dom-module id="vi-sign-in-provider" extends="li">
+    <template>
+        <h3>{{label}}</h3>
+        <h4>{{description}}</h4>
+        <template is="dom-if" if="{{isVidyano}}">
+            <ul id="vidyano">
+                <li class="vertical layout">
+                    <label>{{translations.UserName}}</label>
+                    <input value="{{userName::input}}" id="user" type="text" disabled$="{{signingIn}}" on-keydown="_keydown" />
+                </li>
+                <li class="vertical layout">
+                    <label>{{translations.Password}}</label>
+                    <input value="{{password::input}}" id="pass" type="password" disabled$="{{signingIn}}" on-keydown="_keydown" />
+                </li>
+                <li>
+                    <vi-checkbox label="{{translations.StaySignedIn}}" disabled$="{{signingIn}}"></vi-checkbox>
+                    <div>
+                        <button id="signIn" on-tap="_signIn" disabled$="{{signingIn}}">{{signInLabel}}</button>
+                    </div>
+                </li>
+            </ul>
+            <vi-attached-notifier on-attached="_vidyanoSignInAttached"></vi-attached-notifier>
+        </template>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="sign-in.css" />
+<script src="sign-in.js"></script>

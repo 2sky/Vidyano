@@ -1,0 +1,68 @@
+vi-persistent-object-attribute-presenter {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  position: relative;
+  white-space: nowrap;
+  padding-top: 6px;
+  font-size: 13px;
+  color: #333;
+}
+vi-persistent-object-attribute-presenter label {
+  display: block;
+  font-size: 11px;
+  min-height: 24px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #888;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.5px;
+}
+vi-persistent-object-attribute-presenter label + * {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+vi-persistent-object-attribute-presenter[nolabel] label {
+  display: none;
+}
+vi-persistent-object-attribute-presenter a {
+  text-decoration: none;
+}
+[theme-color-1] vi-persistent-object-attribute-presenter a {
+  color: #126790;
+  fill: #126790;
+}
+[theme-color-1] vi-persistent-object-attribute-presenter a:visited {
+  color: #126790;
+  fill: #126790;
+}
+[theme-color-1] vi-persistent-object-attribute-presenter a:hover {
+  color: #367ea0;
+  fill: #367ea0;
+}
+[theme-color-2] vi-persistent-object-attribute-presenter a {
+  color: #009688;
+  fill: #009688;
+}
+[theme-color-2] vi-persistent-object-attribute-presenter a:visited {
+  color: #009688;
+  fill: #009688;
+}
+[theme-color-2] vi-persistent-object-attribute-presenter a:hover {
+  color: #20a294;
+  fill: #20a294;
+}
+vi-persistent-object-attribute-presenter a[disabled] {
+  color: #333 !important;
+}

@@ -1,0 +1,1 @@
+﻿:host .resize-triggers{visibility:hidden}:host .resize-triggers,:host .resize-triggers>div,:host .resize-triggers .contract-trigger:before{content:" ";display:block;position:absolute;top:0;left:0;height:100%;width:100%;overflow:hidden}:host .resize-triggers>div{background:#eee;overflow:auto}:host .resize-triggers .contract-trigger:before{width:200%;height:200%}

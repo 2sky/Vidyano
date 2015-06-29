@@ -1,0 +1,31 @@
+<dom-module id="vi-popup-menu">
+    <template>
+        <vi-popup id="popup">
+            <div header class="flex layout horizontal">
+                <template is="dom-if" if="{{!contextMenuOnly}}">
+                    <content select="[header]"></content>
+                </template>
+            </div>
+            <div content vertical layout>
+                <content select="vi-popup-menu-item"></content>
+            </div>
+        </vi-popup>
+    </template>
+</dom-module>
+
+<dom-module id="vi-popup-menu-item">
+    <template>
+        <template is="dom-if" if="{{icon}}">
+            <vi-resource source="{{icon}}"></vi-resource>
+        </template>
+        <span>{{label}}</span>
+        <vi-popup open-on-hover>
+            <div content vertical layout>
+                <content select="vi-popup-menu-item"></content>
+            </div>
+        </vi-popup>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="popup-menu.css" />
+<script src="popup-menu.js"></script>

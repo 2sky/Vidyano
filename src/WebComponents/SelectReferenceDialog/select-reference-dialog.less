@@ -1,0 +1,30 @@
+﻿@import (reference) "../vidyano.less";
+
+@inputSearchColor: rgba(0,0,0,0.5);
+@inputSearchPlaceholderColor: rgba(128,128,128,0.5);
+
+vi-select-reference-dialog {
+    vi-dialog {
+        vi-input-search {
+            line-height: @h2;
+            height: @h2;
+            border: 1px solid fadeout(@inputSearchPlaceholderColor, 30%);
+            box-sizing: border-box;
+
+            input {
+                padding: @h1 - @h2;
+                color: #333;
+
+                &:focus {
+                    background-color: white;
+
+                    + button {
+                        .colorize( {
+                            background-color: @@color;
+                        });
+                    }
+                }
+            }
+        }
+    }
+}

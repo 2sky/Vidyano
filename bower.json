@@ -1,0 +1,44 @@
+{
+  "name": "Vidyano",
+  "version": "0.5.0",
+  "license": "MIT",
+  "ignore": [
+    "/*.*",
+    "**/.*",
+    "bin",
+    ".vs",
+    "bower_components",
+    "node_modules",
+    "packages",
+    "Properties"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2sky/vidyano.git"
+  },
+  "exportsOverride": {
+    "polymer": {
+      "": "*.html"
+    },
+    "webcomponentsjs": {
+      "": "*-lite*.js"
+    },
+    "marked-element": {
+      "": "marked*.html"
+    },
+    "layout": {
+      "": "layout.*"
+    }
+  },
+  "devDependencies": {
+    "moment": "2sky/moment#^2.10.0",
+    "polymer": "polymer/polymer#^1.0.5",
+    "marked-element": "polymerelements/marked-element#^1.0.2",
+    "es6-promise": "2sky/es6-promise#^2.3.0",
+    "linqjs": "2sky/linqjs#3.0.3-Beta4",
+    "pathjs": "2sky/pathjs#0.8.4.1",
+    "sortable": "2sky/sortable#^1.2.0",
+    "layout": "2sky/layout#master"
+  },
+  "private": true
+}

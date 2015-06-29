@@ -1,0 +1,69 @@
+﻿@import (reference) "query-grid.less";
+
+@border-color: #ddd;
+
+vi-query-grid-filters {
+    > vi-popup-menu {
+        button[header] {
+            .flex();
+            text-align: left;
+            line-height: @h2;
+            height: @h2;
+            padding: 0;
+            cursor: pointer;
+            .colorize-button-inverse();
+
+            vi-resource {
+                .layout-start-justified();
+
+                svg {
+                    width: @h2;
+                    height: @h2;
+                    fill: #333;
+                }
+            }
+        }
+    }
+
+    vi-popup[open]:hover {
+        button[header] {
+            .colorize( {
+                background-color: @@color-faint;
+
+                vi-resource svg {
+                    fill: @@color;
+                }
+            });
+        }
+    }
+
+    #saveAsNewDialog {
+        [content] {
+            padding: @h4;
+
+            label {
+                display: block;
+            }
+
+            input {
+                width: 16em;
+                border: 1px solid #333;
+                font-size: 13px;
+                background-color: transparent;
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0 @h5;
+                line-height: @h2 - 2px;
+                outline: none;
+                color: #333;
+                margin-bottom: @h4;
+
+                &:focus {
+                    .colorize( {
+                        border-color: @@color;
+                    });
+                }
+            }
+        }
+    }
+}

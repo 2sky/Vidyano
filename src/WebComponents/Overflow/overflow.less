@@ -1,0 +1,58 @@
+@import (reference) "../vidyano.less";
+
+vi-overflow {
+    overflow: hidden;
+    height: @h1;
+    line-height: @h1;
+    .noSelection();
+    .layout-horizontal();
+    .relative();
+
+    #visible {
+        position: relative;
+        overflow: hidden;
+
+        vi-size-tracker {
+            z-index: -1;
+        }
+    }
+
+    #overflowPopup.vi-overflow {
+        position: relative;
+
+        button.vi-overflow {
+            display: block;
+            background-color: transparent;
+            outline: none;
+            border: none;
+            margin: 0;
+            box-sizing: border-box;
+            width: @h1;
+            cursor: pointer;
+            font-weight: bold;
+
+            > * {
+                font-weight: normal;
+            }
+
+            .colorize({
+                color: @@color;
+                background-color: transparent;
+            });
+        }
+
+        &:hover {
+            button.vi-overflow {
+                .colorize({
+                    background-color: @@color-faint;
+                });
+            }
+        }
+    }
+
+    &:not([has-overflow]) {
+        #overflowPopup {
+            display: none;
+        }
+    }
+}

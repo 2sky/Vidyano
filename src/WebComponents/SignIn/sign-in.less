@@ -1,0 +1,202 @@
+@import (reference) "../vidyano.less";
+
+vi-sign-in {
+    .layout-horizontal();
+    .noSelection();
+
+    #image {
+        .flex();
+        .layout-horizontal();
+        .layout-center();
+        .noSelection();
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+        background-color: #EEE;
+
+        > span {
+            text-align: center;
+            color: #aaa;
+        }
+
+        &.has-image > span {
+            display: none;
+        }
+    }
+
+    #side {
+        padding: @h3;
+
+        h1 {
+            font-size: 36px;
+            text-transform: lowercase;
+            display: block;
+            font-weight: normal;
+            margin: @h3 0 @h1 0;
+
+            .colorize({
+                color: @@color;
+            });
+        }
+
+        h2 {
+            margin: @h1 0;
+            font-size: 14px;
+            font-weight: normal;
+            color: #888;
+        }
+
+        > ul {
+            list-style: none;
+            padding: 0;
+        }
+    }
+
+    &[vidyano-only] li[is="vi-sign-in-provider"], &:not([vidyano-only]) li[is="vi-sign-in-provider"][expand] {
+        cursor: default;
+
+        ul#vidyano {
+            max-height: 200px;
+        }
+    }
+}
+
+li[is="vi-sign-in-provider"] {
+    margin-bottom: @h2;
+    cursor: pointer;
+
+    h3 {
+        font-weight: lighter;
+        font-size: 32px;
+        margin: 0;
+
+        .colorize( {
+            color: @@color;
+        });
+    }
+
+    h4 {
+        font-size: 13px;
+        margin: 0;
+        font-weight: 300;
+        color: #666;
+    }
+
+    &[is-vidyano] {
+        &:only-of-type {
+            h3, h4 {
+                display: none;
+            }
+
+            ul#vidyano {
+                padding-left: 0;
+            }
+        }
+
+        ul#vidyano {
+            list-style: none;
+            padding-left: @h1;
+            max-height: 0;
+            overflow: hidden;
+            -moz-transition: max-height 0.3s ease-out;
+            -o-transition: max-height 0.3s ease-out;
+            -webkit-transition: max-height 0.3s ease-out;
+            transition: max-height 0.3s ease-out;
+
+            li {
+                &:first-child {
+                    margin-bottom: @h4;
+                    margin-top: @h3;
+                }
+
+                label {
+                    display: block;
+                    font-size: @h4 - 1px;
+                    font-weight: bold;
+                    margin-bottom: @h5;
+                    font-weight: 400;
+                    color: #888;
+                    overflow: hidden;
+                    text-transform: uppercase;
+                }
+
+                input {
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: @h5;
+                    border: 1px solid #ddd;
+                    outline: none;
+
+                    .colorize( {
+                        &:focus {
+                            border-color: @@color-light;
+                        }
+                    });
+                }
+
+                &:last-of-type {
+                    line-height: @h2;
+                    height: @h2;
+                    margin-top: @h3;
+                    .layout-horizontal();
+
+                    vi-checkbox:not([checked]) {
+                        color: #888;
+                        fill: #bbb;
+                    }
+
+                    vi-checkbox[checked] {
+                        color: #666;
+                    }
+
+                    div {
+                        .layout-horizontal-reverse();
+                        .flex();
+
+                        button {
+                            cursor: pointer;
+                            padding: 0 @h4;
+                            box-sizing: content-box;
+
+                            .colorize({
+                                .colorize-button(@@color);
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &[signing-in] button {
+        text-align: left;
+        cursor: default !important;
+        color: #fff !important;
+
+        .colorize({
+            background-color: fadeout(@@color, 25%) !important;
+        });
+    }
+}
+
+/* Extra small devices (phones, less than 768px) */
+@media (max-width: 767px) {
+    vi-sign-in {
+        #image {
+            display: none;
+        }
+
+        #side {
+            .fit();
+        }
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    vi-sign-in {
+        #side {
+            width: 400px;
+        }
+    }
+}

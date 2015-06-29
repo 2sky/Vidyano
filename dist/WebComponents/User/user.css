@@ -1,0 +1,146 @@
+vi-user {
+  border-top: 1px solid transparent;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+[theme-color-1] vi-user {
+  background-color: rgba(52, 65, 71, 0.5);
+  border-top-color: rgba(75, 83, 87, 0.5);
+}
+[theme-color-2] vi-user {
+  background-color: rgba(42, 77, 73, 0.5);
+  border-top-color: rgba(53, 98, 93, 0.5);
+}
+vi-user > span {
+  line-height: 40px;
+  height: 40px;
+}
+vi-user button {
+  height: 40px !important;
+  line-height: 40px !important;
+  cursor: pointer;
+}
+[theme-color-1] vi-user button#signIn {
+  background-color: #126790;
+  color: white;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+  -moz-transition-timing-function: ease-out;
+  -o-transition-timing-function: ease-out;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+[theme-color-1] vi-user button#signIn:hover {
+  background-color: #126790;
+}
+[theme-color-1] vi-user button#signIn:active {
+  background-color: #0c4763;
+}
+[theme-color-1] vi-user button#signIn[disabled] {
+  fill: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+}
+[theme-color-2] vi-user button#signIn {
+  background-color: #009688;
+  color: white;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+  -moz-transition-timing-function: ease-out;
+  -o-transition-timing-function: ease-out;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+[theme-color-2] vi-user button#signIn:hover {
+  background-color: #009688;
+}
+[theme-color-2] vi-user button#signIn:active {
+  background-color: #00635a;
+}
+[theme-color-2] vi-user button#signIn[disabled] {
+  fill: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+}
+vi-user button#signIn > vi-resource {
+  height: 40px !important;
+  margin-left: 6px;
+}
+vi-user button#settings {
+  width: 40px;
+  box-sizing: border-box;
+}
+[theme-color-1] vi-user button#settings {
+  background-color: rgba(52, 65, 71, 0.6);
+  color: white;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+  -moz-transition-timing-function: ease-out;
+  -o-transition-timing-function: ease-out;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  border-left: 1px solid rgba(75, 83, 87, 0.8);
+}
+[theme-color-1] vi-user button#settings:hover {
+  background-color: rgba(52, 65, 71, 0.6);
+}
+[theme-color-1] vi-user button#settings:active {
+  background-color: rgba(30, 38, 42, 0.6);
+}
+[theme-color-1] vi-user button#settings[disabled] {
+  fill: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+}
+[theme-color-2] vi-user button#settings {
+  background-color: rgba(42, 77, 73, 0.6);
+  color: white;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+  -moz-transition-timing-function: ease-out;
+  -o-transition-timing-function: ease-out;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  border-left: 1px solid rgba(53, 98, 93, 0.8);
+}
+[theme-color-2] vi-user button#settings:hover {
+  background-color: rgba(42, 77, 73, 0.6);
+}
+[theme-color-2] vi-user button#settings:active {
+  background-color: rgba(24, 44, 42, 0.6);
+}
+[theme-color-2] vi-user button#settings[disabled] {
+  fill: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+}
+vi-user button > vi-resource {
+  fill: white;
+}
+vi-user:not([is-signed-in]) button {
+  cursor: pointer;
+}

@@ -1,0 +1,22 @@
+<dom-module id="vi-select">
+    <template>
+        <vi-popup id="popup" on-tap="_openPopup" on-click="_openPopup" on-opened="_popupOpened" on-closed="_popupClosed" sticky auto-width disabled$="{{readonly}}">
+            <div header>
+                <content select="[left]"></content>
+                <div class="suggestions">
+                    <span id="match"></span><span id="remainder"></span>
+                </div>
+                <input id="input" value="{{_inputValue::input}}" on-keydown="_keydown" on-keyup="_keyup" readonly$="{{_isReadonlyInput(readonly, disableFiltering)}}" />
+                <content select="[right]"></content>
+            </div>
+            <div content on-tap="_optionTap" filtering$="{{filtering}}">
+                <template is="dom-repeat" items="{{filteredItems}}">
+                    <div class="option" suggested$="{{_equals(item, suggestion)}}" selected$="{{_equals(item, selectedItem)}}" data-option-index$="{{index}}">{{item.displayValue}}</div>
+                </template>
+            </div>
+        </vi-popup>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="select.css" />
+<script src="select.js"></script>

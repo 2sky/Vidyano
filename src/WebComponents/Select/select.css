@@ -1,0 +1,102 @@
+vi-select {
+  display: block;
+  position: relative;
+  border: 1px solid #dddddd;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+vi-select vi-popup {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+vi-select vi-popup #content {
+  -moz-transform: translate(0, 1px);
+  -ms-transform: translate(0, 1px);
+  -o-transform: translate(0, 1px);
+  -webkit-transform: translate(0, 1px);
+  transform: translate(0, 1px);
+}
+vi-select vi-popup [header] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  position: relative;
+}
+vi-select vi-popup [header] .suggestions {
+  z-index: 1;
+  padding-left: 6px;
+  position: absolute;
+  left: 0;
+  height: 28px;
+  line-height: 28px;
+}
+vi-select vi-popup [header] .suggestions span {
+  float: left;
+  font-size: 13px;
+}
+vi-select vi-popup [header] .suggestions span:first-child {
+  color: transparent;
+}
+vi-select vi-popup [header] .suggestions span:nth-child(2) {
+  color: #CCC;
+}
+vi-select vi-popup [header] input {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  z-index: 2;
+  border: none;
+  height: 28px;
+  line-height: 28px;
+  padding-left: 6px;
+  background-color: transparent;
+  font-size: 13px;
+}
+vi-select vi-popup [header] input[disabled] {
+  color: inherit !important;
+}
+vi-select vi-popup [content] {
+  max-height: 150px;
+  overflow-y: auto;
+}
+vi-select vi-popup [content] .option {
+  padding-left: 6px;
+  line-height: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+[theme-color-1] vi-select vi-popup [content] .option:hover {
+  background-color: #e7f0f4;
+}
+[theme-color-2] vi-select vi-popup [content] .option:hover {
+  background-color: #e5f4f2;
+}
+[theme-color-1] vi-select vi-popup [content] .option[suggested],
+[theme-color-1] vi-select vi-popup [content]:not([filtering]) .option[selected] {
+  background-color: #126790;
+  color: white;
+}
+[theme-color-2] vi-select vi-popup [content] .option[suggested],
+[theme-color-2] vi-select vi-popup [content]:not([filtering]) .option[selected] {
+  background-color: #009688;
+  color: white;
+}
+[theme-color-1] vi-select vi-popup [content] .option[suggested]:hover,
+[theme-color-1] vi-select vi-popup [content]:not([filtering]) .option[selected]:hover {
+  background-color: #367ea0;
+}
+[theme-color-2] vi-select vi-popup [content] .option[suggested]:hover,
+[theme-color-2] vi-select vi-popup [content]:not([filtering]) .option[selected]:hover {
+  background-color: #20a294;
+}

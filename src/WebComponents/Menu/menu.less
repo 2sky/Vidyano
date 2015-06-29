@@ -1,0 +1,58 @@
+@import (reference) "../vidyano.less";
+
+@indent: 16px;
+
+vi-menu {
+    .layout-vertical();
+    .noSelection();
+    height: 100%;
+    color: @dark-foreground;
+    width: 16em;
+    box-sizing: border-box;
+    .colorize({
+        background-color: darken(desaturate(@@color-darker, 70%), 7%);
+    });
+}
+
+.vi-menu.style-scope {
+    header&, footer& {
+        display: block;
+        line-height: @h1;
+        min-height: @h1;
+    }
+
+    header& {
+        text-align: center;
+
+        span {
+            display: block;
+            font-size: (@h3);
+            line-height: @h1 * 2;
+            .colorize({
+                background-color: @@color-dark;
+            });
+        }
+    }
+
+    vi-input-search& {
+        margin: (@indent / 2) (@indent - @indent / 2);
+        border-bottom: 1px solid fadeout(white, 90%);
+
+        input {
+            padding-left: @h5;
+        }
+    }
+
+    #programUnits& {
+        overflow-y: auto;
+
+        .subItems {
+            display: none;
+            margin-bottom: @h5;
+        }
+
+        vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
+            display: block;
+        }
+    }
+}

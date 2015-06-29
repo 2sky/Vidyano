@@ -1,0 +1,25 @@
+﻿<script>
+    // DON'T SPAN EMPTY
+    Polymer.telemetry.registrations.some(function (e) {
+        if (e.is == "dom-if") {
+            e._wrapTextNodes = function () { };
+            e._showHideChildren = function () {
+                var hidden = this._hideTemplateChildren || !this.if;
+                if (this._instance) {
+                    var c$ = this._instance._children;
+                    for (var i = 0; i < c$.length; i++) {
+                        var c = c$[i];
+                        if (c.style === undefined)
+                            continue;
+
+                        c.style.display = hidden ? 'none' : '';
+                        c._hideTemplateChildren = hidden;
+                    }
+                }
+            };
+
+            return true;
+        }
+    });
+</script>
+<script src="webcomponent.js"></script>

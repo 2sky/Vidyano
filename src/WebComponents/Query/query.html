@@ -1,0 +1,15 @@
+﻿<dom-module id="vi-query">
+    <template>
+        <template is="dom-if" if="{{isLoading}}" restamp>
+            <vi-spinner></vi-spinner>
+        </template>
+
+        <vi-query-items-presenter class="flex" query="{{query}}"></vi-query-items-presenter>
+        <vi-notification service-object="{{query}}"></vi-notification>
+        <vi-action-bar class="horizontal layout center" service-object="{{query}}" hidden$="{{noActions}}"></vi-action-bar>
+        <header>{{query.labelWithTotalItems}}</header>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="query.css" />
+<script src="query.js"></script>

@@ -1,0 +1,32 @@
+<dom-module id="vi-persistent-object-attribute-as-detail">
+    <template>
+        <table>
+            <thead>
+                <tr>
+                    <template is="dom-repeat" items="{{attribute.details.columns}}" filter="isVisible">
+                        <td>{{item.label}}</td>
+                    </template>
+                </tr>
+            </thead>
+            <tbody>
+                <template is="dom-repeat" items="{{attribute.objects}}" as="obj">
+                    <tr>
+                        <template is="dom-repeat" items="{{attribute.details.columns}}" as="column" filter="isVisible">
+                            <td>
+                                <template is="dom-if" if="{{editing}}">
+                                    <vi-persistent-object-attribute-presenter nolabel attribute="{{getAttributeForColumn(obj, column)}}"></vi-persistent-object-attribute-presenter>
+                                </template>
+                                <template is="dom-if" if="{{!editing}}">
+                                    <span>{{getDisplayValue(obj, column)}}</span>
+                                </template>
+                            </td>
+                        </template>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="persistent-object-attribute-as-detail.css" />
+<script src="persistent-object-attribute-as-detail.js"></script>

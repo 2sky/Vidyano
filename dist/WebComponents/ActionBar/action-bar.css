@@ -1,0 +1,79 @@
+vi-action-bar {
+  min-height: 40px;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+vi-action-bar([isEmpty]) {
+  display: none !important;
+}
+vi-action-bar .actions {
+  overflow: hidden;
+}
+vi-action-bar .action vi-resource[hasResource] {
+  padding-right: 2px;
+}
+[theme-color-1] vi-action-bar vi-overflow button[header] {
+  color: #126790;
+}
+[theme-color-2] vi-action-bar vi-overflow button[header] {
+  color: #009688;
+}
+vi-action-bar vi-overflow vi-action-button {
+  text-align: left;
+}
+vi-action-bar vi-input-search {
+  min-width: 16em;
+  margin: 5px 6px;
+  height: 30px;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  box-sizing: border-box;
+}
+vi-action-bar vi-input-search input {
+  padding: 0 10px;
+  color: #333;
+}
+vi-action-bar vi-input-search input:focus {
+  background-color: white;
+}
+[theme-color-1] vi-action-bar vi-input-search input:focus + button {
+  background-color: #126790;
+}
+[theme-color-2] vi-action-bar vi-input-search input:focus + button {
+  background-color: #009688;
+}
+vi-action-bar vi-input-search input:not(:focus)::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: rgba(77, 77, 77, 0.5);
+}
+vi-action-bar vi-input-search input:not(:focus):-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: rgba(77, 77, 77, 0.5);
+  opacity: 1;
+}
+vi-action-bar vi-input-search input:not(:focus)::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: rgba(77, 77, 77, 0.5);
+  opacity: 1;
+}
+vi-action-bar vi-input-search input:not(:focus):-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: rgba(77, 77, 77, 0.5);
+}
+vi-action-bar vi-input-search button {
+  fill: rgba(128, 128, 128, 0.5);
+}
+[theme-color-1] vi-action-bar[theme-color-inverse] #toggle button[header] {
+  color: white;
+}
+[theme-color-2] vi-action-bar[theme-color-inverse] #toggle button[header] {
+  color: white;
+}

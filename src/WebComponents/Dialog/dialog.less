@@ -1,0 +1,214 @@
+@import (reference) "../vidyano.less";
+
+vi-dialog {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000000;
+
+    #overlay, #dialogHost {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    #overlay {
+        background-color: rgba(0, 0, 0, 0.1);
+        display: none;
+    }
+
+    #dialogHost {
+        z-index: 50001;
+    }
+
+    #dialog {
+        max-width: 80%;
+        opacity: 0;
+        -moz-transition: opacity 3000ms ease-out;
+        -o-transition: opacity 3000ms ease-out;
+        -webkit-transition: opacity 3000ms ease-out;
+        transition: opacity 3000ms ease-out;
+        background-color: white;
+        .z-index1();
+
+        > header, > footer {
+            background-color: #FAFAFA;
+        }
+
+        & > header {
+            line-height: @h1;
+            padding: @h5 @h4;
+            border-bottom: 1px solid #EEE;
+
+            h4 {
+                margin: 0;
+                font-weight: 500;
+                font-size: 120%;
+            }
+
+            button.close {
+                margin: 0;
+                padding: 0 @h5;
+                fill: #888;
+                background: none;
+                border: none;
+                cursor: pointer;
+
+                &:hover {
+                    fill: #555;
+                }
+
+                &:active {
+                    fill: #333;
+                }
+
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
+
+        & > footer {
+            padding: @h4;
+            border-top: 1px solid #EEE;
+
+            > button {
+                line-height: @h2;
+                padding: 0 @h5;
+                margin-left: @h5;
+
+                &:not([disabled]) {
+                    cursor: pointer;
+                }
+
+                &[action-type="Default"] {
+                    .colorize({
+                        .colorize-button(@@color);
+                    });
+                }
+
+                &[action-type="Danger"] {
+                    .colorize-button(#FF4136);
+                }
+
+                &[action-type="Safe"] {
+                    .colorize-button(#3D9970);
+                }
+
+                &[action-type=""], &:not([action-type]) {
+                    .colorize-button-inverse();
+                }
+            }
+        }
+
+        .content {
+            position: relative;
+        }
+    }
+
+    &[shown] {
+        display: block;
+
+        #overlay {
+            display: block;
+        }
+
+        #dialog {
+            opacity: 1;
+        }
+    }
+
+    &[auto-size] {
+        #dialog {
+            .layout-vertical();
+
+            .content {
+                .flex();
+            }
+        }
+    }
+}
+
+/* Extra small devices (phones, less than 768px) */
+@media (max-width: 767px) {
+    vi-dialog {
+        #dialog {
+            position: absolute;
+            left: 1em;
+            right: 1em;
+            top: 1em;
+            bottom: 1em;
+            max-width: none;
+        }
+
+        &:not([auto-size]) {
+            #dialog {
+                .layout-vertical();
+
+                & > .content {
+                    .flex();
+                    overflow: auto;
+                }
+            }
+        }
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+    vi-dialog[auto-size] {
+        #dialog {
+            width: 800px;
+            height: 70%;
+        }
+    }
+
+    vi-dialog:not([auto-size]) {
+        #dialog > .content {
+            max-width: 800px;
+            max-height: 75vh;
+            overflow: auto;
+        }
+    }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    vi-dialog[auto-size] {
+        #dialog {
+            width: 900px;
+            height: 70%;
+        }
+    }
+
+    vi-dialog:not([auto-size]) {
+        #dialog > .content {
+            max-width: 900px;
+            max-height: 75vh;
+            overflow: auto;
+        }
+    }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    vi-dialog[auto-size] {
+        #dialog {
+            width: 1000px;
+            height: 70%;
+        }
+    }
+
+    vi-dialog:not([auto-size]) {
+        #dialog > .content {
+            max-width: 1000px;
+            max-height: 75vh;
+            overflow: auto;
+        }
+    }
+}

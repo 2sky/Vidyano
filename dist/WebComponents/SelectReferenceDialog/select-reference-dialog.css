@@ -1,0 +1,19 @@
+vi-select-reference-dialog vi-dialog vi-input-search {
+  line-height: 30px;
+  height: 30px;
+  border: 1px solid rgba(128, 128, 128, 0.2);
+  box-sizing: border-box;
+}
+vi-select-reference-dialog vi-dialog vi-input-search input {
+  padding: 10px;
+  color: #333;
+}
+vi-select-reference-dialog vi-dialog vi-input-search input:focus {
+  background-color: white;
+}
+[theme-color-1] vi-select-reference-dialog vi-dialog vi-input-search input:focus + button {
+  background-color: #126790;
+}
+[theme-color-2] vi-select-reference-dialog vi-dialog vi-input-search input:focus + button {
+  background-color: #009688;
+}

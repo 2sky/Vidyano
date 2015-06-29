@@ -1,0 +1,19 @@
+﻿@import (reference) "query-grid.less";
+
+vi-query-grid-item-actions, .vi-query-grid-item-actions-proxy {
+    display: block;
+    width: @cell-width;
+    height: @cell-line-height;
+    .noSelection();
+
+    > vi-resource, #toggle {
+        fill: #333;
+        height: @cell-line-height;
+    }
+
+    &:hover {
+        .colorize({
+            background-color: darken(@@color-faint, 5%);
+        });
+    }
+}

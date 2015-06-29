@@ -1,0 +1,64 @@
+vi-persistent-object-attribute-boolean,
+vi-persistent-object-attribute-nullable-boolean {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: block;
+  fill: #aaa;
+  cursor: default;
+}
+vi-persistent-object-attribute-boolean vi-resource[icon],
+vi-persistent-object-attribute-nullable-boolean vi-resource[icon] {
+  margin-right: 6px;
+}
+[theme-color-1] vi-persistent-object-attribute-boolean vi-resource[icon].selected #check,
+[theme-color-1] vi-persistent-object-attribute-nullable-boolean vi-resource[icon].selected #check {
+  fill: #126790;
+}
+[theme-color-2] vi-persistent-object-attribute-boolean vi-resource[icon].selected #check,
+[theme-color-2] vi-persistent-object-attribute-nullable-boolean vi-resource[icon].selected #check {
+  fill: #009688;
+}
+vi-persistent-object-attribute-boolean span,
+vi-persistent-object-attribute-nullable-boolean span {
+  padding-right: 6px;
+  line-height: 30px;
+}
+vi-persistent-object-attribute-boolean[editing]:not([read-only]),
+vi-persistent-object-attribute-nullable-boolean[editing]:not([read-only]) {
+  cursor: pointer !important;
+}
+vi-persistent-object-attribute-boolean:not([editing]),
+vi-persistent-object-attribute-nullable-boolean:not([editing]) {
+  line-height: 16px;
+}
+vi-persistent-object-attribute-boolean:not([editing]) vi-resource[icon],
+vi-persistent-object-attribute-nullable-boolean:not([editing]) vi-resource[icon] {
+  height: 16px;
+  line-height: 16px;
+}
+vi-persistent-object-attribute-boolean:not([editing]) vi-resource[icon] #box,
+vi-persistent-object-attribute-nullable-boolean:not([editing]) vi-resource[icon] #box {
+  fill: #dddddd;
+}
+vi-persistent-object-attribute-boolean:not([editing]) vi-resource,
+vi-persistent-object-attribute-nullable-boolean:not([editing]) vi-resource,
+vi-persistent-object-attribute-boolean:not([editing]) span,
+vi-persistent-object-attribute-nullable-boolean:not([editing]) span {
+  vertical-align: top;
+  line-height: 16px;
+}
+vi-persistent-object-attribute-boolean[editing][read-only] vi-resource[icon],
+vi-persistent-object-attribute-nullable-boolean[editing][read-only] vi-resource[icon] {
+  fill: #dddddd;
+}
+vi-persistent-object-attribute-nullable-boolean {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}

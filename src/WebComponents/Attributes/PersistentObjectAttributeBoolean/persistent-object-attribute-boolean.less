@@ -1,0 +1,55 @@
+@import (reference) "../persistent-object-attribute.less";
+
+vi-persistent-object-attribute-boolean, vi-persistent-object-attribute-nullable-boolean {
+    .noSelection();
+    display: block;
+    fill: #aaa;
+    cursor: default;
+
+    vi-resource[icon] {
+        margin-right: @h5;
+
+        &.selected #check {
+            .colorize({
+                fill: @@color;
+            });
+        }
+    }
+
+    span {
+        padding-right: @h5;
+        line-height: @h2;
+    }
+
+    &[editing]:not([read-only]) {
+        cursor: pointer !important;
+    }
+
+	&:not([editing]) {
+        line-height: @non-edit-line-height;
+
+		vi-resource[icon] {
+            height: @non-edit-line-height;
+            line-height: @non-edit-line-height;
+
+             #box {
+                fill: @border-color;
+            }
+        }
+
+        vi-resource, span {
+            vertical-align: top;
+		    line-height: @non-edit-line-height;
+        }
+	}
+
+	&[editing][read-only] {
+        vi-resource[icon] {
+            fill: @border-color;
+        }
+    }
+}
+
+vi-persistent-object-attribute-nullable-boolean {
+    .layout-horizontal();
+}

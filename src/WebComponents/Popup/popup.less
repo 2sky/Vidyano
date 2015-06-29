@@ -1,0 +1,41 @@
+@import (reference) "../vidyano.less";
+
+:host {
+    display: block;
+    position: relative;
+
+    > [toggle] {
+        width: 100%;
+        box-sizing: border-box;
+        cursor: pointer;
+
+        > vi-resource {
+            display: block;
+
+            > span {
+                white-space: nowrap;
+                display: block;
+            }
+        }
+    }
+
+    > #content {
+        position: fixed;
+        visibility: hidden;
+        background-color: white;
+        opacity: 0;
+        -moz-transition: opacity 0.1s ease-out;
+        -o-transition: opacity 0.1s ease-out;
+        -webkit-transition: opacity 0.1s ease-out;
+        transition: opacity 0.1s ease-out;
+        .z-index1();
+    }
+
+    &[open] {
+        > #content {
+            visibility: visible;
+            opacity: 1;
+            z-index: 11;
+        }
+    }
+}

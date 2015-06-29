@@ -1,0 +1,115 @@
+vi-query-grid-filters > vi-popup-menu button[header] {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  text-align: left;
+  line-height: 30px;
+  height: 30px;
+  padding: 0;
+  cursor: pointer;
+}
+[theme-color-1] vi-query-grid-filters > vi-popup-menu button[header] {
+  background-color: transparent;
+  color: #043d59;
+  fill: #595959;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -moz-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+[theme-color-1] vi-query-grid-filters > vi-popup-menu button[header]:hover {
+  background-color: #f0f0f0;
+}
+[theme-color-1] vi-query-grid-filters > vi-popup-menu button[header]:active {
+  background-color: #095072;
+  fill: white !important;
+  color: white !important;
+}
+[theme-color-1] vi-query-grid-filters > vi-popup-menu button[header][disabled] {
+  fill: #e7f0f4;
+  color: rgba(0, 0, 0, 0.5);
+}
+[theme-color-2] vi-query-grid-filters > vi-popup-menu button[header] {
+  background-color: transparent;
+  color: #005d53;
+  fill: #595959;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -moz-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+[theme-color-2] vi-query-grid-filters > vi-popup-menu button[header]:hover {
+  background-color: #f0f0f0;
+}
+[theme-color-2] vi-query-grid-filters > vi-popup-menu button[header]:active {
+  background-color: #00776a;
+  fill: white !important;
+  color: white !important;
+}
+[theme-color-2] vi-query-grid-filters > vi-popup-menu button[header][disabled] {
+  fill: #e5f4f2;
+  color: rgba(0, 0, 0, 0.5);
+}
+vi-query-grid-filters > vi-popup-menu button[header] vi-resource {
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+}
+vi-query-grid-filters > vi-popup-menu button[header] vi-resource svg {
+  width: 30px;
+  height: 30px;
+  fill: #333;
+}
+[theme-color-1] vi-query-grid-filters vi-popup[open]:hover button[header] {
+  background-color: #e7f0f4;
+}
+[theme-color-1] vi-query-grid-filters vi-popup[open]:hover button[header] vi-resource svg {
+  fill: #126790;
+}
+[theme-color-2] vi-query-grid-filters vi-popup[open]:hover button[header] {
+  background-color: #e5f4f2;
+}
+[theme-color-2] vi-query-grid-filters vi-popup[open]:hover button[header] vi-resource svg {
+  fill: #009688;
+}
+vi-query-grid-filters #saveAsNewDialog [content] {
+  padding: 12px;
+}
+vi-query-grid-filters #saveAsNewDialog [content] label {
+  display: block;
+}
+vi-query-grid-filters #saveAsNewDialog [content] input {
+  width: 16em;
+  border: 1px solid #333;
+  font-size: 13px;
+  background-color: transparent;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 6px;
+  line-height: 28px;
+  outline: none;
+  color: #333;
+  margin-bottom: 12px;
+}
+[theme-color-1] vi-query-grid-filters #saveAsNewDialog [content] input:focus {
+  border-color: #126790;
+}
+[theme-color-2] vi-query-grid-filters #saveAsNewDialog [content] input:focus {
+  border-color: #009688;
+}

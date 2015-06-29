@@ -1,0 +1,573 @@
+vi-time-picker {
+  display: block;
+  position: relative;
+  padding: 24px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+vi-time-picker #clockHost {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+vi-time-picker #clockHost::before {
+  position: absolute;
+  z-index: -1;
+  left: -10px;
+  top: -10px;
+  width: 220px;
+  height: 220px;
+  background: #eee;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  content: "";
+}
+vi-time-picker #clockHost .list {
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  left: 90px;
+  top: 90px;
+  position: absolute;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+vi-time-picker #clockHost .list .item {
+  position: absolute;
+  text-align: center;
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+vi-time-picker #clockHost .list .item:nth-child(13) {
+  transform: rotate(360deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(13) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-360deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(13) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(12) {
+  transform: rotate(330deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(12) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-330deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(12) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(11) {
+  transform: rotate(300deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(11) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-300deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(11) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(10) {
+  transform: rotate(270deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(10) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-270deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(10) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(9) {
+  transform: rotate(240deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(9) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-240deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(9) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(8) {
+  transform: rotate(210deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(8) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-210deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(8) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(7) {
+  transform: rotate(180deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(7) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-180deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(7) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(6) {
+  transform: rotate(150deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(6) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-150deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(6) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(5) {
+  transform: rotate(120deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(5) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-120deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(5) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(4) {
+  transform: rotate(90deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(4) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-90deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(4) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(3) {
+  transform: rotate(60deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(3) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-60deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(3) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(2) {
+  transform: rotate(30deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(2) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-30deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(2) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item:nth-child(1) {
+  transform: rotate(0deg) translate(0, -90px);
+}
+vi-time-picker #clockHost .list .item:nth-child(1) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(0deg);
+}
+vi-time-picker #clockHost .list .item:nth-child(1) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(1) {
+  font-size: 90%;
+}
+vi-time-picker #clockHost .list:nth-child(2) {
+  position: absolute;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item {
+  position: absolute;
+  text-align: center;
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(13) {
+  transform: rotate(360deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(13) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-360deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(13) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(12) {
+  transform: rotate(330deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(12) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-330deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(12) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(11) {
+  transform: rotate(300deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(11) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-300deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(11) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(10) {
+  transform: rotate(270deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(10) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-270deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(10) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(9) {
+  transform: rotate(240deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(9) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-240deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(9) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(8) {
+  transform: rotate(210deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(8) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-210deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(8) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(7) {
+  transform: rotate(180deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(7) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-180deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(7) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(6) {
+  transform: rotate(150deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(6) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-150deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(6) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(5) {
+  transform: rotate(120deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(5) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-120deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(5) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(4) {
+  transform: rotate(90deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(4) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-90deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(4) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(3) {
+  transform: rotate(60deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(3) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-60deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(3) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(2) {
+  transform: rotate(30deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(2) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(-30deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(2) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(1) {
+  transform: rotate(0deg) translate(0, -57px);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(1) span {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transform: rotate(0deg);
+}
+vi-time-picker #clockHost .list:nth-child(2) .item:nth-child(1) span::before {
+  width: 25px;
+  height: 25px;
+  -moz-border-radius: 12.5px;
+  -webkit-border-radius: 12.5px;
+  border-radius: 12.5px;
+}
+vi-time-picker #clockHost .list .item span {
+  position: absolute;
+  text-align: center;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+vi-time-picker #clockHost .list .item span:hover {
+  color: white;
+}
+[theme-color-1] vi-time-picker #clockHost .list .item span:hover::before {
+  background-color: #367ea0;
+}
+[theme-color-2] vi-time-picker #clockHost .list .item span:hover::before {
+  background-color: #20a294;
+}
+vi-time-picker #clockHost .list .item span::before {
+  position: absolute;
+  z-index: -1;
+  left: -12.5%;
+  top: -12.5%;
+  content: "";
+}
+vi-time-picker #clockHost .list .item.active span {
+  color: white;
+}
+[theme-color-1] vi-time-picker #clockHost .list .item.active span::before {
+  background-color: #126790;
+}
+[theme-color-2] vi-time-picker #clockHost .list .item.active span::before {
+  background-color: #009688;
+}
+[theme-color-1] vi-time-picker #clockHost .list .item.active span:hover::before {
+  background-color: #095072;
+}
+[theme-color-2] vi-time-picker #clockHost .list .item.active span:hover::before {
+  background-color: #00776a;
+}
+vi-time-picker #clockHost > .face {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  -moz-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  -webkit-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+}
+vi-time-picker #current {
+  display: block;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+vi-time-picker #current span.minutes,
+vi-time-picker #current span.hours {
+  cursor: pointer;
+  font-weight: bold;
+}
+vi-time-picker[state="minutes"] .list:nth-child(3) {
+  transform: scale(1);
+  opacity: 1;
+  z-index: 2;
+}
+vi-time-picker[state="minutes"] .list:nth-child(1),
+vi-time-picker[state="minutes"] .list:nth-child(2) {
+  transform: scale(1.3);
+  opacity: 0;
+  z-index: -2;
+}
+[theme-color-1] vi-time-picker[state="minutes"] #current .minutes {
+  color: #126790;
+}
+[theme-color-2] vi-time-picker[state="minutes"] #current .minutes {
+  color: #009688;
+}
+vi-time-picker[state="hours"] .list:nth-child(3) {
+  transform: scale(0.7);
+  opacity: 0;
+  z-index: 1;
+}
+vi-time-picker[state="hours"] .list:nth-child(1),
+vi-time-picker[state="hours"] .list:nth-child(2) {
+  transform: scale(1);
+  opacity: 1;
+  z-index: 2;
+}
+[theme-color-1] vi-time-picker[state="hours"] #current .hours {
+  color: #126790;
+}
+[theme-color-2] vi-time-picker[state="hours"] #current .hours {
+  color: #009688;
+}

@@ -1,0 +1,84 @@
+vi-menu-item {
+  display: block;
+  line-height: 30px;
+  color: #fafafa;
+  fill: #fafafa;
+  font-size: 13px;
+}
+vi-menu-item span.match {
+  color: #FFDD00;
+  font-weight: bold;
+}
+vi-menu-item.program-unit {
+  background-color: transparent;
+  text-transform: uppercase;
+}
+vi-menu-item.program-unit > a {
+  font-weight: 600;
+  color: #fafafa;
+}
+vi-menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+vi-menu-item a {
+  display: block;
+  padding: 0 6px 0 16px;
+  text-decoration: none;
+  color: #fafafa;
+  white-space: nowrap;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+vi-menu-item.program-unit-item:not([has-items]) {
+  padding-left: 24px;
+}
+vi-menu-item:not([has-items]) .group {
+  display: none;
+}
+vi-menu-item[has-items].program-unit-item {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  padding-left: 8px;
+}
+vi-menu-item[has-items].program-unit-item .group {
+  width: 32px;
+  text-align: center;
+  -moz-transition: transform 0.2s ease-out;
+  -o-transition: transform 0.2s ease-out;
+  -webkit-transition: transform 0.2s ease-out;
+  transition: transform 0.2s ease-out;
+}
+vi-menu-item[has-items].program-unit-item a {
+  -ms-flex: 1;
+  flex: 1;
+  padding-left: 0;
+  position: relative;
+  cursor: pointer;
+}
+vi-menu-item[has-items].program-unit-item a::before {
+  position: absolute;
+  left: 8px;
+  padding: 1px 0 0 8px;
+}
+vi-menu-item[has-items].program-unit-item[expand] .group {
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+vi-menu-item.program-unit-group-item {
+  padding-left: 0;
+  padding-left: 40px;
+}
+vi-menu-item[hide] {
+  display: none !important;
+}
+vi-menu-item[hide] + .subItems {
+  display: none !important;
+}

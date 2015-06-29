@@ -1,0 +1,17 @@
+<dom-module id="vi-query-presenter">
+    <template>
+        <template is="dom-if" if="{{loading}}">
+            <vi-spinner></vi-spinner>
+        </template>
+        <template is="dom-if" if="{{hasError}}" restamp>
+            <div id="error">
+                <vi-resource source="Icon_Notification_Error"></vi-resource>
+                <span>{{error}}</span>
+            </div>
+        </template>
+        <content></content>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="query-presenter.css" />
+<script src="query-presenter.js"></script>

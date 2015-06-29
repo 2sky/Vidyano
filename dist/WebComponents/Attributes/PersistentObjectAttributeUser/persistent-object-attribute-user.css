@@ -1,0 +1,16 @@
+vi-persistent-object-attribute-user {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+vi-persistent-object-attribute-user span {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  line-height: 30px;
+}

@@ -1,0 +1,54 @@
+@import (reference) "../persistent-object-attribute.less";
+
+vi-persistent-object-attribute-translated-string {
+	.layout-horizontal();
+
+    pre {
+        padding-top: @h5;
+        line-height: normal !important;
+    }
+}
+
+vi-persistent-object-attribute-translated-string-dialog {
+    ul {
+        margin: 0;
+        padding: @h4;
+        list-style: none;
+
+        li {
+            min-width: 50vw;
+
+            &:not(:last-of-type) {
+                margin-bottom: @h4;
+            }
+
+            label {
+                display: block;
+                font-size: 11px;
+                min-height: 20px;
+                line-height: 20px;
+                font-weight: 400;
+                color: #888;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-transform: uppercase;
+            }
+
+            input, textarea {
+                width: 100%;
+                resize: none;
+                box-sizing: border-box;
+                margin: 0;
+                padding: @h5;
+                border: 1px solid @border-color;
+                outline: none;
+
+                .colorize( {
+                    &:focus {
+                        border-color: @@color-light;
+                    }
+                });
+            }
+        }
+    }
+}

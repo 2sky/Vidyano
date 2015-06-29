@@ -1,0 +1,17 @@
+<dom-module id="vi-dialog">
+    <template>
+        <div id="overlay"></div>
+        <div id="dialogHost" class="horizontal center-justified center layout">
+            <div id="dialog">
+                <content select="header"></content>
+                <div class="content">
+                    <content select=":not(footer):not(header)"></content>
+                </div>
+                <content select="footer"></content>
+            </div>
+        </div>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="dialog.css" />
+<script src="dialog.js"></script>

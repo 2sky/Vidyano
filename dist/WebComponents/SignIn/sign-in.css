@@ -1,0 +1,258 @@
+vi-sign-in {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+vi-sign-in #image {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-color: #EEE;
+}
+vi-sign-in #image > span {
+  text-align: center;
+  color: #aaa;
+}
+vi-sign-in #image.has-image > span {
+  display: none;
+}
+vi-sign-in #side {
+  padding: 22px;
+}
+vi-sign-in #side h1 {
+  font-size: 36px;
+  text-transform: lowercase;
+  display: block;
+  font-weight: normal;
+  margin: 22px 0 40px 0;
+}
+[theme-color-1] vi-sign-in #side h1 {
+  color: #126790;
+}
+[theme-color-2] vi-sign-in #side h1 {
+  color: #009688;
+}
+vi-sign-in #side h2 {
+  margin: 40px 0;
+  font-size: 14px;
+  font-weight: normal;
+  color: #888;
+}
+vi-sign-in #side > ul {
+  list-style: none;
+  padding: 0;
+}
+vi-sign-in[vidyano-only] li[is="vi-sign-in-provider"],
+vi-sign-in:not([vidyano-only]) li[is="vi-sign-in-provider"][expand] {
+  cursor: default;
+}
+vi-sign-in[vidyano-only] li[is="vi-sign-in-provider"] ul#vidyano,
+vi-sign-in:not([vidyano-only]) li[is="vi-sign-in-provider"][expand] ul#vidyano {
+  max-height: 200px;
+}
+li[is="vi-sign-in-provider"] {
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+li[is="vi-sign-in-provider"] h3 {
+  font-weight: lighter;
+  font-size: 32px;
+  margin: 0;
+}
+[theme-color-1] li[is="vi-sign-in-provider"] h3 {
+  color: #126790;
+}
+[theme-color-2] li[is="vi-sign-in-provider"] h3 {
+  color: #009688;
+}
+li[is="vi-sign-in-provider"] h4 {
+  font-size: 13px;
+  margin: 0;
+  font-weight: 300;
+  color: #666;
+}
+li[is="vi-sign-in-provider"][is-vidyano]:only-of-type h3,
+li[is="vi-sign-in-provider"][is-vidyano]:only-of-type h4 {
+  display: none;
+}
+li[is="vi-sign-in-provider"][is-vidyano]:only-of-type ul#vidyano {
+  padding-left: 0;
+}
+li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano {
+  list-style: none;
+  padding-left: 40px;
+  max-height: 0;
+  overflow: hidden;
+  -moz-transition: max-height 0.3s ease-out;
+  -o-transition: max-height 0.3s ease-out;
+  -webkit-transition: max-height 0.3s ease-out;
+  transition: max-height 0.3s ease-out;
+}
+li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:first-child {
+  margin-bottom: 12px;
+  margin-top: 22px;
+}
+li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li label {
+  display: block;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-weight: 400;
+  color: #888;
+  overflow: hidden;
+  text-transform: uppercase;
+}
+li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li input {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px;
+  border: 1px solid #ddd;
+  outline: none;
+}
+[theme-color-1] li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li input:focus {
+  border-color: #367ea0;
+}
+[theme-color-2] li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li input:focus {
+  border-color: #20a294;
+}
+li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type {
+  line-height: 30px;
+  height: 30px;
+  margin-top: 22px;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type vi-checkbox:not([checked]) {
+  color: #888;
+  fill: #bbb;
+}
+li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type vi-checkbox[checked] {
+  color: #666;
+}
+li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row-reverse;
+  -webkit-flex-direction: row-reverse;
+  flex-direction: row-reverse;
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div button {
+  cursor: pointer;
+  padding: 0 12px;
+  box-sizing: content-box;
+}
+[theme-color-1] li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div button {
+  background-color: #126790;
+  color: white;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+  -moz-transition-timing-function: ease-out;
+  -o-transition-timing-function: ease-out;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+[theme-color-1] li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div button:hover {
+  background-color: #126790;
+}
+[theme-color-1] li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div button:active {
+  background-color: #0c4763;
+}
+[theme-color-1] li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div button[disabled] {
+  fill: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+}
+[theme-color-2] li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div button {
+  background-color: #009688;
+  color: white;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+  -moz-transition-timing-function: ease-out;
+  -o-transition-timing-function: ease-out;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+[theme-color-2] li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div button:hover {
+  background-color: #009688;
+}
+[theme-color-2] li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div button:active {
+  background-color: #00635a;
+}
+[theme-color-2] li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div button[disabled] {
+  fill: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+}
+li[is="vi-sign-in-provider"][signing-in] button {
+  text-align: left;
+  cursor: default !important;
+  color: #fff !important;
+}
+[theme-color-1] li[is="vi-sign-in-provider"][signing-in] button {
+  background-color: rgba(18, 103, 144, 0.75) !important;
+}
+[theme-color-2] li[is="vi-sign-in-provider"][signing-in] button {
+  background-color: rgba(0, 150, 136, 0.75) !important;
+}
+/* Extra small devices (phones, less than 768px) */
+@media (max-width: 767px) {
+  vi-sign-in #image {
+    display: none;
+  }
+  vi-sign-in #side {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  vi-sign-in #side {
+    width: 400px;
+  }
+}

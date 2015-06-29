@@ -1,0 +1,213 @@
+﻿@import (reference) "../vidyano.less";
+
+@discSize: 220px;
+@innerDiscSize: 0.7;
+@discSpacing: 20px;
+
+vi-time-picker {
+	display: block;
+	position: relative;
+	padding: @h4 * 2;
+	.noSelection();
+
+	.numbers(@n, @offset, @size) {
+		.numbers-loop (@counter) when (@counter >= 0) {
+			.numbers-loop (@counter - 1);
+
+			@current: (@n - @counter);
+			@currentChild: @current + 1;
+
+			.item:nth-child(@{currentChild}) {
+				@currentDeg: @current * 30;
+				transform: rotate(~"@{currentDeg}deg") translate(0, @offset * -1 + @discSpacing);
+
+				span {
+					width: @size;
+					height: @size;
+					line-height: @size;
+					@currentDegNeg: @current * -30;
+					transform: rotate(~"@{currentDegNeg}deg");
+
+					&::before {
+						width: @size * 1.25;
+						height: @size * 1.25;
+						-moz-border-radius: @size * 1.25 / 2;
+						-webkit-border-radius: @size * 1.25 / 2;
+						border-radius: @size * 1.25 / 2;
+					}
+				}
+			}
+		}
+
+		.numbers-loop(@n);
+	}
+
+	.clock(@offset) {
+		position: absolute;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+
+		.item {
+			position: absolute;
+			text-align: center;
+			display: block;
+			width: @discSpacing;
+			height: @discSpacing;
+		}
+
+		.numbers(12, @offset / 2, @discSpacing);
+	}
+
+	#clockHost {
+		position: relative;
+		width: @discSize - @discSpacing;
+		height: @discSize - @discSpacing;
+
+		&::before {
+			position: absolute;
+			z-index: -1;
+			left: @discSpacing / -2;
+			top: @discSpacing / -2;
+			width: @discSize;
+			height: @discSize;
+			background: #eee;
+			-moz-border-radius: 50%;
+			-webkit-border-radius: 50%;
+			border-radius: 50%;
+			content: "";
+		}
+
+		.list {
+			-moz-transition: all 0.3s ease-in-out;
+			-o-transition: all 0.3s ease-in-out;
+			-webkit-transition: all 0.3s ease-in-out;
+			transition: all 0.3s ease-in-out;
+			left: @discSize / 2 - @discSpacing;
+			top: @discSize / 2 - @discSpacing;
+			.clock(@discSize);
+
+			&:nth-child(1) {
+				font-size: 90%;
+			}
+
+			&:nth-child(2) {
+				.clock(@discSize * @innerDiscSize);
+			}
+
+			.item {
+				span {
+					position: absolute;
+					text-align: center;
+					z-index: 1;
+					left: 0;
+					top: 0;
+					cursor: pointer;
+
+					&:hover {
+						color: white;
+
+						&::before {
+							.colorize({
+								background-color: @@color-light;
+							});
+						}
+					}
+
+					&::before {
+						position: absolute;
+						z-index: -1;
+						left: -12.5%;
+						top: -12.5%;
+						content: "";
+					}
+				}
+
+				&.active {
+					span {
+						color: white;
+
+						&::before {
+							.colorize({
+								background-color: @@color;
+							});
+						}
+
+						&:hover::before {
+							.colorize({
+								background-color: @@color-dark;
+							});
+						}
+					}
+				}
+			}
+		}
+
+		> .face {
+			position: absolute;
+			width: @discSize;
+			height: @discSize;
+			-moz-transform-origin: 50% 50%;
+			-ms-transform-origin: 50% 50%;
+			-o-transform-origin: 50% 50%;
+			-webkit-transform-origin: 50% 50%;
+			transform-origin: 50% 50%;
+		}
+	}
+
+	#current {
+		display: block;
+		text-align: center;
+		margin-bottom: @discSpacing;
+		font-size: @h3;
+
+		span.minutes, span.hours {
+			cursor: pointer;
+			font-weight: bold;
+		}
+	}
+
+	&[state="minutes"] {
+		.list:nth-child(3) {
+			transform: scale(1);
+			opacity: 1;
+			z-index: 2;
+		}
+
+		.list:nth-child(1), .list:nth-child(2) {
+			transform: scale(2 - @innerDiscSize);
+			opacity: 0;
+			z-index: -2;
+		}
+
+		#current {
+			.minutes {
+				.colorize({
+					color: @@color;
+				});
+			}
+		}
+	}
+
+	&[state="hours"] {
+		.list:nth-child(3) {
+			transform: scale(@innerDiscSize);
+			opacity: 0;
+			z-index: 1;
+		}
+
+		.list:nth-child(1), .list:nth-child(2) {
+			transform: scale(1);
+			opacity: 1;
+			z-index: 2;
+		}
+
+		#current {
+			.hours {
+				.colorize({
+					color: @@color;
+				});
+			}
+		}
+	}
+}

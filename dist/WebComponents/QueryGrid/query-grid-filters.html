@@ -1,0 +1,33 @@
+﻿<dom-module id="vi-query-grid-filters">
+    <template>
+        <vi-popup-menu>
+            <button header>
+                <vi-resource source="Icon_FilterMenu"></vi-resource>
+            </button>
+            <vi-popup-menu-item icon="Icon_New" label="Save as new filter..." on-tap="_saveAsNew"></vi-popup-menu-item>
+            <template is="dom-repeat" items="{{filters}}" as="filter">
+                <vi-popup-menu-item label="{{filter.header}}">
+                    <vi-popup-menu-item icon="Icon_Delete" label="{{translations.Delete}}"></vi-popup-menu-item>
+                </vi-popup-menu-item>
+            </template>
+        </vi-popup-menu>
+        <vi-dialog id="saveAsNewDialog">
+            <header>
+                <h4 class="flex">Save as new filter...</h4>
+            </header>
+            <div content>
+                <label for="name">Name:</label>
+                <input id="name" value="{{name::input}}" autofocus />
+                <vi-checkbox label="Default filter"></vi-checkbox>
+            </div>
+            <footer class="horizontal layout end-justified">
+                <button on-tap="_ok">{{translations.OK}}</button>
+                <button on-tap="_cancel">{{translations.Cancel}}</button>
+            </footer>
+        </vi-dialog>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="query-grid-filters.css" />
+
+<script src="query-grid-filters.js"></script>

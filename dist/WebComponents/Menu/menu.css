@@ -1,0 +1,61 @@
+vi-menu {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  height: 100%;
+  color: white;
+  width: 16em;
+  box-sizing: border-box;
+}
+[theme-color-1] vi-menu {
+  background-color: #171f23;
+}
+[theme-color-2] vi-menu {
+  background-color: #142523;
+}
+header.vi-menu.style-scope,
+footer.vi-menu.style-scope {
+  display: block;
+  line-height: 40px;
+  min-height: 40px;
+}
+header.vi-menu.style-scope {
+  text-align: center;
+}
+header.vi-menu.style-scope span {
+  display: block;
+  font-size: 22px;
+  line-height: 80px;
+}
+[theme-color-1] header.vi-menu.style-scope span {
+  background-color: #095072;
+}
+[theme-color-2] header.vi-menu.style-scope span {
+  background-color: #00776a;
+}
+vi-input-search.vi-menu.style-scope {
+  margin: 8px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+vi-input-search.vi-menu.style-scope input {
+  padding-left: 6px;
+}
+#programUnits.vi-menu.style-scope {
+  overflow-y: auto;
+}
+#programUnits.vi-menu.style-scope .subItems {
+  display: none;
+  margin-bottom: 6px;
+}
+#programUnits.vi-menu.style-scope vi-menu-item[expand] + .subItems,
+#programUnits.vi-menu.style-scope vi-menu-item[filtering]:not([hide]) + .subItems {
+  display: block;
+}

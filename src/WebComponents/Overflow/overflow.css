@@ -1,0 +1,58 @@
+vi-overflow {
+  overflow: hidden;
+  height: 40px;
+  line-height: 40px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  position: relative;
+}
+vi-overflow #visible {
+  position: relative;
+  overflow: hidden;
+}
+vi-overflow #visible vi-size-tracker {
+  z-index: -1;
+}
+vi-overflow #overflowPopup.vi-overflow {
+  position: relative;
+}
+vi-overflow #overflowPopup.vi-overflow button.vi-overflow {
+  display: block;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  margin: 0;
+  box-sizing: border-box;
+  width: 40px;
+  cursor: pointer;
+  font-weight: bold;
+}
+vi-overflow #overflowPopup.vi-overflow button.vi-overflow > * {
+  font-weight: normal;
+}
+[theme-color-1] vi-overflow #overflowPopup.vi-overflow button.vi-overflow {
+  color: #126790;
+  background-color: transparent;
+}
+[theme-color-2] vi-overflow #overflowPopup.vi-overflow button.vi-overflow {
+  color: #009688;
+  background-color: transparent;
+}
+[theme-color-1] vi-overflow #overflowPopup.vi-overflow:hover button.vi-overflow {
+  background-color: #e7f0f4;
+}
+[theme-color-2] vi-overflow #overflowPopup.vi-overflow:hover button.vi-overflow {
+  background-color: #e5f4f2;
+}
+vi-overflow:not([has-overflow]) #overflowPopup {
+  display: none;
+}

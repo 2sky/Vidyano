@@ -1,0 +1,144 @@
+﻿<#@ template debug="true" hostspecific="false" language="C#" #>
+<#@ output extension=".ts" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Globalization" #>
+<#@ import namespace="System.Linq" #>
+<# 
+
+// Configuration: Begin
+
+// List the cultures you want to export to JS.
+var cultureNames = new List<string> 
+{
+    "",
+    "de-DE",
+    "en-GB",
+    "en-US",
+    "es-ES",
+    "fr-BE",
+    "fr-FR",
+    "it-IT",
+    "ja-JP",
+    "nl-BE",
+    "nl-NL",
+    "pt-PT",
+    "zh-CHS",
+}; 
+
+// Override currency culture if your site only operates under a single currency, otherwise set to null.
+CultureInfo currencyCulture = null; // CultureInfo.GetCultureInfo("en-US");
+
+// Configuration: End
+
+var cultures = cultureNames.Select(t => CultureInfo.GetCultureInfo(t)).ToList();
+
+var percentPositivePattern = new string[] { "n %", "n%", "%n", "% n" };
+var percentNegativePattern = new string[] { "-n %", "-n%", "-%n", "%-n", "%n-", "n-%", "n%-", "-% n", "n %-", "% n-", "% -n", "n- %" };
+
+var currencyPositivePattern = new string[] { "$n", "n$", "$ n", "n $" };
+var currencyNegativePattern = new string[] { "($n)", "-$n", "$-n", "$n-", "(n$)", "-n$", "n-$", "n$-", "-n $", "-$ n", "n $-", "$ n-", "$ -n", "n- $", "($ n)", "(n $)" };
+
+#>
+
+module Vidyano {
+    export class CultureInfo {
+        static currentCulture: CultureInfo;
+        static invariantCulture: CultureInfo;
+		static cultures: linqjs.Dictionary<string, CultureInfo> = Enumerable.empty<string>().toDictionary(s => s, s => null);
+
+		constructor(public name: string, public numberFormat: CultureInfoNumberFormat, public dateFormat: CultureInfoDateFormat){
+		}
+    }
+
+    export interface CultureInfoNumberFormat {
+        naNSymbol: string;
+        negativeSign: string;
+        positiveSign: string;
+        negativeInfinityText: string;
+        positiveInfinityText: string;
+        percentSymbol: string;
+        percentGroupSizes: Array<number>;
+        percentDecimalDigits: number;
+        percentDecimalSeparator: string;
+        percentGroupSeparator: string;
+        percentPositivePattern: string;
+        percentNegativePattern: string;
+        currencySymbol: string;
+        currencyGroupSizes: Array<number>;
+        currencyDecimalDigits: number;
+        currencyDecimalSeparator: string;
+        currencyGroupSeparator: string;
+        currencyNegativePattern: string;
+        currencyPositivePattern: string;
+        numberGroupSizes: Array<number>;
+        numberDecimalDigits: number;
+        numberDecimalSeparator: string;
+        numberGroupSeparator: string;
+    }
+
+    export interface CultureInfoDateFormat {
+        amDesignator: string;
+        pmDesignator: string;
+        dateSeparator: string;
+        timeSeparator: string;
+        gmtDateTimePattern: string;
+        universalDateTimePattern: string;
+        sortableDateTimePattern: string;
+        dateTimePattern: string;
+        longDatePattern: string;
+        shortDatePattern: string;
+        longTimePattern: string;
+        shortTimePattern: string;
+        yearMonthPattern: string;
+        firstDayOfWeek: number;
+        dayNames: Array<string>;
+        shortDayNames: Array<string>;
+        minimizedDayNames: Array<string>;
+        monthNames: Array<string>;
+        shortMonthNames: Array<string>;
+    }
+
+<# foreach(CultureInfo culture in cultures) { #>
+<# CultureInfo currency = currencyCulture ?? culture; #>
+	CultureInfo.cultures.add(<#= Quote(culture.Name) #>,new CultureInfo(<#= Quote(culture.Name) #>, {naNSymbol:<#= Quote(culture.NumberFormat.NaNSymbol) #>,negativeSign:<#= Quote(culture.NumberFormat.NegativeSign) #>,positiveSign:<#= Quote(culture.NumberFormat.PositiveSign) #>,negativeInfinityText:<#= Quote(culture.NumberFormat.NegativeInfinitySymbol) #>,positiveInfinityText:<#= Quote(culture.NumberFormat.PositiveInfinitySymbol) #>,percentSymbol:<#= Quote(culture.NumberFormat.PercentSymbol) #>,percentGroupSizes:<#= Quote(culture.NumberFormat.PercentGroupSizes) #>,percentDecimalDigits:<#= culture.NumberFormat.PercentDecimalDigits #>,percentDecimalSeparator:<#= Quote(culture.NumberFormat.PercentDecimalSeparator) #>,percentGroupSeparator:<#= Quote(culture.NumberFormat.PercentGroupSeparator) #>,percentPositivePattern:<#= QuoteNumericPattern(percentPositivePattern[culture.NumberFormat.PercentPositivePattern]) #>,percentNegativePattern:<#= QuoteNumericPattern(percentNegativePattern[culture.NumberFormat.PercentNegativePattern]) #>,currencySymbol:<#= Quote(currency.NumberFormat.CurrencySymbol) #>,currencyGroupSizes:<#= Quote(currency.NumberFormat.CurrencyGroupSizes) #>,currencyDecimalDigits:<#= currency.NumberFormat.CurrencyDecimalDigits #>,currencyDecimalSeparator:<#= Quote(currency.NumberFormat.CurrencyDecimalSeparator) #>,currencyGroupSeparator:<#= Quote(currency.NumberFormat.CurrencyGroupSeparator) #>,currencyNegativePattern:<#= QuoteNumericPattern(currencyNegativePattern[currency.NumberFormat.CurrencyNegativePattern]) #>,currencyPositivePattern:<#= QuoteNumericPattern(currencyPositivePattern[currency.NumberFormat.CurrencyPositivePattern]) #>,numberGroupSizes:<#= Quote(culture.NumberFormat.NumberGroupSizes) #>,numberDecimalDigits:<#= culture.NumberFormat.NumberDecimalDigits #>,numberDecimalSeparator:<#= Quote(culture.NumberFormat.NumberDecimalSeparator) #>,numberGroupSeparator:<#= Quote(culture.NumberFormat.NumberGroupSeparator) #>},{amDesignator:<#= Quote(culture.DateTimeFormat.AMDesignator) #>,pmDesignator:<#= Quote(culture.DateTimeFormat.PMDesignator) #>,dateSeparator:<#= Quote(culture.DateTimeFormat.DateSeparator) #>,timeSeparator:<#= Quote(culture.DateTimeFormat.TimeSeparator) #>,gmtDateTimePattern:<#= QuoteDateTimePattern(culture.DateTimeFormat.RFC1123Pattern) #>,universalDateTimePattern:<#= QuoteDateTimePattern(culture.DateTimeFormat.UniversalSortableDateTimePattern) #>,sortableDateTimePattern:<#= QuoteDateTimePattern(culture.DateTimeFormat.SortableDateTimePattern) #>,dateTimePattern:<#= QuoteDateTimePattern(culture.DateTimeFormat.FullDateTimePattern) #>,longDatePattern:<#= QuoteDateTimePattern(culture.DateTimeFormat.LongDatePattern) #>,shortDatePattern:<#= QuoteDateTimePattern(culture.DateTimeFormat.ShortDatePattern.Replace("yy", "yyyy").Replace("yyyyyyyy", "yyyy").Replace("M", "MM").Replace("MMMM", "MM").Replace("d", "dd").Replace("dddd", "dd")) #>,longTimePattern:<#= QuoteDateTimePattern(culture.DateTimeFormat.LongTimePattern) #>,shortTimePattern:<#= QuoteDateTimePattern(culture.DateTimeFormat.ShortTimePattern) #>,yearMonthPattern:<#= QuoteDateTimePattern(culture.DateTimeFormat.YearMonthPattern) #>,firstDayOfWeek:<#= (int)culture.DateTimeFormat.FirstDayOfWeek #>,dayNames:<#= Quote(culture.DateTimeFormat.DayNames) #>,shortDayNames:<#= Quote(culture.DateTimeFormat.AbbreviatedDayNames) #>,minimizedDayNames:<#= Quote(culture.DateTimeFormat.ShortestDayNames) #>,monthNames:<#= Quote(culture.DateTimeFormat.MonthGenitiveNames) #>,shortMonthNames:<#= Quote(culture.DateTimeFormat.AbbreviatedMonthGenitiveNames) #>}));
+<#}#>
+	CultureInfo.currentCulture = CultureInfo.invariantCulture = CultureInfo.cultures.get('');
+}
+<#+
+
+string Quote(string input)
+{
+    return @"'" + 
+        input
+        .Replace(@"\", @"\\")
+        .Replace(@"'", @"\'")
+        + @"'";
+}
+
+string Quote(bool input)
+{
+    return input.ToString().ToLower();
+}
+
+string Quote(int[] input)
+{
+    return "[" + String.Join(",", input) + "]";
+}
+
+string Quote<T>(T[] input)
+{
+    return "[" + String.Join(",", input.Select(t => Quote(t.ToString()))) + "]";
+}
+
+string QuoteNumericPattern(string input)
+{
+    return Quote(input.Replace("n", "{0}"));
+}
+
+string QuoteDateTimePattern(string input)
+{
+    return Quote(input);
+}
+
+#>

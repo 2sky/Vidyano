@@ -1,0 +1,24 @@
+﻿<dom-module id="vi-message-dialog">
+    <template>
+        <vi-dialog id="dialog">
+            <header class="horizontal layout">
+                <template is="dom-if" if="{{_hasHeaderIcon(options)}}">
+                    <vi-resource source="{{options.titleIcon}}" icon></vi-resource>
+                </template>
+                <h4 class="flex">{{options.title}}</h4>
+                <template is="dom-if" if="{{!options.noClose}}">
+                    <button class="close" on-tap="_close"><vi-resource source="Icon_Remove"></vi-resource></button>
+                </template>
+            </header>
+            <pre>{{options.message}}</pre>
+            <footer class="horizontal layout end-justified">
+                <template is="dom-repeat" items="{{options.actions}}" as="action">
+                    <button on-tap="_onSelectAction" action-type$="{{_getActionType(options, index)}}" data-action-index$="{{index}}">{{action}}</button>
+                </template>
+            </footer>
+        </vi-dialog>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="message-dialog.css" />
+<script src="message-dialog.js"></script>

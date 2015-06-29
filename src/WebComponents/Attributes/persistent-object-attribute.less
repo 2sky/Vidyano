@@ -1,0 +1,229 @@
+﻿@import (reference) "../PersistentObjectAttributePresenter/persistent-object-attribute-presenter.less";
+
+vi-persistent-object-attribute-edit {
+    .layout-horizontal();
+    .flex();
+    .relative();
+
+    .box {
+        position: relative;
+        min-height: @h2 - 2px;
+        line-height: @h2 - 2px;
+        overflow: hidden;
+        border: 1px solid @border-color;
+        -moz-transition: border-color 0.2s ease-in-out;
+        -o-transition: border-color 0.2s ease-in-out;
+        -webkit-transition: border-color 0.2s ease-in-out;
+        transition: border-color 0.2s ease-in-out;
+    }
+
+    #errorIndicator {
+        display: none;
+    }
+
+    &[has-error] {
+        .box {
+            background-color: mix(white, @color-error, 95%) !important;
+            border-color: @color-error !important;
+        }
+
+        #errorIndicator {
+            display: block;
+            width: @h2;
+            height: @h2;
+            line-height: @h2;
+            padding: 0;
+            background-color: transparent;
+            cursor: pointer;
+
+            vi-resource[icon] {
+                width: @h2;
+                height: @h2;
+
+                svg {
+                    width: @h3;
+                    height: @h3;
+                    fill: @color-error;
+                }
+            }
+
+            pre[content] {
+                padding: @h5;
+                border: 1px solid @color-error;
+            }
+
+            #content.vi-popup {
+                &.top {
+                    -moz-transform: translateY(@h4);
+                    -ms-transform: translateY(@h4);
+                    -o-transform: translateY(@h4);
+                    -webkit-transform: translateY(@h4);
+                    transform: translateY(@h4);
+                }
+
+                &.bottom {
+                    -moz-transform: translateY(-@h4);
+                    -ms-transform: translateY(-@h4);
+                    -o-transform: translateY(-@h4);
+                    -webkit-transform: translateY(-@h4);
+                    transform: translateY(-@h4);
+                }
+            }
+        }
+    }
+
+    [content] {
+        .flex();
+    }
+
+    textarea {
+        overflow: auto;
+        resize: none;
+    }
+
+    input, textarea {
+        font-size: 13px;
+        background-color: transparent;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0 @h5;
+        line-height: @h2 - 2px;
+        border: none;
+        outline: none;
+        color: #333;
+    }
+
+    vi-select[content] {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        border: none;
+
+        vi-popup > #content {
+            -moz-transform: translateY(1px);
+            -ms-transform: translateY(1px);
+            -o-transform: translateY(1px);
+            -webkit-transform: translateY(1px);
+            transform: translateY(1px);
+        }
+
+        & + .buttons {
+            z-index: 2;
+        }
+    }
+
+    .buttons {
+        .layout-horizontal();
+
+        > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+            .relative();
+            outline: none;
+            cursor: pointer;
+            width: @h2 - 2px;
+            height: @h2 - 2xp;
+            line-height: @h2 - 2xp;
+            padding: 0;
+            box-sizing: content-box;
+            text-align: center;
+            .colorize-button-inverse();
+            -moz-transition: background-color 0.1s ease-out;
+            -o-transition: background-color 0.1s ease-out;
+            -webkit-transition: background-color 0.1s ease-out;
+            transition: background-color 0.1s ease-out;
+
+            &::after {
+                position: absolute;
+                bottom: -1px;
+                left: 3px;
+                right: 4px;
+                content: " ";
+                border-bottom: 1px solid @border-color;
+                -moz-transition: all 0.1s ease-in-out;
+                -o-transition: all 0.1s ease-in-out;
+                -webkit-transition: all 0.1s ease-out;
+                transition: all 0.1s ease-in-out;
+            }
+
+            &::before {
+                position: absolute;
+                top: 4px;
+                bottom: 4px;
+                left: 0;
+                content: " ";
+                border-left: 1px solid @border-color;
+                -moz-transition: all 0.1s ease-in-out;
+                -o-transition: all 0.1s ease-in-out;
+                -webkit-transition: all 0.1s ease-out;
+                transition: all 0.1s ease-in-out;
+            }
+
+            vi-resource[icon] {
+                width: @h2 - 2px;
+                height: @h2 - 2xp;
+
+                svg {
+                    -moz-transition: fill 0.1s ease-out;
+                    -o-transition: fill 0.1s ease-out;
+                    -webkit-transition: fill 0.1s ease-out;
+                    transition: fill 0.1s ease-out;
+                }
+            }
+        }
+
+        &:hover {
+            & > button, & > .button, & > [button], & > vi-popup:not([content]) button[header] {
+                &::after {
+                    left: 0;
+                    right: 0;
+                }
+
+                &::before {
+                    top: 0;
+                    bottom: 0;
+                }
+            }
+        }
+    }
+
+    &[focus] {
+        .box {
+            .colorize( {
+                border-color: @@color-lighter;
+            });
+
+            > .buttons {
+                > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                    &::after, &::before {
+                        .colorize( {
+                            border-color: @@color-lighter;
+                        });
+                    }
+
+                    svg {
+                        .colorize( {
+                            fill: @@color-light;
+                        });
+                    }
+
+                    &:active {
+                        .colorize({
+                            background-color: @@color !important;
+                        });
+
+                         svg {
+                             fill: white !important;
+                         }
+                    }
+
+                    &:hover {
+                        .colorize({
+                            background-color: @@color-faint;
+                        });
+                    }
+                }
+            }
+        }
+    }
+}

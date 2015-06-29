@@ -1,0 +1,67 @@
+@import (reference) "query-grid.less";
+
+vi-query-grid-column-header {
+    padding: 0;
+    position: relative;
+    display: block;
+
+    button {
+        width: 100%;
+        .layout-horizontal();
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-align: left;
+        background-color: transparent;
+        color: @light-foreground;
+        border-right: 1px solid @separatorColor !important;
+        padding: 0 @cell-padding;
+        position: relative;
+		
+		.colorize-button-inverse();
+
+        span {
+            .flex();
+            color: #808080;
+            display: block;
+            line-height: @cell-line-height;
+            white-space: nowrap;
+            -ms-text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding-right: 16px;
+        }
+
+        &:active span {
+            color: white;
+        }
+
+        vi-resource {
+            fill: #555;
+            position: absolute;
+            right: @cell-padding;
+            top: 0;
+            bottom: 0;
+            margin-left: (@cell-padding * 2);
+        }
+    }
+
+    .resizer {
+        position: absolute;
+        right: -@cell-padding;
+        height: @cell-width;
+        top: 0;
+        bottom: 0;
+        width: (@cell-padding * 2);
+        cursor: col-resize;
+        z-index: 1;
+    }
+}
+
+vi-sortable[isGroupDragging] {
+	vi-query-grid-column:not([dragging="true"]) button{
+		background-color: transparent !important;
+	}
+}

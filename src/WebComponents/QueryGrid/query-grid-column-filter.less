@@ -1,0 +1,257 @@
+﻿@import (reference) "query-grid.less";
+
+vi-query-grid-column-filter {
+    position: relative;
+    display: block;
+    border-right: 1px solid @separatorColor !important;
+    box-sizing: border-box;
+
+    vi-popup[disabled] {
+        height: @cell-line-height;
+        line-height: @cell-line-height;
+        background-color: #F9F9F9;
+
+        button {
+            display: none;
+        }
+    }
+
+    button[header] {
+        .layout-horizontal();
+        box-sizing: border-box;
+        overflow: hidden;
+        text-align: left;
+        font-weight: 500;
+        background-color: transparent;
+        color: @light-foreground;
+        position: relative;
+        width: 100%;
+        padding: 0;
+        .colorize-button-inverse();
+
+        span {
+            .flex();
+            padding: 0 @cell-padding;
+            line-height: @cell-line-height;
+            white-space: nowrap;
+            -ms-text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        vi-resource {
+            fill: #eee;
+            height: @h2;
+            padding: 0 0 0 @cell-padding;
+        }
+
+        &:hover {
+            vi-resource {
+                fill: white;
+            }
+        }
+    }
+
+    &:not([filtered]) {
+        button.vi-query-grid-column-filter label {
+            opacity: 0.4;
+        }
+    }
+
+    [content] {
+        .noSelection();
+
+        .filter {
+            position: relative;
+
+            .left {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: @cell-line-height;
+                background-color: #F7F7F7;
+            }
+        }
+
+        .menuItem {
+            cursor: pointer;
+            text-align: left;
+            line-height: @cell-line-height;
+            font-weight: normal;
+
+            vi-resource {
+                text-align: center;
+                width: @cell-line-height;
+            }
+
+            &[disabled] {
+                opacity: 0.25;
+                cursor: default;
+            }
+
+            span {
+                margin-left: @h5;
+            }
+        }
+
+
+        .split {
+            border-top: 1px solid @separatorColor;
+            margin: 0 0 @h5 (@cell-line-height + @h5);
+        }
+
+        .advanced {
+            .layout-vertical();
+            padding: 0 @cell-padding @cell-padding 0;
+            position: relative;
+
+            vi-input-search {
+                height: @h2;
+                border: 1px solid @separatorColor;
+                box-sizing: border-box;
+                margin: 0 0 @h5 (@cell-line-height + @h5);
+
+                input {
+                    padding-left: 8px;
+                    color: #333;
+                }
+
+                button {
+                    width: @cell-line-height;
+                    padding: 0;
+                    fill: @separatorColor;
+                }
+            }
+
+            > div {
+                .flex();
+                padding-left: @cell-line-height;
+
+                button#inverse {
+                    .layout-horizontal();
+                    .layout-center-center();
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: @cell-line-height;
+                    height: @h3;
+                    cursor: pointer;
+                    .colorize-button-inverse();
+
+                    &[inversed]:not(:active) {
+                        fill: darkred !important;
+                    }
+
+                    &:not(:active) {
+                        fill: #aaa !important;
+                    }
+
+                    vi-resource svg {
+                        width: @h4;
+                        height: @h4;
+                    }
+                }
+            }
+        }
+
+        #distincts {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            height: 15em;
+            min-width: 15em;
+            line-height: 2em;
+            overflow-y: auto;
+            text-align: left;
+            font-weight: normal;
+            border: 1px solid @separatorColor;
+            margin-left: @h5;
+
+            &[inversed] {
+                border-color: darkred;
+            }
+
+            > div {
+                display: block;
+                cursor: pointer;
+                line-height: @h3;
+                height: @h3;
+                .layout-horizontal();
+                .layout-center();
+
+                &:hover {
+                    .colorize( {
+                        background-color: @@color-faint;
+                    }
+
+                    );
+                }
+
+                span {
+                    line-height: @h3;
+                    height: @h3;
+                    .flex();
+                }
+
+                div.selector {
+                    line-height: @h3;
+                    height: @h3;
+                    padding: 0 @h5;
+                    text-align: center;
+                    .layout-horizontal();
+                    .layout-center();
+
+                    svg {
+                        width: @h2 / 2;
+                        height: @h2 / 2;
+                        fill: #BBB;
+                    }
+                }
+
+                &:not(.include):not(.exclude) {
+                    div.selector svg #check {
+                        display: none;
+                    }
+                }
+
+                &.include {
+                    #check {
+                        fill: green !important;
+                    }
+                }
+
+                &.exclude {
+                    #check {
+                        fill: darkred !important;
+                    }
+                }
+
+                &.remaining {
+                    color: #aaa;
+                    fill: white;
+                }
+            }
+        }
+
+        button.close {
+            border-top: 1px solid @separatorColor;
+            line-height: @cell-line-height;
+            text-align: center;
+            cursor: pointer;
+
+            .colorize( {
+                .colorize-button(@@color);
+            }
+
+            );
+        }
+    }
+
+    &[loading] {
+        #distincts {
+            opacity: 0.5;
+        }
+    }
+}

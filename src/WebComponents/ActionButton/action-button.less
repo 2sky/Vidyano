@@ -1,0 +1,105 @@
+@import (reference) "../vidyano.less";
+
+vi-action-button {
+    display: block;
+    box-sizing: border-box;
+
+    button {
+        display: block;
+        text-align: left;
+        cursor: pointer;
+        background-color: transparent;
+        line-height: @h1;
+        padding: 0 @h4;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+
+        .colorize( {
+            color: @@color;
+            fill: @@color;
+        });
+
+        &:not([can-execute]) {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        > vi-resource[icon] {
+            height: @h1;
+
+            &.options {
+                margin-left: @h5;
+                svg {
+                    width: 12px;
+                    height: 12px;
+                }
+            }
+        }
+    }
+
+    &[overflow] {
+        vi-resource.options {
+            -moz-transform: rotate(-90deg);
+            -ms-transform: rotate(-90deg);
+            -o-transform: rotate(-90deg);
+            -webkit-transform: rotate(-90deg);
+            transform: rotate(-90deg);
+        }
+    }
+
+    &:hover {
+        button[can-execute] {
+            .colorize( {
+                background-color: @@color-faint;
+            }
+
+            );
+        }
+    }
+
+    &[no-label], &[pinned] {
+        button > span {
+            display: none;
+        }
+    }
+
+    &:not([no-label]):not([pinned]) {
+        button > vi-resource[icon][has-resource]:first-of-type {
+            margin-right: @h5;
+        }
+    }
+
+    &[no-icon] {
+        button > vi-resource[icon] {
+            display: none;
+        }
+    }
+
+    &(:focus) {
+        outline: none;
+    }
+
+    ul {
+        padding: 0;
+        margin: 0;
+        list-style-type: none;
+        line-height: @h1;
+
+        li {
+            cursor: pointer;
+            padding: 0 @h4;
+            font-size: 13px;
+
+            .colorize( {
+                color: @@color;
+
+                &:hover {
+                    background-color: @@color-faint;
+                }
+            }
+
+            );
+        }
+    }
+}

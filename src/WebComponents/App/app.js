@@ -1,0 +1,486 @@
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var Vidyano;
+(function (Vidyano) {
+    var WebComponents;
+    (function (WebComponents) {
+        var hashBang = "#!/";
+        var AppRoute = (function (_super) {
+            __extends(AppRoute, _super);
+            function AppRoute(route, component) {
+                _super.call(this);
+                this.route = route;
+                this.component = component;
+                this._parameters = {};
+            }
+            AppRoute.prototype.attached = function () {
+                _super.prototype.attached.call(this);
+                this.fire("app-route-add", { route: this.route, component: this.component });
+            };
+            AppRoute.prototype.activate = function (parameters) {
+                var component = Polymer.dom(this).children[0];
+                if (!component || this._constructorChanged) {
+                    this._constructorChanged = false;
+                    this.empty();
+                    component = new this._constructor();
+                    Polymer.dom(this).appendChild(component);
+                }
+                if (component.fire("activating", { route: this, parameters: this._parameters = parameters }, { bubbles: false, cancelable: true }).defaultPrevented)
+                    return false;
+                this._setActive(true);
+                component.fire("activated", { route: this }, { bubbles: false, cancelable: false });
+                return true;
+            };
+            AppRoute.prototype.deactivate = function () {
+                this._setActive(false);
+            };
+            Object.defineProperty(AppRoute.prototype, "parameters", {
+                get: function () {
+                    return this._parameters;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            AppRoute.prototype._componentChanged = function () {
+                this._constructor = this.component.split(".").reduce(function (obj, path) { return obj[path]; }, window);
+                this._constructorChanged = true;
+            };
+            return AppRoute;
+        })(WebComponents.WebComponent);
+        WebComponents.AppRoute = AppRoute;
+        var AppCacheEntry = (function () {
+            function AppCacheEntry(id) {
+                this.id = id;
+            }
+            AppCacheEntry.prototype.isMatch = function (entry) {
+                return entry.id == this.id;
+            };
+            return AppCacheEntry;
+        })();
+        WebComponents.AppCacheEntry = AppCacheEntry;
+        var PersistentObjectAppCacheEntry = (function (_super) {
+            __extends(PersistentObjectAppCacheEntry, _super);
+            function PersistentObjectAppCacheEntry(idOrPo, objectId) {
+                _super.call(this, typeof idOrPo === "string" ? idOrPo : (idOrPo instanceof Vidyano.PersistentObject ? idOrPo.id : null));
+                this.objectId = objectId;
+                if (idOrPo instanceof Vidyano.PersistentObject) {
+                    this.persistentObject = idOrPo;
+                    this.objectId = this.persistentObject.objectId;
+                }
+            }
+            Object.defineProperty(PersistentObjectAppCacheEntry.prototype, "persistentObject", {
+                get: function () {
+                    return this._persistentObject;
+                },
+                set: function (po) {
+                    if (po === this._persistentObject)
+                        return;
+                    this._persistentObject = po;
+                    this.selectedMasterTab = this.selectedDetailTab = null;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            PersistentObjectAppCacheEntry.prototype.isMatch = function (entry) {
+                if (!(entry instanceof PersistentObjectAppCacheEntry))
+                    return false;
+                if (entry.persistentObject === this.persistentObject)
+                    return true;
+                return _super.prototype.isMatch.call(this, entry) && (entry.objectId === this.objectId || StringEx.isNullOrEmpty(entry.objectId) && StringEx.isNullOrEmpty(this.objectId));
+            };
+            return PersistentObjectAppCacheEntry;
+        })(AppCacheEntry);
+        WebComponents.PersistentObjectAppCacheEntry = PersistentObjectAppCacheEntry;
+        var PersistentObjectFromActionAppCacheEntry = (function (_super) {
+            __extends(PersistentObjectFromActionAppCacheEntry, _super);
+            function PersistentObjectFromActionAppCacheEntry(po, fromActionId, fromActionIdReturnPath) {
+                _super.call(this, po);
+                this.fromActionId = fromActionId;
+                this.fromActionIdReturnPath = fromActionIdReturnPath;
+            }
+            PersistentObjectFromActionAppCacheEntry.prototype.isMatch = function (entry) {
+                if (!(entry instanceof PersistentObjectFromActionAppCacheEntry))
+                    return false;
+                return this.fromActionId == entry.fromActionId || entry.persistentObject === this.persistentObject;
+            };
+            return PersistentObjectFromActionAppCacheEntry;
+        })(PersistentObjectAppCacheEntry);
+        WebComponents.PersistentObjectFromActionAppCacheEntry = PersistentObjectFromActionAppCacheEntry;
+        var QueryAppCacheEntry = (function (_super) {
+            __extends(QueryAppCacheEntry, _super);
+            function QueryAppCacheEntry(idOrQuery) {
+                _super.call(this, typeof idOrQuery === "string" ? idOrQuery : null);
+                if (idOrQuery instanceof Vidyano.Query)
+                    this.query = idOrQuery;
+            }
+            QueryAppCacheEntry.prototype.isMatch = function (entry) {
+                if (!(entry instanceof QueryAppCacheEntry))
+                    return false;
+                if (entry.query === this.query)
+                    return true;
+                return entry instanceof QueryAppCacheEntry && _super.prototype.isMatch.call(this, entry);
+            };
+            return QueryAppCacheEntry;
+        })(AppCacheEntry);
+        WebComponents.QueryAppCacheEntry = QueryAppCacheEntry;
+        var App = (function (_super) {
+            __extends(App, _super);
+            function App() {
+                _super.apply(this, arguments);
+                this._cache = [];
+                this._routeMap = {};
+            }
+            App.prototype.attached = function () {
+                _super.prototype.attached.call(this);
+                if (!this.label)
+                    this.label = this.asElement.title;
+            };
+            Object.defineProperty(App.prototype, "configuration", {
+                get: function () {
+                    return this._configuration;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            App.prototype._setConfiguration = function (config) {
+                this._configuration = config;
+            };
+            App.prototype.changePath = function (path, replaceCurrent) {
+                if (replaceCurrent === void 0) { replaceCurrent = false; }
+                path = hashBang + App._stripHashBang(path);
+                if (this.path === path)
+                    return;
+                if (!this.noHistory) {
+                    if (!replaceCurrent)
+                        Vidyano.Path.history.pushState(null, null, path);
+                    else
+                        Vidyano.Path.history.replaceState(null, null, path);
+                }
+                else
+                    this.path = path;
+            };
+            App.prototype.getUrlForPersistentObject = function (id, objectId, pu) {
+                if (pu === void 0) { pu = this.programUnit; }
+                return (pu ? pu.name + "/" : "") + "PersistentObject." + id + "/" + objectId;
+            };
+            App.prototype.getUrlForQuery = function (id, pu) {
+                if (pu === void 0) { pu = this.programUnit; }
+                return (pu ? pu.name + "/" : "") + "Query." + id;
+            };
+            App.prototype.getUrlForFromAction = function (id, pu) {
+                if (pu === void 0) { pu = this.programUnit; }
+                return (pu ? pu.name + "/" : "") + "FromAction/" + id;
+            };
+            App.prototype.cache = function (entry) {
+                // Remove LRU from cache
+                if (this._cache.length >= this.cacheSize)
+                    this._cache.splice(0, this._cache.length - this.cacheSize);
+                var cacheEntry = this.cachePing(entry);
+                if (!cacheEntry)
+                    this._cache.push(cacheEntry = entry);
+                return cacheEntry;
+            };
+            App.prototype.cachePing = function (entry) {
+                var cacheEntry = Enumerable.from(this._cache).lastOrDefault(function (e) { return entry.isMatch(e); });
+                if (cacheEntry) {
+                    this._cache.remove(cacheEntry);
+                    this._cache.push(cacheEntry);
+                }
+                return cacheEntry;
+            };
+            App.prototype.cacheRemove = function (key) {
+                var entry = Enumerable.from(this._cache).firstOrDefault(function (e) { return key.isMatch(e); });
+                if (entry)
+                    this._cache.remove(entry);
+            };
+            App.prototype.cacheClear = function () {
+                this._cache = [];
+            };
+            App.prototype.createServiceHooks = function () {
+                return new AppServiceHooks(this);
+            };
+            App.prototype.redirectToSignIn = function (keepUrl) {
+                if (keepUrl === void 0) { keepUrl = true; }
+                this.changePath("SignIn" + (keepUrl && this.path ? "/" + encodeURIComponent(App._stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
+                for (var route in this._routeMap) {
+                    if (!App._stripHashBang(route).startsWith("SignIn"))
+                        this._routeMap[route].empty();
+                }
+            };
+            App.prototype.showMessageDialog = function (options) {
+                var _this = this;
+                var messageDialog = new Vidyano.WebComponents.MessageDialog();
+                Polymer.dom(this).appendChild(messageDialog);
+                return messageDialog.show(options).then(function (result) {
+                    Polymer.dom(_this).removeChild(messageDialog);
+                    return result;
+                }, function (e) {
+                    Polymer.dom(_this).removeChild(messageDialog);
+                    throw e;
+                });
+            };
+            App.prototype._computeService = function (uri) {
+                var _this = this;
+                var service = new Vidyano.Service(this.uri, this.createServiceHooks());
+                this._setInitializing(true);
+                Promise.all([service.initialize(document.location.hash && App._stripHashBang(document.location.hash).startsWith("SignIn"))]).then(function () {
+                    if (_this.service == service)
+                        _this._onInitialized();
+                }, function (e) {
+                    if (_this.service === service) {
+                        // TODO(sleeckx): Go to SignIn
+                        _this._initializationError = e;
+                        _this._onInitialized();
+                    }
+                });
+                return service;
+            };
+            App.prototype._onInitialized = function () {
+                var _this = this;
+                Vidyano.Path.rescue(function () {
+                    _this.path = App._stripHashBang(Vidyano.Path.routes.current);
+                });
+                if (!this.noHistory) {
+                    Vidyano.Path.root(hashBang + App._stripHashBang(this.path));
+                    Vidyano.Path.history.listen();
+                    Vidyano.Path.listen();
+                }
+                else
+                    this.changePath(this.path);
+                this._setInitializing(false);
+            };
+            App.prototype._computeMappedRoute = function (path, routeMapVersion) {
+                return Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
+            };
+            App.prototype._computeCurrentRoute = function (mappedRoute, path) {
+                var currentRoute = this.currentRoute;
+                // Find route and activate
+                if (mappedRoute) {
+                    var route = this._routeMap[hashBang + App._stripHashBang(mappedRoute.path)];
+                    if (route && route.activate(mappedRoute.params)) {
+                        if (currentRoute && currentRoute != route)
+                            currentRoute.deactivate();
+                        currentRoute = route;
+                    }
+                }
+                else
+                    currentRoute = null;
+                return currentRoute;
+            };
+            App.prototype._computeProgramUnit = function (mappedRoute, path, application) {
+                if (!mappedRoute || !application)
+                    return null;
+                if (mappedRoute.params && mappedRoute.params.programUnitName)
+                    return Enumerable.from(application.programUnits).firstOrDefault(function (pu) { return pu.name == mappedRoute.params.programUnitName; });
+                else if (application.programUnits.length > 0)
+                    return application.programUnits[0];
+                return null;
+            };
+            App.prototype._start = function (initializing, path) {
+                var _this = this;
+                if (initializing)
+                    return;
+                if (!this.service.isSignedIn && !App._stripHashBang(path).startsWith("SignIn")) {
+                    if (this.service.defaultUserName) {
+                        this._setInitializing(true);
+                        this.service.signInUsingDefaultCredentials().then(function () {
+                            _this._setInitializing(false);
+                        });
+                    }
+                    else
+                        this.redirectToSignIn();
+                }
+            };
+            App.prototype._appRouteAdded = function (e, detail) {
+                var _this = this;
+                this.async(function () {
+                    if (_this._routeMap[hashBang + App._stripHashBang(detail.route)] === undefined) {
+                        Vidyano.Path.map(hashBang + App._stripHashBang(detail.route)).to(function () {
+                            _this.path = Vidyano.Path.routes.current;
+                        });
+                        _this._routeMap[hashBang + App._stripHashBang(detail.route)] = e.target;
+                    }
+                    _this._setRouteMapVersion(_this.routeMapVersion + 1);
+                });
+            };
+            App._stripHashBang = function (path) {
+                return path && path.replace(hashBang, "") || "";
+            };
+            return App;
+        })(WebComponents.WebComponent);
+        WebComponents.App = App;
+        var AppServiceHooks = (function (_super) {
+            __extends(AppServiceHooks, _super);
+            function AppServiceHooks(app) {
+                _super.call(this);
+                this.app = app;
+            }
+            AppServiceHooks.prototype.onAction = function (args) {
+                var _this = this;
+                if (args.action == "Delete") {
+                    return this.app.showMessageDialog({
+                        title: this.service.getTranslatedMessage("Delete"),
+                        titleIcon: "Icon_Action_Delete",
+                        message: this.service.getTranslatedMessage("AskForDeleteItems"),
+                        actions: [this.service.getTranslatedMessage("Delete"), this.service.getTranslatedMessage("Cancel")],
+                        actionTypes: ["Danger", "Safe"]
+                    }).then(function (result) {
+                        return result == 0 ? args.executeServiceRequest() : Promise.reject(null);
+                    });
+                }
+                else if (args.action == "AddReference") {
+                    var dialog = new Vidyano.WebComponents.SelectReferenceDialog();
+                    dialog.query = args.query.clone(true);
+                    dialog.query.search();
+                    Polymer.dom(this.app).appendChild(dialog);
+                    return dialog.show().then(function (result) {
+                        Polymer.dom(_this.app).removeChild(dialog);
+                        if (result && result.length > 0) {
+                            args.selectedItems = result;
+                            return args.executeServiceRequest();
+                        }
+                    }).catch(function (e) {
+                        Polymer.dom(_this.app).removeChild(dialog);
+                    });
+                }
+                return _super.prototype.onAction.call(this, args);
+            };
+            AppServiceHooks.prototype.onOpen = function (obj, replaceCurrent, fromAction) {
+                if (replaceCurrent === void 0) { replaceCurrent = false; }
+                if (fromAction === void 0) { fromAction = false; }
+                if (obj instanceof Vidyano.PersistentObject) {
+                    var po = obj;
+                    var path;
+                    if (!fromAction) {
+                        path = this.app.getUrlForPersistentObject(po.id, po.objectId);
+                        var cacheEntry = new PersistentObjectAppCacheEntry(po);
+                        var existing = this.app.cachePing(cacheEntry);
+                        if (existing)
+                            this.app.cacheRemove(existing);
+                        this.app.cache(cacheEntry);
+                    }
+                    else {
+                        var fromActionId = Unique.get();
+                        path = this.app.getUrlForFromAction(fromActionId);
+                        this.app.cache(new PersistentObjectFromActionAppCacheEntry(po, fromActionId, this.app.path));
+                    }
+                    this.app.changePath(path, replaceCurrent);
+                }
+            };
+            AppServiceHooks.prototype.onClose = function (parent) {
+                if (parent instanceof Vidyano.PersistentObject) {
+                    var cacheEntry = this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(parent));
+                    if (cacheEntry instanceof PersistentObjectFromActionAppCacheEntry && cacheEntry.fromActionIdReturnPath) {
+                        this.app.cacheRemove(cacheEntry);
+                        this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
+                    }
+                }
+            };
+            AppServiceHooks.prototype.onMessageDialog = function (title, message) {
+                var actions = [];
+                for (var _i = 2; _i < arguments.length; _i++) {
+                    actions[_i - 2] = arguments[_i];
+                }
+                return this.app.showMessageDialog.apply(this.app, [{ title: title, message: message, actions: actions }]);
+            };
+            AppServiceHooks.prototype.onSessionExpired = function () {
+                this.app.redirectToSignIn();
+            };
+            return AppServiceHooks;
+        })(Vidyano.ServiceHooks);
+        WebComponents.AppServiceHooks = AppServiceHooks;
+        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.AppRoute, Vidyano.WebComponents, "vi", {
+            properties: {
+                route: {
+                    type: String,
+                    reflectToAttribute: true
+                },
+                component: {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: "_componentChanged"
+                },
+                active: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                }
+            }
+        });
+        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.App, Vidyano.WebComponents, "vi", {
+            properties: {
+                uri: {
+                    type: String,
+                    reflectToAttribute: true
+                },
+                noHistory: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    value: false
+                },
+                path: {
+                    type: String,
+                    reflectToAttribute: true
+                },
+                service: {
+                    type: Object,
+                    computed: "_computeService(uri)"
+                },
+                mappedRoute: {
+                    type: Object,
+                    computed: "_computeMappedRoute(path, routeMapVersion)"
+                },
+                currentRoute: {
+                    type: Object,
+                    computed: "_computeCurrentRoute(mappedRoute, path)"
+                },
+                application: Object,
+                programUnit: {
+                    type: Object,
+                    computed: "_computeProgramUnit(mappedRoute, path, service.application)"
+                },
+                noMenu: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                },
+                initializing: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                },
+                label: {
+                    type: String,
+                    reflectToAttribute: true
+                },
+                cacheSize: {
+                    type: Number,
+                    value: 25,
+                    reflectToAttribute: true
+                },
+                routeMapVersion: {
+                    type: Number,
+                    readOnly: true,
+                    value: 0
+                },
+                signInImage: String
+            },
+            observers: [
+                "_start(initializing, path)"
+            ],
+            hostAttributes: {
+                "theme-color-1": true
+            },
+            listeners: {
+                "app-route-add": "_appRouteAdded"
+            },
+            forwardObservers: [
+                "service.isSignedIn",
+                "service.application"
+            ]
+        });
+    })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
+})(Vidyano || (Vidyano = {}));

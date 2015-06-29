@@ -1,0 +1,17 @@
+<dom-module id="vi-persistent-object-presenter">
+    <template>
+        <template is="dom-if" if="{{loading}}">
+            <vi-spinner></vi-spinner>
+        </template>
+        <template is="dom-if" if="{{hasError}}" restamp>
+            <div id="error">
+                <vi-resource source="Icon_Notification_Error"></vi-resource>
+                <span>{{error}}</span>
+            </div>
+        </template>
+        <content></content>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="persistent-object-presenter.css" />
+<script src="persistent-object-presenter.js"></script>

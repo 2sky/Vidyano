@@ -1,0 +1,46 @@
+@import (reference) "../vidyano.less";
+
+vi-input-search {
+    .layout-horizontal();
+    line-height: @h2;
+
+    input {
+        border: none;
+        outline: none;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        padding: 8px 12px;
+        background-color: transparent;
+        color: white;
+    }
+
+    button {
+        border: none;
+        outline: none;
+        fill: #aaa;
+        cursor: pointer;
+        width: @h2;
+        background-color: transparent;
+        margin: 1px 1px 1px 0;
+    }
+
+    input:not(:focus) {
+        &::-webkit-input-placeholder {
+            color: #aaa;
+        }
+
+        &::-moz-placeholder {
+            color: #aaa;
+            opacity: 1;
+        }
+
+        &:-ms-input-placeholder {
+            color: #aaa;
+        }
+    }
+
+    input:focus + button {
+        fill: white;
+    }
+}

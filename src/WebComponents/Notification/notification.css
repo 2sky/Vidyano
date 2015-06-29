@@ -1,0 +1,104 @@
+:host {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  height: 40px;
+  box-sizing: border-box;
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+}
+:host:not([shown]) {
+  display: none !important;
+}
+:host #icon {
+  width: 40px;
+  line-height: 40px;
+}
+:host #icon vi-resource {
+  height: 38px;
+}
+:host #icon vi-resource svg {
+  width: 22px;
+  height: 22px;
+}
+:host #close {
+  cursor: pointer;
+  background-color: transparent;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  fill: white;
+}
+:host #close:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+:host .flex {
+  color: white;
+}
+:host .flex span {
+  display: block;
+  line-height: 38px;
+  height: 38px;
+  font-size: 14px;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:host vi-resource {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+:host vi-resource svg {
+  fill: white;
+  -moz-transform: none;
+  -ms-transform: none;
+  -o-transform: none;
+  -webkit-transform: none;
+  transform: none;
+}
+:host[type="error"],
+:host[type="Error"],
+:host[type="0"] {
+  border-bottom-color: #76040c;
+  background-color: #a80511;
+  fill: #a80511;
+}
+:host[type="notice"],
+:host[type="Notice"],
+:host[type="1"] {
+  border-bottom-color: #323a41;
+  background-color: #48545e;
+  fill: #48545e;
+}
+:host[type="ok"],
+:host[type="OK"],
+:host[type="2"] {
+  border-bottom-color: #27785d;
+  background-color: #339f7b;
+  fill: #339f7b;
+}
+:host[type="warning"],
+:host[type="Warning"],
+:host[type="3"] {
+  border-bottom-color: #b27f00;
+  background-color: #e5a300;
+  fill: #e5a300;
+}

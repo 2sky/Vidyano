@@ -1,0 +1,75 @@
+@import (reference) "../vidyano.less";
+
+@inputSearchColor: rgba(0,0,0,0.5);
+@inputSearchPlaceholderColor: rgba(128,128,128,0.5);
+
+vi-action-bar {
+    min-height: @h1;
+    .layout-horizontal();
+    .noSelection();
+
+    &([isEmpty]) {
+        display: none !important;
+    }
+
+	.actions {
+		overflow: hidden;
+	}
+
+    .action {
+        vi-resource[hasResource] {
+            padding-right: 2px;
+        }
+    }
+
+    vi-overflow {
+        button[header] {
+            .colorize({
+                color: @@color;
+            });
+        }
+
+        vi-action-button {
+            text-align: left;
+        }
+    }
+
+    vi-input-search {
+        min-width: 16em;
+        margin: ((@h1 - @h2) / 2) @h5;
+        height: @h2;
+        border: 1px solid fadeout(@inputSearchPlaceholderColor, 30%);
+        box-sizing: border-box;
+
+        input {
+            padding: 0 (@h1 - @h2);
+            color: #333;
+
+            &:focus {
+                background-color: white;
+
+                + button {
+                    .colorize({
+                        background-color: @@color;
+                    });
+                }
+            }
+
+            &:not(:focus) {
+                .placeholder-color(darken(@inputSearchPlaceholderColor, 20%));
+            }
+        }
+
+        button {
+            fill: @inputSearchPlaceholderColor;
+        }
+    }
+
+    &[theme-color-inverse] {
+        .colorize({
+            #toggle button[header] {
+                color: white;
+            }
+        });
+    }
+}

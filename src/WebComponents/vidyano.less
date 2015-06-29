@@ -1,0 +1,260 @@
+@import (reference) "../../Bower/layout/layout.less";
+
+@dark-background: #3b3b3b;
+@dark-foreground: white;
+@light-background: white;
+@light-foreground: #333;
+@semilight-background: #FAFAFA;
+@semilight-foreground: #333;
+@actionsBG: #F9F9F9;
+@h1: 40px;
+@h2: 30px;
+@h3: 22px;
+@h4: 12px;
+@h5: 6px;
+@theme-color-1: #126790;
+@theme-color-1-light: #367EA0;
+@theme-color-1-lighter: #5C9BBA;
+@theme-color-1-dark: #095072;
+@theme-color-1-darker: #043D59;
+@theme-color-1-faint: #e7f0f4;
+@theme-color-1-semi-faint: darken(@theme-color-1-faint,10%);
+@theme-color-2: #009688;
+@theme-color-2-light: #20A294;
+@theme-color-2-lighter: #42B2A6;
+@theme-color-2-dark: #00776A;
+@theme-color-2-darker: #005D53;
+@theme-color-2-faint: #e5f4f2;
+@theme-color-2-semi-faint: darken(@theme-color-2-faint,10%);
+@color-error:#a80511;
+@color-warning:#e5a300;
+@color-notice:#48545e;
+@color-ok:#339f7b;
+
+.shadow() {
+    -webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow:    0 0 4px 0 rgba(0, 0, 0, 0.5);
+    box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.colorize(@style) {
+    .colorize-loop (@style, @counter) when (@counter > 0) {
+        .colorize-loop (@style, (@counter - 1));
+        
+        @theme: ~'[theme-color-@{counter}]';
+        @{theme} & {
+			@color: ~'theme-color-@{counter}';
+			@color-light: ~'theme-color-@{counter}-light';
+			@color-lighter: ~'theme-color-@{counter}-lighter';
+			@color-dark: ~'theme-color-@{counter}-dark';
+			@color-darker: ~'theme-color-@{counter}-darker';
+			@color-faint: ~'theme-color-@{counter}-faint';
+            @color-semi-faint: ~'theme-color-@{counter}-semi-faint';
+
+    		@style();
+        }
+    }
+    
+    .colorize-loop(@style, 2);
+}
+
+.colorize-button(@color) {
+    background-color: @color;
+    color: white;
+
+    &:hover {
+        background-color: @color;
+    }
+
+    &:active {
+        background-color: darken(@color, 10%);
+    }
+
+    &[disabled] {
+        fill: fadeout(white, 50%);
+        color: fadeout(white, 50%);
+    }
+
+    -moz-transition-property: fill, color, background-color;
+    -o-transition-property: fill, color, background-color;
+    -webkit-transition-property: fill, color, background-color;
+    transition-property: fill, color, background-color;
+    -moz-transition-duration: 0.1s;
+    -o-transition-duration: 0.1s;
+    -webkit-transition-duration: 0.1s;
+    transition-duration: 0.1s;
+    -moz-transition-timing-function: ease-out;
+    -o-transition-timing-function: ease-out;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+
+.colorize-button-inverse() {
+    .colorize({
+        background-color: transparent;
+        color: @@color-darker;
+        fill: #595959;
+
+        &:hover {
+            background-color: #f0f0f0;
+        }
+
+        &:active {
+            background-color: @@color-dark;
+            fill: white !important;
+            color: white !important;
+        }
+
+        &[disabled] {
+            fill: @@color-faint;
+            color: fadeout(black, 50%);
+        }
+
+        -moz-transition-property: fill, color, background-color;
+        -o-transition-property: fill, color, background-color;
+        -webkit-transition-property: fill, color, background-color;
+        transition-property: fill, color, background-color;
+        -moz-transition-duration: 0.2s;
+        -o-transition-duration: 0.2s;
+        -webkit-transition-duration: 0.2s;
+        transition-duration: 0.2s;
+        -moz-transition-timing-function: ease-in-out;
+        -o-transition-timing-function: ease-in-out;
+        -webkit-transition-timing-function: ease-in-out;
+        transition-timing-function: ease-in-out;
+    });
+}
+
+.flexbox() {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: -ms-flex;
+    display: flex;
+}
+
+.flexbox-vertical() {
+    .flexbox();
+    -ms-flex-direction: column;
+    -webkit-box-orient: vertical;
+    flex-direction: column;
+}
+
+.flexfill() {
+    -ms-flex: 1;
+    flex: 1;
+}
+
+.layout(@direction) {
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+
+	.horizontal() when (@direction = "horizontal") {
+		-ms-flex-direction: row;
+		-webkit-flex-direction: row;
+		flex-direction: row;
+	}
+
+	.horizontal();
+}
+
+.layout-fill() {
+	-ms-flex: 1;
+    flex: 1;
+}
+
+.noSelection() {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.placeholder-color(@color) {
+    &::-webkit-input-placeholder { /* WebKit browsers */
+        color: @color;
+    }
+    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+       color:    @color;
+       opacity:  1;
+    }
+    &::-moz-placeholder { /* Mozilla Firefox 19+ */
+       color:    @color;
+       opacity:  1;
+    }
+    &:-ms-input-placeholder { /* Internet Explorer 10+ */
+       color:    @color;
+    }
+}
+
+.hideScrollbars() {
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
+
+    &::-webkit-scrollbar {
+        width: 0 !important;
+        height: 0 !important;
+    }
+}
+
+.button() {
+    border-width: 1px;
+    border-style: solid;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    outline: none !important;
+
+    &:not(:disabled) {
+        &:active {
+            position: relative;
+            top: 1px;
+        }
+    }
+
+    &:disabled {
+        background-color: #888;
+    }
+}
+
+.input() {
+    border: 1px solid #BBB;
+    padding: 6px;
+
+    &:focus {
+        outline: none;
+        border-width: 1px;
+        border-style: solid;
+    }
+}
+
+.z-index1() {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.page-title() {
+    display: block;
+    color: white;
+    padding-top: 2px;
+    line-height: @h1 - 2px;
+    min-height: @h1;
+    box-sizing: border-box;
+    font-size: @h5 + @h4;
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    padding: 0 @h4;
+
+    .colorize({
+        background-color: @@color;
+    });
+}

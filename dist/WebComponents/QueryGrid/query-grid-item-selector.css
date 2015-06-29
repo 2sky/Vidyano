@@ -1,0 +1,42 @@
+vi-query-grid-item-selector,
+.vi-query-grid-item-selector-proxy {
+  display: block;
+  width: 30px;
+  height: 30px;
+  padding-left: 6px;
+  box-sizing: border-box;
+  text-align: center;
+  fill: #bbb;
+}
+vi-query-grid-item-selector vi-resource,
+.vi-query-grid-item-selector-proxy vi-resource {
+  height: 30px;
+}
+vi-query-grid-item-selector:not([is-selected]) #check,
+.vi-query-grid-item-selector-proxy:not([is-selected]) #check {
+  display: none;
+}
+[theme-color-1] vi-query-grid-item-selector[is-selected] vi-resource,
+[theme-color-1] .vi-query-grid-item-selector-proxy[is-selected] vi-resource {
+  fill: #888;
+}
+[theme-color-1] vi-query-grid-item-selector[is-selected] vi-resource #check,
+[theme-color-1] .vi-query-grid-item-selector-proxy[is-selected] vi-resource #check {
+  fill: #126790;
+}
+[theme-color-2] vi-query-grid-item-selector[is-selected] vi-resource,
+[theme-color-2] .vi-query-grid-item-selector-proxy[is-selected] vi-resource {
+  fill: #888;
+}
+[theme-color-2] vi-query-grid-item-selector[is-selected] vi-resource #check,
+[theme-color-2] .vi-query-grid-item-selector-proxy[is-selected] vi-resource #check {
+  fill: #009688;
+}
+[theme-color-1] vi-query-grid-item-selector:hover,
+[theme-color-1] .vi-query-grid-item-selector-proxy:hover {
+  background-color: #d6e5ec;
+}
+[theme-color-2] vi-query-grid-item-selector:hover,
+[theme-color-2] .vi-query-grid-item-selector-proxy:hover {
+  background-color: #d3ece9;
+}

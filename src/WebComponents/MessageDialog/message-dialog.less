@@ -1,0 +1,38 @@
+﻿@import (reference) "../vidyano.less";
+
+vi-message-dialog {
+    vi-dialog .content {
+        padding: @h4;
+        .layout-horizontal();
+
+        pre {
+            .flex();
+            white-space: pre-wrap;
+        }
+    }
+
+    header > vi-resource[icon] {
+        padding-right: @h4;
+
+        svg {
+            width: @h3;
+            height: @h3;
+        }
+
+        &[source$="Error"] {
+            fill: @color-error;
+        }
+
+        &[source$="Warning"] {
+            fill: @color-warning;
+        }
+
+        &[source$="Notice"] {
+            fill: @color-notice;
+        }
+
+        &[source$="OK"] {
+            fill: @color-ok;
+        }
+    }
+}
