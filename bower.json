@@ -39,6 +39,5 @@
     "pathjs": "2sky/pathjs#0.8.4.1",
     "sortable": "2sky/sortable#^1.2.0",
     "layout": "2sky/layout#master"
-  },
-  "private": true
+  }
 }
