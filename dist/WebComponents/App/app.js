@@ -280,6 +280,9 @@ var Vidyano;
                     return application.programUnits[0];
                 return null;
             };
+            App.prototype._computeShowMenu = function (isSignedIn, noMenu) {
+                return isSignedIn && !noMenu;
+            };
             App.prototype._start = function (initializing, path) {
                 var _this = this;
                 if (initializing)
@@ -445,7 +448,8 @@ var Vidyano;
                 },
                 noMenu: {
                     type: Boolean,
-                    reflectToAttribute: true
+                    reflectToAttribute: true,
+                    value: false
                 },
                 initializing: {
                     type: Boolean,
@@ -466,7 +470,11 @@ var Vidyano;
                     readOnly: true,
                     value: 0
                 },
-                signInImage: String
+                signInImage: String,
+                showMenu: {
+                    type: Boolean,
+                    computed: "_computeShowMenu(service.isSignedIn, noMenu)"
+                }
             },
             observers: [
                 "_start(initializing, path)"
