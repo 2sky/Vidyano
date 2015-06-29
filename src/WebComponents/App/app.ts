@@ -326,6 +326,10 @@
             return null;
         }
 
+        private _computeShowMenu(isSignedIn: boolean, noMenu: boolean): boolean {
+            return isSignedIn && !noMenu;
+        }
+
         private _start(initializing: boolean, path: string) {
             if (initializing)
                 return;
@@ -497,7 +501,8 @@
             },
             noMenu: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: false
             },
             initializing: {
                 type: Boolean,
@@ -518,7 +523,11 @@
                 readOnly: true,
                 value: 0
             },
-            signInImage: String
+            signInImage: String,
+            showMenu: {
+                type: Boolean,
+                computed: "_computeShowMenu(service.isSignedIn, noMenu)"
+            }
         },
         observers: [
             "_start(initializing, path)"

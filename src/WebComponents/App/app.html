@@ -5,7 +5,7 @@
         </template>
         <template is="dom-if" if="{{!initializing}}">
             <div class="fit layout horizontal">
-                <template is="dom-if" if="{{service.isSignedIn}}" restamp>
+                <template is="dom-if" if="{{showMenu}}" restamp>
                     <vi-menu menu label="{{label}}" items="{{service.application.programUnits}}" program-unit="{{programUnit}}">
                         <content select="[menu-element]"></content>
                     </vi-menu>
