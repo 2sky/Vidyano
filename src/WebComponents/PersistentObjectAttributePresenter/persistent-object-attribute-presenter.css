@@ -32,6 +32,7 @@ vi-persistent-object-attribute-presenter label + * {
   -ms-flex-direction: row;
   -webkit-flex-direction: row;
   flex-direction: row;
+  flex-basis: 0.000000001px;
 }
 vi-persistent-object-attribute-presenter[nolabel] label {
   display: none;
