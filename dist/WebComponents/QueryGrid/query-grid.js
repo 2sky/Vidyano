@@ -238,7 +238,7 @@ var Vidyano;
                     var newE = this.fire("item-click", { item: item, column: column });
                     if (newE.defaultPrevented)
                         return;
-                    if (!this.query.asLookup) {
+                    if (!this.query.asLookup && !this.asLookup) {
                         if (this.query.canRead) {
                             this._itemOpening = item;
                             item.getPersistentObject().then(function (po) {
@@ -270,7 +270,7 @@ var Vidyano;
                 this.items.updateTablePosition(true);
             };
             QueryGrid.prototype._computeDisableInlineActions = function (actions) {
-                return !actions || !actions.some(function (a) { return a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); }) || actions[0].query.asLookup;
+                return !actions || !actions.some(function (a) { return a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); }) || actions[0].query.asLookup || this.asLookup;
             };
             QueryGrid.prototype._computeDisableSelect = function (actions) {
                 return !actions || !actions.some(function (a) { return a.definition.selectionRule != ExpressionParser.alwaysTrue; });
@@ -1270,6 +1270,10 @@ var Vidyano;
         Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.QueryGrid, Vidyano.WebComponents, "vi", {
             properties: {
                 query: Object,
+                asLookup: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                },
                 loading: {
                     type: Boolean,
                     reflectToAttribute: true,
