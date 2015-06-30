@@ -34,6 +34,7 @@
         query: Vidyano.Query;
         initializing: boolean;
         disableSelect: boolean;
+        disableInlineActions: boolean;
         asLookup: boolean;
 
         _setInitializing: (val: boolean) => void;
@@ -746,34 +747,36 @@
                 this.hosts.header.appendChild(selectorCol);
             }
 
-            actions = actions.filter(a => a.definition.selectionRule(1));
-            if (!this.grid.query.asLookup && actions.length > 0) {
-                // Adds the actions proxy for performance
-                var actionsCol = document.createElement("td")
-                if (!QueryGridItem._actionsProxy) {
-                    QueryGridItem._actionsProxy = document.createElement("div");
-                    var resource = <Resource><any>document.createElement("vi-resource");
-                    resource.source = "Icon_EllipsisVertical";
+            if (!this.grid.disableInlineActions) {
+                actions = actions.filter(a => a.definition.selectionRule(1));
+                if (!this.grid.query.asLookup && actions.length > 0) {
+                    // Adds the actions proxy for performance
+                    var actionsCol = document.createElement("td")
+                    if (!QueryGridItem._actionsProxy) {
+                        QueryGridItem._actionsProxy = document.createElement("div");
+                        var resource = <Resource><any>document.createElement("vi-resource");
+                        resource.source = "Icon_EllipsisVertical";
 
-                    QueryGridItem._actionsProxy.className = "vi-query-grid-item-actions-proxy";
-                    QueryGridItem._actionsProxy.appendChild(resource);
+                        QueryGridItem._actionsProxy.className = "vi-query-grid-item-actions-proxy";
+                        QueryGridItem._actionsProxy.appendChild(resource);
+                    }
+                    this._actionsProxy = <HTMLElement>actionsCol.appendChild(QueryGridItem._actionsProxy.cloneNode(true));
+                    this._actionsProxy.addEventListener("click", this._actionsProxyClick = <EventListener><any>((e: UIEvent, detail: any) => {
+                        actionsCol.removeChild(this._actionsProxy);
+                        this._actionsProxyClick = this._actionsProxy = null;
+
+                        actionsCol.appendChild(this._actions = new Vidyano.WebComponents.QueryGridItemActions());
+                        this._actions.item = this._item;
+
+                        Polymer.dom(this._actions).flush();
+
+                        e.stopPropagation();
+                        this._actions.async(() => {
+                            this._actions.popup();
+                        });
+                    }));
+                    this.hosts.header.appendChild(actionsCol);
                 }
-                this._actionsProxy = <HTMLElement>actionsCol.appendChild(QueryGridItem._actionsProxy.cloneNode(true));
-                this._actionsProxy.addEventListener("click", this._actionsProxyClick = <EventListener><any>((e: UIEvent, detail: any) => {
-                    actionsCol.removeChild(this._actionsProxy);
-                    this._actionsProxyClick = this._actionsProxy = null;
-
-                    actionsCol.appendChild(this._actions = new Vidyano.WebComponents.QueryGridItemActions());
-                    this._actions.item = this._item;
-
-                    Polymer.dom(this._actions).flush();
-
-                    e.stopPropagation();
-                    this._actions.async(() => {
-                        this._actions.popup();
-                    });
-                }));
-                this.hosts.header.appendChild(actionsCol);
             }
 
             this.updateColumns(parent.grid.pinnedColumns, parent.grid.unpinnedColumns);

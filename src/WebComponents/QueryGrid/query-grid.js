@@ -626,30 +626,32 @@ var Vidyano;
                     }
                     this.hosts.header.appendChild(selectorCol);
                 }
-                actions = actions.filter(function (a) { return a.definition.selectionRule(1); });
-                if (!this.grid.query.asLookup && actions.length > 0) {
-                    // Adds the actions proxy for performance
-                    var actionsCol = document.createElement("td");
-                    if (!QueryGridItem._actionsProxy) {
-                        QueryGridItem._actionsProxy = document.createElement("div");
-                        var resource = document.createElement("vi-resource");
-                        resource.source = "Icon_EllipsisVertical";
-                        QueryGridItem._actionsProxy.className = "vi-query-grid-item-actions-proxy";
-                        QueryGridItem._actionsProxy.appendChild(resource);
+                if (!this.grid.disableInlineActions) {
+                    actions = actions.filter(function (a) { return a.definition.selectionRule(1); });
+                    if (!this.grid.query.asLookup && actions.length > 0) {
+                        // Adds the actions proxy for performance
+                        var actionsCol = document.createElement("td");
+                        if (!QueryGridItem._actionsProxy) {
+                            QueryGridItem._actionsProxy = document.createElement("div");
+                            var resource = document.createElement("vi-resource");
+                            resource.source = "Icon_EllipsisVertical";
+                            QueryGridItem._actionsProxy.className = "vi-query-grid-item-actions-proxy";
+                            QueryGridItem._actionsProxy.appendChild(resource);
+                        }
+                        this._actionsProxy = actionsCol.appendChild(QueryGridItem._actionsProxy.cloneNode(true));
+                        this._actionsProxy.addEventListener("click", this._actionsProxyClick = (function (e, detail) {
+                            actionsCol.removeChild(_this._actionsProxy);
+                            _this._actionsProxyClick = _this._actionsProxy = null;
+                            actionsCol.appendChild(_this._actions = new Vidyano.WebComponents.QueryGridItemActions());
+                            _this._actions.item = _this._item;
+                            Polymer.dom(_this._actions).flush();
+                            e.stopPropagation();
+                            _this._actions.async(function () {
+                                _this._actions.popup();
+                            });
+                        }));
+                        this.hosts.header.appendChild(actionsCol);
                     }
-                    this._actionsProxy = actionsCol.appendChild(QueryGridItem._actionsProxy.cloneNode(true));
-                    this._actionsProxy.addEventListener("click", this._actionsProxyClick = (function (e, detail) {
-                        actionsCol.removeChild(_this._actionsProxy);
-                        _this._actionsProxyClick = _this._actionsProxy = null;
-                        actionsCol.appendChild(_this._actions = new Vidyano.WebComponents.QueryGridItemActions());
-                        _this._actions.item = _this._item;
-                        Polymer.dom(_this._actions).flush();
-                        e.stopPropagation();
-                        _this._actions.async(function () {
-                            _this._actions.popup();
-                        });
-                    }));
-                    this.hosts.header.appendChild(actionsCol);
                 }
                 this.updateColumns(parent.grid.pinnedColumns, parent.grid.unpinnedColumns);
             }
