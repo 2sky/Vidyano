@@ -168,6 +168,9 @@ module Vidyano.WebComponents {
         },
         observers: [
             "_updateItemTitle(item, filter, filtering)"
-        ]
+        ],
+        listeners: {
+            "tap": "_tap"
+        }
     });
 }

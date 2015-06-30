@@ -152,7 +152,10 @@ var Vidyano;
             },
             observers: [
                 "_updateItemTitle(item, filter, filtering)"
-            ]
+            ],
+            listeners: {
+                "tap": "_tap"
+            }
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

@@ -53,6 +53,7 @@ vi-menu-item {
 	&[has-items].program-unit-item {
 		.flexbox();
         padding-left: @indent / 2;
+        cursor: pointer;
 
 		.group {
 			width: @indent * 2;
@@ -78,11 +79,11 @@ vi-menu-item {
 
 		&[expand] {
 			.group {
-				-moz-transform: rotate(180deg);
-				-ms-transform: rotate(180deg);
-				-o-transform: rotate(180deg);
-				-webkit-transform: rotate(180deg);
-				transform: rotate(180deg);
+				-moz-transform: rotate(90deg);
+				-ms-transform: rotate(90deg);
+				-o-transform: rotate(90deg);
+				-webkit-transform: rotate(90deg);
+				transform: rotate(90deg);
 			}
 		}
 	}

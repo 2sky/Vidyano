@@ -5,6 +5,7 @@ vi-persistent-object-attribute-presenter {
   -ms-flex-direction: column;
   -webkit-flex-direction: column;
   flex-direction: column;
+  flex-basis: 0.000000001px;
   position: relative;
   white-space: nowrap;
   padding-top: 6px;
@@ -32,7 +33,6 @@ vi-persistent-object-attribute-presenter label + * {
   -ms-flex-direction: row;
   -webkit-flex-direction: row;
   flex-direction: row;
-  flex-basis: 0.000000001px;
 }
 vi-persistent-object-attribute-presenter[nolabel] label {
   display: none;
