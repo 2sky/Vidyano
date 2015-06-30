@@ -22,6 +22,7 @@
             this._grid = new WebComponents.QueryGrid();
             this._grid.asElement.addEventListener("item-click", this._itemClickCallback = this._selectReference.bind(this));
             this._grid.classList.add("fit");
+            this._grid.asLookup = true;
             this._grid.query = this.query;
 
             Polymer.dom(this).appendChild(this._grid);

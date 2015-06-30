@@ -34,6 +34,7 @@
         query: Vidyano.Query;
         initializing: boolean;
         disableSelect: boolean;
+        asLookup: boolean;
 
         _setInitializing: (val: boolean) => void;
         _setViewport: (viewport: Viewport) => void;
@@ -295,7 +296,7 @@
                 if (newE.defaultPrevented)
                     return;
 
-                if (!this.query.asLookup) {
+                if (!this.query.asLookup && !this.asLookup) {
                     if (this.query.canRead) {
                         this._itemOpening = item;
                         item.getPersistentObject().then(po => {
@@ -334,7 +335,7 @@
         }
 
         private _computeDisableInlineActions(actions: Vidyano.Action[]): boolean {
-            return !actions || !actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1)) || actions[0].query.asLookup;
+            return !actions || !actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1)) || actions[0].query.asLookup || this.asLookup;
         }
 
         private _computeDisableSelect(actions: Vidyano.Action[]): boolean {
@@ -1506,6 +1507,10 @@
     Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.QueryGrid, Vidyano.WebComponents, "vi", {
         properties: {
             query: Object,
+            asLookup: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             loading: {
                 type: Boolean,
                 reflectToAttribute: true,

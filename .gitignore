@@ -197,3 +197,4 @@ ModelManifest.xml
 # Project files
 .vs/config/applicationhost.config
 project.lock.json
+src/demo-dev.html
