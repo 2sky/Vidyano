@@ -227,7 +227,8 @@ var Vidyano;
                             _this.authToken = result.authToken;
                             _this._lastAuthTokenUpdate = createdRequest;
                         }
-                        //app.updateSession(result.session);
+                        if (result.session && _this.application)
+                            _this.application._updateSession(result.session);
                         resolve(result);
                     }
                     else if (result.exception == "Session expired") {
@@ -572,6 +573,8 @@ var Vidyano;
                     Vidyano.CultureInfo.currentCulture = Vidyano.CultureInfo.cultures.get(result.userCultureInfo) || Vidyano.CultureInfo.cultures.get(result.userLanguage) || Vidyano.CultureInfo.invariantCulture;
                     _this._setUserName(result.userName);
                     _this._setIsUsingDefaultCredentials(_this._clientData.defaultUser === result.userName);
+                    if (result.session)
+                        _this.application._updateSession(result.session);
                     _this._setIsSignedIn(true);
                     resolve(_this.application);
                 }, function (e) {
@@ -2967,6 +2970,28 @@ var Vidyano;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Application.prototype, "session", {
+            get: function () {
+                return this._session;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Application.prototype._updateSession = function (session) {
+            var oldSession = this._session;
+            if (!session) {
+                if (this._session)
+                    this._session = null;
+            }
+            else {
+                if (this._session)
+                    this._session.refreshFromResult(new PersistentObject(this.service, session));
+                else
+                    this._session = new PersistentObject(this.service, session);
+            }
+            if (oldSession != this._session)
+                this.notifyPropertyChanged("session", this._session, oldSession);
+        };
         return Application;
     })(PersistentObject);
     Vidyano.Application = Application;

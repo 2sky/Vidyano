@@ -289,7 +289,10 @@ module Vidyano {
                             this.authToken = result.authToken;
                             this._lastAuthTokenUpdate = createdRequest;
                         }
-                        //app.updateSession(result.session);
+
+                        if(result.session && this.application)
+                            this.application._updateSession(result.session);
+
                         resolve(result);
                     } else if (result.exception == "Session expired") {
                         this.authToken = null;
@@ -698,6 +701,10 @@ module Vidyano {
 
                     this._setUserName(result.userName);
                     this._setIsUsingDefaultCredentials(this._clientData.defaultUser === result.userName);
+
+                    if (result.session)
+                        this.application._updateSession(result.session);
+
                     this._setIsSignedIn(true);
 
                     resolve(this.application);
@@ -3257,6 +3264,7 @@ module Vidyano {
         private _analyticsKey: string;
         private _userSettings: any;
         private _hasManagement: boolean;
+        private _session: Vidyano.PersistentObject;
         programUnits: ProgramUnit[];
 
         constructor(service: Service, po: any) {
@@ -3302,6 +3310,27 @@ module Vidyano {
 
         get hasManagement(): boolean {
             return this._hasManagement;
+        }
+
+        get session(): Vidyano.PersistentObject {
+            return this._session;
+        }
+
+        _updateSession(session: any) {
+            var oldSession = this._session;
+
+            if (!session) {
+                if (this._session)
+                    this._session = null;
+            } else {
+                if (this._session)
+                    this._session.refreshFromResult(new PersistentObject(this.service, session));
+                else
+                    this._session = new PersistentObject(this.service, session);
+            }
+
+            if (oldSession != this._session)
+                this.notifyPropertyChanged("session", this._session, oldSession);
         }
     }
 
