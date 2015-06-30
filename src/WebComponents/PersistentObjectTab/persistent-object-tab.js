@@ -206,6 +206,10 @@ var Vidyano;
                 this._setWidth(detail.width);
                 this._setHeight(detail.height);
                 if (!this.authored) {
+                    if (this.tab.columnCount) {
+                        this.columns = this.tab.columnCount;
+                        return;
+                    }
                     if (detail.width >= 1500)
                         this.columns = 4;
                     else if (detail.width > 1000)

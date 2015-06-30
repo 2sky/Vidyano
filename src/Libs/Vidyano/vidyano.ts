@@ -1174,8 +1174,8 @@ module Vidyano {
             return new PersistentObject(service, po);
         }
 
-        onConstructPersistentObjectAttributeTab(service: Service, groups: linqjs.Enumerable<PersistentObjectAttributeGroup>, key: string, id: string, name: string, layout: any, parent: PersistentObject): PersistentObjectAttributeTab {
-            return new PersistentObjectAttributeTab(service, groups.toArray(), key, id, name, layout, parent);
+        onConstructPersistentObjectAttributeTab(service: Service, groups: linqjs.Enumerable<PersistentObjectAttributeGroup>, key: string, id: string, name: string, layout: any, parent: PersistentObject, columnCount: number): PersistentObjectAttributeTab {
+            return new PersistentObjectAttributeTab(service, groups.toArray(), key, id, name, layout, parent, columnCount);
         }
 
         onConstructPersistentObjectQueryTab(service: Service, query: Query): PersistentObjectQueryTab {
@@ -1413,7 +1413,7 @@ module Vidyano {
                     attr.index = n;
                 });
                 var serviceTab = po.tabs[tab.key()];
-                return this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, tab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, this);
+                return this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, tab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount);
             })).toArray() : [];
             this._tabs = attributeTabs.concat(Enumerable.from(this.queries).select(q => <PersistentObjectTab>this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
 
@@ -2135,7 +2135,7 @@ module Vidyano {
     }
 
     export class PersistentObjectAttributeTab extends PersistentObjectTab {
-        constructor(service: Service, public groups: PersistentObjectAttributeGroup[], public key: string, public id: string, public name: string, private _layout: any, po: PersistentObject) {
+        constructor(service: Service, public groups: PersistentObjectAttributeGroup[], public key: string, public id: string, public name: string, private _layout: any, po: PersistentObject, public columnCount: number) {
             super(service, StringEx.isNullOrEmpty(key) ? po.label : key, po, po);
             this.tabGroupIndex = 0;
         }

@@ -1028,8 +1028,8 @@ var Vidyano;
         ServiceHooks.prototype.onConstructPersistentObject = function (service, po) {
             return new PersistentObject(service, po);
         };
-        ServiceHooks.prototype.onConstructPersistentObjectAttributeTab = function (service, groups, key, id, name, layout, parent) {
-            return new PersistentObjectAttributeTab(service, groups.toArray(), key, id, name, layout, parent);
+        ServiceHooks.prototype.onConstructPersistentObjectAttributeTab = function (service, groups, key, id, name, layout, parent, columnCount) {
+            return new PersistentObjectAttributeTab(service, groups.toArray(), key, id, name, layout, parent, columnCount);
         };
         ServiceHooks.prototype.onConstructPersistentObjectQueryTab = function (service, query) {
             return new PersistentObjectQueryTab(service, query);
@@ -1226,7 +1226,7 @@ var Vidyano;
                     attr.index = n;
                 });
                 var serviceTab = po.tabs[tab.key()];
-                return _this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, tab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, _this);
+                return _this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, tab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, _this, serviceTab.columnCount);
             })).toArray() : [];
             this._tabs = attributeTabs.concat(Enumerable.from(this.queries).select(function (q) { return _this.service.hooks.onConstructPersistentObjectQueryTab(_this.service, q); }).toArray());
             if (this.isNew || this.stateBehavior == "OpenInEdit" || this.stateBehavior.indexOf("OpenInEdit") >= 0 || this.stateBehavior == "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
@@ -1863,13 +1863,14 @@ var Vidyano;
     Vidyano.PersistentObjectTab = PersistentObjectTab;
     var PersistentObjectAttributeTab = (function (_super) {
         __extends(PersistentObjectAttributeTab, _super);
-        function PersistentObjectAttributeTab(service, groups, key, id, name, _layout, po) {
+        function PersistentObjectAttributeTab(service, groups, key, id, name, _layout, po, columnCount) {
             _super.call(this, service, StringEx.isNullOrEmpty(key) ? po.label : key, po, po);
             this.groups = groups;
             this.key = key;
             this.id = id;
             this.name = name;
             this._layout = _layout;
+            this.columnCount = columnCount;
             this.tabGroupIndex = 0;
         }
         Object.defineProperty(PersistentObjectAttributeTab.prototype, "layout", {
