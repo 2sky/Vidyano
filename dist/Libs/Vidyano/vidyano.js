@@ -1754,9 +1754,17 @@ var Vidyano;
                         if (result)
                             _this.parent.refreshFromResult(result);
                         resolve(true);
-                    }, function (e) { return reject(e); });
+                    }, function (e) {
+                        reject(e);
+                    });
                 }
             }); });
+        };
+        PersistentObjectAttributeWithReference.prototype.getPersistentObject = function () {
+            var _this = this;
+            if (!this.objectId)
+                return Promise.resolve(null);
+            return this.parent.queueWork(function () { return _this.service.getPersistentObject(_this.parent, _this.lookup.persistentObject.id, _this.objectId); });
         };
         PersistentObjectAttributeWithReference.prototype._refreshFromResult = function (resultAttr) {
             var resultAttrWithRef = resultAttr;

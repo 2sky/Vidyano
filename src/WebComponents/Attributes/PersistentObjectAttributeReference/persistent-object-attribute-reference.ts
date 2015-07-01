@@ -101,6 +101,15 @@ module Vidyano.WebComponents.Attributes {
             this._setCanAddNewReference(hasReference && this.referenceAttribute.parent.isEditing && !this.referenceAttribute.isReadOnly && this.referenceAttribute.canAddNewReference);
             this._setCanBrowseReference(hasReference && this.referenceAttribute.parent.isEditing && !this.referenceAttribute.isReadOnly && !this.referenceAttribute.selectInPlace);
         }
+
+        private _open(e: Event) {
+            this.referenceAttribute.getPersistentObject().then(po => {
+                if (po)
+                    this.referenceAttribute.service.hooks.onOpen(po, false, true);
+            });
+
+            e.preventDefault();
+        }
     }
 
     PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeReference, {

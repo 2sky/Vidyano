@@ -290,7 +290,7 @@ module Vidyano {
                             this._lastAuthTokenUpdate = createdRequest;
                         }
 
-                        if(result.session && this.application)
+                        if (result.session && this.application)
                             this.application._updateSession(result.session);
 
                         resolve(result);
@@ -2026,9 +2026,18 @@ module Vidyano {
                             this.parent.refreshFromResult(result);
 
                         resolve(true);
-                    }, e => reject(e));
+                    }, e => {
+                            reject(e);
+                        });
                 }
             }));
+        }
+
+        getPersistentObject(): Promise<Vidyano.PersistentObject> {
+            if (!this.objectId)
+                return Promise.resolve(null);
+
+            return this.parent.queueWork(() => this.service.getPersistentObject(this.parent, this.lookup.persistentObject.id, this.objectId));
         }
 
         _refreshFromResult(resultAttr: PersistentObjectAttribute) {
@@ -2531,7 +2540,7 @@ module Vidyano {
                 });
             };
 
-            if(immediate)
+            if (immediate)
                 return search();
             else
                 return this.queueWork(search, false);

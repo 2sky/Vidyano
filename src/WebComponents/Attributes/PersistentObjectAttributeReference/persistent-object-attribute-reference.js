@@ -91,6 +91,14 @@ var Vidyano;
                     this._setCanAddNewReference(hasReference && this.referenceAttribute.parent.isEditing && !this.referenceAttribute.isReadOnly && this.referenceAttribute.canAddNewReference);
                     this._setCanBrowseReference(hasReference && this.referenceAttribute.parent.isEditing && !this.referenceAttribute.isReadOnly && !this.referenceAttribute.selectInPlace);
                 };
+                PersistentObjectAttributeReference.prototype._open = function (e) {
+                    var _this = this;
+                    this.referenceAttribute.getPersistentObject().then(function (po) {
+                        if (po)
+                            _this.referenceAttribute.service.hooks.onOpen(po, false, true);
+                    });
+                    e.preventDefault();
+                };
                 return PersistentObjectAttributeReference;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeReference = PersistentObjectAttributeReference;
