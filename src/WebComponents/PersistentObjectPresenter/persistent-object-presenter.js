@@ -69,7 +69,7 @@ var Vidyano;
                 if (this.persistentObject) {
                     var persistentObject = new Vidyano.WebComponents.PersistentObject();
                     persistentObject.persistentObject = this.persistentObject;
-                    Polymer.dom(this).appendChild(persistentObject.asElement);
+                    Polymer.dom(this).appendChild(persistentObject);
                 }
                 this._setLoading(false);
             };

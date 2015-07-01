@@ -297,7 +297,7 @@
 
         private _computeCurrentRoute(mappedRoute: Route, path: string): AppRoute {
             var currentRoute = this.currentRoute;
-            
+
             // Find route and activate
             if (mappedRoute) {
                 var route = this._routeMap[hashBang + App._stripHashBang(mappedRoute.path)];
@@ -391,7 +391,7 @@
 
                 return dialog.show().then((result: QueryResultItem[]) => {
                     Polymer.dom(this.app).removeChild(dialog);
-                    
+
                     if (result && result.length > 0) {
                         args.selectedItems = result;
                         return args.executeServiceRequest();
@@ -440,11 +440,15 @@
         }
 
         onMessageDialog(title: string, message: string, ...actions: string[]): Promise<number> {
-            return this.app.showMessageDialog.apply(this.app, [{ title: title, message: message, actions: actions }]);
+            return this.app.showMessageDialog({ title: title, message: message, actions: actions });
         }
 
         onSessionExpired() {
             this.app.redirectToSignIn();
+        }
+
+        onNavigate(path: string, replaceCurrent: boolean = false) {
+            this.app.changePath(path, replaceCurrent);
         }
     }
 

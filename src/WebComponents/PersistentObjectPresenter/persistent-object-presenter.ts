@@ -7,7 +7,7 @@ module Vidyano.WebComponents {
 
         private _setLoading: (loading: boolean) => void;
         private _setError: (error: string) => void;
-        
+
         private _activating(e: CustomEvent, detail: { route: AppRoute; parameters: { id?: string; objectId?: string; fromActionId?: string; }; }) {
             this._setError(null);
 
@@ -72,7 +72,7 @@ module Vidyano.WebComponents {
             if (this.persistentObject) {
                 var persistentObject = new Vidyano.WebComponents.PersistentObject();
                 persistentObject.persistentObject = this.persistentObject;
-                Polymer.dom(this).appendChild(persistentObject.asElement);
+                Polymer.dom(this).appendChild(persistentObject);
             }
 
             this._setLoading(false);

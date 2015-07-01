@@ -115,9 +115,9 @@ var Vidyano;
                 this.$["items"].style.height = this.$["cells"].offsetHeight + "px";
                 return cells;
             };
-            PersistentObjectTab.prototype._autoArrange = function () {
+            PersistentObjectTab.prototype._autoArrange = function (force) {
                 var _this = this;
-                if (this.authored || this._lastArrangedColumnCount == this.columns)
+                if (!force && (this.authored || this._lastArrangedColumnCount == this.columns))
                     return;
                 var oldItems = Enumerable.from(this.items || []).memoize();
                 var items = [];
@@ -201,6 +201,9 @@ var Vidyano;
                 this._setRows(tabY + 1);
                 this._lastArrangedColumnCount = this.columns;
                 this._setItems(items);
+            };
+            PersistentObjectTab.prototype.update = function () {
+                this._autoArrange(true);
             };
             PersistentObjectTab.prototype._sizeChanged = function (e, detail) {
                 this._setWidth(detail.width);

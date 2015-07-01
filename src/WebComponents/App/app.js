@@ -388,10 +388,14 @@ var Vidyano;
                 for (var _i = 2; _i < arguments.length; _i++) {
                     actions[_i - 2] = arguments[_i];
                 }
-                return this.app.showMessageDialog.apply(this.app, [{ title: title, message: message, actions: actions }]);
+                return this.app.showMessageDialog({ title: title, message: message, actions: actions });
             };
             AppServiceHooks.prototype.onSessionExpired = function () {
                 this.app.redirectToSignIn();
+            };
+            AppServiceHooks.prototype.onNavigate = function (path, replaceCurrent) {
+                if (replaceCurrent === void 0) { replaceCurrent = false; }
+                this.app.changePath(path, replaceCurrent);
             };
             return AppServiceHooks;
         })(Vidyano.ServiceHooks);

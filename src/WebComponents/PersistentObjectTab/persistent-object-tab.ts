@@ -141,8 +141,8 @@ module Vidyano.WebComponents {
             return cells;
         }
 
-        private _autoArrange() {
-            if (this.authored || this._lastArrangedColumnCount == this.columns)
+        private _autoArrange(force?: boolean) {
+            if (!force && (this.authored || this._lastArrangedColumnCount == this.columns))
                 return;
 
             var oldItems = Enumerable.from(this.items || []).memoize();
@@ -247,6 +247,10 @@ module Vidyano.WebComponents {
             this._lastArrangedColumnCount = this.columns;
 
             this._setItems(items);
+        }
+
+        update() {
+            this._autoArrange(true);
         }
 
         private _sizeChanged(e: Event, detail: { width: number; height: number }) {

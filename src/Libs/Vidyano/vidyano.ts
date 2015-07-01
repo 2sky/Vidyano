@@ -2,6 +2,8 @@
 declare var Windows;
 
 module Vidyano {
+    "use strict";
+
     export enum NotificationType {
         Error,
         Notice,
@@ -290,7 +292,7 @@ module Vidyano {
                             this._lastAuthTokenUpdate = createdRequest;
                         }
 
-                        if (result.session && this.application)
+                        if (this.application)
                             this.application._updateSession(result.session);
 
                         resolve(result);
@@ -1224,6 +1226,13 @@ module Vidyano {
         onConstructAction(service: Service, action: Action): Action {
             return action;
         }
+
+        onMessageDialog(title: string, message: string, ...actions: string[]): Promise<number> {
+            return Promise.resolve(-1);
+        }
+
+        onNavigate(path: string, replaceCurrent: boolean = false) {
+        }
     }
 
     export class ExecuteActionArgs {
@@ -1370,6 +1379,7 @@ module Vidyano {
         attributes: PersistentObjectAttribute[];
         attributesByName: { [key: string]: PersistentObjectAttribute } = {};
         private _tabs: PersistentObjectTab[];
+        private _serviceTabs: any;
         queries: Query[];
         queriesByName: { [key: string]: Query } = {};
         isDeleted: boolean;
@@ -1416,12 +1426,11 @@ module Vidyano {
             var visibility = this.isNew ? "New" : "Read";
             var attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility == "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => attr.tab, attr => attr).select(tab => {
                 var groups = tab.orderBy(attr => attr.offset).groupBy(attr => attr.group, attr => attr).select(group => this.service.hooks.onConstructPersistentObjectAttributeGroup(service, group.key(), group, this)).memoize();
-                groups.toArray().forEach((attr, n) => {
-                    attr.index = n;
-                });
+                groups.toArray().forEach((g, n) => g.index = n);
                 var serviceTab = po.tabs[tab.key()];
                 return this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, tab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount);
             })).toArray() : [];
+            this._serviceTabs = po.tabs;
             this._tabs = attributeTabs.concat(Enumerable.from(this.queries).select(q => <PersistentObjectTab>this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
 
             if (this.isNew || this.stateBehavior == "OpenInEdit" || this.stateBehavior.indexOf("OpenInEdit") >= 0 || this.stateBehavior == "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
@@ -1444,6 +1453,11 @@ module Vidyano {
 
         get tabs(): PersistentObjectTab[] {
             return this._tabs;
+        }
+
+        set tabs(tabs: PersistentObjectTab[]) {
+            var oldTabs = this._tabs;
+            this.notifyPropertyChanged("tabs", this._tabs = tabs, oldTabs);
         }
 
         get isEditing(): boolean {
@@ -1589,13 +1603,82 @@ module Vidyano {
                 return;
             }
 
+            var visibilityChanged: PersistentObjectAttribute[] = [];
+            var isDirty = false;
             this.attributes.forEach(attr => {
                 var serviceAttr = resultAttributesEnum.firstOrDefault(a => a.id == attr.id);
-                if (serviceAttr)
-                    attr._refreshFromResult(serviceAttr);
+                if (serviceAttr && attr._refreshFromResult(serviceAttr))
+                    visibilityChanged.push(attr);
+
+                if (attr.isValueChanged)
+                    isDirty = true;
             });
 
-            this._setIsDirty(this.attributes.some(attr => attr.isValueChanged));
+            if (visibilityChanged.length > 0) {
+                var tabContentsChanged: PersistentObjectAttributeTab[] = [];
+                var tabsRemoved = false;
+                var tabsAdded = false;
+                visibilityChanged.forEach(attr => {
+                    var tab = <PersistentObjectAttributeTab>Enumerable.from(this.tabs).firstOrDefault(t => t instanceof PersistentObjectAttributeTab && t.key == attr.tab);
+                    if (!tab) {
+                        if (!attr.isVisible)
+                            return;
+
+                        var groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.group, Enumerable.from([attr]), this)];
+                        groups[0].index = 0;
+
+                        var serviceTab = this._serviceTabs[attr.tab];
+                        tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tab, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount);
+                        this.tabs.push(tab);
+                        tabsAdded = true;
+                        return;
+                    }
+
+                    var group = Enumerable.from(tab.groups).firstOrDefault(g => g.key == attr.group);
+                    if (!group && attr.isVisible) {
+                        group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.group, Enumerable.from([attr]), this);
+                        tab.groups.push(group);
+                        tab.groups.sort((g1, g2) => Enumerable.from(g1.attributes).min(a => a.offset) - Enumerable.from(g2.attributes).min(a => a.offset));
+                        tab.groups.forEach((g, n) => g.index = n);
+                    }
+                    else if (attr.isVisible) {
+                        if (group.attributes.indexOf(attr) < 0) {
+                            group.attributes.push(attr);
+                            group.attributes.sort((x, y) => x.offset - y.offset);
+                        }
+                    }
+                    else if (group) {
+                        group.attributes.remove(attr);
+
+                        if (group.attributes.length == 0) {
+                            tab.groups.remove(group);
+
+                            if (tab.groups.length == 0) {
+                                this.tabs.remove(tab);
+                                tabsRemoved = true;
+                                return;
+                            }
+                            else
+                                tab.groups.forEach((g, n) => g.index = n);
+                        }
+                    }
+
+                    if (tabContentsChanged.indexOf(tab) < 0)
+                        tabContentsChanged.push(tab);
+                });
+
+                tabContentsChanged.forEach(tab => tab.groups = tab.groups.slice());
+
+                if (tabsAdded) {
+                    var attrTabs = <PersistentObjectAttributeTab[]>this.tabs.filter(t => t instanceof PersistentObjectAttributeTab);
+                    attrTabs.sort((t1, t2) => Enumerable.from(t1.groups).selectMany(g => g.attributes).min(a => a.offset) - Enumerable.from(t2.groups).selectMany(g => g.attributes).min(a => a.offset));
+                    this.tabs = attrTabs.concat.apply(attrTabs, this.tabs.filter(t => t instanceof PersistentObjectQueryTab));
+                }
+                else if (tabsRemoved)
+                    this.tabs = this.tabs.slice();
+            }
+
+            this._setIsDirty(isDirty);
 
             if (this.isNew) {
                 this.objectId = result.objectId;
@@ -1919,11 +2002,16 @@ module Vidyano {
             return result;
         }
 
-        _refreshFromResult(resultAttr: PersistentObjectAttribute) {
+        _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean {
+            var visibilityChanged = false;
+
             this._setOptions(resultAttr._serviceOptions);
             this.isReadOnly = resultAttr.isReadOnly;
             this.isRequired = resultAttr.isRequired;
-            this.visibility = resultAttr.visibility;
+            if (this.visibility != resultAttr.visibility) {
+                this.visibility = resultAttr.visibility;
+                visibilityChanged = true;
+            }
             if ((!this.isReadOnly && this._refreshValue !== undefined ? this._refreshValue : this.value) != resultAttr.value) {
                 var oldDisplayValue = this.displayValue;
                 var oldValue = this.value;
@@ -1936,6 +2024,8 @@ module Vidyano {
             this.triggersRefresh = resultAttr.triggersRefresh;
             this.isValueChanged = resultAttr.isValueChanged;
             this.validationError = resultAttr.validationError;
+
+            return visibilityChanged;
         }
 
         protected _triggerAttributeRefresh(): Promise<any> {
@@ -2151,7 +2241,7 @@ module Vidyano {
     }
 
     export class PersistentObjectAttributeTab extends PersistentObjectTab {
-        constructor(service: Service, public groups: PersistentObjectAttributeGroup[], public key: string, public id: string, public name: string, private _layout: any, po: PersistentObject, public columnCount: number) {
+        constructor(service: Service, private _groups: PersistentObjectAttributeGroup[], public key: string, public id: string, public name: string, private _layout: any, po: PersistentObject, public columnCount: number) {
             super(service, StringEx.isNullOrEmpty(key) ? po.label : key, po, po);
             this.tabGroupIndex = 0;
         }
@@ -2162,7 +2252,16 @@ module Vidyano {
 
         private _setLayout(layout: any) {
             var oldLayout = this._layout;
-            this.notifyPropertyChanged("isVisible", this._layout = layout, oldLayout);
+            this.notifyPropertyChanged("layout", this._layout = layout, oldLayout);
+        }
+
+        get groups(): PersistentObjectAttributeGroup[] {
+            return this._groups;
+        }
+
+        set groups(groups: PersistentObjectAttributeGroup[]) {
+            var oldGroups = this._groups;
+            this.notifyPropertyChanged("groups", this._groups = groups, oldGroups);
         }
 
         saveLayout(layout: any): Promise<any> {

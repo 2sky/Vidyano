@@ -15,6 +15,10 @@ var Vidyano;
                 function PersistentObjectAttributeKeyValueList() {
                     _super.apply(this, arguments);
                 }
+                PersistentObjectAttributeKeyValueList.prototype._valueChanged = function (newValue) {
+                    if (this.attribute && newValue != this.attribute.value)
+                        this.attribute.setValue(newValue, true);
+                };
                 return PersistentObjectAttributeKeyValueList;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeKeyValueList = PersistentObjectAttributeKeyValueList;

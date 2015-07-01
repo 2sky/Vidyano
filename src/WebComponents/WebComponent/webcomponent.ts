@@ -327,6 +327,9 @@
 
                     var properties = source.toArray();
                     wcPrototype[methodName] = function (sourceObj: any, attached: boolean) {
+                        if (sourceObj == null)
+                            return;
+
                         if (!this._forwardObservers)
                             this._forwardObservers = [];
 

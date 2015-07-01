@@ -15,6 +15,10 @@ var Vidyano;
                 function PersistentObjectAttributeDropDown() {
                     _super.apply(this, arguments);
                 }
+                PersistentObjectAttributeDropDown.prototype._valueChanged = function (newValue) {
+                    if (this.attribute && newValue != this.attribute.value)
+                        this.attribute.setValue(newValue, true);
+                };
                 return PersistentObjectAttributeDropDown;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeDropDown = PersistentObjectAttributeDropDown;
