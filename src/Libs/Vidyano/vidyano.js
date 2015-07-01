@@ -2411,7 +2411,12 @@ var Vidyano;
         };
         QueryResultItem.prototype.getPersistentObject = function () {
             var _this = this;
-            return this.query.queueWork(function () { return _this.service.getPersistentObject(_this.query.parent, _this.query.persistentObject.id, _this.id); }, false);
+            return this.query.queueWork(function () {
+                return _this.service.getPersistentObject(_this.query.parent, _this.query.persistentObject.id, _this.id).then(function (po) {
+                    po.ownerQuery = _this.query;
+                    return po;
+                });
+            }, false);
         };
         QueryResultItem.prototype._toServiceObject = function () {
             var result = this.copyProperties(["id"]);

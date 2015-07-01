@@ -2780,7 +2780,13 @@ module Vidyano {
         }
 
         getPersistentObject(): Promise<PersistentObject> {
-            return this.query.queueWork(() => this.service.getPersistentObject(this.query.parent, this.query.persistentObject.id, this.id), false);
+            return this.query.queueWork(() => {
+                return this.service.getPersistentObject(this.query.parent, this.query.persistentObject.id, this.id).then(po => {
+                    po.ownerQuery = this.query;
+
+                    return po;
+                });
+            }, false);
         }
 
         _toServiceObject() {
