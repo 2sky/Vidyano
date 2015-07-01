@@ -44,7 +44,7 @@ module Vidyano.WebComponents {
     WebComponent.register(PersistentObjectAttributePresenter, WebComponents, "vi", {
         properties: {
             attribute: Object,
-            nolabel: {
+            noLabel: {
                 type: Boolean,
                 reflectToAttribute: true
             }

@@ -9,7 +9,6 @@ vi-persistent-object-attribute-presenter {
     position: relative;
     font-size: 13px;
     white-space: nowrap;
-    padding-top: @h5;
     font-size: 13px;
     color: #333;
 
@@ -23,6 +22,7 @@ vi-persistent-object-attribute-presenter {
         overflow: hidden;
         text-overflow: ellipsis;
         letter-spacing: 0.5px;
+        padding-top: @h5;
     }
 
     label + * {
@@ -30,7 +30,7 @@ vi-persistent-object-attribute-presenter {
         .layout-horizontal();
     }
 
-    &[nolabel] {
+    &[no-label] {
         label {
             display: none;
         }
@@ -39,7 +39,7 @@ vi-persistent-object-attribute-presenter {
     a {
         text-decoration: none;
 
-        .colorize( {
+        .colorize({
             color: @@color;
             fill: @@color;
 

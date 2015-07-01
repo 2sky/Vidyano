@@ -117,10 +117,13 @@ var Vidyano;
                     this.masterWidth = (px + detail.ddx) + "px";
                 }
                 else if (detail.state == "start") {
+                    this.app.classList.add("dragging");
                     if (this.masterWidth.endsWith("%"))
                         this.masterWidth = (this.asElement.offsetWidth * (parseInt(this.masterWidth) / 100)).toString() + "px";
                 }
                 else if (detail.state == "end") {
+                    this.app.classList.remove("dragging");
+                    window.getSelection().removeAllRanges();
                     if (this.masterWidth.endsWith("px")) {
                         var px = parseInt(this.masterWidth);
                         this.masterWidth = (100 / this.asElement.offsetWidth * px).toString() + "%";

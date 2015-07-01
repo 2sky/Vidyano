@@ -50,6 +50,14 @@ vi-app {
     .vertical.layout .flex {
         flex-basis: 0.000000001px;
     }
+
+    &.dragging {
+        .noSelection();
+
+        * {
+            .noSelection() !important;
+        }
+    }
 }
 
 vi-app-route {

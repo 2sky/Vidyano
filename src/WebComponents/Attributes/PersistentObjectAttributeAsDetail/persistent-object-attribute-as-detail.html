@@ -14,7 +14,7 @@
                         <template is="dom-repeat" items="{{attribute.details.columns}}" as="column" filter="isVisible">
                             <td>
                                 <template is="dom-if" if="{{editing}}">
-                                    <vi-persistent-object-attribute-presenter nolabel attribute="{{getAttributeForColumn(obj, column)}}"></vi-persistent-object-attribute-presenter>
+                                    <vi-persistent-object-attribute-presenter no-label attribute="{{getAttributeForColumn(obj, column)}}"></vi-persistent-object-attribute-presenter>
                                 </template>
                                 <template is="dom-if" if="{{!editing}}">
                                     <span>{{getDisplayValue(obj, column)}}</span>
