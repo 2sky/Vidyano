@@ -2899,6 +2899,38 @@ var Vidyano;
             return ExportToExcel;
         })(Action);
         Actions.ExportToExcel = ExportToExcel;
+        var ShowHelp = (function (_super) {
+            __extends(ShowHelp, _super);
+            function ShowHelp(service, definition, owner) {
+                _super.call(this, service, definition, owner);
+            }
+            ShowHelp.prototype._onExecute = function (option, parameters, selectedItems) {
+                var _this = this;
+                if (option === void 0) { option = -1; }
+                var owner = this.query ? this.query.persistentObject : this.parent;
+                var helpWindow = window.open();
+                return this.service.executeAction("PersistentObject.ShowHelp", owner, null, null).then(function (po) {
+                    if (po != null) {
+                        if (po.fullTypeName == "Vidyano.RegisteredStream" || po.getAttributeValue("Type") == "0") {
+                            helpWindow.close();
+                            _this.service._getStream(po);
+                        }
+                        else {
+                            helpWindow.location = po.getAttributeValue("Document");
+                            helpWindow.focus();
+                        }
+                    }
+                    else
+                        helpWindow.close();
+                    return null;
+                }, function (e) {
+                    helpWindow.close();
+                    _this.owner.setNotification(e);
+                });
+            };
+            return ShowHelp;
+        })(Action);
+        Actions.ShowHelp = ShowHelp;
     })(Actions = Vidyano.Actions || (Vidyano.Actions = {}));
     var ActionDefinition = (function () {
         function ActionDefinition(service, item) {

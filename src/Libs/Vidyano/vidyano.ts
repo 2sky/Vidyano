@@ -3272,6 +3272,34 @@ module Vidyano {
                 return Promise.resolve(null);
             }
         }
+
+        export class ShowHelp extends Action {
+            constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions) {
+                super(service, definition, owner);
+            }
+
+            _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
+                var owner = this.query ? this.query.persistentObject : this.parent;
+                var helpWindow = window.open();
+                return this.service.executeAction("PersistentObject.ShowHelp", owner, null, null).then(po => {
+                    if (po != null) {
+                        if (po.fullTypeName == "Vidyano.RegisteredStream" || po.getAttributeValue("Type") == "0") {
+                            helpWindow.close();
+                            this.service._getStream(po);
+                        } else {
+                            helpWindow.location = po.getAttributeValue("Document");
+                            helpWindow.focus();
+                        }
+                    }
+                    else
+                        helpWindow.close();
+                    return null;
+                }, e => {
+                    helpWindow.close();
+                    this.owner.setNotification(e);
+                });
+            }
+        }
     }
 
     export class ActionDefinition {
