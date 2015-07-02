@@ -6,6 +6,7 @@ var __extends = this.__extends || function (d, b) {
 };
 var Vidyano;
 (function (Vidyano) {
+    "use strict";
     (function (NotificationType) {
         NotificationType[NotificationType["Error"] = 0] = "Error";
         NotificationType[NotificationType["Notice"] = 1] = "Notice";
@@ -227,7 +228,7 @@ var Vidyano;
                             _this.authToken = result.authToken;
                             _this._lastAuthTokenUpdate = createdRequest;
                         }
-                        if (result.session && _this.application)
+                        if (_this.application)
                             _this.application._updateSession(result.session);
                         resolve(result);
                     }
@@ -1065,6 +1066,16 @@ var Vidyano;
         ServiceHooks.prototype.onConstructAction = function (service, action) {
             return action;
         };
+        ServiceHooks.prototype.onMessageDialog = function (title, message) {
+            var actions = [];
+            for (var _i = 2; _i < arguments.length; _i++) {
+                actions[_i - 2] = arguments[_i];
+            }
+            return Promise.resolve(-1);
+        };
+        ServiceHooks.prototype.onNavigate = function (path, replaceCurrent) {
+            if (replaceCurrent === void 0) { replaceCurrent = false; }
+        };
         return ServiceHooks;
     })();
     Vidyano.ServiceHooks = ServiceHooks;
@@ -1225,12 +1236,11 @@ var Vidyano;
             var visibility = this.isNew ? "New" : "Read";
             var attributeTabs = po.tabs ? Enumerable.from(Enumerable.from(this.attributes).where(function (attr) { return attr.visibility == "Always" || attr.visibility.contains(visibility); }).orderBy(function (attr) { return attr.offset; }).groupBy(function (attr) { return attr.tab; }, function (attr) { return attr; }).select(function (tab) {
                 var groups = tab.orderBy(function (attr) { return attr.offset; }).groupBy(function (attr) { return attr.group; }, function (attr) { return attr; }).select(function (group) { return _this.service.hooks.onConstructPersistentObjectAttributeGroup(service, group.key(), group, _this); }).memoize();
-                groups.toArray().forEach(function (attr, n) {
-                    attr.index = n;
-                });
+                groups.toArray().forEach(function (g, n) { return g.index = n; });
                 var serviceTab = po.tabs[tab.key()];
                 return _this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, tab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, _this, serviceTab.columnCount);
             })).toArray() : [];
+            this._serviceTabs = po.tabs;
             this._tabs = attributeTabs.concat(Enumerable.from(this.queries).select(function (q) { return _this.service.hooks.onConstructPersistentObjectQueryTab(_this.service, q); }).toArray());
             if (this.isNew || this.stateBehavior == "OpenInEdit" || this.stateBehavior.indexOf("OpenInEdit") >= 0 || this.stateBehavior == "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
                 this.beginEdit();
@@ -1260,6 +1270,10 @@ var Vidyano;
         Object.defineProperty(PersistentObject.prototype, "tabs", {
             get: function () {
                 return this._tabs;
+            },
+            set: function (tabs) {
+                var oldTabs = this._tabs;
+                this.notifyPropertyChanged("tabs", this._tabs = tabs, oldTabs);
             },
             enumerable: true,
             configurable: true
@@ -1392,12 +1406,71 @@ var Vidyano;
                 this.setNotification("Could not refresh from server result. One or more attributes don't match.", NotificationType.Error);
                 return;
             }
+            var visibilityChanged = [];
+            var isDirty = false;
             this.attributes.forEach(function (attr) {
                 var serviceAttr = resultAttributesEnum.firstOrDefault(function (a) { return a.id == attr.id; });
-                if (serviceAttr)
-                    attr._refreshFromResult(serviceAttr);
+                if (serviceAttr && attr._refreshFromResult(serviceAttr))
+                    visibilityChanged.push(attr);
+                if (attr.isValueChanged)
+                    isDirty = true;
             });
-            this._setIsDirty(this.attributes.some(function (attr) { return attr.isValueChanged; }));
+            if (visibilityChanged.length > 0) {
+                var tabContentsChanged = [];
+                var tabsRemoved = false;
+                var tabsAdded = false;
+                visibilityChanged.forEach(function (attr) {
+                    var tab = Enumerable.from(_this.tabs).firstOrDefault(function (t) { return t instanceof PersistentObjectAttributeTab && t.key == attr.tab; });
+                    if (!tab) {
+                        if (!attr.isVisible)
+                            return;
+                        var groups = [_this.service.hooks.onConstructPersistentObjectAttributeGroup(_this.service, attr.group, Enumerable.from([attr]), _this)];
+                        groups[0].index = 0;
+                        var serviceTab = _this._serviceTabs[attr.tab];
+                        tab = _this.service.hooks.onConstructPersistentObjectAttributeTab(_this.service, Enumerable.from(groups), attr.tab, serviceTab.id, serviceTab.name, serviceTab.layout, _this, serviceTab.columnCount);
+                        _this.tabs.push(tab);
+                        tabsAdded = true;
+                        return;
+                    }
+                    var group = Enumerable.from(tab.groups).firstOrDefault(function (g) { return g.key == attr.group; });
+                    if (!group && attr.isVisible) {
+                        group = _this.service.hooks.onConstructPersistentObjectAttributeGroup(_this.service, attr.group, Enumerable.from([attr]), _this);
+                        tab.groups.push(group);
+                        tab.groups.sort(function (g1, g2) { return Enumerable.from(g1.attributes).min(function (a) { return a.offset; }) - Enumerable.from(g2.attributes).min(function (a) { return a.offset; }); });
+                        tab.groups.forEach(function (g, n) { return g.index = n; });
+                    }
+                    else if (attr.isVisible) {
+                        if (group.attributes.indexOf(attr) < 0) {
+                            group.attributes.push(attr);
+                            group.attributes.sort(function (x, y) { return x.offset - y.offset; });
+                        }
+                    }
+                    else if (group) {
+                        group.attributes.remove(attr);
+                        if (group.attributes.length == 0) {
+                            tab.groups.remove(group);
+                            if (tab.groups.length == 0) {
+                                _this.tabs.remove(tab);
+                                tabsRemoved = true;
+                                return;
+                            }
+                            else
+                                tab.groups.forEach(function (g, n) { return g.index = n; });
+                        }
+                    }
+                    if (tabContentsChanged.indexOf(tab) < 0)
+                        tabContentsChanged.push(tab);
+                });
+                tabContentsChanged.forEach(function (tab) { return tab.groups = tab.groups.slice(); });
+                if (tabsAdded) {
+                    var attrTabs = this.tabs.filter(function (t) { return t instanceof PersistentObjectAttributeTab; });
+                    attrTabs.sort(function (t1, t2) { return Enumerable.from(t1.groups).selectMany(function (g) { return g.attributes; }).min(function (a) { return a.offset; }) - Enumerable.from(t2.groups).selectMany(function (g) { return g.attributes; }).min(function (a) { return a.offset; }); });
+                    this.tabs = attrTabs.concat.apply(attrTabs, this.tabs.filter(function (t) { return t instanceof PersistentObjectQueryTab; }));
+                }
+                else if (tabsRemoved)
+                    this.tabs = this.tabs.slice();
+            }
+            this._setIsDirty(isDirty);
             if (this.isNew) {
                 this.objectId = result.objectId;
                 this.isNew = result.isNew;
@@ -1667,10 +1740,14 @@ var Vidyano;
             return result;
         };
         PersistentObjectAttribute.prototype._refreshFromResult = function (resultAttr) {
+            var visibilityChanged = false;
             this._setOptions(resultAttr._serviceOptions);
             this.isReadOnly = resultAttr.isReadOnly;
             this.isRequired = resultAttr.isRequired;
-            this.visibility = resultAttr.visibility;
+            if (this.visibility != resultAttr.visibility) {
+                this.visibility = resultAttr.visibility;
+                visibilityChanged = true;
+            }
             if ((!this.isReadOnly && this._refreshValue !== undefined ? this._refreshValue : this.value) != resultAttr.value) {
                 var oldDisplayValue = this.displayValue;
                 var oldValue = this.value;
@@ -1681,6 +1758,7 @@ var Vidyano;
             this.triggersRefresh = resultAttr.triggersRefresh;
             this.isValueChanged = resultAttr.isValueChanged;
             this.validationError = resultAttr.validationError;
+            return visibilityChanged;
         };
         PersistentObjectAttribute.prototype._triggerAttributeRefresh = function () {
             this._queueRefresh = false;
@@ -1874,9 +1952,9 @@ var Vidyano;
     Vidyano.PersistentObjectTab = PersistentObjectTab;
     var PersistentObjectAttributeTab = (function (_super) {
         __extends(PersistentObjectAttributeTab, _super);
-        function PersistentObjectAttributeTab(service, groups, key, id, name, _layout, po, columnCount) {
+        function PersistentObjectAttributeTab(service, _groups, key, id, name, _layout, po, columnCount) {
             _super.call(this, service, StringEx.isNullOrEmpty(key) ? po.label : key, po, po);
-            this.groups = groups;
+            this._groups = _groups;
             this.key = key;
             this.id = id;
             this.name = name;
@@ -1893,8 +1971,19 @@ var Vidyano;
         });
         PersistentObjectAttributeTab.prototype._setLayout = function (layout) {
             var oldLayout = this._layout;
-            this.notifyPropertyChanged("isVisible", this._layout = layout, oldLayout);
+            this.notifyPropertyChanged("layout", this._layout = layout, oldLayout);
         };
+        Object.defineProperty(PersistentObjectAttributeTab.prototype, "groups", {
+            get: function () {
+                return this._groups;
+            },
+            set: function (groups) {
+                var oldGroups = this._groups;
+                this.notifyPropertyChanged("groups", this._groups = groups, oldGroups);
+            },
+            enumerable: true,
+            configurable: true
+        });
         PersistentObjectAttributeTab.prototype.saveLayout = function (layout) {
             var _this = this;
             return this.service.executeAction("System.SaveTabLayout", null, null, null, { "Id": this.id, "Layout": layout ? JSON.stringify(layout) : "" }).then(function (_) {

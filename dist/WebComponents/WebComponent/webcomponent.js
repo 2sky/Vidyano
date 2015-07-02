@@ -215,6 +215,8 @@ var Vidyano;
                         var properties = source.toArray();
                         wcPrototype[methodName] = function (sourceObj, attached) {
                             var _this = this;
+                            if (sourceObj == null)
+                                return;
                             if (!this._forwardObservers)
                                 this._forwardObservers = [];
                             while (this._forwardObservers.length > 0)
