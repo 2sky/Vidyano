@@ -80,9 +80,5 @@
             inputtype: String,
             maxlength: Number,
         },
-    },
-        ctor => {
-            Attributes["PersistentObjectAttributeGuid"] = ctor;
-            Attributes["PersistentObjectAttributeNullableGuid"] = ctor;
-        });
+    });
 }

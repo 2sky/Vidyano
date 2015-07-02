@@ -1399,6 +1399,7 @@ var Vidyano;
         };
         PersistentObject.prototype.refreshFromResult = function (result) {
             var _this = this;
+            this._serviceTabs = result._serviceTabs;
             this.setNotification(result.notification, result.notificationType);
             var resultAttributesEnum = Enumerable.from(result.attributes);
             if (this.attributes.length != result.attributes.length ||
@@ -1847,10 +1848,11 @@ var Vidyano;
         PersistentObjectAttributeWithReference.prototype._refreshFromResult = function (resultAttr) {
             var resultAttrWithRef = resultAttr;
             this.objectId = resultAttrWithRef.objectId;
-            _super.prototype._refreshFromResult.call(this, resultAttr);
+            var visibilityChanged = _super.prototype._refreshFromResult.call(this, resultAttr);
             this.displayAttribute = resultAttrWithRef.displayAttribute;
             this.canAddNewReference = resultAttrWithRef.canAddNewReference;
             this.selectInPlace = resultAttrWithRef.selectInPlace;
+            return visibilityChanged;
         };
         return PersistentObjectAttributeWithReference;
     })(PersistentObjectAttribute);
@@ -1888,7 +1890,7 @@ var Vidyano;
         PersistentObjectAttributeAsDetail.prototype._refreshFromResult = function (resultAttr) {
             var _this = this;
             var asDetailAttr = resultAttr;
-            _super.prototype._refreshFromResult.call(this, resultAttr);
+            var visibilityChanged = _super.prototype._refreshFromResult.call(this, resultAttr);
             if (this.objects != null && asDetailAttr.objects != null) {
                 this.objects = asDetailAttr.objects.map(function (obj) {
                     obj.parent = _this.parent;
@@ -1896,6 +1898,7 @@ var Vidyano;
                     return obj;
                 });
             }
+            return visibilityChanged;
         };
         PersistentObjectAttributeAsDetail.prototype.onChanged = function (allowRefresh) {
             var _this = this;

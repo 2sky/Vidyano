@@ -55,8 +55,6 @@ var Vidyano;
                 listeners: {
                     "tap": "toggle"
                 }
-            }, function (ctor) {
-                Attributes["PersistentObjectAttributeYesNo"] = ctor;
             });
             Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeNullableBoolean, {
                 properties: {

@@ -22,9 +22,7 @@ var Vidyano;
                 return PersistentObjectAttributeDropDown;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeDropDown = PersistentObjectAttributeDropDown;
-            Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeDropDown, {}, function (ctor) {
-                Attributes["PersistentObjectAttributeEnum"] = ctor;
-            });
+            Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeDropDown);
         })(Attributes = WebComponents.Attributes || (WebComponents.Attributes = {}));
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

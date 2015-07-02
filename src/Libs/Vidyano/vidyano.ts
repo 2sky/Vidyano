@@ -1594,6 +1594,7 @@ module Vidyano {
         }
 
         refreshFromResult(result: PersistentObject) {
+            this._serviceTabs = result._serviceTabs;
             this.setNotification(result.notification, result.notificationType);
 
             var resultAttributesEnum = Enumerable.from(result.attributes);
@@ -2130,15 +2131,17 @@ module Vidyano {
             return this.parent.queueWork(() => this.service.getPersistentObject(this.parent, this.lookup.persistentObject.id, this.objectId));
         }
 
-        _refreshFromResult(resultAttr: PersistentObjectAttribute) {
+        _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean {
             var resultAttrWithRef = <PersistentObjectAttributeWithReference>resultAttr;
             this.objectId = resultAttrWithRef.objectId;
 
-            super._refreshFromResult(resultAttr);
+            var visibilityChanged = super._refreshFromResult(resultAttr);
 
             this.displayAttribute = resultAttrWithRef.displayAttribute;
             this.canAddNewReference = resultAttrWithRef.canAddNewReference;
             this.selectInPlace = resultAttrWithRef.selectInPlace;
+
+            return visibilityChanged;
         }
     }
 
@@ -2179,10 +2182,10 @@ module Vidyano {
             this.lookupAttribute = attr.lookupAttribute;
         }
 
-        _refreshFromResult(resultAttr: PersistentObjectAttribute) {
+        _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean {
             var asDetailAttr = <PersistentObjectAttributeAsDetail>resultAttr;
 
-            super._refreshFromResult(resultAttr);
+            var visibilityChanged = super._refreshFromResult(resultAttr);
 
             if (this.objects != null && asDetailAttr.objects != null) {
                 this.objects = asDetailAttr.objects.map(obj => {
@@ -2191,6 +2194,8 @@ module Vidyano {
                     return obj;
                 });
             }
+
+            return visibilityChanged;
         }
 
         onChanged(allowRefresh: boolean): Promise<any> {

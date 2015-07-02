@@ -1,4 +1,9 @@
-﻿<dom-module id="vi-app">
+﻿<link rel="import" href="../AttachedNotifier/attached-notifier.html" />
+<link rel="import" href="../SizeTracker/size-tracker.html" />
+<link rel="import" href="../Spinner/spinner.html" />
+<link rel="import" href="../Resource/resource.html" />
+
+<dom-module id="vi-app">
     <template>
         <template is="dom-if" if="{{initializing}}" restamp>
             <vi-spinner></vi-spinner>

@@ -79,9 +79,6 @@ var Vidyano;
                     inputtype: String,
                     maxlength: Number,
                 },
-            }, function (ctor) {
-                Attributes["PersistentObjectAttributeGuid"] = ctor;
-                Attributes["PersistentObjectAttributeNullableGuid"] = ctor;
             });
         })(Attributes = WebComponents.Attributes || (WebComponents.Attributes = {}));
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

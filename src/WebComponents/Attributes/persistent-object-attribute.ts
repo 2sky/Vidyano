@@ -33,6 +33,14 @@
 
 module Vidyano.WebComponents.Attributes {
     export class PersistentObjectAttribute extends WebComponent {
+        static typeSynonyms: { [key: string]: string[]; } = {
+            "Boolean": ["YesNo"],
+            "DropDown": ["Enum"],
+            "MultiLineString": ["MultiString"],
+            "String": ["Guid", "NullableGuid"],
+            "User": ["NullableUser"]
+        };
+
         attribute: Vidyano.PersistentObjectAttribute;
         value: any;
         editing: boolean;
@@ -105,6 +113,25 @@ module Vidyano.WebComponents.Attributes {
             info.forwardObservers.push("_editingChanged(attribute.parent.isEditing)");
             info.forwardObservers.push("_attributeValueChanged(attribute.value)");
 
+            var synonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[WebComponent.getName(obj).replace("PersistentObjectAttribute", "")];
+            if (synonyms) {
+                var synonymFinalizer = (ctor: any) => {
+                    synonyms.forEach(ss => {
+                        Attributes["PersistentObjectAttribute" + ss] = ctor;
+                    });
+                };
+
+                if (finalized) {
+                    var oldFinalized = finalized;
+                    finalized = (ctor: any) => {
+                        oldFinalized(ctor);
+                        synonymFinalizer(ctor);
+                    };
+                }
+                else
+                    finalized = synonymFinalizer;
+            }
+
             WebComponent.register(obj, Attributes, "vi", info, finalized);
         }
     }
@@ -124,7 +151,7 @@ module Vidyano.WebComponents.Attributes {
         private _showError() {
             if (!this.attribute || !this.attribute.validationError)
                 return;
-            
+
             this.app.showMessageDialog({
                 title: this.app.translateMessage(NotificationType[NotificationType.Error]),
                 titleIcon: "Icon_Notification_Error",

@@ -1,5 +1,6 @@
 module Vidyano.WebComponents {
     export class PersistentObjectPresenter extends WebComponent {
+        private static _persistentObjectComponentLoader: Promise<any>;
         private _cacheEntry: PersistentObjectAppCacheEntry;
         persistentObjectId: string;
         persistentObjectObjectId: string;
@@ -65,17 +66,37 @@ module Vidyano.WebComponents {
             return !StringEx.isNullOrEmpty(error);
         }
 
-        private _persistentObjectChanged(newPersistentObject: Vidyano.PersistentObject, oldPersistentObject: Vidyano.PersistentObject) {
+        private _persistentObjectChanged(persistentObject: Vidyano.PersistentObject, oldPersistentObject: Vidyano.PersistentObject) {
             if (oldPersistentObject)
                 this.empty();
 
-            if (this.persistentObject) {
-                var persistentObject = new Vidyano.WebComponents.PersistentObject();
-                persistentObject.persistentObject = this.persistentObject;
-                Polymer.dom(this).appendChild(persistentObject);
-            }
+            if (persistentObject) {
+                if (!Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader) {
+                    Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader = new Promise(resolve => {
+                        this.importHref(this.resolveUrl("../PersistentObject/persistent-object.html"), e => {
+                            resolve(true);
+                        }, err => {
+                                console.error(err);
+                                resolve(false);
+                            });
+                    });
+                }
 
-            this._setLoading(false);
+                this._renderPersistentObject(persistentObject);
+            }
+        }
+
+        private _renderPersistentObject(persistentObject: Vidyano.PersistentObject) {
+            Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader.then(() => {
+                if (persistentObject !== this.persistentObject)
+                    return;
+
+                var persistentObjectComponent = new Vidyano.WebComponents.PersistentObject();
+                persistentObjectComponent.persistentObject = persistentObject;
+                Polymer.dom(this).appendChild(persistentObjectComponent);
+
+                this._setLoading(false);
+            });
         }
     }
 

@@ -407,13 +407,5 @@
             if (typeof finalized == 'function')
                 finalized(ns[name]);
         }
-
-        //x TODO: REMOVE
-        static registerTODO(obj: any, ns?: any, prefix: string = "vi", properties: PolymerProperties = {}, computed: { [name: string]: string } = {}, finalized?: (ctor: any) => void) {
-        }
-
-        //x TODO: REMOVE
-        static registerLightTODO(obj: any, ns?: any, prefix: string = "vi", publish: any = {}, computed: { [name: string]: string } = {}, finalized?: (ctor: any) => void) {
-        }
     }
 }

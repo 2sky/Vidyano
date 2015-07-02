@@ -13,10 +13,11 @@ var Vidyano;
             function QueryItemsPresenter() {
                 _super.apply(this, arguments);
             }
-            QueryItemsPresenter.prototype._queryChanged = function (newQuery, oldQuery) {
+            QueryItemsPresenter.prototype._queryChanged = function (query, oldQuery) {
+                var _this = this;
                 if (oldQuery)
                     this.empty();
-                if (this.query) {
+                if (query) {
                     var child;
                     //! TODO Custom templates for queries
                     //var queryTemplateName = "QUERY." + this.query.name;
@@ -26,10 +27,28 @@ var Vidyano;
                     //    this.appendChild(resource);
                     //}
                     //else {
-                    var grid = new Vidyano.WebComponents.QueryGrid();
-                    grid.query = this.query;
-                    this.appendChild(grid);
+                    if (!Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader) {
+                        Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader = new Promise(function (resolve) {
+                            _this.importHref(_this.resolveUrl("../QueryGrid/query-grid.html"), function (e) {
+                                resolve(true);
+                            }, function (err) {
+                                console.error(err);
+                                resolve(false);
+                            });
+                        });
+                    }
+                    this._renderGrid(query);
                 }
+            };
+            QueryItemsPresenter.prototype._renderGrid = function (query) {
+                var _this = this;
+                Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader.then(function () {
+                    if (query !== _this.query)
+                        return;
+                    var grid = new Vidyano.WebComponents.QueryGrid();
+                    grid.query = _this.query;
+                    _this.appendChild(grid);
+                });
             };
             return QueryItemsPresenter;
         })(WebComponents.WebComponent);

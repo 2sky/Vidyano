@@ -38,9 +38,7 @@ module Vidyano.WebComponents.Attributes {
         listeners: {
             "tap": "toggle"
         }
-    }, ctor => {
-            Attributes["PersistentObjectAttributeYesNo"] = ctor;
-        });
+    });
 
     PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeNullableBoolean, {
         properties: {

@@ -53,7 +53,5 @@ module Vidyano.WebComponents.Attributes {
                 computed: "_computeCanBrowseReference(attribute.isReadOnly)",
             },
         }
-    }, ctor => {
-            Attributes["PersistentObjectAttributeNullableUser"] = ctor;
-        });
+    });
 }

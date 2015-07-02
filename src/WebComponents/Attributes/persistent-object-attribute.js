@@ -104,7 +104,31 @@ var Vidyano;
                     info.forwardObservers.push("_optionsChanged(attribute.options)");
                     info.forwardObservers.push("_editingChanged(attribute.parent.isEditing)");
                     info.forwardObservers.push("_attributeValueChanged(attribute.value)");
+                    var synonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[WebComponents.WebComponent.getName(obj).replace("PersistentObjectAttribute", "")];
+                    if (synonyms) {
+                        var synonymFinalizer = function (ctor) {
+                            synonyms.forEach(function (ss) {
+                                Attributes["PersistentObjectAttribute" + ss] = ctor;
+                            });
+                        };
+                        if (finalized) {
+                            var oldFinalized = finalized;
+                            finalized = function (ctor) {
+                                oldFinalized(ctor);
+                                synonymFinalizer(ctor);
+                            };
+                        }
+                        else
+                            finalized = synonymFinalizer;
+                    }
                     WebComponents.WebComponent.register(obj, Attributes, "vi", info, finalized);
+                };
+                PersistentObjectAttribute.typeSynonyms = {
+                    "Boolean": ["YesNo"],
+                    "DropDown": ["Enum"],
+                    "MultiLineString": ["MultiString"],
+                    "String": ["Guid", "NullableGuid"],
+                    "User": ["NullableUser"]
                 };
                 return PersistentObjectAttribute;
             })(WebComponents.WebComponent);

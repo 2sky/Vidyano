@@ -1,5 +1,6 @@
 module Vidyano.WebComponents {
     export class QueryPresenter extends WebComponent {
+        private static _queryComponentLoader: Promise<any>;
         private _cacheEntry: QueryAppCacheEntry;
         queryId: string;
         query: Vidyano.Query;
@@ -44,15 +45,37 @@ module Vidyano.WebComponents {
                 this.query = null;
         }
 
-        private _queryChanged(newQuery: Vidyano.Query, oldQuery: Vidyano.Query) {
+        private _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
             if (oldQuery)
                 this.empty();
 
-            if (this.query) {
-                var query = new Vidyano.WebComponents.Query();
-                query.query = this.query;
-                Polymer.dom(this).appendChild(query);
+            if (query) {
+                if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader) {
+                    Vidyano.WebComponents.QueryPresenter._queryComponentLoader = new Promise(resolve => {
+                        this.importHref(this.resolveUrl("../Query/query.html"), e => {
+                            resolve(true);
+                        }, err => {
+                                console.error(err);
+                                resolve(false);
+                            });
+                    });
+                }
+
+                this._renderQuery(query);
             }
+        }
+
+        private _renderQuery(query: Vidyano.Query) {
+            Vidyano.WebComponents.QueryPresenter._queryComponentLoader.then(() => {
+                if (query !== this.query)
+                    return;
+
+                var queryComponent = new Vidyano.WebComponents.Query();
+                queryComponent.query = query;
+                Polymer.dom(this).appendChild(queryComponent);
+
+                this._setLoading(false);
+            });
         }
     }
 

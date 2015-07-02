@@ -282,18 +282,6 @@ var Vidyano;
                 if (typeof finalized == 'function')
                     finalized(ns[name]);
             };
-            //x TODO: REMOVE
-            WebComponent.registerTODO = function (obj, ns, prefix, properties, computed, finalized) {
-                if (prefix === void 0) { prefix = "vi"; }
-                if (properties === void 0) { properties = {}; }
-                if (computed === void 0) { computed = {}; }
-            };
-            //x TODO: REMOVE
-            WebComponent.registerLightTODO = function (obj, ns, prefix, publish, computed, finalized) {
-                if (prefix === void 0) { prefix = "vi"; }
-                if (publish === void 0) { publish = {}; }
-                if (computed === void 0) { computed = {}; }
-            };
             return WebComponent;
         })();
         WebComponents.WebComponent = WebComponent;

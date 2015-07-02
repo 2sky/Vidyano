@@ -5,7 +5,7 @@ module Vidyano.WebComponents.Attributes {
         constructor() {
             super();
 
-            this.importHref(this.resolveUrl("../../../../Bower/marked-element/marked-element.html"), e => {
+            this.importHref(this.resolveUrl("../../../Libs/marked-element/marked-element.html"), e => {
                 this._setMarkedElementLoaded(true);
             });
         }

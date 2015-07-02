@@ -6,8 +6,5 @@ module Vidyano.WebComponents.Attributes {
         }
     }
 
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeDropDown, {
-    }, ctor => {
-        Attributes["PersistentObjectAttributeEnum"] = ctor;
-        });
+    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeDropDown);
 }

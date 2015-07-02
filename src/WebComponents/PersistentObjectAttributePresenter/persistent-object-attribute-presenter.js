@@ -13,34 +13,138 @@ var Vidyano;
             function PersistentObjectAttributePresenter() {
                 _super.apply(this, arguments);
             }
-            PersistentObjectAttributePresenter.prototype._attributeChanged = function (newAttribute, isAttached) {
+            PersistentObjectAttributePresenter.prototype._attributeChanged = function (attribute, isAttached) {
+                var _this = this;
                 if (Polymer.dom(this).children.length > 0)
                     this.empty();
-                if (newAttribute) {
-                    var config = this.app.configuration.getAttributeConfig(newAttribute);
+                if (attribute && isAttached) {
+                    this._setLoading(true);
+                    var attributeType;
+                    if (Vidyano.Service.isNumericType(attribute.type))
+                        attributeType = "Numeric";
+                    else if (Vidyano.Service.isDateTimeType(attribute.type))
+                        attributeType = "DateTime";
+                    else
+                        attributeType = attribute.type;
+                    if (Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type] !== undefined) {
+                        this._renderAttribute(attribute, attributeType);
+                        return;
+                    }
+                    var typeImport = this._getAttributeTypeImportInfo(attributeType);
+                    if (!typeImport) {
+                        Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type] = Promise.resolve(false);
+                        this._renderAttribute(attribute, attributeType);
+                        return;
+                    }
+                    var synonymResolvers;
+                    if (typeImport.synonyms) {
+                        synonymResolvers = [];
+                        typeImport.synonyms.forEach(function (s) { return Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[s] = new Promise(function (resolve) { synonymResolvers.push(resolve); }); });
+                    }
+                    Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type] = new Promise(function (resolve) {
+                        _this.importHref(_this.resolveUrl("../Attributes/" + typeImport.filename), function (e) {
+                            resolve(true);
+                            if (synonymResolvers)
+                                synonymResolvers.forEach(function (resolver) { return resolver(true); });
+                            _this._renderAttribute(attribute, attributeType);
+                        }, function (err) {
+                            console.error(err);
+                            Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type] = Promise.resolve(false);
+                            _this._setLoading(false);
+                        });
+                    });
+                }
+            };
+            PersistentObjectAttributePresenter.prototype._getAttributeTypeImportInfo = function (type) {
+                var synonyms;
+                for (var key in Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms) {
+                    var typeSynonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[key];
+                    if (key === type)
+                        synonyms = typeSynonyms;
+                    else if (typeSynonyms.indexOf(type) >= 0) {
+                        type = key;
+                        synonyms = typeSynonyms;
+                    }
+                }
+                if (type === "AsDetail")
+                    return { filename: "PersistentObjectAttributeAsDetail/persistent-object-attribute-as-detail.html", synonyms: synonyms };
+                else if (type === "BinaryFile")
+                    return { filename: "PersistentObjectAttributeBinaryFile/persistent-object-attribute-binary-file.html", synonyms: synonyms };
+                else if (type === "Boolean")
+                    return { filename: "PersistentObjectAttributeBoolean/persistent-object-attribute-boolean.html", synonyms: synonyms };
+                else if (type === "ComboBox")
+                    return { filename: "PersistentObjectAttributeComboBox/persistent-object-attribute-combo-box.html", synonyms: synonyms };
+                else if (type === "CommonMark")
+                    return { filename: "PersistentObjectAttributeCommonMark/persistent-object-attribute-common-mark.html", synonyms: synonyms };
+                else if (type === "DateTime")
+                    return { filename: "PersistentObjectAttributeDateTime/persistent-object-attribute-date-time.html", synonyms: synonyms };
+                else if (type === "DropDown")
+                    return { filename: "PersistentObjectAttributeDropDown/persistent-object-attribute-drop-down.html", synonyms: synonyms };
+                else if (type === "FlagsEnum")
+                    return { filename: "PersistentObjectAttributeFlagsEnum/persistent-object-attribute-flags-enum.html", synonyms: synonyms };
+                else if (type === "Image")
+                    return { filename: "PersistentObjectAttributeImage/persistent-object-attribute-image.html", synonyms: synonyms };
+                else if (type === "KeyValueList")
+                    return { filename: "PersistentObjectAttributeKeyValueList/persistent-object-attribute-key-value-list.html", synonyms: synonyms };
+                else if (type === "MultiLineString")
+                    return { filename: "PersistentObjectAttributeMultiLineString/persistent-object-attribute-multi-line-string.html", synonyms: synonyms };
+                else if (type === "Numeric")
+                    return { filename: "PersistentObjectAttributeNumeric/persistent-object-attribute-numeric.html", synonyms: synonyms };
+                else if (type === "Password")
+                    return { filename: "PersistentObjectAttributePassword/persistent-object-attribute-password.html", synonyms: synonyms };
+                else if (type === "Reference")
+                    return { filename: "PersistentObjectAttributeReference/persistent-object-attribute-reference.html", synonyms: synonyms };
+                else if (type === "String")
+                    return { filename: "PersistentObjectAttributeString/persistent-object-attribute-string.html", synonyms: synonyms };
+                else if (type === "TranslatedString")
+                    return { filename: "PersistentObjectAttributeTranslatedString/persistent-object-attribute-translated-string.html", synonyms: synonyms };
+                else if (type === "User")
+                    return { filename: "PersistentObjectAttributeUser/persistent-object-attribute-user.html", synonyms: synonyms };
+                return null;
+            };
+            PersistentObjectAttributePresenter.prototype._renderAttribute = function (attribute, attributeType) {
+                var _this = this;
+                Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type].then(function () {
+                    if (attribute !== _this.attribute)
+                        return;
+                    _this._setLoading(false);
+                    var config = _this.app.configuration.getAttributeConfig(attribute);
                     if (config && config.template) {
                         var template = document.createElement("template", "dom-bind");
-                        template.attribute = newAttribute;
+                        template.attribute = attribute;
                         var fragmentClone = document.importNode(config.template.content, true);
                         while (fragmentClone.children.length > 0)
                             template.content.appendChild(fragmentClone.children[0]);
                         var container = document.createElement("div");
                         container.className = "layout horizontal";
                         container.appendChild(template);
-                        Polymer.dom(this).appendChild(container);
+                        Polymer.dom(_this).appendChild(container);
                         return;
                     }
-                    var attributeType;
-                    if (Vidyano.Service.isNumericType(newAttribute.type))
-                        attributeType = "Numeric";
-                    else if (Vidyano.Service.isDateTimeType(newAttribute.type))
-                        attributeType = "DateTime";
-                    else
-                        attributeType = newAttribute.type;
                     var child = new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
-                    Polymer.dom(this).appendChild(child.asElement);
-                    child.attribute = newAttribute;
-                }
+                    Polymer.dom(_this).appendChild(child.asElement);
+                    child.attribute = attribute;
+                });
+            };
+            PersistentObjectAttributePresenter._attributeImports = {
+                "AsDetail": undefined,
+                "BinaryFile": undefined,
+                "Boolean": undefined,
+                "ComboBox": undefined,
+                "CommonMark": undefined,
+                "DateTime": undefined,
+                "DropDown": undefined,
+                "FlagsEnum": undefined,
+                "Image": undefined,
+                "KeyValueList": undefined,
+                "MultiLineString": undefined,
+                "MultiString": undefined,
+                "Numeric": undefined,
+                "Password": undefined,
+                "Reference": undefined,
+                "String": undefined,
+                "TranslatedString": undefined,
+                "User": undefined
             };
             return PersistentObjectAttributePresenter;
         })(WebComponents.WebComponent);
@@ -51,6 +155,12 @@ var Vidyano;
                 noLabel: {
                     type: Boolean,
                     reflectToAttribute: true
+                },
+                loading: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true,
+                    value: true
                 }
             },
             observers: [

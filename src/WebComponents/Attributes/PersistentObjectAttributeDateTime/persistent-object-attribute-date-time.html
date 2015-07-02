@@ -1,4 +1,8 @@
-﻿<dom-module id="vi-persistent-object-attribute-date-time">
+﻿<link rel="import" href="../../DatePicker/date-picker.html" />
+<link rel="import" href="../../TimePicker/time-picker.html" />
+<link rel="import" href="../../MaskedInput/masked-input.html" />
+
+<dom-module id="vi-persistent-object-attribute-date-time">
     <template>
         <template is="dom-if" if="{{!editing}}">
             <span>{{attribute.displayValue}}</span>

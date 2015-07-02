@@ -22,7 +22,5 @@ module Vidyano.WebComponents.Attributes {
         properties: {
             maxlength: Number
         }
-    }, ctor => {
-            Attributes["PersistentObjectAttributeMultiString"] = ctor;
-        });
+    });
 }

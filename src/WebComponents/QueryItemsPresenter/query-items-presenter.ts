@@ -1,12 +1,13 @@
 module Vidyano.WebComponents {
     export class QueryItemsPresenter extends WebComponent {
+        private static _queryGridComponentLoader: Promise<any>;
         query: Vidyano.Query;
 
-        private _queryChanged(newQuery: Vidyano.Query, oldQuery: Vidyano.Query) {
+        private _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
             if (oldQuery)
                 this.empty();
 
-            if (this.query) {
+            if (query) {
                 var child: HTMLElement;
 
                 //! TODO Custom templates for queries
@@ -17,11 +18,31 @@ module Vidyano.WebComponents {
                 //    this.appendChild(resource);
                 //}
                 //else {
+                if (!Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader) {
+                    Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader = new Promise(resolve => {
+                        this.importHref(this.resolveUrl("../QueryGrid/query-grid.html"), e => {
+                            resolve(true);
+                        }, err => {
+                                console.error(err);
+                                resolve(false);
+                            });
+                    });
+                }
+
+                this._renderGrid(query);
+                //}
+            }
+        }
+
+        private _renderGrid(query: Vidyano.Query) {
+            Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader.then(() => {
+                if (query !== this.query)
+                    return;
+
                 var grid = new Vidyano.WebComponents.QueryGrid();
                 grid.query = this.query;
                 this.appendChild(grid);
-                //}
-            }
+            });
         }
     }
 
