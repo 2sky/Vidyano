@@ -176,11 +176,12 @@ var Vidyano;
     })(Common = Vidyano.Common || (Vidyano.Common = {}));
     var Service = (function (_super) {
         __extends(Service, _super);
-        function Service(serviceUri, hooks) {
+        function Service(serviceUri, hooks, _forceUser) {
             if (hooks === void 0) { hooks = new ServiceHooks(); }
             _super.call(this);
             this.serviceUri = serviceUri;
             this.hooks = hooks;
+            this._forceUser = _forceUser;
             this._lastAuthTokenUpdate = new Date();
             this.environment = "Web";
             this.environmentVersion = "2";
@@ -407,7 +408,7 @@ var Vidyano;
         };
         Object.defineProperty(Service.prototype, "userName", {
             get: function () {
-                return Vidyano.cookie("userName", { force: !this.staySignedIn });
+                return this._forceUser || Vidyano.cookie("userName", { force: !this.staySignedIn });
             },
             enumerable: true,
             configurable: true
@@ -431,9 +432,13 @@ var Vidyano;
         });
         Object.defineProperty(Service.prototype, "authToken", {
             get: function () {
+                if (this._forceUser)
+                    return null;
                 return Vidyano.cookie("authToken", { force: !this.staySignedIn });
             },
             set: function (val) {
+                if (this._forceUser)
+                    return;
                 if (this.staySignedIn)
                     Vidyano.cookie("authToken", val, { expires: 14 });
                 else
@@ -482,7 +487,7 @@ var Vidyano;
                 else {
                     _this._setUserName(_this.userName || _this._clientData.defaultUser);
                     _this._setIsSignedIn(!StringEx.isNullOrEmpty(_this.authToken));
-                    if (_this.isSignedIn || ((_this._clientData.defaultUser || _this.windowsAuthentication) && !skipDefaultCredentialLogin))
+                    if (_this._forceUser || _this.isSignedIn || ((_this._clientData.defaultUser || _this.windowsAuthentication) && !skipDefaultCredentialLogin))
                         return _this._getApplication();
                     else
                         return Promise.resolve(_this.application);

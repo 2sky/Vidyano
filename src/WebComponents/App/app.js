@@ -223,9 +223,9 @@ var Vidyano;
                     throw e;
                 });
             };
-            App.prototype._computeService = function (uri) {
+            App.prototype._computeService = function (uri, user) {
                 var _this = this;
-                var service = new Vidyano.Service(this.uri, this.createServiceHooks());
+                var service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
                 this._setInitializing(true);
                 Promise.all([service.initialize(document.location.hash && App._stripHashBang(document.location.hash).startsWith("SignIn"))]).then(function () {
                     if (_this.service == service)
@@ -435,7 +435,12 @@ var Vidyano;
                 },
                 service: {
                     type: Object,
-                    computed: "_computeService(uri)"
+                    computed: "_computeService(uri, user)"
+                },
+                user: {
+                    type: String,
+                    reflectToAttribute: true,
+                    value: null
                 },
                 mappedRoute: {
                     type: Object,

@@ -233,7 +233,7 @@ module Vidyano {
         environmentVersion: string = "2";
         ignoreMobile: boolean;
 
-        constructor(public serviceUri: string, public hooks: ServiceHooks = new ServiceHooks()) {
+        constructor(public serviceUri: string, public hooks: ServiceHooks = new ServiceHooks(), private _forceUser?: string) {
             super();
 
             (<any>this.hooks)._service = this;
@@ -522,7 +522,7 @@ module Vidyano {
         }
 
         get userName(): string {
-            return Vidyano.cookie("userName", { force: !this.staySignedIn });
+            return this._forceUser || Vidyano.cookie("userName", { force: !this.staySignedIn });
         }
 
         private _setUserName(val: string) {
@@ -543,10 +543,16 @@ module Vidyano {
         }
 
         private get authToken(): string {
+            if (this._forceUser)
+                return null;
+
             return Vidyano.cookie("authToken", { force: !this.staySignedIn });
         }
 
         private set authToken(val: string) {
+            if (this._forceUser)
+                return;
+
             if (this.staySignedIn)
                 Vidyano.cookie("authToken", val, { expires: 14 });
             else
@@ -594,7 +600,7 @@ module Vidyano {
                     this._setUserName(this.userName || this._clientData.defaultUser);
                     this._setIsSignedIn(!StringEx.isNullOrEmpty(this.authToken));
 
-                    if (this.isSignedIn || ((this._clientData.defaultUser || this.windowsAuthentication) && !skipDefaultCredentialLogin))
+                    if (this._forceUser || this.isSignedIn || ((this._clientData.defaultUser || this.windowsAuthentication) && !skipDefaultCredentialLogin))
                         return this._getApplication();
                     else
                         return Promise.resolve(this.application);

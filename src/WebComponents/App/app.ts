@@ -257,8 +257,8 @@
                 });
         }
 
-        private _computeService(uri: string): Vidyano.Service {
-            var service = new Vidyano.Service(this.uri, this.createServiceHooks());
+        private _computeService(uri: string, user: string): Vidyano.Service {
+            var service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
             this._setInitializing(true);
 
             Promise.all([service.initialize(document.location.hash && App._stripHashBang(document.location.hash).startsWith("SignIn"))]).then(() => {
@@ -488,7 +488,12 @@
             },
             service: {
                 type: Object,
-                computed: "_computeService(uri)"
+                computed: "_computeService(uri, user)"
+            },
+            user: {
+                type: String,
+                reflectToAttribute: true,
+                value: null
             },
             mappedRoute: {
                 type: Object,
