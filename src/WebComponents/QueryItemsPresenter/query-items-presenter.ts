@@ -1,11 +1,14 @@
 module Vidyano.WebComponents {
     export class QueryItemsPresenter extends WebComponent {
         private static _queryGridComponentLoader: Promise<any>;
+        private _content: HTMLElement | WebComponent;
         query: Vidyano.Query;
 
         private _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
-            if (oldQuery)
-                this.empty();
+            if (this._content) {
+                Polymer.dom(this).removeChild(this._content);
+                this._content = null;
+            }
 
             if (query) {
                 var child: HTMLElement;
@@ -41,8 +44,40 @@ module Vidyano.WebComponents {
 
                 var grid = new Vidyano.WebComponents.QueryGrid();
                 grid.query = this.query;
-                this.appendChild(grid);
+                Polymer.dom(this).appendChild(this._content = grid);
             });
+        }
+
+        private _refresh() {
+            if (this.query)
+                this.query.search();
+        }
+
+        private _new() {
+            if (!this.query)
+                return;
+
+            var action = <Vidyano.Action>this.query.actions["New"];
+            if (action)
+                action.execute();
+        }
+
+        private _delete() {
+            if (!this.query)
+                return;
+
+            var action = <Vidyano.Action>this.query.actions["Delete"];
+            if (action)
+                action.execute();
+        }
+
+        private _bulkEdit() {
+            if (!this.query)
+                return;
+
+            var action = <Vidyano.Action>this.query.actions["BulkEdit"];
+            if (action)
+                action.execute();
         }
     }
 
@@ -52,6 +87,15 @@ module Vidyano.WebComponents {
                 type: Object,
                 observer: "_queryChanged"
             }
+        },
+        hostAttributes: {
+            "tabindex": "0"
+        },
+        keybindings: {
+            "f5 ctrl+r": "_refresh",
+            "ctrl+n": "_new",
+            "del": "_delete",
+            "f2": "_bulkEdit"
         }
     });
 }

@@ -57,7 +57,7 @@
         }
 
         private _keydown(e: KeyboardEvent) {
-            if (e.which == KeyCodes.enter && !StringEx.isNullOrEmpty(this.userName) && !StringEx.isNullOrEmpty(this.password))
+            if (e.which == Keyboard.KeyCodes.enter && !StringEx.isNullOrEmpty(this.userName) && !StringEx.isNullOrEmpty(this.password))
                 this._signIn();
         }
 

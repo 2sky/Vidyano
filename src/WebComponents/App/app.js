@@ -133,11 +133,14 @@ var Vidyano;
                 _super.apply(this, arguments);
                 this._cache = [];
                 this._routeMap = {};
+                this._keybindingRegistrations = {};
             }
             App.prototype.attached = function () {
                 _super.prototype.attached.call(this);
                 if (!this.label)
                     this.label = this.asElement.title;
+                var keys = this.$$("iron-a11y-keys");
+                keys.target = document.body;
             };
             Object.defineProperty(App.prototype, "configuration", {
                 get: function () {
@@ -310,6 +313,51 @@ var Vidyano;
                     _this._setRouteMapVersion(_this.routeMapVersion + 1);
                 });
             };
+            App.prototype._registerKeybindings = function (registration) {
+                var _this = this;
+                var currentKeys = this.keys ? this.keys.split(" ") : [];
+                registration.keys.forEach(function (key) {
+                    var registrations = _this._keybindingRegistrations[key] || (_this._keybindingRegistrations[key] = []);
+                    registrations.push(registration);
+                    var e = registration.element;
+                    do {
+                        if (e instanceof Vidyano.WebComponents.AppRoute) {
+                            registration.appRoute = e;
+                            break;
+                        }
+                        e = e.parentElement;
+                    } while (e != null);
+                    currentKeys.push(key);
+                });
+                this._setKeys(Enumerable.from(currentKeys).distinct().toArray().join(" "));
+            };
+            App.prototype._unregisterKeybindings = function (registration) {
+                var _this = this;
+                var currentKeys = this.keys.split(" ");
+                registration.keys.forEach(function (key) {
+                    var registrations = _this._keybindingRegistrations[key];
+                    registrations.remove(registration);
+                    if (registrations.length == 0) {
+                        _this._keybindingRegistrations[key] = undefined;
+                        currentKeys.remove(key);
+                    }
+                });
+                this._setKeys(Enumerable.from(currentKeys).distinct().toArray().join(" "));
+            };
+            App.prototype._keysPressed = function (e) {
+                if (!this._keybindingRegistrations[e.detail.combo])
+                    return;
+                var activeRegs = this._keybindingRegistrations[e.detail.combo].filter(function (reg) { return !reg.appRoute || reg.appRoute.active; });
+                var highestPriorityRegs = Enumerable.from(activeRegs).groupBy(function (r) { return r.priority; }, function (r) { return r; }).orderByDescending(function (kvp) { return kvp.key(); }).firstOrDefault();
+                if (!highestPriorityRegs || highestPriorityRegs.isEmpty())
+                    return;
+                var regs = highestPriorityRegs.toArray();
+                if (regs.length > 1 && regs.some(function (r) { return !r.nonExclusive; }))
+                    return;
+                regs.forEach(function (reg) {
+                    reg.listener(e);
+                });
+            };
             App._stripHashBang = function (path) {
                 return path && path.replace(hashBang, "") || "";
             };
@@ -442,6 +490,10 @@ var Vidyano;
                     reflectToAttribute: true,
                     value: null
                 },
+                keys: {
+                    type: String,
+                    readOnly: true
+                },
                 mappedRoute: {
                     type: Object,
                     computed: "_computeMappedRoute(path, routeMapVersion)"
@@ -489,7 +541,8 @@ var Vidyano;
                 "_start(initializing, path)"
             ],
             hostAttributes: {
-                "theme-color-1": true
+                "theme-color-1": true,
+                "tabindex": 0
             },
             listeners: {
                 "app-route-add": "_appRouteAdded"

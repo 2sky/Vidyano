@@ -141,6 +141,7 @@
         private _cache: AppCacheEntry[] = [];
         private _initializationError: string;
         private _routeMap: { [key: string]: AppRoute } = {};
+        private _keybindingRegistrations: { [key: string]: Keyboard.KeybindingRegistration[]; } = {};
         private routeMapVersion: number;
         private _configuration: AppConfig;
         service: Vidyano.Service;
@@ -153,16 +154,21 @@
         noMenu: boolean;
         programUnit: ProgramUnit;
         label: string;
+        keys: string;
 
         private _setInitializing: (init: boolean) => void;
         private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setRouteMapVersion: (version: number) => void;
+        private _setKeys: (keys: string) => void;
 
         attached() {
             super.attached();
 
             if (!this.label)
                 this.label = this.asElement.title;
+
+            var keys = <any>this.$$("iron-a11y-keys");
+            keys.target = document.body;
         }
 
         get configuration(): AppConfig {
@@ -360,6 +366,63 @@
             });
         }
 
+        private _registerKeybindings(registration: Keyboard.KeybindingRegistration) {
+            var currentKeys = this.keys ? this.keys.split(" ") : [];
+            registration.keys.forEach(key => {
+                var registrations = this._keybindingRegistrations[key] || (this._keybindingRegistrations[key] = []);
+                registrations.push(registration);
+
+                var e = registration.element;
+                do {
+                    if (e instanceof Vidyano.WebComponents.AppRoute) {
+                        registration.appRoute = <Vidyano.WebComponents.AppRoute><any>e;
+                        break;
+                    }
+
+                    e = e.parentElement;
+                }
+                while (e != null);
+
+                currentKeys.push(key);
+            });
+
+            this._setKeys(Enumerable.from(currentKeys).distinct().toArray().join(" "));
+        }
+
+        private _unregisterKeybindings(registration: Keyboard.KeybindingRegistration) {
+            var currentKeys = this.keys.split(" ");
+
+            registration.keys.forEach(key => {
+                var registrations = this._keybindingRegistrations[key];
+                registrations.remove(registration);
+
+                if (registrations.length == 0) {
+                    this._keybindingRegistrations[key] = undefined;
+                    currentKeys.remove(key);
+                }
+            });
+
+            this._setKeys(Enumerable.from(currentKeys).distinct().toArray().join(" "));
+        }
+
+        private _keysPressed(e: Keyboard.KeysEvent) {
+            if (!this._keybindingRegistrations[e.detail.combo])
+                return;
+
+            var activeRegs = this._keybindingRegistrations[e.detail.combo].filter(reg => !reg.appRoute || reg.appRoute.active);
+            var highestPriorityRegs = Enumerable.from(activeRegs).groupBy(r => r.priority, r => r).orderByDescending(kvp => kvp.key()).firstOrDefault();
+            if (!highestPriorityRegs || highestPriorityRegs.isEmpty())
+                return;
+
+            var regs = highestPriorityRegs.toArray();
+            if (regs.length > 1 && regs.some(r => !r.nonExclusive))
+                    return;
+
+            regs.forEach(reg => {
+                reg.listener(e);
+            });
+        }
+
         private static _stripHashBang(path: string): string {
             return path && path.replace(hashBang, "") || "";
         }
@@ -495,6 +558,10 @@
                 reflectToAttribute: true,
                 value: null
             },
+            keys: {
+                type: String,
+                readOnly: true
+            },
             mappedRoute: {
                 type: Object,
                 computed: "_computeMappedRoute(path, routeMapVersion)"
@@ -542,7 +609,8 @@
             "_start(initializing, path)"
         ],
         hostAttributes: {
-            "theme-color-1": true
+            "theme-color-1": true,
+            "tabindex": 0
         },
         listeners: {
             "app-route-add": "_appRouteAdded"

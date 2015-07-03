@@ -9,3 +9,6 @@ vi-query-items-presenter > * {
   bottom: 0;
   left: 0;
 }
+vi-query-items-presenter:focus {
+  outline: none !important;
+}

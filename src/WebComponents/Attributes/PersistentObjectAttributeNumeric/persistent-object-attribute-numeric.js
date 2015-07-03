@@ -77,20 +77,20 @@ var Vidyano;
                 };
                 PersistentObjectAttributeNumeric.prototype._keypress = function (e) {
                     var keyCode = e.keyCode || e.which;
-                    if (keyCode == WebComponents.KeyCodes.backspace || keyCode == WebComponents.KeyCodes.tab || keyCode == WebComponents.KeyCodes.shift || keyCode == WebComponents.KeyCodes.control || keyCode == WebComponents.KeyCodes.alt ||
-                        keyCode == WebComponents.KeyCodes.leftarrow || keyCode == WebComponents.KeyCodes.rightarrow || keyCode == WebComponents.KeyCodes.uparrow || keyCode == WebComponents.KeyCodes.downarrow)
+                    if (keyCode == WebComponents.Keyboard.KeyCodes.backspace || keyCode == WebComponents.Keyboard.KeyCodes.tab || keyCode == WebComponents.Keyboard.KeyCodes.shift || keyCode == WebComponents.Keyboard.KeyCodes.control || keyCode == WebComponents.Keyboard.KeyCodes.alt ||
+                        keyCode == WebComponents.Keyboard.KeyCodes.leftarrow || keyCode == WebComponents.Keyboard.KeyCodes.rightarrow || keyCode == WebComponents.Keyboard.KeyCodes.uparrow || keyCode == WebComponents.Keyboard.KeyCodes.downarrow)
                         return;
                     var input = e.target;
                     var value = input.value;
                     var carretIndex = input.selectionStart;
                     if (input.selectionEnd != carretIndex)
                         value = value.slice(0, Math.min(input.selectionEnd, carretIndex)) + value.slice(Math.max(input.selectionEnd, carretIndex));
-                    if (keyCode < WebComponents.KeyCodes.zero || keyCode > WebComponents.KeyCodes.nine) {
-                        if ((keyCode == WebComponents.KeyCodes.comma || keyCode == WebComponents.KeyCodes.period) && !value.contains(this._decimalSeparator) && this._allowDecimal) {
+                    if (keyCode < WebComponents.Keyboard.KeyCodes.zero || keyCode > WebComponents.Keyboard.KeyCodes.nine) {
+                        if ((keyCode == WebComponents.Keyboard.KeyCodes.comma || keyCode == WebComponents.Keyboard.KeyCodes.period) && !value.contains(this._decimalSeparator) && this._allowDecimal) {
                             input.value = value.insert(this._decimalSeparator, carretIndex);
                             this._setCarretIndex(input, carretIndex + 1);
                         }
-                        else if (keyCode == WebComponents.KeyCodes.subtract && !value.contains("-") && carretIndex == 0 && PersistentObjectAttributeNumeric._unsignedTypes.indexOf(this.attribute.type) == -1) {
+                        else if (keyCode == WebComponents.Keyboard.KeyCodes.subtract && !value.contains("-") && carretIndex == 0 && PersistentObjectAttributeNumeric._unsignedTypes.indexOf(this.attribute.type) == -1) {
                             input.value = value.insert("-", carretIndex);
                             this._setCarretIndex(input, carretIndex + 1);
                         }

@@ -46,6 +46,9 @@ var Vidyano;
             },
             hostAttributes: {
                 "dialog": ""
+            },
+            keybindings: {
+                "esc": "_close"
             }
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

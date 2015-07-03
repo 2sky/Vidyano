@@ -15,8 +15,10 @@ var Vidyano;
             }
             QueryItemsPresenter.prototype._queryChanged = function (query, oldQuery) {
                 var _this = this;
-                if (oldQuery)
-                    this.empty();
+                if (this._content) {
+                    Polymer.dom(this).removeChild(this._content);
+                    this._content = null;
+                }
                 if (query) {
                     var child;
                     //! TODO Custom templates for queries
@@ -47,8 +49,33 @@ var Vidyano;
                         return;
                     var grid = new Vidyano.WebComponents.QueryGrid();
                     grid.query = _this.query;
-                    _this.appendChild(grid);
+                    Polymer.dom(_this).appendChild(_this._content = grid);
                 });
+            };
+            QueryItemsPresenter.prototype._refresh = function () {
+                if (this.query)
+                    this.query.search();
+            };
+            QueryItemsPresenter.prototype._new = function () {
+                if (!this.query)
+                    return;
+                var action = this.query.actions["New"];
+                if (action)
+                    action.execute();
+            };
+            QueryItemsPresenter.prototype._delete = function () {
+                if (!this.query)
+                    return;
+                var action = this.query.actions["Delete"];
+                if (action)
+                    action.execute();
+            };
+            QueryItemsPresenter.prototype._bulkEdit = function () {
+                if (!this.query)
+                    return;
+                var action = this.query.actions["BulkEdit"];
+                if (action)
+                    action.execute();
             };
             return QueryItemsPresenter;
         })(WebComponents.WebComponent);
@@ -59,6 +86,15 @@ var Vidyano;
                     type: Object,
                     observer: "_queryChanged"
                 }
+            },
+            hostAttributes: {
+                "tabindex": "0"
+            },
+            keybindings: {
+                "f5 ctrl+r": "_refresh",
+                "ctrl+n": "_new",
+                "del": "_delete",
+                "f2": "_bulkEdit"
             }
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

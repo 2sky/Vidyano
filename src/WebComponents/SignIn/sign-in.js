@@ -49,7 +49,7 @@ var Vidyano;
                 this._autoFocus();
             };
             SignInProvider.prototype._keydown = function (e) {
-                if (e.which == WebComponents.KeyCodes.enter && !StringEx.isNullOrEmpty(this.userName) && !StringEx.isNullOrEmpty(this.password))
+                if (e.which == WebComponents.Keyboard.KeyCodes.enter && !StringEx.isNullOrEmpty(this.userName) && !StringEx.isNullOrEmpty(this.password))
                     this._signIn();
             };
             SignInProvider.prototype._computeLabel = function () {

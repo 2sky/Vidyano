@@ -98,6 +98,33 @@ module Vidyano.WebComponents {
                 this._setLoading(false);
             });
         }
+
+        private _edit() {
+            if (!this.persistentObject)
+                return;
+
+            var action = <Vidyano.Action>this.persistentObject.actions["Edit"];
+            if (action)
+                action.execute();
+        }
+
+        private _save() {
+            if (!this.persistentObject)
+                return;
+
+            var action = <Vidyano.Action>(this.persistentObject.actions["Save"] || this.persistentObject.actions["EndEdit"]);
+            if (action)
+                action.execute();
+        }
+
+        private _cancelSave() {
+            if (!this.persistentObject)
+                return;
+
+            var action = <Vidyano.Action>(this.persistentObject.actions["CancelEdit"] || this.persistentObject.actions["CancelSave"]);
+            if (action)
+                action.execute();
+        }
     }
 
     WebComponent.register(PersistentObjectPresenter, WebComponents, "vi", {
@@ -135,6 +162,11 @@ module Vidyano.WebComponents {
         ],
         listeners: {
             "activating": "_activating"
+        },
+        keybindings: {
+            "f2": "_edit",
+            "ctrl+s": "_save",
+            "esc": "_cancelSave"
         }
     });
 }

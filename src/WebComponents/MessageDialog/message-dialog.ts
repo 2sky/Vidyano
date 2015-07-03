@@ -57,6 +57,9 @@
             },
             hostAttributes: {
                 "dialog": ""
+            },
+            keybindings: {
+                "esc": "_close"
             }
         });
 }

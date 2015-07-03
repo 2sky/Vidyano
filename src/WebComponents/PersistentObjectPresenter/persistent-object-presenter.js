@@ -92,6 +92,27 @@ var Vidyano;
                     _this._setLoading(false);
                 });
             };
+            PersistentObjectPresenter.prototype._edit = function () {
+                if (!this.persistentObject)
+                    return;
+                var action = this.persistentObject.actions["Edit"];
+                if (action)
+                    action.execute();
+            };
+            PersistentObjectPresenter.prototype._save = function () {
+                if (!this.persistentObject)
+                    return;
+                var action = (this.persistentObject.actions["Save"] || this.persistentObject.actions["EndEdit"]);
+                if (action)
+                    action.execute();
+            };
+            PersistentObjectPresenter.prototype._cancelSave = function () {
+                if (!this.persistentObject)
+                    return;
+                var action = (this.persistentObject.actions["CancelEdit"] || this.persistentObject.actions["CancelSave"]);
+                if (action)
+                    action.execute();
+            };
             return PersistentObjectPresenter;
         })(WebComponents.WebComponent);
         WebComponents.PersistentObjectPresenter = PersistentObjectPresenter;
@@ -130,6 +151,11 @@ var Vidyano;
             ],
             listeners: {
                 "activating": "_activating"
+            },
+            keybindings: {
+                "f2": "_edit",
+                "ctrl+s": "_save",
+                "esc": "_cancelSave"
             }
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
