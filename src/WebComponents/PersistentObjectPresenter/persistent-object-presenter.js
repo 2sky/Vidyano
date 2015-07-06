@@ -153,7 +153,10 @@ var Vidyano;
                 "activating": "_activating"
             },
             keybindings: {
-                "f2": "_edit",
+                "f2": {
+                    listener: "_edit",
+                    priority: 10
+                },
                 "ctrl+s": "_save",
                 "esc": "_cancelSave"
             }

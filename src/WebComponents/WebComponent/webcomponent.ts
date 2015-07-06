@@ -456,7 +456,8 @@
 
                 wcPrototype["_keybindingsObserver"] = function (isAttached: boolean) {
                     if (isAttached) {
-                        var registrations: Keyboard.KeybindingRegistration[] = this._keybindingRegistrations || (this._keybindingRegistrations = []);
+                        if (!this._keybindingRegistrations)
+                            this._keybindingRegistrations = [];
 
                         var registerKeybinding = (keys: string) => {
                             var keybinding = this.keybindings[keys];
@@ -489,7 +490,7 @@
                                 nonExclusive: keybinding.nonExclusive
                             };
 
-                            registrations.push(registration);
+                            this._keybindingRegistrations.push(registration);
                             Polymer.dom(this.root).appendChild(element);
 
                             this.app._registerKeybindings(registration);

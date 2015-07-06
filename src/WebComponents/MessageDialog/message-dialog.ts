@@ -59,7 +59,10 @@
                 "dialog": ""
             },
             keybindings: {
-                "esc": "_close"
+                "esc": {
+                    listener: "_close",
+                    priority: Number.MAX_VALUE
+                }
             }
         });
 }

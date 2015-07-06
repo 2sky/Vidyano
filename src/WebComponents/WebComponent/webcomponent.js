@@ -291,7 +291,8 @@ var Vidyano;
                     wcPrototype["_keybindingsObserver"] = function (isAttached) {
                         var _this = this;
                         if (isAttached) {
-                            var registrations = this._keybindingRegistrations || (this._keybindingRegistrations = []);
+                            if (!this._keybindingRegistrations)
+                                this._keybindingRegistrations = [];
                             var registerKeybinding = function (keys) {
                                 var keybinding = _this.keybindings[keys];
                                 if (typeof keybinding === "string")
@@ -317,7 +318,7 @@ var Vidyano;
                                     priority: keybinding.priority || 0,
                                     nonExclusive: keybinding.nonExclusive
                                 };
-                                registrations.push(registration);
+                                _this._keybindingRegistrations.push(registration);
                                 Polymer.dom(_this.root).appendChild(element);
                                 _this.app._registerKeybindings(registration);
                             };

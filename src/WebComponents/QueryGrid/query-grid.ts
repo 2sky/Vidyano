@@ -212,6 +212,9 @@
         }
 
         private _sizeChanged(e: Event, detail: { width: number; height: number }) {
+            if (!detail.width || !detail.height)
+                return;
+
             this._setViewport(detail);
 
             this.items.updateRows();

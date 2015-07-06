@@ -28,10 +28,10 @@ vi-query-grid #initializingOverlay {
   top: 0;
   bottom: 0;
   background-color: white;
-  z-index: 1;
+  z-index: 2;
 }
 vi-query-grid vi-spinner {
-  z-index: 2;
+  z-index: 3;
 }
 vi-query-grid .scroll-shadow {
   position: absolute;

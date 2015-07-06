@@ -45,6 +45,9 @@ vi-app input[type="file"] > input[type="button"]::-moz-focus-inner {
 vi-app .vertical.layout .flex {
   flex-basis: 0.000000001px;
 }
+vi-app iron-a11y-keys {
+  display: none;
+}
 vi-app.dragging {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
