@@ -1782,7 +1782,7 @@ module Vidyano {
             this.name = attr.name;
             this.type = attr.type;
             this.label = attr.label;
-            this._serviceValue = attr.value;
+            this._serviceValue = attr.value !== undefined ? attr.value : null;
             this.group = attr.group;
             this.tab = attr.tab;
             this.isReadOnly = !!attr.isReadOnly;
@@ -1863,7 +1863,7 @@ module Vidyano {
         }
 
         get value(): any {
-            if (this._lastParsedValue != this._serviceValue) {
+            if (this._lastParsedValue !== this._serviceValue) {
                 this._lastParsedValue = this._serviceValue;
                 this._cachedValue = Service.fromServiceString(this._serviceValue, this.type);
             }
@@ -2023,7 +2023,7 @@ module Vidyano {
                 var oldDisplayValue = this.displayValue;
                 var oldValue = this.value;
 
-                this.notifyPropertyChanged(name, this.value = resultAttr.value, oldValue);
+                this.notifyPropertyChanged("value", this.value = resultAttr.value, oldValue);
                 this.notifyPropertyChanged("displayValue", this.displayValue, oldDisplayValue);
             }
 

@@ -159,6 +159,10 @@ module Vidyano.WebComponents {
                 child.attribute = attribute;
             });
         }
+
+        private _computeRequired(required: boolean, value: any): boolean {
+            return required && (value === "" || value == null);
+        }
     }
 
     WebComponent.register(PersistentObjectAttributePresenter, WebComponents, "vi", {
@@ -166,7 +170,18 @@ module Vidyano.WebComponents {
             attribute: Object,
             noLabel: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: false
+            },
+            editing: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "attribute.parent.isEditing"
+            },
+            required: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeRequired(attribute.isRequired, attribute.value)"
             },
             loading: {
                 type: Boolean,
@@ -177,6 +192,11 @@ module Vidyano.WebComponents {
         },
         observers: [
             "_attributeChanged(attribute, isAttached)"
+        ],
+        forwardObservers: [
+            "attribute.parent.isEditing",
+            "attribute.isRequired",
+            "attribute.value"
         ]
     });
 }

@@ -126,6 +126,9 @@ var Vidyano;
                     child.attribute = attribute;
                 });
             };
+            PersistentObjectAttributePresenter.prototype._computeRequired = function (required, value) {
+                return required && (value === "" || value == null);
+            };
             PersistentObjectAttributePresenter._attributeImports = {
                 "AsDetail": undefined,
                 "BinaryFile": undefined,
@@ -154,7 +157,18 @@ var Vidyano;
                 attribute: Object,
                 noLabel: {
                     type: Boolean,
-                    reflectToAttribute: true
+                    reflectToAttribute: true,
+                    value: false
+                },
+                editing: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "attribute.parent.isEditing"
+                },
+                required: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "_computeRequired(attribute.isRequired, attribute.value)"
                 },
                 loading: {
                     type: Boolean,
@@ -165,6 +179,11 @@ var Vidyano;
             },
             observers: [
                 "_attributeChanged(attribute, isAttached)"
+            ],
+            forwardObservers: [
+                "attribute.parent.isEditing",
+                "attribute.isRequired",
+                "attribute.value"
             ]
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

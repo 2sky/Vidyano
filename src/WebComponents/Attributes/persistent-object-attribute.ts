@@ -86,6 +86,12 @@ module Vidyano.WebComponents.Attributes {
                 reflectToAttribute: true,
                 computed: "attribute.isReadOnly"
             };
+            info.properties["required"] =
+            {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "attribute.isRequired"
+            };
             info.properties["value"] =
             {
                 type: Object,

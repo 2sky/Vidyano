@@ -21,28 +21,71 @@ vi-persistent-object-attribute-presenter {
         opacity: 1;
     }
 
-    label {
-        display: block;
-        font-size: 11px;
+    .label.vi-persistent-object-attribute-presenter {
+        padding-top: @h5;
         min-height: @h2 - @h5;
         line-height: @h2 - @h5;
-        font-weight: 400;
-        color: #888;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        letter-spacing: 0.5px;
-        padding-top: @h5;
+
+        label {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 400;
+            color: #888;
+            letter-spacing: 0.5px;
+        }
+
+        .required {
+            display: none;
+            position: relative;
+            font-size: 10px;
+            color: white;
+            line-height: 13px;
+            height: 14px;
+            margin: 0 0 0 @h5;
+            padding: 0 4px 0 3px;
+            -moz-transform: translateY(-1px);
+            -ms-transform: translateY(-1px);
+            -o-transform: translateY(-1px);
+            -webkit-transform: translateY(-1px);
+            transform: translateY(-1px);
+
+            .colorize( {
+                background-color: @@color;
+            }
+
+            );
+
+            &::before {
+                content: "";
+                position: absolute;
+                right: 100%;
+                width: 0;
+                height: 0;
+                border-top: 7px solid transparent;
+                border-bottom: 7px solid transparent;
+
+                .colorize( {
+                    border-right: 7px solid @@color;
+                }
+
+                );
+            }
+        }
     }
 
-    label + * {
-        .flex();
-        .layout-horizontal();
+    &[editing][required] .required.vi-persistent-object-attribute-presenter {
+        display: inline-block;
     }
 
     &[no-label] {
-        label {
+        .label.vi-persistent-object-attribute-presenter {
             display: none;
         }
+    }
+
+    & > *:last-child {
+        .flex();
+        .layout-horizontal();
     }
 
     a {
