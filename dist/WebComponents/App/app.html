@@ -1,5 +1,12 @@
-﻿<dom-module id="vi-app">
+﻿<link rel="import" href="../../Libs/iron-a11y-keys/iron-a11y-keys.html" />
+<link rel="import" href="../AttachedNotifier/attached-notifier.html" />
+<link rel="import" href="../SizeTracker/size-tracker.html" />
+<link rel="import" href="../Spinner/spinner.html" />
+<link rel="import" href="../Resource/resource.html" />
+
+<dom-module id="vi-app">
     <template>
+        <iron-a11y-keys keys="{{keys}}" on-keys-pressed="_keysPressed"></iron-a11y-keys>
         <template is="dom-if" if="{{initializing}}" restamp>
             <vi-spinner></vi-spinner>
         </template>

@@ -44,14 +44,34 @@ var Vidyano;
                 else
                     this.query = null;
             };
-            QueryPresenter.prototype._queryChanged = function (newQuery, oldQuery) {
+            QueryPresenter.prototype._queryChanged = function (query, oldQuery) {
+                var _this = this;
                 if (oldQuery)
                     this.empty();
-                if (this.query) {
-                    var query = new Vidyano.WebComponents.Query();
-                    query.query = this.query;
-                    Polymer.dom(this).appendChild(query);
+                if (query) {
+                    if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader) {
+                        Vidyano.WebComponents.QueryPresenter._queryComponentLoader = new Promise(function (resolve) {
+                            _this.importHref(_this.resolveUrl("../Query/query.html"), function (e) {
+                                resolve(true);
+                            }, function (err) {
+                                console.error(err);
+                                resolve(false);
+                            });
+                        });
+                    }
+                    this._renderQuery(query);
                 }
+            };
+            QueryPresenter.prototype._renderQuery = function (query) {
+                var _this = this;
+                Vidyano.WebComponents.QueryPresenter._queryComponentLoader.then(function () {
+                    if (query !== _this.query)
+                        return;
+                    var queryComponent = new Vidyano.WebComponents.Query();
+                    queryComponent.query = query;
+                    Polymer.dom(_this).appendChild(queryComponent);
+                    _this._setLoading(false);
+                });
             };
             return QueryPresenter;
         })(WebComponents.WebComponent);

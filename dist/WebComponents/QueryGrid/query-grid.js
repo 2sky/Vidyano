@@ -171,6 +171,8 @@ var Vidyano;
                     this._lastSelectedItemIndex = indexOfItem;
             };
             QueryGrid.prototype._sizeChanged = function (e, detail) {
+                if (!detail.width || !detail.height)
+                    return;
                 this._setViewport(detail);
                 this.items.updateRows();
                 this._updateScrollBarsVisibility();

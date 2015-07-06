@@ -1,6 +1,6 @@
 {
   "name": "Vidyano",
-  "version": "0.5.1-alpha",
+  "version": "0.5.2-alpha",
   "license": "MIT",
   "ignore": [
     "/*.*",
@@ -37,7 +37,7 @@
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.2",
     "es6-promise": "2sky/es6-promise#^2.3.0",
     "linqjs": "2sky/linqjs#3.0.3-Beta4",
-    "pathjs": "2sky/pathjs#0.8.4.1",
+    "pathjs": "2sky/pathjs#master",
     "sortable": "2sky/sortable#^1.2.0",
     "layout": "2sky/layout#master"
   }

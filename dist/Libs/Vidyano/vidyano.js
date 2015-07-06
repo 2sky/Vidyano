@@ -176,11 +176,12 @@ var Vidyano;
     })(Common = Vidyano.Common || (Vidyano.Common = {}));
     var Service = (function (_super) {
         __extends(Service, _super);
-        function Service(serviceUri, hooks) {
+        function Service(serviceUri, hooks, _forceUser) {
             if (hooks === void 0) { hooks = new ServiceHooks(); }
             _super.call(this);
             this.serviceUri = serviceUri;
             this.hooks = hooks;
+            this._forceUser = _forceUser;
             this._lastAuthTokenUpdate = new Date();
             this.environment = "Web";
             this.environmentVersion = "2";
@@ -407,7 +408,7 @@ var Vidyano;
         };
         Object.defineProperty(Service.prototype, "userName", {
             get: function () {
-                return Vidyano.cookie("userName", { force: !this.staySignedIn });
+                return this._forceUser || Vidyano.cookie("userName", { force: !this.staySignedIn });
             },
             enumerable: true,
             configurable: true
@@ -431,9 +432,13 @@ var Vidyano;
         });
         Object.defineProperty(Service.prototype, "authToken", {
             get: function () {
+                if (this._forceUser)
+                    return null;
                 return Vidyano.cookie("authToken", { force: !this.staySignedIn });
             },
             set: function (val) {
+                if (this._forceUser)
+                    return;
                 if (this.staySignedIn)
                     Vidyano.cookie("authToken", val, { expires: 14 });
                 else
@@ -482,7 +487,7 @@ var Vidyano;
                 else {
                     _this._setUserName(_this.userName || _this._clientData.defaultUser);
                     _this._setIsSignedIn(!StringEx.isNullOrEmpty(_this.authToken));
-                    if (_this.isSignedIn || ((_this._clientData.defaultUser || _this.windowsAuthentication) && !skipDefaultCredentialLogin))
+                    if (_this._forceUser || _this.isSignedIn || ((_this._clientData.defaultUser || _this.windowsAuthentication) && !skipDefaultCredentialLogin))
                         return _this._getApplication();
                     else
                         return Promise.resolve(_this.application);
@@ -1399,6 +1404,7 @@ var Vidyano;
         };
         PersistentObject.prototype.refreshFromResult = function (result) {
             var _this = this;
+            this._serviceTabs = result._serviceTabs;
             this.setNotification(result.notification, result.notificationType);
             var resultAttributesEnum = Enumerable.from(result.attributes);
             if (this.attributes.length != result.attributes.length ||
@@ -1527,7 +1533,7 @@ var Vidyano;
             this.name = attr.name;
             this.type = attr.type;
             this.label = attr.label;
-            this._serviceValue = attr.value;
+            this._serviceValue = attr.value !== undefined ? attr.value : null;
             this.group = attr.group;
             this.tab = attr.tab;
             this.isReadOnly = !!attr.isReadOnly;
@@ -1614,7 +1620,7 @@ var Vidyano;
         });
         Object.defineProperty(PersistentObjectAttribute.prototype, "value", {
             get: function () {
-                if (this._lastParsedValue != this._serviceValue) {
+                if (this._lastParsedValue !== this._serviceValue) {
                     this._lastParsedValue = this._serviceValue;
                     this._cachedValue = Service.fromServiceString(this._serviceValue, this.type);
                 }
@@ -1751,7 +1757,7 @@ var Vidyano;
             if ((!this.isReadOnly && this._refreshValue !== undefined ? this._refreshValue : this.value) != resultAttr.value) {
                 var oldDisplayValue = this.displayValue;
                 var oldValue = this.value;
-                this.notifyPropertyChanged(name, this.value = resultAttr.value, oldValue);
+                this.notifyPropertyChanged("value", this.value = resultAttr.value, oldValue);
                 this.notifyPropertyChanged("displayValue", this.displayValue, oldDisplayValue);
             }
             this._refreshValue = undefined;
@@ -1847,10 +1853,11 @@ var Vidyano;
         PersistentObjectAttributeWithReference.prototype._refreshFromResult = function (resultAttr) {
             var resultAttrWithRef = resultAttr;
             this.objectId = resultAttrWithRef.objectId;
-            _super.prototype._refreshFromResult.call(this, resultAttr);
+            var visibilityChanged = _super.prototype._refreshFromResult.call(this, resultAttr);
             this.displayAttribute = resultAttrWithRef.displayAttribute;
             this.canAddNewReference = resultAttrWithRef.canAddNewReference;
             this.selectInPlace = resultAttrWithRef.selectInPlace;
+            return visibilityChanged;
         };
         return PersistentObjectAttributeWithReference;
     })(PersistentObjectAttribute);
@@ -1888,7 +1895,7 @@ var Vidyano;
         PersistentObjectAttributeAsDetail.prototype._refreshFromResult = function (resultAttr) {
             var _this = this;
             var asDetailAttr = resultAttr;
-            _super.prototype._refreshFromResult.call(this, resultAttr);
+            var visibilityChanged = _super.prototype._refreshFromResult.call(this, resultAttr);
             if (this.objects != null && asDetailAttr.objects != null) {
                 this.objects = asDetailAttr.objects.map(function (obj) {
                     obj.parent = _this.parent;
@@ -1896,6 +1903,7 @@ var Vidyano;
                     return obj;
                 });
             }
+            return visibilityChanged;
         };
         PersistentObjectAttributeAsDetail.prototype.onChanged = function (allowRefresh) {
             var _this = this;

@@ -62,8 +62,6 @@ var Vidyano;
                         computed: "_computeCanBrowseReference(attribute.isReadOnly)",
                     },
                 }
-            }, function (ctor) {
-                Attributes["PersistentObjectAttributeNullableUser"] = ctor;
             });
         })(Attributes = WebComponents.Attributes || (WebComponents.Attributes = {}));
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

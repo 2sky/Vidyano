@@ -13,41 +13,87 @@ var Vidyano;
         })(WebComponents.PathObserverState || (WebComponents.PathObserverState = {}));
         var PathObserverState = WebComponents.PathObserverState;
         ;
-        (function (KeyCodes) {
-            KeyCodes[KeyCodes["backspace"] = 8] = "backspace";
-            KeyCodes[KeyCodes["tab"] = 9] = "tab";
-            KeyCodes[KeyCodes["enter"] = 13] = "enter";
-            KeyCodes[KeyCodes["shift"] = 16] = "shift";
-            KeyCodes[KeyCodes["control"] = 17] = "control";
-            KeyCodes[KeyCodes["alt"] = 18] = "alt";
-            KeyCodes[KeyCodes["pause"] = 19] = "pause";
-            KeyCodes[KeyCodes["break"] = 19] = "break";
-            KeyCodes[KeyCodes["capslock"] = 20] = "capslock";
-            KeyCodes[KeyCodes["escape"] = 27] = "escape";
-            KeyCodes[KeyCodes["pageup"] = 33] = "pageup";
-            KeyCodes[KeyCodes["pagedown"] = 34] = "pagedown";
-            KeyCodes[KeyCodes["end"] = 35] = "end";
-            KeyCodes[KeyCodes["home"] = 36] = "home";
-            KeyCodes[KeyCodes["leftarrow"] = 37] = "leftarrow";
-            KeyCodes[KeyCodes["uparrow"] = 38] = "uparrow";
-            KeyCodes[KeyCodes["rightarrow"] = 39] = "rightarrow";
-            KeyCodes[KeyCodes["downarrow"] = 40] = "downarrow";
-            KeyCodes[KeyCodes["comma"] = 44] = "comma";
-            KeyCodes[KeyCodes["subtract"] = 45] = "subtract";
-            KeyCodes[KeyCodes["period"] = 46] = "period";
-            KeyCodes[KeyCodes["zero"] = 48] = "zero";
-            KeyCodes[KeyCodes["one"] = 49] = "one";
-            KeyCodes[KeyCodes["two"] = 50] = "two";
-            KeyCodes[KeyCodes["three"] = 51] = "three";
-            KeyCodes[KeyCodes["four"] = 52] = "four";
-            KeyCodes[KeyCodes["five"] = 53] = "five";
-            KeyCodes[KeyCodes["six"] = 54] = "six";
-            KeyCodes[KeyCodes["seven"] = 55] = "seven";
-            KeyCodes[KeyCodes["eight"] = 56] = "eight";
-            KeyCodes[KeyCodes["nine"] = 57] = "nine";
-        })(WebComponents.KeyCodes || (WebComponents.KeyCodes = {}));
-        var KeyCodes = WebComponents.KeyCodes;
-        ;
+        var Keyboard;
+        (function (Keyboard) {
+            (function (KeyCodes) {
+                KeyCodes[KeyCodes["backspace"] = 8] = "backspace";
+                KeyCodes[KeyCodes["tab"] = 9] = "tab";
+                KeyCodes[KeyCodes["enter"] = 13] = "enter";
+                KeyCodes[KeyCodes["shift"] = 16] = "shift";
+                KeyCodes[KeyCodes["control"] = 17] = "control";
+                KeyCodes[KeyCodes["alt"] = 18] = "alt";
+                KeyCodes[KeyCodes["pause"] = 19] = "pause";
+                KeyCodes[KeyCodes["break"] = 19] = "break";
+                KeyCodes[KeyCodes["capslock"] = 20] = "capslock";
+                KeyCodes[KeyCodes["escape"] = 27] = "escape";
+                KeyCodes[KeyCodes["pageup"] = 33] = "pageup";
+                KeyCodes[KeyCodes["pagedown"] = 34] = "pagedown";
+                KeyCodes[KeyCodes["end"] = 35] = "end";
+                KeyCodes[KeyCodes["home"] = 36] = "home";
+                KeyCodes[KeyCodes["leftarrow"] = 37] = "leftarrow";
+                KeyCodes[KeyCodes["uparrow"] = 38] = "uparrow";
+                KeyCodes[KeyCodes["rightarrow"] = 39] = "rightarrow";
+                KeyCodes[KeyCodes["downarrow"] = 40] = "downarrow";
+                KeyCodes[KeyCodes["comma"] = 44] = "comma";
+                KeyCodes[KeyCodes["subtract"] = 45] = "subtract";
+                KeyCodes[KeyCodes["period"] = 46] = "period";
+                KeyCodes[KeyCodes["zero"] = 48] = "zero";
+                KeyCodes[KeyCodes["one"] = 49] = "one";
+                KeyCodes[KeyCodes["two"] = 50] = "two";
+                KeyCodes[KeyCodes["three"] = 51] = "three";
+                KeyCodes[KeyCodes["four"] = 52] = "four";
+                KeyCodes[KeyCodes["five"] = 53] = "five";
+                KeyCodes[KeyCodes["six"] = 54] = "six";
+                KeyCodes[KeyCodes["seven"] = 55] = "seven";
+                KeyCodes[KeyCodes["eight"] = 56] = "eight";
+                KeyCodes[KeyCodes["nine"] = 57] = "nine";
+            })(Keyboard.KeyCodes || (Keyboard.KeyCodes = {}));
+            var KeyCodes = Keyboard.KeyCodes;
+            ;
+            Keyboard.KeyIdentifiers = {
+                "tab": "U+0009",
+                "esc": "U+001B",
+                "space": "U+0020",
+                "*": "U+002A",
+                "0": "U+0030",
+                "1": "U+0031",
+                "2": "U+0032",
+                "3": "U+0033",
+                "4": "U+0034",
+                "5": "U+0035",
+                "6": "U+0036",
+                "7": "U+0037",
+                "8": "U+0038",
+                "9": "U+0039",
+                "a": "U+0041",
+                "b": "U+0042",
+                "c": "U+0043",
+                "d": "U+0044",
+                "e": "U+0045",
+                "f": "U+0046",
+                "g": "U+0047",
+                "h": "U+0048",
+                "i": "U+0049",
+                "j": "U+004A",
+                "k": "U+004B",
+                "l": "U+004C",
+                "m": "U+004D",
+                "n": "U+004E",
+                "o": "U+004F",
+                "p": "U+0050",
+                "q": "U+0051",
+                "r": "U+0052",
+                "s": "U+0053",
+                "t": "U+0054",
+                "u": "U+0055",
+                "v": "U+0056",
+                "w": "U+0057",
+                "x": "U+0058",
+                "y": "U+0059",
+                "z": "U+005A",
+                "del": "U+007F",
+            };
+        })(Keyboard = WebComponents.Keyboard || (WebComponents.Keyboard = {}));
         ////////////////////////////////////////////////////
         // Get browser scrollbar width and height
         ////////////////////////////////////////////////////
@@ -240,6 +286,58 @@ var Vidyano;
                         };
                     });
                 }
+                if (info.keybindings) {
+                    (info.observers = info.observers || []).push("_keybindingsObserver(isAttached)");
+                    wcPrototype["_keybindingsObserver"] = function (isAttached) {
+                        var _this = this;
+                        if (isAttached) {
+                            if (!this._keybindingRegistrations)
+                                this._keybindingRegistrations = [];
+                            var registerKeybinding = function (keys) {
+                                var keybinding = _this.keybindings[keys];
+                                if (typeof keybinding === "string")
+                                    keybinding = { listener: keybinding };
+                                var listener = _this[keybinding.listener];
+                                if (!listener) {
+                                    console.warn("Keybindings listener '" + keybinding.listener + "' not found on element " + _this.is);
+                                    return;
+                                }
+                                var eventListener = function (e) {
+                                    listener.call(_this, e.detail.keyboardEvent);
+                                    e.stopPropagation();
+                                    e.detail.keyboardEvent.stopPropagation();
+                                    e.detail.keyboardEvent.preventDefault();
+                                };
+                                var element = document.createElement("iron-a11y-keys");
+                                element.keys = keys;
+                                element.addEventListener("keys-pressed", eventListener);
+                                var registration = {
+                                    keys: keys.split(" "),
+                                    element: element,
+                                    listener: eventListener,
+                                    priority: keybinding.priority || 0,
+                                    nonExclusive: keybinding.nonExclusive
+                                };
+                                _this._keybindingRegistrations.push(registration);
+                                Polymer.dom(_this.root).appendChild(element);
+                                _this.app._registerKeybindings(registration);
+                            };
+                            for (var keys in this.keybindings) {
+                                registerKeybinding(keys);
+                            }
+                        }
+                        else {
+                            if (this._keybindingRegistrations) {
+                                while (this._keybindingRegistrations.length > 0) {
+                                    var reg = this._keybindingRegistrations.splice(0, 1)[0];
+                                    this.app._unregisterKeybindings(reg);
+                                    reg.element.removeEventListener(reg.listener);
+                                    Polymer.dom(this.root).removeChild(reg.element);
+                                }
+                            }
+                        }
+                    };
+                }
                 var extendFunction = function (proto, p, elementName) {
                     if (verboseSkipLogFunctions.indexOf(p) == -1 && (verboseLogElements.indexOf(elementName) > -1 || verboseLogFunctions.indexOf(p) > -1)) {
                         return function () {
@@ -281,18 +379,6 @@ var Vidyano;
                 }
                 if (typeof finalized == 'function')
                     finalized(ns[name]);
-            };
-            //x TODO: REMOVE
-            WebComponent.registerTODO = function (obj, ns, prefix, properties, computed, finalized) {
-                if (prefix === void 0) { prefix = "vi"; }
-                if (properties === void 0) { properties = {}; }
-                if (computed === void 0) { computed = {}; }
-            };
-            //x TODO: REMOVE
-            WebComponent.registerLightTODO = function (obj, ns, prefix, publish, computed, finalized) {
-                if (prefix === void 0) { prefix = "vi"; }
-                if (publish === void 0) { publish = {}; }
-                if (computed === void 0) { computed = {}; }
             };
             return WebComponent;
         })();

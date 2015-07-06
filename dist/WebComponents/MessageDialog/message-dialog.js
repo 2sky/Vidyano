@@ -46,6 +46,12 @@ var Vidyano;
             },
             hostAttributes: {
                 "dialog": ""
+            },
+            keybindings: {
+                "esc": {
+                    listener: "_close",
+                    priority: Number.MAX_VALUE
+                }
             }
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

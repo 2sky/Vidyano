@@ -63,15 +63,55 @@ var Vidyano;
             PersistentObjectPresenter.prototype._computeHasError = function (error) {
                 return !StringEx.isNullOrEmpty(error);
             };
-            PersistentObjectPresenter.prototype._persistentObjectChanged = function (newPersistentObject, oldPersistentObject) {
+            PersistentObjectPresenter.prototype._persistentObjectChanged = function (persistentObject, oldPersistentObject) {
+                var _this = this;
                 if (oldPersistentObject)
                     this.empty();
-                if (this.persistentObject) {
-                    var persistentObject = new Vidyano.WebComponents.PersistentObject();
-                    persistentObject.persistentObject = this.persistentObject;
-                    Polymer.dom(this).appendChild(persistentObject);
+                if (persistentObject) {
+                    if (!Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader) {
+                        Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader = new Promise(function (resolve) {
+                            _this.importHref(_this.resolveUrl("../PersistentObject/persistent-object.html"), function (e) {
+                                resolve(true);
+                            }, function (err) {
+                                console.error(err);
+                                resolve(false);
+                            });
+                        });
+                    }
+                    this._renderPersistentObject(persistentObject);
                 }
-                this._setLoading(false);
+            };
+            PersistentObjectPresenter.prototype._renderPersistentObject = function (persistentObject) {
+                var _this = this;
+                Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader.then(function () {
+                    if (persistentObject !== _this.persistentObject)
+                        return;
+                    var persistentObjectComponent = new Vidyano.WebComponents.PersistentObject();
+                    persistentObjectComponent.persistentObject = persistentObject;
+                    Polymer.dom(_this).appendChild(persistentObjectComponent);
+                    _this._setLoading(false);
+                });
+            };
+            PersistentObjectPresenter.prototype._edit = function () {
+                if (!this.persistentObject)
+                    return;
+                var action = this.persistentObject.actions["Edit"];
+                if (action)
+                    action.execute();
+            };
+            PersistentObjectPresenter.prototype._save = function () {
+                if (!this.persistentObject)
+                    return;
+                var action = (this.persistentObject.actions["Save"] || this.persistentObject.actions["EndEdit"]);
+                if (action)
+                    action.execute();
+            };
+            PersistentObjectPresenter.prototype._cancelSave = function () {
+                if (!this.persistentObject)
+                    return;
+                var action = (this.persistentObject.actions["CancelEdit"] || this.persistentObject.actions["CancelSave"]);
+                if (action)
+                    action.execute();
             };
             return PersistentObjectPresenter;
         })(WebComponents.WebComponent);
@@ -111,6 +151,14 @@ var Vidyano;
             ],
             listeners: {
                 "activating": "_activating"
+            },
+            keybindings: {
+                "f2": {
+                    listener: "_edit",
+                    priority: 10
+                },
+                "ctrl+s": "_save",
+                "esc": "_cancelSave"
             }
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

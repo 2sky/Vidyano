@@ -25,7 +25,7 @@ var Vidyano;
                     return;
                 if (this.items && this.items.length > 0) {
                     var currentIndex = this.filteredItems.indexOf(this.filtering ? this.suggestion : this.selectedItem);
-                    if (e.which == WebComponents.KeyCodes.downarrow) {
+                    if (e.which == WebComponents.Keyboard.KeyCodes.downarrow) {
                         this.popup.popup();
                         if (currentIndex + 1 < this.items.length) {
                             if (this.filtering)
@@ -36,7 +36,7 @@ var Vidyano;
                         e.stopPropagation();
                         e.preventDefault();
                     }
-                    else if (e.which == WebComponents.KeyCodes.uparrow) {
+                    else if (e.which == WebComponents.Keyboard.KeyCodes.uparrow) {
                         this.popup.popup();
                         if (currentIndex > 0) {
                             if (this.filtering)
@@ -47,18 +47,18 @@ var Vidyano;
                         e.stopPropagation();
                         e.preventDefault();
                     }
-                    else if (e.which == WebComponents.KeyCodes.enter || e.which == WebComponents.KeyCodes.tab) {
+                    else if (e.which == WebComponents.Keyboard.KeyCodes.enter || e.which == WebComponents.Keyboard.KeyCodes.tab) {
                         this.popup.close();
                         if (this.suggestion !== this.selectedItem)
                             this._setSelectedItem(this.suggestion);
                         else
                             this._selectedItemChanged();
-                        if (e.which == WebComponents.KeyCodes.enter) {
+                        if (e.which == WebComponents.Keyboard.KeyCodes.enter) {
                             e.stopPropagation();
                             e.preventDefault();
                         }
                     }
-                    else if (e.which == WebComponents.KeyCodes.escape) {
+                    else if (e.which == WebComponents.Keyboard.KeyCodes.escape) {
                         this.popup.close();
                         if (this.filtering)
                             this._setFiltering(false);
@@ -72,7 +72,7 @@ var Vidyano;
                 }
             };
             Select.prototype._keyup = function (e) {
-                if (this._lastMatchedInputValue != this._inputValue && !this.filtering && e.which != WebComponents.KeyCodes.enter && e.which != WebComponents.KeyCodes.tab && e.which != WebComponents.KeyCodes.escape)
+                if (this._lastMatchedInputValue != this._inputValue && !this.filtering && e.which != WebComponents.Keyboard.KeyCodes.enter && e.which != WebComponents.KeyCodes.tab && e.which != WebComponents.KeyCodes.escape)
                     this._setFiltering(true);
             };
             Select.prototype._openPopup = function () {

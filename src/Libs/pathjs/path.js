@@ -83,6 +83,8 @@ var Path = {
                         var splittedSlice = slice.split(this.splitRegex);
                         for (i = 0; i < splittedSlice.length; i++) {
                             var splittedCompare = compare.split(this.splitRegex);
+                            if (splittedCompare.length > splittedSlice.length)
+                                splittedCompare = splittedCompare.slice(0, splittedSlice.length - 1).concat(splittedCompare.slice(splittedSlice.length - 1).join("."));
                             if ((i < splittedCompare.length) && (splittedSlice[i].charAt(0) === ":")) {
                                 params[splittedSlice[i].replace(/:/, '')] = splittedCompare[i];
                                 compare = compare.replace(new RegExp("(\\b|^|\\.|\\/)" + splittedCompare[i].replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&") + "(\\b|$|\\.|\\/)"), "$1" + splittedSlice[i] + "$2");

@@ -15,7 +15,7 @@ var Vidyano;
                 function PersistentObjectAttributeCommonMark() {
                     var _this = this;
                     _super.call(this);
-                    this.importHref(this.resolveUrl("../../../../Bower/marked-element/marked-element.html"), function (e) {
+                    this.importHref(this.resolveUrl("../../../Libs/marked-element/marked-element.html"), function (e) {
                         _this._setMarkedElementLoaded(true);
                     });
                 }

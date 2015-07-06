@@ -33,8 +33,6 @@ var Vidyano;
                 properties: {
                     maxlength: Number
                 }
-            }, function (ctor) {
-                Attributes["PersistentObjectAttributeMultiString"] = ctor;
             });
         })(Attributes = WebComponents.Attributes || (WebComponents.Attributes = {}));
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
