@@ -37,8 +37,6 @@
                 this.selectedMasterTab = this._cacheEntry.selectedMasterTab || this._computeMasterTabs(this.persistentObject, this.persistentObject.tabs)[0];
                 this.selectedDetailTab = this._cacheEntry.selectedDetailTab || this._computeDetailTabs(this.persistentObject, this.persistentObject.tabs)[0];
             }
-            else
-                this._cacheEntry = this.selectedMasterTab = this.selectedDetailTab = undefined;
         }
 
         private _masterWidthChanged() {

@@ -1,20 +1,19 @@
 ﻿<link rel="import" href="../ActionButton/action-button.html" />
 <link rel="import" href="../InputSearch/input-search.html" />
-<link rel="import" href="../Toolbar/toolbar.html" />
 
 <dom-module id="vi-action-bar">
     <template>
-        <vi-toolbar class="flex">
+        <vi-overflow class="flex">
             <template is="dom-repeat" items="{{unpinnedActions}}">
                 <vi-action-button action="{{item}}"></vi-action-button>
             </template>
-            <template is="dom-repeat" items="{{pinnedActions}}">
-                <vi-action-button pinned action="{{item}}"></vi-action-button>
-            </template>
-            <template is="dom-if" if="{{canSearch}}">
-                <vi-input-search pinned value="{{serviceObject.textSearch}}" on-search="_search"></vi-input-search>
-            </template>
-        </vi-toolbar>
+        </vi-overflow>
+        <template is="dom-repeat" items="{{pinnedActions}}">
+            <vi-action-button pinned action="{{item}}"></vi-action-button>
+        </template>
+        <template is="dom-if" if="{{canSearch}}">
+            <vi-input-search pinned value="{{serviceObject.textSearch}}" on-search="_search"></vi-input-search>
+        </template>
     </template>
 </dom-module>
 

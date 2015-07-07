@@ -23,9 +23,12 @@ var Vidyano;
                         this._decimalSeparator = Vidyano.CultureInfo.currentCulture.numberFormat.numberDecimalSeparator;
                     }
                 };
-                PersistentObjectAttributeNumeric.prototype._editInputBlur = function () {
+                PersistentObjectAttributeNumeric.prototype._editInputBlur = function (e) {
                     if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)
                         this.attribute.value = this.value;
+                    var input = e.target;
+                    if (input.value === "" || input.value == null)
+                        input.value = this.attribute.value;
                 };
                 PersistentObjectAttributeNumeric.prototype._canParse = function (value) {
                     if (!value && this.attribute.type.startsWith("Nullable"))
