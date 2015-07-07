@@ -5,7 +5,7 @@
         <template is="dom-if" if="{{!noLabel}}">
             <div class="label">
                 <label>{{attribute.label}}</label>
-                <span class="required">Required</span>
+                <span class="required">{{translateMessage('Required', isAttached)}}</span>
             </div>
         </template>
         <content></content>

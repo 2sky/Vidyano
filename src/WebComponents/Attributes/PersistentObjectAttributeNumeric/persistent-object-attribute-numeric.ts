@@ -18,9 +18,13 @@
             }
         }
 
-        private _editInputBlur() {
+        private _editInputBlur(e: Event) {
             if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)
                 this.attribute.value = this.value;
+
+            var input = <HTMLInputElement>e.target;
+            if (input.value === "" || input.value == null)
+                input.value = this.attribute.value;
         }
 
         private _canParse(value: string): boolean {
