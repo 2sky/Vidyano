@@ -175,7 +175,14 @@
             horizontalSpacer.style.width = (this._horizontalSpacerWidth = this.items.hosts.pinned.offsetWidth + this.items.hosts.unpinned.offsetWidth - this.remainderWidth + this.items.hosts.header.offsetWidth) + "px";
         }
 
-        private _measureColumnsListener() {
+        private _updateScrollBarsListener(e: CustomEvent) {
+            e.stopPropagation();
+            this._updateScrollBarsVisibility();
+        }
+
+        private _measureColumnsListener(e: CustomEvent) {
+            e.stopPropagation();
+
             var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
 
             this._setStyle("ColumnWidths", []);
@@ -658,8 +665,10 @@
                         return;
                     }
 
-                    if (this._virtualHeight != this._rowHeight * this.grid.query.totalItems)
+                    if (this._virtualHeight != this._rowHeight * this.grid.query.totalItems) {
                         this._verticalSpacer.style.height = (this._virtualHeight = (this._rowHeight * this.grid.query.totalItems)) + "px";
+                        this.grid.fire("update-scrollbars", null);
+                    }
 
                     var numberOfItemRows = Math.min(this._rowsStartIndex + this._items.length, this.grid.query.totalItems);
                     this._items.slice(0, numberOfItemRows).forEach((row, i) => row.item = items[i]);
@@ -1598,6 +1607,7 @@
         listeners: {
             "measure-columns": "_measureColumnsListener",
             "column-width-updated": "_columnWidthUpdatedListener",
+            "update-scrollbars": "_updateScrollBarsListener",
             "item-select": "_itemSelectListener",
             "filter-changed": "_filterChangedListener",
             "column-filter-changed": "_columnFilterChangedListener"

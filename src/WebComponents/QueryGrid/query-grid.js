@@ -141,8 +141,13 @@ var Vidyano;
                 }
                 horizontalSpacer.style.width = (this._horizontalSpacerWidth = this.items.hosts.pinned.offsetWidth + this.items.hosts.unpinned.offsetWidth - this.remainderWidth + this.items.hosts.header.offsetWidth) + "px";
             };
-            QueryGrid.prototype._measureColumnsListener = function () {
+            QueryGrid.prototype._updateScrollBarsListener = function (e) {
+                e.stopPropagation();
+                this._updateScrollBarsVisibility();
+            };
+            QueryGrid.prototype._measureColumnsListener = function (e) {
                 var _this = this;
+                e.stopPropagation();
                 var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
                 this._setStyle("ColumnWidths", []);
                 columns.forEach(function (c) {
@@ -557,8 +562,10 @@ var Vidyano;
                             this.updateRows();
                             return;
                         }
-                        if (this._virtualHeight != this._rowHeight * this.grid.query.totalItems)
+                        if (this._virtualHeight != this._rowHeight * this.grid.query.totalItems) {
                             this._verticalSpacer.style.height = (this._virtualHeight = (this._rowHeight * this.grid.query.totalItems)) + "px";
+                            this.grid.fire("update-scrollbars", null);
+                        }
                         var numberOfItemRows = Math.min(this._rowsStartIndex + this._items.length, this.grid.query.totalItems);
                         this._items.slice(0, numberOfItemRows).forEach(function (row, i) { return row.item = items[i]; });
                         this._items.slice(numberOfItemRows, this._items.length).forEach(function (row) { return row.item = null; });
@@ -1351,6 +1358,7 @@ var Vidyano;
             listeners: {
                 "measure-columns": "_measureColumnsListener",
                 "column-width-updated": "_columnWidthUpdatedListener",
+                "update-scrollbars": "_updateScrollBarsListener",
                 "item-select": "_itemSelectListener",
                 "filter-changed": "_filterChangedListener",
                 "column-filter-changed": "_columnFilterChangedListener"
