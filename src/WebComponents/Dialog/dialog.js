@@ -53,6 +53,25 @@ var Vidyano;
                 this._setShown(false);
                 this._instance.reject();
             };
+            Dialog.prototype._track = function (e, detail) {
+                if (detail.state == "track") {
+                    this._set_translate({
+                        x: this._translate.x + detail.ddx,
+                        y: this._translate.y + detail.ddy
+                    });
+                }
+                else if (detail.state == "start") {
+                    if (!this._translate)
+                        this._set_translate({ x: 0, y: 0 });
+                    this._setDragging(true);
+                }
+                else if (detail.state == "end")
+                    this._setDragging(false);
+            };
+            Dialog.prototype._translateChanged = function () {
+                var dialog = this.$["dialog"];
+                dialog.style.webkitTransform = dialog.style.transform = "translate(" + this._translate.x + "px, " + this._translate.y + "px)";
+            };
             return Dialog;
         })(WebComponents.WebComponent);
         WebComponents.Dialog = Dialog;
@@ -67,6 +86,16 @@ var Vidyano;
                     type: Boolean,
                     readOnly: true,
                     reflectToAttribute: true
+                },
+                dragging: {
+                    type: Boolean,
+                    readOnly: true,
+                    reflectToAttribute: true
+                },
+                _translate: {
+                    type: Object,
+                    readOnly: true,
+                    observer: "_translateChanged"
                 }
             }
         });

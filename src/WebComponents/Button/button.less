@@ -1,0 +1,61 @@
+﻿@import (reference) "../vidyano.less";
+
+button[is="vi-button"] {
+    -moz-transition-property: fill, color, background-color;
+    -o-transition-property: fill, color, background-color;
+    -webkit-transition-property: fill, color, background-color;
+    transition-property: fill, color, background-color;
+    -moz-transition-duration: 0.1s;
+    -o-transition-duration: 0.1s;
+    -webkit-transition-duration: 0.1s;
+    transition-duration: 0.1s;
+    -moz-transition-timing-function: ease-out;
+    -o-transition-timing-function: ease-out;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+
+    &:not([inverse]) {
+        .colorize({
+            background-color: @@color;
+            color: white;
+
+            &:hover {
+                background-color: @@color;
+            }
+
+            &:active {
+                background-color: darken(@@color, 10%);
+            }
+
+            &[disabled] {
+                fill: fadeout(white, 50%);
+                color: fadeout(white, 50%);
+            }
+        }
+
+        );
+    }
+
+    &[inverse] {
+        .colorize({
+            background-color: transparent;
+            color: @@color-darker;
+            fill: #595959;
+
+            &:hover {
+                background-color: @@color-faint;
+            }
+
+            &:active {
+                background-color: @@color-dark;
+                fill: white !important;
+                color: white !important;
+            }
+
+            &[disabled] {
+                fill: @@color-faint;
+                color: fadeout(black, 50%);
+            }
+        });
+    }
+}

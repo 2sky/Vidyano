@@ -2323,6 +2323,7 @@ module Vidyano {
         private _labelWithTotalItems: string;
         private _sortOptions: SortOption[];
         private _queriedPages: Array<number> = [];
+        private _filters: PersistentObject;
 
         persistentObject: PersistentObject;
         columns: QueryColumn[];
@@ -2390,8 +2391,15 @@ module Vidyano {
                     bulkEdit.selectionRule = count => count == 1;
             }
 
+            if (query.filters)
+                this._filters = service.hooks.onConstructPersistentObject(service, query.filters);
+
             if (query.result)
                 this._setResult(query.result);
+        }
+
+        get filters(): PersistentObject {
+            return this._filters;
         }
 
         get selectedItems(): QueryResultItem[] {
@@ -2498,7 +2506,7 @@ module Vidyano {
 
             var oldLabelWithTotalItems = this._labelWithTotalItems;
             this._labelWithTotalItems = (this.totalItems != null ? this.totalItems + " " : "") + (this.totalItems != 1 ? this.label : (this.singularLabel || this.persistentObject.label || this.persistentObject.type));
-            this.notifyPropertyChanged("totalItems", this._labelWithTotalItems, oldLabelWithTotalItems);
+            this.notifyPropertyChanged("labelWithTotalItems", this._labelWithTotalItems, oldLabelWithTotalItems);
         }
 
         _toServiceObject() {
@@ -2948,6 +2956,7 @@ module Vidyano {
         private _block: boolean;
         private _parameters: any = {};
         private _offset: number;
+        skipOpen: boolean;
         selectionRule: (count: number) => boolean;
         displayName: string;
         options: Array<string> = [];
@@ -3057,8 +3066,6 @@ module Vidyano {
                         selectedItems = this.query.selectedItems;
 
                     this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters).then(po => {
-                        var result = null;
-
                         if (po != null) {
                             if (po.fullTypeName == "Vidyano.Notification") {
                                 if (po.objectId != null && JSON.parse(po.objectId).dialog) {
@@ -3075,14 +3082,16 @@ module Vidyano {
                             } else {
                                 po.ownerQuery = this.query;
                                 po.ownerPersistentObject = this.parent;
-                                this.service.hooks.onOpen(result = po, false, true);
+
+                                if (!this.skipOpen)
+                                    this.service.hooks.onOpen(po, false, true);
                             }
                         }
 
                         if (this.query != null && this.definition.refreshQueryOnCompleted)
                             this.query.search();
 
-                        resolve(result);
+                        resolve(po);
                     }, error => {
                             reject(error);
                         });
@@ -3306,9 +3315,9 @@ module Vidyano {
                         helpWindow.close();
                     return null;
                 }, e => {
-                    helpWindow.close();
-                    this.owner.setNotification(e);
-                });
+                        helpWindow.close();
+                        this.owner.setNotification(e);
+                    });
             }
         }
     }

@@ -153,7 +153,7 @@ vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[he
 [theme-color-1] vi-persistent-object-attribute-edit .buttons > .button:hover,
 [theme-color-1] vi-persistent-object-attribute-edit .buttons > [button]:hover,
 [theme-color-1] vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header]:hover {
-  background-color: #f0f0f0;
+  background-color: #e7f0f4;
 }
 [theme-color-1] vi-persistent-object-attribute-edit .buttons > button:active,
 [theme-color-1] vi-persistent-object-attribute-edit .buttons > .button:active,
@@ -194,7 +194,7 @@ vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[he
 [theme-color-2] vi-persistent-object-attribute-edit .buttons > .button:hover,
 [theme-color-2] vi-persistent-object-attribute-edit .buttons > [button]:hover,
 [theme-color-2] vi-persistent-object-attribute-edit .buttons > vi-popup:not([content]) button[header]:hover {
-  background-color: #f0f0f0;
+  background-color: #e5f4f2;
 }
 [theme-color-2] vi-persistent-object-attribute-edit .buttons > button:active,
 [theme-color-2] vi-persistent-object-attribute-edit .buttons > .button:active,

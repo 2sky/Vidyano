@@ -48,3 +48,7 @@ vi-popup-menu-item > span {
 [theme-color-2] vi-popup-menu-item:hover {
   background-color: #e5f4f2;
 }
+vi-popup-menu-item-separator {
+  display: block;
+  border-top: 1px solid #ddd;
+}

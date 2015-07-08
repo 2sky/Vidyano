@@ -1,0 +1,16 @@
+vi-persistent-object-dialog vi-dialog .content {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  width: 500px;
+  padding: 6px;
+}
+vi-persistent-object-dialog vi-dialog .content > div {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  overflow: hidden;
+}

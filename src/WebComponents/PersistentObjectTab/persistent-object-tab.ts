@@ -88,9 +88,9 @@ module Vidyano.WebComponents {
             this.style.marginRight = "-" + scrollbarWidth().toString(10) + "px";
         }
 
-        private _tabChanged() {
-            this._setDesignModeAvailable(this.tab && this.tab.parent.actions["viConfigurePO"] !== undefined);
-            this._setAuthored(this.tab && !!this.tab.layout);
+        private _tabChanged(tab: Vidyano.PersistentObjectAttributeTab, oldTab: Vidyano.PersistentObjectAttributeTab) {
+            this._setDesignModeAvailable(tab && tab.parent.actions["viConfigurePO"] !== undefined);
+            this._setAuthored(tab && !!tab.layout);
         }
 
         private _computeCells(items: PersistentObjectTabItem[], columns: number, rows: number): PersistentObjectTabCell[][] {
@@ -129,14 +129,14 @@ module Vidyano.WebComponents {
                 cell.style.width = width + "px";
                 if (x == 0 && y == 0) {
                     this._setCellWidth(width);
-                    this._setCellHeight(cell.asElement.offsetHeight);
+                    this._setCellHeight(parseInt(window.getComputedStyle(cell.asElement).height));
                 }
             }, cells);
 
             this.$["cells"].style.width = (width * this.columns) + "px";
-            this.$["cells"].style.height = (rows * this.cellHeight) + "px";
+            this.$["cells"].style.height = ((rows - 1) * this.cellHeight) + "px";
             this.$["items"].style.width = (width * this.columns) + "px";
-            this.$["items"].style.height = this.$["cells"].offsetHeight + "px";
+            this.$["items"].style.height = ((rows - 1) * this.cellHeight) + "px";
 
             return cells;
         }
@@ -256,6 +256,9 @@ module Vidyano.WebComponents {
         private _sizeChanged(e: Event, detail: { width: number; height: number }) {
             this._setWidth(detail.width);
             this._setHeight(detail.height);
+
+            if (!this.tab)
+                return;
 
             if (!this.authored) {
                 if (this.tab.columnCount) {

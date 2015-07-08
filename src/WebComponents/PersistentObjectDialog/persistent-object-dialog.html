@@ -1,0 +1,21 @@
+﻿<link rel="import" href="../PersistentObjectTab/persistent-object-tab.html" />
+
+<dom-module id="vi-persistent-object-dialog">
+    <template>
+        <vi-dialog id="dialog">
+            <header class="horizontal layout">
+                <h4 class="flex">{{persistentObject.breadcrumb}}</h4>
+            </header>
+            <div>
+                <vi-persistent-object-tab class="flex" tab="{{tab}}" columns="1"></vi-persistent-object-tab>
+            </div>
+            <footer class="horizontal layout end-justified">
+                <button on-tap="_save" action-type="Default">{{translations.Save}}</button>
+                <button on-tap="_cancel">{{translations.Cancel}}</button>
+            </footer>
+        </vi-dialog>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="persistent-object-dialog.css" />
+<script src="persistent-object-dialog.js"></script>

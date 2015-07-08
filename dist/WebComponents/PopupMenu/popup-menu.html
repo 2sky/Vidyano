@@ -7,7 +7,7 @@
                 </template>
             </div>
             <div content vertical layout>
-                <content select="vi-popup-menu-item"></content>
+                <content select="vi-popup-menu-item, vi-popup-menu-item-separator"></content>
             </div>
         </vi-popup>
     </template>
@@ -20,12 +20,15 @@
         </template>
         <span>{{label}}</span>
         <vi-popup open-on-hover>
+            <!--<vi-resource source="Icon_Forward" header></vi-resource>-->
             <div content vertical layout>
                 <content select="vi-popup-menu-item"></content>
             </div>
         </vi-popup>
     </template>
 </dom-module>
+
+<dom-module id="vi-popup-menu-item-separator"></dom-module>
 
 <link rel="stylesheet" href="popup-menu.css" />
 <script src="popup-menu.js"></script>

@@ -1,0 +1,76 @@
+button[is="vi-button"] {
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.1s;
+  -o-transition-duration: 0.1s;
+  -webkit-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+  -moz-transition-timing-function: ease-out;
+  -o-transition-timing-function: ease-out;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+[theme-color-1] button[is="vi-button"]:not([inverse]) {
+  background-color: #126790;
+  color: white;
+}
+[theme-color-1] button[is="vi-button"]:not([inverse]):hover {
+  background-color: #126790;
+}
+[theme-color-1] button[is="vi-button"]:not([inverse]):active {
+  background-color: #0c4763;
+}
+[theme-color-1] button[is="vi-button"]:not([inverse])[disabled] {
+  fill: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+}
+[theme-color-2] button[is="vi-button"]:not([inverse]) {
+  background-color: #009688;
+  color: white;
+}
+[theme-color-2] button[is="vi-button"]:not([inverse]):hover {
+  background-color: #009688;
+}
+[theme-color-2] button[is="vi-button"]:not([inverse]):active {
+  background-color: #00635a;
+}
+[theme-color-2] button[is="vi-button"]:not([inverse])[disabled] {
+  fill: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+}
+[theme-color-1] button[is="vi-button"][inverse] {
+  background-color: transparent;
+  color: #043d59;
+  fill: #595959;
+}
+[theme-color-1] button[is="vi-button"][inverse]:hover {
+  background-color: #e7f0f4;
+}
+[theme-color-1] button[is="vi-button"][inverse]:active {
+  background-color: #095072;
+  fill: white !important;
+  color: white !important;
+}
+[theme-color-1] button[is="vi-button"][inverse][disabled] {
+  fill: #e7f0f4;
+  color: rgba(0, 0, 0, 0.5);
+}
+[theme-color-2] button[is="vi-button"][inverse] {
+  background-color: transparent;
+  color: #005d53;
+  fill: #595959;
+}
+[theme-color-2] button[is="vi-button"][inverse]:hover {
+  background-color: #e5f4f2;
+}
+[theme-color-2] button[is="vi-button"][inverse]:active {
+  background-color: #00776a;
+  fill: white !important;
+  color: white !important;
+}
+[theme-color-2] button[is="vi-button"][inverse][disabled] {
+  fill: #e5f4f2;
+  color: rgba(0, 0, 0, 0.5);
+}

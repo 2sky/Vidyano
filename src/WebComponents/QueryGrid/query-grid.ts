@@ -29,6 +29,7 @@
         private _styles: { [key: string]: Text } = {};
         private _queryPropertyObservers: Vidyano.Common.SubjectDisposer[] = [];
         private _itemOpening: Vidyano.QueryResultItem;
+        private _lastSelectedItemIndex: number;
         private remainderWidth: number;
         viewport: Viewport;
         query: Vidyano.Query;
@@ -194,7 +195,6 @@
             this._setStyle("ColumnWidths", Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(c => "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }").toArray());
         }
 
-        private _lastSelectedItemIndex: number;
         private _itemSelectListener(e: CustomEvent, detail: { item: Vidyano.QueryResultItem; rangeSelect: boolean }) {
             if (!detail.item)
                 return;
@@ -209,6 +209,18 @@
             
             if (detail.item.isSelected = !detail.item.isSelected)
                 this._lastSelectedItemIndex = indexOfItem;
+        }
+
+        private _filterChangedListener(e: Event) {
+            e.stopPropagation();
+
+            this.filters.refreshColumns();
+        }
+
+        private _columnFilterChangedListener(e: Event) {
+            e.stopPropagation();
+
+            this.filters.refreshHeader();
         }
 
         private _sizeChanged(e: Event, detail: { width: number; height: number }) {
@@ -490,6 +502,17 @@
 
                 this.hosts.header.appendChild(this._filterMenu);
             }
+        }
+
+        refreshColumns() {
+            var columns = <WebComponents.QueryGridColumnFilter[]><any[]>Enumerable.from(this.hosts.pinned.children).concat(Enumerable.from(this.hosts.unpinned.children).toArray()).where(c => c instanceof WebComponents.QueryGridColumnFilter).toArray();
+            columns.forEach(col => col.refresh());
+        }
+
+        refreshHeader() {
+            var header = <QueryGridFilters><any>this.hosts.header.querySelector("vi-query-grid-filters");
+            if (header)
+                header.fire("column-filter-changed", null);
         }
 
         protected _createRemainder(): HTMLElement {
@@ -1139,6 +1162,10 @@
             this._updateFiltered();
         }
 
+        refresh() {
+            this._updateFiltered();
+        }
+
         private _getTargetCollection(): string[] {
             return !this.inversed ? this.gridColumn.column.includes : this.gridColumn.column.excludes;
         }
@@ -1234,6 +1261,8 @@
         private _updateDistincts() {
             var distinctsDiv = <HTMLElement>this.$["distincts"];
             this._renderDistincts(distinctsDiv);
+
+            this.fire("column-filter-changed", null);
 
             this._setLoading(true);
             this.gridColumn.column.query.search().then(() => {
@@ -1569,7 +1598,9 @@
         listeners: {
             "measure-columns": "_measureColumnsListener",
             "column-width-updated": "_columnWidthUpdatedListener",
-            "item-select": "_itemSelectListener"
+            "item-select": "_itemSelectListener",
+            "filter-changed": "_filterChangedListener",
+            "column-filter-changed": "_columnFilterChangedListener"
         }
     });
 

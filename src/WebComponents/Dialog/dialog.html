@@ -3,7 +3,9 @@
         <div id="overlay"></div>
         <div id="dialogHost" class="horizontal center-justified center layout">
             <div id="dialog">
-                <content select="header"></content>
+                <div class="header" on-track="_track">
+                    <content select="header"></content>
+                </div>
                 <div class="content">
                     <content select=":not(footer):not(header)"></content>
                 </div>

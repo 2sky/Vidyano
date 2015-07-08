@@ -5,27 +5,50 @@
 vi-query-grid-filters {
     > vi-popup-menu {
         button[header] {
+            .relative();
             .flex();
-            text-align: left;
+            z-index: 1;
+            text-align: center;
             line-height: @h2;
             height: @h2;
-            padding: 0;
+            background-color: red;
+            /*padding: 0;
             cursor: pointer;
-            .colorize-button-inverse();
+
+            .colorize-button-inverse(#f8f8f8);
 
             vi-resource {
-                .layout-start-justified();
+                .layout-center-justified();
 
                 svg {
-                    width: @h2;
-                    height: @h2;
-                    fill: #333;
+                    width: @h3;
+                    height: @h3;
+                    fill: #666;
                 }
             }
+
+            &::after {
+                content: "";
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: 0;
+                height: 0;
+                border-top: (@h2 / 2) solid transparent;
+                border-bottom: (@h2 / 2) solid transparent;
+                border-left-width: 8px;
+                border-left-style: solid;
+                background-color: white;
+            }*/
+        }
+
+        vi-popup-menu-item {
+            line-height: @h2;
+            height: @h2;
         }
     }
 
-    vi-popup[open]:hover {
+    vi-popup[open] {
         button[header] {
             .colorize( {
                 background-color: @@color-faint;
@@ -34,36 +57,6 @@ vi-query-grid-filters {
                     fill: @@color;
                 }
             });
-        }
-    }
-
-    #saveAsNewDialog {
-        [content] {
-            padding: @h4;
-
-            label {
-                display: block;
-            }
-
-            input {
-                width: 16em;
-                border: 1px solid #333;
-                font-size: 13px;
-                background-color: transparent;
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0 @h5;
-                line-height: @h2 - 2px;
-                outline: none;
-                color: #333;
-                margin-bottom: @h4;
-
-                &:focus {
-                    .colorize( {
-                        border-color: @@color;
-                    });
-                }
-            }
         }
     }
 }

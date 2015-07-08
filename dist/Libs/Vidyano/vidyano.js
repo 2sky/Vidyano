@@ -2074,9 +2074,18 @@ var Vidyano;
                 if (bulkEdit)
                     bulkEdit.selectionRule = function (count) { return count == 1; };
             }
+            if (query.filters)
+                this._filters = service.hooks.onConstructPersistentObject(service, query.filters);
             if (query.result)
                 this._setResult(query.result);
         }
+        Object.defineProperty(Query.prototype, "filters", {
+            get: function () {
+                return this._filters;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Query.prototype, "selectedItems", {
             get: function () {
                 return this.items ? this.items.filter(function (i) { return i.isSelected; }) : [];
@@ -2182,7 +2191,7 @@ var Vidyano;
             this.notifyPropertyChanged("totalItems", this._totalItems = items, oldTotalItems);
             var oldLabelWithTotalItems = this._labelWithTotalItems;
             this._labelWithTotalItems = (this.totalItems != null ? this.totalItems + " " : "") + (this.totalItems != 1 ? this.label : (this.singularLabel || this.persistentObject.label || this.persistentObject.type));
-            this.notifyPropertyChanged("totalItems", this._labelWithTotalItems, oldLabelWithTotalItems);
+            this.notifyPropertyChanged("labelWithTotalItems", this._labelWithTotalItems, oldLabelWithTotalItems);
         };
         Query.prototype._toServiceObject = function () {
             var result = this.copyProperties(["id", "name", "label", "pageSize", "skip", "top", "textSearch"]);
@@ -2672,7 +2681,6 @@ var Vidyano;
                     if (selectedItems == null && _this.query && _this.query.selectedItems)
                         selectedItems = _this.query.selectedItems;
                     _this.service.executeAction(_this._targetType + "." + _this.definition.name, _this.parent, _this.query, selectedItems, parameters).then(function (po) {
-                        var result = null;
                         if (po != null) {
                             if (po.fullTypeName == "Vidyano.Notification") {
                                 if (po.objectId != null && JSON.parse(po.objectId).dialog) {
@@ -2692,12 +2700,13 @@ var Vidyano;
                             else {
                                 po.ownerQuery = _this.query;
                                 po.ownerPersistentObject = _this.parent;
-                                _this.service.hooks.onOpen(result = po, false, true);
+                                if (!_this.skipOpen)
+                                    _this.service.hooks.onOpen(po, false, true);
                             }
                         }
                         if (_this.query != null && _this.definition.refreshQueryOnCompleted)
                             _this.query.search();
-                        resolve(result);
+                        resolve(po);
                     }, function (error) {
                         reject(error);
                     });

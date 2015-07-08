@@ -378,7 +378,7 @@ var Vidyano;
                         titleIcon: "Icon_Action_Delete",
                         message: this.service.getTranslatedMessage("AskForDeleteItems"),
                         actions: [this.service.getTranslatedMessage("Delete"), this.service.getTranslatedMessage("Cancel")],
-                        actionTypes: ["Danger", "Safe"]
+                        actionTypes: ["Danger"]
                     }).then(function (result) {
                         return result == 0 ? args.executeServiceRequest() : Promise.reject(null);
                     });

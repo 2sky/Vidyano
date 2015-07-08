@@ -43,6 +43,10 @@ module Vidyano.WebComponents {
     }
 
     export class PopupMenuItem extends WebComponent {
+        label: string;
+    }
+
+    export class PopupMenuItemSeparator extends WebComponent {
     }
 
     WebComponent.register(PopupMenu, WebComponents, "vi", {
@@ -71,4 +75,6 @@ module Vidyano.WebComponents {
             label: String
         }
     });
+
+    WebComponent.register(PopupMenuItemSeparator, WebComponents, "vi");
 }

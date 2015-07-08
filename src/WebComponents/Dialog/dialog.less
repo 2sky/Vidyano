@@ -9,6 +9,10 @@ vi-dialog {
     bottom: 0;
     z-index: 10000000;
 
+    &[dragging] {
+        cursor: move !important;
+    }
+
     #overlay, #dialogHost {
         position: fixed;
         top: 0;
@@ -36,11 +40,11 @@ vi-dialog {
         background-color: white;
         .z-index1();
 
-        > header, > footer {
+        > .header > header, > footer {
             background-color: #FAFAFA;
         }
 
-        & > header {
+        & .header > header {
             line-height: @h1;
             padding: @h5 @h4;
             border-bottom: 1px solid #EEE;

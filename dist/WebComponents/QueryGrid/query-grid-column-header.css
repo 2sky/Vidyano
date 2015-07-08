@@ -40,7 +40,7 @@ vi-query-grid-column-header button {
   transition-timing-function: ease-in-out;
 }
 [theme-color-1] vi-query-grid-column-header button:hover {
-  background-color: #f0f0f0;
+  background-color: #e7f0f4;
 }
 [theme-color-1] vi-query-grid-column-header button:active {
   background-color: #095072;
@@ -69,7 +69,7 @@ vi-query-grid-column-header button {
   transition-timing-function: ease-in-out;
 }
 [theme-color-2] vi-query-grid-column-header button:hover {
-  background-color: #f0f0f0;
+  background-color: #e5f4f2;
 }
 [theme-color-2] vi-query-grid-column-header button:active {
   background-color: #00776a;

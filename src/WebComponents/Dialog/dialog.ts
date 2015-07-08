@@ -17,10 +17,12 @@ module Vidyano.WebComponents {
     }
 
     export class Dialog extends WebComponent {
+        private _translate: { x: number; y: number };
         private _instance: DialogInstance;
-        private _position: { x: number; y: number };
         private _setShown: (shown: boolean) => void;
         private _setAutoSize: (autoSize: boolean) => void;
+        private _setDragging: (dragging: boolean) => void;
+        private _set_translate: (translate: { x: number; y: number }) => void;
 
         show(options: DialogOptions = {}): DialogInstance {
             var resolve: Function;
@@ -48,6 +50,28 @@ module Vidyano.WebComponents {
 
             this._instance.reject();
         }
+
+        private _track(e: CustomEvent, detail: PolymerTrackDetail) {
+            if (detail.state == "track") {
+                this._set_translate({
+                    x: this._translate.x + detail.ddx,
+                    y: this._translate.y + detail.ddy
+                });
+            }
+            else if (detail.state == "start") {
+                if (!this._translate)
+                    this._set_translate({ x: 0, y: 0 });
+
+                this._setDragging(true);
+            }
+            else if (detail.state == "end")
+                this._setDragging(false);
+        }
+
+        private _translateChanged() {
+            var dialog = this.$["dialog"];
+            dialog.style.webkitTransform = dialog.style.transform = "translate(" + this._translate.x + "px, " + this._translate.y + "px)";
+        }
     }
 
     WebComponent.register(Dialog, WebComponents, "vi", {
@@ -63,6 +87,16 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true
+            },
+            dragging: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            _translate: {
+                type: Object,
+                readOnly: true,
+                observer: "_translateChanged"
             }
         }
     });

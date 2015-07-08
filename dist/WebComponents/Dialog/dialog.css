@@ -7,6 +7,9 @@ vi-dialog {
   bottom: 0;
   z-index: 10000000;
 }
+vi-dialog[dragging] {
+  cursor: move !important;
+}
 vi-dialog #overlay,
 vi-dialog #dialogHost {
   position: fixed;
@@ -34,21 +37,21 @@ vi-dialog #dialog {
   -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
-vi-dialog #dialog > header,
+vi-dialog #dialog > .header > header,
 vi-dialog #dialog > footer {
   background-color: #FAFAFA;
 }
-vi-dialog #dialog > header {
+vi-dialog #dialog .header > header {
   line-height: 40px;
   padding: 6px 12px;
   border-bottom: 1px solid #EEE;
 }
-vi-dialog #dialog > header h4 {
+vi-dialog #dialog .header > header h4 {
   margin: 0;
   font-weight: 500;
   font-size: 120%;
 }
-vi-dialog #dialog > header button.close {
+vi-dialog #dialog .header > header button.close {
   margin: 0;
   padding: 0 6px;
   fill: #888;
@@ -56,13 +59,13 @@ vi-dialog #dialog > header button.close {
   border: none;
   cursor: pointer;
 }
-vi-dialog #dialog > header button.close:hover {
+vi-dialog #dialog .header > header button.close:hover {
   fill: #555;
 }
-vi-dialog #dialog > header button.close:active {
+vi-dialog #dialog .header > header button.close:active {
   fill: #333;
 }
-vi-dialog #dialog > header button.close:focus {
+vi-dialog #dialog .header > header button.close:focus {
   outline: none;
 }
 vi-dialog #dialog > footer {
@@ -201,7 +204,7 @@ vi-dialog #dialog > footer > button[action-type="Safe"][disabled] {
 }
 [theme-color-1] vi-dialog #dialog > footer > button[action-type=""]:hover,
 [theme-color-1] vi-dialog #dialog > footer > button:not([action-type]):hover {
-  background-color: #f0f0f0;
+  background-color: #e7f0f4;
 }
 [theme-color-1] vi-dialog #dialog > footer > button[action-type=""]:active,
 [theme-color-1] vi-dialog #dialog > footer > button:not([action-type]):active {
@@ -234,7 +237,7 @@ vi-dialog #dialog > footer > button[action-type="Safe"][disabled] {
 }
 [theme-color-2] vi-dialog #dialog > footer > button[action-type=""]:hover,
 [theme-color-2] vi-dialog #dialog > footer > button:not([action-type]):hover {
-  background-color: #f0f0f0;
+  background-color: #e5f4f2;
 }
 [theme-color-2] vi-dialog #dialog > footer > button[action-type=""]:active,
 [theme-color-2] vi-dialog #dialog > footer > button:not([action-type]):active {

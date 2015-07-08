@@ -70,9 +70,9 @@ var Vidyano;
                 _super.prototype.attached.call(this);
                 this.style.marginRight = "-" + WebComponents.scrollbarWidth().toString(10) + "px";
             };
-            PersistentObjectTab.prototype._tabChanged = function () {
-                this._setDesignModeAvailable(this.tab && this.tab.parent.actions["viConfigurePO"] !== undefined);
-                this._setAuthored(this.tab && !!this.tab.layout);
+            PersistentObjectTab.prototype._tabChanged = function (tab, oldTab) {
+                this._setDesignModeAvailable(tab && tab.parent.actions["viConfigurePO"] !== undefined);
+                this._setAuthored(tab && !!tab.layout);
             };
             PersistentObjectTab.prototype._computeCells = function (items, columns, rows) {
                 var _this = this;
@@ -106,13 +106,13 @@ var Vidyano;
                     cell.style.width = width + "px";
                     if (x == 0 && y == 0) {
                         _this._setCellWidth(width);
-                        _this._setCellHeight(cell.asElement.offsetHeight);
+                        _this._setCellHeight(parseInt(window.getComputedStyle(cell.asElement).height));
                     }
                 }, cells);
                 this.$["cells"].style.width = (width * this.columns) + "px";
-                this.$["cells"].style.height = (rows * this.cellHeight) + "px";
+                this.$["cells"].style.height = ((rows - 1) * this.cellHeight) + "px";
                 this.$["items"].style.width = (width * this.columns) + "px";
-                this.$["items"].style.height = this.$["cells"].offsetHeight + "px";
+                this.$["items"].style.height = ((rows - 1) * this.cellHeight) + "px";
                 return cells;
             };
             PersistentObjectTab.prototype._autoArrange = function (force) {
@@ -208,6 +208,8 @@ var Vidyano;
             PersistentObjectTab.prototype._sizeChanged = function (e, detail) {
                 this._setWidth(detail.width);
                 this._setHeight(detail.height);
+                if (!this.tab)
+                    return;
                 if (!this.authored) {
                     if (this.tab.columnCount) {
                         this.columns = this.tab.columnCount;

@@ -170,6 +170,14 @@ var Vidyano;
                 if (detail.item.isSelected = !detail.item.isSelected)
                     this._lastSelectedItemIndex = indexOfItem;
             };
+            QueryGrid.prototype._filterChangedListener = function (e) {
+                e.stopPropagation();
+                this.filters.refreshColumns();
+            };
+            QueryGrid.prototype._columnFilterChangedListener = function (e) {
+                e.stopPropagation();
+                this.filters.refreshHeader();
+            };
             QueryGrid.prototype._sizeChanged = function (e, detail) {
                 if (!detail.width || !detail.height)
                     return;
@@ -423,6 +431,15 @@ var Vidyano;
                     this._filterMenu = document.createElement("div");
                     this.hosts.header.appendChild(this._filterMenu);
                 }
+            };
+            QueryGridColumnFilters.prototype.refreshColumns = function () {
+                var columns = Enumerable.from(this.hosts.pinned.children).concat(Enumerable.from(this.hosts.unpinned.children).toArray()).where(function (c) { return c instanceof WebComponents.QueryGridColumnFilter; }).toArray();
+                columns.forEach(function (col) { return col.refresh(); });
+            };
+            QueryGridColumnFilters.prototype.refreshHeader = function () {
+                var header = this.hosts.header.querySelector("vi-query-grid-filters");
+                if (header)
+                    header.fire("column-filter-changed", null);
             };
             QueryGridColumnFilters.prototype._createRemainder = function () {
                 var remainder = document.createElement("div");
@@ -950,6 +967,9 @@ var Vidyano;
                 }
                 this._updateFiltered();
             };
+            QueryGridColumnFilter.prototype.refresh = function () {
+                this._updateFiltered();
+            };
             QueryGridColumnFilter.prototype._getTargetCollection = function () {
                 return !this.inversed ? this.gridColumn.column.includes : this.gridColumn.column.excludes;
             };
@@ -1027,6 +1047,7 @@ var Vidyano;
                 var _this = this;
                 var distinctsDiv = this.$["distincts"];
                 this._renderDistincts(distinctsDiv);
+                this.fire("column-filter-changed", null);
                 this._setLoading(true);
                 this.gridColumn.column.query.search().then(function () {
                     return _this.gridColumn.column.refreshDistincts().then(function (distincts) {
@@ -1330,7 +1351,9 @@ var Vidyano;
             listeners: {
                 "measure-columns": "_measureColumnsListener",
                 "column-width-updated": "_columnWidthUpdatedListener",
-                "item-select": "_itemSelectListener"
+                "item-select": "_itemSelectListener",
+                "filter-changed": "_filterChangedListener",
+                "column-filter-changed": "_columnFilterChangedListener"
             }
         });
         Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.QueryGridColumnHeader, Vidyano.WebComponents, "vi", {

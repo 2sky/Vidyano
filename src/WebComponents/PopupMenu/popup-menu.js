@@ -51,6 +51,14 @@ var Vidyano;
             return PopupMenuItem;
         })(WebComponents.WebComponent);
         WebComponents.PopupMenuItem = PopupMenuItem;
+        var PopupMenuItemSeparator = (function (_super) {
+            __extends(PopupMenuItemSeparator, _super);
+            function PopupMenuItemSeparator() {
+                _super.apply(this, arguments);
+            }
+            return PopupMenuItemSeparator;
+        })(WebComponents.WebComponent);
+        WebComponents.PopupMenuItemSeparator = PopupMenuItemSeparator;
         WebComponents.WebComponent.register(PopupMenu, WebComponents, "vi", {
             properties: {
                 contextMenuOnly: {
@@ -76,5 +84,6 @@ var Vidyano;
                 label: String
             }
         });
+        WebComponents.WebComponent.register(PopupMenuItemSeparator, WebComponents, "vi");
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

@@ -3,30 +3,25 @@
 <dom-module id="vi-query-grid-filters">
     <template>
         <vi-popup-menu>
-            <button header>
+            <button header is="vi-button" inverse>
                 <vi-resource source="Icon_FilterMenu"></vi-resource>
             </button>
-            <vi-popup-menu-item icon="Icon_New" label="Save as new filter..." on-tap="_saveAsNew"></vi-popup-menu-item>
+            <template is="dom-if" if="{{filtering}}">
+                <vi-popup-menu-item icon="Icon_New" label="{{translations.Reset}}" on-tap="_reset"></vi-popup-menu-item>
+            </template>
+            <template is="dom-if" if="{{currentFilter}}">
+                <vi-popup-menu-item icon="Icon_Save" label="{{_getCurrentFilterSave(currentFilter)}}" on-tap="_saveCurrent"></vi-popup-menu-item>
+            </template>
+            <vi-popup-menu-item icon="Icon_New" label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
+            <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
             <template is="dom-repeat" items="{{filters}}" as="filter">
-                <vi-popup-menu-item label="{{filter.header}}">
-                    <vi-popup-menu-item icon="Icon_Delete" label="{{translations.Delete}}"></vi-popup-menu-item>
+                <vi-popup-menu-item label="{{filter}}" data-filter$="{{filter}}" on-tap="_load">
+                    <vi-popup-menu-item icon="Icon_Edit" label="Edit..." data-filter$="{{filter}}" on-tap="_edit"></vi-popup-menu-item>
+                    <vi-popup-menu-item icon="Icon_Delete" label="{{translations.Delete}}" data-filter$="{{filter}}" on-tap="_delete"></vi-popup-menu-item>
                 </vi-popup-menu-item>
             </template>
         </vi-popup-menu>
-        <vi-dialog id="saveAsNewDialog">
-            <header>
-                <h4 class="flex">Save as new filter...</h4>
-            </header>
-            <div content>
-                <label for="name">Name:</label>
-                <input id="name" value="{{name::input}}" autofocus />
-                <vi-checkbox label="Default filter"></vi-checkbox>
-            </div>
-            <footer class="horizontal layout end-justified">
-                <button on-tap="_ok">{{translations.OK}}</button>
-                <button on-tap="_cancel">{{translations.Cancel}}</button>
-            </footer>
-        </vi-dialog>
+        <vi-persistent-object-dialog id="dialog"></vi-persistent-object-dialog>
     </template>
 </dom-module>
 

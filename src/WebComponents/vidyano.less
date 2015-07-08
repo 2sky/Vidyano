@@ -89,14 +89,14 @@
     transition-timing-function: ease-out;
 }
 
-.colorize-button-inverse() {
+.colorize-button-inverse(@bgColor: transparent) {
     .colorize({
-        background-color: transparent;
+        background-color: @bgColor;
         color: @@color-darker;
         fill: #595959;
 
         &:hover {
-            background-color: #f0f0f0;
+            background-color: @@color-faint;
         }
 
         &:active {

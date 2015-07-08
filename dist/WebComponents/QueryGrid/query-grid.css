@@ -71,7 +71,6 @@ vi-query-grid .columnHost {
 vi-query-grid .columnHost > * {
   display: inline-block;
   white-space: nowrap;
-  overflow: hidden;
 }
 vi-query-grid .columnHost > *:nth-child(3) {
   overflow-x: auto;
