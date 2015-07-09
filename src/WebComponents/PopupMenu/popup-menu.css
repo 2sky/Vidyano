@@ -31,7 +31,7 @@ vi-popup-menu-item {
   fill: #009688;
 }
 vi-popup-menu-item > vi-resource {
-  padding-left: 6px;
+  width: 30px;
 }
 vi-popup-menu-item > vi-resource:not([has-resource]) {
   display: none;
@@ -47,6 +47,9 @@ vi-popup-menu-item > span {
 }
 [theme-color-2] vi-popup-menu-item:hover {
   background-color: #e5f4f2;
+}
+vi-popup-menu-item[icon-space] {
+  padding-left: 30px;
 }
 vi-popup-menu-item-separator {
   display: block;

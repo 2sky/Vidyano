@@ -33,7 +33,7 @@ vi-popup-menu-item {
     });
 
     > vi-resource {
-        padding-left: @h5;
+        width: @h2;
 
         &:not([has-resource]) {
             display: none;
@@ -49,6 +49,10 @@ vi-popup-menu-item {
         .colorize({
             background-color: @@color-faint;
         });
+    }
+
+    &[icon-space] {
+        padding-left: @h2;
     }
 }
 
