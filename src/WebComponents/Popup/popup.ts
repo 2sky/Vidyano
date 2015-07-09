@@ -55,20 +55,20 @@ module Vidyano.WebComponents {
 
             if (this.isAttached) {
                 if (this.openOnHover) {
-                    this._header.addEventListener("mouseenter", this._enterHandler = this._onOpen.bind(this))
-                    this._header.addEventListener("mouseleave", this._leaveHandler = this.close.bind(this));
+                    this.asElement.addEventListener("mouseenter", this._enterHandler = this._onOpen.bind(this))
+                    this.asElement.addEventListener("mouseleave", this._leaveHandler = this.close.bind(this));
                 }
                 else
                     this._header.addEventListener("tap", this._tapHandler = this._tap.bind(this));
             }
             else {
                 if (this._enterHandler) {
-                    this._header.removeEventListener("mouseenter", this._enterHandler);
+                    this.asElement.removeEventListener("mouseenter", this._enterHandler);
                     this._enterHandler = undefined;
                 }
 
                 if (this._leaveHandler) {
-                    this._header.removeEventListener("mouseleave", this._leaveHandler);
+                    this.asElement.removeEventListener("mouseleave", this._leaveHandler);
                     this._leaveHandler = undefined
                 }
 

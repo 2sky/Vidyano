@@ -15,12 +15,16 @@
 
 <dom-module id="vi-popup-menu-item">
     <template>
-        <template is="dom-if" if="{{icon}}">
-            <vi-resource source="{{icon}}"></vi-resource>
-        </template>
-        <span>{{label}}</span>
+        <div class="flex horizontal layout">
+            <template is="dom-if" if="{{icon}}">
+                <vi-resource source="{{icon}}"></vi-resource>
+            </template>
+            <span>{{label}}</span>
+        </div>
         <vi-popup open-on-hover>
-            <!--<vi-resource source="Icon_Forward" header></vi-resource>-->
+            <template is="dom-if" if="{{split}}">
+                <vi-resource source="Icon_Forward" header></vi-resource>
+            </template>
             <div content vertical layout>
                 <content select="vi-popup-menu-item"></content>
             </div>

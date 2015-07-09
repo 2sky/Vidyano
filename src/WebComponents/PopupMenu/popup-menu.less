@@ -32,27 +32,50 @@ vi-popup-menu-item {
         fill: @@color;
     });
 
-    > vi-resource {
-        width: @h2;
+     > div {
+         > vi-resource {
+            width: @h2;
 
-        &:not([has-resource]) {
-            display: none;
+            &:not([has-resource]) {
+                display: none;
+            }
         }
-    }
 
-    > span {
-        .flex();
-        padding: 0 @h5;
-    }
+        > span {
+            .flex();
+            padding: 0 @h5;
+        }
 
-    &:hover {
-        .colorize({
-            background-color: @@color-faint;
-        });
-    }
+        > vi-resource[has-resource] ~ span {
+            padding-left: 0;
+        }
 
-    &[icon-space] {
+        &:hover {
+            .colorize({
+                background-color: @@color-faint;
+            });
+        }
+     }
+
+    &[icon-space] > div > span {
         padding-left: @h2;
+    }
+
+    &[split] {
+        > vi-popup {
+            vi-resource[header] {
+                width: @h2;
+                height: @h2;
+                box-sizing: border-box;
+                border-left: 1px solid #ddd;
+            }
+
+            &:hover vi-resource[header] {
+                .colorize({
+                    background-color: @@color-faint;
+                });
+            }
+        }
     }
 }
 

@@ -11,11 +11,14 @@
             </template>
             <template is="dom-if" if="{{currentFilter}}">
                 <vi-popup-menu-item icon="Icon_Filter_Save" label="{{_getCurrentFilterSave(currentFilter)}}" on-tap="_saveCurrent"></vi-popup-menu-item>
+                <vi-popup-menu-item icon-space label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
             </template>
-            <vi-popup-menu-item icon-space label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
+            <template is="dom-if" if="{{!currentFilter}}">
+                <vi-popup-menu-item icon="Icon_Filter_Save" label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
+            </template>
             <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
             <template is="dom-repeat" items="{{filters}}" as="filter">
-                <vi-popup-menu-item icon-space label="{{filter}}" data-filter$="{{filter}}" on-tap="_load">
+                <vi-popup-menu-item icon-space split label="{{filter}}" data-filter$="{{filter}}" on-tap="_load">
                     <vi-popup-menu-item icon="Icon_Action_Edit" label="{{editLabel}}" data-filter$="{{filter}}" on-tap="_edit"></vi-popup-menu-item>
                     <vi-popup-menu-item icon="Icon_Action_Delete" label="{{translations.Delete}}" data-filter$="{{filter}}" on-tap="_delete"></vi-popup-menu-item>
                 </vi-popup-menu-item>

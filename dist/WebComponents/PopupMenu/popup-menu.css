@@ -30,26 +30,41 @@ vi-popup-menu-item {
   color: #009688;
   fill: #009688;
 }
-vi-popup-menu-item > vi-resource {
+vi-popup-menu-item > div > vi-resource {
   width: 30px;
 }
-vi-popup-menu-item > vi-resource:not([has-resource]) {
+vi-popup-menu-item > div > vi-resource:not([has-resource]) {
   display: none;
 }
-vi-popup-menu-item > span {
+vi-popup-menu-item > div > span {
   -ms-flex: 1;
   -webkit-flex: 1;
   flex: 1;
   padding: 0 6px;
 }
-[theme-color-1] vi-popup-menu-item:hover {
+vi-popup-menu-item > div > vi-resource[has-resource] ~ span {
+  padding-left: 0;
+}
+[theme-color-1] vi-popup-menu-item > div:hover {
   background-color: #e7f0f4;
 }
-[theme-color-2] vi-popup-menu-item:hover {
+[theme-color-2] vi-popup-menu-item > div:hover {
   background-color: #e5f4f2;
 }
-vi-popup-menu-item[icon-space] {
+vi-popup-menu-item[icon-space] > div > span {
   padding-left: 30px;
+}
+vi-popup-menu-item[split] > vi-popup vi-resource[header] {
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  border-left: 1px solid #ddd;
+}
+[theme-color-1] vi-popup-menu-item[split] > vi-popup:hover vi-resource[header] {
+  background-color: #e7f0f4;
+}
+[theme-color-2] vi-popup-menu-item[split] > vi-popup:hover vi-resource[header] {
+  background-color: #e5f4f2;
 }
 vi-popup-menu-item-separator {
   display: block;

@@ -80,8 +80,16 @@ var Vidyano;
         });
         WebComponents.WebComponent.register(PopupMenuItem, WebComponents, "vi", {
             properties: {
+                label: String,
                 icon: String,
-                label: String
+                iconSpace: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                },
+                split: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                }
             }
         });
         WebComponents.WebComponent.register(PopupMenuItemSeparator, WebComponents, "vi");
