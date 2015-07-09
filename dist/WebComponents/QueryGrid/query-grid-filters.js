@@ -15,7 +15,7 @@ var Vidyano;
             }
             QueryGridFilters.prototype._queryChanged = function (query) {
                 this._setFilters(query && query.filters ? this._computeFilters(query.filters) : null);
-                if (query) {
+                if (query && query.filters) {
                     var filterAttr = this.query.filters.attributesByName["Filters"];
                     var defaultFilter = Enumerable.from(filterAttr.objects).firstOrDefault(function (filter) { return filter.getAttributeValue("IsDefault"); });
                     if (defaultFilter)
@@ -26,9 +26,40 @@ var Vidyano;
                 else
                     this._setCurrentFilter(null);
             };
+            QueryGridFilters.prototype._currentFilterChanged = function () {
+                try {
+                    this._preventColumnFilterChangedListener = true;
+                    this.fire("filter-changed", null);
+                    this._updateFiltering();
+                }
+                finally {
+                    this._preventColumnFilterChangedListener = false;
+                }
+            };
             QueryGridFilters.prototype._computeFilters = function (filters) {
                 var filterAttr = filters.attributesByName["Filters"];
                 return filterAttr.objects.map(function (filter) { return filter.getAttributeValue("Name"); }).sort(function (a, b) { return a.toLowerCase().localeCompare(b.toLowerCase()); });
+            };
+            QueryGridFilters.prototype._columnFilterChangedListener = function (e) {
+                e.stopPropagation();
+                if (!this._preventColumnFilterChangedListener)
+                    this._updateFiltering();
+            };
+            QueryGridFilters.prototype._updateFiltering = function () {
+                this._setFiltering(this.query && this.query.columns.some(function (c) { return (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0); }));
+            };
+            QueryGridFilters.prototype._getFilterObject = function (name) {
+                var filterAttr = this.query.filters.attributesByName["Filters"];
+                return Enumerable.from(filterAttr.objects).firstOrDefault(function (filter) { return filter.getAttributeValue("Name") === name; });
+            };
+            QueryGridFilters.prototype._getColumnsFilterData = function (query) {
+                return JSON.stringify(query.columns.filter(function (c) { return (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0); }).map(function (c) {
+                    return {
+                        name: c.name,
+                        includes: c.includes,
+                        excludes: c.excludes
+                    };
+                }));
             };
             QueryGridFilters.prototype._save = function () {
                 var _this = this;
@@ -37,7 +68,7 @@ var Vidyano;
                 var action = filterAttr.details.actions["New"];
                 action.skipOpen = true;
                 action.execute().then(function (po) {
-                    var dialog = _this.$$("#dialog");
+                    var dialog = _this.$["dialog"];
                     dialog.show(po, function () {
                         po.attributesByName["Columns"].setValue(_this._getColumnsFilterData(_this.query));
                         filterAttr.objects.push(po);
@@ -68,43 +99,6 @@ var Vidyano;
                     this._setCurrentFilter(null);
                 this.query.search();
             };
-            QueryGridFilters.prototype._currentFilterChanged = function () {
-                try {
-                    this._preventColumnFilterChangedListener = true;
-                    this.fire("filter-changed", null);
-                    this._updateFiltering();
-                }
-                finally {
-                    this._preventColumnFilterChangedListener = false;
-                }
-            };
-            QueryGridFilters.prototype._columnFilterChangedListener = function (e) {
-                e.stopPropagation();
-                if (!this._preventColumnFilterChangedListener)
-                    this._updateFiltering();
-            };
-            QueryGridFilters.prototype._updateFiltering = function () {
-                this._setFiltering(this.query && this.query.columns.some(function (c) { return (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0); }));
-            };
-            QueryGridFilters.prototype._getFilterObject = function (name) {
-                var filterAttr = this.query.filters.attributesByName["Filters"];
-                return Enumerable.from(filterAttr.objects).firstOrDefault(function (filter) { return filter.getAttributeValue("Name") === name; });
-            };
-            QueryGridFilters.prototype._getColumnsFilterData = function (query) {
-                return JSON.stringify(query.columns.filter(function (c) { return (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0); }).map(function (c) {
-                    return {
-                        name: c.name,
-                        includes: c.includes,
-                        excludes: c.excludes
-                    };
-                }));
-            };
-            QueryGridFilters.prototype._ok = function () {
-                this._dialog.resolve(true);
-            };
-            QueryGridFilters.prototype._cancel = function () {
-                this._dialog.reject(false);
-            };
             QueryGridFilters.prototype._edit = function (e) {
                 var _this = this;
                 e.stopPropagation();
@@ -117,7 +111,7 @@ var Vidyano;
                     return;
                 this.query.filters.beginEdit();
                 var isCurrentFilter = po.getAttributeValue("Name") === this.currentFilter && this.currentFilter != null;
-                var dialog = this.$$("#dialog");
+                var dialog = this.$["dialog"];
                 po.breadcrumb = po.actions["Edit"].displayName + " '" + name + "'";
                 dialog.show(po, function () {
                     if (isCurrentFilter)
@@ -181,6 +175,12 @@ var Vidyano;
                     }
                 });
             };
+            QueryGridFilters.prototype._ok = function () {
+                this._dialog.resolve(true);
+            };
+            QueryGridFilters.prototype._cancel = function () {
+                this._dialog.reject(false);
+            };
             QueryGridFilters.prototype._getCurrentFilterSave = function (currentFilter) {
                 if (!currentFilter)
                     return "";
@@ -208,6 +208,10 @@ var Vidyano;
                     type: Object,
                     readOnly: true,
                     observer: "_currentFilterChanged"
+                },
+                editLabel: {
+                    type: String,
+                    computed: "query.filters.actions.Edit.displayName"
                 }
             },
             listeners: {

@@ -116,6 +116,9 @@ vi-query-grid.header-sorting #filters {
 vi-query-grid.header-sorting #configure {
   display: none;
 }
+vi-query-grid[no-filters] #filters {
+  display: none;
+}
 vi-query-grid #filters {
   z-index: 2;
   line-height: 30px;

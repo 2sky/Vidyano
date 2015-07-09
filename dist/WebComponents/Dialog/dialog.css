@@ -10,22 +10,22 @@ vi-dialog {
 vi-dialog[dragging] {
   cursor: move !important;
 }
-vi-dialog #overlay,
-vi-dialog #dialogHost {
+vi-dialog > #overlay,
+vi-dialog > #dialogHost {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
 }
-vi-dialog #overlay {
+vi-dialog > #overlay {
   background-color: rgba(0, 0, 0, 0.1);
   display: none;
 }
-vi-dialog #dialogHost {
+vi-dialog > #dialogHost {
   z-index: 50001;
 }
-vi-dialog #dialog {
+vi-dialog > #dialogHost > #dialog {
   max-width: 80%;
   opacity: 0;
   -moz-transition: opacity 3000ms ease-out;
@@ -37,21 +37,21 @@ vi-dialog #dialog {
   -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
-vi-dialog #dialog > .header > header,
-vi-dialog #dialog > footer {
+vi-dialog > #dialogHost > #dialog > .header > header,
+vi-dialog > #dialogHost > #dialog > footer {
   background-color: #FAFAFA;
 }
-vi-dialog #dialog .header > header {
+vi-dialog > #dialogHost > #dialog .header > header {
   line-height: 40px;
   padding: 6px 12px;
   border-bottom: 1px solid #EEE;
 }
-vi-dialog #dialog .header > header h4 {
+vi-dialog > #dialogHost > #dialog .header > header h4 {
   margin: 0;
   font-weight: 500;
   font-size: 120%;
 }
-vi-dialog #dialog .header > header button.close {
+vi-dialog > #dialogHost > #dialog .header > header button.close {
   margin: 0;
   padding: 0 6px;
   fill: #888;
@@ -59,28 +59,28 @@ vi-dialog #dialog .header > header button.close {
   border: none;
   cursor: pointer;
 }
-vi-dialog #dialog .header > header button.close:hover {
+vi-dialog > #dialogHost > #dialog .header > header button.close:hover {
   fill: #555;
 }
-vi-dialog #dialog .header > header button.close:active {
+vi-dialog > #dialogHost > #dialog .header > header button.close:active {
   fill: #333;
 }
-vi-dialog #dialog .header > header button.close:focus {
+vi-dialog > #dialogHost > #dialog .header > header button.close:focus {
   outline: none;
 }
-vi-dialog #dialog > footer {
+vi-dialog > #dialogHost > #dialog > footer {
   padding: 12px;
   border-top: 1px solid #EEE;
 }
-vi-dialog #dialog > footer > button {
+vi-dialog > #dialogHost > #dialog > footer > button {
   line-height: 30px;
   padding: 0 6px;
   margin-left: 6px;
 }
-vi-dialog #dialog > footer > button:not([disabled]) {
+vi-dialog > #dialogHost > #dialog > footer > button:not([disabled]) {
   cursor: pointer;
 }
-[theme-color-1] vi-dialog #dialog > footer > button[action-type="Default"] {
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button[action-type="Default"] {
   background-color: #126790;
   color: white;
   -moz-transition-property: fill, color, background-color;
@@ -96,17 +96,17 @@ vi-dialog #dialog > footer > button:not([disabled]) {
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
 }
-[theme-color-1] vi-dialog #dialog > footer > button[action-type="Default"]:hover {
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button[action-type="Default"]:hover {
   background-color: #126790;
 }
-[theme-color-1] vi-dialog #dialog > footer > button[action-type="Default"]:active {
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button[action-type="Default"]:active {
   background-color: #0c4763;
 }
-[theme-color-1] vi-dialog #dialog > footer > button[action-type="Default"][disabled] {
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button[action-type="Default"][disabled] {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
-[theme-color-2] vi-dialog #dialog > footer > button[action-type="Default"] {
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button[action-type="Default"] {
   background-color: #009688;
   color: white;
   -moz-transition-property: fill, color, background-color;
@@ -122,17 +122,17 @@ vi-dialog #dialog > footer > button:not([disabled]) {
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
 }
-[theme-color-2] vi-dialog #dialog > footer > button[action-type="Default"]:hover {
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button[action-type="Default"]:hover {
   background-color: #009688;
 }
-[theme-color-2] vi-dialog #dialog > footer > button[action-type="Default"]:active {
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button[action-type="Default"]:active {
   background-color: #00635a;
 }
-[theme-color-2] vi-dialog #dialog > footer > button[action-type="Default"][disabled] {
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button[action-type="Default"][disabled] {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
-vi-dialog #dialog > footer > button[action-type="Danger"] {
+vi-dialog > #dialogHost > #dialog > footer > button[action-type="Danger"] {
   background-color: #ff4136;
   color: white;
   -moz-transition-property: fill, color, background-color;
@@ -148,17 +148,17 @@ vi-dialog #dialog > footer > button[action-type="Danger"] {
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
 }
-vi-dialog #dialog > footer > button[action-type="Danger"]:hover {
+vi-dialog > #dialogHost > #dialog > footer > button[action-type="Danger"]:hover {
   background-color: #ff4136;
 }
-vi-dialog #dialog > footer > button[action-type="Danger"]:active {
+vi-dialog > #dialogHost > #dialog > footer > button[action-type="Danger"]:active {
   background-color: #ff1103;
 }
-vi-dialog #dialog > footer > button[action-type="Danger"][disabled] {
+vi-dialog > #dialogHost > #dialog > footer > button[action-type="Danger"][disabled] {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
-vi-dialog #dialog > footer > button[action-type="Safe"] {
+vi-dialog > #dialogHost > #dialog > footer > button[action-type="Safe"] {
   background-color: #3d9970;
   color: white;
   -moz-transition-property: fill, color, background-color;
@@ -174,18 +174,18 @@ vi-dialog #dialog > footer > button[action-type="Safe"] {
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
 }
-vi-dialog #dialog > footer > button[action-type="Safe"]:hover {
+vi-dialog > #dialogHost > #dialog > footer > button[action-type="Safe"]:hover {
   background-color: #3d9970;
 }
-vi-dialog #dialog > footer > button[action-type="Safe"]:active {
+vi-dialog > #dialogHost > #dialog > footer > button[action-type="Safe"]:active {
   background-color: #2e7555;
 }
-vi-dialog #dialog > footer > button[action-type="Safe"][disabled] {
+vi-dialog > #dialogHost > #dialog > footer > button[action-type="Safe"][disabled] {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
-[theme-color-1] vi-dialog #dialog > footer > button[action-type=""],
-[theme-color-1] vi-dialog #dialog > footer > button:not([action-type]) {
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button[action-type=""],
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button:not([action-type]) {
   background-color: transparent;
   color: #043d59;
   fill: #595959;
@@ -202,23 +202,23 @@ vi-dialog #dialog > footer > button[action-type="Safe"][disabled] {
   -webkit-transition-timing-function: ease-in-out;
   transition-timing-function: ease-in-out;
 }
-[theme-color-1] vi-dialog #dialog > footer > button[action-type=""]:hover,
-[theme-color-1] vi-dialog #dialog > footer > button:not([action-type]):hover {
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button[action-type=""]:hover,
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button:not([action-type]):hover {
   background-color: #e7f0f4;
 }
-[theme-color-1] vi-dialog #dialog > footer > button[action-type=""]:active,
-[theme-color-1] vi-dialog #dialog > footer > button:not([action-type]):active {
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button[action-type=""]:active,
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button:not([action-type]):active {
   background-color: #095072;
   fill: white !important;
   color: white !important;
 }
-[theme-color-1] vi-dialog #dialog > footer > button[action-type=""][disabled],
-[theme-color-1] vi-dialog #dialog > footer > button:not([action-type])[disabled] {
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button[action-type=""][disabled],
+[theme-color-1] vi-dialog > #dialogHost > #dialog > footer > button:not([action-type])[disabled] {
   fill: #e7f0f4;
   color: rgba(0, 0, 0, 0.5);
 }
-[theme-color-2] vi-dialog #dialog > footer > button[action-type=""],
-[theme-color-2] vi-dialog #dialog > footer > button:not([action-type]) {
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button[action-type=""],
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button:not([action-type]) {
   background-color: transparent;
   color: #005d53;
   fill: #595959;
@@ -235,34 +235,34 @@ vi-dialog #dialog > footer > button[action-type="Safe"][disabled] {
   -webkit-transition-timing-function: ease-in-out;
   transition-timing-function: ease-in-out;
 }
-[theme-color-2] vi-dialog #dialog > footer > button[action-type=""]:hover,
-[theme-color-2] vi-dialog #dialog > footer > button:not([action-type]):hover {
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button[action-type=""]:hover,
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button:not([action-type]):hover {
   background-color: #e5f4f2;
 }
-[theme-color-2] vi-dialog #dialog > footer > button[action-type=""]:active,
-[theme-color-2] vi-dialog #dialog > footer > button:not([action-type]):active {
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button[action-type=""]:active,
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button:not([action-type]):active {
   background-color: #00776a;
   fill: white !important;
   color: white !important;
 }
-[theme-color-2] vi-dialog #dialog > footer > button[action-type=""][disabled],
-[theme-color-2] vi-dialog #dialog > footer > button:not([action-type])[disabled] {
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button[action-type=""][disabled],
+[theme-color-2] vi-dialog > #dialogHost > #dialog > footer > button:not([action-type])[disabled] {
   fill: #e5f4f2;
   color: rgba(0, 0, 0, 0.5);
 }
-vi-dialog #dialog .content {
+vi-dialog > #dialogHost > #dialog .content {
   position: relative;
 }
 vi-dialog[shown] {
   display: block;
 }
-vi-dialog[shown] #overlay {
+vi-dialog[shown] > #overlay {
   display: block;
 }
-vi-dialog[shown] #dialog {
+vi-dialog[shown] > #dialogHost > #dialog {
   opacity: 1;
 }
-vi-dialog[auto-size] #dialog {
+vi-dialog[auto-size] > #dialogHost > #dialog {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
@@ -270,14 +270,14 @@ vi-dialog[auto-size] #dialog {
   -webkit-flex-direction: column;
   flex-direction: column;
 }
-vi-dialog[auto-size] #dialog .content {
+vi-dialog[auto-size] > #dialogHost > #dialog .content {
   -ms-flex: 1;
   -webkit-flex: 1;
   flex: 1;
 }
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
-  vi-dialog #dialog {
+  vi-dialog > #dialogHost > #dialog {
     position: absolute;
     left: 1em;
     right: 1em;
@@ -285,7 +285,7 @@ vi-dialog[auto-size] #dialog .content {
     bottom: 1em;
     max-width: none;
   }
-  vi-dialog:not([auto-size]) #dialog {
+  vi-dialog:not([auto-size]) > #dialogHost > #dialog {
     display: -ms-flexbox;
     display: -webkit-flex;
     display: flex;
@@ -293,7 +293,7 @@ vi-dialog[auto-size] #dialog .content {
     -webkit-flex-direction: column;
     flex-direction: column;
   }
-  vi-dialog:not([auto-size]) #dialog > .content {
+  vi-dialog:not([auto-size]) > #dialogHost > #dialog > .content {
     -ms-flex: 1;
     -webkit-flex: 1;
     flex: 1;
@@ -302,11 +302,11 @@ vi-dialog[auto-size] #dialog .content {
 }
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991px) {
-  vi-dialog[auto-size] #dialog {
+  vi-dialog[auto-size] > #dialogHost > #dialog {
     width: 800px;
     height: 70%;
   }
-  vi-dialog:not([auto-size]) #dialog > .content {
+  vi-dialog:not([auto-size]) > #dialogHost > #dialog > .content {
     max-width: 800px;
     max-height: 75vh;
     overflow: auto;
@@ -314,11 +314,11 @@ vi-dialog[auto-size] #dialog .content {
 }
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1199px) {
-  vi-dialog[auto-size] #dialog {
+  vi-dialog[auto-size] > #dialogHost > #dialog {
     width: 900px;
     height: 70%;
   }
-  vi-dialog:not([auto-size]) #dialog > .content {
+  vi-dialog:not([auto-size]) > #dialogHost > #dialog > .content {
     max-width: 900px;
     max-height: 75vh;
     overflow: auto;
@@ -326,11 +326,11 @@ vi-dialog[auto-size] #dialog .content {
 }
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-  vi-dialog[auto-size] #dialog {
+  vi-dialog[auto-size] > #dialogHost > #dialog {
     width: 1000px;
     height: 70%;
   }
-  vi-dialog:not([auto-size]) #dialog > .content {
+  vi-dialog:not([auto-size]) > #dialogHost > #dialog > .content {
     max-width: 1000px;
     max-height: 75vh;
     overflow: auto;

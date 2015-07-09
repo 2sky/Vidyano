@@ -65,7 +65,7 @@ var Vidyano;
                     var dialog = this.$$("#browseReferenceDialog");
                     return dialog.show().then(function (result) {
                         if (!result)
-                            return Promise.reject();
+                            return Promise.resolve();
                         _this.referenceAttribute.changeReference(result).then(function () {
                             _this._update();
                         });

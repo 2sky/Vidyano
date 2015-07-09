@@ -357,6 +357,10 @@
             this.items.updateTablePosition(true);
         }
 
+        private _computeNoFilters(filters: Vidyano.PersistentObject): boolean {
+            return !filters;
+        }
+
         private _computeDisableInlineActions(actions: Vidyano.Action[]): boolean {
             return !actions || !actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1)) || actions[0].query.asLookup || this.asLookup;
         }
@@ -1551,6 +1555,11 @@
     Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.QueryGrid, Vidyano.WebComponents, "vi", {
         properties: {
             query: Object,
+            noFilters: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeNoFilters(query.filters)"
+            },
             asLookup: {
                 type: Boolean,
                 reflectToAttribute: true

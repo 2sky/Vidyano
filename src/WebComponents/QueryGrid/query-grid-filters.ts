@@ -13,7 +13,7 @@
         private _queryChanged(query: Vidyano.Query) {
             this._setFilters(query && query.filters ? this._computeFilters(query.filters) : null);
 
-            if (query) {
+            if (query && query.filters) {
                 var filterAttr = <Vidyano.PersistentObjectAttributeAsDetail>this.query.filters.attributesByName["Filters"];
                 var defaultFilter = Enumerable.from(filterAttr.objects).firstOrDefault(filter => filter.getAttributeValue("IsDefault"));
                 if (defaultFilter)
@@ -25,9 +25,47 @@
                 this._setCurrentFilter(null);
         }
 
+        private _currentFilterChanged() {
+            try {
+                this._preventColumnFilterChangedListener = true;
+
+                this.fire("filter-changed", null);
+                this._updateFiltering();
+            }
+            finally {
+                this._preventColumnFilterChangedListener = false;
+            }
+        }
+
         private _computeFilters(filters: Vidyano.PersistentObject): string[] {
             var filterAttr = <Vidyano.PersistentObjectAttributeAsDetail>filters.attributesByName["Filters"];
             return filterAttr.objects.map(filter => filter.getAttributeValue("Name")).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+        }
+
+        private _columnFilterChangedListener(e: Event) {
+            e.stopPropagation();
+
+            if (!this._preventColumnFilterChangedListener)
+                this._updateFiltering();
+        }
+
+        private _updateFiltering() {
+            this._setFiltering(this.query && this.query.columns.some(c => (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0)));
+        }
+
+        private _getFilterObject(name: string): Vidyano.PersistentObject {
+            var filterAttr = <Vidyano.PersistentObjectAttributeAsDetail>this.query.filters.attributesByName["Filters"];
+            return Enumerable.from(filterAttr.objects).firstOrDefault(filter => filter.getAttributeValue("Name") === name);
+        }
+
+        private _getColumnsFilterData(query: Vidyano.Query): string {
+            return JSON.stringify(query.columns.filter(c => (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0)).map(c => {
+                return {
+                    name: c.name,
+                    includes: c.includes,
+                    excludes: c.excludes
+                };
+            }));
         }
 
         private _save() {
@@ -38,7 +76,7 @@
             action.skipOpen = true;
 
             action.execute().then(po => {
-                var dialog = <PersistentObjectDialog>this.$$("#dialog");
+                var dialog = <PersistentObjectDialog><any>this.$["dialog"];
                 dialog.show(po, () => {
                     po.attributesByName["Columns"].setValue(this._getColumnsFilterData(this.query));
                     filterAttr.objects.push(po);
@@ -77,52 +115,6 @@
             this.query.search();
         }
 
-        private _currentFilterChanged() {
-            try {
-                this._preventColumnFilterChangedListener = true;
-
-                this.fire("filter-changed", null);
-                this._updateFiltering();
-            }
-            finally {
-                this._preventColumnFilterChangedListener = false;
-            }
-        }
-
-        private _columnFilterChangedListener(e: Event) {
-            e.stopPropagation();
-
-            if (!this._preventColumnFilterChangedListener)
-                this._updateFiltering();
-        }
-
-        private _updateFiltering() {
-            this._setFiltering(this.query && this.query.columns.some(c => (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0)));
-        }
-
-        private _getFilterObject(name: string): Vidyano.PersistentObject {
-            var filterAttr = <Vidyano.PersistentObjectAttributeAsDetail>this.query.filters.attributesByName["Filters"];
-            return Enumerable.from(filterAttr.objects).firstOrDefault(filter => filter.getAttributeValue("Name") === name);
-        }
-
-        private _getColumnsFilterData(query: Vidyano.Query): string {
-            return JSON.stringify(query.columns.filter(c => (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0)).map(c => {
-                return {
-                    name: c.name,
-                    includes: c.includes,
-                    excludes: c.excludes
-                };
-            }));
-        }
-
-        private _ok() {
-            this._dialog.resolve(true);
-        }
-
-        private _cancel() {
-            this._dialog.reject(false);
-        }
-
         private _edit(e: Event) {
             e.stopPropagation();
             Popup.closeAll();
@@ -139,7 +131,7 @@
 
             var isCurrentFilter = po.getAttributeValue("Name") === this.currentFilter && this.currentFilter != null;
 
-            var dialog = <PersistentObjectDialog>this.$$("#dialog");
+            var dialog = <PersistentObjectDialog><any>this.$["dialog"];
             po.breadcrumb = po.actions["Edit"].displayName + " '" + name + "'";
 
             dialog.show(po, () => {
@@ -216,6 +208,14 @@
             });
         }
 
+        private _ok() {
+            this._dialog.resolve(true);
+        }
+
+        private _cancel() {
+            this._dialog.reject(false);
+        }
+
         private _getCurrentFilterSave(currentFilter: string): string {
             if (!currentFilter)
                 return "";
@@ -243,6 +243,10 @@
                 type: Object,
                 readOnly: true,
                 observer: "_currentFilterChanged"
+            },
+            editLabel: {
+                type: String,
+                computed: "query.filters.actions.Edit.displayName"
             }
         },
         listeners: {

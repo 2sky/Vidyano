@@ -53,7 +53,7 @@ var Vidyano;
                 this._dialog.resolve(this.query.selectedItems);
             };
             SelectReferenceDialog.prototype._cancel = function () {
-                this._dialog.reject();
+                this._dialog.resolve();
             };
             SelectReferenceDialog.prototype._search = function (e, detail) {
                 if (!this.query)

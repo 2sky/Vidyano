@@ -25,7 +25,7 @@
 
         private _cancel() {
             this.persistentObject.cancelEdit();
-            this._dialog.reject();
+            this._dialog.resolve();
         }
 
         private _computeTab(persistentObject: Vidyano.PersistentObject): Vidyano.PersistentObjectAttributeTab {

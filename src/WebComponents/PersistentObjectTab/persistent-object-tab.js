@@ -206,8 +206,11 @@ var Vidyano;
                 this._autoArrange(true);
             };
             PersistentObjectTab.prototype._sizeChanged = function (e, detail) {
-                this._setWidth(detail.width);
-                this._setHeight(detail.height);
+                e.stopPropagation();
+                if (detail.width > 0)
+                    this._setWidth(detail.width);
+                if (detail.height > 0)
+                    this._setHeight(detail.height);
                 if (!this.tab)
                     return;
                 if (!this.authored) {

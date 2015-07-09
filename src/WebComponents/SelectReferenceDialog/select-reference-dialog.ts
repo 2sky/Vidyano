@@ -58,7 +58,7 @@
 		}
 
         private _cancel() {
-            this._dialog.reject();
+            this._dialog.resolve();
         }
 
         private _search(e: CustomEvent, detail: string) {

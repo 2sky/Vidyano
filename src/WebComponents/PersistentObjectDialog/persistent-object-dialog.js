@@ -28,7 +28,7 @@ var Vidyano;
             };
             PersistentObjectDialog.prototype._cancel = function () {
                 this.persistentObject.cancelEdit();
-                this._dialog.reject();
+                this._dialog.resolve();
             };
             PersistentObjectDialog.prototype._computeTab = function (persistentObject) {
                 if (!persistentObject)

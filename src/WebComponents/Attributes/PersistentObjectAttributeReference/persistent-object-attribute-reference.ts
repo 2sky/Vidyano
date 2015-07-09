@@ -68,7 +68,7 @@ module Vidyano.WebComponents.Attributes {
             var dialog = <SelectReferenceDialog>this.$$("#browseReferenceDialog");
             return dialog.show().then(result => {
                 if (!result)
-                    return Promise.reject();
+                    return Promise.resolve();
 
                 this.referenceAttribute.changeReference(result).then(() => {
                     this._update();

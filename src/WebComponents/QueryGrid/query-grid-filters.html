@@ -7,17 +7,17 @@
                 <vi-resource source="Icon_FilterMenu"></vi-resource>
             </button>
             <template is="dom-if" if="{{filtering}}">
-                <vi-popup-menu-item icon="Icon_New" label="{{translations.Reset}}" on-tap="_reset"></vi-popup-menu-item>
+                <vi-popup-menu-item icon="Icon_Filter_New" label="{{translations.Reset}}" on-tap="_reset"></vi-popup-menu-item>
             </template>
             <template is="dom-if" if="{{currentFilter}}">
-                <vi-popup-menu-item icon="Icon_Save" label="{{_getCurrentFilterSave(currentFilter)}}" on-tap="_saveCurrent"></vi-popup-menu-item>
+                <vi-popup-menu-item icon="Icon_Filter_Save" label="{{_getCurrentFilterSave(currentFilter)}}" on-tap="_saveCurrent"></vi-popup-menu-item>
             </template>
-            <vi-popup-menu-item icon="Icon_New" label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
+            <vi-popup-menu-item label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
             <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
             <template is="dom-repeat" items="{{filters}}" as="filter">
                 <vi-popup-menu-item label="{{filter}}" data-filter$="{{filter}}" on-tap="_load">
-                    <vi-popup-menu-item icon="Icon_Edit" label="Edit..." data-filter$="{{filter}}" on-tap="_edit"></vi-popup-menu-item>
-                    <vi-popup-menu-item icon="Icon_Delete" label="{{translations.Delete}}" data-filter$="{{filter}}" on-tap="_delete"></vi-popup-menu-item>
+                    <vi-popup-menu-item icon="Icon_Action_Edit" label="{{editLabel}}" data-filter$="{{filter}}" on-tap="_edit"></vi-popup-menu-item>
+                    <vi-popup-menu-item icon="Icon_Action_Delete" label="{{translations.Delete}}" data-filter$="{{filter}}" on-tap="_delete"></vi-popup-menu-item>
                 </vi-popup-menu-item>
             </template>
         </vi-popup-menu>
