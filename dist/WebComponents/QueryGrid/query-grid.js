@@ -1112,7 +1112,7 @@ var Vidyano;
                         else
                             objects.push(value);
                     });
-                    var label = !this.inversed ? "= " : "≠ ";
+                    var label = "";
                     if (objects.length > 0)
                         label += objects.map(function (o) { return _this._getDistinctDisplayValue(o); }).join(", ");
                     if (textSearch.length > 0) {
@@ -1120,7 +1120,7 @@ var Vidyano;
                             label += ", ";
                         label += textSearch.map(function (t) { return _this._getDistinctDisplayValue(t); }).join(", ");
                     }
-                    this.label = label;
+                    this.label = (!this.inversed ? "= " : "≠ ") + label;
                 }
                 else
                     this.label = "=";

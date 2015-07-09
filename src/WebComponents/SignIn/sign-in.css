@@ -228,14 +228,6 @@ li[is="vi-sign-in-provider"][is-vidyano] ul#vidyano li:last-of-type div button {
 }
 li[is="vi-sign-in-provider"][signing-in] button {
   text-align: left;
-  cursor: default !important;
-  color: #fff !important;
-}
-[theme-color-1] li[is="vi-sign-in-provider"][signing-in] button {
-  background-color: rgba(18, 103, 144, 0.75) !important;
-}
-[theme-color-2] li[is="vi-sign-in-provider"][signing-in] button {
-  background-color: rgba(0, 150, 136, 0.75) !important;
 }
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {

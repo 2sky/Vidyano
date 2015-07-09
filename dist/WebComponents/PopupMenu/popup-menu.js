@@ -48,6 +48,9 @@ var Vidyano;
             function PopupMenuItem() {
                 _super.apply(this, arguments);
             }
+            PopupMenuItem.prototype._splitTap = function (e) {
+                e.stopPropagation();
+            };
             return PopupMenuItem;
         })(WebComponents.WebComponent);
         WebComponents.PopupMenuItem = PopupMenuItem;
@@ -61,6 +64,10 @@ var Vidyano;
         WebComponents.PopupMenuItemSeparator = PopupMenuItemSeparator;
         WebComponents.WebComponent.register(PopupMenu, WebComponents, "vi", {
             properties: {
+                disabled: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                },
                 contextMenuOnly: {
                     type: Boolean,
                     reflectToAttribute: true,

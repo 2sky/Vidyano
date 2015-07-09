@@ -19,73 +19,13 @@ vi-query-grid-column-filter button[header] {
   -ms-flex-direction: row;
   -webkit-flex-direction: row;
   flex-direction: row;
+  position: relative;
   box-sizing: border-box;
   overflow: hidden;
   text-align: left;
   font-weight: 500;
-  background-color: transparent;
-  color: #333333;
-  position: relative;
   width: 100%;
   padding: 0;
-}
-[theme-color-1] vi-query-grid-column-filter button[header] {
-  background-color: transparent;
-  color: #043d59;
-  fill: #595959;
-  -moz-transition-property: fill, color, background-color;
-  -o-transition-property: fill, color, background-color;
-  -webkit-transition-property: fill, color, background-color;
-  transition-property: fill, color, background-color;
-  -moz-transition-duration: 0.2s;
-  -o-transition-duration: 0.2s;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-  -moz-transition-timing-function: ease-in-out;
-  -o-transition-timing-function: ease-in-out;
-  -webkit-transition-timing-function: ease-in-out;
-  transition-timing-function: ease-in-out;
-}
-[theme-color-1] vi-query-grid-column-filter button[header]:hover {
-  background-color: #e7f0f4;
-}
-[theme-color-1] vi-query-grid-column-filter button[header]:active {
-  background-color: #095072;
-  fill: white !important;
-  color: white !important;
-}
-[theme-color-1] vi-query-grid-column-filter button[header][disabled] {
-  fill: #e7f0f4;
-  color: rgba(0, 0, 0, 0.5);
-}
-[theme-color-2] vi-query-grid-column-filter button[header] {
-  background-color: transparent;
-  color: #005d53;
-  fill: #595959;
-  -moz-transition-property: fill, color, background-color;
-  -o-transition-property: fill, color, background-color;
-  -webkit-transition-property: fill, color, background-color;
-  transition-property: fill, color, background-color;
-  -moz-transition-duration: 0.2s;
-  -o-transition-duration: 0.2s;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-  -moz-transition-timing-function: ease-in-out;
-  -o-transition-timing-function: ease-in-out;
-  -webkit-transition-timing-function: ease-in-out;
-  transition-timing-function: ease-in-out;
-}
-[theme-color-2] vi-query-grid-column-filter button[header]:hover {
-  background-color: #e5f4f2;
-}
-[theme-color-2] vi-query-grid-column-filter button[header]:active {
-  background-color: #00776a;
-  fill: white !important;
-  color: white !important;
-}
-[theme-color-2] vi-query-grid-column-filter button[header][disabled] {
-  fill: #e5f4f2;
-  color: rgba(0, 0, 0, 0.5);
 }
 vi-query-grid-column-filter button[header] span {
   -ms-flex: 1;
@@ -103,9 +43,6 @@ vi-query-grid-column-filter button[header] vi-resource {
   fill: #eee;
   height: 30px;
   padding: 0 0 0 9px;
-}
-vi-query-grid-column-filter button[header]:hover vi-resource {
-  fill: white;
 }
 vi-query-grid-column-filter:not([filtered]) button.vi-query-grid-column-filter label {
   opacity: 0.4;
@@ -348,60 +285,6 @@ vi-query-grid-column-filter [content] #distincts > div.remaining {
 vi-query-grid-column-filter [content] button.close {
   border-top: 1px solid #eaeaea;
   line-height: 30px;
-  text-align: center;
-  cursor: pointer;
-}
-[theme-color-1] vi-query-grid-column-filter [content] button.close {
-  background-color: #126790;
-  color: white;
-  -moz-transition-property: fill, color, background-color;
-  -o-transition-property: fill, color, background-color;
-  -webkit-transition-property: fill, color, background-color;
-  transition-property: fill, color, background-color;
-  -moz-transition-duration: 0.1s;
-  -o-transition-duration: 0.1s;
-  -webkit-transition-duration: 0.1s;
-  transition-duration: 0.1s;
-  -moz-transition-timing-function: ease-out;
-  -o-transition-timing-function: ease-out;
-  -webkit-transition-timing-function: ease-out;
-  transition-timing-function: ease-out;
-}
-[theme-color-1] vi-query-grid-column-filter [content] button.close:hover {
-  background-color: #126790;
-}
-[theme-color-1] vi-query-grid-column-filter [content] button.close:active {
-  background-color: #0c4763;
-}
-[theme-color-1] vi-query-grid-column-filter [content] button.close[disabled] {
-  fill: rgba(255, 255, 255, 0.5);
-  color: rgba(255, 255, 255, 0.5);
-}
-[theme-color-2] vi-query-grid-column-filter [content] button.close {
-  background-color: #009688;
-  color: white;
-  -moz-transition-property: fill, color, background-color;
-  -o-transition-property: fill, color, background-color;
-  -webkit-transition-property: fill, color, background-color;
-  transition-property: fill, color, background-color;
-  -moz-transition-duration: 0.1s;
-  -o-transition-duration: 0.1s;
-  -webkit-transition-duration: 0.1s;
-  transition-duration: 0.1s;
-  -moz-transition-timing-function: ease-out;
-  -o-transition-timing-function: ease-out;
-  -webkit-transition-timing-function: ease-out;
-  transition-timing-function: ease-out;
-}
-[theme-color-2] vi-query-grid-column-filter [content] button.close:hover {
-  background-color: #009688;
-}
-[theme-color-2] vi-query-grid-column-filter [content] button.close:active {
-  background-color: #00635a;
-}
-[theme-color-2] vi-query-grid-column-filter [content] button.close[disabled] {
-  fill: rgba(255, 255, 255, 0.5);
-  color: rgba(255, 255, 255, 0.5);
 }
 vi-query-grid-column-filter[loading] #distincts {
   opacity: 0.5;

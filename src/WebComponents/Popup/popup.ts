@@ -29,6 +29,7 @@ module Vidyano.WebComponents {
         private _closeOnMoveoutTimer: number;
         private _currentOrientation: string;
         private _header: HTMLElement;
+        disabled: boolean;
         contentAlign: string;
         sticky: boolean;
         open: boolean;
@@ -80,6 +81,9 @@ module Vidyano.WebComponents {
         }
 
         private _tap(e: CustomEvent) {
+            if (this.disabled)
+                return;
+
             if (this.open) {
                 if(!this.sticky)
                     this.close();
@@ -317,6 +321,10 @@ module Vidyano.WebComponents {
 
     WebComponent.register(Popup, WebComponents, "vi", {
         properties: {
+            disabled: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             open: {
                 type: Boolean,
                 readOnly: true,

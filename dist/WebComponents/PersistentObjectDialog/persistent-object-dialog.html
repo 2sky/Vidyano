@@ -10,8 +10,8 @@
                 <vi-persistent-object-tab class="flex" tab="{{tab}}" columns="1"></vi-persistent-object-tab>
             </div>
             <footer class="horizontal layout end-justified">
-                <button on-tap="_save" action-type="Default">{{translations.Save}}</button>
-                <button on-tap="_cancel">{{translations.Cancel}}</button>
+                <button is="vi-button" on-tap="_save" action-type="Default">{{translations.Save}}</button>
+                <button is="vi-button" inverse on-tap="_cancel">{{translations.Cancel}}</button>
             </footer>
         </vi-dialog>
     </template>

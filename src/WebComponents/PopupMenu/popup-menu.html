@@ -1,6 +1,6 @@
 <dom-module id="vi-popup-menu">
     <template>
-        <vi-popup id="popup">
+        <vi-popup id="popup" disabled="{{disabled}}">
             <div header class="flex layout horizontal">
                 <template is="dom-if" if="{{!contextMenuOnly}}">
                     <content select="[header]"></content>
@@ -23,7 +23,9 @@
         </div>
         <vi-popup open-on-hover>
             <template is="dom-if" if="{{split}}">
-                <vi-resource source="Icon_Forward" header></vi-resource>
+                <div header on-tap="_splitTap">
+                    <vi-resource source="Icon_Forward"></vi-resource>
+                </div>
             </template>
             <div content vertical layout>
                 <content select="vi-popup-menu-item"></content>

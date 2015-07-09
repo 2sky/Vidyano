@@ -1,6 +1,30 @@
 ﻿@import (reference) "../vidyano.less";
 
+.colorizer(@bgColor, @fgColor, @bgHoverColor: lighten(@bgColor, 10%)) {
+    background-color: @bgColor;
+    color: @fgColor;
+    fill: @fgColor;
+
+    &:hover {
+        background-color: @bgHoverColor;
+    }
+
+    &:active {
+        background-color: darken(@bgColor, 10%);
+        color: white;
+        fill: white;
+    }
+
+    &[disabled] {
+        background-color: fadeout(@bgColor, 50%) !important;
+        fill: fadeout(@fgColor, 50%) !important;
+        color: fadeout(@fgColor, 50%) !important;
+    }
+}
+
 button[is="vi-button"] {
+    .relative();
+    cursor: pointer;
     -moz-transition-property: fill, color, background-color;
     -o-transition-property: fill, color, background-color;
     -webkit-transition-property: fill, color, background-color;
@@ -14,48 +38,67 @@ button[is="vi-button"] {
     -webkit-transition-timing-function: ease-out;
     transition-timing-function: ease-out;
 
-    &:not([inverse]) {
-        .colorize({
-            background-color: @@color;
-            color: white;
-
-            &:hover {
-                background-color: @@color;
-            }
-
-            &:active {
-                background-color: darken(@@color, 10%);
-            }
-
-            &[disabled] {
-                fill: fadeout(white, 50%);
-                color: fadeout(white, 50%);
-            }
-        }
-
-        );
+    &[disabled] {
+        cursor: default;
     }
 
-    &[inverse] {
-        .colorize({
-            background-color: transparent;
-            color: @@color-darker;
-            fill: #595959;
+    &[type=""], &:not([type]) {
+        &:not([inverse]) {
+            .colorize({
+                .colorizer(@@color, white, @@color-light);
+            });
+        }
 
-            &:hover {
-                background-color: @@color-faint;
-            }
+        &[inverse] {
+            .colorize({
+                .colorizer(transparent, @@color-darker, @@color-faint);
+                
+                &:active {
+                    background-color: @@color;
+                }
+            });
+        }
+    }
+
+    &[type="light-monochrome"] {
+        &:not([inverse]) {
+            .colorizer(#f0f0f0, white);
+        }
+
+        &[inverse] {
+            .colorizer(transparent, #f0f0f0, fadeout(#f0f0f0, 90%));
 
             &:active {
-                background-color: @@color-dark;
-                fill: white !important;
-                color: white !important;
+                background-color: darken(#f0f0f0, 10%);
             }
+        }
+    }
 
-            &[disabled] {
-                fill: @@color-faint;
-                color: fadeout(black, 50%);
+    &[type="danger"] {
+        &:not([inverse]) {
+            .colorizer(#FF4136, white);
+        }
+
+        &[inverse] {
+            .colorizer(transparent, #FF4136, fadeout(#FF4136, 90%));
+
+            &:active {
+                background-color: darken(#FF4136, 10%);
             }
-        });
+        }
+    }
+
+    &[type="safe"] {
+        &:not([inverse]) {
+            .colorizer(#3D9970, white);
+        }
+
+        &[inverse] {
+            .colorizer(transparent, #3D9970, fadeout(#3D9970, 90%));
+
+            &:active {
+                background-color: darken(#3D9970, 10%);
+            }
+        }
     }
 }

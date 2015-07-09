@@ -63,14 +63,17 @@ vi-popup-menu-item {
 
     &[split] {
         > vi-popup {
-            vi-resource[header] {
-                width: @h2;
-                height: @h2;
-                box-sizing: border-box;
-                border-left: 1px solid #ddd;
+            div[header] {
+                & > vi-resource {
+                    .relative();
+                    width: @h2;
+                    height: @h2;
+                    box-sizing: border-box;
+                    border-left: 1px solid #ddd;
+                }
             }
 
-            &:hover vi-resource[header] {
+            &:hover div[header] {
                 .colorize({
                     background-color: @@color-faint;
                 });

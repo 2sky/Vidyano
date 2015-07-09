@@ -17,8 +17,8 @@
                 </div>
             </div>
             <footer class="horizontal layout end-justified">
-                <button on-tap="_select" disabled$="{{!canSelect}}">{{translateMessage('OK', isAttached)}}</button>
-                <button on-tap="_cancel">{{translateMessage('Cancel', isAttached)}}</button>
+                <button is="vi-button" on-tap="_select" disabled$="{{!canSelect}}">{{translateMessage('OK', isAttached)}}</button>
+                <button is="vi-button" inverse on-tap="_cancel">{{translateMessage('Cancel', isAttached)}}</button>
             </footer>
         </vi-dialog>
 	</template>

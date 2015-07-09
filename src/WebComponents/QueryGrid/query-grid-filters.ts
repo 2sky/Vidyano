@@ -42,6 +42,10 @@
             return filterAttr.objects.map(filter => filter.getAttributeValue("Name")).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
         }
 
+        private _computeCanOpen(filters: string[], filtering: boolean): boolean {
+            return filters && filters.length > 0 || filtering;
+        }
+
         private _columnFilterChangedListener(e: Event) {
             e.stopPropagation();
 
@@ -51,6 +55,7 @@
 
         private _updateFiltering() {
             this._setFiltering(this.query && this.query.columns.some(c => (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0)));
+            Popup.closeAll();
         }
 
         private _getFilterObject(name: string): Vidyano.PersistentObject {
@@ -112,6 +117,7 @@
             else
                 this._setCurrentFilter(null);
 
+            this._updateFiltering();
             this.query.search();
         }
 
@@ -232,17 +238,24 @@
             },
             filters: {
                 type: Array,
-                readOnly: true
+                readOnly: true,
+                value: null
             },
             filtering: {
                 type: Boolean,
                 reflectToAttribute: true,
-                readOnly: true
+                readOnly: true,
+                value: false
+            },
+            canOpen: {
+                type: Boolean,
+                computed: "_computeCanOpen(filters, filtering)"
             },
             currentFilter: {
                 type: Object,
                 readOnly: true,
-                observer: "_currentFilterChanged"
+                observer: "_currentFilterChanged",
+                value: null
             },
             editLabel: {
                 type: String,

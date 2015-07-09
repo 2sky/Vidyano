@@ -70,6 +70,8 @@ var Vidyano;
                 }
             };
             Popup.prototype._tap = function (e) {
+                if (this.disabled)
+                    return;
                 if (this.open) {
                     if (!this.sticky)
                         this.close();
@@ -263,6 +265,10 @@ var Vidyano;
         WebComponents.Popup = Popup;
         WebComponents.WebComponent.register(Popup, WebComponents, "vi", {
             properties: {
+                disabled: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                },
                 open: {
                     type: Boolean,
                     readOnly: true,

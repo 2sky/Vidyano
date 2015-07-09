@@ -5,8 +5,12 @@
     WebComponent.register(Button, WebComponents, "vi", {
         extends: "button",
         properties: {
-            inverse: {
+            disabled: {
                 type: Boolean,
+                reflectToAttribute: true
+            },
+            inverse: {
+                type: String,
                 reflectToAttribute: true
             }
         }

@@ -40,6 +40,9 @@ var Vidyano;
                 var filterAttr = filters.attributesByName["Filters"];
                 return filterAttr.objects.map(function (filter) { return filter.getAttributeValue("Name"); }).sort(function (a, b) { return a.toLowerCase().localeCompare(b.toLowerCase()); });
             };
+            QueryGridFilters.prototype._computeCanOpen = function (filters, filtering) {
+                return filters && filters.length > 0 || filtering;
+            };
             QueryGridFilters.prototype._columnFilterChangedListener = function (e) {
                 e.stopPropagation();
                 if (!this._preventColumnFilterChangedListener)
@@ -47,6 +50,7 @@ var Vidyano;
             };
             QueryGridFilters.prototype._updateFiltering = function () {
                 this._setFiltering(this.query && this.query.columns.some(function (c) { return (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0); }));
+                WebComponents.Popup.closeAll();
             };
             QueryGridFilters.prototype._getFilterObject = function (name) {
                 var filterAttr = this.query.filters.attributesByName["Filters"];
@@ -97,6 +101,7 @@ var Vidyano;
                     this.fire("filter-changed", null);
                 else
                     this._setCurrentFilter(null);
+                this._updateFiltering();
                 this.query.search();
             };
             QueryGridFilters.prototype._edit = function (e) {
@@ -197,17 +202,24 @@ var Vidyano;
                 },
                 filters: {
                     type: Array,
-                    readOnly: true
+                    readOnly: true,
+                    value: null
                 },
                 filtering: {
                     type: Boolean,
                     reflectToAttribute: true,
-                    readOnly: true
+                    readOnly: true,
+                    value: false
+                },
+                canOpen: {
+                    type: Boolean,
+                    computed: "_computeCanOpen(filters, filtering)"
                 },
                 currentFilter: {
                     type: Object,
                     readOnly: true,
-                    observer: "_currentFilterChanged"
+                    observer: "_currentFilterChanged",
+                    value: null
                 },
                 editLabel: {
                     type: String,

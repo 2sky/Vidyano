@@ -18,16 +18,13 @@ vi-query-grid-column-filter {
 
     button[header] {
         .layout-horizontal();
+        .relative();
         box-sizing: border-box;
         overflow: hidden;
         text-align: left;
         font-weight: 500;
-        background-color: transparent;
-        color: @light-foreground;
-        position: relative;
         width: 100%;
         padding: 0;
-        .colorize-button-inverse();
 
         span {
             .flex();
@@ -44,12 +41,6 @@ vi-query-grid-column-filter {
             fill: #eee;
             height: @h2;
             padding: 0 0 0 @cell-padding;
-        }
-
-        &:hover {
-            vi-resource {
-                fill: white;
-            }
         }
     }
 
@@ -238,14 +229,6 @@ vi-query-grid-column-filter {
         button.close {
             border-top: 1px solid @separatorColor;
             line-height: @cell-line-height;
-            text-align: center;
-            cursor: pointer;
-
-            .colorize( {
-                .colorize-button(@@color);
-            }
-
-            );
         }
     }
 

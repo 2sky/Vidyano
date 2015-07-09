@@ -4,6 +4,7 @@ vi-menu-item {
   color: #fafafa;
   fill: #fafafa;
   font-size: 13px;
+  cursor: pointer;
 }
 vi-menu-item span.match {
   color: #FFDD00;

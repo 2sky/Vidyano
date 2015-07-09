@@ -34,6 +34,9 @@ var Vidyano;
                 this._dialog.resolve(parseInt(e.target.getAttribute("data-action-index"), 10));
                 e.stopPropagation();
             };
+            MessageDialog.prototype._isFirst = function (index) {
+                return index === 0;
+            };
             return MessageDialog;
         })(WebComponents.WebComponent);
         WebComponents.MessageDialog = MessageDialog;

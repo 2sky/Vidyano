@@ -44,6 +44,10 @@ module Vidyano.WebComponents {
 
     export class PopupMenuItem extends WebComponent {
         label: string;
+
+        private _splitTap(e: Event) {
+            e.stopPropagation();
+        }
     }
 
     export class PopupMenuItemSeparator extends WebComponent {
@@ -51,6 +55,10 @@ module Vidyano.WebComponents {
 
     WebComponent.register(PopupMenu, WebComponents, "vi", {
         properties: {
+            disabled: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             contextMenuOnly: {
                 type: Boolean,
                 reflectToAttribute: true,

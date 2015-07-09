@@ -45,6 +45,10 @@
 
             e.stopPropagation();
         }
+
+        private _isFirst(index: number): boolean {
+            return index === 0;
+        }
     }
 
     Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.MessageDialog, Vidyano.WebComponents, "vi",

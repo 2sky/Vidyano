@@ -58,7 +58,7 @@
 
 <dom-module id="vi-query-grid-column-header">
     <template>
-        <button id="header" on-tap="_sort">
+        <button is="vi-button" inverse id="header" on-tap="_sort">
             <span flex>{{column.label}}</span>
             <template is="dom-if" if="{{_getIsSorting(sortDirection)}}">
                 <vi-resource source="{{_getSortingIcon(sortDirection)}}"></vi-resource>
@@ -71,7 +71,7 @@
 <dom-module id="vi-query-grid-column-filter">
     <template>
         <vi-popup id="filter" on-popup-opening="_popupOpening" flex disabled$="{{!gridColumn.column.canFilter}}">
-            <button class="flex" header>
+            <button is="vi-button" class="flex" header inverse>
                 <template is="dom-if" if="{{filtered}}">
                     <span>{{label}}</span>
                 </template>
@@ -100,7 +100,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="close" on-tap="_closePopup">{{translations.Close}}</button>
+                <button is="vi-button" class="close" on-tap="_closePopup">{{translations.Close}}</button>
             </div>
         </vi-popup>
     </template>

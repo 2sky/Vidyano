@@ -2394,7 +2394,7 @@ module Vidyano {
             if (query.filters)
                 this._filters = service.hooks.onConstructPersistentObject(service, query.filters);
             else
-                query.filters = null;
+                query._filters = null;
 
             if (query.result)
                 this._setResult(query.result);

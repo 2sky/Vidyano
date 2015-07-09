@@ -54,16 +54,17 @@ vi-popup-menu-item > div > vi-resource[has-resource] ~ span {
 vi-popup-menu-item[icon-space] > div > span {
   padding-left: 30px;
 }
-vi-popup-menu-item[split] > vi-popup vi-resource[header] {
+vi-popup-menu-item[split] > vi-popup div[header] > vi-resource {
+  position: relative;
   width: 30px;
   height: 30px;
   box-sizing: border-box;
   border-left: 1px solid #ddd;
 }
-[theme-color-1] vi-popup-menu-item[split] > vi-popup:hover vi-resource[header] {
+[theme-color-1] vi-popup-menu-item[split] > vi-popup:hover div[header] {
   background-color: #e7f0f4;
 }
-[theme-color-2] vi-popup-menu-item[split] > vi-popup:hover vi-resource[header] {
+[theme-color-2] vi-popup-menu-item[split] > vi-popup:hover div[header] {
   background-color: #e5f4f2;
 }
 vi-popup-menu-item-separator {

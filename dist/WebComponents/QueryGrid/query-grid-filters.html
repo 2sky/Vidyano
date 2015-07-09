@@ -2,8 +2,8 @@
 
 <dom-module id="vi-query-grid-filters">
     <template>
-        <vi-popup-menu>
-            <button header is="vi-button" inverse>
+        <vi-popup-menu disabled="{{!canOpen}}">
+            <button header is="vi-button" inverse disabled="{{!canOpen}}">
                 <vi-resource source="Icon_Filter_Menu"></vi-resource>
             </button>
             <template is="dom-if" if="{{filtering}}">
@@ -12,11 +12,14 @@
             <template is="dom-if" if="{{currentFilter}}">
                 <vi-popup-menu-item icon="Icon_Filter_Save" label="{{_getCurrentFilterSave(currentFilter)}}" on-tap="_saveCurrent"></vi-popup-menu-item>
                 <vi-popup-menu-item icon-space label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
+                <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
             </template>
             <template is="dom-if" if="{{!currentFilter}}">
-                <vi-popup-menu-item icon="Icon_Filter_Save" label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
+                <template is="dom-if" if="{{filtering}}">
+                    <vi-popup-menu-item icon="Icon_Filter_Save" label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
+                    <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
+                </template>
             </template>
-            <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
             <template is="dom-repeat" items="{{filters}}" as="filter">
                 <vi-popup-menu-item icon-space split label="{{filter}}" data-filter$="{{filter}}" on-tap="_load">
                     <vi-popup-menu-item icon="Icon_Action_Edit" label="{{editLabel}}" data-filter$="{{filter}}" on-tap="_edit"></vi-popup-menu-item>

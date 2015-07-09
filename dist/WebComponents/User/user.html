@@ -12,7 +12,7 @@
             </vi-popup-menu>
         </template>
         <template is="dom-if" if="{{!isSignedIn}}">
-            <button id="signIn" class="flex" on-tap="signIn">
+            <button is="vi-button" id="signIn" class="flex" on-tap="signIn">
                 <span>{{translations.SignIn}}</span>
                 <vi-resource source="Icon_SignIn"></vi-resource>
             </button>
