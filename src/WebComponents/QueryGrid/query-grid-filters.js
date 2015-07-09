@@ -14,7 +14,7 @@ var Vidyano;
                 _super.apply(this, arguments);
             }
             QueryGridFilters.prototype._queryChanged = function (query) {
-                this._setFilters(query && query.filters ? this._computeFilters(query.filters) : null);
+                this._setFilters(query && query.filters ? this._computeFilters(query.filters) : []);
                 if (query && query.filters) {
                     var filterAttr = this.query.filters.attributesByName["Filters"];
                     var defaultFilter = Enumerable.from(filterAttr.objects).firstOrDefault(function (filter) { return filter.getAttributeValue("IsDefault"); });
@@ -25,6 +25,7 @@ var Vidyano;
                 }
                 else
                     this._setCurrentFilter(null);
+                this._updateFiltering();
             };
             QueryGridFilters.prototype._currentFilterChanged = function () {
                 try {
@@ -202,8 +203,7 @@ var Vidyano;
                 },
                 filters: {
                     type: Array,
-                    readOnly: true,
-                    value: null
+                    readOnly: true
                 },
                 filtering: {
                     type: Boolean,

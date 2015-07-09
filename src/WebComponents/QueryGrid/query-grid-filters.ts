@@ -11,7 +11,7 @@
         private _setFiltering: (filtering: boolean) => void;
 
         private _queryChanged(query: Vidyano.Query) {
-            this._setFilters(query && query.filters ? this._computeFilters(query.filters) : null);
+            this._setFilters(query && query.filters ? this._computeFilters(query.filters) : []);
 
             if (query && query.filters) {
                 var filterAttr = <Vidyano.PersistentObjectAttributeAsDetail>this.query.filters.attributesByName["Filters"];
@@ -23,6 +23,8 @@
             }
             else
                 this._setCurrentFilter(null);
+
+            this._updateFiltering();
         }
 
         private _currentFilterChanged() {
@@ -37,7 +39,7 @@
             }
         }
 
-        private _computeFilters(filters: Vidyano.PersistentObject): string[] {
+        private _computeFilters(filters: Vidyano.PersistentObject): string[]{
             var filterAttr = <Vidyano.PersistentObjectAttributeAsDetail>filters.attributesByName["Filters"];
             return filterAttr.objects.map(filter => filter.getAttributeValue("Name")).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
         }
@@ -238,8 +240,7 @@
             },
             filters: {
                 type: Array,
-                readOnly: true,
-                value: null
+                readOnly: true
             },
             filtering: {
                 type: Boolean,
