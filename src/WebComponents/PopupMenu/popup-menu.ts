@@ -5,6 +5,7 @@ module Vidyano.WebComponents {
         shiftKey: boolean;
         ctrlKey: boolean;
         rightAlign: boolean;
+        openOnHover: boolean;
 
         private _hookContextMenu(isAttached: boolean, contextMenu: boolean) {
             if (isAttached && contextMenu)
@@ -40,6 +41,11 @@ module Vidyano.WebComponents {
         private _alignmentChanged() {
             (<Popup><any>this.$["popup"]).contentAlign = this.rightAlign ? "right" : "";
         }
+
+        private _mouseenter() {
+            if (this.openOnHover)
+                (<Popup><any>this.$["popup"]).popup();
+        }
     }
 
     export class PopupMenuItem extends WebComponent {
@@ -59,6 +65,10 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true
             },
+            openOnHover: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             contextMenuOnly: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -74,7 +84,10 @@ module Vidyano.WebComponents {
         },
         observers: [
             "_hookContextMenu(isAttached, contextMenuOnly)"
-        ]
+        ],
+        listeners: {
+            "mouseenter": "_mouseenter"
+        }
     });
 
     WebComponent.register(PopupMenuItem, WebComponents, "vi", {

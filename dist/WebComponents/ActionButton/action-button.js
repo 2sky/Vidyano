@@ -18,8 +18,7 @@ var Vidyano;
                     this._execute();
             };
             ActionButton.prototype._executeWithOption = function (e) {
-                var li = e.target;
-                this._execute(parseInt(li.getAttribute("data-option-index"), 10));
+                this._execute(e.model.index);
             };
             ActionButton.prototype._execute = function (option) {
                 if (option === void 0) { option = -1; }

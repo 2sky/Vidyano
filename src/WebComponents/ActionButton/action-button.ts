@@ -14,9 +14,8 @@ module Vidyano.WebComponents {
                 this._execute();
         }
 
-        private _executeWithOption(e: Event) {
-            var li = <HTMLElement>e.target;
-            this._execute(parseInt(li.getAttribute("data-option-index"), 10));
+        private _executeWithOption(e: TapEvent) {
+            this._execute(e.model.index);
         }
 
         private _execute(option: number = -1) {

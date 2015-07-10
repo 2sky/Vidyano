@@ -4,26 +4,15 @@ vi-action-button {
     display: block;
     box-sizing: border-box;
 
-    button {
-        display: block;
+    button.vi-action-button {
+        .layout-horizontal();
         text-align: left;
         cursor: pointer;
-        background-color: transparent;
         line-height: @h1;
-        padding: 0 @h4;
         width: 100%;
+        padding: 0 @h4;
         white-space: nowrap;
         overflow: hidden;
-
-        .colorize( {
-            color: @@color;
-            fill: @@color;
-        });
-
-        &:not([can-execute]) {
-            opacity: 0.5;
-            cursor: default;
-        }
 
         > vi-resource[icon] {
             height: @h1;
@@ -48,30 +37,20 @@ vi-action-button {
         }
     }
 
-    &:hover {
-        button[can-execute] {
-            .colorize( {
-                background-color: @@color-faint;
-            }
-
-            );
-        }
-    }
-
     &[no-label], &[pinned] {
-        button > span {
+        button.vi-action-button > span.label {
             display: none;
         }
     }
 
     &:not([no-label]):not([pinned]) {
-        button > vi-resource[icon][has-resource]:first-of-type {
+        button.vi-action-button > vi-resource[icon][has-resource]:first-of-type {
             margin-right: @h5;
         }
     }
 
     &[no-icon] {
-        button > vi-resource[icon] {
+        button.vi-action-button > vi-resource[icon] {
             display: none;
         }
     }
@@ -97,9 +76,7 @@ vi-action-button {
                 &:hover {
                     background-color: @@color-faint;
                 }
-            }
-
-            );
+            });
         }
     }
 }

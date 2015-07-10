@@ -7,7 +7,6 @@ vi-query-grid-filters > vi-popup-menu button[header] {
   text-align: center;
   line-height: 30px;
   height: 30px;
-  background-color: red;
   /*
             vi-resource {
                 .layout-center-justified();
@@ -36,16 +35,4 @@ vi-query-grid-filters > vi-popup-menu button[header] {
 vi-query-grid-filters > vi-popup-menu vi-popup-menu-item {
   line-height: 30px;
   height: 30px;
-}
-[theme-color-1] vi-query-grid-filters vi-popup[open] button[header] {
-  background-color: #e7f0f4 !important;
-}
-[theme-color-1] vi-query-grid-filters vi-popup[open] button[header] vi-resource svg {
-  fill: #126790;
-}
-[theme-color-2] vi-query-grid-filters vi-popup[open] button[header] {
-  background-color: #e5f4f2 !important;
-}
-[theme-color-2] vi-query-grid-filters vi-popup[open] button[header] vi-resource svg {
-  fill: #009688;
 }

@@ -1,20 +1,22 @@
 <dom-module id="vi-action-button">
     <template>
-        <button can-execute$="{{canExecute}}" header class="layout horizontal" on-tap="_executeWithoutOptions">
-            <vi-resource source="{{icon}}"></vi-resource>
-            <span>{{action.definition.displayName}}</span>
-            <template is="dom-if" if="{{hasOptions}}">
-                <vi-resource source="Icon_Down" class="options"></vi-resource>
-            </template>
-        </button>
+        <template is="dom-if" if="{{!hasOptions}}">
+            <button is="vi-button" disabled="{{!canExecute}}" header class="layout horizontal" on-tap="_executeWithoutOptions" inverse>
+                <vi-resource source="{{icon}}"></vi-resource>
+                <span class="label">{{action.definition.displayName}}</span>
+            </button>
+        </template>
         <template is="dom-if" if="{{hasOptions}}">
-            <vi-popup id="options" open-on-hover$="{{overflow}}">
-                <ul content>
-                    <template is="dom-repeat" items="{{options}}">
-                        <li on-tap="_executeWithOption" data-option-index$="{{index}}">{{item}}</li>
-                    </template>
-                </ul>
-            </vi-popup>
+            <vi-popup-menu open-on-hover="{{overflow}}">
+                <button is="vi-button" disabled="{{!canExecute}}" header class="layout horizontal" inverse>
+                    <vi-resource source="{{icon}}"></vi-resource>
+                    <span class="label">{{action.definition.displayName}}</span>
+                    <vi-resource source="Icon_Down" class="options"></vi-resource>
+                </button>
+                <template is="dom-repeat" items="{{options}}">
+                    <vi-popup-menu-item label="{{item}}" on-tap="_executeWithOption" data-option-index$="{{index}}"></vi-popup-menu-item>
+                </template>
+            </vi-popup-menu>
         </template>
     </template>
 </dom-module>

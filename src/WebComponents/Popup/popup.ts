@@ -49,14 +49,14 @@ module Vidyano.WebComponents {
         }
 
         private _hookTapAndHoverEvents() {
-            this._header = <HTMLElement>Polymer.dom(this).querySelector("[header]") || this.asElement.parentElement;
+            this._header = <HTMLElement>Polymer.dom(this.root).querySelector("[toggle]") || this.asElement.parentElement;
 
             if (this._header == this.asElement.parentElement)
                 (<any>this._header).popup = this;
 
             if (this.isAttached) {
                 if (this.openOnHover) {
-                    this.asElement.addEventListener("mouseenter", this._enterHandler = this._onOpen.bind(this))
+                    this._header.addEventListener("mouseenter", this._enterHandler = this._onOpen.bind(this))
                     this.asElement.addEventListener("mouseleave", this._leaveHandler = this.close.bind(this));
                 }
                 else
@@ -64,7 +64,7 @@ module Vidyano.WebComponents {
             }
             else {
                 if (this._enterHandler) {
-                    this.asElement.removeEventListener("mouseenter", this._enterHandler);
+                    this._header.removeEventListener("mouseenter", this._enterHandler);
                     this._enterHandler = undefined;
                 }
 

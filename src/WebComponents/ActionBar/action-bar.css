@@ -21,12 +21,6 @@ vi-action-bar .actions {
 vi-action-bar .action vi-resource[hasResource] {
   padding-right: 2px;
 }
-[theme-color-1] vi-action-bar vi-overflow button[header] {
-  color: #126790;
-}
-[theme-color-2] vi-action-bar vi-overflow button[header] {
-  color: #009688;
-}
 vi-action-bar vi-overflow vi-action-button {
   text-align: left;
 }
@@ -70,10 +64,4 @@ vi-action-bar vi-input-search input:not(:focus):-ms-input-placeholder {
 }
 vi-action-bar vi-input-search button {
   fill: rgba(128, 128, 128, 0.5);
-}
-[theme-color-1] vi-action-bar[theme-color-inverse] #toggle button[header] {
-  color: white;
-}
-[theme-color-2] vi-action-bar[theme-color-inverse] #toggle button[header] {
-  color: white;
 }

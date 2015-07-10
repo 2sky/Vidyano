@@ -1,4 +1,5 @@
 vi-menu-item {
+  position: relative;
   display: block;
   line-height: 30px;
   color: #fafafa;
@@ -22,6 +23,7 @@ vi-menu-item:hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 vi-menu-item a {
+  position: relative;
   display: block;
   padding: 0 6px 0 16px;
   text-decoration: none;

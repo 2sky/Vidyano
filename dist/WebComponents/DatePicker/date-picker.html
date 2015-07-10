@@ -1,13 +1,14 @@
 ﻿<script src="../../Libs/moment/moment.js"></script>
+<link rel="import" href="../Button/button.html" />
 
 <dom-module id="vi-date-picker">
 	<template>
 		<header class="horizontal layout">
-			<div id="fback" on-tap="_fastBackward"><vi-resource source="Icon_FastBackward"></vi-resource></div>
-			<div id="back" on-tap="_backward"><vi-resource source="Icon_Backward"></vi-resource></div>
-			<div class="flex" on-tap="_zoomOut">{{header}}</div>
-			<div id="forward" on-tap="_forward"><vi-resource source="Icon_Forward"></vi-resource></div>
-			<div id="fforward" on-tap="_fastForward"><vi-resource source="Icon_FastForward"></vi-resource></div>
+			<button is="vi-button" id="fback" on-tap="_fastBackward"><vi-resource source="Icon_FastBackward"></vi-resource></button>
+			<button is="vi-button" id="back" on-tap="_backward"><vi-resource source="Icon_Backward"></vi-resource></button>
+			<button is="vi-button" class="flex" on-tap="_zoomOut">{{header}}</button>
+			<button is="vi-button" id="forward" on-tap="_forward"><vi-resource source="Icon_Forward"></vi-resource></button>
+			<button is="vi-button" id="fforward" on-tap="_fastForward"><vi-resource source="Icon_FastForward"></vi-resource></button>
 		</header>
 		<div on-tap="_select">
 			<table id="days" cellpadding="0" cellspacing="0">

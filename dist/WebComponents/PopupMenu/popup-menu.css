@@ -18,6 +18,7 @@ vi-popup-menu-item {
   -ms-flex-direction: row;
   -webkit-flex-direction: row;
   flex-direction: row;
+  position: relative;
   line-height: 40px;
   height: 40px;
   cursor: pointer;
@@ -30,42 +31,34 @@ vi-popup-menu-item {
   color: #009688;
   fill: #009688;
 }
-vi-popup-menu-item > div > vi-resource {
+vi-popup-menu-item > button {
+  padding: 0;
+  text-align: left;
+}
+vi-popup-menu-item > button > vi-resource {
   width: 30px;
 }
-vi-popup-menu-item > div > vi-resource:not([has-resource]) {
+vi-popup-menu-item > button > vi-resource:not([has-resource]) {
   display: none;
 }
-vi-popup-menu-item > div > span {
+vi-popup-menu-item > button > span {
   -ms-flex: 1;
   -webkit-flex: 1;
   flex: 1;
   padding: 0 6px;
 }
-vi-popup-menu-item > div > vi-resource[has-resource] ~ span {
+vi-popup-menu-item > button > vi-resource[has-resource] ~ span {
   padding-left: 0;
-}
-[theme-color-1] vi-popup-menu-item > div:hover {
-  background-color: #e7f0f4;
-}
-[theme-color-2] vi-popup-menu-item > div:hover {
-  background-color: #e5f4f2;
 }
 vi-popup-menu-item[icon-space] > div > span {
   padding-left: 30px;
 }
-vi-popup-menu-item[split] > vi-popup div[header] > vi-resource {
-  position: relative;
-  width: 30px;
-  height: 30px;
+vi-popup-menu-item[split] > vi-popup [header] {
   box-sizing: border-box;
   border-left: 1px solid #ddd;
-}
-[theme-color-1] vi-popup-menu-item[split] > vi-popup:hover div[header] {
-  background-color: #e7f0f4;
-}
-[theme-color-2] vi-popup-menu-item[split] > vi-popup:hover div[header] {
-  background-color: #e5f4f2;
+  padding: 0;
+  width: 30px;
+  height: 30px;
 }
 vi-popup-menu-item-separator {
   display: block;

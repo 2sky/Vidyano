@@ -67,6 +67,21 @@ interface PolymerTrackDetail {
     hover(): Element | Vidyano.WebComponents.WebComponent;
 }
 
+interface TemplateInstance {
+    item: any;
+    index: number;
+}
+
+interface TapEvent extends CustomEvent {
+    detail: {
+        x: number;
+        y: number;
+        sourceEvent: Event;
+    };
+
+    model?: TemplateInstance | any;
+}
+
 declare var Polymer: {
     (polymer: any): void;
     dom(element: Node | Vidyano.WebComponents.WebComponent): PolymerDomApi;

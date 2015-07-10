@@ -9,16 +9,14 @@ vi-user {
     .colorize( {
         background-color: fadeout(desaturate(@@color-dark, 70%), 50%);
         border-top-color: fadeout(desaturate(@@color, 70%), 50%);
-    }
-
-    );
+    });
 
     > span {
         line-height: @footerHeight;
         height: @footerHeight;
     }
 
-    button {
+    button.vi-user {
         height: @footerHeight !important;
         line-height: @footerHeight !important;
         cursor: pointer;
@@ -50,7 +48,7 @@ vi-user {
     }
 
     &:not([is-signed-in]) {
-        button {
+        button.vi-user {
             cursor: pointer;
         }
     }

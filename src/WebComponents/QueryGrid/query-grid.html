@@ -70,7 +70,7 @@
 
 <dom-module id="vi-query-grid-column-filter">
     <template>
-        <vi-popup id="filter" on-popup-opening="_popupOpening" flex disabled$="{{!gridColumn.column.canFilter}}">
+        <vi-popup id="filter" on-popup-opening="_popupOpening" class="flex" disabled="{{!gridColumn.column.canFilter}}">
             <button is="vi-button" class="flex" header inverse>
                 <template is="dom-if" if="{{filtered}}">
                     <span>{{label}}</span>
@@ -108,7 +108,7 @@
 
 <dom-module id="vi-query-grid-item-actions">
     <template>
-        <vi-popup id="popup" on-popup-opening="_popupOpening" flex disabled?="{{!gridColumn.column.canFilter}}">
+        <vi-popup id="popup" on-popup-opening="_popupOpening" class="flex" disabled="{{!gridColumn.column.canFilter}}">
             <vi-resource class="flex" source="Icon_EllipsisVertical" header></vi-resource>
             <content content></content>
         </vi-popup>

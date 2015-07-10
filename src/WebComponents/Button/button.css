@@ -27,12 +27,6 @@ button[is="vi-button"][disabled] {
 [theme-color-1] button[is="vi-button"]:not([type]):not([inverse]):hover {
   background-color: #367ea0;
 }
-[theme-color-1] button[is="vi-button"][type=""]:not([inverse]):active,
-[theme-color-1] button[is="vi-button"]:not([type]):not([inverse]):active {
-  background-color: #0c4763;
-  color: white;
-  fill: white;
-}
 [theme-color-1] button[is="vi-button"][type=""]:not([inverse])[disabled],
 [theme-color-1] button[is="vi-button"]:not([type]):not([inverse])[disabled] {
   background-color: rgba(18, 103, 144, 0.5) !important;
@@ -49,12 +43,6 @@ button[is="vi-button"][disabled] {
 [theme-color-2] button[is="vi-button"]:not([type]):not([inverse]):hover {
   background-color: #20a294;
 }
-[theme-color-2] button[is="vi-button"][type=""]:not([inverse]):active,
-[theme-color-2] button[is="vi-button"]:not([type]):not([inverse]):active {
-  background-color: #00635a;
-  color: white;
-  fill: white;
-}
 [theme-color-2] button[is="vi-button"][type=""]:not([inverse])[disabled],
 [theme-color-2] button[is="vi-button"]:not([type]):not([inverse])[disabled] {
   background-color: rgba(0, 150, 136, 0.5) !important;
@@ -64,54 +52,34 @@ button[is="vi-button"][disabled] {
 [theme-color-1] button[is="vi-button"][type=""][inverse],
 [theme-color-1] button[is="vi-button"]:not([type])[inverse] {
   background-color: transparent;
-  color: #043d59;
-  fill: #043d59;
+  color: #126790;
+  fill: #126790;
 }
 [theme-color-1] button[is="vi-button"][type=""][inverse]:hover,
 [theme-color-1] button[is="vi-button"]:not([type])[inverse]:hover {
   background-color: #e7f0f4;
 }
-[theme-color-1] button[is="vi-button"][type=""][inverse]:active,
-[theme-color-1] button[is="vi-button"]:not([type])[inverse]:active {
-  background-color: rgba(0, 0, 0, 0);
-  color: white;
-  fill: white;
-}
 [theme-color-1] button[is="vi-button"][type=""][inverse][disabled],
 [theme-color-1] button[is="vi-button"]:not([type])[inverse][disabled] {
   background-color: rgba(0, 0, 0, 0) !important;
-  fill: rgba(4, 61, 89, 0.5) !important;
-  color: rgba(4, 61, 89, 0.5) !important;
-}
-[theme-color-1] button[is="vi-button"][type=""][inverse]:active,
-[theme-color-1] button[is="vi-button"]:not([type])[inverse]:active {
-  background-color: #126790;
+  fill: rgba(18, 103, 144, 0.5) !important;
+  color: rgba(18, 103, 144, 0.5) !important;
 }
 [theme-color-2] button[is="vi-button"][type=""][inverse],
 [theme-color-2] button[is="vi-button"]:not([type])[inverse] {
   background-color: transparent;
-  color: #005d53;
-  fill: #005d53;
+  color: #009688;
+  fill: #009688;
 }
 [theme-color-2] button[is="vi-button"][type=""][inverse]:hover,
 [theme-color-2] button[is="vi-button"]:not([type])[inverse]:hover {
   background-color: #e5f4f2;
 }
-[theme-color-2] button[is="vi-button"][type=""][inverse]:active,
-[theme-color-2] button[is="vi-button"]:not([type])[inverse]:active {
-  background-color: rgba(0, 0, 0, 0);
-  color: white;
-  fill: white;
-}
 [theme-color-2] button[is="vi-button"][type=""][inverse][disabled],
 [theme-color-2] button[is="vi-button"]:not([type])[inverse][disabled] {
   background-color: rgba(0, 0, 0, 0) !important;
-  fill: rgba(0, 93, 83, 0.5) !important;
-  color: rgba(0, 93, 83, 0.5) !important;
-}
-[theme-color-2] button[is="vi-button"][type=""][inverse]:active,
-[theme-color-2] button[is="vi-button"]:not([type])[inverse]:active {
-  background-color: #009688;
+  fill: rgba(0, 150, 136, 0.5) !important;
+  color: rgba(0, 150, 136, 0.5) !important;
 }
 button[is="vi-button"][type="light-monochrome"]:not([inverse]) {
   background-color: #f0f0f0;
@@ -120,11 +88,6 @@ button[is="vi-button"][type="light-monochrome"]:not([inverse]) {
 }
 button[is="vi-button"][type="light-monochrome"]:not([inverse]):hover {
   background-color: #ffffff;
-}
-button[is="vi-button"][type="light-monochrome"]:not([inverse]):active {
-  background-color: #d7d7d7;
-  color: white;
-  fill: white;
 }
 button[is="vi-button"][type="light-monochrome"]:not([inverse])[disabled] {
   background-color: rgba(240, 240, 240, 0.5) !important;
@@ -139,18 +102,10 @@ button[is="vi-button"][type="light-monochrome"][inverse] {
 button[is="vi-button"][type="light-monochrome"][inverse]:hover {
   background-color: rgba(240, 240, 240, 0.1);
 }
-button[is="vi-button"][type="light-monochrome"][inverse]:active {
-  background-color: rgba(0, 0, 0, 0);
-  color: white;
-  fill: white;
-}
 button[is="vi-button"][type="light-monochrome"][inverse][disabled] {
   background-color: rgba(0, 0, 0, 0) !important;
   fill: rgba(240, 240, 240, 0.5) !important;
   color: rgba(240, 240, 240, 0.5) !important;
-}
-button[is="vi-button"][type="light-monochrome"][inverse]:active {
-  background-color: #d7d7d7;
 }
 button[is="vi-button"][type="danger"]:not([inverse]) {
   background-color: #ff4136;
@@ -159,11 +114,6 @@ button[is="vi-button"][type="danger"]:not([inverse]) {
 }
 button[is="vi-button"][type="danger"]:not([inverse]):hover {
   background-color: #ff7169;
-}
-button[is="vi-button"][type="danger"]:not([inverse]):active {
-  background-color: #ff1103;
-  color: white;
-  fill: white;
 }
 button[is="vi-button"][type="danger"]:not([inverse])[disabled] {
   background-color: rgba(255, 65, 54, 0.5) !important;
@@ -178,18 +128,10 @@ button[is="vi-button"][type="danger"][inverse] {
 button[is="vi-button"][type="danger"][inverse]:hover {
   background-color: rgba(255, 65, 54, 0.1);
 }
-button[is="vi-button"][type="danger"][inverse]:active {
-  background-color: rgba(0, 0, 0, 0);
-  color: white;
-  fill: white;
-}
 button[is="vi-button"][type="danger"][inverse][disabled] {
   background-color: rgba(0, 0, 0, 0) !important;
   fill: rgba(255, 65, 54, 0.5) !important;
   color: rgba(255, 65, 54, 0.5) !important;
-}
-button[is="vi-button"][type="danger"][inverse]:active {
-  background-color: #ff1103;
 }
 button[is="vi-button"][type="safe"]:not([inverse]) {
   background-color: #3d9970;
@@ -198,11 +140,6 @@ button[is="vi-button"][type="safe"]:not([inverse]) {
 }
 button[is="vi-button"][type="safe"]:not([inverse]):hover {
   background-color: #50b98a;
-}
-button[is="vi-button"][type="safe"]:not([inverse]):active {
-  background-color: #2e7555;
-  color: white;
-  fill: white;
 }
 button[is="vi-button"][type="safe"]:not([inverse])[disabled] {
   background-color: rgba(61, 153, 112, 0.5) !important;
@@ -217,16 +154,42 @@ button[is="vi-button"][type="safe"][inverse] {
 button[is="vi-button"][type="safe"][inverse]:hover {
   background-color: rgba(61, 153, 112, 0.1);
 }
-button[is="vi-button"][type="safe"][inverse]:active {
-  background-color: rgba(0, 0, 0, 0);
-  color: white;
-  fill: white;
-}
 button[is="vi-button"][type="safe"][inverse][disabled] {
   background-color: rgba(0, 0, 0, 0) !important;
   fill: rgba(61, 153, 112, 0.5) !important;
   color: rgba(61, 153, 112, 0.5) !important;
 }
-button[is="vi-button"][type="safe"][inverse]:active {
-  background-color: #2e7555;
+[theme-color-1] vi-popup[open] > [toggle] button[is="vi-button"][header][type=""]:not([inverse]),
+[theme-color-1] vi-popup[open] > [toggle] button[is="vi-button"][header]:not([type]):not([inverse]) {
+  background-color: #367ea0;
+}
+[theme-color-2] vi-popup[open] > [toggle] button[is="vi-button"][header][type=""]:not([inverse]),
+[theme-color-2] vi-popup[open] > [toggle] button[is="vi-button"][header]:not([type]):not([inverse]) {
+  background-color: #20a294;
+}
+[theme-color-1] vi-popup[open] > [toggle] button[is="vi-button"][header][type=""][inverse],
+[theme-color-1] vi-popup[open] > [toggle] button[is="vi-button"][header]:not([type])[inverse] {
+  background-color: #e7f0f4;
+}
+[theme-color-2] vi-popup[open] > [toggle] button[is="vi-button"][header][type=""][inverse],
+[theme-color-2] vi-popup[open] > [toggle] button[is="vi-button"][header]:not([type])[inverse] {
+  background-color: #e5f4f2;
+}
+vi-popup[open] > [toggle] button[is="vi-button"][header][type="light-monochrome"]:not([inverse]) {
+  background-color: #ffffff;
+}
+vi-popup[open] > [toggle] button[is="vi-button"][header][type="light-monochrome"][inverse] {
+  background-color: rgba(240, 240, 240, 0.1);
+}
+vi-popup[open] > [toggle] button[is="vi-button"][header][type="danger"]:not([inverse]) {
+  background-color: #ff7169;
+}
+vi-popup[open] > [toggle] button[is="vi-button"][header][type="danger"][inverse] {
+  background-color: rgba(255, 65, 54, 0.1);
+}
+vi-popup[open] > [toggle] button[is="vi-button"][header][type="safe"]:not([inverse]) {
+  background-color: #50b98a;
+}
+vi-popup[open] > [toggle] button[is="vi-button"][header][type="safe"][inverse] {
+  background-color: rgba(61, 153, 112, 0.1);
 }

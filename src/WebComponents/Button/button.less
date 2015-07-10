@@ -9,12 +9,6 @@
         background-color: @bgHoverColor;
     }
 
-    &:active {
-        background-color: darken(@bgColor, 10%);
-        color: white;
-        fill: white;
-    }
-
     &[disabled] {
         background-color: fadeout(@bgColor, 50%) !important;
         fill: fadeout(@fgColor, 50%) !important;
@@ -51,11 +45,7 @@ button[is="vi-button"] {
 
         &[inverse] {
             .colorize({
-                .colorizer(transparent, @@color-darker, @@color-faint);
-                
-                &:active {
-                    background-color: @@color;
-                }
+                .colorizer(transparent, @@color, @@color-faint);
             });
         }
     }
@@ -67,10 +57,6 @@ button[is="vi-button"] {
 
         &[inverse] {
             .colorizer(transparent, #f0f0f0, fadeout(#f0f0f0, 90%));
-
-            &:active {
-                background-color: darken(#f0f0f0, 10%);
-            }
         }
     }
 
@@ -81,10 +67,6 @@ button[is="vi-button"] {
 
         &[inverse] {
             .colorizer(transparent, #FF4136, fadeout(#FF4136, 90%));
-
-            &:active {
-                background-color: darken(#FF4136, 10%);
-            }
         }
     }
 
@@ -95,10 +77,52 @@ button[is="vi-button"] {
 
         &[inverse] {
             .colorizer(transparent, #3D9970, fadeout(#3D9970, 90%));
+        }
+    }
+}
 
-            &:active {
-                background-color: darken(#3D9970, 10%);
-            }
+vi-popup[open] > [toggle] button[is="vi-button"][header] {
+    &[type=""], &:not([type]) {
+        &:not([inverse]) {
+            .colorize({
+                background-color: @@color-light;
+            });
+        }
+
+        &[inverse] {
+            .colorize({
+                background-color: @@color-faint;
+            });
+        }
+    }
+
+    &[type="light-monochrome"] {
+        &:not([inverse]) {
+            background-color: lighten(#f0f0f0, 10%);
+        }
+
+        &[inverse] {
+            background-color: fadeout(#f0f0f0, 90%);
+        }
+    }
+
+    &[type="danger"] {
+        &:not([inverse]) {
+            background-color: lighten(#FF4136, 10%);
+        }
+
+        &[inverse] {
+            background-color: fadeout(#FF4136, 90%);
+        }
+    }
+
+    &[type="safe"] {
+        &:not([inverse]) {
+            background-color: lighten(#3D9970, 10%);
+        }
+
+        &[inverse] {
+            background-color: fadeout(#3D9970, 90%);
         }
     }
 }

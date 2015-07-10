@@ -23,6 +23,7 @@ vi-popup-menu {
 
 vi-popup-menu-item {
     .layout-horizontal();
+    .relative();
     height: @h1;
     line-height: @h1;
     height: @h1;
@@ -32,7 +33,10 @@ vi-popup-menu-item {
         fill: @@color;
     });
 
-     > div {
+     > button {
+         padding: 0;
+         text-align: left;
+
          > vi-resource {
             width: @h2;
 
@@ -49,12 +53,6 @@ vi-popup-menu-item {
         > vi-resource[has-resource] ~ span {
             padding-left: 0;
         }
-
-        &:hover {
-            .colorize({
-                background-color: @@color-faint;
-            });
-        }
      }
 
     &[icon-space] > div > span {
@@ -63,20 +61,12 @@ vi-popup-menu-item {
 
     &[split] {
         > vi-popup {
-            div[header] {
-                & > vi-resource {
-                    .relative();
-                    width: @h2;
-                    height: @h2;
-                    box-sizing: border-box;
-                    border-left: 1px solid #ddd;
-                }
-            }
-
-            &:hover div[header] {
-                .colorize({
-                    background-color: @@color-faint;
-                });
+            [header] {
+                box-sizing: border-box;
+                border-left: 1px solid #ddd;
+                padding: 0;
+                width: @h2;
+                height: @h2;
             }
         }
     }

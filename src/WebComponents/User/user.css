@@ -19,12 +19,12 @@ vi-user > span {
   line-height: 40px;
   height: 40px;
 }
-vi-user button {
+vi-user button.vi-user {
   height: 40px !important;
   line-height: 40px !important;
   cursor: pointer;
 }
-[theme-color-1] vi-user button#signIn {
+[theme-color-1] vi-user button.vi-user#signIn {
   background-color: #126790;
   color: white;
   -moz-transition-property: fill, color, background-color;
@@ -40,17 +40,17 @@ vi-user button {
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
 }
-[theme-color-1] vi-user button#signIn:hover {
+[theme-color-1] vi-user button.vi-user#signIn:hover {
   background-color: #126790;
 }
-[theme-color-1] vi-user button#signIn:active {
+[theme-color-1] vi-user button.vi-user#signIn:active {
   background-color: #0c4763;
 }
-[theme-color-1] vi-user button#signIn[disabled] {
+[theme-color-1] vi-user button.vi-user#signIn[disabled] {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
-[theme-color-2] vi-user button#signIn {
+[theme-color-2] vi-user button.vi-user#signIn {
   background-color: #009688;
   color: white;
   -moz-transition-property: fill, color, background-color;
@@ -66,25 +66,25 @@ vi-user button {
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
 }
-[theme-color-2] vi-user button#signIn:hover {
+[theme-color-2] vi-user button.vi-user#signIn:hover {
   background-color: #009688;
 }
-[theme-color-2] vi-user button#signIn:active {
+[theme-color-2] vi-user button.vi-user#signIn:active {
   background-color: #00635a;
 }
-[theme-color-2] vi-user button#signIn[disabled] {
+[theme-color-2] vi-user button.vi-user#signIn[disabled] {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
-vi-user button#signIn > vi-resource {
+vi-user button.vi-user#signIn > vi-resource {
   height: 40px !important;
   margin-left: 6px;
 }
-vi-user button#settings {
+vi-user button.vi-user#settings {
   width: 40px;
   box-sizing: border-box;
 }
-[theme-color-1] vi-user button#settings {
+[theme-color-1] vi-user button.vi-user#settings {
   background-color: rgba(52, 65, 71, 0.6);
   color: white;
   -moz-transition-property: fill, color, background-color;
@@ -101,17 +101,17 @@ vi-user button#settings {
   transition-timing-function: ease-out;
   border-left: 1px solid rgba(75, 83, 87, 0.8);
 }
-[theme-color-1] vi-user button#settings:hover {
+[theme-color-1] vi-user button.vi-user#settings:hover {
   background-color: rgba(52, 65, 71, 0.6);
 }
-[theme-color-1] vi-user button#settings:active {
+[theme-color-1] vi-user button.vi-user#settings:active {
   background-color: rgba(30, 38, 42, 0.6);
 }
-[theme-color-1] vi-user button#settings[disabled] {
+[theme-color-1] vi-user button.vi-user#settings[disabled] {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
-[theme-color-2] vi-user button#settings {
+[theme-color-2] vi-user button.vi-user#settings {
   background-color: rgba(42, 77, 73, 0.6);
   color: white;
   -moz-transition-property: fill, color, background-color;
@@ -128,19 +128,19 @@ vi-user button#settings {
   transition-timing-function: ease-out;
   border-left: 1px solid rgba(53, 98, 93, 0.8);
 }
-[theme-color-2] vi-user button#settings:hover {
+[theme-color-2] vi-user button.vi-user#settings:hover {
   background-color: rgba(42, 77, 73, 0.6);
 }
-[theme-color-2] vi-user button#settings:active {
+[theme-color-2] vi-user button.vi-user#settings:active {
   background-color: rgba(24, 44, 42, 0.6);
 }
-[theme-color-2] vi-user button#settings[disabled] {
+[theme-color-2] vi-user button.vi-user#settings[disabled] {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
-vi-user button > vi-resource {
+vi-user button.vi-user > vi-resource {
   fill: white;
 }
-vi-user:not([is-signed-in]) button {
+vi-user:not([is-signed-in]) button.vi-user {
   cursor: pointer;
 }

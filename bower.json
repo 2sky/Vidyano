@@ -33,6 +33,7 @@
   "devDependencies": {
     "moment": "2sky/moment#^2.10.0",
     "polymer": "polymer/polymer#^1.0.5",
+    "paper-ripple": "polymerelements/paper-ripple#^1.0.1",
     "marked-element": "polymerelements/marked-element#^1.0.2",
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.2",
     "es6-promise": "2sky/es6-promise#^2.3.0",

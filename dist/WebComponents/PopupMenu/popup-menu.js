@@ -40,6 +40,10 @@ var Vidyano;
             PopupMenu.prototype._alignmentChanged = function () {
                 this.$["popup"].contentAlign = this.rightAlign ? "right" : "";
             };
+            PopupMenu.prototype._mouseenter = function () {
+                if (this.openOnHover)
+                    this.$["popup"].popup();
+            };
             return PopupMenu;
         })(WebComponents.WebComponent);
         WebComponents.PopupMenu = PopupMenu;
@@ -68,6 +72,10 @@ var Vidyano;
                     type: Boolean,
                     reflectToAttribute: true
                 },
+                openOnHover: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                },
                 contextMenuOnly: {
                     type: Boolean,
                     reflectToAttribute: true,
@@ -83,7 +91,10 @@ var Vidyano;
             },
             observers: [
                 "_hookContextMenu(isAttached, contextMenuOnly)"
-            ]
+            ],
+            listeners: {
+                "mouseenter": "_mouseenter"
+            }
         });
         WebComponents.WebComponent.register(PopupMenuItem, WebComponents, "vi", {
             properties: {

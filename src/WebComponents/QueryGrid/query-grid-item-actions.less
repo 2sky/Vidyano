@@ -1,12 +1,12 @@
 ﻿@import (reference) "query-grid.less";
 
 vi-query-grid-item-actions, .vi-query-grid-item-actions-proxy {
-    display: block;
+    .layout-horizontal();
+    .noSelection();
     width: @cell-width;
     height: @cell-line-height;
-    .noSelection();
 
-    > vi-resource, #toggle {
+    > vi-resource, [toggle] {
         fill: #333;
         height: @cell-line-height;
     }
@@ -15,5 +15,11 @@ vi-query-grid-item-actions, .vi-query-grid-item-actions-proxy {
         .colorize({
             background-color: darken(@@color-faint, 5%);
         });
+    }
+}
+
+.vi-query-grid-item-actions-proxy {
+    > vi-resource {
+        .flex();
     }
 }

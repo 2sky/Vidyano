@@ -23,12 +23,6 @@ vi-action-bar {
     }
 
     vi-overflow {
-        button[header] {
-            .colorize({
-                color: @@color;
-            });
-        }
-
         vi-action-button {
             text-align: left;
         }
@@ -63,13 +57,5 @@ vi-action-bar {
         button {
             fill: @inputSearchPlaceholderColor;
         }
-    }
-
-    &[theme-color-inverse] {
-        .colorize({
-            #toggle button[header] {
-                color: white;
-            }
-        });
     }
 }
