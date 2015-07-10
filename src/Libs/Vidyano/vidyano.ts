@@ -1772,7 +1772,7 @@ module Vidyano {
         triggersRefresh: boolean;
         column: number;
         columnSpan: number;
-        objects: Array<PersistentObject>;
+        objects: PersistentObject[];
 
         constructor(service: Service, attr: any, public parent: PersistentObject) {
             super(service);

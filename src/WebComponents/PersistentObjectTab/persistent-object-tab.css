@@ -108,7 +108,9 @@ vi-persistent-object-tab-item-presenter {
   position: absolute;
   box-sizing: border-box;
   background-color: white;
-  padding: 0 12px;
+}
+vi-persistent-object-tab-item-presenter > .vi-persistent-object-tab:not(#rect) {
+  margin: 0 12px;
 }
 vi-persistent-object-tab-item-presenter #rect {
   display: none;

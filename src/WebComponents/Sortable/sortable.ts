@@ -70,15 +70,15 @@
 		}
     }
 
-    Vidyano.WebComponents.WebComponent.registerTODO(Vidyano.WebComponents.Sortable, Vidyano.WebComponents, "vi",
-        {
-			group: { value: null, reflect: true },
-			filter: { value: null, reflect: true },
-			isDragging: { value: false, reflect: true },
-			isGroupDragging: { value: false, reflect: true },
-			disabled: { value: false, reflect: true }
-        }, {
-			isDragging: "_isDragging",
-			isGroupDragging: "_isGroupDragging"
-		});
+  //  Vidyano.WebComponents.WebComponent.registerTODO(Vidyano.WebComponents.Sortable, Vidyano.WebComponents, "vi",
+  //      {
+		//	group: { value: null, reflect: true },
+		//	filter: { value: null, reflect: true },
+		//	isDragging: { value: false, reflect: true },
+		//	isGroupDragging: { value: false, reflect: true },
+		//	disabled: { value: false, reflect: true }
+  //      }, {
+		//	isDragging: "_isDragging",
+		//	isGroupDragging: "_isGroupDragging"
+		//});
 }

@@ -1,10 +1,10 @@
 module Vidyano.WebComponents {
-    interface Position {
+    export interface Position {
         x: number;
         y: number;
     }
 
-    interface Size {
+    export interface Size {
         width: number;
         height: number;
     }

@@ -2,7 +2,7 @@
     //x TODO
     //x http://localhost/VidyanoWeb2/#!/Management/PersistentObject.27d6baf2-ecb3-4eec-82f6-eb415b8987f9/ActionNotImplemented
 
-    interface TranslatedString {
+    export interface TranslatedString {
         key: string;
         label: string;
         value: string;

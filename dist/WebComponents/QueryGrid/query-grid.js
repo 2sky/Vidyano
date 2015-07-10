@@ -410,6 +410,7 @@ var Vidyano;
             };
             return QueryGridRow;
         })();
+        WebComponents.QueryGridRow = QueryGridRow;
         var QueryGridColumnHeaders = (function (_super) {
             __extends(QueryGridColumnHeaders, _super);
             function QueryGridColumnHeaders() {
@@ -428,6 +429,7 @@ var Vidyano;
             };
             return QueryGridColumnHeaders;
         })(QueryGridRow);
+        WebComponents.QueryGridColumnHeaders = QueryGridColumnHeaders;
         var QueryGridColumnFilters = (function (_super) {
             __extends(QueryGridColumnFilters, _super);
             function QueryGridColumnFilters() {
@@ -462,6 +464,7 @@ var Vidyano;
             };
             return QueryGridColumnFilters;
         })(QueryGridRow);
+        WebComponents.QueryGridColumnFilters = QueryGridColumnFilters;
         var QueryGridItems = (function (_super) {
             __extends(QueryGridItems, _super);
             function QueryGridItems(grid, hosts) {
@@ -618,6 +621,7 @@ var Vidyano;
             };
             return QueryGridItems;
         })(QueryGridRow);
+        WebComponents.QueryGridItems = QueryGridItems;
         var QueryGridItem = (function (_super) {
             __extends(QueryGridItem, _super);
             function QueryGridItem(parent) {

@@ -401,10 +401,24 @@ var Vidyano;
                 return _super.prototype.onAction.call(this, args);
             };
             AppServiceHooks.prototype.onOpen = function (obj, replaceCurrent, fromAction) {
+                var _this = this;
                 if (replaceCurrent === void 0) { replaceCurrent = false; }
                 if (fromAction === void 0) { fromAction = false; }
                 if (obj instanceof Vidyano.PersistentObject) {
                     var po = obj;
+                    if (po.stateBehavior.indexOf("OpenAsDialog") >= 0) {
+                        var dialog = new Vidyano.WebComponents.PersistentObjectDialog();
+                        Polymer.dom(this.app).appendChild(dialog);
+                        Polymer.dom(this.app).flush();
+                        return dialog.show(po).then(function (result) {
+                            Polymer.dom(_this.app).removeChild(dialog);
+                            return result;
+                        }, function (e) {
+                            Polymer.dom(_this.app).removeChild(dialog);
+                            throw e;
+                        });
+                        return;
+                    }
                     var path;
                     if (!fromAction) {
                         path = this.app.getUrlForPersistentObject(po.id, po.objectId);

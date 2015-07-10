@@ -5,12 +5,22 @@ vi-persistent-object-dialog vi-dialog .content {
   -ms-flex-direction: row;
   -webkit-flex-direction: row;
   flex-direction: row;
-  width: 500px;
-  padding: 6px;
+  min-width: 500px;
+  padding: 0;
 }
 vi-persistent-object-dialog vi-dialog .content > div {
   -ms-flex: 1;
   -webkit-flex: 1;
   flex: 1;
-  overflow: hidden;
+  overflow: auto;
+}
+vi-persistent-object-dialog vi-dialog .content > div vi-persistent-object-tab {
+  margin-right: auto !important;
+  overflow-y: auto;
+}
+@media (max-width: 767px) {
+  vi-persistent-object-dialog vi-dialog .content {
+    min-width: 0;
+    width: 85vw;
+  }
 }

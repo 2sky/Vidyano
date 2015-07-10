@@ -72,7 +72,7 @@ var Vidyano;
                 }
             };
             Select.prototype._keyup = function (e) {
-                if (this._lastMatchedInputValue != this._inputValue && !this.filtering && e.which != WebComponents.Keyboard.KeyCodes.enter && e.which != WebComponents.KeyCodes.tab && e.which != WebComponents.KeyCodes.escape)
+                if (this._lastMatchedInputValue != this._inputValue && !this.filtering && e.which != WebComponents.Keyboard.KeyCodes.enter && e.which != WebComponents.Keyboard.KeyCodes.tab && e.which != WebComponents.Keyboard.KeyCodes.escape)
                     this._setFiltering(true);
             };
             Select.prototype._openPopup = function () {

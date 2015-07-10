@@ -15,7 +15,10 @@ var Vidyano;
             }
             AttachedNotifier.prototype.attached = function () {
                 _super.prototype.attached.call(this);
-                this.fire("attached", { id: this.asElement.id }, this.asElement, false);
+                this.fire("attached", { id: this.asElement.id }, {
+                    node: this.asElement,
+                    bubbles: false
+                });
             };
             return AttachedNotifier;
         })(WebComponents.WebComponent);

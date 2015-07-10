@@ -30,7 +30,8 @@ vi-dialog {
         z-index: 50001;
 
         > #dialog {
-            max-width: 80%;
+            max-height: 90vh;
+            max-width: 90vw;
             opacity: 0;
             -moz-transition: opacity 3000ms ease-out;
             -o-transition: opacity 3000ms ease-out;
@@ -119,11 +120,6 @@ vi-dialog {
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
     vi-dialog {
-        > #dialogHost > #dialog {
-            max-height: 90vh;
-            max-width: 90vw;
-        }
-
         &:not([auto-size]) {
             > #dialogHost > #dialog {
                 .layout-vertical();

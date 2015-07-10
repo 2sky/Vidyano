@@ -4,13 +4,13 @@
         column?: QueryColumn;
     }
 
-    interface QueryGridColumnHosts {
+    export interface QueryGridColumnHosts {
         header: HTMLElement;
         pinned: HTMLElement;
         unpinned: HTMLElement;
     }
 
-    interface Viewport {
+    export interface Viewport {
         width: number;
         height: number;
     }
@@ -403,7 +403,7 @@
         }
     }
 
-    class QueryGridRow {
+    export class QueryGridRow {
         private _remainder: HTMLElement;
         private _columnsOrder: string;
 
@@ -485,7 +485,7 @@
         }
     }
 
-    class QueryGridColumnHeaders extends QueryGridRow {
+    export class QueryGridColumnHeaders extends QueryGridRow {
         protected _createRemainder(): HTMLElement {
             var remainder = document.createElement("div");
             remainder.className = "_RemainderColumn";
@@ -502,7 +502,7 @@
         }
     }
 
-    class QueryGridColumnFilters extends QueryGridRow {
+    export class QueryGridColumnFilters extends QueryGridRow {
         private _filterMenu: HTMLElement;
 
         updateColumns(pinned: QueryGridColumn[], unpinned: QueryGridColumn[]) {
@@ -542,7 +542,7 @@
         }
     }
 
-    class QueryGridItems extends QueryGridRow {
+    export class QueryGridItems extends QueryGridRow {
         private _items: QueryGridItem[] = [];
         private _measuredRowWidths: boolean;
         private _rowHeight: number;

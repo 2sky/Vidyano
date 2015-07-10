@@ -88,7 +88,7 @@ module Vidyano.WebComponents {
         }
 
         private _keyup(e: KeyboardEvent) {
-            if (this._lastMatchedInputValue != this._inputValue && !this.filtering && e.which != WebComponents.Keyboard.KeyCodes.enter && e.which != WebComponents.KeyCodes.tab && e.which != WebComponents.KeyCodes.escape)
+            if (this._lastMatchedInputValue != this._inputValue && !this.filtering && e.which != WebComponents.Keyboard.KeyCodes.enter && e.which != WebComponents.Keyboard.KeyCodes.tab && e.which != WebComponents.Keyboard.KeyCodes.escape)
                 this._setFiltering(true);
         }
 

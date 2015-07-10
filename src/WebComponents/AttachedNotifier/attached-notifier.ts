@@ -3,7 +3,10 @@
         attached() {
             super.attached();
 
-            this.fire("attached", { id: this.asElement.id }, this.asElement, false);
+            this.fire("attached", { id: this.asElement.id }, {
+                node: this.asElement,
+                bubbles: false
+            });
         }
     }
 

@@ -470,8 +470,24 @@
         onOpen(obj: ServiceObject, replaceCurrent: boolean = false, fromAction: boolean = false) {
             if (obj instanceof Vidyano.PersistentObject) {
                 var po = <Vidyano.PersistentObject>obj;
-                var path: string;
 
+                if (po.stateBehavior.indexOf("OpenAsDialog") >= 0) {
+                    var dialog = new Vidyano.WebComponents.PersistentObjectDialog();
+                    Polymer.dom(this.app).appendChild(dialog);
+                    Polymer.dom(this.app).flush();
+
+                    return dialog.show(po).then(result => {
+                        Polymer.dom(this.app).removeChild(dialog);
+                        return result;
+                    }, e => {
+                        Polymer.dom(this.app).removeChild(dialog);
+                            throw e;
+                        });
+
+                    return;
+                }
+
+                var path: string;
                 if (!fromAction) {
                     path = this.app.getUrlForPersistentObject(po.id, po.objectId);
 

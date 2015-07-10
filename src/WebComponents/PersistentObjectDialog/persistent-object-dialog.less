@@ -3,12 +3,24 @@
 vi-persistent-object-dialog {
     vi-dialog .content {
         .layout-horizontal();
-        width: 500px;
-        padding: @h5;
+        min-width: 500px;
+        padding: 0;
 
         > div {
             .flex();
-            overflow: hidden;
+            overflow: auto;
+
+            vi-persistent-object-tab {
+                margin-right: auto !important;
+                overflow-y: auto;
+            }
         }
+    }
+}
+
+@media (max-width: 767px) {
+    vi-persistent-object-dialog vi-dialog .content {
+        min-width: 0;
+        width: 85vw;
     }
 }
