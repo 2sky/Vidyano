@@ -8,52 +8,6 @@ var Vidyano;
 (function (Vidyano) {
     var WebComponents;
     (function (WebComponents) {
-        var AppConfig = (function (_super) {
-            __extends(AppConfig, _super);
-            function AppConfig() {
-                _super.apply(this, arguments);
-                this._attributeConfigs = [];
-            }
-            AppConfig.prototype.attached = function () {
-                _super.prototype.attached.call(this);
-                if (!this._defaultAttributeConfig) {
-                    this._defaultAttributeConfig = this.appendChild(new WebComponents.PersistentObjectAttributeConfig());
-                }
-                this.app._setConfiguration(this);
-            };
-            AppConfig.prototype.getAttributeConfig = function (attr) {
-                var configs = Enumerable.from(this._attributeConfigs);
-                return configs.firstOrDefault(function (c) { return c.parentObjectId == attr.parent.objectId && c.parentId == attr.parent.id && (c.name == attr.name || c.type == attr.type); }) ||
-                    configs.firstOrDefault(function (c) { return c.parentId == attr.parent.id && (c.name == attr.name || c.type == attr.type); }) ||
-                    configs.firstOrDefault(function (c) { return c.name == attr.name && c.type == attr.type; }) ||
-                    configs.firstOrDefault(function (c) { return c.name == attr.name; }) ||
-                    configs.firstOrDefault(function (c) { return c.type == attr.type; }) ||
-                    this._defaultAttributeConfig;
-            };
-            AppConfig.prototype._configAdded = function (e, detail) {
-                if (detail.config instanceof WebComponents.PersistentObjectAttributeConfig)
-                    this._attributeConfigs.push(detail.config);
-            };
-            return AppConfig;
-        })(WebComponents.WebComponent);
-        WebComponents.AppConfig = AppConfig;
-        WebComponents.WebComponent.register(AppConfig, WebComponents, "vi", {
-            listeners: {
-                "config-added": "_configAdded"
-            }
-        });
-        var AppConfigEntry = (function (_super) {
-            __extends(AppConfigEntry, _super);
-            function AppConfigEntry() {
-                _super.apply(this, arguments);
-            }
-            AppConfigEntry.prototype.attached = function () {
-                _super.prototype.attached.call(this);
-                this.fire("config-added", { config: this });
-            };
-            return AppConfigEntry;
-        })(WebComponents.WebComponent);
-        WebComponents.AppConfigEntry = AppConfigEntry;
         var PersistentObjectAttributeConfig = (function (_super) {
             __extends(PersistentObjectAttributeConfig, _super);
             function PersistentObjectAttributeConfig() {
@@ -86,7 +40,7 @@ var Vidyano;
                 return this._calculateWidth(attr);
             };
             return PersistentObjectAttributeConfig;
-        })(AppConfigEntry);
+        })(WebComponents.WebComponent);
         WebComponents.PersistentObjectAttributeConfig = PersistentObjectAttributeConfig;
         WebComponents.WebComponent.register(PersistentObjectAttributeConfig, WebComponents, "vi", {
             properties: {

@@ -107,23 +107,27 @@ var Vidyano;
                 Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type].then(function () {
                     if (attribute !== _this.attribute)
                         return;
-                    _this._setLoading(false);
-                    var config = _this.app.configuration.getAttributeConfig(attribute);
-                    if (config && config.template) {
-                        var template = document.createElement("template", "dom-bind");
-                        template.attribute = attribute;
-                        var fragmentClone = document.importNode(config.template.content, true);
-                        while (fragmentClone.children.length > 0)
-                            template.content.appendChild(fragmentClone.children[0]);
-                        var container = document.createElement("div");
-                        container.className = "layout horizontal";
-                        container.appendChild(template);
-                        Polymer.dom(_this).appendChild(container);
-                        return;
+                    try {
+                        var config = _this.app.configuration.getAttributeConfig(attribute);
+                        if (config && config.template) {
+                            var template = document.createElement("template", "dom-bind");
+                            template.attribute = attribute;
+                            var fragmentClone = document.importNode(config.template.content, true);
+                            while (fragmentClone.children.length > 0)
+                                template.content.appendChild(fragmentClone.children[0]);
+                            var container = document.createElement("div");
+                            container.className = "layout horizontal";
+                            container.appendChild(template);
+                            Polymer.dom(_this).appendChild(container);
+                            return;
+                        }
+                        var child = new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
+                        Polymer.dom(_this).appendChild(child.asElement);
+                        child.attribute = attribute;
                     }
-                    var child = new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
-                    Polymer.dom(_this).appendChild(child.asElement);
-                    child.attribute = attribute;
+                    finally {
+                        _this._setLoading(false);
+                    }
                 });
             };
             PersistentObjectAttributePresenter.prototype._computeRequired = function (required, value) {

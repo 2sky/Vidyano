@@ -57,11 +57,12 @@ module Vidyano.WebComponents {
     }
 
     export class PersistentObjectTab extends WebComponent {
+        private _config: Vidyano.WebComponents.PersistentObjectTabConfig;
         private _itemDragTargetPosition: Position;
         private _itemDragTargetSize: Size;
         private _lastArrangedColumnCount: number;
         tab: Vidyano.PersistentObjectAttributeTab;
-        authored: boolean;
+        layout: string;
         designMode: boolean;
         cells: PersistentObjectTabCell[][];
         items: PersistentObjectTabItem[];
@@ -78,9 +79,7 @@ module Vidyano.WebComponents {
         private _setCellWidth: (width: number) => void;
         private _setCellHeight: (height: number) => void;
         private _setRows: (rows: number) => void;
-        private _setAuthored: (authored: boolean) => void;
         private _setItemDragging: (dragging: boolean) => void;
-        private _setDesignModeAvailable: (available: boolean) => void;
 
         attached() {
             super.attached();
@@ -88,14 +87,36 @@ module Vidyano.WebComponents {
             this.style.marginRight = "-" + scrollbarWidth().toString(10) + "px";
         }
 
-        private _tabChanged(tab: Vidyano.PersistentObjectAttributeTab, oldTab: Vidyano.PersistentObjectAttributeTab) {
-            this._setDesignModeAvailable(tab && tab.parent.actions["viConfigurePO"] !== undefined);
-            this._setAuthored(tab && !!tab.layout);
+        isEqual(str1: string, str2: string): boolean {
+            return str1 === str2;
         }
 
-        private _computeCells(items: PersistentObjectTabItem[], columns: number, rows: number): PersistentObjectTabCell[][] {
+        update() {
+            this._arrangeAutoLayout(true);
+        }
+
+        private _computeLayout(tab: Vidyano.PersistentObjectAttributeTab, isAttached: boolean): string {
+            if (!isAttached || !tab)
+                return this.layout;
+
+            if (!!(this._config = this.app.configuration.getTabConfig(tab)) && !!this._config.template)
+                return "Template";
+            else if (!!tab.layout)
+                return "Authored";
+            else
+                return "Auto";
+        }
+
+        private _computeIsDesignModeAvailable(tab: Vidyano.PersistentObjectAttributeTab, layout: string): boolean {
+            return tab && tab.parent.actions["viConfigurePO"] !== undefined && this.layout !== "Template";
+        }
+
+        private _computeDesignModeCells(items: PersistentObjectTabItem[], columns: number, rows: number): PersistentObjectTabCell[][]{
             if (!items)
                 return [];
+
+            var cellsElement = <HTMLElement>this.$$("#cells");
+            var itemsElement = <HTMLElement>this.$$("#items");
 
             var cells: PersistentObjectTabCell[][] = [];
             var oldCells = Enumerable.from(this.cells || []).selectMany(cell => cell).toArray();
@@ -107,7 +128,7 @@ module Vidyano.WebComponents {
                         var cell: PersistentObjectTabCell;
                         row.push(cell = (this.cells && this.cells.length > y && this.cells[y].length > x ? this.cells[y][x] : new WebComponents.PersistentObjectTabCell(x, y)));
                         if (!cell.isAttached)
-                            this.$["cells"].appendChild(cell);
+                            cellsElement.appendChild(cell);
 
                         newCells.push(cell);
                         if (!this.designMode)
@@ -121,7 +142,7 @@ module Vidyano.WebComponents {
             }
 
             Enumerable.from(oldCells).except(newCells).forEach(oldCell => {
-                this.$["cells"].removeChild(oldCell.asElement);
+                cellsElement.removeChild(oldCell.asElement);
             });
 
             var width = Math.floor(this.width / this.columns);
@@ -133,16 +154,55 @@ module Vidyano.WebComponents {
                 }
             }, cells);
 
-            this.$["cells"].style.width = (width * this.columns) + "px";
-            this.$["cells"].style.height = ((rows - 1) * this.cellHeight) + "px";
-            this.$["items"].style.width = (width * this.columns) + "px";
-            this.$["items"].style.height = ((rows - 1) * this.cellHeight) + "px";
+            cellsElement.style.width = (width * this.columns) + "px";
+            cellsElement.style.height = ((rows - 1) * this.cellHeight) + "px";
+            itemsElement.style.width = (width * this.columns) + "px";
+            itemsElement.style.height = ((rows - 1) * this.cellHeight) + "px";
 
             return cells;
         }
 
-        private _autoArrange(force?: boolean) {
-            if (!force && (this.authored || this._lastArrangedColumnCount == this.columns))
+        private _computeColumns(layout: string, width: number, defaultColumnCount: number): number {
+            if (layout !== "Auto")
+                return;
+
+            if (defaultColumnCount)
+                return defaultColumnCount;
+
+            if (this.width >= 1500)
+                return 4;
+            else if (this.width > 1000)
+                return 3;
+            else if (this.width > 500)
+                return 2;
+
+            return 1;
+        }
+
+        private _renderTemplate(tab: Vidyano.PersistentObjectTab, layout: string) {
+            if (this.layout === "Template") {
+                this.empty();
+
+                var template = (<any>document).createElement("template", "dom-bind");
+                template.tab = this.tab;
+
+                var fragmentClone = <HTMLElement>document.importNode(this._config.template.content, true);
+                while (fragmentClone.children.length > 0)
+                    template.content.appendChild(fragmentClone.children[0]);
+
+                var container = document.createElement("div");
+                container.className = "layout horizontal";
+                container.appendChild(template);
+
+                Polymer.dom(this).appendChild(container);
+            }
+        }
+
+        private _arrangeAutoLayout(force?: boolean) {
+            if (this.layout !== "Auto")
+                return;
+
+            if (!force && this._lastArrangedColumnCount == this.columns)
                 return;
 
             var oldItems = Enumerable.from(this.items || []).memoize();
@@ -170,6 +230,7 @@ module Vidyano.WebComponents {
                         attrItem = new PersistentObjectTabItem(attr);
 
                     var config = this.app.configuration.getAttributeConfig(attr);
+                    
                     attrItem.height = config.calculateHeight(attr);
                     attrItem.width = Math.min(this.columns, config.calculateWidth(attr));
 
@@ -249,10 +310,6 @@ module Vidyano.WebComponents {
             this._setItems(items);
         }
 
-        update() {
-            this._autoArrange(true);
-        }
-
         private _sizeChanged(e: Event, detail: { width: number; height: number }) {
             e.stopPropagation();
 
@@ -261,25 +318,6 @@ module Vidyano.WebComponents {
 
             if (detail.height > 0)
                 this._setHeight(detail.height);
-
-            if (!this.tab)
-                return;
-
-            if (!this.authored) {
-                if (this.tab.columnCount) {
-                    this.columns = this.tab.columnCount;
-                    return;
-                }
-
-                if (detail.width >= 1500)
-                    this.columns = 4;
-                else if (detail.width > 1000)
-                    this.columns = 3;
-                else if (detail.width > 500)
-                    this.columns = 2;
-                else
-                    this.columns = 1;
-            }
         }
 
         private _cellsForEach(fnc: (cell: PersistentObjectTabCell, x: number, y: number) => void, cells: PersistentObjectTabCell[][] = this.cells) {
@@ -482,8 +520,10 @@ module Vidyano.WebComponents {
 
     WebComponent.register(PersistentObjectTab, WebComponents, "vi", {
         properties: {
+            tab: Object,
             columns: {
-                type: Number
+                type: Number,
+                computed: "_computeColumns(layout, width, tab.columnCount)"
             },
             rows: {
                 type: Number,
@@ -491,15 +531,11 @@ module Vidyano.WebComponents {
             },
             cells: {
                 type: Array,
-                computed: "_computeCells(items, columns, rows, width, designModeAvailable, designMode)"
+                computed: "_computeDesignModeCells(items, columns, rows, width, isDesignModeAvailable, designMode)"
             },
-            tab: {
-                type: Object,
-                observer: "_tabChanged"
-            },
-            authored: {
-                type: Boolean,
-                readOnly: true
+            layout: {
+                type: String,
+                computed: "_computeLayout(tab, isAttached)"
             },
             items: {
                 type: Array,
@@ -526,9 +562,9 @@ module Vidyano.WebComponents {
                 value: false,
                 reflectToAttribute: true
             },
-            designModeAvailable: {
+            isDesignModeAvailable: {
                 type: Boolean,
-                readOnly: true
+                computed: "_computeIsDesignModeAvailable(tab, layout)"
             },
             itemDragging: {
                 type: Boolean,
@@ -537,7 +573,8 @@ module Vidyano.WebComponents {
             }
         },
         observers: [
-            "_autoArrange(tab, columns)"
+            "_renderTemplate(tab, layout)",
+            "_arrangeAutoLayout(tab, layout, columns)",
         ],
         hostAttributes: {
             "class": "relative"

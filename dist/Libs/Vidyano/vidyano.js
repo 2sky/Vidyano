@@ -1242,7 +1242,7 @@ var Vidyano;
             var attributeTabs = po.tabs ? Enumerable.from(Enumerable.from(this.attributes).where(function (attr) { return attr.visibility == "Always" || attr.visibility.contains(visibility); }).orderBy(function (attr) { return attr.offset; }).groupBy(function (attr) { return attr.tab; }, function (attr) { return attr; }).select(function (tab) {
                 var groups = tab.orderBy(function (attr) { return attr.offset; }).groupBy(function (attr) { return attr.group; }, function (attr) { return attr; }).select(function (group) { return _this.service.hooks.onConstructPersistentObjectAttributeGroup(service, group.key(), group, _this); }).memoize();
                 groups.toArray().forEach(function (g, n) { return g.index = n; });
-                var serviceTab = po.tabs[tab.key()];
+                var serviceTab = po.tabs[tab.key()] || {};
                 return _this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, tab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, _this, serviceTab.columnCount);
             })).toArray() : [];
             this._serviceTabs = po.tabs;
@@ -1934,10 +1934,11 @@ var Vidyano;
     Vidyano.PersistentObjectAttributeAsDetail = PersistentObjectAttributeAsDetail;
     var PersistentObjectTab = (function (_super) {
         __extends(PersistentObjectTab, _super);
-        function PersistentObjectTab(service, label, target, parent, _isVisible) {
+        function PersistentObjectTab(service, name, label, target, parent, _isVisible) {
             if (_isVisible === void 0) { _isVisible = true; }
             _super.call(this);
             this.service = service;
+            this.name = name;
             this.label = label;
             this.target = target;
             this.parent = parent;
@@ -1961,11 +1962,10 @@ var Vidyano;
     var PersistentObjectAttributeTab = (function (_super) {
         __extends(PersistentObjectAttributeTab, _super);
         function PersistentObjectAttributeTab(service, _groups, key, id, name, _layout, po, columnCount) {
-            _super.call(this, service, StringEx.isNullOrEmpty(key) ? po.label : key, po, po);
+            _super.call(this, service, name, StringEx.isNullOrEmpty(key) ? po.label : key, po, po);
             this._groups = _groups;
             this.key = key;
             this.id = id;
-            this.name = name;
             this._layout = _layout;
             this.columnCount = columnCount;
             this.tabGroupIndex = 0;
@@ -2001,20 +2001,10 @@ var Vidyano;
         return PersistentObjectAttributeTab;
     })(PersistentObjectTab);
     Vidyano.PersistentObjectAttributeTab = PersistentObjectAttributeTab;
-    var PersistentObjectAuthoredTab = (function (_super) {
-        __extends(PersistentObjectAuthoredTab, _super);
-        function PersistentObjectAuthoredTab(service, parent, layout) {
-            _super.call(this, service, parent.label, parent);
-            this.layout = layout;
-            this.tabGroupIndex = 0;
-        }
-        return PersistentObjectAuthoredTab;
-    })(PersistentObjectTab);
-    Vidyano.PersistentObjectAuthoredTab = PersistentObjectAuthoredTab;
     var PersistentObjectQueryTab = (function (_super) {
         __extends(PersistentObjectQueryTab, _super);
         function PersistentObjectQueryTab(service, query) {
-            _super.call(this, service, query.label, query, query.parent, !query.isHidden);
+            _super.call(this, service, query.name, query.label, query, query.parent, !query.isHidden);
             this.query = query;
             this.tabGroupIndex = 1;
         }
@@ -2077,7 +2067,7 @@ var Vidyano;
             if (query.filters)
                 this._filters = service.hooks.onConstructPersistentObject(service, query.filters);
             else
-                query._filters = null;
+                this._filters = null;
             if (query.result)
                 this._setResult(query.result);
         }

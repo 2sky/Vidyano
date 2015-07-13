@@ -1433,7 +1433,7 @@ module Vidyano {
             var attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility == "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => attr.tab, attr => attr).select(tab => {
                 var groups = tab.orderBy(attr => attr.offset).groupBy(attr => attr.group, attr => attr).select(group => this.service.hooks.onConstructPersistentObjectAttributeGroup(service, group.key(), group, this)).memoize();
                 groups.toArray().forEach((g, n) => g.index = n);
-                var serviceTab = po.tabs[tab.key()];
+                var serviceTab = po.tabs[tab.key()] || {};
                 return this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, tab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount);
             })).toArray() : [];
             this._serviceTabs = po.tabs;
@@ -2236,7 +2236,7 @@ module Vidyano {
     export class PersistentObjectTab extends Common.Observable<PersistentObjectTab> {
         tabGroupIndex: number;
 
-        constructor(public service: Service, public label: string, public target: ServiceObjectWithActions, public parent?: PersistentObject, private _isVisible = true) {
+        constructor(public service: Service, public name: string, public label: string, public target: ServiceObjectWithActions, public parent?: PersistentObject, private _isVisible = true) {
             super();
         }
 
@@ -2252,8 +2252,8 @@ module Vidyano {
     }
 
     export class PersistentObjectAttributeTab extends PersistentObjectTab {
-        constructor(service: Service, private _groups: PersistentObjectAttributeGroup[], public key: string, public id: string, public name: string, private _layout: any, po: PersistentObject, public columnCount: number) {
-            super(service, StringEx.isNullOrEmpty(key) ? po.label : key, po, po);
+        constructor(service: Service, private _groups: PersistentObjectAttributeGroup[], public key: string, public id: string, name: string, private _layout: any, po: PersistentObject, public columnCount: number) {
+            super(service, name, StringEx.isNullOrEmpty(key) ? po.label : key, po, po);
             this.tabGroupIndex = 0;
         }
 
@@ -2282,16 +2282,9 @@ module Vidyano {
         }
     }
 
-    export class PersistentObjectAuthoredTab extends PersistentObjectTab {
-        constructor(service: Service, parent: PersistentObject, public layout: any) {
-            super(service, parent.label, parent);
-            this.tabGroupIndex = 0;
-        }
-    }
-
     export class PersistentObjectQueryTab extends PersistentObjectTab {
         constructor(service: Service, public query: Query) {
-            super(service, query.label, query, query.parent, !query.isHidden);
+            super(service, query.name, query.label, query, query.parent, !query.isHidden);
             this.tabGroupIndex = 1;
         }
     }
@@ -2394,7 +2387,7 @@ module Vidyano {
             if (query.filters)
                 this._filters = service.hooks.onConstructPersistentObject(service, query.filters);
             else
-                query._filters = null;
+                this._filters = null;
 
             if (query.result)
                 this._setResult(query.result);

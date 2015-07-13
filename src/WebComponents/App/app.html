@@ -54,13 +54,13 @@
             <vi-persistent-object-attribute-config type="Image" height="4" wrap-around></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="TranslatedString" height="attr.getTypeHint('MultiLine') == 'True' ? 3 : 2" wrap-around></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="AsDetail" height="6" width="4"></vi-persistent-object-attribute-config>
-            <content select="vi-persistent-object-attribute-config"></content>
+            <content select="vi-persistent-object-attribute-config, vi-persistent-object-tab-config"></content>
         </vi-app-config>
     </template>
 </dom-module>
 
-<dom-module id="vi-app-route"></dom-module>
-
 <link rel="stylesheet" href="app.css" />
 <script src="app.js"></script>
-<script src="app-config.js"></script>
+<script src="Config/persistent-object-attribute-config.js"></script>
+<script src="Config/persistent-object-tab-config.js"></script>
+<script src="Config/app-config.js"></script>

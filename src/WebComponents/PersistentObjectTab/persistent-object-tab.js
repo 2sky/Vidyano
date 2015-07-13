@@ -70,14 +70,31 @@ var Vidyano;
                 _super.prototype.attached.call(this);
                 this.style.marginRight = "-" + WebComponents.scrollbarWidth().toString(10) + "px";
             };
-            PersistentObjectTab.prototype._tabChanged = function (tab, oldTab) {
-                this._setDesignModeAvailable(tab && tab.parent.actions["viConfigurePO"] !== undefined);
-                this._setAuthored(tab && !!tab.layout);
+            PersistentObjectTab.prototype.isEqual = function (str1, str2) {
+                return str1 === str2;
             };
-            PersistentObjectTab.prototype._computeCells = function (items, columns, rows) {
+            PersistentObjectTab.prototype.update = function () {
+                this._arrangeAutoLayout(true);
+            };
+            PersistentObjectTab.prototype._computeLayout = function (tab, isAttached) {
+                if (!isAttached || !tab)
+                    return this.layout;
+                if (!!(this._config = this.app.configuration.getTabConfig(tab)) && !!this._config.template)
+                    return "Template";
+                else if (!!tab.layout)
+                    return "Authored";
+                else
+                    return "Auto";
+            };
+            PersistentObjectTab.prototype._computeIsDesignModeAvailable = function (tab, layout) {
+                return tab && tab.parent.actions["viConfigurePO"] !== undefined && this.layout !== "Template";
+            };
+            PersistentObjectTab.prototype._computeDesignModeCells = function (items, columns, rows) {
                 var _this = this;
                 if (!items)
                     return [];
+                var cellsElement = this.$$("#cells");
+                var itemsElement = this.$$("#items");
                 var cells = [];
                 var oldCells = Enumerable.from(this.cells || []).selectMany(function (cell) { return cell; }).toArray();
                 var newCells = [];
@@ -88,7 +105,7 @@ var Vidyano;
                             var cell;
                             row.push(cell = (this.cells && this.cells.length > y && this.cells[y].length > x ? this.cells[y][x] : new WebComponents.PersistentObjectTabCell(x, y)));
                             if (!cell.isAttached)
-                                this.$["cells"].appendChild(cell);
+                                cellsElement.appendChild(cell);
                             newCells.push(cell);
                             if (!this.designMode)
                                 break;
@@ -99,7 +116,7 @@ var Vidyano;
                     }
                 }
                 Enumerable.from(oldCells).except(newCells).forEach(function (oldCell) {
-                    _this.$["cells"].removeChild(oldCell.asElement);
+                    cellsElement.removeChild(oldCell.asElement);
                 });
                 var width = Math.floor(this.width / this.columns);
                 this._cellsForEach(function (cell, x, y) {
@@ -109,15 +126,44 @@ var Vidyano;
                         _this._setCellHeight(parseInt(window.getComputedStyle(cell.asElement).height));
                     }
                 }, cells);
-                this.$["cells"].style.width = (width * this.columns) + "px";
-                this.$["cells"].style.height = ((rows - 1) * this.cellHeight) + "px";
-                this.$["items"].style.width = (width * this.columns) + "px";
-                this.$["items"].style.height = ((rows - 1) * this.cellHeight) + "px";
+                cellsElement.style.width = (width * this.columns) + "px";
+                cellsElement.style.height = ((rows - 1) * this.cellHeight) + "px";
+                itemsElement.style.width = (width * this.columns) + "px";
+                itemsElement.style.height = ((rows - 1) * this.cellHeight) + "px";
                 return cells;
             };
-            PersistentObjectTab.prototype._autoArrange = function (force) {
+            PersistentObjectTab.prototype._computeColumns = function (layout, width, defaultColumnCount) {
+                if (layout !== "Auto")
+                    return;
+                if (defaultColumnCount)
+                    return defaultColumnCount;
+                if (this.width >= 1500)
+                    return 4;
+                else if (this.width > 1000)
+                    return 3;
+                else if (this.width > 500)
+                    return 2;
+                return 1;
+            };
+            PersistentObjectTab.prototype._renderTemplate = function (tab, layout) {
+                if (this.layout === "Template") {
+                    this.empty();
+                    var template = document.createElement("template", "dom-bind");
+                    template.tab = this.tab;
+                    var fragmentClone = document.importNode(this._config.template.content, true);
+                    while (fragmentClone.children.length > 0)
+                        template.content.appendChild(fragmentClone.children[0]);
+                    var container = document.createElement("div");
+                    container.className = "layout horizontal";
+                    container.appendChild(template);
+                    Polymer.dom(this).appendChild(container);
+                }
+            };
+            PersistentObjectTab.prototype._arrangeAutoLayout = function (force) {
                 var _this = this;
-                if (!force && (this.authored || this._lastArrangedColumnCount == this.columns))
+                if (this.layout !== "Auto")
+                    return;
+                if (!force && this._lastArrangedColumnCount == this.columns)
                     return;
                 var oldItems = Enumerable.from(this.items || []).memoize();
                 var items = [];
@@ -202,31 +248,12 @@ var Vidyano;
                 this._lastArrangedColumnCount = this.columns;
                 this._setItems(items);
             };
-            PersistentObjectTab.prototype.update = function () {
-                this._autoArrange(true);
-            };
             PersistentObjectTab.prototype._sizeChanged = function (e, detail) {
                 e.stopPropagation();
                 if (detail.width > 0)
                     this._setWidth(detail.width);
                 if (detail.height > 0)
                     this._setHeight(detail.height);
-                if (!this.tab)
-                    return;
-                if (!this.authored) {
-                    if (this.tab.columnCount) {
-                        this.columns = this.tab.columnCount;
-                        return;
-                    }
-                    if (detail.width >= 1500)
-                        this.columns = 4;
-                    else if (detail.width > 1000)
-                        this.columns = 3;
-                    else if (detail.width > 500)
-                        this.columns = 2;
-                    else
-                        this.columns = 1;
-                }
             };
             PersistentObjectTab.prototype._cellsForEach = function (fnc, cells) {
                 if (cells === void 0) { cells = this.cells; }
@@ -401,8 +428,10 @@ var Vidyano;
         WebComponents.PersistentObjectTabItemPresenter = PersistentObjectTabItemPresenter;
         WebComponents.WebComponent.register(PersistentObjectTab, WebComponents, "vi", {
             properties: {
+                tab: Object,
                 columns: {
-                    type: Number
+                    type: Number,
+                    computed: "_computeColumns(layout, width, tab.columnCount)"
                 },
                 rows: {
                     type: Number,
@@ -410,15 +439,11 @@ var Vidyano;
                 },
                 cells: {
                     type: Array,
-                    computed: "_computeCells(items, columns, rows, width, designModeAvailable, designMode)"
+                    computed: "_computeDesignModeCells(items, columns, rows, width, isDesignModeAvailable, designMode)"
                 },
-                tab: {
-                    type: Object,
-                    observer: "_tabChanged"
-                },
-                authored: {
-                    type: Boolean,
-                    readOnly: true
+                layout: {
+                    type: String,
+                    computed: "_computeLayout(tab, isAttached)"
                 },
                 items: {
                     type: Array,
@@ -445,9 +470,9 @@ var Vidyano;
                     value: false,
                     reflectToAttribute: true
                 },
-                designModeAvailable: {
+                isDesignModeAvailable: {
                     type: Boolean,
-                    readOnly: true
+                    computed: "_computeIsDesignModeAvailable(tab, layout)"
                 },
                 itemDragging: {
                     type: Boolean,
@@ -456,7 +481,8 @@ var Vidyano;
                 }
             },
             observers: [
-                "_autoArrange(tab, columns)"
+                "_renderTemplate(tab, layout)",
+                "_arrangeAutoLayout(tab, layout, columns)",
             ],
             hostAttributes: {
                 "class": "relative"
