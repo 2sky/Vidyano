@@ -264,7 +264,7 @@ var Vidyano;
                 // Find route and activate
                 if (mappedRoute) {
                     var route = this._routeMap[hashBang + App._stripHashBang(mappedRoute.path)];
-                    if (route && route.activate(mappedRoute.params)) {
+                    if (route && route !== currentRoute && route.activate(mappedRoute.params)) {
                         if (currentRoute && currentRoute != route)
                             currentRoute.deactivate();
                         currentRoute = route;

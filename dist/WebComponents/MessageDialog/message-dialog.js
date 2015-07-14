@@ -31,7 +31,7 @@ var Vidyano;
                 return options.actionTypes[index];
             };
             MessageDialog.prototype._onSelectAction = function (e) {
-                this._dialog.resolve(parseInt(e.target.getAttribute("data-action-index"), 10));
+                this._dialog.resolve(e.model.index);
                 e.stopPropagation();
             };
             MessageDialog.prototype._isFirst = function (index) {

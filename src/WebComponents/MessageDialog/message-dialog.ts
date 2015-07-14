@@ -40,8 +40,8 @@
             return options.actionTypes[index];
         }
 
-        private _onSelectAction(e: Event) {
-            this._dialog.resolve(parseInt((<HTMLElement>e.target).getAttribute("data-action-index"), 10));
+        private _onSelectAction(e: TapEvent) {
+            this._dialog.resolve(e.model.index);
 
             e.stopPropagation();
         }

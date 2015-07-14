@@ -1435,11 +1435,14 @@ declare module Vidyano {
         id: string;
         private _layout;
         columnCount: number;
+        private _attributes;
         constructor(service: Service, _groups: PersistentObjectAttributeGroup[], key: string, id: string, name: string, _layout: any, po: PersistentObject, columnCount: number);
         layout: any;
         private _setLayout(layout);
+        attributes: PersistentObjectAttribute[];
         groups: PersistentObjectAttributeGroup[];
         saveLayout(layout: any): Promise<any>;
+        private _updateAttributes();
     }
     class PersistentObjectQueryTab extends PersistentObjectTab {
         query: Query;
@@ -2314,7 +2317,7 @@ declare module Vidyano.WebComponents {
         hasOverflow: boolean;
         private _setHasOverflow;
         private _visibleSizeChanged(e, detail);
-        protected _getChildren(): HTMLElement[];
+        protected _getChildren(): linqjs.Enumerable<HTMLElement>;
         private _popupOpening();
         private _popupClosed();
         private _popup(e);
@@ -2354,6 +2357,7 @@ declare module Vidyano.WebComponents {
 declare module Vidyano.WebComponents {
     class PersistentObjectAttributePresenter extends WebComponent {
         private static _attributeImports;
+        private _templatePresenter;
         attribute: Vidyano.PersistentObjectAttribute;
         private _setLoading;
         private _attributeChanged(attribute, isAttached);
@@ -2423,12 +2427,10 @@ declare module Vidyano.WebComponents {
         height: number;
     }
     class PersistentObjectTab extends WebComponent {
-        private _config;
         private _itemDragTargetPosition;
         private _itemDragTargetSize;
         private _lastArrangedColumnCount;
         tab: Vidyano.PersistentObjectAttributeTab;
-        layout: string;
         designMode: boolean;
         cells: PersistentObjectTabCell[][];
         items: PersistentObjectTabItem[];
@@ -2446,14 +2448,10 @@ declare module Vidyano.WebComponents {
         private _setRows;
         private _setItemDragging;
         attached(): void;
-        isEqual(str1: string, str2: string): boolean;
-        update(): void;
-        private _computeLayout(tab, isAttached);
-        private _computeIsDesignModeAvailable(tab, layout);
+        private _computeIsDesignModeAvailable(tab);
         private _computeDesignModeCells(items, columns, rows);
-        private _computeColumns(layout, width, defaultColumnCount);
-        private _renderTemplate(tab, layout);
-        private _arrangeAutoLayout(force?);
+        private _computeColumns(width, defaultColumnCount);
+        private _arrangeAutoLayout(tab, groups, columns);
         private _sizeChanged(e, detail);
         private _cellsForEach(fnc, cells?);
         private _itemDragStart(e, detail);
@@ -2503,11 +2501,12 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents {
     class PersistentObjectTabPresenter extends WebComponent {
-        private _skipTabUpdate;
-        private _tabComponent;
+        private static _persistentObjectTabComponentLoader;
+        private _templatePresenter;
         private _renderedTab;
+        tab: Vidyano.PersistentObjectTab;
+        private _setLoading;
         private _renderTab(tab, isAttached);
-        private _updateAuthoredTab(groups, isAttached);
     }
 }
 declare module Vidyano.WebComponents {
@@ -2945,7 +2944,7 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents {
     class SessionPresenter extends WebComponent {
-        private _sessionSourceTemplate;
+        private _templatePresenter;
         private _computeApplication(isAttached);
         private _computeSession(session);
     }
@@ -3019,6 +3018,16 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents {
     class Spinner extends WebComponent {
+    }
+}
+declare module Vidyano.WebComponents {
+    class TemplatePresenter extends WebComponent {
+        private _sourceTemplate;
+        dataContextName: string;
+        dataContext: any;
+        private _domBindTemplate;
+        constructor(_sourceTemplate: any, dataContextName?: string, dataContext?: any);
+        private _render(dataContextName, dataContext);
     }
 }
 declare module Vidyano.WebComponents {
