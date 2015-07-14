@@ -17,9 +17,11 @@ var Vidyano;
                 return isAttached ? this.app.service.application : null;
             };
             SessionPresenter.prototype._computeSession = function (session) {
-                if (!this._sessionSourceTemplate)
-                    this._sessionSourceTemplate = Polymer.dom(this).querySelector("template");
-                this._sessionSourceTemplate.session = session;
+                if (!this._templatePresenter)
+                    this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(Polymer.dom(this).querySelector("template"), "session");
+                this._templatePresenter.dataContext = session;
+                if (!this._templatePresenter.isAttached)
+                    Polymer.dom(this).appendChild(this._templatePresenter);
                 return session;
             };
             return SessionPresenter;

@@ -2,6 +2,18 @@
 
 More than often, developers will want to extend Vidyano applications with custom user interface components. The Vidyano Web Client takes advantage of Polymer's ```dom-bind``` template functionality to accomplish this.
 
+## Persistent Object Tab templates
+
+The ```vi-persistent-object-tab-presenter``` component checks for a ```vi-persistent-object-tab-config``` element on the the ```vi-app``` that corresponds to the current persistent object's tab. If you want to override the complete DOM template for a tab, you will simply have to add a ```<template>``` child element to it:
+
+```html
+<vi-persistent-object-tab-config type="Customer" name="General">
+	<template>
+		<div>{{tab.label}}</div>
+	</template>
+</vi-persistent-object-tab-config>
+```
+
 ## Persistent Object Attribute templates
 
 The ```vi-persistent-object-attribute-presenter``` component uses the ```vi-persistent-object-attribute-config``` element for influencing the rendering behavior. If you want to override the complete DOM template for an attribute, you will simply have to add a ```<template>``` child element to it:  

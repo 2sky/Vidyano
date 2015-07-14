@@ -110,15 +110,11 @@ var Vidyano;
                     try {
                         var config = _this.app.configuration.getAttributeConfig(attribute);
                         if (config && config.template) {
-                            var template = document.createElement("template", "dom-bind");
-                            template.attribute = attribute;
-                            var fragmentClone = document.importNode(config.template.content, true);
-                            while (fragmentClone.children.length > 0)
-                                template.content.appendChild(fragmentClone.children[0]);
-                            var container = document.createElement("div");
-                            container.className = "layout horizontal";
-                            container.appendChild(template);
-                            Polymer.dom(_this).appendChild(container);
+                            if (!_this._templatePresenter)
+                                _this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(config.template, "attribute");
+                            _this._templatePresenter.dataContext = attribute;
+                            if (!_this._templatePresenter.isAttached)
+                                Polymer.dom(_this).appendChild(_this._templatePresenter);
                             return;
                         }
                         var child = new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
