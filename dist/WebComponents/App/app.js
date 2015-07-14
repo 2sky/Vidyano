@@ -259,7 +259,7 @@ var Vidyano;
                     this.changePath(this.path);
                 this._setInitializing(false);
             };
-            App.prototype._updateRoute = function (application, path) {
+            App.prototype._updateRoute = function (path) {
                 var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
                 var currentRoute = this.currentRoute;
                 // Find route and activate
@@ -273,17 +273,16 @@ var Vidyano;
                 }
                 else
                     this._setCurrentRoute(null);
-                // Resolve current program unit if available
-                if (!mappedPathRoute || !application)
-                    this._setProgramUnit(null);
-                else {
+            };
+            App.prototype._computeProgramUnit = function (application, path) {
+                var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
+                if (mappedPathRoute && application) {
                     if (mappedPathRoute.params && mappedPathRoute.params.programUnitName)
-                        this._setProgramUnit(Enumerable.from(application.programUnits).firstOrDefault(function (pu) { return pu.name == mappedPathRoute.params.programUnitName; }));
+                        return Enumerable.from(application.programUnits).firstOrDefault(function (pu) { return pu.name == mappedPathRoute.params.programUnitName; });
                     else if (application.programUnits.length > 0)
-                        this._setProgramUnit(application.programUnits[0]);
-                    else
-                        this._setProgramUnit(null);
+                        return application.programUnits[0];
                 }
+                return null;
             };
             App.prototype._computeShowMenu = function (isSignedIn, noMenu) {
                 return isSignedIn && !noMenu;
@@ -517,7 +516,7 @@ var Vidyano;
                 application: Object,
                 programUnit: {
                     type: Object,
-                    readOnly: true
+                    computed: "_computeProgramUnit(service.application, path, routeMapVersion)"
                 },
                 noMenu: {
                     type: Boolean,
@@ -551,7 +550,7 @@ var Vidyano;
             },
             observers: [
                 "_start(initializing, path)",
-                "_updateRoute(service.application, path, routeMapVersion)"
+                "_updateRoute(path, routeMapVersion)"
             ],
             hostAttributes: {
                 "theme-color-1": true,

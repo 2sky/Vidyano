@@ -301,7 +301,7 @@
             this._setInitializing(false);
         }
 
-        private _updateRoute(application: Vidyano.Application, path: string) {
+        private _updateRoute(path: string) {
             var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
             var currentRoute = this.currentRoute;
             
@@ -317,18 +317,19 @@
             }
             else
                 this._setCurrentRoute(null);
+        }
 
-            // Resolve current program unit if available
-            if (!mappedPathRoute || !application)
-                this._setProgramUnit(null);
-            else {
+        private _computeProgramUnit(application: Vidyano.Application, path: string): ProgramUnit {
+            var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
+
+            if (mappedPathRoute && application) {
                 if (mappedPathRoute.params && mappedPathRoute.params.programUnitName)
-                    this._setProgramUnit(Enumerable.from(application.programUnits).firstOrDefault(pu => pu.name == mappedPathRoute.params.programUnitName));
+                    return Enumerable.from(application.programUnits).firstOrDefault(pu => pu.name == mappedPathRoute.params.programUnitName);
                 else if (application.programUnits.length > 0)
-                    this._setProgramUnit(application.programUnits[0]);
-                else
-                    this._setProgramUnit(null);
+                    return application.programUnits[0];
             }
+
+            return null;
         }
 
         private _computeShowMenu(isSignedIn: boolean, noMenu: boolean): boolean {
@@ -415,7 +416,7 @@
 
             var regs = highestPriorityRegs.toArray();
             if (regs.length > 1 && regs.some(r => !r.nonExclusive))
-                    return;
+                return;
 
             regs.forEach(reg => {
                 reg.listener(e);
@@ -479,7 +480,7 @@
                         Polymer.dom(this.app).removeChild(dialog);
                         return result;
                     }, e => {
-                        Polymer.dom(this.app).removeChild(dialog);
+                            Polymer.dom(this.app).removeChild(dialog);
                             throw e;
                         });
 
@@ -584,7 +585,7 @@
             application: Object,
             programUnit: {
                 type: Object,
-                readOnly: true
+                computed: "_computeProgramUnit(service.application, path, routeMapVersion)"
             },
             noMenu: {
                 type: Boolean,
@@ -618,7 +619,7 @@
         },
         observers: [
             "_start(initializing, path)",
-            "_updateRoute(service.application, path, routeMapVersion)"
+            "_updateRoute(path, routeMapVersion)"
         ],
         hostAttributes: {
             "theme-color-1": true,

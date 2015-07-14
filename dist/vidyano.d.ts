@@ -1897,7 +1897,8 @@ declare module Vidyano.WebComponents {
         showMessageDialog(options: MessageDialogOptions): Promise<number>;
         private _computeService(uri, user);
         private _onInitialized();
-        private _updateRoute(application, path);
+        private _updateRoute(path);
+        private _computeProgramUnit(application, path);
         private _computeShowMenu(isSignedIn, noMenu);
         private _start(initializing, path);
         private _appRouteAdded(e, detail);
