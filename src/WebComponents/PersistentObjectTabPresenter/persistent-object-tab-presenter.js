@@ -14,53 +14,71 @@ var Vidyano;
                 _super.apply(this, arguments);
             }
             PersistentObjectTabPresenter.prototype._renderTab = function (tab, isAttached) {
+                var _this = this;
                 if (!isAttached || this._renderedTab === tab)
                     return;
-                if (this._tabComponent) {
-                    Polymer.dom(this).removeChild(this._tabComponent);
-                    this._tabComponent = this._renderedTab = null;
-                }
-                var childClassName = "style-scope vi-persistent-object fit";
-                if (tab instanceof Vidyano.PersistentObjectQueryTab) {
-                    this._renderedTab = tab;
-                    var itemPresenter = new WebComponents.QueryItemsPresenter();
-                    itemPresenter.className = childClassName;
-                    itemPresenter.query = tab.query;
-                    if (itemPresenter.query.autoQuery && !itemPresenter.query.hasSearched)
-                        itemPresenter.query.search();
-                    Polymer.dom(this).appendChild(this._tabComponent = itemPresenter);
-                }
-                else if (tab instanceof Vidyano.PersistentObjectAttributeTab) {
-                    this._renderedTab = tab;
-                    // TODO: Check Custom
-                    var attributeTab = new WebComponents.PersistentObjectTab();
-                    attributeTab.className = childClassName;
-                    attributeTab.tab = tab;
-                    Polymer.dom(this).appendChild(this._tabComponent = attributeTab);
-                    this._skipTabUpdate = true;
-                }
-            };
-            PersistentObjectTabPresenter.prototype._updateAuthoredTab = function (groups, isAttached) {
-                if (this._skipTabUpdate) {
-                    this._skipTabUpdate = false;
+                this.empty();
+                if (!tab)
                     return;
+                this._setLoading(true);
+                var childClassName = "style-scope vi-persistent-object fit";
+                var config = this.app.configuration.getTabConfig(tab);
+                if (config && config.template) {
+                    if (!this._templatePresenter)
+                        this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(config.template, "tab");
+                    this._templatePresenter.dataContext = tab;
+                    if (!this._templatePresenter.isAttached)
+                        Polymer.dom(this).appendChild(this._templatePresenter);
+                    this._setLoading(false);
                 }
-                if (isAttached && this._tabComponent instanceof Vidyano.WebComponents.PersistentObjectTab)
-                    this._tabComponent.update();
+                else {
+                    if (tab instanceof Vidyano.PersistentObjectQueryTab) {
+                        var itemPresenter = new WebComponents.QueryItemsPresenter();
+                        itemPresenter.className = childClassName;
+                        itemPresenter.query = tab.query;
+                        if (itemPresenter.query.autoQuery && !itemPresenter.query.hasSearched)
+                            itemPresenter.query.search();
+                        Polymer.dom(this).appendChild(itemPresenter);
+                        this._setLoading(false);
+                    }
+                    else if (tab instanceof Vidyano.PersistentObjectAttributeTab) {
+                        if (!Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader) {
+                            Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader = new Promise(function (resolve) {
+                                _this.importHref(_this.resolveUrl("../PersistentObjectTab/persistent-object-tab.html"), function (e) {
+                                    resolve(true);
+                                }, function (err) {
+                                    console.error(err);
+                                    resolve(false);
+                                });
+                            });
+                        }
+                        Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader.then(function () {
+                            if (tab !== _this.tab)
+                                return;
+                            var attributeTab = new WebComponents.PersistentObjectTab();
+                            attributeTab.className = childClassName;
+                            attributeTab.tab = tab;
+                            Polymer.dom(_this).appendChild(attributeTab);
+                            _this._setLoading(false);
+                        });
+                    }
+                }
             };
             return PersistentObjectTabPresenter;
         })(WebComponents.WebComponent);
         WebComponents.PersistentObjectTabPresenter = PersistentObjectTabPresenter;
         WebComponents.WebComponent.register(PersistentObjectTabPresenter, WebComponents, "vi", {
             properties: {
-                tab: Object
+                tab: Object,
+                loading: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true,
+                    value: true
+                }
             },
             observers: [
-                "_renderTab(tab, isAttached)",
-                "_updateAuthoredTab(tab.groups, isAttached)"
-            ],
-            forwardObservers: [
-                "tab.groups"
+                "_renderTab(tab, isAttached)"
             ]
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

@@ -60,9 +60,6 @@ var Vidyano;
                     type: Object,
                     readOnly: true
                 }
-            },
-            hostAttributes: {
-                "config": ""
             }
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

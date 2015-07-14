@@ -1969,6 +1969,7 @@ var Vidyano;
             this._layout = _layout;
             this.columnCount = columnCount;
             this.tabGroupIndex = 0;
+            this._attributes = this._updateAttributes();
         }
         Object.defineProperty(PersistentObjectAttributeTab.prototype, "layout", {
             get: function () {
@@ -1981,6 +1982,13 @@ var Vidyano;
             var oldLayout = this._layout;
             this.notifyPropertyChanged("layout", this._layout = layout, oldLayout);
         };
+        Object.defineProperty(PersistentObjectAttributeTab.prototype, "attributes", {
+            get: function () {
+                return this._attributes;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(PersistentObjectAttributeTab.prototype, "groups", {
             get: function () {
                 return this._groups;
@@ -1988,6 +1996,8 @@ var Vidyano;
             set: function (groups) {
                 var oldGroups = this._groups;
                 this.notifyPropertyChanged("groups", this._groups = groups, oldGroups);
+                var oldAttributes = this._attributes;
+                this.notifyPropertyChanged("attributes", this._attributes = this._updateAttributes(), oldAttributes);
             },
             enumerable: true,
             configurable: true
@@ -1997,6 +2007,11 @@ var Vidyano;
             return this.service.executeAction("System.SaveTabLayout", null, null, null, { "Id": this.id, "Layout": layout ? JSON.stringify(layout) : "" }).then(function (_) {
                 _this._setLayout(layout);
             });
+        };
+        PersistentObjectAttributeTab.prototype._updateAttributes = function () {
+            var attributes = Enumerable.from(this.groups).selectMany(function (grp) { return grp.attributes; }).toArray();
+            attributes.forEach(function (attr) { return attributes[attr.name] = attr; });
+            return attributes;
         };
         return PersistentObjectAttributeTab;
     })(PersistentObjectTab);

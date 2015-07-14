@@ -70,24 +70,8 @@ var Vidyano;
                 _super.prototype.attached.call(this);
                 this.style.marginRight = "-" + WebComponents.scrollbarWidth().toString(10) + "px";
             };
-            PersistentObjectTab.prototype.isEqual = function (str1, str2) {
-                return str1 === str2;
-            };
-            PersistentObjectTab.prototype.update = function () {
-                this._arrangeAutoLayout(true);
-            };
-            PersistentObjectTab.prototype._computeLayout = function (tab, isAttached) {
-                if (!isAttached || !tab)
-                    return this.layout;
-                if (!!(this._config = this.app.configuration.getTabConfig(tab)) && !!this._config.template)
-                    return "Template";
-                else if (!!tab.layout)
-                    return "Authored";
-                else
-                    return "Auto";
-            };
-            PersistentObjectTab.prototype._computeIsDesignModeAvailable = function (tab, layout) {
-                return tab && tab.parent.actions["viConfigurePO"] !== undefined && this.layout !== "Template";
+            PersistentObjectTab.prototype._computeIsDesignModeAvailable = function (tab) {
+                return tab && tab.parent.actions["viConfigurePO"] !== undefined;
             };
             PersistentObjectTab.prototype._computeDesignModeCells = function (items, columns, rows) {
                 var _this = this;
@@ -132,9 +116,7 @@ var Vidyano;
                 itemsElement.style.height = ((rows - 1) * this.cellHeight) + "px";
                 return cells;
             };
-            PersistentObjectTab.prototype._computeColumns = function (layout, width, defaultColumnCount) {
-                if (layout !== "Auto")
-                    return;
+            PersistentObjectTab.prototype._computeColumns = function (width, defaultColumnCount) {
                 if (defaultColumnCount)
                     return defaultColumnCount;
                 if (this.width >= 1500)
@@ -145,25 +127,9 @@ var Vidyano;
                     return 2;
                 return 1;
             };
-            PersistentObjectTab.prototype._renderTemplate = function (tab, layout) {
-                if (this.layout === "Template") {
-                    this.empty();
-                    var template = document.createElement("template", "dom-bind");
-                    template.tab = this.tab;
-                    var fragmentClone = document.importNode(this._config.template.content, true);
-                    while (fragmentClone.children.length > 0)
-                        template.content.appendChild(fragmentClone.children[0]);
-                    var container = document.createElement("div");
-                    container.className = "layout horizontal";
-                    container.appendChild(template);
-                    Polymer.dom(this).appendChild(container);
-                }
-            };
-            PersistentObjectTab.prototype._arrangeAutoLayout = function (force) {
+            PersistentObjectTab.prototype._arrangeAutoLayout = function (tab, groups, columns) {
                 var _this = this;
-                if (this.layout !== "Auto")
-                    return;
-                if (!force && this._lastArrangedColumnCount == this.columns)
+                if (tab.layout)
                     return;
                 var oldItems = Enumerable.from(this.items || []).memoize();
                 var items = [];
@@ -431,7 +397,7 @@ var Vidyano;
                 tab: Object,
                 columns: {
                     type: Number,
-                    computed: "_computeColumns(layout, width, tab.columnCount)"
+                    computed: "_computeColumns(width, tab.columnCount)"
                 },
                 rows: {
                     type: Number,
@@ -440,10 +406,6 @@ var Vidyano;
                 cells: {
                     type: Array,
                     computed: "_computeDesignModeCells(items, columns, rows, width, isDesignModeAvailable, designMode)"
-                },
-                layout: {
-                    type: String,
-                    computed: "_computeLayout(tab, isAttached)"
                 },
                 items: {
                     type: Array,
@@ -472,7 +434,7 @@ var Vidyano;
                 },
                 isDesignModeAvailable: {
                     type: Boolean,
-                    computed: "_computeIsDesignModeAvailable(tab, layout)"
+                    computed: "_computeIsDesignModeAvailable(tab)"
                 },
                 itemDragging: {
                     type: Boolean,
@@ -481,8 +443,7 @@ var Vidyano;
                 }
             },
             observers: [
-                "_renderTemplate(tab, layout)",
-                "_arrangeAutoLayout(tab, layout, columns)",
+                "_arrangeAutoLayout(tab, tab.groups, columns)"
             ],
             hostAttributes: {
                 "class": "relative"
@@ -492,7 +453,10 @@ var Vidyano;
                 "item-drag": "_itemDrag",
                 "item-drag-start": "_itemDragStart",
                 "item-drag-end": "_itemDragEnd"
-            }
+            },
+            forwardObservers: [
+                "tab.groups"
+            ]
         });
         WebComponents.WebComponent.register(PersistentObjectTabCell, WebComponents, "vi", {
             properties: {

@@ -23,7 +23,9 @@ module Vidyano.WebComponents {
             "User": undefined
         };
 
+        private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
         attribute: Vidyano.PersistentObjectAttribute;
+
         private _setLoading: (loading: boolean) => void;
 
         private _attributeChanged(attribute: Vidyano.PersistentObjectAttribute, isAttached: boolean) {
@@ -136,18 +138,13 @@ module Vidyano.WebComponents {
                 try {
                     var config = this.app.configuration.getAttributeConfig(attribute);
                     if (config && config.template) {
-                        var template = (<any>document).createElement("template", "dom-bind");
-                        template.attribute = attribute;
+                        if (!this._templatePresenter)
+                            this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(config.template, "attribute");
 
-                        var fragmentClone = <HTMLElement>document.importNode(config.template.content, true);
-                        while (fragmentClone.children.length > 0)
-                            template.content.appendChild(fragmentClone.children[0]);
+                        this._templatePresenter.dataContext = attribute;
 
-                        var container = document.createElement("div");
-                        container.className = "layout horizontal";
-                        container.appendChild(template);
-
-                        Polymer.dom(this).appendChild(container);
+                        if (!this._templatePresenter.isAttached)
+                            Polymer.dom(this).appendChild(this._templatePresenter);
 
                         return;
                     }

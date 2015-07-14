@@ -65,9 +65,6 @@
                 type: Object,
                 readOnly: true
             }
-        },
-        hostAttributes: {
-            "config": ""
         }
     });
 }

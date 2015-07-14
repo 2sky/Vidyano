@@ -2252,9 +2252,13 @@ module Vidyano {
     }
 
     export class PersistentObjectAttributeTab extends PersistentObjectTab {
+        private _attributes: PersistentObjectAttribute[];
+
         constructor(service: Service, private _groups: PersistentObjectAttributeGroup[], public key: string, public id: string, name: string, private _layout: any, po: PersistentObject, public columnCount: number) {
             super(service, name, StringEx.isNullOrEmpty(key) ? po.label : key, po, po);
             this.tabGroupIndex = 0;
+
+            this._attributes = this._updateAttributes();
         }
 
         get layout(): any {
@@ -2266,6 +2270,10 @@ module Vidyano {
             this.notifyPropertyChanged("layout", this._layout = layout, oldLayout);
         }
 
+        get attributes(): PersistentObjectAttribute[]{
+            return this._attributes;
+        }
+
         get groups(): PersistentObjectAttributeGroup[] {
             return this._groups;
         }
@@ -2273,12 +2281,22 @@ module Vidyano {
         set groups(groups: PersistentObjectAttributeGroup[]) {
             var oldGroups = this._groups;
             this.notifyPropertyChanged("groups", this._groups = groups, oldGroups);
+
+            var oldAttributes = this._attributes;
+            this.notifyPropertyChanged("attributes", this._attributes = this._updateAttributes(), oldAttributes);
         }
 
         saveLayout(layout: any): Promise<any> {
             return this.service.executeAction("System.SaveTabLayout", null, null, null, { "Id": this.id, "Layout": layout ? JSON.stringify(layout) : "" }).then(_ => {
                 this._setLayout(layout);
             });
+        }
+
+        private _updateAttributes(): Vidyano.PersistentObjectAttribute[] {
+            var attributes = Enumerable.from(this.groups).selectMany(grp => grp.attributes).toArray();
+            attributes.forEach(attr => attributes[attr.name] = attr);
+
+            return attributes;
         }
     }
 
