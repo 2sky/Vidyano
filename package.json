@@ -12,6 +12,7 @@
     "grunt-typescript": "^0.6.2",
     "grunt-typescript-export": "^0.1.0",
     "typescript": "^1.4.1",
-    "less": "^2.1.2"
+    "less": "^2.1.2",
+    "dts-generator": "^1.5.0"
   }
 }

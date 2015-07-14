@@ -57,13 +57,24 @@ module.exports = function (grunt) {
                     return true;
                 }
             }
+        },
+        dtsGenerator: {
+            options: {
+                name: 'Vidyano',
+                baseDir: 'src',
+                out: 'dist/vidyano.d.ts'
+            },
+            default: {
+                src: ['src/**/*.ts']
+            }
         }
     });
 
     grunt.registerTask("default", ["bower:install"]);
     grunt.registerTask("dist", [
         "clean",
-        "copy:dist"
+        "copy:dist",
+        "dtsGenerator"
     ]);
 
     grunt.loadNpmTasks("grunt-bower-task");
@@ -72,4 +83,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-less");
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-typescript");
+    grunt.loadNpmTasks('dts-generator');
 };

@@ -171,7 +171,7 @@
         extends?: string;
 
         // Non-default Polymer registration info
-        
+
         /**
         * Binds keys to local observer functions
         */
@@ -194,19 +194,15 @@
         $: { [id: string]: HTMLElement };
 
         /**
-        * Returns a list of the elements within the document (using depth-first pre-order traversal of the document's nodes) that match the specified group of selectors. The object returned is a NodeList.
+        * Convenience method to run `querySelector` on this local DOM scope.
         */
-        $$: (selectors: string) => HTMLElement | WebComponents.WebComponent;
+        $$: (selector: string) => HTMLElement | WebComponents.WebComponent;
 
         /**
          * Shady DOM entry point.
          */
         root: HTMLElement | WebComponent;
 
-        /**
-         * Binds the property to the specific observer.
-         */
-        bindProperty: (property: string, observable: Observer) => { close(): void };
         /**
           * Invokes a function asynchronously. The context of the callback
           * function is bound to 'this' automatically.
