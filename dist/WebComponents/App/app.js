@@ -22,6 +22,9 @@ var Vidyano;
                 this.fire("app-route-add", { route: this.route, component: this.component });
             };
             AppRoute.prototype.activate = function (parameters) {
+                if (parameters === void 0) { parameters = {}; }
+                if (this.active && this._parameters && JSON.stringify(this._parameters) === JSON.stringify(parameters))
+                    return false;
                 var component = Polymer.dom(this).children[0];
                 if (!component || this._constructorChanged) {
                     this._constructorChanged = false;
@@ -256,32 +259,31 @@ var Vidyano;
                     this.changePath(this.path);
                 this._setInitializing(false);
             };
-            App.prototype._computeMappedRoute = function (path, routeMapVersion) {
-                return Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
-            };
-            App.prototype._computeCurrentRoute = function (mappedRoute, path) {
+            App.prototype._updateRoute = function (application, path) {
+                var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
                 var currentRoute = this.currentRoute;
                 // Find route and activate
-                if (mappedRoute) {
-                    var route = this._routeMap[hashBang + App._stripHashBang(mappedRoute.path)];
-                    if (route && route !== currentRoute && route.activate(mappedRoute.params)) {
+                if (mappedPathRoute) {
+                    var route = this._routeMap[hashBang + App._stripHashBang(mappedPathRoute.path)];
+                    if (route && route.activate(mappedPathRoute.params)) {
                         if (currentRoute && currentRoute != route)
                             currentRoute.deactivate();
-                        currentRoute = route;
+                        this._setCurrentRoute(route);
                     }
                 }
                 else
-                    currentRoute = null;
-                return currentRoute;
-            };
-            App.prototype._computeProgramUnit = function (mappedRoute, path, application) {
-                if (!mappedRoute || !application)
-                    return null;
-                if (mappedRoute.params && mappedRoute.params.programUnitName)
-                    return Enumerable.from(application.programUnits).firstOrDefault(function (pu) { return pu.name == mappedRoute.params.programUnitName; });
-                else if (application.programUnits.length > 0)
-                    return application.programUnits[0];
-                return null;
+                    this._setCurrentRoute(null);
+                // Resolve current program unit if available
+                if (!mappedPathRoute || !application)
+                    this._setProgramUnit(null);
+                else {
+                    if (mappedPathRoute.params && mappedPathRoute.params.programUnitName)
+                        this._setProgramUnit(Enumerable.from(application.programUnits).firstOrDefault(function (pu) { return pu.name == mappedPathRoute.params.programUnitName; }));
+                    else if (application.programUnits.length > 0)
+                        this._setProgramUnit(application.programUnits[0]);
+                    else
+                        this._setProgramUnit(null);
+                }
             };
             App.prototype._computeShowMenu = function (isSignedIn, noMenu) {
                 return isSignedIn && !noMenu;
@@ -508,18 +510,14 @@ var Vidyano;
                     type: String,
                     readOnly: true
                 },
-                mappedRoute: {
-                    type: Object,
-                    computed: "_computeMappedRoute(path, routeMapVersion)"
-                },
                 currentRoute: {
                     type: Object,
-                    computed: "_computeCurrentRoute(mappedRoute, path)"
+                    readOnly: true
                 },
                 application: Object,
                 programUnit: {
                     type: Object,
-                    computed: "_computeProgramUnit(mappedRoute, path, service.application)"
+                    readOnly: true
                 },
                 noMenu: {
                     type: Boolean,
@@ -552,7 +550,8 @@ var Vidyano;
                 }
             },
             observers: [
-                "_start(initializing, path)"
+                "_start(initializing, path)",
+                "_updateRoute(service.application, path, routeMapVersion)"
             ],
             hostAttributes: {
                 "theme-color-1": true,

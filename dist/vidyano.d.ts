@@ -1826,7 +1826,7 @@ declare module Vidyano.WebComponents {
         private _setActive;
         constructor(route: string, component: string);
         attached(): void;
-        activate(parameters: {
+        activate(parameters?: {
             [key: string]: string;
         }): boolean;
         deactivate(): void;
@@ -1866,6 +1866,7 @@ declare module Vidyano.WebComponents {
         private routeMapVersion;
         private _configuration;
         service: Vidyano.Service;
+        programUnit: ProgramUnit;
         currentRoute: AppRoute;
         initializing: boolean;
         uri: string;
@@ -1873,13 +1874,13 @@ declare module Vidyano.WebComponents {
         path: string;
         cacheSize: number;
         noMenu: boolean;
-        programUnit: ProgramUnit;
         label: string;
         keys: string;
         private _setInitializing;
-        private _setProgramUnit;
         private _setRouteMapVersion;
         private _setKeys;
+        private _setProgramUnit;
+        private _setCurrentRoute;
         attached(): void;
         configuration: AppConfig;
         private _setConfiguration(config);
@@ -1896,9 +1897,7 @@ declare module Vidyano.WebComponents {
         showMessageDialog(options: MessageDialogOptions): Promise<number>;
         private _computeService(uri, user);
         private _onInitialized();
-        private _computeMappedRoute(path, routeMapVersion);
-        private _computeCurrentRoute(mappedRoute, path);
-        private _computeProgramUnit(mappedRoute, path, application);
+        private _updateRoute(application, path);
         private _computeShowMenu(isSignedIn, noMenu);
         private _start(initializing, path);
         private _appRouteAdded(e, detail);

@@ -23,7 +23,10 @@
             this.fire("app-route-add", { route: this.route, component: this.component });
         }
 
-        activate(parameters: { [key: string]: string }): boolean {
+        activate(parameters: { [key: string]: string } = {}): boolean {
+            if (this.active && this._parameters && JSON.stringify(this._parameters) === JSON.stringify(parameters))
+                return false;
+
             var component = <WebComponent><any>Polymer.dom(this).children[0];
             if (!component || this._constructorChanged) {
                 this._constructorChanged = false;
@@ -145,6 +148,7 @@
         private routeMapVersion: number;
         private _configuration: AppConfig;
         service: Vidyano.Service;
+        programUnit: ProgramUnit;
         currentRoute: AppRoute;
         initializing: boolean;
         uri: string;
@@ -152,14 +156,14 @@
         path: string;
         cacheSize: number;
         noMenu: boolean;
-        programUnit: ProgramUnit;
         label: string;
         keys: string;
 
         private _setInitializing: (init: boolean) => void;
-        private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setRouteMapVersion: (version: number) => void;
         private _setKeys: (keys: string) => void;
+        private _setProgramUnit: (pu: ProgramUnit) => void;
+        private _setCurrentRoute: (route: AppRoute) => void;
 
         attached() {
             super.attached();
@@ -297,39 +301,34 @@
             this._setInitializing(false);
         }
 
-        private _computeMappedRoute(path: string, routeMapVersion: number) {
-            return Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
-        }
-
-        private _computeCurrentRoute(mappedRoute: Route, path: string): AppRoute {
+        private _updateRoute(application: Vidyano.Application, path: string) {
+            var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
             var currentRoute = this.currentRoute;
-
+            
             // Find route and activate
-            if (mappedRoute) {
-                var route = this._routeMap[hashBang + App._stripHashBang(mappedRoute.path)];
-                if (route && route !== currentRoute && route.activate(mappedRoute.params)) {
+            if (mappedPathRoute) {
+                var route = this._routeMap[hashBang + App._stripHashBang(mappedPathRoute.path)];
+                if (route && route.activate(mappedPathRoute.params)) {
                     if (currentRoute && currentRoute != route)
                         currentRoute.deactivate();
 
-                    currentRoute = route;
+                    this._setCurrentRoute(route);
                 }
             }
             else
-                currentRoute = null;
+                this._setCurrentRoute(null);
 
-            return currentRoute;
-        }
-
-        private _computeProgramUnit(mappedRoute: Route, path: string, application: Vidyano.Application): ProgramUnit {
-            if (!mappedRoute || !application)
-                return null;
-
-            if (mappedRoute.params && mappedRoute.params.programUnitName)
-                return Enumerable.from(application.programUnits).firstOrDefault(pu => pu.name == mappedRoute.params.programUnitName);
-            else if (application.programUnits.length > 0)
-                return application.programUnits[0];
-
-            return null;
+            // Resolve current program unit if available
+            if (!mappedPathRoute || !application)
+                this._setProgramUnit(null);
+            else {
+                if (mappedPathRoute.params && mappedPathRoute.params.programUnitName)
+                    this._setProgramUnit(Enumerable.from(application.programUnits).firstOrDefault(pu => pu.name == mappedPathRoute.params.programUnitName));
+                else if (application.programUnits.length > 0)
+                    this._setProgramUnit(application.programUnits[0]);
+                else
+                    this._setProgramUnit(null);
+            }
         }
 
         private _computeShowMenu(isSignedIn: boolean, noMenu: boolean): boolean {
@@ -578,18 +577,14 @@
                 type: String,
                 readOnly: true
             },
-            mappedRoute: {
-                type: Object,
-                computed: "_computeMappedRoute(path, routeMapVersion)"
-            },
             currentRoute: {
                 type: Object,
-                computed: "_computeCurrentRoute(mappedRoute, path)"
+                readOnly: true
             },
             application: Object,
             programUnit: {
                 type: Object,
-                computed: "_computeProgramUnit(mappedRoute, path, service.application)"
+                readOnly: true
             },
             noMenu: {
                 type: Boolean,
@@ -622,7 +617,8 @@
             }
         },
         observers: [
-            "_start(initializing, path)"
+            "_start(initializing, path)",
+            "_updateRoute(service.application, path, routeMapVersion)"
         ],
         hostAttributes: {
             "theme-color-1": true,
