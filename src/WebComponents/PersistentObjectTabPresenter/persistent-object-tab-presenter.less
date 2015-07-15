@@ -1,5 +1,21 @@
 @import (reference) "../vidyano.less";
 
 vi-persistent-object-tab-presenter {
-    display: block;
+    &:not([templated]) {
+        display: block;
+    }
+
+    &[templated] {
+        .layout-horizontal();
+
+        > vi-template-presenter {
+            .layout-horizontal();
+            .flex();
+
+            > div {
+                .layout-horizontal();
+                .flex();
+            }
+        }
+    }
 }

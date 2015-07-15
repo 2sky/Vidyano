@@ -2505,7 +2505,9 @@ declare module Vidyano.WebComponents {
         private _templatePresenter;
         private _renderedTab;
         tab: Vidyano.PersistentObjectTab;
+        templated: boolean;
         private _setLoading;
+        private _setTemplated;
         private _renderTab(tab, isAttached);
     }
 }

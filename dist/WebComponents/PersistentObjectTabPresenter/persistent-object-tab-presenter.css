@@ -1,3 +1,33 @@
-vi-persistent-object-tab-presenter {
+vi-persistent-object-tab-presenter:not([templated]) {
   display: block;
+}
+vi-persistent-object-tab-presenter[templated] {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+vi-persistent-object-tab-presenter[templated] > vi-template-presenter {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+vi-persistent-object-tab-presenter[templated] > vi-template-presenter > div {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
 }

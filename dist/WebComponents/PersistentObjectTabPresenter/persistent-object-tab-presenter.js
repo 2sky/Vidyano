@@ -23,7 +23,8 @@ var Vidyano;
                 this._setLoading(true);
                 var childClassName = "style-scope vi-persistent-object fit";
                 var config = this.app.configuration.getTabConfig(tab);
-                if (config && config.template) {
+                this._setTemplated(!!config && !!config.template);
+                if (this.templated) {
                     if (!this._templatePresenter)
                         this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(config.template, "tab");
                     this._templatePresenter.dataContext = tab;
@@ -75,6 +76,11 @@ var Vidyano;
                     reflectToAttribute: true,
                     readOnly: true,
                     value: true
+                },
+                templated: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
                 }
             },
             observers: [
