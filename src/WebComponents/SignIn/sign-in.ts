@@ -7,15 +7,24 @@
         private _setVidyanoOnly: (val: boolean) => void;
 
         private _activating(e: CustomEvent, detail: { route: AppRoute }) {
-            if (detail.route.app.service.isSignedIn) {
-                detail.route.app.service.signOut();
-                detail.route.app.cacheClear();
+            var app = detail.route.app;
+
+            if (app.service.isSignedIn) {
+                app.service.signOut();
+                app.cacheClear();
+            }
+
+            if (app.service.windowsAuthentication) {
+                app.service.signInUsingCredentials("", "").then(() => {
+                    app.changePath(decodeURIComponent(detail.route.parameters.returnUrl ? detail.route.parameters.returnUrl : ""));
+                });
+                return;
             }
 
             this.empty();
 
             var providerNames: string[] = [];
-            for (var name in detail.route.app.service.providers) {
+            for (var name in app.service.providers) {
                 providerNames.push(name);
 
                 var provider = new WebComponents.SignInProvider();

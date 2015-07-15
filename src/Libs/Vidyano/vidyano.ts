@@ -56,7 +56,7 @@ module Vidyano {
         return target;
     }
 
-    export function cookie(key, value, options?) {
+    export function cookie(key: string, value?: any, options?: { force?: boolean; raw?: boolean; path?: string; domain?: string; secure?: boolean; expires?: number|Date; }) {
         var now = new Date();
 
         // key and at least value given, set cookie...
@@ -66,9 +66,10 @@ module Vidyano {
             if (value == null)
                 options.expires = -1;
 
+            var expires: Date = <Date>options.expires;
             if (typeof options.expires === 'number') {
-                var days = options.expires, t = options.expires = new Date();
-                t.setDate(t.getDate() + days);
+                expires = new Date();
+                expires.setDate(expires.getDate() + <number>options.expires);
             }
 
             value = String(value);
@@ -82,7 +83,7 @@ module Vidyano {
 
                 if (options.expires) {
                     if (options.expires > now)
-                        window.localStorage.setItem(key, JSON.stringify({ val: options.raw ? value : encodeURIComponent(value), exp: options.expires.toUTCString() }));
+                        window.localStorage.setItem(key, JSON.stringify({ val: options.raw ? value : encodeURIComponent(value), exp: expires.toUTCString() }));
                     else
                         window.localStorage.removeItem(key);
 
@@ -97,7 +98,7 @@ module Vidyano {
                 return (document.cookie = [
                     encodeURIComponent(key), '=',
                     options.raw ? value : encodeURIComponent(value),
-                    options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+                    options.expires ? '; expires=' + expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
                     options.path ? '; path=' + options.path : '',
                     options.domain ? '; domain=' + options.domain : '',
                     options.secure ? '; secure' : ''
@@ -522,7 +523,7 @@ module Vidyano {
         }
 
         get userName(): string {
-            return this._forceUser || Vidyano.cookie("userName", { force: !this.staySignedIn });
+            return this._forceUser || Vidyano.cookie("userName");
         }
 
         private _setUserName(val: string) {
@@ -533,7 +534,7 @@ module Vidyano {
             if (this.staySignedIn)
                 Vidyano.cookie("userName", val, { expires: 365 });
             else
-                Vidyano.cookie("userName", val, { force: true });
+                Vidyano.cookie("userName", val);
 
             this.notifyPropertyChanged("userName", val, oldUserName);
         }
@@ -546,7 +547,7 @@ module Vidyano {
             if (this._forceUser)
                 return null;
 
-            return Vidyano.cookie("authToken", { force: !this.staySignedIn });
+            return Vidyano.cookie("authToken");
         }
 
         private set authToken(val: string) {
@@ -556,7 +557,7 @@ module Vidyano {
             if (this.staySignedIn)
                 Vidyano.cookie("authToken", val, { expires: 14 });
             else
-                Vidyano.cookie("authToken", val, { force: true });
+                Vidyano.cookie("authToken", val);
         }
 
         getTranslatedMessage(key: string, ...params: string[]): string {
@@ -598,14 +599,16 @@ module Vidyano {
                 }
                 else {
                     this._setUserName(this.userName || this._clientData.defaultUser);
-                    this._setIsSignedIn(!StringEx.isNullOrEmpty(this.authToken));
 
-                    if (this._forceUser || this.isSignedIn || ((this._clientData.defaultUser || this.windowsAuthentication) && !skipDefaultCredentialLogin))
+                    if (this._forceUser || !StringEx.isNullOrEmpty(this.authToken) || ((this._clientData.defaultUser || this.windowsAuthentication) && !skipDefaultCredentialLogin))
                         return this._getApplication();
-                    else
+                    else {
+                        this._setIsSignedIn(!!this.application);
                         return Promise.resolve(this.application);
+                    }
                 }
 
+                this._setIsSignedIn(!!this.application);
                 return Promise.resolve(this.application);
             });
         }
@@ -717,6 +720,9 @@ module Vidyano {
 
                     resolve(this.application);
                 }, e => {
+                        this._setApplication(null);
+                        this._setIsSignedIn(false);
+
                         reject(e);
                     });
             });
@@ -2270,7 +2276,7 @@ module Vidyano {
             this.notifyPropertyChanged("layout", this._layout = layout, oldLayout);
         }
 
-        get attributes(): PersistentObjectAttribute[]{
+        get attributes(): PersistentObjectAttribute[] {
             return this._attributes;
         }
 

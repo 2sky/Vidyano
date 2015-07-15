@@ -1,7 +1,7 @@
 module Vidyano.WebComponents.Attributes {
     export class PersistentObjectAttributeReference extends WebComponents.Attributes.PersistentObjectAttribute {
         objectId: string;
-        referenceAttribute: Vidyano.PersistentObjectAttributeWithReference;
+        attribute: Vidyano.PersistentObjectAttributeWithReference;
         href: string;
         filter: string;
 
@@ -29,83 +29,87 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _objectIdChanged() {
-            if (this.referenceAttribute && this.referenceAttribute.objectId !== this.objectId)
-                this.referenceAttribute.changeReference(this.objectId ? [this.objectId] : []);
+            if (this.attribute && this.attribute.objectId !== this.objectId)
+                this.attribute.changeReference(this.objectId ? [this.objectId] : []);
         }
 
         private _filterBlur() {
-            if (!this.referenceAttribute)
+            if (!this.attribute)
                 return;
 
-            if (!StringEx.isNullOrEmpty(this.filter) && this.filter != this.referenceAttribute.value) {
-                this.referenceAttribute.lookup.textSearch = 'vi-breadcrumb:"' + this.filter + '"';
-                this.referenceAttribute.lookup.search().then(result => {
+            if (!StringEx.isNullOrEmpty(this.filter) && this.filter != this.attribute.value) {
+                this.attribute.lookup.textSearch = 'vi-breadcrumb:"' + this.filter + '"';
+                this.attribute.lookup.search().then(result => {
                     if (result.length == 0)
-                        this.filter = this.referenceAttribute.value;
+                        this.filter = this.attribute.value;
                     else if (result.length == 1)
-                        this.referenceAttribute.changeReference([result[0]]).then(() => this._update());
+                        this.attribute.changeReference([result[0]]).then(() => this._update());
                     else {
-                        this.referenceAttribute.lookup.textSearch = this.filter;
+                        this.attribute.lookup.textSearch = this.filter;
 
-                        this._browseReference().catch(() => {
-                            this.filter = this.referenceAttribute.value;
+                        this._browseReference(true).catch(() => {
+                            this.filter = this.attribute.value;
                         });
                     }
                 });
             }
             else
-                this.filter = this.referenceAttribute.value;
+                this.filter = this.attribute.value;
         }
 
         protected _editingChanged() {
             this._update();
         }
 
-        private _browseReference(): Promise<any> {
-            this.referenceAttribute.lookup.selectedItems = [];
-            this.referenceAttribute.lookup.search();
+        private _browseReference(throwExceptions?: boolean): Promise<any> {
+            this.attribute.lookup.selectedItems = [];
+            this.attribute.lookup.search();
 
             var dialog = <SelectReferenceDialog>this.$$("#browseReferenceDialog");
             return dialog.show().then(result => {
-                if (!result)
-                    return Promise.resolve();
+                if (!result) {
+                    if (throwExceptions === true)
+                        return Promise.reject("Nothing selected");
 
-                this.referenceAttribute.changeReference(result).then(() => {
+                    return Promise.resolve();
+                }
+
+                return this.attribute.changeReference(result).then(() => {
                     this._update();
                 });
             });
         }
 
         private _addNewReference(e: Event) {
-            this.referenceAttribute.addNewReference();
+            this.attribute.addNewReference();
         }
 
         private _clearReference(e: Event) {
-            this.referenceAttribute.changeReference([]).then(() => this._update());
+            this.attribute.changeReference([]).then(() => this._update());
         }
 
         private _update() {
-            var hasReference = this.referenceAttribute instanceof Vidyano.PersistentObjectAttributeWithReference;
+            var hasReference = this.attribute instanceof Vidyano.PersistentObjectAttributeWithReference;
 
-            if (hasReference && this.referenceAttribute.objectId != this.objectId)
-                this.objectId = this.referenceAttribute ? this.referenceAttribute.objectId : null;
+            if (hasReference && this.attribute.objectId != this.objectId)
+                this.objectId = this.attribute ? this.attribute.objectId : null;
 
-            if (hasReference && this.referenceAttribute.lookup && this.referenceAttribute.objectId && this.app)
-                this.href = "#!/" + this.app.getUrlForPersistentObject(this.referenceAttribute.lookup.persistentObject.id, this.referenceAttribute.objectId);
+            if (hasReference && this.attribute.lookup && this.attribute.objectId && this.app)
+                this.href = "#!/" + this.app.getUrlForPersistentObject(this.attribute.lookup.persistentObject.id, this.attribute.objectId);
             else
                 this.href = null;
 
-            this.filter = hasReference ? this.referenceAttribute.value : "";
+            this.filter = hasReference ? this.attribute.value : "";
 
-            this._setCanClear(hasReference && this.referenceAttribute.parent.isEditing && !this.referenceAttribute.isReadOnly && !this.referenceAttribute.isRequired && !StringEx.isNullOrEmpty(this.href) && !this.referenceAttribute.selectInPlace);
-            this._setCanAddNewReference(hasReference && this.referenceAttribute.parent.isEditing && !this.referenceAttribute.isReadOnly && this.referenceAttribute.canAddNewReference);
-            this._setCanBrowseReference(hasReference && this.referenceAttribute.parent.isEditing && !this.referenceAttribute.isReadOnly && !this.referenceAttribute.selectInPlace);
+            this._setCanClear(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.attribute.isRequired && !StringEx.isNullOrEmpty(this.href) && !this.attribute.selectInPlace);
+            this._setCanAddNewReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && this.attribute.canAddNewReference);
+            this._setCanBrowseReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.attribute.selectInPlace);
         }
 
         private _open(e: Event) {
-            this.referenceAttribute.getPersistentObject().then(po => {
+            this.attribute.getPersistentObject().then(po => {
                 if (po)
-                    this.referenceAttribute.service.hooks.onOpen(po, false, true);
+                    this.attribute.service.hooks.onOpen(po, false, true);
             });
 
             e.preventDefault();
@@ -115,10 +119,6 @@ module Vidyano.WebComponents.Attributes {
     PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeReference, {
         properties: {
             href: String,
-            referenceAttribute: {
-                type: Object,
-                computed: "_forwardComputed(attribute)"
-            },
             canClear: {
                 type: Boolean,
                 readOnly: true
@@ -142,8 +142,11 @@ module Vidyano.WebComponents.Attributes {
             selectInPlace: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "referenceAttribute.selectInPlace"
+                computed: "attribute.selectInPlace"
             }
-        }
+        },
+        observers: [
+            "_update(attribute.isReadOnly)"
+        ]
     });
 }

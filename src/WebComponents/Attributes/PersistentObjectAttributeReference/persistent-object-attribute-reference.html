@@ -4,7 +4,7 @@
 <dom-module name="vi-persistent-object-attribute-reference">
     <template>
         <template is="dom-if" if="{{!editing}}">
-            <a href$="{{href}}" title$="{{referenceAttribute.displayValue}}" disabled$="{{!href}}" on-tap="_open">
+            <a href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" on-tap="_open">
                 <span>{{attribute.displayValue}}</span>
                 <template is="dom-if" if="{{href}}">
                     <vi-resource source="Icon_ArrowUpRight" small></vi-resource>
@@ -13,10 +13,10 @@
             </a>
         </template>
         <template is="dom-if" if="{{editing}}">
-            <template is="dom-if" if="{{referenceAttribute.selectInPlace}}">
+            <template is="dom-if" if="{{attribute.selectInPlace}}">
                 <vi-persistent-object-attribute-edit attribute="{{attribute}}">
-                    <vi-select content class="flex" options="{{referenceAttribute.options}}" selected-option="{{objectId}}" readonly$="{{referenceAttribute.isReadOnly}}"></vi-select>
-                    <a class="button" href$="{{href}}" title$="{{referenceAttribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open">
+                    <vi-select content class="flex" options="{{attribute.options}}" selected-option="{{objectId}}" readonly$="{{attribute.isReadOnly}}"></vi-select>
+                    <a class="button" href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open">
                         <vi-resource source="Icon_ArrowUpRight" icon></vi-resource>
                     </a>
                     <template is="dom-if" if="{{canAddNewReference}}" restamp>
@@ -31,10 +31,10 @@
                     </template>
                 </vi-persistent-object-attribute-edit>
             </template>
-            <template is="dom-if" if="{{!referenceAttribute.selectInPlace}}">
+            <template is="dom-if" if="{{!attribute.selectInPlace}}">
                 <vi-persistent-object-attribute-edit attribute="{{attribute}}">
-                    <input content value="{{filter::input}}" on-blur="_filterBlur" readonly$="{{referenceAttribute.isReadOnly}}" />
-                    <a class="button" href$="{{href}}" title$="{{referenceAttribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open">
+                    <input content value="{{filter::input}}" on-blur="_filterBlur" readonly$="{{attribute.isReadOnly}}" />
+                    <a class="button" href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open">
                         <vi-resource source="Icon_ArrowUpRight" icon></vi-resource>
                     </a>
                     <template is="dom-if" if="{{canBrowseReference}}" restamp>
@@ -54,7 +54,7 @@
                     </template>
                 </vi-persistent-object-attribute-edit>
             </template>
-            <vi-select-reference-dialog id="browseReferenceDialog" query="{{referenceAttribute.lookup}}"></vi-select-reference-dialog>
+            <vi-select-reference-dialog id="browseReferenceDialog" query="{{attribute.lookup}}"></vi-select-reference-dialog>
         </template>
     </template>
 </dom-module>

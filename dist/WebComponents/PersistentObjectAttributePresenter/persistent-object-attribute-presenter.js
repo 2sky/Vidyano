@@ -70,7 +70,7 @@ var Vidyano;
                     return { filename: "PersistentObjectAttributeAsDetail/persistent-object-attribute-as-detail.html", synonyms: synonyms };
                 else if (type === "BinaryFile")
                     return { filename: "PersistentObjectAttributeBinaryFile/persistent-object-attribute-binary-file.html", synonyms: synonyms };
-                else if (type === "Boolean")
+                else if (type === "Boolean" || type === "NullableBoolean")
                     return { filename: "PersistentObjectAttributeBoolean/persistent-object-attribute-boolean.html", synonyms: synonyms };
                 else if (type === "ComboBox")
                     return { filename: "PersistentObjectAttributeComboBox/persistent-object-attribute-combo-box.html", synonyms: synonyms };

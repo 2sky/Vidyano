@@ -19,11 +19,8 @@
         }
     }
 
-	export class QueryGridCellNullableBoolean extends QueryGridCellBoolean {
-	}
-
-	export class QueryGridCellYesNo extends QueryGridCellBoolean {
-	}
+    export var QueryGridCellNullableBoolean = QueryGridCellBoolean;
+    export var QueryGridCellYesNo = QueryGridCellBoolean;
 
     export class QueryGridCellImage extends QueryGridCell {
         private _img: HTMLElement;

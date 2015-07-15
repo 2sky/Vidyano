@@ -1124,7 +1124,14 @@ declare module Vidyano {
         redirectUri: string;
     }
     function extend(target: any, ...sources: any[]): any;
-    function cookie(key: any, value: any, options?: any): any;
+    function cookie(key: string, value?: any, options?: {
+        force?: boolean;
+        raw?: boolean;
+        path?: string;
+        domain?: string;
+        secure?: boolean;
+        expires?: number | Date;
+    }): any;
     function _debounce(func: Function, wait: number, immediate?: boolean): Function;
     module Common {
         interface KeyValuePair {
@@ -2068,7 +2075,7 @@ declare module Vidyano.WebComponents.Attributes {
 declare module Vidyano.WebComponents.Attributes {
     class PersistentObjectAttributeReference extends WebComponents.Attributes.PersistentObjectAttribute {
         objectId: string;
-        referenceAttribute: Vidyano.PersistentObjectAttributeWithReference;
+        attribute: Vidyano.PersistentObjectAttributeWithReference;
         href: string;
         filter: string;
         private _setCanClear;
@@ -2080,7 +2087,7 @@ declare module Vidyano.WebComponents.Attributes {
         private _objectIdChanged();
         private _filterBlur();
         protected _editingChanged(): void;
-        private _browseReference();
+        private _browseReference(throwExceptions?);
         private _addNewReference(e);
         private _clearReference(e);
         private _update();
@@ -2583,10 +2590,8 @@ declare module Vidyano.WebComponents {
         private _resource;
         protected _render(dom: HTMLElement): void;
     }
-    class QueryGridCellNullableBoolean extends QueryGridCellBoolean {
-    }
-    class QueryGridCellYesNo extends QueryGridCellBoolean {
-    }
+    var QueryGridCellNullableBoolean: typeof QueryGridCellBoolean;
+    var QueryGridCellYesNo: typeof QueryGridCellBoolean;
     class QueryGridCellImage extends QueryGridCell {
         private _img;
         protected _render(dom: HTMLElement): void;

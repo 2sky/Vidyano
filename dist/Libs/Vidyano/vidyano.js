@@ -49,9 +49,10 @@ var Vidyano;
             options = Vidyano.extend({}, options);
             if (value == null)
                 options.expires = -1;
+            var expires = options.expires;
             if (typeof options.expires === 'number') {
-                var days = options.expires, t = options.expires = new Date();
-                t.setDate(t.getDate() + days);
+                expires = new Date();
+                expires.setDate(expires.getDate() + options.expires);
             }
             value = String(value);
             if (hasStorage && !options.force) {
@@ -61,7 +62,7 @@ var Vidyano;
                 key = locationPrefix + key;
                 if (options.expires) {
                     if (options.expires > now)
-                        window.localStorage.setItem(key, JSON.stringify({ val: options.raw ? value : encodeURIComponent(value), exp: options.expires.toUTCString() }));
+                        window.localStorage.setItem(key, JSON.stringify({ val: options.raw ? value : encodeURIComponent(value), exp: expires.toUTCString() }));
                     else
                         window.localStorage.removeItem(key);
                     window.sessionStorage.removeItem(key);
@@ -76,7 +77,7 @@ var Vidyano;
                 return (document.cookie = [
                     encodeURIComponent(key), '=',
                     options.raw ? value : encodeURIComponent(value),
-                    options.expires ? '; expires=' + options.expires.toUTCString() : '',
+                    options.expires ? '; expires=' + expires.toUTCString() : '',
                     options.path ? '; path=' + options.path : '',
                     options.domain ? '; domain=' + options.domain : '',
                     options.secure ? '; secure' : ''
@@ -408,7 +409,7 @@ var Vidyano;
         };
         Object.defineProperty(Service.prototype, "userName", {
             get: function () {
-                return this._forceUser || Vidyano.cookie("userName", { force: !this.staySignedIn });
+                return this._forceUser || Vidyano.cookie("userName");
             },
             enumerable: true,
             configurable: true
@@ -420,7 +421,7 @@ var Vidyano;
             if (this.staySignedIn)
                 Vidyano.cookie("userName", val, { expires: 365 });
             else
-                Vidyano.cookie("userName", val, { force: true });
+                Vidyano.cookie("userName", val);
             this.notifyPropertyChanged("userName", val, oldUserName);
         };
         Object.defineProperty(Service.prototype, "defaultUserName", {
@@ -434,7 +435,7 @@ var Vidyano;
             get: function () {
                 if (this._forceUser)
                     return null;
-                return Vidyano.cookie("authToken", { force: !this.staySignedIn });
+                return Vidyano.cookie("authToken");
             },
             set: function (val) {
                 if (this._forceUser)
@@ -442,7 +443,7 @@ var Vidyano;
                 if (this.staySignedIn)
                     Vidyano.cookie("authToken", val, { expires: 14 });
                 else
-                    Vidyano.cookie("authToken", val, { force: true });
+                    Vidyano.cookie("authToken", val);
             },
             enumerable: true,
             configurable: true
@@ -486,12 +487,14 @@ var Vidyano;
                 }
                 else {
                     _this._setUserName(_this.userName || _this._clientData.defaultUser);
-                    _this._setIsSignedIn(!StringEx.isNullOrEmpty(_this.authToken));
-                    if (_this._forceUser || _this.isSignedIn || ((_this._clientData.defaultUser || _this.windowsAuthentication) && !skipDefaultCredentialLogin))
+                    if (_this._forceUser || !StringEx.isNullOrEmpty(_this.authToken) || ((_this._clientData.defaultUser || _this.windowsAuthentication) && !skipDefaultCredentialLogin))
                         return _this._getApplication();
-                    else
+                    else {
+                        _this._setIsSignedIn(!!_this.application);
                         return Promise.resolve(_this.application);
+                    }
                 }
+                _this._setIsSignedIn(!!_this.application);
                 return Promise.resolve(_this.application);
             });
         };
@@ -584,6 +587,8 @@ var Vidyano;
                     _this._setIsSignedIn(true);
                     resolve(_this.application);
                 }, function (e) {
+                    _this._setApplication(null);
+                    _this._setIsSignedIn(false);
                     reject(e);
                 });
             });

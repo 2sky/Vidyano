@@ -2,7 +2,7 @@ module Vidyano.WebComponents.Attributes {
     export class PersistentObjectAttributeBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
         toggle() {
             if (this.attribute.parent.isEditing && !this.attribute.isReadOnly)
-                this.value = this.value ? false : true; // If value was null, we also toggle to 'true'
+                this.attribute.setValue(!this.value); // If value was null, we also toggle to 'true'
         }
     }
 
@@ -12,7 +12,7 @@ module Vidyano.WebComponents.Attributes {
         attached() {
             super.attached();
 
-            if (!this.options) {
+            if (!this.options && this.attribute) {
                 this.options = [
                     {
                         key: null,
@@ -20,17 +20,17 @@ module Vidyano.WebComponents.Attributes {
                     },
                     {
                         key: true,
-                        value: this.translations.Yes
+                        value: this.translations[this.attribute.getTypeHint("TrueKey", "Yes")]
                     },
                     {
                         key: false,
-                        value: this.translations.No
+                        value: this.translations[this.attribute.getTypeHint("FalseKey", "No")]
                     }];
             }
         }
 
         private _notNull(value: any): boolean {
-            return value !== null;
+            return value != null;
         }
     }
 

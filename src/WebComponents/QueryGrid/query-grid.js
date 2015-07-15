@@ -1287,10 +1287,10 @@ var Vidyano;
                 var extraClass = this._getTypeHint("ExtraClass", null);
                 if (extraClass != this._extraClass) {
                     if (!StringEx.isNullOrEmpty(this._extraClass))
-                        dom.classList.remove(this._extraClass);
+                        this._extraClass.split(' ').forEach(function (cls) { return dom.classList.remove(cls); });
                     if (!StringEx.isNullOrEmpty(extraClass)) {
                         this._extraClass = extraClass;
-                        dom.classList.add(this._extraClass);
+                        this._extraClass.split(' ').forEach(function (cls) { return dom.classList.add(cls); });
                     }
                 }
                 if (dom.firstChild != null) {

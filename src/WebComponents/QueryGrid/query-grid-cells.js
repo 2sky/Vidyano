@@ -30,22 +30,8 @@ var Vidyano;
             return QueryGridCellBoolean;
         })(WebComponents.QueryGridCell);
         WebComponents.QueryGridCellBoolean = QueryGridCellBoolean;
-        var QueryGridCellNullableBoolean = (function (_super) {
-            __extends(QueryGridCellNullableBoolean, _super);
-            function QueryGridCellNullableBoolean() {
-                _super.apply(this, arguments);
-            }
-            return QueryGridCellNullableBoolean;
-        })(QueryGridCellBoolean);
-        WebComponents.QueryGridCellNullableBoolean = QueryGridCellNullableBoolean;
-        var QueryGridCellYesNo = (function (_super) {
-            __extends(QueryGridCellYesNo, _super);
-            function QueryGridCellYesNo() {
-                _super.apply(this, arguments);
-            }
-            return QueryGridCellYesNo;
-        })(QueryGridCellBoolean);
-        WebComponents.QueryGridCellYesNo = QueryGridCellYesNo;
+        WebComponents.QueryGridCellNullableBoolean = QueryGridCellBoolean;
+        WebComponents.QueryGridCellYesNo = QueryGridCellBoolean;
         var QueryGridCellImage = (function (_super) {
             __extends(QueryGridCellImage, _super);
             function QueryGridCellImage() {

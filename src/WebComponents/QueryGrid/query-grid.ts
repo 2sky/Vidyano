@@ -213,7 +213,7 @@
                     return;
                 }
             }
-            
+
             if (detail.item.isSelected = !detail.item.isSelected)
                 this._lastSelectedItemIndex = indexOfItem;
         }
@@ -778,7 +778,7 @@
 
                         selectorCol.appendChild(this._selector = new Vidyano.WebComponents.QueryGridItemSelector());
                         this._selector.item = this._item;
-                        
+
                         e.stopPropagation();
                         this._selector.fire("tap", { sourceEvent: e });
                     }));
@@ -1190,7 +1190,7 @@
                 distinctValue = element.getAttribute("distinct-value");
                 if (distinctValue) {
                     distinctValue = <string>JSON.parse(distinctValue).value;
-                    
+
                     var targetCollection = this._getTargetCollection();
                     if (targetCollection.indexOf(distinctValue) == -1)
                         targetCollection.push(distinctValue);
@@ -1361,7 +1361,7 @@
             e.stopPropagation();
 
             this._setInversed(!this.inversed);
-            
+
             var filters: number;
             if (this.inversed) {
                 filters = this.gridColumn.column.includes.length;
@@ -1531,11 +1531,11 @@
             var extraClass = this._getTypeHint("ExtraClass", null);
             if (extraClass != this._extraClass) {
                 if (!StringEx.isNullOrEmpty(this._extraClass))
-                    dom.classList.remove(this._extraClass);
+                    this._extraClass.split(' ').forEach(cls => dom.classList.remove(cls));
 
                 if (!StringEx.isNullOrEmpty(extraClass)) {
                     this._extraClass = extraClass;
-                    dom.classList.add(this._extraClass);
+                    this._extraClass.split(' ').forEach(cls => dom.classList.add(cls));
                 }
             }
 
