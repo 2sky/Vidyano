@@ -34,9 +34,9 @@ vi-query-grid-item-selector:not([is-selected]) #check,
 }
 [theme-color-1] vi-query-grid-item-selector:hover,
 [theme-color-1] .vi-query-grid-item-selector-proxy:hover {
-  background-color: #dae6ef;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 [theme-color-2] vi-query-grid-item-selector:hover,
 [theme-color-2] .vi-query-grid-item-selector-proxy:hover {
-  background-color: #ceeae9;
+  background-color: rgba(0, 0, 0, 0.05);
 }

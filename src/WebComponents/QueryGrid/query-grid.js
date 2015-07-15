@@ -709,13 +709,22 @@ var Vidyano;
                 set: function (item) {
                     var _this = this;
                     this._item = item;
+                    var extraClass = item ? item.getTypeHint("ExtraClass", null) : null;
                     for (var host in this.hosts) {
                         this._cells.forEach(function (cell) { return cell.item = _this._item; });
-                        if (item)
+                        if (item) {
+                            if (extraClass != this._extraClass) {
+                                if (!StringEx.isNullOrEmpty(this._extraClass))
+                                    this._extraClass.split(' ').forEach(function (cls) { return _this.hosts[host].classList.remove(cls); });
+                                if (!StringEx.isNullOrEmpty(extraClass))
+                                    extraClass.split(' ').forEach(function (cls) { return _this.hosts[host].classList.add(cls); });
+                            }
                             this.hosts[host].classList.remove("noData");
+                        }
                         else
                             this.hosts[host].classList.add("noData");
                     }
+                    this._extraClass = extraClass;
                     if (this._isItemSelectedDisposer) {
                         this._isItemSelectedDisposer();
                         this._isItemSelectedDisposer = null;
@@ -1284,7 +1293,7 @@ var Vidyano;
                 var textAlign = this._getTypeHint("HorizontalContentAlignment", null);
                 if (textAlign != this._textAlign.currentValue)
                     dom.style.textAlign = this._textAlign.currentValue = textAlign || this._textAlign.originalValue;
-                var extraClass = this._getTypeHint("ExtraClass", null);
+                var extraClass = this.gridColumn.column.getTypeHint("ExtraClass", undefined, itemValue && itemValue.typeHints);
                 if (extraClass != this._extraClass) {
                     if (!StringEx.isNullOrEmpty(this._extraClass))
                         this._extraClass.split(' ').forEach(function (cls) { return dom.classList.remove(cls); });

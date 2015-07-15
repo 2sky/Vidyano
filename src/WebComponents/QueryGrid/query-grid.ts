@@ -746,6 +746,7 @@
         private _hover: boolean;
         private _selector: QueryGridItemSelector;
         private _actions: QueryGridItemActions;
+        private _extraClass: string;
 
         constructor(parent: QueryGridItems) {
             super(parent.grid, {
@@ -845,14 +846,25 @@
         set item(item: QueryResultItem) {
             this._item = item;
 
+            var extraClass = item ? item.getTypeHint("ExtraClass", null) : null;
             for (var host in this.hosts) {
                 this._cells.forEach(cell => cell.item = this._item);
+                
+                if (item) {
+                    if (extraClass != this._extraClass) {
+                        if (!StringEx.isNullOrEmpty(this._extraClass))
+                            this._extraClass.split(' ').forEach(cls => this.hosts[host].classList.remove(cls));
 
-                if (item)
+                        if (!StringEx.isNullOrEmpty(extraClass))
+                            extraClass.split(' ').forEach(cls => this.hosts[host].classList.add(cls));
+                    }
+
                     this.hosts[host].classList.remove("noData");
+                }
                 else
                     this.hosts[host].classList.add("noData");
             }
+            this._extraClass = extraClass;
 
             if (this._isItemSelectedDisposer) {
                 this._isItemSelectedDisposer();
@@ -1378,7 +1390,7 @@
                 this.gridColumn.column.excludes = temp.slice();
             }
 
-            if(filters > 0)
+            if (filters > 0)
                 this._updateDistincts();
         }
 
@@ -1528,7 +1540,7 @@
             if (textAlign != this._textAlign.currentValue)
                 dom.style.textAlign = this._textAlign.currentValue = textAlign || this._textAlign.originalValue;
 
-            var extraClass = this._getTypeHint("ExtraClass", null);
+            var extraClass = this.gridColumn.column.getTypeHint("ExtraClass", undefined, itemValue && itemValue.typeHints);
             if (extraClass != this._extraClass) {
                 if (!StringEx.isNullOrEmpty(this._extraClass))
                     this._extraClass.split(' ').forEach(cls => dom.classList.remove(cls));
@@ -1540,7 +1552,7 @@
             }
 
             if (dom.firstChild != null) {
-                if((<Text>dom.firstChild).nodeValue !== value)
+                if ((<Text>dom.firstChild).nodeValue !== value)
                     (<Text>dom.firstChild).nodeValue = value;
             }
             else

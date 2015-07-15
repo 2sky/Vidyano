@@ -2966,6 +2966,10 @@ module Vidyano {
             this.typeHints = value.typeHints;
         }
 
+        getTypeHint(name: string, defaultValue?: string, typeHints?: any): string {
+            return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);
+        }
+
         _toServiceObject() {
             return this.copyProperties(["key", "value", "persistentObjectId", "objectId"]);
         }

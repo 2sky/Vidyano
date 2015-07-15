@@ -1589,6 +1589,7 @@ declare module Vidyano {
         persistentObjectId: string;
         objectId: string;
         constructor(service: Service, value: any);
+        getTypeHint(name: string, defaultValue?: string, typeHints?: any): string;
         _toServiceObject(): any;
     }
     class Action extends ServiceObject {

@@ -2568,6 +2568,9 @@ var Vidyano;
             this.objectId = value.objectId;
             this.typeHints = value.typeHints;
         }
+        QueryResultItemValue.prototype.getTypeHint = function (name, defaultValue, typeHints) {
+            return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);
+        };
         QueryResultItemValue.prototype._toServiceObject = function () {
             return this.copyProperties(["key", "value", "persistentObjectId", "objectId"]);
         };
