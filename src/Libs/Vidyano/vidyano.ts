@@ -2414,7 +2414,7 @@ module Vidyano {
                     bulkEdit.selectionRule = count => count == 1;
             }
 
-            if (query.filters)
+            if (query.filters && !(query.filters instanceof PersistentObject))
                 this._filters = service.hooks.onConstructPersistentObject(service, query.filters);
             else
                 this._filters = null;

@@ -2090,7 +2090,7 @@ var Vidyano;
                 if (bulkEdit)
                     bulkEdit.selectionRule = function (count) { return count == 1; };
             }
-            if (query.filters)
+            if (query.filters && !(query.filters instanceof PersistentObject))
                 this._filters = service.hooks.onConstructPersistentObject(service, query.filters);
             else
                 this._filters = null;
