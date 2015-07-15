@@ -2019,7 +2019,8 @@ module Vidyano {
             var visibilityChanged = false;
 
             this._setOptions(resultAttr._serviceOptions);
-            this.isReadOnly = resultAttr.isReadOnly;
+            if (this.isReadOnly != resultAttr.isReadOnly)
+                this.notifyPropertyChanged("isReadOnly", this.isReadOnly = resultAttr.isReadOnly, !resultAttr.isReadOnly);
             this.isRequired = resultAttr.isRequired;
             if (this.visibility != resultAttr.visibility) {
                 this.visibility = resultAttr.visibility;
@@ -2200,11 +2201,16 @@ module Vidyano {
             var visibilityChanged = super._refreshFromResult(resultAttr);
 
             if (this.objects != null && asDetailAttr.objects != null) {
+                var isEditing = this.parent.isEditing;
+                var oldObjects = this.objects;
                 this.objects = asDetailAttr.objects.map(obj => {
                     obj.parent = this.parent;
                     obj.ownerDetailAttribute = this;
+                    if (isEditing)
+                        obj.beginEdit();
                     return obj;
                 });
+                this.notifyPropertyChanged("objects", this.objects, oldObjects);
             }
 
             return visibilityChanged;

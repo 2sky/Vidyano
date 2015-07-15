@@ -1753,7 +1753,8 @@ var Vidyano;
         PersistentObjectAttribute.prototype._refreshFromResult = function (resultAttr) {
             var visibilityChanged = false;
             this._setOptions(resultAttr._serviceOptions);
-            this.isReadOnly = resultAttr.isReadOnly;
+            if (this.isReadOnly != resultAttr.isReadOnly)
+                this.notifyPropertyChanged("isReadOnly", this.isReadOnly = resultAttr.isReadOnly, !resultAttr.isReadOnly);
             this.isRequired = resultAttr.isRequired;
             if (this.visibility != resultAttr.visibility) {
                 this.visibility = resultAttr.visibility;
@@ -1902,11 +1903,16 @@ var Vidyano;
             var asDetailAttr = resultAttr;
             var visibilityChanged = _super.prototype._refreshFromResult.call(this, resultAttr);
             if (this.objects != null && asDetailAttr.objects != null) {
+                var isEditing = this.parent.isEditing;
+                var oldObjects = this.objects;
                 this.objects = asDetailAttr.objects.map(function (obj) {
                     obj.parent = _this.parent;
                     obj.ownerDetailAttribute = _this;
+                    if (isEditing)
+                        obj.beginEdit();
                     return obj;
                 });
+                this.notifyPropertyChanged("objects", this.objects, oldObjects);
             }
             return visibilityChanged;
         };

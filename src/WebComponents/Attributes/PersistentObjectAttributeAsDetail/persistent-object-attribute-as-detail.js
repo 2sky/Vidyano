@@ -28,7 +28,11 @@ var Vidyano;
                 return PersistentObjectAttributeAsDetail;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeAsDetail = PersistentObjectAttributeAsDetail;
-            Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeAsDetail, {});
+            Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeAsDetail, {
+                forwardObservers: [
+                    "attribute.objects"
+                ]
+            });
         })(Attributes = WebComponents.Attributes || (WebComponents.Attributes = {}));
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

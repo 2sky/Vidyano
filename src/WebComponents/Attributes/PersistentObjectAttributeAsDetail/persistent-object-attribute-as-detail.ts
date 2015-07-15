@@ -15,5 +15,8 @@ module Vidyano.WebComponents.Attributes {
     }
 
     PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeAsDetail, {
+        forwardObservers: [
+            "attribute.objects"
+        ]
     });
 }
