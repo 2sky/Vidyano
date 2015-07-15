@@ -139,7 +139,7 @@ vi-query-grid-column-filter [content] .advanced > div button#inverse {
 }
 [theme-color-1] vi-query-grid-column-filter [content] .advanced > div button#inverse {
   background-color: transparent;
-  color: #043d59;
+  color: #2a4e6c;
   fill: #595959;
   -moz-transition-property: fill, color, background-color;
   -o-transition-property: fill, color, background-color;
@@ -155,20 +155,20 @@ vi-query-grid-column-filter [content] .advanced > div button#inverse {
   transition-timing-function: ease-in-out;
 }
 [theme-color-1] vi-query-grid-column-filter [content] .advanced > div button#inverse:hover {
-  background-color: #e7f0f4;
+  background-color: #ecf2f7;
 }
 [theme-color-1] vi-query-grid-column-filter [content] .advanced > div button#inverse:active {
-  background-color: #095072;
+  background-color: #386890;
   fill: white !important;
   color: white !important;
 }
 [theme-color-1] vi-query-grid-column-filter [content] .advanced > div button#inverse[disabled] {
-  fill: #e7f0f4;
+  fill: #ecf2f7;
   color: rgba(0, 0, 0, 0.5);
 }
 [theme-color-2] vi-query-grid-column-filter [content] .advanced > div button#inverse {
   background-color: transparent;
-  color: #005d53;
+  color: #004d40;
   fill: #595959;
   -moz-transition-property: fill, color, background-color;
   -o-transition-property: fill, color, background-color;
@@ -184,15 +184,15 @@ vi-query-grid-column-filter [content] .advanced > div button#inverse {
   transition-timing-function: ease-in-out;
 }
 [theme-color-2] vi-query-grid-column-filter [content] .advanced > div button#inverse:hover {
-  background-color: #e5f4f2;
+  background-color: #e0f2f1;
 }
 [theme-color-2] vi-query-grid-column-filter [content] .advanced > div button#inverse:active {
-  background-color: #00776a;
+  background-color: #00796b;
   fill: white !important;
   color: white !important;
 }
 [theme-color-2] vi-query-grid-column-filter [content] .advanced > div button#inverse[disabled] {
-  fill: #e5f4f2;
+  fill: #e0f2f1;
   color: rgba(0, 0, 0, 0.5);
 }
 vi-query-grid-column-filter [content] .advanced > div button#inverse[inversed]:not(:active) {
@@ -237,10 +237,10 @@ vi-query-grid-column-filter [content] #distincts > div {
   align-items: center;
 }
 [theme-color-1] vi-query-grid-column-filter [content] #distincts > div:hover {
-  background-color: #e7f0f4;
+  background-color: #ecf2f7;
 }
 [theme-color-2] vi-query-grid-column-filter [content] #distincts > div:hover {
-  background-color: #e5f4f2;
+  background-color: #e0f2f1;
 }
 vi-query-grid-column-filter [content] #distincts > div span {
   line-height: 22px;

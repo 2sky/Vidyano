@@ -10,7 +10,7 @@ vi-checkbox:not([disabled]) {
   cursor: pointer;
 }
 [theme-color-1] vi-checkbox:not([disabled])[checked] {
-  fill: #126790;
+  fill: #4682b4;
 }
 [theme-color-2] vi-checkbox:not([disabled])[checked] {
   fill: #009688;

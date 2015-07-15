@@ -11,7 +11,7 @@ vi-date-picker header {
   fill: white;
 }
 [theme-color-1] vi-date-picker header {
-  background-color: #126790;
+  background-color: #4682b4;
 }
 [theme-color-2] vi-date-picker header {
   background-color: #009688;
@@ -27,10 +27,10 @@ vi-date-picker header button > vi-resource {
   height: 30px;
 }
 [theme-color-1] vi-date-picker header button:hover {
-  background-color: #367ea0;
+  background-color: #6a9bc3;
 }
 [theme-color-2] vi-date-picker header button:hover {
-  background-color: #20a294;
+  background-color: #4db6ac;
 }
 vi-date-picker > div {
   position: relative;
@@ -55,36 +55,36 @@ vi-date-picker > div #days tr td div {
   border-width: 0 0 1px 1px;
 }
 [theme-color-1] vi-date-picker > div #days tr td div {
-  border-color: #e7f0f4;
+  border-color: #ecf2f7;
 }
 [theme-color-2] vi-date-picker > div #days tr td div {
-  border-color: #e5f4f2;
+  border-color: #e0f2f1;
 }
 [theme-color-1] vi-date-picker > div #days tr td div:not(.previous):not(.next) {
-  color: #126790;
+  color: #4682b4;
 }
 [theme-color-1] vi-date-picker > div #days tr td div:not(.previous):not(.next):hover {
-  background-color: #e7f0f4;
+  background-color: #ecf2f7;
 }
 [theme-color-2] vi-date-picker > div #days tr td div:not(.previous):not(.next) {
   color: #009688;
 }
 [theme-color-2] vi-date-picker > div #days tr td div:not(.previous):not(.next):hover {
-  background-color: #e5f4f2;
+  background-color: #e0f2f1;
 }
 [theme-color-1] vi-date-picker > div #days tr td div:not(.previous):not(.next).today {
-  background-color: #095072;
+  background-color: #386890;
   color: white;
 }
 [theme-color-1] vi-date-picker > div #days tr td div:not(.previous):not(.next).today:hover {
-  background-color: #043d59;
+  background-color: #2a4e6c;
 }
 [theme-color-2] vi-date-picker > div #days tr td div:not(.previous):not(.next).today {
-  background-color: #00776a;
+  background-color: #00796b;
   color: white;
 }
 [theme-color-2] vi-date-picker > div #days tr td div:not(.previous):not(.next).today:hover {
-  background-color: #005d53;
+  background-color: #004d40;
 }
 [theme-color-1] vi-date-picker > div #days tr td div.previous,
 [theme-color-1] vi-date-picker > div #days tr td div.next {
@@ -115,7 +115,7 @@ vi-date-picker > div #days tr td div.selected::before {
   left: 0;
 }
 [theme-color-1] vi-date-picker > div #days tr td div.selected::before {
-  border: 1px solid #126790;
+  border: 1px solid #4682b4;
 }
 [theme-color-2] vi-date-picker > div #days tr td div.selected::before {
   border: 1px solid #009688;
@@ -124,7 +124,7 @@ vi-date-picker > div #days tr td div.selected::after {
   z-index: 1;
 }
 [theme-color-1] vi-date-picker > div #days tr td div.selected::after {
-  border-top: 12px solid #126790;
+  border-top: 12px solid #4682b4;
   border-left: 12px solid transparent;
 }
 [theme-color-2] vi-date-picker > div #days tr td div.selected::after {
@@ -162,32 +162,32 @@ vi-date-picker > div #monthsAndYears .row > div {
   line-height: 72px;
 }
 [theme-color-1] vi-date-picker > div #monthsAndYears .row > div {
-  border-color: #e7f0f4;
-  color: #126790;
+  border-color: #ecf2f7;
+  color: #4682b4;
 }
 [theme-color-1] vi-date-picker > div #monthsAndYears .row > div:hover {
-  background-color: #e7f0f4;
+  background-color: #ecf2f7;
 }
 [theme-color-1] vi-date-picker > div #monthsAndYears .row > div.current {
-  background-color: #095072;
+  background-color: #386890;
   color: white;
 }
 [theme-color-1] vi-date-picker > div #monthsAndYears .row > div.current:hover {
-  background-color: #043d59;
+  background-color: #2a4e6c;
 }
 [theme-color-2] vi-date-picker > div #monthsAndYears .row > div {
-  border-color: #e5f4f2;
+  border-color: #e0f2f1;
   color: #009688;
 }
 [theme-color-2] vi-date-picker > div #monthsAndYears .row > div:hover {
-  background-color: #e5f4f2;
+  background-color: #e0f2f1;
 }
 [theme-color-2] vi-date-picker > div #monthsAndYears .row > div.current {
-  background-color: #00776a;
+  background-color: #00796b;
   color: white;
 }
 [theme-color-2] vi-date-picker > div #monthsAndYears .row > div.current:hover {
-  background-color: #005d53;
+  background-color: #004d40;
 }
 vi-date-picker:not([zoom="days"]) #days {
   visibility: hidden;

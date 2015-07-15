@@ -36,3 +36,6 @@ vi-query-grid-filters > vi-popup-menu vi-popup-menu-item {
   line-height: 30px;
   height: 30px;
 }
+vi-query-grid-filters[filtering] > vi-popup-menu button[header] {
+  background-color: red;
+}

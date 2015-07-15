@@ -23,11 +23,11 @@ vi-query-grid-item-actions [toggle],
 }
 [theme-color-1] vi-query-grid-item-actions:hover,
 [theme-color-1] .vi-query-grid-item-actions-proxy:hover {
-  background-color: #d6e5ec;
+  background-color: #dae6ef;
 }
 [theme-color-2] vi-query-grid-item-actions:hover,
 [theme-color-2] .vi-query-grid-item-actions-proxy:hover {
-  background-color: #d3ece9;
+  background-color: #ceeae9;
 }
 .vi-query-grid-item-actions-proxy > vi-resource {
   -ms-flex: 1;

@@ -45,6 +45,10 @@ var Vidyano;
                             }];
                     }
                 };
+                PersistentObjectAttributeNullableBoolean.prototype._valueChanged = function (newValue) {
+                    if (this.attribute && newValue != this.attribute.value)
+                        this.attribute.setValue(newValue, true);
+                };
                 PersistentObjectAttributeNullableBoolean.prototype._notNull = function (value) {
                     return value != null;
                 };

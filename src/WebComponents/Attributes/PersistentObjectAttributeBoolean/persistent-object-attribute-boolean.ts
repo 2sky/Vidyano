@@ -29,6 +29,11 @@ module Vidyano.WebComponents.Attributes {
             }
         }
 
+        protected _valueChanged(newValue: any) {
+            if (this.attribute && newValue != this.attribute.value)
+                this.attribute.setValue(newValue, true);
+        }
+
         private _notNull(value: any): boolean {
             return value != null;
         }

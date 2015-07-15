@@ -44,9 +44,9 @@ vi-persistent-object-attribute-translated-string-dialog ul li textarea {
 }
 [theme-color-1] vi-persistent-object-attribute-translated-string-dialog ul li input:focus,
 [theme-color-1] vi-persistent-object-attribute-translated-string-dialog ul li textarea:focus {
-  border-color: #367ea0;
+  border-color: #6a9bc3;
 }
 [theme-color-2] vi-persistent-object-attribute-translated-string-dialog ul li input:focus,
 [theme-color-2] vi-persistent-object-attribute-translated-string-dialog ul li textarea:focus {
-  border-color: #20a294;
+  border-color: #4db6ac;
 }

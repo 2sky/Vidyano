@@ -489,10 +489,10 @@ vi-time-picker #clockHost .list .item span:hover {
   color: white;
 }
 [theme-color-1] vi-time-picker #clockHost .list .item span:hover::before {
-  background-color: #367ea0;
+  background-color: #6a9bc3;
 }
 [theme-color-2] vi-time-picker #clockHost .list .item span:hover::before {
-  background-color: #20a294;
+  background-color: #4db6ac;
 }
 vi-time-picker #clockHost .list .item span::before {
   position: absolute;
@@ -505,16 +505,16 @@ vi-time-picker #clockHost .list .item.active span {
   color: white;
 }
 [theme-color-1] vi-time-picker #clockHost .list .item.active span::before {
-  background-color: #126790;
+  background-color: #4682b4;
 }
 [theme-color-2] vi-time-picker #clockHost .list .item.active span::before {
   background-color: #009688;
 }
 [theme-color-1] vi-time-picker #clockHost .list .item.active span:hover::before {
-  background-color: #095072;
+  background-color: #386890;
 }
 [theme-color-2] vi-time-picker #clockHost .list .item.active span:hover::before {
-  background-color: #00776a;
+  background-color: #00796b;
 }
 vi-time-picker #clockHost > .face {
   position: absolute;
@@ -549,7 +549,7 @@ vi-time-picker[state="minutes"] .list:nth-child(2) {
   z-index: -2;
 }
 [theme-color-1] vi-time-picker[state="minutes"] #current .minutes {
-  color: #126790;
+  color: #4682b4;
 }
 [theme-color-2] vi-time-picker[state="minutes"] #current .minutes {
   color: #009688;
@@ -566,7 +566,7 @@ vi-time-picker[state="hours"] .list:nth-child(2) {
   z-index: 2;
 }
 [theme-color-1] vi-time-picker[state="hours"] #current .hours {
-  color: #126790;
+  color: #4682b4;
 }
 [theme-color-2] vi-time-picker[state="hours"] #current .hours {
   color: #009688;

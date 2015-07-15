@@ -15,7 +15,7 @@ vi-persistent-object-attribute-nullable-boolean vi-resource[icon] {
 }
 [theme-color-1] vi-persistent-object-attribute-boolean vi-resource[icon].selected #check,
 [theme-color-1] vi-persistent-object-attribute-nullable-boolean vi-resource[icon].selected #check {
-  fill: #126790;
+  fill: #4682b4;
 }
 [theme-color-2] vi-persistent-object-attribute-boolean vi-resource[icon].selected #check,
 [theme-color-2] vi-persistent-object-attribute-nullable-boolean vi-resource[icon].selected #check {

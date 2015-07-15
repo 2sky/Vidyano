@@ -54,8 +54,15 @@ module.exports = function (grunt) {
                     if (src.indexOf(".less") > 0 || src.indexOf(".min.css") > 0 || src.indexOf(".ts") > 0 || src.indexOf(".tt") > 0 || src.indexOf(".config") > 0 || src.indexOf("\\bin") > 0)
                         return false;
 
+                    if (src.indexOf("/colors.css") > 0 || src.indexOf("vidyano.css") > 0)
+                        return false;
+
                     return true;
                 }
+            },
+            less: {
+                src: "src/WebComponents/colors.less",
+                dest: "dist/colors.less"
             }
         },
         dtsGenerator: {
@@ -74,6 +81,7 @@ module.exports = function (grunt) {
     grunt.registerTask("dist", [
         "clean",
         "copy:dist",
+        "copy:less",
         "dtsGenerator"
     ]);
 

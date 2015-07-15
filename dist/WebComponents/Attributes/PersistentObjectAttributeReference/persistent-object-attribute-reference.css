@@ -27,7 +27,7 @@ vi-persistent-object-attribute-reference:not([editing]) a vi-resource[icon] {
   min-width: 12px;
 }
 [theme-color-1] vi-persistent-object-attribute-reference:not([editing]) a vi-resource[icon] {
-  fill: #126790;
+  fill: #4682b4;
 }
 [theme-color-2] vi-persistent-object-attribute-reference:not([editing]) a vi-resource[icon] {
   fill: #009688;

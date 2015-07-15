@@ -16,10 +16,10 @@ vi-menu {
   box-sizing: border-box;
 }
 [theme-color-1] vi-menu {
-  background-color: #171f23;
+  background-color: #263238;
 }
 [theme-color-2] vi-menu {
-  background-color: #142523;
+  background-color: #263238;
 }
 header.vi-menu.style-scope,
 footer.vi-menu.style-scope {
@@ -36,10 +36,10 @@ header.vi-menu.style-scope span {
   line-height: 80px;
 }
 [theme-color-1] header.vi-menu.style-scope span {
-  background-color: #095072;
+  background-color: #386890;
 }
 [theme-color-2] header.vi-menu.style-scope span {
-  background-color: #00776a;
+  background-color: #00796b;
 }
 vi-input-search.vi-menu.style-scope {
   margin: 8px 8px;

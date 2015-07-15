@@ -8,12 +8,12 @@ vi-user {
   flex-direction: row;
 }
 [theme-color-1] vi-user {
-  background-color: rgba(52, 65, 71, 0.5);
-  border-top-color: rgba(75, 83, 87, 0.5);
+  background-color: rgba(255, 255, 255, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.08);
 }
 [theme-color-2] vi-user {
-  background-color: rgba(42, 77, 73, 0.5);
-  border-top-color: rgba(53, 98, 93, 0.5);
+  background-color: rgba(255, 255, 255, 0.08);
+  border-top-color: rgba(255, 255, 255, 0.08);
 }
 vi-user > span {
   line-height: 40px;
@@ -25,7 +25,7 @@ vi-user button.vi-user {
   cursor: pointer;
 }
 [theme-color-1] vi-user button.vi-user#signIn {
-  background-color: #126790;
+  background-color: #4682b4;
   color: white;
   -moz-transition-property: fill, color, background-color;
   -o-transition-property: fill, color, background-color;
@@ -41,10 +41,10 @@ vi-user button.vi-user {
   transition-timing-function: ease-out;
 }
 [theme-color-1] vi-user button.vi-user#signIn:hover {
-  background-color: #126790;
+  background-color: #4682b4;
 }
 [theme-color-1] vi-user button.vi-user#signIn:active {
-  background-color: #0c4763;
+  background-color: #38678f;
 }
 [theme-color-1] vi-user button.vi-user#signIn[disabled] {
   fill: rgba(255, 255, 255, 0.5);
@@ -85,7 +85,7 @@ vi-user button.vi-user#settings {
   box-sizing: border-box;
 }
 [theme-color-1] vi-user button.vi-user#settings {
-  background-color: rgba(52, 65, 71, 0.6);
+  background-color: rgba(255, 255, 255, 0.05);
   color: white;
   -moz-transition-property: fill, color, background-color;
   -o-transition-property: fill, color, background-color;
@@ -99,20 +99,20 @@ vi-user button.vi-user#settings {
   -o-transition-timing-function: ease-out;
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
-  border-left: 1px solid rgba(75, 83, 87, 0.8);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
 }
 [theme-color-1] vi-user button.vi-user#settings:hover {
-  background-color: rgba(52, 65, 71, 0.6);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 [theme-color-1] vi-user button.vi-user#settings:active {
-  background-color: rgba(30, 38, 42, 0.6);
+  background-color: rgba(230, 230, 230, 0.05);
 }
 [theme-color-1] vi-user button.vi-user#settings[disabled] {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
 [theme-color-2] vi-user button.vi-user#settings {
-  background-color: rgba(42, 77, 73, 0.6);
+  background-color: rgba(255, 255, 255, 0.05);
   color: white;
   -moz-transition-property: fill, color, background-color;
   -o-transition-property: fill, color, background-color;
@@ -126,13 +126,13 @@ vi-user button.vi-user#settings {
   -o-transition-timing-function: ease-out;
   -webkit-transition-timing-function: ease-out;
   transition-timing-function: ease-out;
-  border-left: 1px solid rgba(53, 98, 93, 0.8);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
 }
 [theme-color-2] vi-user button.vi-user#settings:hover {
-  background-color: rgba(42, 77, 73, 0.6);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 [theme-color-2] vi-user button.vi-user#settings:active {
-  background-color: rgba(24, 44, 42, 0.6);
+  background-color: rgba(230, 230, 230, 0.05);
 }
 [theme-color-2] vi-user button.vi-user#settings[disabled] {
   fill: rgba(255, 255, 255, 0.5);

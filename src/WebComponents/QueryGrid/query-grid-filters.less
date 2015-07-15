@@ -11,7 +11,6 @@ vi-query-grid-filters {
             text-align: center;
             line-height: @h2;
             height: @h2;
-
             /*
             vi-resource {
                 .layout-center-justified();
@@ -41,6 +40,14 @@ vi-query-grid-filters {
         vi-popup-menu-item {
             line-height: @h2;
             height: @h2;
+        }
+    }
+
+    &[filtering] {
+        > vi-popup-menu {
+            button[header] {
+                background-color: red;
+            }
         }
     }
 }

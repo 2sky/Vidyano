@@ -189,10 +189,10 @@ vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr .cell vi-resou
   height: 30px;
 }
 [theme-color-1] vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr[hover] {
-  background-color: #e7f0f4 !important;
+  background-color: #ecf2f7;
 }
 [theme-color-2] vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr[hover] {
-  background-color: #e5f4f2 !important;
+  background-color: #e0f2f1;
 }
 vi-query-grid #dataContainer #data #verticalSpacer .columnHost .pinned tr:not(.noData) > td:last-of-type > div {
   border-right: 1px solid #eaeaea;

@@ -93,10 +93,10 @@ vi-persistent-object-tab-cell #background {
   right: 2px;
 }
 [theme-color-1] vi-persistent-object-tab-cell #background {
-  background-color: #e7f0f4;
+  background-color: #ecf2f7;
 }
 [theme-color-2] vi-persistent-object-tab-cell #background {
-  background-color: #e5f4f2;
+  background-color: #e0f2f1;
 }
 vi-persistent-object-tab-item-presenter {
   display: -ms-flexbox;

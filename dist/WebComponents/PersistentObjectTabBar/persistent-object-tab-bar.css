@@ -10,10 +10,10 @@ vi-persistent-object-tab-bar {
   user-select: none;
 }
 [theme-color-1] vi-persistent-object-tab-bar vi-overflow [toggle]:hover {
-  background-color: #e7f0f4;
+  background-color: #ecf2f7;
 }
 [theme-color-2] vi-persistent-object-tab-bar vi-overflow [toggle]:hover {
-  background-color: #e5f4f2;
+  background-color: #e0f2f1;
 }
 vi-persistent-object-tab-bar-item {
   font-size: 13px;
@@ -38,30 +38,30 @@ vi-persistent-object-tab-bar-item span.badge {
   font-size: 10px;
 }
 [theme-color-1] vi-persistent-object-tab-bar-item span.badge {
-  background-color: rgba(18, 103, 144, 0.5);
+  background-color: rgba(70, 130, 180, 0.5);
 }
 [theme-color-2] vi-persistent-object-tab-bar-item span.badge {
   background-color: rgba(0, 150, 136, 0.5);
 }
 [theme-color-1] vi-persistent-object-tab-bar-item {
-  color: #126790;
-  fill: #126790;
+  color: #4682b4;
+  fill: #4682b4;
 }
 [theme-color-1] vi-persistent-object-tab-bar-item:hover {
-  background-color: #e7f0f4;
+  background-color: #ecf2f7;
 }
 [theme-color-2] vi-persistent-object-tab-bar-item {
   color: #009688;
   fill: #009688;
 }
 [theme-color-2] vi-persistent-object-tab-bar-item:hover {
-  background-color: #e5f4f2;
+  background-color: #e0f2f1;
 }
 [theme-color-1] vi-persistent-object-tab-bar-item[is-selected] {
-  border-bottom-color: #126790;
+  border-bottom-color: #4682b4;
 }
 [theme-color-1] vi-persistent-object-tab-bar-item[is-selected] span.badge {
-  background-color: #126790;
+  background-color: #4682b4;
 }
 [theme-color-2] vi-persistent-object-tab-bar-item[is-selected] {
   border-bottom-color: #009688;

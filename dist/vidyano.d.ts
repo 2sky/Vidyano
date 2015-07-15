@@ -1955,6 +1955,7 @@ declare module Vidyano.WebComponents.Attributes {
     class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
         options: Common.KeyValuePair[];
         attached(): void;
+        protected _valueChanged(newValue: any): void;
         private _notNull(value);
     }
 }

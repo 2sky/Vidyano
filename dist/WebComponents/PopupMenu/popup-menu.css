@@ -24,8 +24,8 @@ vi-popup-menu-item {
   cursor: pointer;
 }
 [theme-color-1] vi-popup-menu-item {
-  color: #126790;
-  fill: #126790;
+  color: #4682b4;
+  fill: #4682b4;
 }
 [theme-color-2] vi-popup-menu-item {
   color: #009688;

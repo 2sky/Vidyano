@@ -47,7 +47,7 @@ vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-p
   transform: translateY(-1px);
 }
 [theme-color-1] vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter .required {
-  background-color: #126790;
+  background-color: #4682b4;
 }
 [theme-color-2] vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter .required {
   background-color: #009688;
@@ -62,7 +62,7 @@ vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-p
   border-bottom: 7px solid transparent;
 }
 [theme-color-1] vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter .required::before {
-  border-right: 7px solid #126790;
+  border-right: 7px solid #4682b4;
 }
 [theme-color-2] vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter .required::before {
   border-right: 7px solid #009688;
@@ -88,16 +88,16 @@ vi-persistent-object-attribute-presenter a {
   text-decoration: none;
 }
 [theme-color-1] vi-persistent-object-attribute-presenter a {
-  color: #126790;
-  fill: #126790;
+  color: #4682b4;
+  fill: #4682b4;
 }
 [theme-color-1] vi-persistent-object-attribute-presenter a:visited {
-  color: #126790;
-  fill: #126790;
+  color: #4682b4;
+  fill: #4682b4;
 }
 [theme-color-1] vi-persistent-object-attribute-presenter a:hover {
-  color: #367ea0;
-  fill: #367ea0;
+  color: #6a9bc3;
+  fill: #6a9bc3;
 }
 [theme-color-2] vi-persistent-object-attribute-presenter a {
   color: #009688;
@@ -108,8 +108,8 @@ vi-persistent-object-attribute-presenter a {
   fill: #009688;
 }
 [theme-color-2] vi-persistent-object-attribute-presenter a:hover {
-  color: #20a294;
-  fill: #20a294;
+  color: #4db6ac;
+  fill: #4db6ac;
 }
 vi-persistent-object-attribute-presenter a[disabled] {
   color: #333 !important;

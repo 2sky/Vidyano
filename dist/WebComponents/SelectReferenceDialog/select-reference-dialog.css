@@ -12,7 +12,7 @@ vi-select-reference-dialog vi-dialog vi-input-search input:focus {
   background-color: white;
 }
 [theme-color-1] vi-select-reference-dialog vi-dialog vi-input-search input:focus + button {
-  background-color: #126790;
+  background-color: #4682b4;
 }
 [theme-color-2] vi-select-reference-dialog vi-dialog vi-input-search input:focus + button {
   background-color: #009688;

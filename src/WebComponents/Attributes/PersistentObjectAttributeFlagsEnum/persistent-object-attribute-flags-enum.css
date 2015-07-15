@@ -29,10 +29,10 @@ vi-persistent-object-attribute-flags-enum vi-popup ul li {
   overflow: hidden;
 }
 [theme-color-1] vi-persistent-object-attribute-flags-enum vi-popup ul li:hover {
-  background-color: #e7f0f4;
+  background-color: #ecf2f7;
 }
 [theme-color-2] vi-persistent-object-attribute-flags-enum vi-popup ul li:hover {
-  background-color: #e5f4f2;
+  background-color: #e0f2f1;
 }
 vi-persistent-object-attribute-flags-enum vi-popup ul li vi-checkbox:not([checked]) {
   fill: #aaa;
