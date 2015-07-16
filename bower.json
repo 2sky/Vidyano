@@ -40,6 +40,7 @@
     "linqjs": "2sky/linqjs#3.0.3-Beta4",
     "pathjs": "2sky/pathjs#master",
     "sortable": "2sky/sortable#^1.2.0",
-    "layout": "2sky/layout#master"
+    "layout": "2sky/layout#master",
+    "bignumber.js": "^2.0.7"
   }
 }

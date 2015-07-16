@@ -54,7 +54,7 @@ var Vidyano;
                 PersistentObjectAttribute.prototype._editingChanged = function () {
                 };
                 PersistentObjectAttribute.prototype._valueChanged = function (newValue) {
-                    if (this.attribute && newValue != this.attribute.value)
+                    if (this.attribute && newValue !== this.attribute.value)
                         this.attribute.setValue(newValue, false);
                 };
                 PersistentObjectAttribute.prototype._computeHasError = function (validationError) {

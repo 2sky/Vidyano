@@ -897,6 +897,13 @@ declare var BooleanEx: BooleanEx;
 interface Array<T> {
     remove(s: T): boolean;
     removeAll(f: (t: T) => boolean, thisObject?: any): void;
+}
+
+interface BigNumber {
+}
+
+declare var BigNumber: {
+    new (number: number | string): BigNumber;
 }declare var unwrap: <TNode extends Node>(node: TNode) => TNode;
 
 interface Node {
@@ -2063,6 +2070,8 @@ declare module Vidyano.WebComponents.Attributes {
         private static _decimalTypes;
         private static _unsignedTypes;
         _attributeChanged(): void;
+        protected _attributeValueChanged(): void;
+        protected _valueChanged(newValue: any): void;
         private _editInputBlur(e);
         private _canParse(value);
         private _between(value, minValue, maxValue);
@@ -2153,7 +2162,7 @@ declare module Vidyano.WebComponents.Attributes {
         attribute: Vidyano.PersistentObjectAttribute;
         value: any;
         editing: boolean;
-        private _attributeValueChanged();
+        protected _attributeValueChanged(): void;
         protected _optionsChanged(): void;
         protected _attributeChanged(): void;
         protected _editingChanged(): void;

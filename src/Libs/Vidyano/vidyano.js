@@ -778,18 +778,23 @@ var Vidyano;
                 case "Decimal":
                 case "Single":
                 case "Double":
+                case "Int64":
+                case "UInt64":
                     if (StringEx.isNullOrEmpty(value))
-                        return 0.0;
-                    return parseFloat(value);
+                        return new BigNumber(0);
+                    return new BigNumber(value);
                 case "NullableDecimal":
                 case "NullableSingle":
                 case "NullableDouble":
+                case "NullableInt64":
+                case "NullableUInt64":
                     if (StringEx.isNullOrEmpty(value))
                         return null;
-                    return parseFloat(value);
+                    return new BigNumber(value);
                 case "Int16":
+                case "UInt16":
                 case "Int32":
-                case "Int64":
+                case "UInt32":
                 case "Byte":
                 case "SByte":
                     if (StringEx.isNullOrEmpty(value))
@@ -797,7 +802,8 @@ var Vidyano;
                     return parseInt(value, 10);
                 case "NullableInt16":
                 case "NullableInt32":
-                case "NullableInt64":
+                case "NullableUInt16":
+                case "NullableUInt32":
                 case "NullableByte":
                 case "NullableSByte":
                     if (StringEx.isNullOrEmpty(value))

@@ -18,9 +18,35 @@
             }
         }
 
+        protected _attributeValueChanged() {
+            if (this.attribute.value == null) {
+                this.value = "";
+                return;
+            }
+
+            var value = this.attribute.value.toString();
+            if (this._decimalSeparator !== ".")
+                this.value = value.replace(".", this._decimalSeparator);
+            else
+                this.value = value;
+        }
+
+        protected _valueChanged(newValue: any) {
+            if (newValue != null && this._decimalSeparator !== ".")
+                newValue = newValue.replace(this._decimalSeparator, ".");
+
+            if (this.attribute)
+                this.attribute.setValue(newValue, false);
+        }
+
         private _editInputBlur(e: Event) {
-            if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)
-                this.attribute.value = this.value;
+            if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh) {
+                var newValue = this.value;
+                if (newValue != null && this._decimalSeparator !== ".")
+                    newValue = newValue.replace(this._decimalSeparator, ".");
+
+                this.attribute.value = newValue;
+            }
 
             var input = <HTMLInputElement>e.target;
             if (input.value === "" || input.value == null)

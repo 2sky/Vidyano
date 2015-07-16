@@ -175,25 +175,25 @@ Number.parse = function Number$parse(s) {
     return parseInt(s, 10);
 };
 
-Number.prototype.format = function Number$format(format) {
+BigNumber.prototype.format = Number.prototype.format = function Number$format(format) {
     if (format == null || (format.length == 0) || (format == 'i')) {
         format = 'G';
     }
     return this._netFormat(format, false);
 };
 
-Number.prototype.localeFormat = function Number$localeFormat(format) {
+BigNumber.prototype.localeFormat = Number.prototype.localeFormat = function Number$localeFormat(format) {
     if (format == null || (format.length == 0) || (format == 'i')) {
         format = 'G';
     }
     return this._netFormat(format, true);
 };
 
-Number.prototype.toLocaleString = function () {
+BigNumber.prototype.toLocaleString = Number.prototype.toLocaleString = function () {
     return this.localeFormat();
 };
 
-Number._commaFormat = function Number$_commaFormat(number, groups, decimal, comma) {
+BigNumber._commaFormat = Number._commaFormat = function Number$_commaFormat(number, groups, decimal, comma) {
     var decimalPart = null;
     var decimalIndex = number.indexOf(decimal);
     if (decimalIndex > 0) {
@@ -249,7 +249,7 @@ Number._commaFormat = function Number$_commaFormat(number, groups, decimal, comm
     return decimalPart ? s + decimalPart : s;
 };
 
-Number.prototype._netFormat = function Number$_netFormat(format, useLocale) {
+BigNumber.prototype._netFormat = Number.prototype._netFormat = function Number$_netFormat(format, useLocale) {
     var nf = useLocale ? Vidyano.CultureInfo.currentCulture.numberFormat : Vidyano.CultureInfo.invariantCulture.numberFormat;
 
     var s = '';

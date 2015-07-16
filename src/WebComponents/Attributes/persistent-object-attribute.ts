@@ -45,7 +45,7 @@ module Vidyano.WebComponents.Attributes {
         value: any;
         editing: boolean;
 
-        private _attributeValueChanged() {
+        protected _attributeValueChanged() {
             this.value = this.attribute.value !== undefined ? this.attribute.value : null;
         }
 
@@ -59,7 +59,7 @@ module Vidyano.WebComponents.Attributes {
         }
 
         protected _valueChanged(newValue: any) {
-            if (this.attribute && newValue != this.attribute.value)
+            if (this.attribute && newValue !== this.attribute.value)
                 this.attribute.setValue(newValue, false);
         }
 

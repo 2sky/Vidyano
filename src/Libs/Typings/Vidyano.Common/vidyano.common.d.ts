@@ -54,3 +54,10 @@ interface Array<T> {
     remove(s: T): boolean;
     removeAll(f: (t: T) => boolean, thisObject?: any): void;
 }
+
+interface BigNumber {
+}
+
+declare var BigNumber: {
+    new (number: number | string): BigNumber;
+}
