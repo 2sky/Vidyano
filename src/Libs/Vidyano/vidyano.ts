@@ -1918,7 +1918,7 @@ module Vidyano {
                         else
                             this._queueRefresh = true;
                     }
-                    
+
                     this.parent.triggerDirty();
                 }
 
@@ -2788,6 +2788,7 @@ module Vidyano {
             this.type = col.type;
             this.isPinned = !!col.isPinned;
             this.isHidden = !!col.isHidden;
+            this.width = col.width;
             this.typeHints = col.typeHints;
             this._sortDirection = SortDirection.None;
 

@@ -2412,6 +2412,7 @@ var Vidyano;
             this.type = col.type;
             this.isPinned = !!col.isPinned;
             this.isHidden = !!col.isHidden;
+            this.width = col.width;
             this.typeHints = col.typeHints;
             this._sortDirection = SortDirection.None;
             query.propertyChanged.attach(this._queryPropertyChanged.bind(this));
