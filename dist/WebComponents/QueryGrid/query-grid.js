@@ -1110,6 +1110,7 @@ var Vidyano;
                 this._renderDistincts();
                 this.gridColumn.column.query.search().then(function () {
                     _this._renderDistincts();
+                    _this.fire("column-filter-changed", null);
                 });
             };
             QueryGridColumnFilter.prototype._closePopup = function () {

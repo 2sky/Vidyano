@@ -1288,7 +1288,6 @@
         private _updateDistincts() {
             var distinctsDiv = <HTMLElement>this.$["distincts"];
             this._renderDistincts(distinctsDiv);
-
             this.fire("column-filter-changed", null);
 
             this._setLoading(true);
@@ -1334,6 +1333,7 @@
             this._renderDistincts();
             this.gridColumn.column.query.search().then(() => {
                 this._renderDistincts();
+                this.fire("column-filter-changed", null);
             });
         }
 
