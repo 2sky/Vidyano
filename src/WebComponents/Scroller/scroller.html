@@ -1,0 +1,16 @@
+﻿<dom-module id="vi-scroller">
+    <template>
+        <vi-size-tracker on-sizechanged="_outerSizeChanged"></vi-size-tracker>
+        <div id="wrapper" on-scroll="_scroll">
+            <div class="relative">
+                <vi-size-tracker on-sizechanged="_innerSizeChanged"></vi-size-tracker>
+                <content></content>
+            </div>
+        </div>
+        <div id="horizontal" class="scrollbar" on-track="_trackHorizontal"></div>
+        <div id="vertical" class="scrollbar" on-track="_trackVertical"></div>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="scroller.css" />
+<script src="scroller.js"></script>

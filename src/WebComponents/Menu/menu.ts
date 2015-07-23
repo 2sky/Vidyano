@@ -4,12 +4,6 @@ module Vidyano.WebComponents {
         filtering: boolean;
         programUnit: ProgramUnit;
 
-        attached() {
-            super.attached();
-
-            this.$["programUnits"].style.marginRight = "-" + (this.$["programUnits"].style.paddingRight = scrollbarWidth().toString(10) + "px");
-        }
-
         private _filterChanged() {
             this.filtering = !StringEx.isNullOrEmpty(this.filter);
         }
@@ -24,7 +18,6 @@ module Vidyano.WebComponents {
     }
 
     export class MenuItem extends WebComponent {
-        private _appPathObserver: PathObserver;
         item: Vidyano.ProgramUnitItem;
         programUnit: Vidyano.ProgramUnit;
         expand: boolean;

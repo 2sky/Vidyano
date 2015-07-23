@@ -8,23 +8,21 @@
             <content select="[menu-element~='start']"></content>
             <vi-input-search value="{{filter}}" on-search="_search"></vi-input-search>
         </header>
-        <div id="programUnits" class="flex">
-            <div>
-                <template is="dom-repeat" items="{{items}}">
-                    <vi-menu-item class="program-unit" item="{{item}}" filter="{{filter}}" program-unit="{{programUnit}}"></vi-menu-item>
-                    <div class="subItems">
-                        <template is="dom-repeat" items="{{item.items}}">
-                            <vi-menu-item class="program-unit-item" item="{{item}}" filter="{{filter}}"></vi-menu-item>
-                            <div class="subItems">
-                                <template is="dom-repeat" items="{{item.items}}" as="groupItem">
-                                    <vi-menu-item class="program-unit-group-item" item="{{groupItem}}" filter="{{filter}}" filter-parent="{{item}}"></vi-menu-item>
-                                </template>
-                            </div>
-                        </template>
-                    </div>
-                </template>
-            </div>
-        </div>
+        <vi-scroller id="programUnits" class="flex">
+            <template is="dom-repeat" items="{{items}}">
+                <vi-menu-item class="program-unit" item="{{item}}" filter="{{filter}}" program-unit="{{programUnit}}"></vi-menu-item>
+                <div class="subItems">
+                    <template is="dom-repeat" items="{{item.items}}">
+                        <vi-menu-item class="program-unit-item" item="{{item}}" filter="{{filter}}"></vi-menu-item>
+                        <div class="subItems">
+                            <template is="dom-repeat" items="{{item.items}}" as="groupItem">
+                                <vi-menu-item class="program-unit-group-item" item="{{groupItem}}" filter="{{filter}}" filter-parent="{{item}}"></vi-menu-item>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </vi-scroller>
         <footer>
             <content select="[menu-element~='end']"></content>
             <vi-user></vi-user>

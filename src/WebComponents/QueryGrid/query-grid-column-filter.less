@@ -147,18 +147,18 @@ vi-query-grid-column-filter {
             }
         }
 
-        #distincts {
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            box-sizing: border-box;
+        #distinctsContainer {
             height: 15em;
             min-width: 15em;
-            line-height: 2em;
-            overflow-y: auto;
-            text-align: left;
-            font-weight: normal;
             border: 1px solid @separatorColor;
             margin-left: @h5;
+            box-sizing: border-box;
+        }
+
+        #distincts {
+            line-height: 2em;
+            text-align: left;
+            font-weight: normal;
 
             &[inversed] {
                 border-color: darkred;
@@ -175,9 +175,7 @@ vi-query-grid-column-filter {
                 &:hover {
                     .colorize( {
                         background-color: @@color-faint;
-                    }
-
-                    );
+                    });
                 }
 
                 span {

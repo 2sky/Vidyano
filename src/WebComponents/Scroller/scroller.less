@@ -1,0 +1,42 @@
+﻿@import (reference) "../vidyano.less";
+
+vi-scroller {
+    .relative();
+    display: block;
+    overflow: hidden;
+
+    #wrapper {
+        overflow: scroll;
+    }
+
+    &:not([hovering]):not([scrolling]) {
+        .scrollbar {
+            display: none;
+        }
+    }
+
+    .scrollbar {
+        position: absolute;
+        background-color: #797979;
+    }
+
+    #vertical {
+        top: 0;
+        right: (@h5 / 2);
+        width: @h5;
+    }
+
+    #horizontal {
+        left: 0;
+        bottom: (@h5 / 2);
+        height: @h5;
+    }
+
+    &:not([vertical]) #vertical {
+        display: none;
+    }
+
+    &:not([horizontal]) #horizontal {
+        display: none;
+    }
+}

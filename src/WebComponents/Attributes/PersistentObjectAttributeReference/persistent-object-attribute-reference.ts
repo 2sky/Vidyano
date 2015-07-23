@@ -91,7 +91,7 @@ module Vidyano.WebComponents.Attributes {
         private _update() {
             var hasReference = this.attribute instanceof Vidyano.PersistentObjectAttributeWithReference;
 
-            if (hasReference && this.attribute.objectId != this.objectId)
+            if (hasReference && this.attribute.objectId !== this.objectId)
                 this.objectId = this.attribute ? this.attribute.objectId : null;
 
             if (hasReference && this.attribute.lookup && this.attribute.lookup.canRead && this.attribute.objectId && this.app)
@@ -137,7 +137,8 @@ module Vidyano.WebComponents.Attributes {
             },
             objectId: {
                 type: String,
-                observer: "_objectIdChanged"
+                observer: "_objectIdChanged",
+                value: null
             },
             selectInPlace: {
                 type: Boolean,

@@ -904,7 +904,8 @@ interface BigNumber {
 
 declare var BigNumber: {
     new (number: number | string): BigNumber;
-}declare var unwrap: <TNode extends Node>(node: TNode) => TNode;
+}
+declare var unwrap: <TNode extends Node>(node: TNode) => TNode;
 
 interface Node {
     /**
@@ -2266,12 +2267,10 @@ declare module Vidyano.WebComponents {
         filter: string;
         filtering: boolean;
         programUnit: ProgramUnit;
-        attached(): void;
         private _filterChanged();
         private _search();
     }
     class MenuItem extends WebComponent {
-        private _appPathObserver;
         item: Vidyano.ProgramUnitItem;
         programUnit: Vidyano.ProgramUnit;
         expand: boolean;
@@ -2905,6 +2904,34 @@ declare module Vidyano.WebComponents {
         static Load(source: string | Resource): DocumentFragment;
         static LoadResource(source: string): Resource;
         static Exists(name: string): boolean;
+    }
+}
+declare module Vidyano.WebComponents {
+    class Scroller extends WebComponent {
+        private _setHovering;
+        private _setScrolling;
+        private _scrollbarWidth;
+        private _verticalScrollbarHeight;
+        private _horizontalScrollbarWidth;
+        outerWidth: number;
+        outerHeight: number;
+        innerWidth: number;
+        innerHeight: number;
+        private _setOuterWidth;
+        private _setOuterHeight;
+        private _setInnerWidth;
+        private _setInnerHeight;
+        private _setHorizontal;
+        private _setVertical;
+        private _outerSizeChanged(e, detail);
+        private _innerSizeChanged(e, detail);
+        private _updateVerticalScrollHeight(outerHeight, innerHeight);
+        private _updateHorizontalScrollWidth(outerWidth, innerWidth);
+        private _trackVertical(e, detail);
+        private _trackHorizontal(e, detail);
+        private _scroll(e);
+        private _mouseenter();
+        private _mouseleave();
     }
 }
 declare module Vidyano.WebComponents {

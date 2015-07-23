@@ -1743,7 +1743,7 @@ var Vidyano;
             var result = this.copyProperties(["id", "name", "label", "type", "isReadOnly", "triggersRefresh", "isRequired", "differsInBulkEditMode", "isValueChanged", "displayAttribute", "objectId", "visibility"]);
             result.value = this._serviceValue;
             if (this.options && this.options.length > 0 && this.isValueChanged)
-                result.options = this.options.map(function (o) { return o ? (o.key ? o.key + "=" + o.value : o) : null; });
+                result.options = this.options.map(function (o) { return o ? (typeof (o) != "string" ? o.key + "=" + o.value : o) : null; });
             else
                 result.options = this._serviceOptions;
             if (this.objects != null) {
@@ -1819,7 +1819,7 @@ var Vidyano;
                 this.lookup = this.service.hooks.onConstructQuery(service, attr.lookup, parent, false, 1);
             else
                 this.lookup = null;
-            this.objectId = attr.objectId;
+            this.objectId = typeof attr.objectId == "undefined" ? null : attr.objectId;
             this.displayAttribute = attr.displayAttribute;
             this.canAddNewReference = !!attr.canAddNewReference;
             this.selectInPlace = !!attr.selectInPlace;
@@ -2554,6 +2554,9 @@ var Vidyano;
                 return _this.service.getPersistentObject(_this.query.parent, _this.query.persistentObject.id, _this.id).then(function (po) {
                     po.ownerQuery = _this.query;
                     return po;
+                }, function (e) {
+                    _this.query.setNotification(e);
+                    return null;
                 });
             }, false);
         };

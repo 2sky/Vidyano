@@ -96,7 +96,9 @@
                             <template is="dom-if" if="{{loading}}">
                                 <vi-spinner></vi-spinner>
                             </template>
-                            <div id="distincts" on-tap="_distinctClick" inversed$="{{inversed}}"></div>
+                            <vi-scroller id="distinctsContainer">
+                                <div id="distincts" on-tap="_distinctClick" inversed$="{{inversed}}"></div>
+                            </vi-scroller>
                         </div>
                     </div>
                 </div>

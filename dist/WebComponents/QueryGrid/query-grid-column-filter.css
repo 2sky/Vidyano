@@ -205,18 +205,17 @@ vi-query-grid-column-filter [content] .advanced > div button#inverse vi-resource
   width: 12px;
   height: 12px;
 }
-vi-query-grid-column-filter [content] #distincts {
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+vi-query-grid-column-filter [content] #distinctsContainer {
   height: 15em;
   min-width: 15em;
-  line-height: 2em;
-  overflow-y: auto;
-  text-align: left;
-  font-weight: normal;
   border: 1px solid #eaeaea;
   margin-left: 6px;
+  box-sizing: border-box;
+}
+vi-query-grid-column-filter [content] #distincts {
+  line-height: 2em;
+  text-align: left;
+  font-weight: normal;
 }
 vi-query-grid-column-filter [content] #distincts[inversed] {
   border-color: darkred;

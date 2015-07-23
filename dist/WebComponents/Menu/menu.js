@@ -13,10 +13,6 @@ var Vidyano;
             function Menu() {
                 _super.apply(this, arguments);
             }
-            Menu.prototype.attached = function () {
-                _super.prototype.attached.call(this);
-                this.$["programUnits"].style.marginRight = "-" + (this.$["programUnits"].style.paddingRight = WebComponents.scrollbarWidth().toString(10) + "px");
-            };
             Menu.prototype._filterChanged = function () {
                 this.filtering = !StringEx.isNullOrEmpty(this.filter);
             };

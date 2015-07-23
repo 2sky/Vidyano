@@ -48,9 +48,6 @@ vi-input-search.vi-menu.style-scope {
 vi-input-search.vi-menu.style-scope input {
   padding-left: 6px;
 }
-#programUnits.vi-menu.style-scope {
-  overflow-y: auto;
-}
 #programUnits.vi-menu.style-scope .subItems {
   display: none;
   margin-bottom: 6px;

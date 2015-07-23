@@ -257,6 +257,8 @@ var Vidyano;
                         if (this.query.canRead) {
                             this._itemOpening = item;
                             item.getPersistentObject().then(function (po) {
+                                if (!po)
+                                    return;
                                 if (_this._itemOpening == item)
                                     item.query.service.hooks.onOpen(po);
                             });

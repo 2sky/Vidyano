@@ -2004,7 +2004,7 @@ module Vidyano {
             result.value = this._serviceValue;
 
             if (this.options && this.options.length > 0 && this.isValueChanged)
-                result.options = (<any[]>this.options).map(o => o ? (o.key ? o.key + "=" + o.value : o) : null);
+                result.options = (<any[]>this.options).map(o => o ? (typeof(o) != "string" ? o.key + "=" + o.value : o) : null);
             else
                 result.options = this._serviceOptions;
 
@@ -2100,7 +2100,7 @@ module Vidyano {
             else
                 this.lookup = null;
 
-            this.objectId = attr.objectId;
+            this.objectId = typeof attr.objectId == "undefined" ? null : attr.objectId;
             this.displayAttribute = attr.displayAttribute;
             this.canAddNewReference = !!attr.canAddNewReference;
             this.selectInPlace = !!attr.selectInPlace;
@@ -2944,6 +2944,9 @@ module Vidyano {
                     po.ownerQuery = this.query;
 
                     return po;
+                }, e => {
+                    this.query.setNotification(e);
+                    return null;
                 });
             }, false);
         }

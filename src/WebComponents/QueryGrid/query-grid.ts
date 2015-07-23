@@ -323,6 +323,8 @@
                     if (this.query.canRead) {
                         this._itemOpening = item;
                         item.getPersistentObject().then(po => {
+                            if (!po) return;
+
                             if (this._itemOpening == item)
                                 item.query.service.hooks.onOpen(po);
                         });
