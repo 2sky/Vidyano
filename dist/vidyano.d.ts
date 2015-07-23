@@ -1334,6 +1334,7 @@ declare module Vidyano {
         };
         isDeleted: boolean;
         constructor(service: Service, po: any);
+        private _createPersistentObjectAttribute(attr);
         id: string;
         isSystem: boolean;
         type: string;
@@ -1373,8 +1374,8 @@ declare module Vidyano {
         id: string;
         name: string;
         label: string;
-        group: string;
-        tab: string;
+        group: PersistentObjectAttributeGroup;
+        tab: PersistentObjectAttributeTab;
         isReadOnly: boolean;
         isRequired: boolean;
         isValueChanged: boolean;

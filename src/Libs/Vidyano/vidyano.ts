@@ -1269,6 +1269,7 @@ module Vidyano {
             return new Promise<PersistentObject>((resolve, reject) => {
                 this.service.executeAction(this._action, this.persistentObject, this.query, this.selectedItems, this.parameters, true).then(result => {
                     this.result = result;
+                    this.isHandled = true;
                     resolve(result);
                 }, e => {
                         reject(e);
@@ -1427,26 +1428,27 @@ module Vidyano {
             this.queriesToRefresh = po.queriesToRefresh || [];
             this.parent = po.parent != null ? service.hooks.onConstructPersistentObject(service, po.parent) : null;
 
-            this.attributes = po.attributes ? Enumerable.from<PersistentObjectAttribute>(po.attributes).select(attr => {
-                if ((<PersistentObjectAttributeWithReference>attr).displayAttribute || (<PersistentObjectAttributeWithReference>attr).objectId)
-                    return this.service.hooks.onConstructPersistentObjectAttributeWithReference(this.service, attr, this);
-
-                if ((<PersistentObjectAttributeAsDetail>attr).objects || (<PersistentObjectAttributeAsDetail>attr).details)
-                    return this.service.hooks.onConstructPersistentObjectAttributeAsDetail(this.service, attr, this);
-
-                return this.service.hooks.onConstructPersistentObjectAttribute(this.service, attr, this);
-            }).toArray() : [];
+            this.attributes = po.attributes ? Enumerable.from<PersistentObjectAttribute>(po.attributes).select(attr => this._createPersistentObjectAttribute(attr)).toArray() : [];
             this.attributes.forEach(attr => this.attributesByName[attr.name] = attr);
 
             this.queries = po.queries ? Enumerable.from<Query>(po.queries).select(query => service.hooks.onConstructQuery(service, query, this)).orderBy(q => q.offset).toArray() : [];
             this.queries.forEach(query => this.queriesByName[query.name] = query);
 
             var visibility = this.isNew ? "New" : "Read";
-            var attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility == "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => attr.tab, attr => attr).select(tab => {
-                var groups = tab.orderBy(attr => attr.offset).groupBy(attr => attr.group, attr => attr).select(group => this.service.hooks.onConstructPersistentObjectAttributeGroup(service, group.key(), group, this)).memoize();
+            var attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility == "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => <string><any>attr.tab, attr => attr).select(attributesByTab => {
+                var groups = attributesByTab.orderBy(attr => attr.offset).groupBy(attr => <string><any>attr.group, attr => attr).select(attributesByGroup => {
+                    var newGroup = this.service.hooks.onConstructPersistentObjectAttributeGroup(service, attributesByGroup.key(), attributesByGroup, this);
+                    attributesByGroup.forEach(attr => attr.group = newGroup);
+
+                    return newGroup;
+                }).memoize();
                 groups.toArray().forEach((g, n) => g.index = n);
-                var serviceTab = po.tabs[tab.key()] || {};
-                return this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, tab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount);
+
+                var serviceTab = po.tabs[attributesByTab.key()] || {};
+                var newTab = this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, attributesByTab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount);
+                attributesByTab.forEach(attr => attr.tab = newTab);
+
+                return newTab;
             })).toArray() : [];
             this._serviceTabs = po.tabs;
             this._tabs = attributeTabs.concat(Enumerable.from(this.queries).select(q => <PersistentObjectTab>this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
@@ -1455,6 +1457,16 @@ module Vidyano {
                 this.beginEdit();
 
             this._initializeActions();
+        }
+
+        private _createPersistentObjectAttribute(attr: PersistentObjectAttribute): PersistentObjectAttribute {
+            if ((<PersistentObjectAttributeWithReference>attr).displayAttribute || (<PersistentObjectAttributeWithReference>attr).objectId)
+                return this.service.hooks.onConstructPersistentObjectAttributeWithReference(this.service, attr, this);
+
+            if ((<PersistentObjectAttributeAsDetail>attr).objects || (<PersistentObjectAttributeAsDetail>attr).details)
+                return this.service.hooks.onConstructPersistentObjectAttributeAsDetail(this.service, attr, this);
+
+            return this.service.hooks.onConstructPersistentObjectAttribute(this.service, attr, this);
         }
 
         get id(): string {
@@ -1615,47 +1627,64 @@ module Vidyano {
             this._serviceTabs = result._serviceTabs;
             this.setNotification(result.notification, result.notificationType);
 
-            var resultAttributesEnum = Enumerable.from(result.attributes);
-            if (this.attributes.length != result.attributes.length ||
-                JSON.stringify(Enumerable.from(this.attributes).orderBy(a => a.id).select(a => a.id).toArray()) != JSON.stringify(resultAttributesEnum.orderBy(a => a.id).select(a => a.id).toArray())) {
-                this.setNotification("Could not refresh from server result. One or more attributes don't match.", NotificationType.Error);
-                return;
-            }
-
-            var visibilityChanged: PersistentObjectAttribute[] = [];
+            var changedAttributes: PersistentObjectAttribute[] = [];
             var isDirty = false;
+
+            this.attributes.removeAll(attr => {
+                if (!result.attributes.some(a => a.id === attr.id)) {
+                    delete this.attributesByName[attr.name];
+
+                    attr.isVisible = false;
+                    changedAttributes.push(attr);
+
+                    return true;
+                }
+
+                return false;
+            });
+
             this.attributes.forEach(attr => {
-                var serviceAttr = resultAttributesEnum.firstOrDefault(a => a.id == attr.id);
+                var serviceAttr = Enumerable.from(result.attributes).firstOrDefault(a => a.id == attr.id);
                 if (serviceAttr && attr._refreshFromResult(serviceAttr))
-                    visibilityChanged.push(attr);
+                    changedAttributes.push(attr);
 
                 if (attr.isValueChanged)
                     isDirty = true;
             });
 
-            if (visibilityChanged.length > 0) {
+            result.attributes.forEach(attr => {
+                if (!this.attributes.some(a => a.id === attr.id)) {
+                    this.attributes.push(attr);
+                    changedAttributes.push(attr);
+
+                    if (attr.isValueChanged)
+                        isDirty = true;
+                }
+            });
+
+            if (changedAttributes.length > 0) {
                 var tabContentsChanged: PersistentObjectAttributeTab[] = [];
                 var tabsRemoved = false;
                 var tabsAdded = false;
-                visibilityChanged.forEach(attr => {
-                    var tab = <PersistentObjectAttributeTab>Enumerable.from(this.tabs).firstOrDefault(t => t instanceof PersistentObjectAttributeTab && t.key == attr.tab);
+                changedAttributes.forEach(attr => {
+                    var tab = <PersistentObjectAttributeTab>Enumerable.from(this.tabs).firstOrDefault(t => t instanceof PersistentObjectAttributeTab && t.key === attr.tab.key);
                     if (!tab) {
                         if (!attr.isVisible)
                             return;
 
-                        var groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.group, Enumerable.from([attr]), this)];
+                        var groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.group.key, Enumerable.from([attr]), this)];
                         groups[0].index = 0;
 
-                        var serviceTab = this._serviceTabs[attr.tab];
-                        tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tab, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount);
+                        var serviceTab = this._serviceTabs[attr.tab.key];
+                        attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tab.key, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount);
                         this.tabs.push(tab);
                         tabsAdded = true;
                         return;
                     }
 
-                    var group = Enumerable.from(tab.groups).firstOrDefault(g => g.key == attr.group);
+                    var group = Enumerable.from(tab.groups).firstOrDefault(g => g.key == attr.group.key);
                     if (!group && attr.isVisible) {
-                        group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.group, Enumerable.from([attr]), this);
+                        group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.group.key, Enumerable.from([attr]), this);
                         tab.groups.push(group);
                         tab.groups.sort((g1, g2) => Enumerable.from(g1.attributes).min(a => a.offset) - Enumerable.from(g2.attributes).min(a => a.offset));
                         tab.groups.forEach((g, n) => g.index = n);
@@ -1663,11 +1692,13 @@ module Vidyano {
                     else if (attr.isVisible) {
                         if (group.attributes.indexOf(attr) < 0) {
                             group.attributes.push(attr);
+                            group.attributes[attr.name] = attr;
                             group.attributes.sort((x, y) => x.offset - y.offset);
                         }
                     }
                     else if (group) {
                         group.attributes.remove(attr);
+                        delete group.attributes[attr.name];
 
                         if (group.attributes.length == 0) {
                             tab.groups.remove(group);
@@ -1766,8 +1797,8 @@ module Vidyano {
         id: string;
         name: string;
         label: string;
-        group: string;
-        tab: string;
+        group: PersistentObjectAttributeGroup;
+        tab: PersistentObjectAttributeTab;
         isReadOnly: boolean;
         isRequired: boolean;
         isValueChanged: boolean;
@@ -2004,7 +2035,7 @@ module Vidyano {
             result.value = this._serviceValue;
 
             if (this.options && this.options.length > 0 && this.isValueChanged)
-                result.options = (<any[]>this.options).map(o => o ? (typeof(o) != "string" ? o.key + "=" + o.value : o) : null);
+                result.options = (<any[]>this.options).map(o => o ? (typeof (o) != "string" ? o.key + "=" + o.value : o) : null);
             else
                 result.options = this._serviceOptions;
 
@@ -2331,6 +2362,8 @@ module Vidyano {
 
         constructor(public service: Service, public key: string, public attributes: PersistentObjectAttribute[], public parent: PersistentObject) {
             this.label = key || "";
+
+            attributes.forEach(attr => attributes[attr.name] = attr);
         }
     }
 
@@ -2945,9 +2978,9 @@ module Vidyano {
 
                     return po;
                 }, e => {
-                    this.query.setNotification(e);
-                    return null;
-                });
+                        this.query.setNotification(e);
+                        return null;
+                    });
             }, false);
         }
 
