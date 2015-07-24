@@ -23,6 +23,7 @@ vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-p
   padding-top: 6px;
   min-height: 24px;
   line-height: 24px;
+  vertical-align: top;
 }
 vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter label {
   display: inline-block;
@@ -67,7 +68,23 @@ vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-p
 [theme-color-2] vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter .required::before {
   border-right: 7px solid #009688;
 }
+vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter .locked {
+  fill: #666;
+  display: none;
+  -moz-transform: translateY(1px);
+  -ms-transform: translateY(1px);
+  -o-transform: translateY(1px);
+  -webkit-transform: translateY(1px);
+  transform: translateY(1px);
+}
+vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter .locked > vi-resource svg {
+  width: 10px;
+  height: 10px;
+}
 vi-persistent-object-attribute-presenter[editing][required] .required.vi-persistent-object-attribute-presenter {
+  display: inline-block;
+}
+vi-persistent-object-attribute-presenter[editing][read-only] .locked.vi-persistent-object-attribute-presenter {
   display: inline-block;
 }
 vi-persistent-object-attribute-presenter[no-label] .label.vi-persistent-object-attribute-presenter {
