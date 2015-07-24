@@ -170,6 +170,11 @@ var Vidyano;
                     reflectToAttribute: true,
                     computed: "_computeRequired(attribute.isRequired, attribute.value)"
                 },
+                readOnly: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "attribute.isReadOnly"
+                },
                 loading: {
                     type: Boolean,
                     reflectToAttribute: true,
@@ -183,6 +188,7 @@ var Vidyano;
             forwardObservers: [
                 "attribute.parent.isEditing",
                 "attribute.isRequired",
+                "attribute.isReadOnly",
                 "attribute.value"
             ]
         });

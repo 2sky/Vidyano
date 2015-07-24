@@ -25,6 +25,7 @@ vi-persistent-object-attribute-presenter {
         padding-top: @h5;
         min-height: @h2 - @h5;
         line-height: @h2 - @h5;
+        vertical-align: top;
 
         label {
             display: inline-block;
@@ -67,9 +68,28 @@ vi-persistent-object-attribute-presenter {
                 });
             }
         }
+
+        .locked {
+            fill: #666;
+            display: none;
+            -moz-transform: translateY(1px);
+            -ms-transform: translateY(1px);
+            -o-transform: translateY(1px);
+            -webkit-transform: translateY(1px);
+            transform: translateY(1px);
+
+            > vi-resource svg {
+                width: 10px;
+                height: 10px;
+            }
+        }
     }
 
     &[editing][required] .required.vi-persistent-object-attribute-presenter {
+        display: inline-block;
+    }
+
+    &[editing][read-only] .locked.vi-persistent-object-attribute-presenter {
         display: inline-block;
     }
 
