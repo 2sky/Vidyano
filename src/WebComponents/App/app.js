@@ -171,15 +171,15 @@ var Vidyano;
             };
             App.prototype.getUrlForPersistentObject = function (id, objectId, pu) {
                 if (pu === void 0) { pu = this.programUnit; }
-                return (pu ? pu.name + "/" : "") + "PersistentObject." + id + "/" + objectId;
+                return (pu ? pu.name + "/" : "") + ("PersistentObject." + id + "/" + objectId);
             };
             App.prototype.getUrlForQuery = function (id, pu) {
                 if (pu === void 0) { pu = this.programUnit; }
-                return (pu ? pu.name + "/" : "") + "Query." + id;
+                return (pu ? pu.name + "/" : "") + ("Query." + id);
             };
             App.prototype.getUrlForFromAction = function (id, pu) {
                 if (pu === void 0) { pu = this.programUnit; }
-                return (pu ? pu.name + "/" : "") + "FromAction/" + id;
+                return (pu ? pu.name + "/" : "") + ("FromAction/" + id);
             };
             App.prototype.cache = function (entry) {
                 // Remove LRU from cache
@@ -381,7 +381,7 @@ var Vidyano;
                         actions: [this.service.getTranslatedMessage("Delete"), this.service.getTranslatedMessage("Cancel")],
                         actionTypes: ["Danger"]
                     }).then(function (result) {
-                        return result == 0 ? args.executeServiceRequest() : Promise.reject(null);
+                        return result == 0 ? args.executeServiceRequest() : null;
                     });
                 }
                 else if (args.action == "AddReference") {
@@ -397,6 +397,7 @@ var Vidyano;
                         }
                     }).catch(function (e) {
                         Polymer.dom(_this.app).removeChild(dialog);
+                        return null;
                     });
                 }
                 return _super.prototype.onAction.call(this, args);

@@ -100,12 +100,10 @@ var Vidyano;
                 this._currentOrientation = orientation;
                 if (this.fire("popup-opening", null, { bubbles: false, cancelable: true }).defaultPrevented)
                     return;
-                // Close non-parent popups
                 var parentPopup = this._findParentPopup();
                 var firstOpenNonParentChild = Popup._openPopups[parentPopup == null ? 0 : Popup._openPopups.indexOf(parentPopup) + 1];
                 if (firstOpenNonParentChild != null)
                     firstOpenNonParentChild.close();
-                // Position content
                 var root = this._header;
                 var rootSizeTracker = this.$["toggleSizeTracker"];
                 rootSizeTracker.measure();
@@ -120,7 +118,6 @@ var Vidyano;
                 var alignRight = alignments.indexOf("RIGHT") >= 0;
                 if (orientation == "vertical") {
                     if (alignRight ? (rootRect.right - contentWidth) < 0 : rootRect.left + contentWidth <= windowWidth) {
-                        // Left-align
                         var left = rootRect.left;
                         if (alignments.indexOf("CENTER") >= 0)
                             left = Math.max(0, left - contentWidth / 2 + rootRect.width / 2);
@@ -130,21 +127,18 @@ var Vidyano;
                         content.classList.remove("right");
                     }
                     else {
-                        // Right-align
                         content.style.left = "auto";
                         content.style.right = Math.max(windowWidth - (rootRect.left + rootRect.width), 0) + "px";
                         content.classList.add("right");
                         content.classList.remove("left");
                     }
                     if (rootRect.top + rootRect.height + contentHeight < windowHeight) {
-                        // Top-align
                         content.style.top = (rootRect.top + rootRect.height) + "px";
                         content.style.bottom = "auto";
                         content.classList.add("top");
                         content.classList.remove("bottom");
                     }
                     else {
-                        // Bottom-align
                         content.style.top = "auto";
                         content.style.bottom = Math.max(windowHeight - rootRect.top, 0) + "px";
                         content.classList.add("bottom");
@@ -153,28 +147,24 @@ var Vidyano;
                 }
                 else if (orientation == "horizontal") {
                     if (alignRight ? (rootRect.right - contentWidth) < 0 : rootRect.left + rootRect.width + contentWidth <= windowWidth) {
-                        // Left-align
                         content.style.left = (rootRect.left + rootRect.width) + "px";
                         content.style.right = "auto";
                         content.classList.add("left");
                         content.classList.remove("right");
                     }
                     else {
-                        // Right-align
                         content.style.left = "auto";
                         content.style.right = Math.max(windowWidth - rootRect.left, 0) + "px";
                         content.classList.add("right");
                         content.classList.remove("left");
                     }
                     if (rootRect.top + contentHeight < windowHeight) {
-                        // Top-align
                         content.style.top = rootRect.top + "px";
                         content.style.bottom = "auto";
                         content.classList.add("top");
                         content.classList.remove("bottom");
                     }
                     else {
-                        // Bottom-align
                         content.style.top = "auto";
                         content.style.bottom = Math.max(windowHeight - rootRect.top, 0) + "px";
                         content.classList.add("bottom");

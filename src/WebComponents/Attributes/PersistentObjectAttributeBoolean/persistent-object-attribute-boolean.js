@@ -17,7 +17,7 @@ var Vidyano;
                 }
                 PersistentObjectAttributeBoolean.prototype.toggle = function () {
                     if (this.attribute.parent.isEditing && !this.attribute.isReadOnly)
-                        this.attribute.setValue(!this.value); // If value was null, we also toggle to 'true'
+                        this.attribute.setValue(!this.value);
                 };
                 return PersistentObjectAttributeBoolean;
             })(WebComponents.Attributes.PersistentObjectAttribute);

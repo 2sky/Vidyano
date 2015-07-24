@@ -21,14 +21,6 @@ var Vidyano;
                 }
                 if (query) {
                     var child;
-                    //! TODO Custom templates for queries
-                    //var queryTemplateName = "QUERY." + this.query.name;
-                    //if (Vidyano.WebComponents.Resource.Exists(queryTemplateName)) {
-                    //    var resource = new Vidyano.WebComponents.Resource();
-                    //    resource.source = queryTemplateName;
-                    //    this.appendChild(resource);
-                    //}
-                    //else {
                     if (!Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader) {
                         Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader = new Promise(function (resolve) {
                             _this.importHref(_this.resolveUrl("../QueryGrid/query-grid.html"), function (e) {

@@ -16,7 +16,6 @@ var Vidyano;
             }
             User.prototype.attached = function () {
                 _super.prototype.attached.call(this);
-                // Set local service property because vi-app is not observable
                 this._setService(this.app.service);
             };
             User.prototype.signIn = function () {

@@ -1161,14 +1161,19 @@ declare module Vidyano {
         class Subject<TSource, TDetail> {
             private _observers;
             constructor(notifier: SubjectNotifier<TSource, TDetail>);
-            attach(observer: (sender: TSource, detail: TDetail) => void): SubjectDisposer;
+            attach(observer: SubjectObserver<TSource, TDetail>): SubjectDisposer;
             private _detach(observerId);
+        }
+        interface SubjectObserver<TSource, TDetail> {
+            (sender: TSource, detail: TDetail): void;
         }
         class Observable<T> {
             private _propertyChangedNotifier;
             propertyChanged: Vidyano.Common.Subject<T, Vidyano.Common.PropertyChangedArgs>;
             constructor();
             protected notifyPropertyChanged(propertyName: string, newValue: any, oldValue?: any): void;
+        }
+        interface PropertyChangedObserver<T> extends SubjectObserver<T, Vidyano.Common.PropertyChangedArgs> {
         }
     }
     class Service extends Vidyano.Common.Observable<Service> {
@@ -1270,6 +1275,8 @@ declare module Vidyano {
         result: PersistentObject;
         constructor(service: Service, action: string, persistentObject: PersistentObject, query: Query, selectedItems: Array<QueryResultItem>, parameters: any);
         executeServiceRequest(): Promise<PersistentObject>;
+    }
+    interface ServiceObjectPropertyChangedObserver extends Common.PropertyChangedObserver<ServiceObject> {
     }
     class ServiceObject extends Vidyano.Common.Observable<ServiceObject> {
         service: Service;

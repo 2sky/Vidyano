@@ -32,17 +32,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        typescript: {
-            base: {
-                src: ["src/**/*.ts"],
-                dest: "build",
-                options: {
-                    declaration: true,
-                    target: "es5",
-                    sourceMap: true
-                }
-            }
-        },
         clean: ["dist"],
         copy: {
             dist: {
@@ -74,6 +63,21 @@ module.exports = function (grunt) {
             default: {
                 src: ['src/**/*.ts']
             }
+        },
+        tsconfig: {
+            make: {
+                options: {
+                    filesGlob: [
+                        'src/**/*.ts'
+                    ],
+                    additionalOptions: {
+                        compilerOptions: {
+                            "version": "1.5.3",
+                            "target": "es5"
+                        },
+                    }
+                }
+            }
         }
     });
 
@@ -90,6 +94,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks("grunt-contrib-less");
     grunt.loadNpmTasks("grunt-contrib-watch");
-    grunt.loadNpmTasks("grunt-typescript");
+    grunt.loadNpmTasks("grunt-tsconfig");
     grunt.loadNpmTasks('dts-generator');
 };

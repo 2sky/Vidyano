@@ -44,7 +44,6 @@ var Vidyano;
     Vidyano.extend = extend;
     function cookie(key, value, options) {
         var now = new Date();
-        // key and at least value given, set cookie...
         if (arguments.length > 1 && (Object.prototype.toString.call(value) === "[object String]" || value === null || value === undefined)) {
             options = Vidyano.extend({}, options);
             if (value == null)
@@ -56,9 +55,7 @@ var Vidyano;
             }
             value = String(value);
             if (hasStorage && !options.force) {
-                // Clear cookie
                 document.cookie = encodeURIComponent(key) + '=; expires=' + new Date(Date.parse("2000-01-01")).toUTCString();
-                // Save to localStorage/sessionStorage
                 key = locationPrefix + key;
                 if (options.expires) {
                     if (options.expires > now)
@@ -84,7 +81,6 @@ var Vidyano;
                 ].join(''));
             }
         }
-        // key and possibly options given, get cookie...
         options = value || {};
         var decode = options.raw ? function (s) { return s; } : decodeURIComponent;
         if (hasStorage && !options.force) {
@@ -104,7 +100,7 @@ var Vidyano;
             for (var i = 0, part; part = parts[i]; i++) {
                 var pair = part.split('=');
                 if (decodeURIComponent(pair[0]) === key)
-                    return decode(pair[1] || ''); // IE saves cookies with empty string as "c; ", e.g. without "=" as opposed to EOMB
+                    return decode(pair[1] || '');
             }
         }
         return null;
@@ -274,7 +270,6 @@ var Vidyano;
             var chr1, chr2, chr3;
             var enc1, enc2, enc3, enc4;
             var i = 0;
-            // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
             var base64test = /[^A-Za-z0-9\+\/\=]/g;
             if (base64test.exec(input)) {
                 throw "There were invalid base64 characters in the input text.";
@@ -517,7 +512,6 @@ var Vidyano;
                                     document.location.hash = "";
                                 document.location.reload();
                             }, function (e) {
-                                // TODO: Toast notification!
                             });
                         }
                     });
@@ -721,9 +715,7 @@ var Vidyano;
                             clonedForm.appendChild(input);
                         });
                         var service = _this;
-                        // NOTE: The first load event gets fired after the iframe has been injected into the DOM, and is used to prepare the actual submission.
                         iframe.onload = function (e) {
-                            // NOTE: The second load event gets fired when the response to the form submission is received. The implementation detects whether the actual payload is embedded in a <textarea> element, and prepares the required conversions to be made in that case.
                             iframe.onload = function (e) {
                                 var doc = this.contentWindow ? this.contentWindow.document : (this.contentDocument ? this.contentDocument : this.document), root = doc.documentElement ? doc.documentElement : doc.body, textarea = root.getElementsByTagName("textarea")[0], type = textarea ? textarea.getAttribute("data-type") : null, content = {
                                     html: root.innerHTML,
@@ -815,7 +807,6 @@ var Vidyano;
                 case "NullableDateTime":
                 case "DateTimeOffset":
                 case "NullableDateTimeOffset":
-                    // Example format: 17-07-2003 00:00:00[.000] [+00:00]
                     if (!StringEx.isNullOrEmpty(value) && value.length >= 19) {
                         var parts = value.split(" ");
                         var date = parts[0].split("-");
@@ -839,7 +830,7 @@ var Vidyano;
                         var zone = now.getTimezoneOffset() * -1;
                         var zoneHour = zone / 60;
                         var zoneMinutes = zone % 60;
-                        now.netOffset(StringEx.format("{0}{1:D2}:{2:D2}", zone < 0 ? "-" : "+", zoneHour, zoneMinutes)); // +00:00
+                        now.netOffset(StringEx.format("{0}{1:D2}:{2:D2}", zone < 0 ? "-" : "+", zoneHour, zoneMinutes));
                         return now;
                     }
                     return null;
@@ -934,7 +925,6 @@ var Vidyano;
         Service._getServiceTimeString = function (timeString, defaultValue) {
             if (!StringEx.isNullOrWhiteSpace(timeString)) {
                 timeString = timeString.trim();
-                // 00:00.0000000
                 var ms = "0000000";
                 var parts = timeString.split('.');
                 if (parts.length == 2) {
@@ -948,18 +938,15 @@ var Vidyano;
                     var values = timeString.split(':'), valuesLen = values.length;
                     var days = 0, hours, minutes, seconds = 0;
                     if ((length == 4 || length == 5) && valuesLen == 2) {
-                        // [0]0:00
                         hours = parseInt(values[0], 10);
                         minutes = parseInt(values[1], 10);
                     }
                     else if ((length == 7 || length == 8) && valuesLen == 3) {
-                        // [0]0:00:00
                         hours = parseInt(values[0], 10);
                         minutes = parseInt(values[1], 10);
                         seconds = parseInt(values[2], 10);
                     }
                     else if (length >= 10 && valuesLen == 4) {
-                        // 0:00:00:00
                         days = parseInt(values[0], 10);
                         hours = parseInt(values[1], 10);
                         minutes = parseInt(values[2], 10);
@@ -1674,7 +1661,6 @@ var Vidyano;
                 }
                 var newServiceValue = Service.toServiceString(val, _this.type);
                 var queuedTriggersRefresh = null;
-                // If value is equal
                 if ((_this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || _this._serviceValue == newServiceValue) {
                     if (allowRefresh && _this._queueRefresh)
                         queuedTriggersRefresh = _this._triggerAttributeRefresh();
@@ -1735,7 +1721,6 @@ var Vidyano;
             if (typeHints != null) {
                 var typeHint = typeHints[name];
                 if (typeHint == null) {
-                    // NOTE: Look again case-insensitive
                     var lowerName = name.toLowerCase();
                     for (var prop in typeHints) {
                         if (lowerName == prop.toLowerCase()) {
@@ -2159,7 +2144,6 @@ var Vidyano;
                 var itemsToSelect = this.items.slice(from, ++to);
                 if (this.maxSelectedItems && Enumerable.from(this.selectedItems.concat(itemsToSelect)).distinct().count() > this.maxSelectedItems)
                     return;
-                // Detect if array has gaps
                 if (Object.keys(itemsToSelect).length == to - from) {
                     itemsToSelect.forEach(function (item) {
                         item.isSelected = true;
@@ -2324,7 +2308,6 @@ var Vidyano;
                             _this._queriedPages.push(p);
                         var isChanged = _this.pageSize > 0 && result.totalItems != _this.totalItems;
                         if (isChanged) {
-                            // NOTE: Query has changed (items added/deleted) so remove old data
                             _this._queriedPages = [];
                             for (var i = startPage; i <= endPage; i++)
                                 _this._queriedPages.push(i);

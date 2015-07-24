@@ -94,9 +94,6 @@ var Vidyano;
                 "del": "U+007F",
             };
         })(Keyboard = WebComponents.Keyboard || (WebComponents.Keyboard = {}));
-        ////////////////////////////////////////////////////
-        // Get browser scrollbar width and height
-        ////////////////////////////////////////////////////
         WebComponents.scrollbarWidth = function () {
             var width = WebComponents.scrollbarWidth["cached"];
             if (width)
@@ -214,7 +211,6 @@ var Vidyano;
                     disposers.splice(0, disposers.length);
                 };
             };
-            // This function simply returns the value. This can be used to reflect a property on an observable object as an attribute.
             WebComponent.prototype._forwardComputed = function (value) {
                 return value;
             };

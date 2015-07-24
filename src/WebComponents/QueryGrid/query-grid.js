@@ -390,19 +390,16 @@ var Vidyano;
                     var currentChildren = Enumerable.from(host.children);
                     if (!pinned)
                         currentChildren = currentChildren.where(function (c) { return c != _this._remainder; });
-                    // Lookup/create new columns
                     var children = gridColumns.map(function (col) {
                         var columnElement = currentChildren.count() > 0 ? currentChildren.firstOrDefault(function (c) { return _this._getColumnNameForElement(c) == col.name; }) : undefined;
                         if (!columnElement)
                             columnElement = _this._createColumnElement(col);
                         return columnElement;
                     });
-                    // Cleanup columns
                     currentChildren.except(children).forEach(function (c) {
                         host.removeChild(c);
                         _this._removedColumnElement(c);
                     });
-                    // Sort/add columns
                     if (!pinned && this._remainder)
                         children.forEach(function (c) { return host.insertBefore(c, _this._remainder); });
                     else
@@ -551,7 +548,6 @@ var Vidyano;
                 else if (this._viewportStartRowIndex < this._rowsStartIndex)
                     newStartIndex = this._viewportEndRowIndex - this._items.length;
                 if (newStartIndex != undefined) {
-                    // Only start on even rows for consistent odd and even rows
                     if (newStartIndex % 2 != 0)
                         newStartIndex--;
                     if (newStartIndex < 0)
@@ -637,7 +633,6 @@ var Vidyano;
                 var actions = (this.grid.query.actions || []).filter(function (a) { return a.isVisible; });
                 actions = actions.filter(function (a) { return a.definition.selectionRule != ExpressionParser.alwaysTrue; });
                 if (!this.grid.disableSelect) {
-                    // Adds the selector or selector proxy for performance
                     var selectorCol = document.createElement("td");
                     if (!QueryGridItem._selectorProxy) {
                         selectorCol.appendChild(this._selector = new Vidyano.WebComponents.QueryGridItemSelector());
@@ -664,7 +659,6 @@ var Vidyano;
                 if (!this.grid.disableInlineActions) {
                     actions = actions.filter(function (a) { return a.definition.selectionRule(1); });
                     if (!this.grid.query.asLookup && actions.length > 0) {
-                        // Adds the actions proxy for performance
                         var actionsCol = document.createElement("td");
                         if (!QueryGridItem._actionsProxy) {
                             QueryGridItem._actionsProxy = document.createElement("div");
@@ -886,7 +880,6 @@ var Vidyano;
             };
             QueryGridItemSelector.prototype._select = function (e) {
                 if (this.item) {
-                    // Effective item selection changing is delegated to the grid as to be able to handle multi selects via key modifiers
                     this.fire("item-select", {
                         item: this.item,
                         rangeSelect: e.detail.sourceEvent && e.detail.sourceEvent.shiftKey

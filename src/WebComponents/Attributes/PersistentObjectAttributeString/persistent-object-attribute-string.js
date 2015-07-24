@@ -40,13 +40,6 @@ var Vidyano;
                     else
                         this.attribute.setValue(newValue, false);
                 };
-                //private _addSuggestion(e: MouseEvent) {
-                //    var value = <string>this.target.value;
-                //    var suggestionsSeparator = this.target.getTypeHint("SuggestionsSeparator");
-                //    var option = (<Paper.PaperItem>e.target).label;
-                //    this.target.setValue(StringEx.isNullOrEmpty(value) ? option : (value.endsWith(suggestionsSeparator) ? value + option : value + suggestionsSeparator + option));
-                //    this.suggestions.remove(option);
-                //}
                 PersistentObjectAttributeString.prototype._characterCasingChanged = function (casing) {
                     if (casing == "Upper")
                         this._setEditInputStyle("text-transform: uppercase;");

@@ -4,8 +4,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-// https://gist.github.com/nuxodin/9250e56a3ce6c0446efa
-/* focusin/out event polyfill (firefox) */
 !function () {
     var w = window, d = w.document;
     if (w.onfocusin === undefined) {

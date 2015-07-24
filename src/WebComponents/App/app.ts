@@ -199,15 +199,15 @@
         }
 
         getUrlForPersistentObject(id: string, objectId: string, pu: ProgramUnit = this.programUnit) {
-            return (pu ? pu.name + "/" : "") + "PersistentObject." + id + "/" + objectId;
+            return (pu ? pu.name + "/" : "") + `PersistentObject.${id}/${objectId}`;
         }
 
         getUrlForQuery(id: string, pu: ProgramUnit = this.programUnit) {
-            return (pu ? pu.name + "/" : "") + "Query." + id;
+            return (pu ? pu.name + "/" : "") + `Query.${id}`;
         }
 
         getUrlForFromAction(id: string, pu: ProgramUnit = this.programUnit) {
-            return (pu ? pu.name + "/" : "") + "FromAction/" + id;
+            return (pu ? pu.name + "/" : "") + `FromAction/${id}`;
         }
 
         cache(entry: Vidyano.WebComponents.AppCacheEntry): Vidyano.WebComponents.AppCacheEntry {
@@ -262,9 +262,9 @@
                 Polymer.dom(this).removeChild(messageDialog);
                 return result;
             }, e => {
-                    Polymer.dom(this).removeChild(messageDialog);
-                    throw e;
-                });
+                Polymer.dom(this).removeChild(messageDialog);
+                throw e;
+            });
         }
 
         private _computeService(uri: string, user: string): Vidyano.Service {
@@ -275,12 +275,12 @@
                 if (this.service == service)
                     this._onInitialized();
             }, e => {
-                    if (this.service === service) {
-                        // TODO(sleeckx): Go to SignIn
-                        this._initializationError = e;
-                        this._onInitialized();
-                    }
-                });
+                if (this.service === service) {
+                    // TODO(sleeckx): Go to SignIn
+                    this._initializationError = e;
+                    this._onInitialized();
+                }
+            });
 
             return service;
         }
@@ -442,7 +442,7 @@
                     actions: [this.service.getTranslatedMessage("Delete"), this.service.getTranslatedMessage("Cancel")],
                     actionTypes: ["Danger"]
                 }).then(result => {
-                    return result == 0 ? args.executeServiceRequest() : Promise.reject(null);
+                    return result == 0 ? args.executeServiceRequest() : null;
                 });
             }
             else if (args.action == "AddReference") {
@@ -461,6 +461,7 @@
                     }
                 }).catch(e => {
                     Polymer.dom(this.app).removeChild(dialog);
+                    return null;
                 });
             }
 
@@ -480,9 +481,9 @@
                         Polymer.dom(this.app).removeChild(dialog);
                         return result;
                     }, e => {
-                            Polymer.dom(this.app).removeChild(dialog);
-                            throw e;
-                        });
+                        Polymer.dom(this.app).removeChild(dialog);
+                        throw e;
+                    });
 
                     return;
                 }

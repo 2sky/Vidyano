@@ -179,16 +179,20 @@ module Vidyano {
                 }
             }
 
-            attach(observer: (sender: TSource, detail: TDetail) => void): SubjectDisposer {
+            attach(observer: SubjectObserver<TSource, TDetail>): SubjectDisposer {
                 var id = this._observers.length;
                 this._observers.push(observer);
 
-                return this._detach.bind(this, id);
+                return <SubjectDisposer>this._detach.bind(this, id);
             }
 
             private _detach(observerId: number) {
                 delete this._observers[observerId];
             }
+        }
+
+        export interface SubjectObserver<TSource, TDetail> {
+            (sender: TSource, detail: TDetail): void;
         }
 
         export class Observable<T> {
@@ -206,6 +210,9 @@ module Vidyano {
                     oldValue: oldValue
                 });
             }
+        }
+
+        export interface PropertyChangedObserver<T> extends SubjectObserver<T, Vidyano.Common.PropertyChangedArgs> {
         }
     }
 
@@ -1276,6 +1283,9 @@ module Vidyano {
                     });
             });
         }
+    }
+
+    export interface ServiceObjectPropertyChangedObserver extends Common.PropertyChangedObserver<ServiceObject> {
     }
 
     export class ServiceObject extends Vidyano.Common.Observable<ServiceObject> {
