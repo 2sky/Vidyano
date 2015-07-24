@@ -2,8 +2,8 @@
   "webroot": "src",
   "version": "1.0.0-*",
   "dependencies": {
-    "Microsoft.AspNet.Server.IIS": "1.0.0-beta4",
-    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta4",
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta5",
+    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta5",
     "moment.TypeScript.DefinitelyTyped": "1.0.2"
   },
   "commands": {
