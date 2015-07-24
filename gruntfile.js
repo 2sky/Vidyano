@@ -73,7 +73,8 @@ module.exports = function (grunt) {
                     additionalOptions: {
                         compilerOptions: {
                             "version": "1.5.3",
-                            "target": "es5"
+                            "target": "es5",
+                            "removeComments": true
                         },
                     }
                 }

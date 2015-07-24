@@ -182,7 +182,6 @@ var Vidyano;
                 return (pu ? pu.name + "/" : "") + ("FromAction/" + id);
             };
             App.prototype.cache = function (entry) {
-                // Remove LRU from cache
                 if (this._cache.length >= this.cacheSize)
                     this._cache.splice(0, this._cache.length - this.cacheSize);
                 var cacheEntry = this.cachePing(entry);
@@ -238,7 +237,6 @@ var Vidyano;
                         _this._onInitialized();
                 }, function (e) {
                     if (_this.service === service) {
-                        // TODO(sleeckx): Go to SignIn
                         _this._initializationError = e;
                         _this._onInitialized();
                     }
@@ -262,7 +260,6 @@ var Vidyano;
             App.prototype._updateRoute = function (path) {
                 var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
                 var currentRoute = this.currentRoute;
-                // Find route and activate
                 if (mappedPathRoute) {
                     var route = this._routeMap[hashBang + App._stripHashBang(mappedPathRoute.path)];
                     if (route && route.activate(mappedPathRoute.params)) {
