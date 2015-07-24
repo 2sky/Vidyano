@@ -1232,8 +1232,8 @@ var Vidyano;
             this.queries = po.queries ? Enumerable.from(po.queries).select(function (query) { return service.hooks.onConstructQuery(service, query, _this); }).orderBy(function (q) { return q.offset; }).toArray() : [];
             this.queries.forEach(function (query) { return _this.queriesByName[query.name] = query; });
             var visibility = this.isNew ? "New" : "Read";
-            var attributeTabs = po.tabs ? Enumerable.from(Enumerable.from(this.attributes).where(function (attr) { return attr.visibility == "Always" || attr.visibility.contains(visibility); }).orderBy(function (attr) { return attr.offset; }).groupBy(function (attr) { return attr.tab; }, function (attr) { return attr; }).select(function (attributesByTab) {
-                var groups = attributesByTab.orderBy(function (attr) { return attr.offset; }).groupBy(function (attr) { return attr.group; }, function (attr) { return attr; }).select(function (attributesByGroup) {
+            var attributeTabs = po.tabs ? Enumerable.from(Enumerable.from(this.attributes).where(function (attr) { return attr.visibility == "Always" || attr.visibility.contains(visibility); }).orderBy(function (attr) { return attr.offset; }).groupBy(function (attr) { return attr.tabKey; }, function (attr) { return attr; }).select(function (attributesByTab) {
+                var groups = attributesByTab.orderBy(function (attr) { return attr.offset; }).groupBy(function (attr) { return attr.groupKey; }, function (attr) { return attr; }).select(function (attributesByGroup) {
                     var newGroup = _this.service.hooks.onConstructPersistentObjectAttributeGroup(service, attributesByGroup.key(), attributesByGroup, _this);
                     attributesByGroup.forEach(function (attr) { return attr.group = newGroup; });
                     return newGroup;
@@ -1443,21 +1443,21 @@ var Vidyano;
                 var tabsRemoved = false;
                 var tabsAdded = false;
                 changedAttributes.forEach(function (attr) {
-                    var tab = Enumerable.from(_this.tabs).firstOrDefault(function (t) { return t instanceof PersistentObjectAttributeTab && t.key === attr.tab.key; });
+                    var tab = Enumerable.from(_this.tabs).firstOrDefault(function (t) { return t instanceof PersistentObjectAttributeTab && t.key === attr.tabKey; });
                     if (!tab) {
                         if (!attr.isVisible)
                             return;
-                        var groups = [_this.service.hooks.onConstructPersistentObjectAttributeGroup(_this.service, attr.group.key, Enumerable.from([attr]), _this)];
+                        var groups = [_this.service.hooks.onConstructPersistentObjectAttributeGroup(_this.service, attr.groupKey, Enumerable.from([attr]), _this)];
                         groups[0].index = 0;
-                        var serviceTab = _this._serviceTabs[attr.tab.key];
-                        attr.tab = tab = _this.service.hooks.onConstructPersistentObjectAttributeTab(_this.service, Enumerable.from(groups), attr.tab.key, serviceTab.id, serviceTab.name, serviceTab.layout, _this, serviceTab.columnCount);
+                        var serviceTab = _this._serviceTabs[attr.tabKey];
+                        attr.tab = tab = _this.service.hooks.onConstructPersistentObjectAttributeTab(_this.service, Enumerable.from(groups), attr.tabKey, serviceTab.id, serviceTab.name, serviceTab.layout, _this, serviceTab.columnCount);
                         _this.tabs.push(tab);
                         tabsAdded = true;
                         return;
                     }
-                    var group = Enumerable.from(tab.groups).firstOrDefault(function (g) { return g.key == attr.group.key; });
+                    var group = Enumerable.from(tab.groups).firstOrDefault(function (g) { return g.key == attr.groupKey; });
                     if (!group && attr.isVisible) {
-                        group = _this.service.hooks.onConstructPersistentObjectAttributeGroup(_this.service, attr.group.key, Enumerable.from([attr]), _this);
+                        group = _this.service.hooks.onConstructPersistentObjectAttributeGroup(_this.service, attr.groupKey, Enumerable.from([attr]), _this);
                         tab.groups.push(group);
                         tab.groups.sort(function (g1, g2) { return Enumerable.from(g1.attributes).min(function (a) { return a.offset; }) - Enumerable.from(g2.attributes).min(function (a) { return a.offset; }); });
                         tab.groups.forEach(function (g, n) { return g.index = n; });
@@ -1553,8 +1553,8 @@ var Vidyano;
             this.type = attr.type;
             this.label = attr.label;
             this._serviceValue = attr.value !== undefined ? attr.value : null;
-            this.group = attr.group;
-            this.tab = attr.tab;
+            this._groupKey = attr.group;
+            this._tabKey = attr.tab;
             this.isReadOnly = !!attr.isReadOnly;
             this.isRequired = !!attr.isRequired;
             this.isValueChanged = !!attr.isValueChanged;
@@ -1572,6 +1572,46 @@ var Vidyano;
             this.columnSpan = attr.columnSpan || 0;
             this._setOptions(attr.options);
         }
+        Object.defineProperty(PersistentObjectAttribute.prototype, "groupKey", {
+            get: function () {
+                return this._groupKey;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(PersistentObjectAttribute.prototype, "group", {
+            get: function () {
+                return this._group;
+            },
+            set: function (group) {
+                var oldGroup = this._group;
+                this._group = group;
+                this._groupKey = group ? group.key : null;
+                this.notifyPropertyChanged("group", group, oldGroup);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(PersistentObjectAttribute.prototype, "tabKey", {
+            get: function () {
+                return this._tabKey;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(PersistentObjectAttribute.prototype, "tab", {
+            get: function () {
+                return this._tab;
+            },
+            set: function (tab) {
+                var oldTab = this._tab;
+                this._tab = tab;
+                this._tabKey = tab ? tab.key : null;
+                this.notifyPropertyChanged("tab", tab, oldTab);
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(PersistentObjectAttribute.prototype, "isSystem", {
             get: function () {
                 return this._isSystem;

@@ -1445,8 +1445,8 @@ module Vidyano {
             this.queries.forEach(query => this.queriesByName[query.name] = query);
 
             var visibility = this.isNew ? "New" : "Read";
-            var attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility == "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => <string><any>attr.tab, attr => attr).select(attributesByTab => {
-                var groups = attributesByTab.orderBy(attr => attr.offset).groupBy(attr => <string><any>attr.group, attr => attr).select(attributesByGroup => {
+            var attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility == "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => attr.tabKey, attr => attr).select(attributesByTab => {
+                var groups = attributesByTab.orderBy(attr => attr.offset).groupBy(attr => attr.groupKey, attr => attr).select(attributesByGroup => {
                     var newGroup = this.service.hooks.onConstructPersistentObjectAttributeGroup(service, attributesByGroup.key(), attributesByGroup, this);
                     attributesByGroup.forEach(attr => attr.group = newGroup);
 
@@ -1677,24 +1677,24 @@ module Vidyano {
                 var tabsRemoved = false;
                 var tabsAdded = false;
                 changedAttributes.forEach(attr => {
-                    var tab = <PersistentObjectAttributeTab>Enumerable.from(this.tabs).firstOrDefault(t => t instanceof PersistentObjectAttributeTab && t.key === attr.tab.key);
+                    var tab = <PersistentObjectAttributeTab>Enumerable.from(this.tabs).firstOrDefault(t => t instanceof PersistentObjectAttributeTab && t.key === attr.tabKey);
                     if (!tab) {
                         if (!attr.isVisible)
                             return;
 
-                        var groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.group.key, Enumerable.from([attr]), this)];
+                        var groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this)];
                         groups[0].index = 0;
 
-                        var serviceTab = this._serviceTabs[attr.tab.key];
-                        attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tab.key, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount);
+                        var serviceTab = this._serviceTabs[attr.tabKey];
+                        attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tabKey, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount);
                         this.tabs.push(tab);
                         tabsAdded = true;
                         return;
                     }
 
-                    var group = Enumerable.from(tab.groups).firstOrDefault(g => g.key == attr.group.key);
+                    var group = Enumerable.from(tab.groups).firstOrDefault(g => g.key == attr.groupKey);
                     if (!group && attr.isVisible) {
-                        group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.group.key, Enumerable.from([attr]), this);
+                        group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this);
                         tab.groups.push(group);
                         tab.groups.sort((g1, g2) => Enumerable.from(g1.attributes).min(a => a.offset) - Enumerable.from(g2.attributes).min(a => a.offset));
                         tab.groups.forEach((g, n) => g.index = n);
@@ -1799,6 +1799,10 @@ module Vidyano {
         private _displayValueSource: any;
         private _displayValue: string;
         private _validationError: string;
+        private _tab: PersistentObjectAttributeTab;
+        private _tabKey: string;
+        private _group: PersistentObjectAttributeGroup;
+        private _groupKey: string;
 
         private _backupData: any;
         protected _queueRefresh: boolean = false;
@@ -1807,8 +1811,6 @@ module Vidyano {
         id: string;
         name: string;
         label: string;
-        group: PersistentObjectAttributeGroup;
-        tab: PersistentObjectAttributeTab;
         isReadOnly: boolean;
         isRequired: boolean;
         isValueChanged: boolean;
@@ -1836,8 +1838,8 @@ module Vidyano {
             this.type = attr.type;
             this.label = attr.label;
             this._serviceValue = attr.value !== undefined ? attr.value : null;
-            this.group = attr.group;
-            this.tab = attr.tab;
+            this._groupKey = attr.group;
+            this._tabKey = attr.tab;
             this.isReadOnly = !!attr.isReadOnly;
             this.isRequired = !!attr.isRequired;
             this.isValueChanged = !!attr.isValueChanged;
@@ -1854,6 +1856,38 @@ module Vidyano {
             this.column = attr.column;
             this.columnSpan = attr.columnSpan || 0;
             this._setOptions(attr.options);
+        }
+
+        get groupKey(): string {
+            return this._groupKey;
+        }
+
+        get group(): PersistentObjectAttributeGroup {
+            return this._group;
+        }
+        set group(group: PersistentObjectAttributeGroup) {
+            var oldGroup = this._group;
+            this._group = group;
+
+            this._groupKey = group ? group.key : null;
+
+            this.notifyPropertyChanged("group", group, oldGroup);
+        }
+
+        get tabKey(): string {
+            return this._tabKey;
+        }
+
+        get tab(): PersistentObjectAttributeTab {
+            return this._tab;
+        }
+        set tab(tab: PersistentObjectAttributeTab) {
+            var oldTab = this._tab;
+            this._tab = tab;
+
+            this._tabKey = tab ? tab.key : null;
+
+            this.notifyPropertyChanged("tab", tab, oldTab);
         }
 
         get isSystem(): boolean {
