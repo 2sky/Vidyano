@@ -28,6 +28,9 @@
     },
     "layout": {
       "": "layout.*"
+    },
+    "bignumber.js": {
+      "": "*.min.js"
     }
   },
   "devDependencies": {
