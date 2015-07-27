@@ -6,7 +6,7 @@ The Vidyano Web Client provides a modern out of the box scaffolded UI that conne
 
 This project is heavily based on the [Polymer project](https://www.polymer-project.org/). if you want to add your own web components to your application, check out the site for all library documentation, including getting started guides and tutorials, developer reference, and more.
 
-Apart from Polymer, we also have dependencies to several support libraries such as:
+Apart from Polymer, the Vidyano Client also uses a number of support libraries such as:
 
 * [moment.js](http://momentjs.com/)
 * [linq.js](http://linqjs.codeplex.com/)

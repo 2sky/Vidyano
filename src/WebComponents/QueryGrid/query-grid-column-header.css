@@ -21,6 +21,7 @@ vi-query-grid-column-header button {
   border-right: 1px solid #eaeaea !important;
   padding: 0 9px;
   position: relative;
+  min-width: 30px;
 }
 vi-query-grid-column-header button span {
   -ms-flex: 1;

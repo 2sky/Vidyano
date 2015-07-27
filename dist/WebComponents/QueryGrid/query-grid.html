@@ -31,11 +31,11 @@
                 <div id="data" class="fit" on-scroll="_onScrollVertical" on-mousemove="_updateHoverRow" on-mousewheel="_updateHoverRow">
                     <div id="verticalSpacer">
                         <div id="topSpacer"></div>
-                        <div class="columnHost horizontal layout">
+                        <div class="columnHost horizontal layout" on-tap="_itemsTap">
                             <table class="header"></table>
-                            <table class="pinned" on-tap="_itemsTap"></table>
+                            <table class="pinned"></table>
                             <div class="flex" on-scroll="_onScrollHorizontal">
-                                <table class="unpinned" on-tap="_itemsTap"></table>
+                                <table class="unpinned"></table>
                             </div>
                         </div>
                     </div>

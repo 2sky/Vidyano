@@ -98,6 +98,7 @@ vi-query-grid #headers > * {
   min-height: 30px;
   height: 30px;
   line-height: 30px;
+  min-width: 30px;
 }
 vi-query-grid.header-sorting #headers {
   position: relative;
@@ -205,6 +206,7 @@ vi-query-grid table tr {
 }
 vi-query-grid table tr td,
 vi-query-grid table tr th {
+  min-width: 30px;
   white-space: nowrap;
   -ms-text-overflow: ellipsis;
   -o-text-overflow: ellipsis;

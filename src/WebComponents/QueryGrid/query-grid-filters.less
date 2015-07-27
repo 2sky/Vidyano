@@ -9,32 +9,9 @@ vi-query-grid-filters {
             .flex();
             z-index: 1;
             text-align: center;
-            line-height: @h2;
-            height: @h2;
-            /*
-            vi-resource {
-                .layout-center-justified();
-
-                svg {
-                    width: @h3;
-                    height: @h3;
-                    fill: #666;
-                }
-            }
-
-            &::after {
-                content: "";
-                position: absolute;
-                right: 0;
-                top: 0;
-                width: 0;
-                height: 0;
-                border-top: (@h2 / 2) solid transparent;
-                border-bottom: (@h2 / 2) solid transparent;
-                border-left-width: 8px;
-                border-left-style: solid;
-                background-color: white;
-            }*/
+            line-height: @cell-line-height;
+            height: @cell-line-height;
+            min-width: @cell-width;
         }
 
         vi-popup-menu-item {

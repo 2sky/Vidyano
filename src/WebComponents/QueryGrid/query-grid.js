@@ -510,9 +510,12 @@ var Vidyano;
                 return this._items[0] ? this._items[0].getColumnWidth(column) : 0;
             };
             QueryGridItems.prototype.getItem = function (row) {
-                var rowIndex = Enumerable.from(this.hosts.pinned.children).indexOf(function (c) { return c == row; });
-                if (rowIndex < 0)
-                    rowIndex = Enumerable.from(this.hosts.unpinned.children).indexOf(function (c) { return c == row; });
+                var rowIndex;
+                for (var host in this.hosts) {
+                    rowIndex = Enumerable.from(this.hosts[host].children).indexOf(function (c) { return c == row; });
+                    if (rowIndex >= 0)
+                        break;
+                }
                 return rowIndex >= 0 && rowIndex < this._items.length ? this._items[rowIndex].item : null;
             };
             QueryGridItems.prototype.updateRows = function () {
@@ -682,6 +685,8 @@ var Vidyano;
                         this.hosts.header.appendChild(actionsCol);
                     }
                 }
+                if (this.grid.disableInlineActions && this.grid.disableSelect)
+                    this.hosts.header.appendChild(document.createElement("td"));
                 this.updateColumns(parent.grid.pinnedColumns, parent.grid.unpinnedColumns);
             }
             QueryGridItem.prototype.detached = function () {

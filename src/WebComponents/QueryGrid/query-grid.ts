@@ -597,9 +597,12 @@
         }
 
         getItem(row: HTMLElement): QueryResultItem {
-            var rowIndex = Enumerable.from(this.hosts.pinned.children).indexOf(c => c == row);
-            if (rowIndex < 0)
-                rowIndex = Enumerable.from(this.hosts.unpinned.children).indexOf(c => c == row);
+            var rowIndex: number;
+            for (let host in this.hosts) {
+                rowIndex = Enumerable.from(this.hosts[host].children).indexOf(c => c == row);
+                if (rowIndex >= 0)
+                    break;
+            }
 
             return rowIndex >= 0 && rowIndex < this._items.length ? this._items[rowIndex].item : null;
         }
@@ -762,7 +765,7 @@
 
             if (!this.grid.disableSelect) {
                 // Adds the selector or selector proxy for performance
-                var selectorCol = document.createElement("td")
+                var selectorCol = document.createElement("td");
                 if (!QueryGridItem._selectorProxy) {
                     selectorCol.appendChild(this._selector = new Vidyano.WebComponents.QueryGridItemSelector());
 
@@ -793,7 +796,7 @@
                 actions = actions.filter(a => a.definition.selectionRule(1));
                 if (!this.grid.query.asLookup && actions.length > 0) {
                     // Adds the actions proxy for performance
-                    var actionsCol = document.createElement("td")
+                    var actionsCol = document.createElement("td");
                     if (!QueryGridItem._actionsProxy) {
                         QueryGridItem._actionsProxy = document.createElement("div");
                         var resource = <Resource><any>document.createElement("vi-resource");
@@ -820,6 +823,9 @@
                     this.hosts.header.appendChild(actionsCol);
                 }
             }
+
+            if (this.grid.disableInlineActions && this.grid.disableSelect)
+                this.hosts.header.appendChild(document.createElement("td"));
 
             this.updateColumns(parent.grid.pinnedColumns, parent.grid.unpinnedColumns);
         }
