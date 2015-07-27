@@ -27,6 +27,12 @@ vi-query-grid {
         }
     }
 
+    &[disable-inline-actions][disable-select] {
+        .header {
+            min-width: @cell-width;
+        }
+    }
+
     #initializingOverlay {
         position: absolute;
         left: 0;
@@ -117,7 +123,6 @@ vi-query-grid {
             min-height: @cell-line-height;
             height: @cell-line-height;
             line-height: @cell-line-height;
-            min-width: @cell-width;
         }
     }
 

@@ -21,6 +21,9 @@ vi-query-grid:not([disable-select]) .header {
 vi-query-grid:not([disable-inline-actions]):not([disable-select]) .header {
   min-width: 60px;
 }
+vi-query-grid[disable-inline-actions][disable-select] .header {
+  min-width: 30px;
+}
 vi-query-grid #initializingOverlay {
   position: absolute;
   left: 0;
@@ -98,7 +101,6 @@ vi-query-grid #headers > * {
   min-height: 30px;
   height: 30px;
   line-height: 30px;
-  min-width: 30px;
 }
 vi-query-grid.header-sorting #headers {
   position: relative;
