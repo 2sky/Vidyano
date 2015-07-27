@@ -57,8 +57,8 @@ var Vidyano;
             if (hasStorage && !options.force) {
                 document.cookie = encodeURIComponent(key) + '=; expires=' + new Date(Date.parse("2000-01-01")).toUTCString();
                 key = locationPrefix + key;
-                if (options.expires) {
-                    if (options.expires > now)
+                if (expires) {
+                    if (expires > now)
                         window.localStorage.setItem(key, JSON.stringify({ val: options.raw ? value : encodeURIComponent(value), exp: expires.toUTCString() }));
                     else
                         window.localStorage.removeItem(key);
@@ -552,7 +552,7 @@ var Vidyano;
             if (data === void 0) { data = this._createData(""); }
             this._setIsUsingDefaultCredentials(this._clientData.defaultUser === this.userName);
             return new Promise(function (resolve, reject) {
-                Vidyano.cookie("staySignedIn", _this.staySignedIn ? "true" : null, { force: true });
+                Vidyano.cookie("staySignedIn", _this.staySignedIn ? "true" : null, { force: true, expires: 365 });
                 _this._postJSON(_this._createUri("GetApplication"), data).then(function (result) {
                     if (!StringEx.isNullOrEmpty(result.exception)) {
                         reject(result.exception);
@@ -1313,6 +1313,9 @@ var Vidyano;
             this.actions.forEach(function (action) { return action._onParentIsDirtyChanged(value); });
             if (this.ownerDetailAttribute && value)
                 this.ownerDetailAttribute.onChanged(false);
+        };
+        PersistentObject.prototype.getAttribute = function (name) {
+            return this.attributesByName[name];
         };
         PersistentObject.prototype.getAttributeValue = function (name) {
             var attr = this.attributesByName[name];
@@ -2646,6 +2649,7 @@ var Vidyano;
             this.dependentActions = [];
             this.displayName = definition.displayName;
             this.selectionRule = definition.selectionRule;
+            this._isPinned = definition.isPinned;
             if (owner instanceof Query) {
                 this._targetType = "Query";
                 this._query = owner;
@@ -2729,6 +2733,13 @@ var Vidyano;
                     return;
                 this._isVisible = val;
                 this.notifyPropertyChanged("isVisible", val, !val);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Action.prototype, "isPinned", {
+            get: function () {
+                return this._isPinned;
             },
             enumerable: true,
             configurable: true
@@ -3024,6 +3035,17 @@ var Vidyano;
             return ShowHelp;
         })(Action);
         Actions.ShowHelp = ShowHelp;
+        var viSearch = (function (_super) {
+            __extends(viSearch, _super);
+            function viSearch(service, definition, owner) {
+                _super.call(this, service, definition, owner);
+                this.isVisible = this.parent == null || this.parent.fullTypeName == "Vidyano.Search";
+                if (this.parent != null && this.parent.fullTypeName == "Vidyano.Search")
+                    this._isPinned = false;
+            }
+            return viSearch;
+        })(Action);
+        Actions.viSearch = viSearch;
     })(Actions = Vidyano.Actions || (Vidyano.Actions = {}));
     var ActionDefinition = (function () {
         function ActionDefinition(service, item) {
@@ -3148,6 +3170,13 @@ var Vidyano;
             var pus = JSON.parse(this.getAttributeValue("ProgramUnits"));
             this.programUnits = Enumerable.from(pus.units).select(function (unit) { return new ProgramUnit(_this.service, unit); }).toArray();
         }
+        Object.defineProperty(Application.prototype, "userId", {
+            get: function () {
+                return this._userId;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(Application.prototype, "friendlyUserName", {
             get: function () {
                 return this._friendlyUserName;

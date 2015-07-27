@@ -52,6 +52,7 @@
         name: string;
         userName: string;
         password: string;
+        staySignedIn: boolean;
         isVidyano: boolean;
         expand: boolean;
         signingIn: boolean;
@@ -62,6 +63,7 @@
 
         private _vidyanoSignInAttached() {
             this.userName = this.app.service.userName !== this.app.service.defaultUserName ? this.app.service.userName : "";
+            this.staySignedIn = Vidyano.cookie("staySignedIn", { force: true }) == "true";
             this._autoFocus();
         }
 
@@ -113,6 +115,7 @@
             this.password = "";
 
             var currentRoute = this.app.currentRoute;
+            this.app.service.staySignedIn = this.staySignedIn;
             this.app.service.signInUsingCredentials(this.userName, password).then(() => {
                 this._setSigningIn(false);
 
@@ -195,6 +198,9 @@
             password: {
                 type: String,
                 notify: true
+            },
+            staySignedIn: {
+                type: Boolean
             },
             expand: {
                 type: Boolean,

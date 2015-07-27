@@ -1,9 +1,13 @@
 module Vidyano.WebComponents {
     export class User extends WebComponent {
-        private _observeDisposers: ObserveChainDisposer[] = [];
         private service: Vidyano.Service;
+        isSignedIn: boolean;
 
         private _setService: (service: Vidyano.Service) => void;
+        private _setIsSignedIn: (val: boolean) => void;
+        private _setCanFeedback: (val: boolean) => void;
+        private _setCanUserSettings: (val: boolean) => void;
+        private _setUserName: (val: string) => void;
 
         attached() {
             super.attached();
@@ -20,8 +24,26 @@ module Vidyano.WebComponents {
             this.app.redirectToSignIn(false);
         }
 
-        private _computeIsSignedIn(isSignedIn: boolean, isUsingDefaultCredentials: boolean): boolean {
-            return isSignedIn && !isUsingDefaultCredentials;
+        feedback() {
+            this.service.getPersistentObject(null, this.service.application.feedbackId).then(po => {
+                var commentAttr = po.getAttribute("Comment");
+                commentAttr.options = ["Url: " + window.location, "Browser: " + navigator.userAgent];
+                commentAttr.isValueChanged = true;
+
+                this.service.hooks.onOpen(po, false, true);
+            });
+        }
+
+        userSettings() {
+            this.app.changePath((this.app.programUnit ? this.app.programUnit.name + "/" : "") + "PersistentObject." + this.service.application.userSettingsId + "/" + this.service.application.userId);
+        }
+
+        private _signedInChanged() {
+            var isSignedIn = this.service.isSignedIn && !this.service.isUsingDefaultCredentials;
+            this._setIsSignedIn(isSignedIn);
+            this._setUserName(isSignedIn ? this.service.userName : null);
+            this._setCanFeedback(isSignedIn && !!this.service.application.feedbackId);
+            this._setCanUserSettings(isSignedIn && !!this.service.application.userSettingsId);
         }
     }
 
@@ -30,21 +52,28 @@ module Vidyano.WebComponents {
             isSignedIn: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeIsSignedIn(service.isSignedIn, service.isUsingDefaultCredentials)"
+                readOnly: true
             },
             userName: {
                 type: String,
-                computed: "_forwardComputed(service.userName)"
+                readOnly: true
             },
             service: {
                 type: Object,
+                readOnly: true
+            },
+            canFeedback: {
+                type: Boolean,
+                readOnly: true
+            },
+            canUserSettings: {
+                type: Boolean,
                 readOnly: true
             }
         },
         forwardObservers: [
             "_signedInChanged(service.isSignedIn)",
-            "_signedInChanged(service.isUsingDefaultCredentials)",
-            "_userNameChanged(service.userName)",
+            "_signedInChanged(service.isUsingDefaultCredentials)"
         ]
     });
 }

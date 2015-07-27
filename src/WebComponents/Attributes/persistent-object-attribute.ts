@@ -44,6 +44,7 @@ module Vidyano.WebComponents.Attributes {
         attribute: Vidyano.PersistentObjectAttribute;
         value: any;
         editing: boolean;
+        readOnly: boolean;
 
         protected _attributeValueChanged() {
             this.value = this.attribute.value !== undefined ? this.attribute.value : null;

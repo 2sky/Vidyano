@@ -81,8 +81,8 @@ module Vidyano {
                 // Save to localStorage/sessionStorage
                 key = locationPrefix + key;
 
-                if (options.expires) {
-                    if (options.expires > now)
+                if (expires) {
+                    if (expires > now)
                         window.localStorage.setItem(key, JSON.stringify({ val: options.raw ? value : encodeURIComponent(value), exp: expires.toUTCString() }));
                     else
                         window.localStorage.removeItem(key);
@@ -689,7 +689,7 @@ module Vidyano {
             this._setIsUsingDefaultCredentials(this._clientData.defaultUser === this.userName);
 
             return new Promise<Application>((resolve, reject) => {
-                Vidyano.cookie("staySignedIn", this.staySignedIn ? "true" : null, { force: true });
+                Vidyano.cookie("staySignedIn", this.staySignedIn ? "true" : null, { force: true, expires: 365 });
                 this._postJSON(this._createUri("GetApplication"), data).then(result => {
                     if (!StringEx.isNullOrEmpty(result.exception)) {
                         reject(result.exception);
@@ -1519,6 +1519,10 @@ module Vidyano {
 
             if (this.ownerDetailAttribute && value)
                 this.ownerDetailAttribute.onChanged(false);
+        }
+
+        getAttribute(name: string): PersistentObjectAttribute {
+            return this.attributesByName[name];
         }
 
         getAttributeValue(name: string): any {
@@ -3072,6 +3076,7 @@ module Vidyano {
         private _block: boolean;
         private _parameters: any = {};
         private _offset: number;
+        protected _isPinned: boolean;
         skipOpen: boolean;
         selectionRule: (count: number) => boolean;
         displayName: string;
@@ -3083,6 +3088,7 @@ module Vidyano {
 
             this.displayName = definition.displayName;
             this.selectionRule = definition.selectionRule;
+            this._isPinned = definition.isPinned;
 
             if (owner instanceof Query) {
                 this._targetType = "Query";
@@ -3157,6 +3163,10 @@ module Vidyano {
 
             this._isVisible = val;
             this.notifyPropertyChanged("isVisible", val, !val);
+        }
+
+        get isPinned(): boolean {
+            return this._isPinned;
         }
 
         execute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], throwExceptions?: boolean): Promise<PersistentObject> {
@@ -3436,6 +3446,17 @@ module Vidyano {
                     });
             }
         }
+
+        export class viSearch extends Action {
+            constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions) {
+                super(service, definition, owner);
+
+                this.isVisible = this.parent == null || this.parent.fullTypeName == "Vidyano.Search";
+
+                if (this.parent != null && this.parent.fullTypeName == "Vidyano.Search")
+                    this._isPinned = false;
+            }
+        }
     }
 
     export class ActionDefinition {
@@ -3560,6 +3581,10 @@ module Vidyano {
 
             var pus = <{ hasManagement: boolean; units: any[] }>JSON.parse(this.getAttributeValue("ProgramUnits"));
             this.programUnits = Enumerable.from(pus.units).select(unit => new ProgramUnit(this.service, unit)).toArray();
+        }
+
+        get userId(): string {
+            return this._userId;
         }
 
         get friendlyUserName(): string {

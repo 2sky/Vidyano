@@ -17,7 +17,7 @@
         }
 
         filterActions(actions: Vidyano.Action[], pinned: boolean): Vidyano.Action[] {
-            return actions.filter(a => a.definition.isPinned == pinned);
+            return actions.filter(a => a.isPinned == pinned);
         }
 
         private _search() {
@@ -29,11 +29,11 @@
         }
 
         private _computePinnedActions(): Vidyano.Action[] {
-            return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(action => action.definition.isPinned) : [];
+            return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(action => action.isPinned) : [];
         }
 
         private _computeUnpinnedActions(): Vidyano.Action[] {
-            return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(action => !action.definition.isPinned) : [];
+            return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(action => !action.isPinned) : [];
         }
 
         private _computeCanSearch(serviceObject: Vidyano.ServiceObjectWithActions) {
