@@ -1350,6 +1350,7 @@ declare module Vidyano {
         private setIsEditing(value);
         isDirty: boolean;
         private _setIsDirty(value);
+        getAttribute(name: string): PersistentObjectAttribute;
         getAttributeValue(name: string): any;
         getQuery(name: string): Query;
         beginEdit(): void;
@@ -1627,6 +1628,7 @@ declare module Vidyano {
         private _block;
         private _parameters;
         private _offset;
+        protected _isPinned: boolean;
         skipOpen: boolean;
         selectionRule: (count: number) => boolean;
         displayName: string;
@@ -1640,6 +1642,7 @@ declare module Vidyano {
         canExecute: boolean;
         block: boolean;
         isVisible: boolean;
+        isPinned: boolean;
         execute(option?: number, parameters?: any, selectedItems?: QueryResultItem[], throwExceptions?: boolean): Promise<PersistentObject>;
         _onExecute(option?: number, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject>;
         _getParameters(parameters: any, option: any): any;
@@ -1689,6 +1692,9 @@ declare module Vidyano {
             constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions);
             _onExecute(option?: number, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject>;
         }
+        class viSearch extends Action {
+            constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions);
+        }
     }
     class ActionDefinition {
         private _name;
@@ -1723,6 +1729,7 @@ declare module Vidyano {
         private _session;
         programUnits: ProgramUnit[];
         constructor(service: Service, po: any);
+        userId: string;
         friendlyUserName: string;
         feedbackId: string;
         userSettingsId: string;
@@ -2057,10 +2064,15 @@ declare module Vidyano.WebComponents.Attributes {
 }
 declare module Vidyano.WebComponents.Attributes {
     class PersistentObjectAttributeImage extends WebComponents.Attributes.PersistentObjectAttribute {
+        private _pasteListener;
+        _attributeChanged(): void;
+        detached(): void;
         private _change(e);
         private _clear();
         private _computeCanClear(value);
         private _computeImage(value);
+        private _pasteAuto(e);
+        private _pasteCreateImage(source);
     }
 }
 declare module Vidyano.WebComponents.Attributes {
@@ -2177,6 +2189,7 @@ declare module Vidyano.WebComponents.Attributes {
         attribute: Vidyano.PersistentObjectAttribute;
         value: any;
         editing: boolean;
+        readOnly: boolean;
         protected _attributeValueChanged(): void;
         protected _optionsChanged(): void;
         protected _attributeChanged(): void;
@@ -3024,6 +3037,7 @@ declare module Vidyano.WebComponents {
         name: string;
         userName: string;
         password: string;
+        staySignedIn: boolean;
         isVidyano: boolean;
         expand: boolean;
         signingIn: boolean;
@@ -3108,13 +3122,19 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents {
     class User extends WebComponent {
-        private _observeDisposers;
         private service;
+        isSignedIn: boolean;
         private _setService;
+        private _setIsSignedIn;
+        private _setCanFeedback;
+        private _setCanUserSettings;
+        private _setUserName;
         attached(): void;
         signIn(): void;
         signOut(): void;
-        private _computeIsSignedIn(isSignedIn, isUsingDefaultCredentials);
+        feedback(): void;
+        userSettings(): void;
+        private _signedInChanged();
     }
 }
 declare module Vidyano.WebComponents {

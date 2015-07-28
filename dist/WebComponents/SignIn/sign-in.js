@@ -53,6 +53,7 @@ var Vidyano;
             }
             SignInProvider.prototype._vidyanoSignInAttached = function () {
                 this.userName = this.app.service.userName !== this.app.service.defaultUserName ? this.app.service.userName : "";
+                this.staySignedIn = Vidyano.cookie("staySignedIn", { force: true }) == "true";
                 this._autoFocus();
             };
             SignInProvider.prototype._keydown = function (e) {
@@ -95,6 +96,7 @@ var Vidyano;
                 var password = this.password;
                 this.password = "";
                 var currentRoute = this.app.currentRoute;
+                this.app.service.staySignedIn = this.staySignedIn;
                 this.app.service.signInUsingCredentials(this.userName, password).then(function () {
                     _this._setSigningIn(false);
                     if (currentRoute == _this.app.currentRoute)
@@ -172,6 +174,9 @@ var Vidyano;
                 password: {
                     type: String,
                     notify: true
+                },
+                staySignedIn: {
+                    type: Boolean
                 },
                 expand: {
                     type: Boolean,

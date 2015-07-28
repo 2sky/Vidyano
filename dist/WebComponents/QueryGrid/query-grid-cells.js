@@ -14,18 +14,22 @@ var Vidyano;
                 _super.apply(this, arguments);
             }
             QueryGridCellBoolean.prototype._render = function (dom) {
-                if (!this._resource) {
-                    this._resource = new Vidyano.WebComponents.Resource();
-                    this._resource.source = "Icon_Selected";
-                    dom.appendChild(this._resource);
-                }
                 var value = this.item ? this.item.getValue(this.gridColumn.column.name) : null;
-                if (value == true)
-                    this._resource.className = "checked";
-                else if (value == false)
-                    this._resource.className = "unchecked";
-                else
-                    this._resource.className = "";
+                if (value === undefined || value === null) {
+                    dom.innerText = "—";
+                    this._resource = null;
+                }
+                else {
+                    if (!this._resource) {
+                        this._resource = new Vidyano.WebComponents.Resource();
+                        this._resource.source = "Icon_Selected";
+                        dom.appendChild(this._resource);
+                    }
+                    if (value === true)
+                        this._resource.className = "checked";
+                    else if (value === false)
+                        this._resource.className = "unchecked";
+                }
             };
             return QueryGridCellBoolean;
         })(WebComponents.QueryGridCell);

@@ -23,7 +23,7 @@ var Vidyano;
                     action.execute(parseInt(sender.getAttribute("data-option") || "-1", 10));
             };
             ActionBar.prototype.filterActions = function (actions, pinned) {
-                return actions.filter(function (a) { return a.definition.isPinned == pinned; });
+                return actions.filter(function (a) { return a.isPinned == pinned; });
             };
             ActionBar.prototype._search = function () {
                 if (!this.canSearch)
@@ -32,10 +32,10 @@ var Vidyano;
                 query.search();
             };
             ActionBar.prototype._computePinnedActions = function () {
-                return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(function (action) { return action.definition.isPinned; }) : [];
+                return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(function (action) { return action.isPinned; }) : [];
             };
             ActionBar.prototype._computeUnpinnedActions = function () {
-                return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(function (action) { return !action.definition.isPinned; }) : [];
+                return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(function (action) { return !action.isPinned; }) : [];
             };
             ActionBar.prototype._computeCanSearch = function (serviceObject) {
                 return serviceObject instanceof Vidyano.Query && serviceObject.actions["Filter"] != null;
