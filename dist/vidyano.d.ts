@@ -1380,14 +1380,14 @@ declare module Vidyano {
         private _tabKey;
         private _group;
         private _groupKey;
+        private _isRequired;
+        private _isReadOnly;
         private _backupData;
         protected _queueRefresh: boolean;
         private _refreshValue;
         id: string;
         name: string;
         label: string;
-        isReadOnly: boolean;
-        isRequired: boolean;
         isValueChanged: boolean;
         options: string[] | Common.KeyValuePair[];
         offset: number;
@@ -1411,6 +1411,10 @@ declare module Vidyano {
         isSystem: boolean;
         isVisible: boolean;
         validationError: string;
+        isRequired: boolean;
+        private _setIsRequired(isRequired);
+        isReadOnly: boolean;
+        private _setIsReadOnly(isReadOnly);
         displayValue: string;
         value: any;
         setValue(val: any, allowRefresh?: boolean): Promise<any>;

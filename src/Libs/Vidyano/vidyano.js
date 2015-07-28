@@ -1558,8 +1558,8 @@ var Vidyano;
             this._serviceValue = attr.value !== undefined ? attr.value : null;
             this._groupKey = attr.group;
             this._tabKey = attr.tab;
-            this.isReadOnly = !!attr.isReadOnly;
-            this.isRequired = !!attr.isRequired;
+            this._isReadOnly = !!attr.isReadOnly;
+            this._isRequired = !!attr.isRequired;
             this.isValueChanged = !!attr.isValueChanged;
             this.offset = attr.offset || 0;
             this.toolTip = attr.toolTip;
@@ -1641,6 +1641,30 @@ var Vidyano;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(PersistentObjectAttribute.prototype, "isRequired", {
+            get: function () {
+                return this._isRequired;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        PersistentObjectAttribute.prototype._setIsRequired = function (isRequired) {
+            var oldIsRequired = this._isRequired;
+            if (oldIsRequired !== isRequired)
+                this.notifyPropertyChanged("isRequired", this._isRequired = isRequired, oldIsRequired);
+        };
+        Object.defineProperty(PersistentObjectAttribute.prototype, "isReadOnly", {
+            get: function () {
+                return this._isReadOnly;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        PersistentObjectAttribute.prototype._setIsReadOnly = function (isReadOnly) {
+            var oldisReadOnly = this._isReadOnly;
+            if (oldisReadOnly !== isReadOnly)
+                this.notifyPropertyChanged("isReadOnly", this._isReadOnly = isReadOnly, oldisReadOnly);
+        };
         Object.defineProperty(PersistentObjectAttribute.prototype, "displayValue", {
             get: function () {
                 if (this._displayValueSource == this._serviceValue)
@@ -1808,9 +1832,8 @@ var Vidyano;
         PersistentObjectAttribute.prototype._refreshFromResult = function (resultAttr) {
             var visibilityChanged = false;
             this._setOptions(resultAttr._serviceOptions);
-            if (this.isReadOnly != resultAttr.isReadOnly)
-                this.notifyPropertyChanged("isReadOnly", this.isReadOnly = resultAttr.isReadOnly, !resultAttr.isReadOnly);
-            this.isRequired = resultAttr.isRequired;
+            this._setIsReadOnly(resultAttr.isReadOnly);
+            this._setIsRequired(resultAttr.isRequired);
             if (this.visibility != resultAttr.visibility) {
                 this.visibility = resultAttr.visibility;
                 visibilityChanged = true;

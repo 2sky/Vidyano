@@ -1807,6 +1807,8 @@ module Vidyano {
         private _tabKey: string;
         private _group: PersistentObjectAttributeGroup;
         private _groupKey: string;
+        private _isRequired: boolean;
+        private _isReadOnly: boolean;
 
         private _backupData: any;
         protected _queueRefresh: boolean = false;
@@ -1815,8 +1817,6 @@ module Vidyano {
         id: string;
         name: string;
         label: string;
-        isReadOnly: boolean;
-        isRequired: boolean;
         isValueChanged: boolean;
         options: string[]| Common.KeyValuePair[];
         offset: number;
@@ -1844,8 +1844,8 @@ module Vidyano {
             this._serviceValue = attr.value !== undefined ? attr.value : null;
             this._groupKey = attr.group;
             this._tabKey = attr.tab;
-            this.isReadOnly = !!attr.isReadOnly;
-            this.isRequired = !!attr.isRequired;
+            this._isReadOnly = !!attr.isReadOnly;
+            this._isRequired = !!attr.isRequired;
             this.isValueChanged = !!attr.isValueChanged;
             this.offset = attr.offset || 0;
             this.toolTip = attr.toolTip;
@@ -1910,6 +1910,26 @@ module Vidyano {
             var oldValidationError = this._validationError;
             if (oldValidationError != error)
                 this.notifyPropertyChanged("validationError", this._validationError = error, oldValidationError);
+        }
+
+        get isRequired(): boolean {
+            return this._isRequired;
+        }
+
+        private _setIsRequired(isRequired: boolean) {
+            var oldIsRequired = this._isRequired;
+            if (oldIsRequired !== isRequired)
+                this.notifyPropertyChanged("isRequired", this._isRequired = isRequired, oldIsRequired);
+        }
+
+        get isReadOnly(): boolean {
+            return this._isReadOnly;
+        }
+
+        private _setIsReadOnly(isReadOnly: boolean) {
+            var oldisReadOnly = this._isReadOnly;
+            if (oldisReadOnly !== isReadOnly)
+                this.notifyPropertyChanged("isReadOnly", this._isReadOnly = isReadOnly, oldisReadOnly);
         }
 
         get displayValue(): string {
@@ -2104,9 +2124,8 @@ module Vidyano {
             var visibilityChanged = false;
 
             this._setOptions(resultAttr._serviceOptions);
-            if (this.isReadOnly != resultAttr.isReadOnly)
-                this.notifyPropertyChanged("isReadOnly", this.isReadOnly = resultAttr.isReadOnly, !resultAttr.isReadOnly);
-            this.isRequired = resultAttr.isRequired;
+            this._setIsReadOnly(resultAttr.isReadOnly);
+            this._setIsRequired(resultAttr.isRequired);
             if (this.visibility != resultAttr.visibility) {
                 this.visibility = resultAttr.visibility;
                 visibilityChanged = true;
