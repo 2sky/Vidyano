@@ -1,3 +1,8 @@
+.cell[data-vi-column-type='Boolean'],
+.cell[data-vi-column-type='NullableBoolean'],
+.cell[data-vi-column-type='YesNo'] {
+  text-align: center;
+}
 .cell[data-vi-column-type='Boolean'] vi-resource.unchecked #check,
 .cell[data-vi-column-type='NullableBoolean'] vi-resource.unchecked #check,
 .cell[data-vi-column-type='YesNo'] vi-resource.unchecked #check {

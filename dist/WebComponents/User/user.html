@@ -9,10 +9,10 @@
                     <vi-resource source="Icon_Up"></vi-resource>
                 </button>
                 <template is="dom-if" if="{{canUserSettings}}">
-                    <vi-popup-menu-item icon="Icon_Hamburger" label="{{translations.UserSettings}}" on-tap="userSettings"></vi-popup-menu-item>
+                    <vi-popup-menu-item icon="Icon_UserSettings" label="{{translations.UserSettings}}" on-tap="userSettings"></vi-popup-menu-item>
                 </template>
                 <template is="dom-if" if="{{canFeedback}}">
-                    <vi-popup-menu-item icon="Icon_Hamburger" label="{{translations.Feedback}}" on-tap="feedback"></vi-popup-menu-item>
+                    <vi-popup-menu-item icon="Icon_UserFeedback" label="{{translations.Feedback}}" on-tap="feedback"></vi-popup-menu-item>
                 </template>
                 <vi-popup-menu-item icon="Icon_SignOut" label="{{translations.SignOut}}" on-tap="signOut"></vi-popup-menu-item>
             </vi-popup-menu>
