@@ -7,7 +7,7 @@
         actionTypes?: string[];
         message: string;
         extraClasses?: string[];
-
+        html?: boolean;
     }
 
     export class MessageDialog extends WebComponent {
@@ -18,6 +18,11 @@
 
         show(options: MessageDialogOptions): Promise<any> {
             this._setOptions(options);
+
+            if (options.html)
+                this.$["pre"].innerHTML = options.message;
+            else
+                this.$["pre"].textContent = options.message;
 
             var dialog = <WebComponents.Dialog><any>this.$["dialog"];
             this._dialog = dialog.show(options);

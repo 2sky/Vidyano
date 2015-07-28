@@ -304,7 +304,7 @@
         private _updateRoute(path: string) {
             var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
             var currentRoute = this.currentRoute;
-            
+
             // Find route and activate
             if (mappedPathRoute) {
                 var route = this._routeMap[hashBang + App._stripHashBang(mappedPathRoute.path)];
@@ -435,6 +435,8 @@
 
         onAction(args: ExecuteActionArgs): Promise<any> {
             if (args.action == "Delete") {
+                args.isHandled = true;
+
                 return this.app.showMessageDialog({
                     title: this.service.getTranslatedMessage("Delete"),
                     titleIcon: "Icon_Action_Delete",

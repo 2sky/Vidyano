@@ -16,6 +16,7 @@ var Vidyano;
             ActionButton.prototype._executeWithoutOptions = function (e) {
                 if (!this.hasOptions)
                     this._execute();
+                e.preventDefault();
             };
             ActionButton.prototype._executeWithOption = function (e) {
                 this._execute(e.model.index);

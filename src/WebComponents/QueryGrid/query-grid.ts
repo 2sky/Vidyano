@@ -290,7 +290,7 @@
         }
 
         private _itemsTap(e: Event, detail: any) {
-            if (!this.query)
+            if (!this.query || e.defaultPrevented)
                 return;
 
             var path = <HTMLElement[]>(<any>e).path;
@@ -857,7 +857,7 @@
             var extraClass = item ? item.getTypeHint("ExtraClass", null) : null;
             for (var host in this.hosts) {
                 this._cells.forEach(cell => cell.item = this._item);
-                
+
                 if (item) {
                     if (extraClass != this._extraClass) {
                         if (!StringEx.isNullOrEmpty(this._extraClass))
@@ -1056,6 +1056,8 @@
                     item: this.item,
                     rangeSelect: e.detail.sourceEvent && e.detail.sourceEvent.shiftKey
                 });
+
+                e.stopPropagation();
             }
         }
     }

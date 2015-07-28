@@ -1,4 +1,8 @@
 ﻿module Vidyano.WebComponents {
+    var findUriLabel = /\[url:([^|]+)\|((https?:\/\/[-\w]+(\.[-\w]+)*(:\d+)?(\/#?!?[^\.\s]*(\.[^\.\s]+)*)?)|#!\/[^\]]+)]/g;
+    var findUri = /(https?:\/\/[-\w]+(\.[-\w]+)*(:\d+)?(\/#?!?[^\.\s]*(\.[^\.\s]+)*)?)/g;
+    var findNewLine = /\r?\n|\r/g;
+
     export class Notification extends WebComponent {
         serviceObject: Vidyano.ServiceObjectWithActions;
         isOverflowing: boolean;
@@ -41,7 +45,8 @@
                 this.app.showMessageDialog({
                     title: header,
                     titleIcon: "Icon_Notification_" + headerIcon,
-                    message: this.text,
+                    message: this.text.replace(findNewLine, "<br />").replace(/class="style-scope vi-notification"/g, "class=\"style-scope vi-message-dialog\""),
+                    html: true,
                     actions: [this.translations.OK]
                 });
             }
@@ -59,8 +64,21 @@
 
         private _setTextOverflow() {
             var text = <HTMLSpanElement>this.$["text"];
+            text.innerHTML = this.text;
             this._setIsOverflowing(text.offsetWidth < text.scrollWidth);
-            this.$["text"].style.cursor = this.isOverflowing ? "pointer" : "auto";
+            text.style.cursor = this.isOverflowing ? "pointer" : "auto";
+        }
+
+        private _computeText(notification: string): string {
+            if (notification) {
+                var html2 = notification.replace(findUriLabel, "<a class=\"style-scope vi-notification\" href=\"$2\" title=\"\">$1</a>");
+                if (notification == html2)
+                    notification = notification.replace(findUri, "<a class=\"style-scope vi-notification\" href=\"$1\" title=\"\">$1</a>");
+                else
+                    notification = html2;
+            }
+
+            return notification;
         }
 
         private _computeShown(text: string): boolean {
@@ -110,7 +128,7 @@
                 type: String,
                 notify: true,
                 observer: "_textChanged",
-                computed: "serviceObject.notification"
+                computed: "_computeText(serviceObject.notification)"
             },
             shown: {
                 type: Boolean,

@@ -13,6 +13,9 @@ vi-message-dialog vi-dialog .content pre {
   flex: 1;
   white-space: pre-wrap;
 }
+vi-message-dialog vi-dialog .content pre a {
+  color: inherit;
+}
 vi-message-dialog header > vi-resource[icon] {
   padding-right: 12px;
 }

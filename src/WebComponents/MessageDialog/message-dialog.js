@@ -15,6 +15,10 @@ var Vidyano;
             }
             MessageDialog.prototype.show = function (options) {
                 this._setOptions(options);
+                if (options.html)
+                    this.$["pre"].innerHTML = options.message;
+                else
+                    this.$["pre"].textContent = options.message;
                 var dialog = this.$["dialog"];
                 this._dialog = dialog.show(options);
                 return this._dialog.result;

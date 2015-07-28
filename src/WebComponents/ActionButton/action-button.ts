@@ -9,9 +9,11 @@ module Vidyano.WebComponents {
         private _setCanExecute: (val: boolean) => void;
         private _setHidden: (val: boolean) => void;
 
-        private _executeWithoutOptions(e: Event) {
+        private _executeWithoutOptions(e: TapEvent) {
             if(!this.hasOptions)
                 this._execute();
+
+            e.preventDefault();
         }
 
         private _executeWithOption(e: TapEvent) {

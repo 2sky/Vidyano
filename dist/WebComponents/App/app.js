@@ -371,6 +371,7 @@ var Vidyano;
             AppServiceHooks.prototype.onAction = function (args) {
                 var _this = this;
                 if (args.action == "Delete") {
+                    args.isHandled = true;
                     return this.app.showMessageDialog({
                         title: this.service.getTranslatedMessage("Delete"),
                         titleIcon: "Icon_Action_Delete",

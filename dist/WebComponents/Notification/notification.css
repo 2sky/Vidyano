@@ -52,6 +52,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+:host .flex span a {
+  color: inherit;
+}
 :host vi-resource {
   display: -ms-flexbox;
   display: -webkit-flex;

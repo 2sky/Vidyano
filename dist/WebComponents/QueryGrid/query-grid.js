@@ -229,7 +229,7 @@ var Vidyano;
             };
             QueryGrid.prototype._itemsTap = function (e, detail) {
                 var _this = this;
-                if (!this.query)
+                if (!this.query || e.defaultPrevented)
                     return;
                 var path = e.path;
                 if (!path) {
@@ -889,6 +889,7 @@ var Vidyano;
                         item: this.item,
                         rangeSelect: e.detail.sourceEvent && e.detail.sourceEvent.shiftKey
                     });
+                    e.stopPropagation();
                 }
             };
             return QueryGridItemSelector;

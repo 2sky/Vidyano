@@ -2324,6 +2324,7 @@ declare module Vidyano.WebComponents {
         actionTypes?: string[];
         message: string;
         extraClasses?: string[];
+        html?: boolean;
     }
     class MessageDialog extends WebComponent {
         private _dialog;
@@ -2349,6 +2350,7 @@ declare module Vidyano.WebComponents {
         private _trackerSizeChanged(e);
         private _textChanged();
         private _setTextOverflow();
+        private _computeText(notification);
         private _computeShown(text);
         private _getIconType(type);
         private _computeIcon(type);
