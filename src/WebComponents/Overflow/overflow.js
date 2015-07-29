@@ -33,8 +33,10 @@ var Vidyano;
             Overflow.prototype._popupOpening = function () {
                 this._overflownChildren = this._getChildren();
                 this._overflownChildren.forEach(function (child) {
-                    if (child.offsetTop > 0)
+                    if (child.offsetTop > 0) {
+                        child._previousParent = child.parentElement;
                         Polymer.dom(child).setAttribute("overflow", "");
+                    }
                 });
                 Polymer.dom(this).flush();
             };
@@ -43,6 +45,12 @@ var Vidyano;
                     Polymer.dom(child).removeAttribute("overflow");
                 });
                 Polymer.dom(this).flush();
+                this._overflownChildren.forEach(function (child) {
+                    if (child._previousParent) {
+                        child._previousParent.appendChild(child);
+                        child._previousParent = null;
+                    }
+                });
                 this._setHasOverflow(this._overflownChildren.toArray().some(function (child) { return child.offsetTop > 0; }));
             };
             Overflow.prototype._popup = function (e) {
