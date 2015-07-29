@@ -2162,10 +2162,12 @@ declare module Vidyano.WebComponents.Attributes {
     class PersistentObjectAttributeTranslatedString extends PersistentObjectAttribute {
         private _defaultLanguage;
         strings: TranslatedString[];
+        private _setStrings;
         protected _optionsChanged(): void;
         protected _valueChanged(newValue: string): void;
         private _editInputBlur();
         private _computeMultiLine(attribute);
+        private _computeCanShowDialog(readOnly, strings);
         private _showLanguagesDialog();
     }
     class PersistentObjectAttributeTranslatedStringDialog extends WebComponent {

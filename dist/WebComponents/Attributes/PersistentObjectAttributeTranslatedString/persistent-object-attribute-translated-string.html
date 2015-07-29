@@ -16,7 +16,7 @@
                 <template is="dom-if" if="{{multiline}}">
                     <textarea content class="flex" value="{{value::input}}" on-blur="_editInputBlur" readonly$="{{readOnly}}"></textarea>
                 </template>
-                <template is="dom-if" if="{{!readOnly}}">
+                <template is="dom-if" if="{{canShowDialog}}">
                     <button on-tap="_showLanguagesDialog" tabindex="-1">
                         <vi-resource source="Icon_TranslatedString"></vi-resource>
                     </button>
