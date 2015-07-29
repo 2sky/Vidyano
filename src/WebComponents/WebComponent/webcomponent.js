@@ -214,6 +214,9 @@ var Vidyano;
             WebComponent.prototype._forwardComputed = function (value) {
                 return value;
             };
+            WebComponent.prototype._forwardNegate = function (value) {
+                return !value;
+            };
             WebComponent.getName = function (fnc) {
                 var results = /function (.+)\(/.exec(fnc.toString());
                 return results && results[1] || "";
@@ -243,8 +246,12 @@ var Vidyano;
                 info.properties["isAttached"]["readOnly"] = true;
                 info.properties["translations"] = Object;
                 for (var prop in info.properties) {
-                    if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed))
-                        info.properties[prop]["computed"] = "_forwardComputed(" + wcPrototype.properties[prop].computed + ")";
+                    if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed)) {
+                        if (wcPrototype.properties[prop].computed[0] !== "!")
+                            info.properties[prop]["computed"] = "_forwardComputed(" + wcPrototype.properties[prop].computed + ")";
+                        else
+                            info.properties[prop]["computed"] = "_forwardNegate(" + wcPrototype.properties[prop].computed.substring(1) + ")";
+                    }
                 }
                 if (info.forwardObservers) {
                     info.observers = info.observers || [];

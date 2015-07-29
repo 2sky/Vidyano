@@ -367,6 +367,11 @@
             return value;
         }
 
+        // This function simply returns the negated value. This can be used to reflect a property on an observable object as an attribute.
+        private _forwardNegate(value: boolean): boolean {
+            return !value;
+        }
+
         static getName(fnc: Function): string {
             var results = /function (.+)\(/.exec(fnc.toString());
             return results && results[1] || "";
@@ -399,8 +404,12 @@
             info.properties["translations"] = Object;
 
             for (var prop in info.properties) {
-                if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed))
-                    info.properties[prop]["computed"] = "_forwardComputed(" + wcPrototype.properties[prop].computed + ")";
+                if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed)) {
+                    if(wcPrototype.properties[prop].computed[0] !== "!")
+                        info.properties[prop]["computed"] = "_forwardComputed(" + wcPrototype.properties[prop].computed + ")";
+                    else
+                        info.properties[prop]["computed"] = "_forwardNegate(" + wcPrototype.properties[prop].computed.substring(1) + ")";
+                }
             }
 
             if (info.forwardObservers) {

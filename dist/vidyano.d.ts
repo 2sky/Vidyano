@@ -1510,6 +1510,7 @@ declare module Vidyano {
         private _sortOptions;
         private _queriedPages;
         private _filters;
+        private _canFilter;
         persistentObject: PersistentObject;
         columns: QueryColumn[];
         id: string;
@@ -1540,6 +1541,7 @@ declare module Vidyano {
         };
         constructor(service: Service, query: any, parent?: PersistentObject, asLookup?: boolean, maxSelectedItems?: number);
         filters: PersistentObject;
+        canFilter: boolean;
         selectedItems: QueryResultItem[];
         selectRange(from: number, to: number): boolean;
         asLookup: boolean;
@@ -2736,7 +2738,6 @@ declare module Vidyano.WebComponents {
         private _sortingEnd(e);
         private _updateColumnPinning(e, detail, sender);
         private _updateColumnOffset();
-        private _computeNoFilters(filters);
         private _computeDisableInlineActions(actions);
         private _computeDisableSelect(actions);
         private _computeRemainderWidth();
@@ -3369,6 +3370,7 @@ declare module Vidyano.WebComponents {
         protected escapeHTML(val: string): string;
         protected _forwardObservable(source: Vidyano.Common.Observable<any> | Array<any>, path: string, pathPrefix: string, callback?: (path: string) => void): ObserveChainDisposer;
         private _forwardComputed(value);
+        private _forwardNegate(value);
         static getName(fnc: Function): string;
         static register(obj: any, ns?: any, prefix?: string, info?: WebComponentRegistrationInfo, finalized?: (ctor: any) => void): void;
     }

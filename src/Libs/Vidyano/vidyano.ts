@@ -2453,6 +2453,7 @@ module Vidyano {
         private _sortOptions: SortOption[];
         private _queriedPages: Array<number> = [];
         private _filters: PersistentObject;
+        private _canFilter: boolean;
 
         persistentObject: PersistentObject;
         columns: QueryColumn[];
@@ -2525,12 +2526,18 @@ module Vidyano {
             else
                 this._filters = null;
 
+            this._canFilter = this._filters && this.actions.some(a => a.name === "Filter") && this.columns.some(c => c.canFilter);
+
             if (query.result)
                 this._setResult(query.result);
         }
 
         get filters(): PersistentObject {
             return this._filters;
+        }
+
+        get canFilter(): boolean {
+            return this._canFilter;
         }
 
         get selectedItems(): QueryResultItem[] {

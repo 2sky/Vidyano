@@ -31,6 +31,13 @@ vi-query-grid {
         .header {
             min-width: @cell-width;
         }
+
+        &[disable-filter] {
+            .header {
+                min-width: 0 !important;
+                width: 0 !important;
+            }
+        }
     }
 
     #initializingOverlay {
@@ -150,7 +157,7 @@ vi-query-grid {
         }
     }
 
-    &[no-filters] {
+    &[disable-filter] {
         #filters {
             display: none;
         }                 

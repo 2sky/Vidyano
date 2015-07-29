@@ -2173,12 +2173,20 @@ var Vidyano;
                 this._filters = service.hooks.onConstructPersistentObject(service, query.filters);
             else
                 this._filters = null;
+            this._canFilter = this._filters && this.actions.some(function (a) { return a.name === "Filter"; }) && this.columns.some(function (c) { return c.canFilter; });
             if (query.result)
                 this._setResult(query.result);
         }
         Object.defineProperty(Query.prototype, "filters", {
             get: function () {
                 return this._filters;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Query.prototype, "canFilter", {
+            get: function () {
+                return this._canFilter;
             },
             enumerable: true,
             configurable: true

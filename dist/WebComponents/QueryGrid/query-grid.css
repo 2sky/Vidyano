@@ -24,6 +24,10 @@ vi-query-grid:not([disable-inline-actions]):not([disable-select]) .header {
 vi-query-grid[disable-inline-actions][disable-select] .header {
   min-width: 30px;
 }
+vi-query-grid[disable-inline-actions][disable-select][disable-filter] .header {
+  min-width: 0 !important;
+  width: 0 !important;
+}
 vi-query-grid #initializingOverlay {
   position: absolute;
   left: 0;
@@ -119,7 +123,7 @@ vi-query-grid.header-sorting #filters {
 vi-query-grid.header-sorting #configure {
   display: none;
 }
-vi-query-grid[no-filters] #filters {
+vi-query-grid[disable-filter] #filters {
   display: none;
 }
 vi-query-grid #filters {

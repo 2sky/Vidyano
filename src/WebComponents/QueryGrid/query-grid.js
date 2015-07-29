@@ -286,9 +286,6 @@ var Vidyano;
                 this._columnsChanged(existingPinnedColumns.concat(existingUnpinnedColumns));
                 this.items.updateTablePosition(true);
             };
-            QueryGrid.prototype._computeNoFilters = function (filters) {
-                return !filters;
-            };
             QueryGrid.prototype._computeDisableInlineActions = function (actions) {
                 return !actions || !actions.some(function (a) { return a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); }) || actions[0].query.asLookup || this.asLookup;
             };
@@ -1320,11 +1317,6 @@ var Vidyano;
         Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.QueryGrid, Vidyano.WebComponents, "vi", {
             properties: {
                 query: Object,
-                noFilters: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "_computeNoFilters(query.filters)"
-                },
                 asLookup: {
                     type: Boolean,
                     reflectToAttribute: true
@@ -1357,6 +1349,11 @@ var Vidyano;
                     type: Boolean,
                     readOnly: true,
                     reflectToAttribute: true
+                },
+                disableFilter: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "!query.canFilter"
                 },
                 disableInlineActions: {
                     type: Boolean,
