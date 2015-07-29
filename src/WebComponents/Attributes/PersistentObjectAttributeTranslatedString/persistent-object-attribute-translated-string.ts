@@ -12,6 +12,8 @@
         private _defaultLanguage: string;
         strings: TranslatedString[];
 
+        private _setStrings: (strings: TranslatedString[]) => void;
+
         protected _optionsChanged() {
             super._optionsChanged();
 
@@ -28,7 +30,7 @@
                 });
             }
 
-            this.strings = strings;
+            this._setStrings(strings);
         }
 
         protected _valueChanged(newValue: string) {
@@ -43,8 +45,8 @@
             this.strings.forEach(val => {
                 newOption[val.key] = val.value;
             });
-
-            this.set("attribute.options[0]", JSON.stringify(newOption));
+            
+            this.set("attribute.options.0", JSON.stringify(newOption));
         }
 
         private _editInputBlur() {
@@ -54,6 +56,10 @@
 
         private _computeMultiLine(attribute: Vidyano.PersistentObjectAttribute): boolean {
             return attribute && attribute.getTypeHint("MultiLine") == "True";
+        }
+
+        private _computeCanShowDialog(readOnly: boolean, strings: TranslatedString[]) {
+            return !readOnly && strings.length > 1;
         }
 
         private _showLanguagesDialog() {
@@ -104,10 +110,18 @@
 
     PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeTranslatedString, {
         properties: {
+            strings: {
+                type: Array,
+                readOnly: true
+            },
             multiline: {
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "_computeMultiLine(attribute)"
+            },
+            canShowDialog: {
+                type: Boolean,
+                computed: "_computeCanShowDialog(readOnly, strings)"
             }
         }
     });

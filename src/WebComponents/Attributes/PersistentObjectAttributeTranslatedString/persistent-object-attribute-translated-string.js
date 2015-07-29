@@ -28,7 +28,7 @@ var Vidyano;
                             label: labels[key]
                         });
                     }
-                    this.strings = strings;
+                    this._setStrings(strings);
                 };
                 PersistentObjectAttributeTranslatedString.prototype._valueChanged = function (newValue) {
                     var _this = this;
@@ -40,7 +40,7 @@ var Vidyano;
                     this.strings.forEach(function (val) {
                         newOption[val.key] = val.value;
                     });
-                    this.set("attribute.options[0]", JSON.stringify(newOption));
+                    this.set("attribute.options.0", JSON.stringify(newOption));
                 };
                 PersistentObjectAttributeTranslatedString.prototype._editInputBlur = function () {
                     if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)
@@ -48,6 +48,9 @@ var Vidyano;
                 };
                 PersistentObjectAttributeTranslatedString.prototype._computeMultiLine = function (attribute) {
                     return attribute && attribute.getTypeHint("MultiLine") == "True";
+                };
+                PersistentObjectAttributeTranslatedString.prototype._computeCanShowDialog = function (readOnly, strings) {
+                    return !readOnly && strings.length > 1;
                 };
                 PersistentObjectAttributeTranslatedString.prototype._showLanguagesDialog = function () {
                     var _this = this;
@@ -92,10 +95,18 @@ var Vidyano;
             Attributes.PersistentObjectAttributeTranslatedStringDialog = PersistentObjectAttributeTranslatedStringDialog;
             Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeTranslatedString, {
                 properties: {
+                    strings: {
+                        type: Array,
+                        readOnly: true
+                    },
                     multiline: {
                         type: Boolean,
                         reflectToAttribute: true,
                         computed: "_computeMultiLine(attribute)"
+                    },
+                    canShowDialog: {
+                        type: Boolean,
+                        computed: "_computeCanShowDialog(readOnly, strings)"
                     }
                 }
             });
