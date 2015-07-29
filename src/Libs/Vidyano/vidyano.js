@@ -1255,7 +1255,7 @@ var Vidyano;
             this.fullTypeName = po.fullTypeName;
             this.queryLayoutMode = po.queryLayoutMode === "FullPage" ? PersistentObjectLayoutMode.FullPage : PersistentObjectLayoutMode.MasterDetail;
             this.objectId = po.objectId;
-            this.breadcrumb = po.breadcrumb;
+            this._breadcrumb = po.breadcrumb;
             this.notification = po.notification;
             this.notificationType = typeof (po.notificationType) == "number" ? po.notificationType : NotificationType[po.notificationType];
             this.isNew = !!po.isNew;
@@ -1342,6 +1342,18 @@ var Vidyano;
             this._isEditing = value;
             this.actions.forEach(function (action) { return action._onParentIsEditingChanged(value); });
             this.notifyPropertyChanged("isEditing", value, !value);
+        };
+        Object.defineProperty(PersistentObject.prototype, "breadcrumb", {
+            get: function () {
+                return this._breadcrumb;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        PersistentObject.prototype._setBreadcrumb = function (breadcrumb) {
+            var oldBreadcrumb = this._breadcrumb;
+            if (oldBreadcrumb !== breadcrumb)
+                this.notifyPropertyChanged("breadcrumb", this._breadcrumb = breadcrumb, oldBreadcrumb);
         };
         Object.defineProperty(PersistentObject.prototype, "isDirty", {
             get: function () {
@@ -1547,7 +1559,7 @@ var Vidyano;
             }
             this.securityToken = result.securityToken;
             if (result.breadcrumb)
-                this.breadcrumb = result.breadcrumb;
+                this._setBreadcrumb(result.breadcrumb);
             result.queriesToRefresh.forEach(function (id) {
                 var query = Enumerable.from(_this.queries).firstOrDefault(function (q) { return q.id == id || q.name == id; });
                 if (query && query.hasSearched) {

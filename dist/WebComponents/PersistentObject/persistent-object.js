@@ -183,7 +183,8 @@ var Vidyano;
                 "_persistentObjectChanged(persistentObject, isAttached)"
             ],
             forwardObservers: [
-                "persistentObject.tabs.isVisible"
+                "persistentObject.tabs.isVisible",
+                "persistentObject.breadcrumb"
             ]
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

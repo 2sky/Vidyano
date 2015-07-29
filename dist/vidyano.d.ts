@@ -1334,7 +1334,7 @@ declare module Vidyano {
         private _inputs;
         private _id;
         private _type;
-        breadcrumb: string;
+        private _breadcrumb;
         fullTypeName: string;
         label: string;
         objectId: string;
@@ -1371,6 +1371,8 @@ declare module Vidyano {
         tabs: PersistentObjectTab[];
         isEditing: boolean;
         private setIsEditing(value);
+        breadcrumb: string;
+        private _setBreadcrumb(breadcrumb);
         isDirty: boolean;
         private _setIsDirty(value);
         getAttribute(name: string): PersistentObjectAttribute;

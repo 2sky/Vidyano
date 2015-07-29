@@ -204,7 +204,8 @@
             "_persistentObjectChanged(persistentObject, isAttached)"
         ],
         forwardObservers: [
-            "persistentObject.tabs.isVisible"
+            "persistentObject.tabs.isVisible",
+            "persistentObject.breadcrumb"
         ]
     });
 }

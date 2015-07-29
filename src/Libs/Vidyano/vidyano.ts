@@ -1452,7 +1452,8 @@ module Vidyano {
         private _inputs: linqjs.Dictionary<string, HTMLInputElement> = Enumerable.empty<string>().toDictionary(i => i, i => null);
         private _id: string;
         private _type: string;
-        breadcrumb: string;
+        private _breadcrumb: string;
+
         fullTypeName: string;
         label: string;
         objectId: string;
@@ -1488,7 +1489,7 @@ module Vidyano {
             this.fullTypeName = po.fullTypeName;
             this.queryLayoutMode = po.queryLayoutMode === "FullPage" ? PersistentObjectLayoutMode.FullPage : PersistentObjectLayoutMode.MasterDetail;
             this.objectId = po.objectId;
-            this.breadcrumb = po.breadcrumb;
+            this._breadcrumb = po.breadcrumb;
             this.notification = po.notification;
             this.notificationType = typeof (po.notificationType) == "number" ? po.notificationType : NotificationType[<string>po.notificationType];
             this.isNew = !!po.isNew;
@@ -1572,6 +1573,15 @@ module Vidyano {
             this._isEditing = value;
             this.actions.forEach(action => action._onParentIsEditingChanged(value));
             this.notifyPropertyChanged("isEditing", value, !value);
+        }
+
+        get breadcrumb(): string {
+            return this._breadcrumb;
+        }
+        private _setBreadcrumb(breadcrumb: string) {
+            var oldBreadcrumb = this._breadcrumb;
+            if (oldBreadcrumb !== breadcrumb)
+                this.notifyPropertyChanged("breadcrumb", this._breadcrumb = breadcrumb, oldBreadcrumb);
         }
 
         get isDirty(): boolean {
@@ -1816,7 +1826,7 @@ module Vidyano {
 
             this.securityToken = result.securityToken;
             if (result.breadcrumb)
-                this.breadcrumb = result.breadcrumb;
+                this._setBreadcrumb(result.breadcrumb);
 
             result.queriesToRefresh.forEach(id => {
                 var query = Enumerable.from(this.queries).firstOrDefault(q => q.id == id || q.name == id);
