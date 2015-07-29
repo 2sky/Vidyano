@@ -289,8 +289,8 @@
             node.textContent = cssBody;
         }
 
-        private _itemsTap(e: Event, detail: any) {
-            if (!this.query || e.defaultPrevented)
+        private _itemsTap(e: TapEvent, detail: any) {
+            if (!this.query || !this.query.canRead || e.defaultPrevented)
                 return;
 
             var path = <HTMLElement[]>(<any>e).path;
@@ -320,15 +320,21 @@
                     return;
 
                 if (!this.query.asLookup && !this.asLookup) {
-                    if (this.query.canRead) {
-                        this._itemOpening = item;
-                        item.getPersistentObject().then(po => {
-                            if (!po) return;
+                    if (!this.app.noHistory && e.detail.sourceEvent && ((<KeyboardEvent>e.detail.sourceEvent).ctrlKey || (<KeyboardEvent>e.detail.sourceEvent).shiftKey)) {
+                        // Open in new window/tab
+                        window.open(document.location.origin + document.location.pathname + "#!/" + this.app.getUrlForPersistentObject(item.query.persistentObject.id, item.id));
 
-                            if (this._itemOpening == item)
-                                item.query.service.hooks.onOpen(po);
-                        });
+                        e.stopPropagation();
+                        return;
                     }
+
+                    this._itemOpening = item;
+                    item.getPersistentObject().then(po => {
+                        if (!po) return;
+
+                        if (this._itemOpening == item)
+                            item.query.service.hooks.onOpen(po);
+                    });
                 }
             }
         }

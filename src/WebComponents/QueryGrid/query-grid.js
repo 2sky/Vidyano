@@ -229,7 +229,7 @@ var Vidyano;
             };
             QueryGrid.prototype._itemsTap = function (e, detail) {
                 var _this = this;
-                if (!this.query || e.defaultPrevented)
+                if (!this.query || !this.query.canRead || e.defaultPrevented)
                     return;
                 var path = e.path;
                 if (!path) {
@@ -254,15 +254,18 @@ var Vidyano;
                     if (newE.defaultPrevented)
                         return;
                     if (!this.query.asLookup && !this.asLookup) {
-                        if (this.query.canRead) {
-                            this._itemOpening = item;
-                            item.getPersistentObject().then(function (po) {
-                                if (!po)
-                                    return;
-                                if (_this._itemOpening == item)
-                                    item.query.service.hooks.onOpen(po);
-                            });
+                        if (!this.app.noHistory && e.detail.sourceEvent && (e.detail.sourceEvent.ctrlKey || e.detail.sourceEvent.shiftKey)) {
+                            window.open(document.location.origin + document.location.pathname + "#!/" + this.app.getUrlForPersistentObject(item.query.persistentObject.id, item.id));
+                            e.stopPropagation();
+                            return;
                         }
+                        this._itemOpening = item;
+                        item.getPersistentObject().then(function (po) {
+                            if (!po)
+                                return;
+                            if (_this._itemOpening == item)
+                                item.query.service.hooks.onOpen(po);
+                        });
                     }
                 }
             };
