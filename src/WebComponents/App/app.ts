@@ -99,10 +99,10 @@
             if (!(entry instanceof PersistentObjectAppCacheEntry))
                 return false;
 
-            if (entry.persistentObject === this.persistentObject)
+            if (entry.persistentObject != null && entry.persistentObject === this.persistentObject)
                 return true;
 
-            return super.isMatch(entry) && (entry.objectId === this.objectId || StringEx.isNullOrEmpty(entry.objectId) && StringEx.isNullOrEmpty(this.objectId));
+            return (super.isMatch(entry) || (entry.persistentObject && this.id === entry.persistentObject.fullTypeName)) && (entry.objectId === this.objectId || StringEx.isNullOrEmpty(entry.objectId) && StringEx.isNullOrEmpty(this.objectId));
         }
     }
 
@@ -516,13 +516,15 @@
                 var cacheEntry = <PersistentObjectFromActionAppCacheEntry>this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(parent));
                 if (cacheEntry instanceof PersistentObjectFromActionAppCacheEntry && cacheEntry.fromActionIdReturnPath) {
                     this.app.cacheRemove(cacheEntry);
-                    this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
+
+                    if (this.app.getUrlForFromAction(cacheEntry.fromActionId) == this.app.path)
+                        this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
                 }
             }
         }
 
-        onMessageDialog(title: string, message: string, ...actions: string[]): Promise<number> {
-            return this.app.showMessageDialog({ title: title, message: message, actions: actions });
+        onMessageDialog(title: string, message: string, html: boolean, ...actions: string[]): Promise<number> {
+            return this.app.showMessageDialog({ title: title, message: message, html: html, actions: actions });
         }
 
         onSessionExpired() {
@@ -531,6 +533,42 @@
 
         onNavigate(path: string, replaceCurrent: boolean = false) {
             this.app.changePath(path, replaceCurrent);
+        }
+
+        onClientOperation(operation: ClientOperations.ClientOperation) {
+            switch (operation.type) {
+                case "Refresh":
+                    var refresh = <ClientOperations.RefreshOperation>operation;
+                    if (refresh.queryId) {
+                        var cacheEntry = <QueryAppCacheEntry>this.app.cachePing(new QueryAppCacheEntry(refresh.queryId));
+                        if (cacheEntry && cacheEntry.query)
+                            cacheEntry.query.search(refresh.delay);
+                    }
+                    else {
+                        var refreshPersistentObject = () => {
+                            var cacheEntry = <PersistentObjectAppCacheEntry>this.app.cachePing(new PersistentObjectAppCacheEntry(refresh.fullTypeName, refresh.objectId));
+                            if (!cacheEntry || !cacheEntry.persistentObject)
+                                return;
+
+                            this.app.service.getPersistentObject(cacheEntry.persistentObject.parent, cacheEntry.persistentObject.id, cacheEntry.persistentObject.objectId).then(po => {
+                                cacheEntry.persistentObject.refreshFromResult(po);
+                            }, e => {
+                                cacheEntry.persistentObject.setNotification(e);
+                            });
+                        };
+
+                        if (refresh.delay)
+                            setTimeout(refreshPersistentObject, refresh.delay);
+                        else
+                            refreshPersistentObject();
+                    }
+
+                    break;
+
+                default:
+                    super.onClientOperation(operation);
+                    break;
+            }
         }
     }
 

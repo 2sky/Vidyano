@@ -1176,6 +1176,28 @@ declare module Vidyano {
         interface PropertyChangedObserver<T> extends SubjectObserver<T, Vidyano.Common.PropertyChangedArgs> {
         }
     }
+    module ClientOperations {
+        interface ClientOperation {
+            type: string;
+        }
+        interface RefreshOperation extends ClientOperation {
+            delay?: number;
+            queryId?: string;
+            fullTypeName?: string;
+            objectId?: string;
+        }
+        interface ExecuteMethodOperation extends ClientOperation {
+            name: string;
+            arguments: any[];
+        }
+        interface OpenOperation extends ClientOperation {
+            persistentObject: any;
+            replace?: boolean;
+        }
+        function navigate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
+        function reloadPage(): void;
+        function showMessageBox(hooks: ServiceHooks, title: string, message: string, html?: boolean, delay?: number): void;
+    }
     class Service extends Vidyano.Common.Observable<Service> {
         serviceUri: string;
         hooks: ServiceHooks;
@@ -1260,8 +1282,9 @@ declare module Vidyano {
         onConstructQueryResultItemValue(service: Service, value: any): QueryResultItemValue;
         onConstructQueryColumn(service: Service, col: any, query: Query): QueryColumn;
         onConstructAction(service: Service, action: Action): Action;
-        onMessageDialog(title: string, message: string, ...actions: string[]): Promise<number>;
+        onMessageDialog(title: string, message: string, html: boolean, ...actions: string[]): Promise<number>;
         onNavigate(path: string, replaceCurrent?: boolean): void;
+        onClientOperation(operation: ClientOperations.ClientOperation): void;
     }
     class ExecuteActionArgs {
         private service;
@@ -1511,6 +1534,7 @@ declare module Vidyano {
         private _queriedPages;
         private _filters;
         private _canFilter;
+        private _lastSearched;
         persistentObject: PersistentObject;
         columns: QueryColumn[];
         id: string;
@@ -1555,7 +1579,7 @@ declare module Vidyano {
         getColumn(name: string): QueryColumn;
         getItemsInMemory(start: number, length: number): QueryResultItem[];
         getItems(start: number, length: number): Promise<QueryResultItem[]>;
-        search(immediate?: boolean): Promise<QueryResultItem[]>;
+        search(delay?: number): Promise<QueryResultItem[]>;
         clone(asLookup?: boolean): Query;
         private _updateColumns(_columns?);
         private _updateItems(items, reset?);
@@ -1956,9 +1980,10 @@ declare module Vidyano.WebComponents {
         onAction(args: ExecuteActionArgs): Promise<any>;
         onOpen(obj: ServiceObject, replaceCurrent?: boolean, fromAction?: boolean): Promise<any>;
         onClose(parent: Vidyano.ServiceObject): void;
-        onMessageDialog(title: string, message: string, ...actions: string[]): Promise<number>;
+        onMessageDialog(title: string, message: string, html: boolean, ...actions: string[]): Promise<number>;
         onSessionExpired(): void;
         onNavigate(path: string, replaceCurrent?: boolean): void;
+        onClientOperation(operation: ClientOperations.ClientOperation): void;
     }
 }
 declare module Vidyano.WebComponents {

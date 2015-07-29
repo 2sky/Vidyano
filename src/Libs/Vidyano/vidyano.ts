@@ -216,6 +216,43 @@ module Vidyano {
         }
     }
 
+    export module ClientOperations {
+        export interface ClientOperation {
+            type: string;
+        }
+
+        export interface RefreshOperation extends ClientOperation {
+            delay?: number;
+            queryId?: string;
+            fullTypeName?: string;
+            objectId?: string;
+        }
+
+        export interface ExecuteMethodOperation extends ClientOperation {
+            name: string;
+            arguments: any[];
+        }
+
+        export interface OpenOperation extends ClientOperation {
+            persistentObject: any;
+            replace?: boolean;
+        }
+
+        export function navigate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void {
+            hooks.onNavigate(path, replaceCurrent);
+        }
+
+        export function reloadPage(): void {
+            document.location.reload();
+        }
+
+        export function showMessageBox(hooks: ServiceHooks, title: string, message: string, html: boolean = false, delay: number = 0): void {
+            setTimeout(function () {
+                hooks.onMessageDialog(title, message, html, hooks.service.getTranslatedMessage("OK"));
+            }, delay);
+        }
+    }
+
     interface ServiceClientData {
         defaultUser: string;
         exception: string;
@@ -304,6 +341,9 @@ module Vidyano {
                             this.application._updateSession(result.session);
 
                         resolve(result);
+
+                        if (result.operations)
+                            result.operations.forEach(o => this.hooks.onClientOperation(o));
                     } else if (result.exception == "Session expired") {
                         this.authToken = null;
                         delete data.authToken;
@@ -639,8 +679,8 @@ module Vidyano {
                                     document.location.hash = "";
                                 document.location.reload();
                             }, e => {
-                                    // TODO: Toast notification!
-                                });
+                                // TODO: Toast notification!
+                            });
                         }
                     });
                 }
@@ -727,11 +767,11 @@ module Vidyano {
 
                     resolve(this.application);
                 }, e => {
-                        this._setApplication(null);
-                        this._setIsSignedIn(false);
+                    this._setApplication(null);
+                    this._setIsSignedIn(false);
 
-                        reject(e);
-                    });
+                    reject(e);
+                });
             });
         }
 
@@ -746,8 +786,8 @@ module Vidyano {
                     else
                         reject(result.exception);
                 }, e => {
-                        reject(e);
-                    });
+                    reject(e);
+                });
             });
         }
 
@@ -765,8 +805,8 @@ module Vidyano {
                     else
                         resolve(this.hooks.onConstructPersistentObject(this, result.result));
                 }, e => {
-                        reject(e);
-                    });
+                    reject(e);
+                });
             });
         }
 
@@ -789,9 +829,9 @@ module Vidyano {
                         reject(result.exception);
                     }
                 }, e => {
-                        query.setNotification(e, NotificationType.Error);
-                        reject(e);
-                    });
+                    query.setNotification(e, NotificationType.Error);
+                    reject(e);
+                });
             });
         }
 
@@ -812,16 +852,16 @@ module Vidyano {
                             this.executeAction(action, parent, query, selectedItems, parameters, true).then(po => {
                                 resolve(po);
                             }, e => {
-                                    reject(e);
-                                });
+                                reject(e);
+                            });
                     }, e => {
-                            if (isObjectAction)
-                                parent.setNotification(e);
-                            else
-                                query.setNotification(e);
+                        if (isObjectAction)
+                            parent.setNotification(e);
+                        else
+                            query.setNotification(e);
 
-                            reject(e);
-                        });
+                        reject(e);
+                    });
 
                     return;
                 }
@@ -930,13 +970,13 @@ module Vidyano {
                 this._postJSON(this._createUri("ExecuteAction"), data).then(result => {
                     resolve(result.result ? this.hooks.onConstructPersistentObject(this, result.result) : null);
                 }, e => {
-                        if (isObjectAction)
-                            parent.setNotification(e);
-                        else
-                            query.setNotification(e);
+                    if (isObjectAction)
+                        parent.setNotification(e);
+                    else
+                        query.setNotification(e);
 
-                        reject(e);
-                    });
+                    reject(e);
+                });
             });
         }
 
@@ -1252,11 +1292,36 @@ module Vidyano {
             return action;
         }
 
-        onMessageDialog(title: string, message: string, ...actions: string[]): Promise<number> {
+        onMessageDialog(title: string, message: string, html: boolean, ...actions: string[]): Promise<number> {
             return Promise.resolve(-1);
         }
 
         onNavigate(path: string, replaceCurrent: boolean = false) {
+        }
+
+        onClientOperation(operation: ClientOperations.ClientOperation) {
+            switch (operation.type) {
+                case "ExecuteMethod":
+                    var executeMethod = <ClientOperations.ExecuteMethodOperation>operation;
+                    var method: Function = Vidyano.ClientOperations[executeMethod.name];
+                    if (typeof (method) == "function") {
+                        method.apply(Vidyano.ClientOperations, [this].concat(executeMethod.arguments));
+                    }
+                    else if (window.console && console.error)
+                        console.error("Method not found: " + executeMethod.name, executeMethod);
+
+                    break;
+
+                case "Open":
+                    var open = <ClientOperations.OpenOperation>operation;
+                    this.onOpen(this.onConstructPersistentObject(this.service, open.persistentObject), open.replace, true);
+                    break;
+
+                default:
+                    if (window.console && console.log)
+                        console.log("Missing client operation type: " + operation.type, operation);
+                    break;
+            }
         }
     }
 
@@ -1279,8 +1344,8 @@ module Vidyano {
                     this.isHandled = true;
                     resolve(result);
                 }, e => {
-                        reject(e);
-                    });
+                    reject(e);
+                });
             });
         }
     }
@@ -1589,8 +1654,8 @@ module Vidyano {
                                     this.ownerQuery.search().then(() => {
                                         resolve(true);
                                     }, () => {
-                                            resolve(true);
-                                        });
+                                        resolve(true);
+                                    });
 
                                 if (waitForOwnerQuery !== true || !this.ownerQuery)
                                     resolve(true);
@@ -1599,8 +1664,8 @@ module Vidyano {
                                 reject(this.notification);
                         }
                     }, e => {
-                            reject(e);
-                        });
+                        reject(e);
+                    });
                 }
                 else
                     resolve(true);
@@ -1777,8 +1842,8 @@ module Vidyano {
 
                         resolve(true);
                     }, e=> {
-                            reject(e);
-                        });
+                        reject(e);
+                    });
                 });
             });
         }
@@ -2235,8 +2300,8 @@ module Vidyano {
 
                         resolve(true);
                     }, e => {
-                            reject(e);
-                        });
+                        reject(e);
+                    });
                 }
             }));
         }
@@ -2454,6 +2519,7 @@ module Vidyano {
         private _queriedPages: Array<number> = [];
         private _filters: PersistentObject;
         private _canFilter: boolean;
+        private _lastSearched: Date;
 
         persistentObject: PersistentObject;
         columns: QueryColumn[];
@@ -2660,6 +2726,7 @@ module Vidyano {
         }
 
         _setResult(result: any) {
+            this._lastSearched = new Date();
             this.pageSize = result.pageSize || 0;
 
             this.groupingInfo = result.groupingInfo;
@@ -2723,7 +2790,7 @@ module Vidyano {
         getItems(start: number, length: number): Promise<QueryResultItem[]> {
             return this.queueWork(() => {
                 if (!this.hasSearched)
-                    return this.search(true).then(() => this.getItems(start, length || this.pageSize));
+                    return this.search(0).then(() => this.getItems(start, length || this.pageSize));
                 else {
                     if (this.totalItems >= 0) {
                         if (start > this.totalItems)
@@ -2776,14 +2843,14 @@ module Vidyano {
 
                         return Promise.resolve(this.items.slice(start, start + length));
                     }, e => {
-                            this.setNotification(e, NotificationType.Error);
-                            return Promise.reject(e);
-                        });
+                        this.setNotification(e, NotificationType.Error);
+                        return Promise.reject(e);
+                    });
                 }
             }, false);
         }
 
-        search(immediate?: boolean): Promise<QueryResultItem[]> {
+        search(delay?: number): Promise<QueryResultItem[]> {
             var search = () => {
                 this._queriedPages = [];
                 this._updateItems([], true);
@@ -2796,10 +2863,23 @@ module Vidyano {
                 });
             };
 
-            if (immediate)
+            if (delay === 0)
                 return search();
-            else
-                return this.queueWork(search, false);
+            else {
+                if (delay > 0) {
+                    var now = new Date();
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            if (this._lastSearched < now)
+                                this.queueWork(search, false).then(result => resolve(result), e => reject(e));
+                            else
+                                resolve(this.items);
+                        }, delay);
+                    });
+                }
+                else
+                    return this.queueWork(search, false);
+            }
         }
 
         clone(asLookup: boolean = false): Query {
@@ -3052,9 +3132,9 @@ module Vidyano {
 
                     return po;
                 }, e => {
-                        this.query.setNotification(e);
-                        return null;
-                    });
+                    this.query.setNotification(e);
+                    return null;
+                });
             }, false);
         }
 
@@ -3201,11 +3281,11 @@ module Vidyano {
                     this._onExecute(option, parameters, selectedItems).then(po => {
                         resolve(po);
                     }, e => {
-                            if (throwExceptions)
-                                reject(e);
-                            else
-                                this.owner.setNotification(e);
-                        });
+                        if (throwExceptions)
+                            reject(e);
+                        else
+                            this.owner.setNotification(e);
+                    });
             });
         }
 
@@ -3245,8 +3325,8 @@ module Vidyano {
 
                         resolve(po);
                     }, error => {
-                            reject(error);
-                        });
+                        reject(error);
+                    });
                 });
             });
         }
@@ -3372,8 +3452,8 @@ module Vidyano {
 
                         resolve(this.parent);
                     }, e => {
-                            reject(e);
-                        });
+                        reject(e);
+                    });
                 });
             }
         }
@@ -3467,9 +3547,9 @@ module Vidyano {
                         helpWindow.close();
                     return null;
                 }, e => {
-                        helpWindow.close();
-                        this.owner.setNotification(e);
-                    });
+                    helpWindow.close();
+                    this.owner.setNotification(e);
+                });
             }
         }
 

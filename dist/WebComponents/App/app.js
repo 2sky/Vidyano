@@ -91,9 +91,9 @@ var Vidyano;
             PersistentObjectAppCacheEntry.prototype.isMatch = function (entry) {
                 if (!(entry instanceof PersistentObjectAppCacheEntry))
                     return false;
-                if (entry.persistentObject === this.persistentObject)
+                if (entry.persistentObject != null && entry.persistentObject === this.persistentObject)
                     return true;
-                return _super.prototype.isMatch.call(this, entry) && (entry.objectId === this.objectId || StringEx.isNullOrEmpty(entry.objectId) && StringEx.isNullOrEmpty(this.objectId));
+                return (_super.prototype.isMatch.call(this, entry) || (entry.persistentObject && this.id === entry.persistentObject.fullTypeName)) && (entry.objectId === this.objectId || StringEx.isNullOrEmpty(entry.objectId) && StringEx.isNullOrEmpty(this.objectId));
             };
             return PersistentObjectAppCacheEntry;
         })(AppCacheEntry);
@@ -441,16 +441,17 @@ var Vidyano;
                     var cacheEntry = this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(parent));
                     if (cacheEntry instanceof PersistentObjectFromActionAppCacheEntry && cacheEntry.fromActionIdReturnPath) {
                         this.app.cacheRemove(cacheEntry);
-                        this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
+                        if (this.app.getUrlForFromAction(cacheEntry.fromActionId) == this.app.path)
+                            this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
                     }
                 }
             };
-            AppServiceHooks.prototype.onMessageDialog = function (title, message) {
+            AppServiceHooks.prototype.onMessageDialog = function (title, message, html) {
                 var actions = [];
-                for (var _i = 2; _i < arguments.length; _i++) {
-                    actions[_i - 2] = arguments[_i];
+                for (var _i = 3; _i < arguments.length; _i++) {
+                    actions[_i - 3] = arguments[_i];
                 }
-                return this.app.showMessageDialog({ title: title, message: message, actions: actions });
+                return this.app.showMessageDialog({ title: title, message: message, html: html, actions: actions });
             };
             AppServiceHooks.prototype.onSessionExpired = function () {
                 this.app.redirectToSignIn();
@@ -458,6 +459,38 @@ var Vidyano;
             AppServiceHooks.prototype.onNavigate = function (path, replaceCurrent) {
                 if (replaceCurrent === void 0) { replaceCurrent = false; }
                 this.app.changePath(path, replaceCurrent);
+            };
+            AppServiceHooks.prototype.onClientOperation = function (operation) {
+                var _this = this;
+                switch (operation.type) {
+                    case "Refresh":
+                        var refresh = operation;
+                        if (refresh.queryId) {
+                            var cacheEntry = this.app.cachePing(new QueryAppCacheEntry(refresh.queryId));
+                            if (cacheEntry && cacheEntry.query)
+                                cacheEntry.query.search(refresh.delay);
+                        }
+                        else {
+                            var refreshPersistentObject = function () {
+                                var cacheEntry = _this.app.cachePing(new PersistentObjectAppCacheEntry(refresh.fullTypeName, refresh.objectId));
+                                if (!cacheEntry || !cacheEntry.persistentObject)
+                                    return;
+                                _this.app.service.getPersistentObject(cacheEntry.persistentObject.parent, cacheEntry.persistentObject.id, cacheEntry.persistentObject.objectId).then(function (po) {
+                                    cacheEntry.persistentObject.refreshFromResult(po);
+                                }, function (e) {
+                                    cacheEntry.persistentObject.setNotification(e);
+                                });
+                            };
+                            if (refresh.delay)
+                                setTimeout(refreshPersistentObject, refresh.delay);
+                            else
+                                refreshPersistentObject();
+                        }
+                        break;
+                    default:
+                        _super.prototype.onClientOperation.call(this, operation);
+                        break;
+                }
             };
             return AppServiceHooks;
         })(Vidyano.ServiceHooks);

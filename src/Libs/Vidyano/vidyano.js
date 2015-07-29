@@ -171,6 +171,25 @@ var Vidyano;
         })();
         Common.Observable = Observable;
     })(Common = Vidyano.Common || (Vidyano.Common = {}));
+    var ClientOperations;
+    (function (ClientOperations) {
+        function navigate(hooks, path, replaceCurrent) {
+            hooks.onNavigate(path, replaceCurrent);
+        }
+        ClientOperations.navigate = navigate;
+        function reloadPage() {
+            document.location.reload();
+        }
+        ClientOperations.reloadPage = reloadPage;
+        function showMessageBox(hooks, title, message, html, delay) {
+            if (html === void 0) { html = false; }
+            if (delay === void 0) { delay = 0; }
+            setTimeout(function () {
+                hooks.onMessageDialog(title, message, html, hooks.service.getTranslatedMessage("OK"));
+            }, delay);
+        }
+        ClientOperations.showMessageBox = showMessageBox;
+    })(ClientOperations = Vidyano.ClientOperations || (Vidyano.ClientOperations = {}));
     var Service = (function (_super) {
         __extends(Service, _super);
         function Service(serviceUri, hooks, _forceUser) {
@@ -229,6 +248,8 @@ var Vidyano;
                         if (_this.application)
                             _this.application._updateSession(result.session);
                         resolve(result);
+                        if (result.operations)
+                            result.operations.forEach(function (o) { return _this.hooks.onClientOperation(o); });
                     }
                     else if (result.exception == "Session expired") {
                         _this.authToken = null;
@@ -1069,15 +1090,36 @@ var Vidyano;
         ServiceHooks.prototype.onConstructAction = function (service, action) {
             return action;
         };
-        ServiceHooks.prototype.onMessageDialog = function (title, message) {
+        ServiceHooks.prototype.onMessageDialog = function (title, message, html) {
             var actions = [];
-            for (var _i = 2; _i < arguments.length; _i++) {
-                actions[_i - 2] = arguments[_i];
+            for (var _i = 3; _i < arguments.length; _i++) {
+                actions[_i - 3] = arguments[_i];
             }
             return Promise.resolve(-1);
         };
         ServiceHooks.prototype.onNavigate = function (path, replaceCurrent) {
             if (replaceCurrent === void 0) { replaceCurrent = false; }
+        };
+        ServiceHooks.prototype.onClientOperation = function (operation) {
+            switch (operation.type) {
+                case "ExecuteMethod":
+                    var executeMethod = operation;
+                    var method = Vidyano.ClientOperations[executeMethod.name];
+                    if (typeof (method) == "function") {
+                        method.apply(Vidyano.ClientOperations, [this].concat(executeMethod.arguments));
+                    }
+                    else if (window.console && console.error)
+                        console.error("Method not found: " + executeMethod.name, executeMethod);
+                    break;
+                case "Open":
+                    var open = operation;
+                    this.onOpen(this.onConstructPersistentObject(this.service, open.persistentObject), open.replace, true);
+                    break;
+                default:
+                    if (window.console && console.log)
+                        console.log("Missing client operation type: " + operation.type, operation);
+                    break;
+            }
         };
         return ServiceHooks;
     })();
@@ -2307,6 +2349,7 @@ var Vidyano;
         };
         Query.prototype._setResult = function (result) {
             var _this = this;
+            this._lastSearched = new Date();
             this.pageSize = result.pageSize || 0;
             this.groupingInfo = result.groupingInfo;
             if (this.groupingInfo) {
@@ -2356,7 +2399,7 @@ var Vidyano;
             var _this = this;
             return this.queueWork(function () {
                 if (!_this.hasSearched)
-                    return _this.search(true).then(function () { return _this.getItems(start, length || _this.pageSize); });
+                    return _this.search(0).then(function () { return _this.getItems(start, length || _this.pageSize); });
                 else {
                     if (_this.totalItems >= 0) {
                         if (start > _this.totalItems)
@@ -2402,7 +2445,7 @@ var Vidyano;
                 }
             }, false);
         };
-        Query.prototype.search = function (immediate) {
+        Query.prototype.search = function (delay) {
             var _this = this;
             var search = function () {
                 _this._queriedPages = [];
@@ -2413,10 +2456,23 @@ var Vidyano;
                     return _this.items;
                 });
             };
-            if (immediate)
+            if (delay === 0)
                 return search();
-            else
-                return this.queueWork(search, false);
+            else {
+                if (delay > 0) {
+                    var now = new Date();
+                    return new Promise(function (resolve, reject) {
+                        setTimeout(function () {
+                            if (_this._lastSearched < now)
+                                _this.queueWork(search, false).then(function (result) { return resolve(result); }, function (e) { return reject(e); });
+                            else
+                                resolve(_this.items);
+                        }, delay);
+                    });
+                }
+                else
+                    return this.queueWork(search, false);
+            }
         };
         Query.prototype.clone = function (asLookup) {
             if (asLookup === void 0) { asLookup = false; }
