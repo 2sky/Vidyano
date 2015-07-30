@@ -2,18 +2,22 @@ module Vidyano.WebComponents {
     export class InputSearch extends WebComponent {
         value: string;
         focused: boolean;
+        collapsed: boolean;
 
         private _searchKeypressed(e: KeyboardEvent) {
             if (e.keyCode == 13) {
-                var input = <HTMLInputElement>this.$["input"];
+                var input = <HTMLInputElement>this.$$("#input");
                 input.blur();
 
                 this._searchClick();
             }
         }
 
-        private _searchClick() {
+        private _searchClick(e?: TapEvent) {
             this.fire("search", this.value);
+
+            if (e && !this.value)
+                e.stopPropagation();
         }
 
         private _input_focused() {
@@ -24,8 +28,15 @@ module Vidyano.WebComponents {
             this.focused = false;
         }
 
+        private _stop_tap(e: TapEvent) {
+            e.stopPropagation();
+            this.focus();
+        }
+
         focus() {
-            this.$["input"].focus();
+            setTimeout(() => {
+                (<HTMLInputElement>this.$$("#input")).focus();
+            }, 100);
         }
     }
 
@@ -41,6 +52,10 @@ module Vidyano.WebComponents {
                 reflectToAttribute: true
             },
             autofocus: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            collapsed: {
                 type: Boolean,
                 reflectToAttribute: true
             }

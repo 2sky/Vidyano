@@ -13,6 +13,10 @@ vi-input-search {
         padding: 8px 12px;
         background-color: transparent;
         color: white;
+        -moz-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
     }
 
     button {
@@ -42,5 +46,11 @@ vi-input-search {
 
     input:focus + button {
         fill: white;
+    }
+
+    &[collapsed] {
+        vi-popup {
+            .flex();
+        }
     }
 }

@@ -2310,10 +2310,12 @@ declare module Vidyano.WebComponents {
     class InputSearch extends WebComponent {
         value: string;
         focused: boolean;
+        collapsed: boolean;
         private _searchKeypressed(e);
-        private _searchClick();
+        private _searchClick(e?);
         private _input_focused();
         private _input_blurred();
+        private _stop_tap(e);
         focus(): void;
     }
 }
@@ -2329,8 +2331,13 @@ declare module Vidyano.WebComponents {
         filter: string;
         filtering: boolean;
         programUnit: ProgramUnit;
+        collapsed: boolean;
+        attached(): void;
         private _filterChanged();
         private _search();
+        private _toggleCollapse();
+        private _hasGroupItems(programUnitItems);
+        private _countItems(programUnitItems);
     }
     class MenuItem extends WebComponent {
         item: Vidyano.ProgramUnitItem;
@@ -2345,7 +2352,7 @@ declare module Vidyano.WebComponents {
         private _filterChanged();
         private _hasMatch(item, search);
         private _programUnitChanged();
-        private _updateItemTitle(item, filter, filtering);
+        private _updateItemTitle(item, filter, filtering, collapsed);
         private _computedHasItems(item);
         private _computedHref(item);
     }
@@ -2604,6 +2611,7 @@ declare module Vidyano.WebComponents {
         private _header;
         disabled: boolean;
         contentAlign: string;
+        orientation: string;
         sticky: boolean;
         open: boolean;
         autoSizeContent: boolean;
@@ -3160,6 +3168,7 @@ declare module Vidyano.WebComponents {
     class User extends WebComponent {
         private service;
         isSignedIn: boolean;
+        collapsed: boolean;
         private _setService;
         private _setIsSignedIn;
         private _setCanFeedback;

@@ -3,17 +3,40 @@ module Vidyano.WebComponents {
         filter: string;
         filtering: boolean;
         programUnit: ProgramUnit;
+        collapsed: boolean;
+
+        attached() {
+            super.attached();
+
+            this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
+        }
 
         private _filterChanged() {
             this.filtering = !StringEx.isNullOrEmpty(this.filter);
         }
 
         private _search() {
+            if(this.collapsed && this.filter)
+                Popup.closeAll();
+
             if (!this.filtering || this.app.service.application.globalSearchId == "00000000-0000-0000-0000-000000000000")
                 return;
 
             this.app.changePath(this.app.getUrlForPersistentObject(this.app.service.application.globalSearchId, this.filter));
             this.filter = "";
+        }
+
+        private _toggleCollapse() {
+            this.collapsed = !this.collapsed;
+            Vidyano.cookie("menu-collapsed", String(this.collapsed));
+        }
+
+        private _hasGroupItems(programUnitItems: ProgramUnitItemGroup[]): boolean {
+            return !!programUnitItems && programUnitItems.some(item => item instanceof ProgramUnitItemGroup);
+        }
+
+        private _countItems(programUnitItems: any[]): number {
+            return !!programUnitItems ? programUnitItems.length : 0;
         }
     }
 
@@ -83,7 +106,12 @@ module Vidyano.WebComponents {
             this._setExpand(this.item && this.item == this.programUnit);
         }
 
-        private _updateItemTitle(item: Vidyano.ProgramUnitItem, filter: string, filtering: boolean) {
+        private _updateItemTitle(item: Vidyano.ProgramUnitItem, filter: string, filtering: boolean, collapsed: boolean) {
+            if (collapsed) {
+                this.$["title"].textContent = item.title[0];
+                return;
+            }
+
             if (!filtering)
                 this.$["title"].textContent = item.title;
             else if (this._hasMatch(item, this.filter.toUpperCase())) {
@@ -109,6 +137,10 @@ module Vidyano.WebComponents {
             menuTitle: String,
             programUnit: Object,
             items: Array,
+            collapsed: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             filter: {
                 type: String,
                 observer: "_filterChanged"
@@ -124,6 +156,11 @@ module Vidyano.WebComponents {
     WebComponent.register(MenuItem, WebComponents, "vi", {
         properties: {
             item: Object,
+            collapsed: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
             programUnit: {
                 type: Object,
                 observer: "_programUnitChanged"
@@ -160,7 +197,7 @@ module Vidyano.WebComponents {
             }
         },
         observers: [
-            "_updateItemTitle(item, filter, filtering)"
+            "_updateItemTitle(item, filter, filtering, collapsed)"
         ],
         listeners: {
             "tap": "_tap"

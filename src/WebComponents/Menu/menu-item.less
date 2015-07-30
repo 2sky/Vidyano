@@ -103,4 +103,14 @@ vi-menu-item {
     &[hide] + .subItems {
         display: none !important;
     }
+
+    &[collapsed] {
+        a {
+            padding: 0;
+            line-height: @h1;
+            height: @h1;
+            width: @h1;
+            text-align: center;
+        }
+    }
 }

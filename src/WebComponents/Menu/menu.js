@@ -13,14 +13,30 @@ var Vidyano;
             function Menu() {
                 _super.apply(this, arguments);
             }
+            Menu.prototype.attached = function () {
+                _super.prototype.attached.call(this);
+                this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
+            };
             Menu.prototype._filterChanged = function () {
                 this.filtering = !StringEx.isNullOrEmpty(this.filter);
             };
             Menu.prototype._search = function () {
+                if (this.collapsed && this.filter)
+                    WebComponents.Popup.closeAll();
                 if (!this.filtering || this.app.service.application.globalSearchId == "00000000-0000-0000-0000-000000000000")
                     return;
                 this.app.changePath(this.app.getUrlForPersistentObject(this.app.service.application.globalSearchId, this.filter));
                 this.filter = "";
+            };
+            Menu.prototype._toggleCollapse = function () {
+                this.collapsed = !this.collapsed;
+                Vidyano.cookie("menu-collapsed", String(this.collapsed));
+            };
+            Menu.prototype._hasGroupItems = function (programUnitItems) {
+                return !!programUnitItems && programUnitItems.some(function (item) { return item instanceof Vidyano.ProgramUnitItemGroup; });
+            };
+            Menu.prototype._countItems = function (programUnitItems) {
+                return !!programUnitItems ? programUnitItems.length : 0;
             };
             return Menu;
         })(WebComponents.WebComponent);
@@ -73,7 +89,11 @@ var Vidyano;
                     return;
                 this._setExpand(this.item && this.item == this.programUnit);
             };
-            MenuItem.prototype._updateItemTitle = function (item, filter, filtering) {
+            MenuItem.prototype._updateItemTitle = function (item, filter, filtering, collapsed) {
+                if (collapsed) {
+                    this.$["title"].textContent = item.title[0];
+                    return;
+                }
                 if (!filtering)
                     this.$["title"].textContent = item.title;
                 else if (this._hasMatch(item, this.filter.toUpperCase())) {
@@ -97,6 +117,10 @@ var Vidyano;
                 menuTitle: String,
                 programUnit: Object,
                 items: Array,
+                collapsed: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                },
                 filter: {
                     type: String,
                     observer: "_filterChanged"
@@ -111,6 +135,11 @@ var Vidyano;
         WebComponents.WebComponent.register(MenuItem, WebComponents, "vi", {
             properties: {
                 item: Object,
+                collapsed: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    value: false
+                },
                 programUnit: {
                     type: Object,
                     observer: "_programUnitChanged"
@@ -147,7 +176,7 @@ var Vidyano;
                 }
             },
             observers: [
-                "_updateItemTitle(item, filter, filtering)"
+                "_updateItemTitle(item, filter, filtering, collapsed)"
             ],
             listeners: {
                 "tap": "_tap"

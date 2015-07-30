@@ -67,6 +67,10 @@ var Vidyano;
                 canUserSettings: {
                     type: Boolean,
                     readOnly: true
+                },
+                collapsed: {
+                    type: Boolean,
+                    reflectToAttribute: true
                 }
             },
             forwardObservers: [

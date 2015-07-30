@@ -16,6 +16,10 @@ vi-input-search input {
   padding: 8px 12px;
   background-color: transparent;
   color: white;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 vi-input-search button {
   border: none;
@@ -38,4 +42,9 @@ vi-input-search input:not(:focus):-ms-input-placeholder {
 }
 vi-input-search input:focus + button {
   fill: white;
+}
+vi-input-search[collapsed] vi-popup {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
 }

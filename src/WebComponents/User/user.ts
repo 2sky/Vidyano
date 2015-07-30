@@ -2,6 +2,7 @@ module Vidyano.WebComponents {
     export class User extends WebComponent {
         private service: Vidyano.Service;
         isSignedIn: boolean;
+        collapsed: boolean;
 
         private _setService: (service: Vidyano.Service) => void;
         private _setIsSignedIn: (val: boolean) => void;
@@ -69,6 +70,10 @@ module Vidyano.WebComponents {
             canUserSettings: {
                 type: Boolean,
                 readOnly: true
+            },
+            collapsed: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         forwardObservers: [

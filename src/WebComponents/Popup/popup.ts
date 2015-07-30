@@ -31,6 +31,7 @@ module Vidyano.WebComponents {
         private _header: HTMLElement;
         disabled: boolean;
         contentAlign: string;
+        orientation: string;
         sticky: boolean;
         open: boolean;
         autoSizeContent: boolean;
@@ -107,13 +108,16 @@ module Vidyano.WebComponents {
 
         private _onOpen(e: Event) {
             if (!this.open)
-                this._open(!this._findParentPopup() ? "vertical" : "horizontal");
+                this._open();
 
             e.stopPropagation();
             e.preventDefault();
         }
 
-        private _open(orientation: string = "vertical") {
+        private _open(orientation: string = this.orientation) {
+            if (orientation.toUpperCase() === "AUTO")
+                orientation = !this._findParentPopup() ? "vertical" : "horizontal";
+
             if (this.open || this.asElement.hasAttribute("disabled"))
                 return;
 
@@ -347,6 +351,11 @@ module Vidyano.WebComponents {
             contentAlign: {
                 type: String,
                 reflectToAttribute: true
+            },
+            orientation: {
+                type: String,
+                reflectToAttribute: true,
+                value: "auto"
             }
         },
         observers: [

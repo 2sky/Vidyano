@@ -7,11 +7,93 @@ vi-menu {
     .noSelection();
     height: 100%;
     color: @dark-foreground;
-    width: 16em;
     box-sizing: border-box;
+
     .colorize({
         background-color: @blue-grey-900;
     });
+
+    &:not([collapsed]) {
+        width: 16em;
+        
+        header.vi-menu.style-scope {
+            #toggleCollapse {
+                background-color: transparent;
+            }
+        }
+
+        #programUnits.vi-menu.style-scope {
+            .subItems {
+                display: none;
+                margin-bottom: @h5;
+            }
+
+            vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
+                display: block;
+            }
+        }
+    }
+
+    &[collapsed] {
+        width: @h1;
+
+        header.vi-menu.style-scope {
+            #toggleCollapse {
+                position: relative;
+
+                .colorize({
+                    background-color: @@color-dark;
+                });
+
+                 vi-resource {
+                    -moz-transform: rotate(180deg);
+                    -ms-transform: rotate(180deg);
+                    -o-transform: rotate(180deg);
+                    -webkit-transform: rotate(180deg);
+                    transform: rotate(180deg);
+                }
+            }
+
+            span {
+                display: none;
+            }
+
+            vi-input-search {
+                margin: 0;
+
+                button {
+                    height: @h1;
+                }
+            }
+        }
+
+        #programUnits.vi-menu.style-scope {
+            :not(.program-unit) + .subItems {
+                display: none;
+            }
+
+            vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
+                display: block;
+            }
+
+            .subItems[content]:not([has-group-items]) > vi-menu-item {
+                padding-left: 0;
+            }
+
+            .subItems[content][item-count="1"] > vi-menu-item {
+                height: @h1;
+                line-height: @h1;
+            }
+        }
+
+        vi-popup {
+            #content {
+                .colorize({
+                    background-color: @blue-grey-900;
+                });
+            }
+        }
+    }
 }
 
 .vi-menu.style-scope {
@@ -22,15 +104,38 @@ vi-menu {
     }
 
     header& {
+        position: relative;
         text-align: center;
 
         span {
             display: block;
             font-size: (@h3);
             line-height: @h1 * 2;
-            .colorize({
+
+            .colorize( {
                 background-color: @@color-dark;
             });
+        }
+
+        #toggleCollapse {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: @h1;
+            width: @h1;
+            fill: rgba(255, 255, 255, 0.5);
+
+            vi-resource {
+                -moz-transition: transform 0.3s ease-in-out;
+                -o-transition: transform 0.3s ease-in-out;
+                -webkit-transition: transform 0.3s ease-in-out;
+                transition: transform 0.3s ease-in-out;
+
+                svg {
+                    width: @h4;
+                    height: @h4;
+                }
+            }
         }
     }
 
@@ -40,17 +145,6 @@ vi-menu {
 
         input {
             padding-left: @h5;
-        }
-    }
-
-    #programUnits& {
-        .subItems {
-            display: none;
-            margin-bottom: @h5;
-        }
-
-        vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
-            display: block;
         }
     }
 }

@@ -15,13 +15,15 @@ var Vidyano;
             }
             InputSearch.prototype._searchKeypressed = function (e) {
                 if (e.keyCode == 13) {
-                    var input = this.$["input"];
+                    var input = this.$$("#input");
                     input.blur();
                     this._searchClick();
                 }
             };
-            InputSearch.prototype._searchClick = function () {
+            InputSearch.prototype._searchClick = function (e) {
                 this.fire("search", this.value);
+                if (e && !this.value)
+                    e.stopPropagation();
             };
             InputSearch.prototype._input_focused = function () {
                 this.focused = true;
@@ -29,8 +31,15 @@ var Vidyano;
             InputSearch.prototype._input_blurred = function () {
                 this.focused = false;
             };
+            InputSearch.prototype._stop_tap = function (e) {
+                e.stopPropagation();
+                this.focus();
+            };
             InputSearch.prototype.focus = function () {
-                this.$["input"].focus();
+                var _this = this;
+                setTimeout(function () {
+                    _this.$$("#input").focus();
+                }, 100);
             };
             return InputSearch;
         })(WebComponents.WebComponent);
@@ -47,6 +56,10 @@ var Vidyano;
                     reflectToAttribute: true
                 },
                 autofocus: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                },
+                collapsed: {
                     type: Boolean,
                     reflectToAttribute: true
                 }

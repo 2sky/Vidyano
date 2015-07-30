@@ -89,12 +89,14 @@ var Vidyano;
             };
             Popup.prototype._onOpen = function (e) {
                 if (!this.open)
-                    this._open(!this._findParentPopup() ? "vertical" : "horizontal");
+                    this._open();
                 e.stopPropagation();
                 e.preventDefault();
             };
             Popup.prototype._open = function (orientation) {
-                if (orientation === void 0) { orientation = "vertical"; }
+                if (orientation === void 0) { orientation = this.orientation; }
+                if (orientation.toUpperCase() === "AUTO")
+                    orientation = !this._findParentPopup() ? "vertical" : "horizontal";
                 if (this.open || this.asElement.hasAttribute("disabled"))
                     return;
                 this._currentOrientation = orientation;
@@ -281,6 +283,11 @@ var Vidyano;
                 contentAlign: {
                     type: String,
                     reflectToAttribute: true
+                },
+                orientation: {
+                    type: String,
+                    reflectToAttribute: true,
+                    value: "auto"
                 }
             },
             observers: [

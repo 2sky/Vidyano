@@ -52,4 +52,24 @@ vi-user {
             cursor: pointer;
         }
     }
+
+    &[collapsed] {
+        #signedIn{
+            display: none;
+        }
+        
+        #signIn {
+            & > span {
+                display: none;
+            }
+
+            vi-resource {
+                margin-left: 0 !important;
+            }
+        }
+
+        button.vi-user#settings {
+            border-left-width: 0;
+        }
+    }
 }

@@ -86,3 +86,10 @@ vi-menu-item[hide] {
 vi-menu-item[hide] + .subItems {
   display: none !important;
 }
+vi-menu-item[collapsed] a {
+  padding: 0;
+  line-height: 40px;
+  height: 40px;
+  width: 40px;
+  text-align: center;
+}

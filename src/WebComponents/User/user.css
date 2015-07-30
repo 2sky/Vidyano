@@ -144,3 +144,15 @@ vi-user button.vi-user > vi-resource {
 vi-user:not([is-signed-in]) button.vi-user {
   cursor: pointer;
 }
+vi-user[collapsed] #signedIn {
+  display: none;
+}
+vi-user[collapsed] #signIn > span {
+  display: none;
+}
+vi-user[collapsed] #signIn vi-resource {
+  margin-left: 0 !important;
+}
+vi-user[collapsed] button.vi-user#settings {
+  border-left-width: 0;
+}
