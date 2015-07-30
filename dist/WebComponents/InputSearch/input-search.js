@@ -16,7 +16,8 @@ var Vidyano;
             InputSearch.prototype._searchKeypressed = function (e) {
                 if (e.keyCode == 13) {
                     var input = this.$$("#input");
-                    input.blur();
+                    if (input)
+                        input.blur();
                     this._searchClick();
                 }
             };
@@ -38,7 +39,9 @@ var Vidyano;
             InputSearch.prototype.focus = function () {
                 var _this = this;
                 setTimeout(function () {
-                    _this.$$("#input").focus();
+                    var input = _this.$$("#input");
+                    if (input)
+                        input.focus();
                 }, 100);
             };
             return InputSearch;
@@ -61,7 +64,8 @@ var Vidyano;
                 },
                 collapsed: {
                     type: Boolean,
-                    reflectToAttribute: true
+                    reflectToAttribute: true,
+                    value: false
                 }
             }
         });

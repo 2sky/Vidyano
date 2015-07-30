@@ -7,7 +7,8 @@ module Vidyano.WebComponents {
         private _searchKeypressed(e: KeyboardEvent) {
             if (e.keyCode == 13) {
                 var input = <HTMLInputElement>this.$$("#input");
-                input.blur();
+                if (input)
+                    input.blur();
 
                 this._searchClick();
             }
@@ -35,7 +36,9 @@ module Vidyano.WebComponents {
 
         focus() {
             setTimeout(() => {
-                (<HTMLInputElement>this.$$("#input")).focus();
+                var input = (<HTMLInputElement>this.$$("#input"));
+                if (input)
+                    input.focus();
             }, 100);
         }
     }
@@ -57,7 +60,8 @@ module Vidyano.WebComponents {
             },
             collapsed: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: false
             }
         }
     });
