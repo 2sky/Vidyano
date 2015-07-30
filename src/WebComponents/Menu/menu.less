@@ -76,21 +76,23 @@ vi-menu {
                 display: none;
             }
 
-            vi-menu-item {
-                padding-right: @h4;
-            }
-
             vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
                 display: block;
             }
 
-            .subItems[content]:not([has-group-items]) > vi-menu-item {
-                padding-left: @h5;
-            }
+            .subItems[content] {
+                vi-menu-item {
+                    padding-right: @h4;
+                }
 
-            .subItems[content][item-count="1"] > vi-menu-item {
-                height: @h1;
-                line-height: @h1;
+                &[item-count="1"] > vi-menu-item {
+                    height: @h1;
+                    line-height: @h1;
+                }
+
+                &:not([has-group-items]) > vi-menu-item {
+                    padding-left: @h5;
+                }
             }
         }
 

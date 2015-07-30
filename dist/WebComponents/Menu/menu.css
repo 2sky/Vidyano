@@ -68,19 +68,19 @@ vi-menu[collapsed] header.vi-menu.style-scope vi-input-search button[header] {
 vi-menu[collapsed] #programUnits.vi-menu.style-scope :not(.program-unit) + .subItems {
   display: none;
 }
-vi-menu[collapsed] #programUnits.vi-menu.style-scope vi-menu-item {
-  padding-right: 12px;
-}
 vi-menu[collapsed] #programUnits.vi-menu.style-scope vi-menu-item[expand] + .subItems,
 vi-menu[collapsed] #programUnits.vi-menu.style-scope vi-menu-item[filtering]:not([hide]) + .subItems {
   display: block;
 }
-vi-menu[collapsed] #programUnits.vi-menu.style-scope .subItems[content]:not([has-group-items]) > vi-menu-item {
-  padding-left: 6px;
+vi-menu[collapsed] #programUnits.vi-menu.style-scope .subItems[content] vi-menu-item {
+  padding-right: 12px;
 }
 vi-menu[collapsed] #programUnits.vi-menu.style-scope .subItems[content][item-count="1"] > vi-menu-item {
   height: 40px;
   line-height: 40px;
+}
+vi-menu[collapsed] #programUnits.vi-menu.style-scope .subItems[content]:not([has-group-items]) > vi-menu-item {
+  padding-left: 6px;
 }
 [theme-color-1] vi-menu[collapsed] vi-popup #content {
   background-color: #263238;
