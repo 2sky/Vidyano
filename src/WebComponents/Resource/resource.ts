@@ -5,9 +5,9 @@ module Vidyano.WebComponents {
         private _loadedSource: string;
         name: string;
         source: string;
-        if: boolean;
         icon: boolean;
         model: any;
+        hasResource: boolean;
 
         attached() {
             super.attached();

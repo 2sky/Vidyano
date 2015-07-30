@@ -2964,9 +2964,9 @@ declare module Vidyano.WebComponents {
         private _loadedSource;
         name: string;
         source: string;
-        if: boolean;
         icon: boolean;
         model: any;
+        hasResource: boolean;
         attached(): void;
         private _nameChanged();
         private _setIcon(value);

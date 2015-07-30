@@ -62,6 +62,9 @@ vi-menu[collapsed] header.vi-menu.style-scope vi-input-search {
 vi-menu[collapsed] header.vi-menu.style-scope vi-input-search button {
   height: 40px;
 }
+vi-menu[collapsed] header.vi-menu.style-scope vi-input-search button[header] {
+  fill: #FAFAFA;
+}
 vi-menu[collapsed] #programUnits.vi-menu.style-scope :not(.program-unit) + .subItems {
   display: none;
 }

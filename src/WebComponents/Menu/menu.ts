@@ -108,6 +108,19 @@ module Vidyano.WebComponents {
 
         private _updateItemTitle(item: Vidyano.ProgramUnitItem, filter: string, filtering: boolean, collapsed: boolean) {
             if (collapsed) {
+                if (item instanceof ProgramUnit && !this.$["title"].querySelector("vi-resource")) {
+                    var resourceName = item.offset < 2147483647 ? "Icon_ProgramUnit_" + item.name : "Icon_Vidyano";
+                    if (Vidyano.WebComponents.Resource.Exists(resourceName)) {
+                        this.$["title"].textContent = "";
+
+                        var resource = new Vidyano.WebComponents.Resource();
+                        resource.source = resourceName;
+                        this.$["title"].appendChild(resource);
+
+                        return;
+                    }
+                }
+
                 this.$["title"].textContent = item.title[0];
                 return;
             }

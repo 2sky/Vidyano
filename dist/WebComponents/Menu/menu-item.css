@@ -34,6 +34,10 @@ vi-menu-item a {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+vi-menu-item a > vi-resource {
+  height: 100%;
+  fill: #fafafa;
+}
 vi-menu-item.program-unit-item:not([has-items]) {
   padding-left: 24px;
 }
