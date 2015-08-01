@@ -2409,29 +2409,29 @@ var Vidyano;
         };
         Query.prototype.getItems = function (start, length) {
             var _this = this;
-            return this.queueWork(function () {
-                if (!_this.hasSearched)
-                    return _this.search(0).then(function () { return _this.getItems(start, length || _this.pageSize); });
-                else {
-                    if (_this.totalItems >= 0) {
-                        if (start > _this.totalItems)
-                            start = _this.totalItems;
-                        if (start + length > _this.totalItems)
-                            length = _this.totalItems - start;
-                    }
-                    if (_this.pageSize <= 0 || length == 0)
-                        return Promise.resolve(_this.items.slice(start, start + length));
-                    var startPage = Math.floor(start / _this.pageSize);
-                    var endPage = Math.floor((start + length - 1) / _this.pageSize);
-                    while (startPage < endPage && _this._queriedPages.indexOf(startPage) >= 0)
-                        startPage++;
-                    while (endPage > startPage && _this._queriedPages.indexOf(endPage) >= 0)
-                        endPage--;
-                    if (startPage == endPage && _this._queriedPages.indexOf(startPage) >= 0)
-                        return Promise.resolve(_this.items.slice(start, start + length));
-                    var clonedQuery = _this.clone(_this._asLookup);
-                    clonedQuery.skip = startPage * _this.pageSize;
-                    clonedQuery.top = (endPage - startPage + 1) * _this.pageSize;
+            if (!this.hasSearched)
+                return this.search(0).then(function () { return _this.getItems(start, length || _this.pageSize); });
+            else {
+                if (this.totalItems >= 0) {
+                    if (start > this.totalItems)
+                        start = this.totalItems;
+                    if (start + length > this.totalItems)
+                        length = this.totalItems - start;
+                }
+                if (this.pageSize <= 0 || length == 0)
+                    return Promise.resolve(this.items.slice(start, start + length));
+                var startPage = Math.floor(start / this.pageSize);
+                var endPage = Math.floor((start + length - 1) / this.pageSize);
+                while (startPage < endPage && this._queriedPages.indexOf(startPage) >= 0)
+                    startPage++;
+                while (endPage > startPage && this._queriedPages.indexOf(endPage) >= 0)
+                    endPage--;
+                if (startPage == endPage && this._queriedPages.indexOf(startPage) >= 0)
+                    return Promise.resolve(this.items.slice(start, start + length));
+                var clonedQuery = this.clone(this._asLookup);
+                clonedQuery.skip = startPage * this.pageSize;
+                clonedQuery.top = (endPage - startPage + 1) * this.pageSize;
+                return this.queueWork(function () {
                     return _this.service.executeQuery(_this.parent, clonedQuery, _this._asLookup).then(function (result) {
                         for (var p = startPage; p <= endPage; p++)
                             _this._queriedPages.push(p);
@@ -2454,19 +2454,26 @@ var Vidyano;
                         _this.setNotification(e, NotificationType.Error);
                         return Promise.reject(e);
                     });
-                }
-            }, false);
+                }, false);
+            }
         };
         Query.prototype.search = function (delay) {
             var _this = this;
             var search = function () {
                 _this._queriedPages = [];
                 _this._updateItems([], true);
-                return _this.service.executeQuery(_this.parent, _this, _this._asLookup).then(function (result) {
-                    _this.hasSearched = true;
-                    _this._setResult(result);
-                    return _this.items;
-                });
+                var now = new Date();
+                return _this.queueWork(function () {
+                    if (_this._lastSearched && _this._lastSearched > now)
+                        return Promise.resolve(_this.items);
+                    return _this.service.executeQuery(_this.parent, _this, _this._asLookup).then(function (result) {
+                        if (!_this._lastSearched || _this._lastSearched < now) {
+                            _this.hasSearched = true;
+                            _this._setResult(result);
+                        }
+                        return _this.items;
+                    });
+                }, false);
             };
             if (delay === 0)
                 return search();
@@ -2475,15 +2482,15 @@ var Vidyano;
                     var now = new Date();
                     return new Promise(function (resolve, reject) {
                         setTimeout(function () {
-                            if (_this._lastSearched < now)
-                                _this.queueWork(search, false).then(function (result) { return resolve(result); }, function (e) { return reject(e); });
+                            if (!_this._lastSearched || _this._lastSearched < now)
+                                search().then(function (result) { return resolve(result); }, function (e) { return reject(e); });
                             else
                                 resolve(_this.items);
                         }, delay);
                     });
                 }
                 else
-                    return this.queueWork(search, false);
+                    return search();
             }
         };
         Query.prototype.clone = function (asLookup) {

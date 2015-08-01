@@ -2798,36 +2798,36 @@ module Vidyano {
         }
 
         getItems(start: number, length: number): Promise<QueryResultItem[]> {
-            return this.queueWork(() => {
-                if (!this.hasSearched)
-                    return this.search(0).then(() => this.getItems(start, length || this.pageSize));
-                else {
-                    if (this.totalItems >= 0) {
-                        if (start > this.totalItems)
-                            start = this.totalItems;
+            if (!this.hasSearched)
+                return this.search(0).then(() => this.getItems(start, length || this.pageSize));
+            else {
+                if (this.totalItems >= 0) {
+                    if (start > this.totalItems)
+                        start = this.totalItems;
 
-                        if (start + length > this.totalItems)
-                            length = this.totalItems - start;
-                    }
+                    if (start + length > this.totalItems)
+                        length = this.totalItems - start;
+                }
 
-                    if (this.pageSize <= 0 || length == 0)
-                        return Promise.resolve(this.items.slice(start, start + length));
+                if (this.pageSize <= 0 || length == 0)
+                    return Promise.resolve(this.items.slice(start, start + length));
 
-                    var startPage = Math.floor(start / this.pageSize);
-                    var endPage = Math.floor((start + length - 1) / this.pageSize);
+                var startPage = Math.floor(start / this.pageSize);
+                var endPage = Math.floor((start + length - 1) / this.pageSize);
 
-                    while (startPage < endPage && this._queriedPages.indexOf(startPage) >= 0)
-                        startPage++;
-                    while (endPage > startPage && this._queriedPages.indexOf(endPage) >= 0)
-                        endPage--;
+                while (startPage < endPage && this._queriedPages.indexOf(startPage) >= 0)
+                    startPage++;
+                while (endPage > startPage && this._queriedPages.indexOf(endPage) >= 0)
+                    endPage--;
 
-                    if (startPage == endPage && this._queriedPages.indexOf(startPage) >= 0)
-                        return Promise.resolve(this.items.slice(start, start + length));
+                if (startPage == endPage && this._queriedPages.indexOf(startPage) >= 0)
+                    return Promise.resolve(this.items.slice(start, start + length));
 
-                    var clonedQuery = this.clone(this._asLookup);
-                    clonedQuery.skip = startPage * this.pageSize;
-                    clonedQuery.top = (endPage - startPage + 1) * this.pageSize;
+                var clonedQuery = this.clone(this._asLookup);
+                clonedQuery.skip = startPage * this.pageSize;
+                clonedQuery.top = (endPage - startPage + 1) * this.pageSize;
 
+                return this.queueWork(() => {
                     return this.service.executeQuery(this.parent, clonedQuery, this._asLookup).then(result => {
                         for (var p = startPage; p <= endPage; p++)
                             this._queriedPages.push(p);
@@ -2856,8 +2856,8 @@ module Vidyano {
                         this.setNotification(e, NotificationType.Error);
                         return Promise.reject(e);
                     });
-                }
-            }, false);
+                }, false);
+            }
         }
 
         search(delay?: number): Promise<QueryResultItem[]> {
@@ -2865,12 +2865,20 @@ module Vidyano {
                 this._queriedPages = [];
                 this._updateItems([], true);
 
-                return this.service.executeQuery(this.parent, this, this._asLookup).then(result => {
-                    this.hasSearched = true;
-                    this._setResult(result);
+                var now = new Date();
+                return this.queueWork(() => {
+                    if (this._lastSearched && this._lastSearched > now)
+                        return Promise.resolve(this.items);
 
-                    return this.items;
-                });
+                    return this.service.executeQuery(this.parent, this, this._asLookup).then(result => {
+                        if (!this._lastSearched || this._lastSearched < now) {
+                            this.hasSearched = true;
+                            this._setResult(result);
+                        }
+
+                        return this.items;
+                    });
+                }, false);
             };
 
             if (delay === 0)
@@ -2880,15 +2888,15 @@ module Vidyano {
                     var now = new Date();
                     return new Promise((resolve, reject) => {
                         setTimeout(() => {
-                            if (this._lastSearched < now)
-                                this.queueWork(search, false).then(result => resolve(result), e => reject(e));
+                            if (!this._lastSearched || this._lastSearched < now)
+                                search().then(result => resolve(result), e => reject(e));
                             else
                                 resolve(this.items);
                         }, delay);
                     });
                 }
                 else
-                    return this.queueWork(search, false);
+                    return search();
             }
         }
 
