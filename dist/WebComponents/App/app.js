@@ -157,7 +157,7 @@ var Vidyano;
             };
             App.prototype.changePath = function (path, replaceCurrent) {
                 if (replaceCurrent === void 0) { replaceCurrent = false; }
-                path = hashBang + App._stripHashBang(path);
+                path = hashBang + App.stripHashBang(path);
                 if (this.path === path)
                     return;
                 if (!this.noHistory) {
@@ -210,9 +210,9 @@ var Vidyano;
             };
             App.prototype.redirectToSignIn = function (keepUrl) {
                 if (keepUrl === void 0) { keepUrl = true; }
-                this.changePath("SignIn" + (keepUrl && this.path ? "/" + encodeURIComponent(App._stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
+                this.changePath("SignIn" + (keepUrl && this.path ? "/" + encodeURIComponent(App.stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
                 for (var route in this._routeMap) {
-                    if (!App._stripHashBang(route).startsWith("SignIn"))
+                    if (!App.stripHashBang(route).startsWith("SignIn"))
                         this._routeMap[route].empty();
                 }
             };
@@ -232,7 +232,7 @@ var Vidyano;
                 var _this = this;
                 var service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
                 this._setInitializing(true);
-                Promise.all([service.initialize(document.location.hash && App._stripHashBang(document.location.hash).startsWith("SignIn"))]).then(function () {
+                Promise.all([service.initialize(document.location.hash && App.stripHashBang(document.location.hash).startsWith("SignIn"))]).then(function () {
                     if (_this.service == service)
                         _this._onInitialized();
                 }, function (e) {
@@ -246,10 +246,10 @@ var Vidyano;
             App.prototype._onInitialized = function () {
                 var _this = this;
                 Vidyano.Path.rescue(function () {
-                    _this.path = App._stripHashBang(Vidyano.Path.routes.current);
+                    _this.path = App.stripHashBang(Vidyano.Path.routes.current);
                 });
                 if (!this.noHistory) {
-                    Vidyano.Path.root(hashBang + App._stripHashBang(this.path));
+                    Vidyano.Path.root(hashBang + App.stripHashBang(this.path));
                     Vidyano.Path.history.listen();
                     Vidyano.Path.listen();
                 }
@@ -258,10 +258,10 @@ var Vidyano;
                 this._setInitializing(false);
             };
             App.prototype._updateRoute = function (path) {
-                var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
+                var mappedPathRoute = Vidyano.Path.match(hashBang + App.stripHashBang(path), true);
                 var currentRoute = this.currentRoute;
                 if (mappedPathRoute) {
-                    var route = this._routeMap[hashBang + App._stripHashBang(mappedPathRoute.path)];
+                    var route = this._routeMap[hashBang + App.stripHashBang(mappedPathRoute.path)];
                     if (route && route.activate(mappedPathRoute.params)) {
                         if (currentRoute && currentRoute != route)
                             currentRoute.deactivate();
@@ -272,7 +272,7 @@ var Vidyano;
                     this._setCurrentRoute(null);
             };
             App.prototype._computeProgramUnit = function (application, path) {
-                var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
+                var mappedPathRoute = Vidyano.Path.match(hashBang + App.stripHashBang(path), true);
                 if (mappedPathRoute && application) {
                     if (mappedPathRoute.params && mappedPathRoute.params.programUnitName)
                         return Enumerable.from(application.programUnits).firstOrDefault(function (pu) { return pu.name == mappedPathRoute.params.programUnitName; });
@@ -288,7 +288,7 @@ var Vidyano;
                 var _this = this;
                 if (initializing)
                     return;
-                if (!this.service.isSignedIn && !App._stripHashBang(path).startsWith("SignIn")) {
+                if (!this.service.isSignedIn && !App.stripHashBang(path).startsWith("SignIn")) {
                     if (this.service.defaultUserName) {
                         this._setInitializing(true);
                         this.service.signInUsingDefaultCredentials().then(function () {
@@ -302,11 +302,11 @@ var Vidyano;
             App.prototype._appRouteAdded = function (e, detail) {
                 var _this = this;
                 this.async(function () {
-                    if (_this._routeMap[hashBang + App._stripHashBang(detail.route)] === undefined) {
-                        Vidyano.Path.map(hashBang + App._stripHashBang(detail.route)).to(function () {
+                    if (_this._routeMap[hashBang + App.stripHashBang(detail.route)] === undefined) {
+                        Vidyano.Path.map(hashBang + App.stripHashBang(detail.route)).to(function () {
                             _this.path = Vidyano.Path.routes.current;
                         });
-                        _this._routeMap[hashBang + App._stripHashBang(detail.route)] = e.target;
+                        _this._routeMap[hashBang + App.stripHashBang(detail.route)] = e.target;
                     }
                     _this._setRouteMapVersion(_this.routeMapVersion + 1);
                 });
@@ -356,7 +356,7 @@ var Vidyano;
                     reg.listener(e);
                 });
             };
-            App._stripHashBang = function (path) {
+            App.stripHashBang = function (path) {
                 return path && path.replace(hashBang, "") || "";
             };
             return App;
@@ -441,7 +441,7 @@ var Vidyano;
                     var cacheEntry = this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(parent));
                     if (cacheEntry instanceof PersistentObjectFromActionAppCacheEntry && cacheEntry.fromActionIdReturnPath) {
                         this.app.cacheRemove(cacheEntry);
-                        if (this.app.getUrlForFromAction(cacheEntry.fromActionId) == this.app.path)
+                        if (App.stripHashBang(this.app.getUrlForFromAction(cacheEntry.fromActionId)) == App.stripHashBang(this.app.path))
                             this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
                     }
                 }

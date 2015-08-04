@@ -184,7 +184,7 @@
         }
 
         changePath(path: string, replaceCurrent: boolean = false) {
-            path = hashBang + App._stripHashBang(path);
+            path = hashBang + App.stripHashBang(path);
             if (this.path === path)
                 return;
 
@@ -247,9 +247,9 @@
         }
 
         redirectToSignIn(keepUrl: boolean = true) {
-            this.changePath("SignIn" + (keepUrl && this.path ? "/" + encodeURIComponent(App._stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
+            this.changePath("SignIn" + (keepUrl && this.path ? "/" + encodeURIComponent(App.stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
             for (var route in this._routeMap) {
-                if (!App._stripHashBang(route).startsWith("SignIn"))
+                if (!App.stripHashBang(route).startsWith("SignIn"))
                     this._routeMap[route].empty();
             }
         }
@@ -271,7 +271,7 @@
             var service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
             this._setInitializing(true);
 
-            Promise.all([service.initialize(document.location.hash && App._stripHashBang(document.location.hash).startsWith("SignIn"))]).then(() => {
+            Promise.all([service.initialize(document.location.hash && App.stripHashBang(document.location.hash).startsWith("SignIn"))]).then(() => {
                 if (this.service == service)
                     this._onInitialized();
             }, e => {
@@ -287,11 +287,11 @@
 
         private _onInitialized() {
             Vidyano.Path.rescue(() => {
-                this.path = App._stripHashBang(Vidyano.Path.routes.current);
+                this.path = App.stripHashBang(Vidyano.Path.routes.current);
             });
 
             if (!this.noHistory) {
-                Vidyano.Path.root(hashBang + App._stripHashBang(this.path));
+                Vidyano.Path.root(hashBang + App.stripHashBang(this.path));
                 Vidyano.Path.history.listen();
                 Vidyano.Path.listen();
             }
@@ -302,12 +302,12 @@
         }
 
         private _updateRoute(path: string) {
-            var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
+            var mappedPathRoute = Vidyano.Path.match(hashBang + App.stripHashBang(path), true);
             var currentRoute = this.currentRoute;
 
             // Find route and activate
             if (mappedPathRoute) {
-                var route = this._routeMap[hashBang + App._stripHashBang(mappedPathRoute.path)];
+                var route = this._routeMap[hashBang + App.stripHashBang(mappedPathRoute.path)];
                 if (route && route.activate(mappedPathRoute.params)) {
                     if (currentRoute && currentRoute != route)
                         currentRoute.deactivate();
@@ -320,7 +320,7 @@
         }
 
         private _computeProgramUnit(application: Vidyano.Application, path: string): ProgramUnit {
-            var mappedPathRoute = Vidyano.Path.match(hashBang + App._stripHashBang(path), true);
+            var mappedPathRoute = Vidyano.Path.match(hashBang + App.stripHashBang(path), true);
 
             if (mappedPathRoute && application) {
                 if (mappedPathRoute.params && mappedPathRoute.params.programUnitName)
@@ -340,7 +340,7 @@
             if (initializing)
                 return;
 
-            if (!this.service.isSignedIn && !App._stripHashBang(path).startsWith("SignIn")) {
+            if (!this.service.isSignedIn && !App.stripHashBang(path).startsWith("SignIn")) {
                 if (this.service.defaultUserName) {
                     this._setInitializing(true);
                     this.service.signInUsingDefaultCredentials().then(() => {
@@ -354,12 +354,12 @@
 
         private _appRouteAdded(e: Event, detail: { route: string; component: string; }) {
             this.async(() => {
-                if (this._routeMap[hashBang + App._stripHashBang(detail.route)] === undefined) {
-                    Vidyano.Path.map(hashBang + App._stripHashBang(detail.route)).to(() => {
+                if (this._routeMap[hashBang + App.stripHashBang(detail.route)] === undefined) {
+                    Vidyano.Path.map(hashBang + App.stripHashBang(detail.route)).to(() => {
                         this.path = Vidyano.Path.routes.current;
                     });
 
-                    this._routeMap[hashBang + App._stripHashBang(detail.route)] = <AppRoute><any>e.target;
+                    this._routeMap[hashBang + App.stripHashBang(detail.route)] = <AppRoute><any>e.target;
                 }
 
                 this._setRouteMapVersion(this.routeMapVersion + 1);
@@ -423,7 +423,7 @@
             });
         }
 
-        private static _stripHashBang(path: string): string {
+        static stripHashBang(path: string): string {
             return path && path.replace(hashBang, "") || "";
         }
     }
@@ -517,7 +517,7 @@
                 if (cacheEntry instanceof PersistentObjectFromActionAppCacheEntry && cacheEntry.fromActionIdReturnPath) {
                     this.app.cacheRemove(cacheEntry);
 
-                    if (this.app.getUrlForFromAction(cacheEntry.fromActionId) == this.app.path)
+                    if (App.stripHashBang(this.app.getUrlForFromAction(cacheEntry.fromActionId)) == App.stripHashBang(this.app.path))
                         this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
                 }
             }
