@@ -66,6 +66,13 @@ vi-persistent-object-attribute-as-detail #table button.action {
   height: 30px;
   line-height: 30px;
 }
+vi-persistent-object-attribute-as-detail[editing] #table {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 vi-persistent-object-attribute-as-detail[editing] #table #head {
   background-color: #f9f9f9;
   border: 1px solid #dddddd;
