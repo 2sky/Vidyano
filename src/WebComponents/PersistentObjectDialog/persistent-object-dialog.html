@@ -7,11 +7,12 @@
                 <h4 class="flex">{{persistentObject.breadcrumb}}</h4>
             </header>
             <div>
+                <vi-notification service-object="{{persistentObject}}"></vi-notification>
                 <vi-persistent-object-tab class="flex" tab="{{tab}}" columns="1"></vi-persistent-object-tab>
             </div>
             <footer class="horizontal layout end-justified">
-                <button is="vi-button" on-tap="_save" action-type="Default">{{translations.Save}}</button>
-                <button is="vi-button" inverse on-tap="_cancel">{{translations.Cancel}}</button>
+                <button is="vi-button" on-tap="_save" action-type="Default" label="{{translations.Save}}"></button>
+                <button is="vi-button" inverse on-tap="_cancel" label="{{translations.Cancel}}"></button>
             </footer>
         </vi-dialog>
     </template>
