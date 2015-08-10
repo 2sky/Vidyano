@@ -19,25 +19,81 @@ vi-scroller[scrollbars='visible-margin'][vertical] #vertical {
 vi-scroller:not([hovering]):not([scrolling]):not([scrollbars^='visible']) .scrollbar {
   opacity: 0;
 }
-vi-scroller .scrollbar {
+vi-scroller .scrollbar-parent {
+  position: absolute;
+  background-color: transparent;
+  -moz-transition: opacity 0.2s, background-color 0.2s;
+  -o-transition: opacity 0.2s, background-color 0.2s;
+  -webkit-transition: opacity 0.2s, background-color 0.2s;
+  transition: opacity 0.2s, background-color 0.2s;
+  -moz-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+vi-scroller .scrollbar-parent .scrollbar {
   position: absolute;
   background-color: #797979;
   opacity: 1;
   border-radius: 6px;
-  -moz-transition: opacity 0.2s ease-in-out;
-  -o-transition: opacity 0.2s ease-in-out;
-  -webkit-transition: opacity 0.2s ease-in-out;
-  transition: opacity 0.2s ease-in-out;
+  -moz-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+vi-scroller .scrollbar-parent.horizontal {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+}
+vi-scroller .scrollbar-parent.horizontal .scrollbar {
+  -moz-transition: opacity 0.2s, height 0.2s;
+  -o-transition: opacity 0.2s, height 0.2s;
+  -webkit-transition: opacity 0.2s, height 0.2s;
+  transition: opacity 0.2s, height 0.2s;
+}
+vi-scroller .scrollbar-parent.vertical {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+}
+vi-scroller .scrollbar-parent.vertical .scrollbar {
+  -moz-transition: opacity 0.2s, width 0.2s;
+  -o-transition: opacity 0.2s, width 0.2s;
+  -webkit-transition: opacity 0.2s, width 0.2s;
+  transition: opacity 0.2s, width 0.2s;
+}
+vi-scroller[vertical] .scrollbar-parent.vertical:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+vi-scroller[horizontal] .scrollbar-parent.horizontal:hover {
+  background-color: rgba(0, 0, 0, 0.2);
 }
 vi-scroller #vertical {
   top: 0;
-  right: 3px;
+  right: 0;
   width: 6px;
+}
+vi-scroller #vertical:hover {
+  width: 8px;
 }
 vi-scroller #horizontal {
   left: 0;
-  bottom: 3px;
+  bottom: 0;
   height: 6px;
+}
+vi-scroller #horizontal:hover {
+  height: 8px;
+}
+vi-scroller[scrolling] #vertical,
+vi-scroller .scrollbar-parent:hover #vertical {
+  width: 8px;
+}
+vi-scroller[scrolling] #horizontal,
+vi-scroller .scrollbar-parent:hover #horizontal {
+  height: 8px;
 }
 vi-scroller:not([vertical]):not([scrollbars^='visible']) #vertical {
   display: none;

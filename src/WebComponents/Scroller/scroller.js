@@ -71,8 +71,8 @@ var Vidyano;
                         this._setHorizontal(width > 0);
                     }
                 }
-                if (horizontalScrollLeft !== this._horizontalScrollTop) {
-                    this._horizontalScrollTop = horizontalScrollLeft;
+                if (horizontalScrollLeft !== this._horizontalScrollLeft) {
+                    this._horizontalScrollLeft = horizontalScrollLeft;
                     this.$["horizontal"].style.left = horizontalScrollLeft + "px";
                 }
             };
@@ -97,7 +97,7 @@ var Vidyano;
                 var wrapper = this.$["wrapper"];
                 if (detail.state == "start") {
                     this._setScrolling(true);
-                    this._trackStart = this._horizontalScrollTop;
+                    this._trackStart = this._horizontalScrollLeft;
                 }
                 else if (detail.state == "track") {
                     var newHorizontalScrollTop = this._trackStart + detail.dy;
@@ -129,6 +129,26 @@ var Vidyano;
             };
             Scroller.prototype._mouseleave = function () {
                 this._setHovering(false);
+            };
+            Scroller.prototype._verticalScrollbarParentTap = function (e) {
+                var event = e.detail.sourceEvent;
+                if (event.offsetY) {
+                    if (event.offsetY > this._verticalScrollTop + this._verticalScrollHeight)
+                        this.$["wrapper"].scrollTop += this.$["wrapper"].scrollHeight * 0.1;
+                    else if (event.offsetY < this._verticalScrollTop)
+                        this.$["wrapper"].scrollTop -= this.$["wrapper"].scrollHeight * 0.1;
+                    e.stopPropagation();
+                }
+            };
+            Scroller.prototype._horizontalScrollbarParentTap = function (e) {
+                var event = e.detail.sourceEvent;
+                if (event.offsetX) {
+                    if (event.offsetX > this._horizontalScrollLeft + this._horizontalScrollLeft)
+                        this.$["wrapper"].scrollLeft += this.$["wrapper"].scrollWidth * 0.1;
+                    else if (event.offsetX < this._horizontalScrollLeft)
+                        this.$["wrapper"].scrollLeft -= this.$["wrapper"].scrollWidth * 0.1;
+                    e.stopPropagation();
+                }
             };
             Scroller._minBarSize = 20;
             return Scroller;

@@ -8,7 +8,7 @@
         private _verticalScrollTop: number;
         private _verticalScrollSpace: number;
         private _horizontalScrollWidth: number;
-        private _horizontalScrollTop: number;
+        private _horizontalScrollLeft: number;
         private _horizontalScrollSpace: number;
         private _trackStart: number;
         outerWidth: number;
@@ -106,8 +106,8 @@
                 }
             }
 
-            if (horizontalScrollLeft !== this._horizontalScrollTop) {
-                this._horizontalScrollTop = horizontalScrollLeft;
+            if (horizontalScrollLeft !== this._horizontalScrollLeft) {
+                this._horizontalScrollLeft = horizontalScrollLeft;
                 this.$["horizontal"].style.left = `${horizontalScrollLeft}px`;
             }
         }
@@ -137,7 +137,7 @@
 
             if (detail.state == "start") {
                 this._setScrolling(true);
-                this._trackStart = this._horizontalScrollTop;
+                this._trackStart = this._horizontalScrollLeft;
             }
             else if (detail.state == "track") {
                 var newHorizontalScrollTop = this._trackStart + detail.dy;
@@ -177,6 +177,30 @@
 
         private _mouseleave() {
             this._setHovering(false);
+        }
+
+        private _verticalScrollbarParentTap(e: TapEvent) {
+            var event = <MouseEvent>e.detail.sourceEvent;
+            if (event.offsetY) {
+                if (event.offsetY > this._verticalScrollTop + this._verticalScrollHeight)
+                    this.$["wrapper"].scrollTop += this.$["wrapper"].scrollHeight * 0.1;
+                else if (event.offsetY < this._verticalScrollTop)
+                    this.$["wrapper"].scrollTop -= this.$["wrapper"].scrollHeight * 0.1;
+
+                e.stopPropagation();
+            }
+        }
+
+        private _horizontalScrollbarParentTap(e: TapEvent) {
+            var event = <MouseEvent>e.detail.sourceEvent;
+            if (event.offsetX) {
+                if (event.offsetX > this._horizontalScrollLeft + this._horizontalScrollLeft)
+                    this.$["wrapper"].scrollLeft += this.$["wrapper"].scrollWidth * 0.1;
+                else if (event.offsetX < this._horizontalScrollLeft)
+                    this.$["wrapper"].scrollLeft -= this.$["wrapper"].scrollWidth * 0.1;
+
+                e.stopPropagation();
+            }
         }
     }
 

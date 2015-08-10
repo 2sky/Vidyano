@@ -1,5 +1,7 @@
 ﻿@import (reference) "../vidyano.less";
 
+@scrollbar-parent-color: rgba(0,0,0,0.2);
+
 vi-scroller {
     .relative();
     overflow: hidden;
@@ -27,27 +29,98 @@ vi-scroller {
         }
     }
 
-    .scrollbar {
+    .scrollbar-parent {
         position: absolute;
-        background-color: #797979;
-        opacity: 1;
-        border-radius: @h5;
-        -moz-transition: opacity 0.2s ease-in-out;
-        -o-transition: opacity 0.2s ease-in-out;
-        -webkit-transition: opacity 0.2s ease-in-out;
-        transition: opacity 0.2s ease-in-out;
+        background-color: transparent;
+        -moz-transition: opacity 0.2s, background-color 0.2s;
+        -o-transition: opacity 0.2s, background-color 0.2s;
+        -webkit-transition: opacity 0.2s, background-color 0.2s;
+        transition: opacity 0.2s, background-color 0.2s;
+        -moz-transition-timing-function: ease-in-out;
+        -o-transition-timing-function: ease-in-out;
+        -webkit-transition-timing-function: ease-in-out;
+        transition-timing-function: ease-in-out;
+
+        .scrollbar {
+            position: absolute;
+            background-color: #797979;
+            opacity: 1;
+            border-radius: @h5;
+            -moz-transition-timing-function: ease-in-out;
+            -o-transition-timing-function: ease-in-out;
+            -webkit-transition-timing-function: ease-in-out;
+            transition-timing-function: ease-in-out;
+        }
+
+        &.horizontal {
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: @h5 + 2px;
+
+            .scrollbar {
+                -moz-transition: opacity 0.2s, height 0.2s;
+                -o-transition: opacity 0.2s, height 0.2s;
+                -webkit-transition: opacity 0.2s, height 0.2s;
+                transition: opacity 0.2s, height 0.2s;
+            }
+        }
+
+        &.vertical {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: @h5 + 2px;
+
+            .scrollbar {
+                -moz-transition: opacity 0.2s, width 0.2s;
+                -o-transition: opacity 0.2s, width 0.2s;
+                -webkit-transition: opacity 0.2s, width 0.2s;
+                transition: opacity 0.2s, width 0.2s;
+            }
+        }
+    }
+
+    &[vertical] {
+        .scrollbar-parent.vertical:hover {
+            background-color: @scrollbar-parent-color;
+        }
+    }
+
+    &[horizontal] {
+        .scrollbar-parent.horizontal:hover {
+            background-color: @scrollbar-parent-color;
+        }
     }
 
     #vertical {
         top: 0;
-        right: (@h5 / 2);
+        right: 0;
         width: @h5;
+
+        &:hover {
+            width: @h5 + 2px;
+        }
     }
 
     #horizontal {
         left: 0;
-        bottom: (@h5 / 2);
+        bottom: 0;
         height: @h5;
+
+        &:hover {
+            height: @h5 + 2px;
+        }
+    }
+
+    &[scrolling], .scrollbar-parent:hover {
+        #vertical {
+            width: @h5 + 2px;
+        }
+
+        #horizontal {
+            height: @h5 + 2px;
+        }
     }
 
     &:not([vertical]):not([scrollbars^='visible']) #vertical {

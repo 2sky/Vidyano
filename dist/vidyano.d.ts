@@ -3014,7 +3014,7 @@ declare module Vidyano.WebComponents {
         private _verticalScrollTop;
         private _verticalScrollSpace;
         private _horizontalScrollWidth;
-        private _horizontalScrollTop;
+        private _horizontalScrollLeft;
         private _horizontalScrollSpace;
         private _trackStart;
         outerWidth: number;
@@ -3047,6 +3047,8 @@ declare module Vidyano.WebComponents {
         private _updateScrollOffsets();
         private _mouseenter();
         private _mouseleave();
+        private _verticalScrollbarParentTap(e);
+        private _horizontalScrollbarParentTap(e);
     }
 }
 declare module Vidyano.WebComponents {
