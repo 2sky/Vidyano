@@ -1453,6 +1453,7 @@ module Vidyano {
         private _id: string;
         private _type: string;
         private _breadcrumb: string;
+        private _isDeleted: boolean;
 
         fullTypeName: string;
         label: string;
@@ -1477,7 +1478,6 @@ module Vidyano {
         private _serviceTabs: any;
         queries: Query[];
         queriesByName: { [key: string]: Query } = {};
-        isDeleted: boolean;
 
         constructor(service: Service, po: any) {
             super(service, (po._actionNames || po.actions || []).map(a => a == "Edit" && po.isNew ? "Save" : a));
@@ -1594,6 +1594,16 @@ module Vidyano {
 
             if (this.ownerDetailAttribute && value)
                 this.ownerDetailAttribute.onChanged(false);
+        }
+
+        get isDeleted(): boolean {
+            return this._isDeleted;
+        }
+
+        set isDeleted(isDeleted: boolean) {
+            var oldIsDeleted = this._isDeleted;
+            if (oldIsDeleted !== isDeleted)
+                this.notifyPropertyChanged("isDeleted", this._isDeleted = isDeleted, oldIsDeleted);
         }
 
         getAttribute(name: string): PersistentObjectAttribute {
@@ -1906,7 +1916,7 @@ module Vidyano {
         triggersRefresh: boolean;
         column: number;
         columnSpan: number;
-        objects: PersistentObject[];
+        //objects: PersistentObject[];
 
         constructor(service: Service, attr: any, public parent: PersistentObject) {
             super(service);
@@ -2182,16 +2192,6 @@ module Vidyano {
             else
                 result.options = this._serviceOptions;
 
-            if (this.objects != null) {
-                result.objects = this.objects.map(obj => {
-                    var detailObj = obj.toServiceObject(true);
-                    if (obj.isDeleted)
-                        detailObj.isDeleted = true;
-
-                    return detailObj;
-                });
-            }
-
             return result;
         }
 
@@ -2338,9 +2338,9 @@ module Vidyano {
     }
 
     export class PersistentObjectAttributeAsDetail extends PersistentObjectAttribute {
+        private _objects: PersistentObject[];
         details: Query;
         lookupAttribute: string;
-        objects: PersistentObject[];
 
         constructor(service: Service, attr: any, public parent: PersistentObject) {
             super(service, attr, parent);
@@ -2351,7 +2351,7 @@ module Vidyano {
                 this.details = null;
 
             if (attr.objects) {
-                this.objects = attr.objects.map(po => {
+                this._objects = attr.objects.map(po => {
                     var detailObj = this.service.hooks.onConstructPersistentObject(service, po);
                     detailObj.parent = this.parent;
                     detailObj.ownerDetailAttribute = this;
@@ -2360,7 +2360,7 @@ module Vidyano {
                 });
             }
             else
-                this.objects = [];
+                this._objects = [];
 
             this.parent.propertyChanged.attach((sender, args) => {
                 if (args.propertyName === "isEditing") {
@@ -2374,6 +2374,29 @@ module Vidyano {
             this.lookupAttribute = attr.lookupAttribute;
         }
 
+        get objects(): Vidyano.PersistentObject[] {
+            return this._objects;
+        }
+        private _setObjects(objects: Vidyano.PersistentObject[]) {
+            if (objects === this._objects) {
+                if (!!objects && objects.length === this._objects.length) {
+                    var hasDifferences: boolean;
+                    for (var n = 0; n < objects.length; n++) {
+                        if (objects[n] !== this.objects[n]) {
+                            hasDifferences = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasDifferences)
+                        return;
+                }
+            }
+
+            var oldObjects = this.objects;
+            this.notifyPropertyChanged("objects", this._objects = objects, oldObjects);
+        }
+
         _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean {
             var asDetailAttr = <PersistentObjectAttributeAsDetail>resultAttr;
 
@@ -2382,17 +2405,32 @@ module Vidyano {
             if (this.objects != null && asDetailAttr.objects != null) {
                 var isEditing = this.parent.isEditing;
                 var oldObjects = this.objects;
-                this.objects = asDetailAttr.objects.map(obj => {
+                this._setObjects(asDetailAttr.objects.map(obj => {
                     obj.parent = this.parent;
                     obj.ownerDetailAttribute = this;
                     if (isEditing)
                         obj.beginEdit();
                     return obj;
-                });
-                this.notifyPropertyChanged("objects", this.objects, oldObjects);
+                }));
             }
 
             return visibilityChanged;
+        }
+
+        _toServiceObject() {
+            var result = super._toServiceObject();
+
+            if (this.objects != null) {
+                result.objects = this.objects.map(obj => {
+                    var detailObj = obj.toServiceObject(true);
+                    if (obj.isDeleted)
+                        detailObj.isDeleted = true;
+
+                    return detailObj;
+                });
+            }
+
+            return result;
         }
 
         onChanged(allowRefresh: boolean): Promise<any> {
@@ -2417,10 +2455,13 @@ module Vidyano {
         restore() {
             super.restore();
 
-            this.objects = this.objects.filter(obj => !obj.isNew);
-            this.objects.forEach(obj => {
+            var newObjects = this.objects.filter(obj => !obj.isNew);
+            newObjects.forEach(obj => {
                 obj.isDeleted = false;
             });
+
+            if (newObjects.length !== this.objects.length)
+                this._setObjects(newObjects);
         }
     }
 

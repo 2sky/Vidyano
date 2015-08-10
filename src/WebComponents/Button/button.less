@@ -36,6 +36,15 @@ button[is="vi-button"] {
         cursor: default;
     }
 
+    &:not([custom-layout]) {
+        .layout-horizontal();
+        .layout-center-center();
+
+        > vi-resource[has-resource] + span {
+            margin-left: @h5;
+        }
+    }
+
     &[type=""], &:not([type]) {
         &:not([inverse]) {
             .colorize({

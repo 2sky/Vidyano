@@ -1,17 +1,33 @@
 vi-scroller {
   position: relative;
-  display: block;
   overflow: hidden;
 }
 vi-scroller #wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   overflow: scroll;
 }
-vi-scroller:not([hovering]):not([scrolling]) .scrollbar {
-  display: none;
+vi-scroller[scrollbars='visible-margin'][vertical] #wrapper > div {
+  margin-right: 9px;
+}
+vi-scroller[scrollbars='visible-margin'][vertical] #vertical {
+  right: 0;
+}
+vi-scroller:not([hovering]):not([scrolling]):not([scrollbars^='visible']) .scrollbar {
+  opacity: 0;
 }
 vi-scroller .scrollbar {
   position: absolute;
   background-color: #797979;
+  opacity: 1;
+  border-radius: 6px;
+  -moz-transition: opacity 0.2s ease-in-out;
+  -o-transition: opacity 0.2s ease-in-out;
+  -webkit-transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
 }
 vi-scroller #vertical {
   top: 0;
@@ -23,9 +39,41 @@ vi-scroller #horizontal {
   bottom: 3px;
   height: 6px;
 }
-vi-scroller:not([vertical]) #vertical {
+vi-scroller:not([vertical]):not([scrollbars^='visible']) #vertical {
   display: none;
 }
-vi-scroller:not([horizontal]) #horizontal {
+vi-scroller:not([horizontal]):not([scrollbars^='visible']) #horizontal {
   display: none;
+}
+vi-scroller .scroll-shadow {
+  position: absolute;
+  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  bottom: 0;
+  height: 30px;
+  -moz-border-radius: 100%;
+  border-radius: 100%;
+  left: -30px;
+  right: -30px;
+  pointer-events: none;
+}
+vi-scroller .scroll-shadow.top {
+  -moz-transition: top 0.2s ease-out;
+  -o-transition: top 0.2s ease-out;
+  -webkit-transition: top 0.2s ease-out;
+  transition: top 0.2s ease-out;
+  top: -45px;
+}
+vi-scroller .scroll-shadow.bottom {
+  -moz-transition: bottom 0.2s ease-out;
+  -o-transition: bottom 0.2s ease-out;
+  -webkit-transition: bottom 0.2s ease-out;
+  transition: bottom 0.2s ease-out;
+  bottom: -45px;
+}
+vi-scroller[scroll-top-shadow] .scroll-shadow.top {
+  top: -30px;
+}
+vi-scroller[scroll-bottom-shadow] .scroll-shadow.bottom {
+  bottom: -30px;
 }

@@ -131,3 +131,7 @@ vi-persistent-object-attribute-presenter a {
 vi-persistent-object-attribute-presenter a[disabled] {
   color: #333 !important;
 }
+vi-persistent-object-attribute-presenter input,
+vi-persistent-object-attribute-presenter textarea {
+  background-color: white;
+}

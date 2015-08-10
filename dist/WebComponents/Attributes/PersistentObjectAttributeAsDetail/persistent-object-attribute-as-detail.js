@@ -15,22 +15,186 @@ var Vidyano;
                 function PersistentObjectAttributeAsDetail() {
                     _super.apply(this, arguments);
                 }
-                PersistentObjectAttributeAsDetail.prototype.getDisplayValue = function (obj, column) {
-                    var attr = this.getAttributeForColumn(obj, column);
-                    return attr && attr.displayValue || "";
-                };
-                PersistentObjectAttributeAsDetail.prototype.getAttributeForColumn = function (obj, column) {
-                    return obj.attributesByName[column.name];
-                };
-                PersistentObjectAttributeAsDetail.prototype.isVisible = function (column) {
+                PersistentObjectAttributeAsDetail.prototype._isColumnVisible = function (column) {
                     return !column.isHidden && column.width !== "0";
+                };
+                PersistentObjectAttributeAsDetail.prototype._editingChanged = function () {
+                    _super.prototype._editingChanged.call(this);
+                    var scroller = this.$["body"];
+                    scroller.scrollbars = this.editing ? "visible-margin" : undefined;
+                };
+                PersistentObjectAttributeAsDetail.prototype._sizechanged = function (e, detail) {
+                    this._setWidth(detail.width);
+                    e.stopPropagation();
+                    if (detail.height > 0) {
+                        if (!this.newAction) {
+                            this._setNewActionPinned(false);
+                            return;
+                        }
+                        var scroller = this.$["body"];
+                        if (!this._inlineAddHeight) {
+                            var inlineAdd = this.$["body"].querySelector(".row.add.inline");
+                            this._inlineAddHeight = inlineAdd.offsetHeight;
+                        }
+                        var contentHeight = this.newActionPinned ? scroller.innerHeight : scroller.innerHeight - this._inlineAddHeight;
+                        this._setNewActionPinned(contentHeight + this._inlineAddHeight > this.$["table"].offsetHeight - this.$["head"].offsetHeight);
+                    }
+                };
+                PersistentObjectAttributeAsDetail.prototype._computeColumns = function (columns) {
+                    return Enumerable.from(columns).where(function (c) { return !c.isHidden; }).toArray();
+                };
+                PersistentObjectAttributeAsDetail.prototype._computeCanDelete = function (editing, deleteAction, objects) {
+                    return editing && !!deleteAction && !!objects && objects.some(function (o) { return !o.isDeleted; });
+                };
+                PersistentObjectAttributeAsDetail.prototype._updateActions = function (actions, editing) {
+                    this._setNewAction(editing && !this.attribute.isReadOnly ? actions["New"] || null : null);
+                    this._setDeleteAction(editing && !this.attribute.isReadOnly ? actions["Delete"] || null : null);
+                };
+                PersistentObjectAttributeAsDetail.prototype._updateWidths = function (columns, width, deleteAction, editing, isAttached) {
+                    if (!isAttached || !columns || !columns.length || !width || this._lastComputedWidths === width)
+                        return;
+                    var widths = [];
+                    var remainingWidth = this._lastComputedWidths = width;
+                    var usedWidth = 0;
+                    columns.filter(function (c) { return c.width != null && !c.width.endsWith('%'); }).forEach(function (c) {
+                        var intWidth = parseInt(c.width, 10);
+                        if (!isNaN(intWidth)) {
+                            widths.push({
+                                name: c.name,
+                                width: intWidth
+                            });
+                            remainingWidth -= intWidth;
+                            usedWidth += intWidth;
+                        }
+                    });
+                    var percentagesRemainingWidth = width;
+                    columns.filter(function (c) { return c.width != null && c.width.endsWith('%'); }).forEach(function (c) {
+                        var intWidthPercentage = parseInt(c.width, 10);
+                        if (!isNaN(intWidthPercentage)) {
+                            var intWidth = Math.floor(percentagesRemainingWidth * intWidthPercentage / 100);
+                            widths.push({
+                                name: c.name,
+                                width: intWidth
+                            });
+                            remainingWidth -= intWidth;
+                            usedWidth += intWidth;
+                        }
+                    });
+                    var udColumns = columns.filter(function (c) { return c.width == null; });
+                    var remainingColumnWidth = Math.floor(remainingWidth / udColumns.length);
+                    udColumns.forEach(function (c) {
+                        widths.push({
+                            name: c.name,
+                            width: remainingColumnWidth
+                        });
+                        usedWidth += remainingColumnWidth;
+                    });
+                    if (usedWidth < width)
+                        widths[0].width += width - usedWidth;
+                    var style = this.$["style"];
+                    widths.forEach(function (w) { return style.setStyle(w.name, ".column[data-column='" + w.name + "'] { width: " + w.width + "px; }"); });
+                    this._setInitializing(false);
+                };
+                PersistentObjectAttributeAsDetail.prototype._rowAdded = function (e) {
+                    var row = e.target.parentElement;
+                    this.async(function () {
+                        row.scrollIntoView(false);
+                    });
+                };
+                PersistentObjectAttributeAsDetail.prototype._add = function (e) {
+                    var _this = this;
+                    this.newAction.skipOpen = true;
+                    this.newAction.execute().then(function (po) {
+                        _this.push("attribute.objects", po);
+                        _this.attribute.isValueChanged = true;
+                        _this.attribute.parent.triggerDirty();
+                    });
+                };
+                PersistentObjectAttributeAsDetail.prototype._delete = function (e) {
+                    var obj = e.model.obj;
+                    if (!obj.isNew)
+                        obj.isDeleted = true;
+                    else
+                        this.splice("attribute.objects", this.attribute.objects.indexOf(obj), 1);
+                    this.attribute.isValueChanged = true;
+                    this.attribute.parent.triggerDirty();
                 };
                 return PersistentObjectAttributeAsDetail;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeAsDetail = PersistentObjectAttributeAsDetail;
+            var PersistentObjectAttributeAsDetailRow = (function (_super) {
+                __extends(PersistentObjectAttributeAsDetailRow, _super);
+                function PersistentObjectAttributeAsDetailRow() {
+                    _super.apply(this, arguments);
+                }
+                PersistentObjectAttributeAsDetailRow.prototype._isColumnVisible = function (column) {
+                    return !column.isHidden && column.width !== "0";
+                };
+                PersistentObjectAttributeAsDetailRow.prototype._getDisplayValue = function (obj, column) {
+                    var attr = this._getAttributeForColumn(obj, column);
+                    return attr && attr.displayValue || "";
+                };
+                PersistentObjectAttributeAsDetailRow.prototype._getAttributeForColumn = function (obj, column) {
+                    return obj.attributesByName[column.name];
+                };
+                PersistentObjectAttributeAsDetailRow.prototype._scrollNewDetailRowIntoView = function (serviceObject, columns, editing, isAttached) {
+                    if (editing && isAttached && !!serviceObject && serviceObject.isNew && !!columns)
+                        this.asElement.scrollIntoView(false);
+                };
+                return PersistentObjectAttributeAsDetailRow;
+            })(WebComponents.WebComponent);
+            Attributes.PersistentObjectAttributeAsDetailRow = PersistentObjectAttributeAsDetailRow;
             Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeAsDetail, {
+                properties: {
+                    columns: {
+                        type: Array,
+                        computed: "_computeColumns(attribute.details.columns)"
+                    },
+                    newAction: {
+                        type: Object,
+                        readOnly: true
+                    },
+                    newActionPinned: {
+                        type: Boolean,
+                        reflectToAttribute: true,
+                        readOnly: true
+                    },
+                    deleteAction: {
+                        type: Object,
+                        readOnly: true
+                    },
+                    width: {
+                        type: Number,
+                        readOnly: true
+                    },
+                    canDelete: {
+                        type: Boolean,
+                        reflectToAttribute: true,
+                        computed: "_computeCanDelete(editing, deleteAction, attribute.objects)"
+                    },
+                    initializing: {
+                        type: Boolean,
+                        reflectToAttribute: true,
+                        value: true,
+                        readOnly: true
+                    }
+                },
+                observers: [
+                    "_updateWidths(columns, width, deleteAction, editing, isAttached)",
+                    "_updateActions(attribute.details.actions, editing)"
+                ],
                 forwardObservers: [
-                    "attribute.objects"
+                    "attribute.objects.isDeleted"
+                ]
+            });
+            WebComponents.WebComponent.register(PersistentObjectAttributeAsDetailRow, WebComponents.Attributes, "vi", {
+                properties: {
+                    serviceObject: Object,
+                    columns: Array,
+                    editing: Boolean
+                },
+                observers: [
+                    "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached)"
                 ]
             });
         })(Attributes = WebComponents.Attributes || (WebComponents.Attributes = {}));

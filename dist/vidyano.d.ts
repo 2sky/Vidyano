@@ -1335,6 +1335,7 @@ declare module Vidyano {
         private _id;
         private _type;
         private _breadcrumb;
+        private _isDeleted;
         fullTypeName: string;
         label: string;
         objectId: string;
@@ -1362,7 +1363,6 @@ declare module Vidyano {
         queriesByName: {
             [key: string]: Query;
         };
-        isDeleted: boolean;
         constructor(service: Service, po: any);
         private _createPersistentObjectAttribute(attr);
         id: string;
@@ -1375,6 +1375,7 @@ declare module Vidyano {
         private _setBreadcrumb(breadcrumb);
         isDirty: boolean;
         private _setIsDirty(value);
+        isDeleted: boolean;
         getAttribute(name: string): PersistentObjectAttribute;
         getAttributeValue(name: string): any;
         getQuery(name: string): Query;
@@ -1427,7 +1428,6 @@ declare module Vidyano {
         triggersRefresh: boolean;
         column: number;
         columnSpan: number;
-        objects: PersistentObject[];
         constructor(service: Service, attr: any, parent: PersistentObject);
         groupKey: string;
         group: PersistentObjectAttributeGroup;
@@ -1469,11 +1469,14 @@ declare module Vidyano {
     }
     class PersistentObjectAttributeAsDetail extends PersistentObjectAttribute {
         parent: PersistentObject;
+        private _objects;
         details: Query;
         lookupAttribute: string;
-        objects: PersistentObject[];
         constructor(service: Service, attr: any, parent: PersistentObject);
+        objects: Vidyano.PersistentObject[];
+        private _setObjects(objects);
         _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean;
+        _toServiceObject(): any;
         onChanged(allowRefresh: boolean): Promise<any>;
         restore(): void;
     }
@@ -1974,7 +1977,7 @@ declare module Vidyano.WebComponents {
         private _registerKeybindings(registration);
         private _unregisterKeybindings(registration);
         private _keysPressed(e);
-        private static _stripHashBang(path);
+        static stripHashBang(path: string): string;
     }
     class AppServiceHooks extends Vidyano.ServiceHooks {
         app: App;
@@ -1995,9 +1998,32 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents.Attributes {
     class PersistentObjectAttributeAsDetail extends WebComponents.Attributes.PersistentObjectAttribute {
-        getDisplayValue(obj: Vidyano.PersistentObject, column: QueryColumn): string;
-        getAttributeForColumn(obj: Vidyano.PersistentObject, column: QueryColumn): Vidyano.PersistentObjectAttribute;
-        isVisible(column: QueryColumn): boolean;
+        private _inlineAddHeight;
+        private _lastComputedWidths;
+        attribute: Vidyano.PersistentObjectAttributeAsDetail;
+        newAction: Vidyano.Action;
+        newActionPinned: boolean;
+        private _setInitializing;
+        private _setWidth;
+        private _setNewAction;
+        private _setNewActionPinned;
+        private _setDeleteAction;
+        private _isColumnVisible(column);
+        protected _editingChanged(): void;
+        private _sizechanged(e, detail);
+        private _computeColumns(columns);
+        private _computeCanDelete(editing, deleteAction, objects);
+        private _updateActions(actions, editing);
+        private _updateWidths(columns, width, deleteAction, editing, isAttached);
+        private _rowAdded(e);
+        private _add(e);
+        private _delete(e);
+    }
+    class PersistentObjectAttributeAsDetailRow extends WebComponents.WebComponent {
+        private _isColumnVisible(column);
+        private _getDisplayValue(obj, column);
+        private _getAttributeForColumn(obj, column);
+        private _scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached);
     }
 }
 declare module Vidyano.WebComponents.Attributes {
@@ -2244,6 +2270,8 @@ declare module Vidyano.WebComponents.Attributes {
 }
 declare module Vidyano.WebComponents {
     class Button extends WebComponents.WebComponent {
+        private _setCustomLayout;
+        attached(): void;
     }
 }
 declare module Vidyano.WebComponents {
@@ -2732,7 +2760,6 @@ declare module Vidyano.WebComponents {
         private _horizontalSpacerWidth;
         private _pinnedColumns;
         private _unpinnedColumns;
-        private _styleElement;
         private _styles;
         private _queryPropertyObservers;
         private _itemOpening;
@@ -2756,6 +2783,7 @@ declare module Vidyano.WebComponents {
         headers: QueryGridColumnHeaders;
         filters: QueryGridColumnFilters;
         items: QueryGridItems;
+        private _style;
         private _columnsChanged(columns);
         private _itemsChanged();
         private _updateScrollBarsVisibility();
@@ -2769,7 +2797,6 @@ declare module Vidyano.WebComponents {
         private _onScrollVertical();
         private _onScrollHorizontal(e);
         private _updateHoverRow(e);
-        private _setStyle(name, css);
         private _itemsTap(e, detail);
         private _sortingStart(e);
         private _sortingEnd(e);
@@ -2979,28 +3006,45 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents {
     class Scroller extends WebComponent {
+        private static _minBarSize;
         private _setHovering;
         private _setScrolling;
         private _scrollbarWidth;
-        private _verticalScrollbarHeight;
-        private _horizontalScrollbarWidth;
+        private _verticalScrollHeight;
+        private _verticalScrollTop;
+        private _verticalScrollSpace;
+        private _horizontalScrollWidth;
+        private _horizontalScrollTop;
+        private _horizontalScrollSpace;
+        private _trackStart;
         outerWidth: number;
         outerHeight: number;
         innerWidth: number;
         innerHeight: number;
+        horizontal: boolean;
+        vertical: boolean;
+        scrollbars: string;
         private _setOuterWidth;
         private _setOuterHeight;
         private _setInnerWidth;
         private _setInnerHeight;
         private _setHorizontal;
         private _setVertical;
+        private _setHorizontalScrollLeft;
+        private _setVerticalScrollTop;
+        private _setScrollTopShadow;
+        private _setScrollBottomShadow;
+        scrollToTop(): void;
+        scrollToBottom(): void;
         private _outerSizeChanged(e, detail);
         private _innerSizeChanged(e, detail);
-        private _updateVerticalScrollHeight(outerHeight, innerHeight);
-        private _updateHorizontalScrollWidth(outerWidth, innerWidth);
+        private _updateVerticalScrollbar(outerHeight, innerHeight, verticalScrollTop);
+        private _updateHorizontalScrollbar(outerWidth, innerWidth, horizontalScrollLeft);
         private _trackVertical(e, detail);
         private _trackHorizontal(e, detail);
+        private _trapEvent(e);
         private _scroll(e);
+        private _updateScrollOffsets();
         private _mouseenter();
         private _mouseleave();
     }
@@ -3135,6 +3179,17 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents {
     class Spinner extends WebComponent {
+    }
+}
+declare module Vidyano.WebComponents {
+    class Style extends Vidyano.WebComponents.WebComponent {
+        private _uniqueId;
+        private _styleElement;
+        private _styles;
+        key: string;
+        attached(): void;
+        detached(): void;
+        setStyle(name: string, ...css: string[]): void;
     }
 }
 declare module Vidyano.WebComponents {
@@ -3366,6 +3421,26 @@ declare module Vidyano.WebComponents {
             bubbles?: boolean;
             cancelable?: boolean;
         }) => CustomEvent;
+        /**
+          * Adds new elements to the end of an array, returns the new length and notifies Polymer that the array has changed.
+        **/
+        push: (path: string, ...items: any[]) => number;
+        /**
+          * Removes the last element of an array, returns that element and notifies Polymer that the array has changed.
+        **/
+        pop: (path: string) => any;
+        /**
+          * Adds new elements to the beginning of an array, returns the new length and notifies Polymer that the array has changed.
+        **/
+        unshift: (path: string, items: any[]) => number;
+        /**
+          * Removes the first element of an array, returns that element and notifies Polymer that the array has changed.
+        **/
+        shift: (path: string) => any;
+        /**
+          * Adds/Removes elements from an array and notifies Polymer that the array has changed.
+        **/
+        splice: (path: string, index: number, removeCount?: number, items?: any[]) => any[];
         /**
          * Dynamically imports an HTML document.
          */

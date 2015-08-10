@@ -1368,6 +1368,18 @@ var Vidyano;
             if (this.ownerDetailAttribute && value)
                 this.ownerDetailAttribute.onChanged(false);
         };
+        Object.defineProperty(PersistentObject.prototype, "isDeleted", {
+            get: function () {
+                return this._isDeleted;
+            },
+            set: function (isDeleted) {
+                var oldIsDeleted = this._isDeleted;
+                if (oldIsDeleted !== isDeleted)
+                    this.notifyPropertyChanged("isDeleted", this._isDeleted = isDeleted, oldIsDeleted);
+            },
+            enumerable: true,
+            configurable: true
+        });
         PersistentObject.prototype.getAttribute = function (name) {
             return this.attributesByName[name];
         };
@@ -1873,14 +1885,6 @@ var Vidyano;
                 result.options = this.options.map(function (o) { return o ? (typeof (o) != "string" ? o.key + "=" + o.value : o) : null; });
             else
                 result.options = this._serviceOptions;
-            if (this.objects != null) {
-                result.objects = this.objects.map(function (obj) {
-                    var detailObj = obj.toServiceObject(true);
-                    if (obj.isDeleted)
-                        detailObj.isDeleted = true;
-                    return detailObj;
-                });
-            }
             return result;
         };
         PersistentObjectAttribute.prototype._refreshFromResult = function (resultAttr) {
@@ -2011,7 +2015,7 @@ var Vidyano;
             else
                 this.details = null;
             if (attr.objects) {
-                this.objects = attr.objects.map(function (po) {
+                this._objects = attr.objects.map(function (po) {
                     var detailObj = _this.service.hooks.onConstructPersistentObject(service, po);
                     detailObj.parent = _this.parent;
                     detailObj.ownerDetailAttribute = _this;
@@ -2019,7 +2023,7 @@ var Vidyano;
                 });
             }
             else
-                this.objects = [];
+                this._objects = [];
             this.parent.propertyChanged.attach(function (sender, args) {
                 if (args.propertyName === "isEditing") {
                     if (args.newValue)
@@ -2030,6 +2034,30 @@ var Vidyano;
             });
             this.lookupAttribute = attr.lookupAttribute;
         }
+        Object.defineProperty(PersistentObjectAttributeAsDetail.prototype, "objects", {
+            get: function () {
+                return this._objects;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        PersistentObjectAttributeAsDetail.prototype._setObjects = function (objects) {
+            if (objects === this._objects) {
+                if (!!objects && objects.length === this._objects.length) {
+                    var hasDifferences;
+                    for (var n = 0; n < objects.length; n++) {
+                        if (objects[n] !== this.objects[n]) {
+                            hasDifferences = true;
+                            break;
+                        }
+                    }
+                    if (!hasDifferences)
+                        return;
+                }
+            }
+            var oldObjects = this.objects;
+            this.notifyPropertyChanged("objects", this._objects = objects, oldObjects);
+        };
         PersistentObjectAttributeAsDetail.prototype._refreshFromResult = function (resultAttr) {
             var _this = this;
             var asDetailAttr = resultAttr;
@@ -2037,16 +2065,27 @@ var Vidyano;
             if (this.objects != null && asDetailAttr.objects != null) {
                 var isEditing = this.parent.isEditing;
                 var oldObjects = this.objects;
-                this.objects = asDetailAttr.objects.map(function (obj) {
+                this._setObjects(asDetailAttr.objects.map(function (obj) {
                     obj.parent = _this.parent;
                     obj.ownerDetailAttribute = _this;
                     if (isEditing)
                         obj.beginEdit();
                     return obj;
-                });
-                this.notifyPropertyChanged("objects", this.objects, oldObjects);
+                }));
             }
             return visibilityChanged;
+        };
+        PersistentObjectAttributeAsDetail.prototype._toServiceObject = function () {
+            var result = _super.prototype._toServiceObject.call(this);
+            if (this.objects != null) {
+                result.objects = this.objects.map(function (obj) {
+                    var detailObj = obj.toServiceObject(true);
+                    if (obj.isDeleted)
+                        detailObj.isDeleted = true;
+                    return detailObj;
+                });
+            }
+            return result;
         };
         PersistentObjectAttributeAsDetail.prototype.onChanged = function (allowRefresh) {
             var _this = this;
@@ -2067,10 +2106,12 @@ var Vidyano;
         };
         PersistentObjectAttributeAsDetail.prototype.restore = function () {
             _super.prototype.restore.call(this);
-            this.objects = this.objects.filter(function (obj) { return !obj.isNew; });
-            this.objects.forEach(function (obj) {
+            var newObjects = this.objects.filter(function (obj) { return !obj.isNew; });
+            newObjects.forEach(function (obj) {
                 obj.isDeleted = false;
             });
+            if (newObjects.length !== this.objects.length)
+                this._setObjects(newObjects);
         };
         return PersistentObjectAttributeAsDetail;
     })(PersistentObjectAttribute);

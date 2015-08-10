@@ -2,13 +2,15 @@
     <template>
         <vi-size-tracker on-sizechanged="_outerSizeChanged"></vi-size-tracker>
         <div id="wrapper" on-scroll="_scroll">
-            <div class="relative">
+            <div id="content" class="relative">
                 <vi-size-tracker on-sizechanged="_innerSizeChanged"></vi-size-tracker>
                 <content></content>
             </div>
         </div>
-        <div id="horizontal" class="scrollbar" on-track="_trackHorizontal"></div>
-        <div id="vertical" class="scrollbar" on-track="_trackVertical"></div>
+        <div class="top scroll-shadow"></div>
+        <div class="bottom scroll-shadow"></div>
+        <div id="horizontal" class="scrollbar" on-track="_trackHorizontal" on-mousedown="_trapEvent"></div>
+        <div id="vertical" class="scrollbar" on-track="_trackVertical" on-mousedown="_trapEvent"></div>
     </template>
 </dom-module>
 

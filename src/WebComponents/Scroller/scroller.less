@@ -2,22 +2,40 @@
 
 vi-scroller {
     .relative();
-    display: block;
     overflow: hidden;
 
     #wrapper {
+        .fit();
         overflow: scroll;
     }
 
-    &:not([hovering]):not([scrolling]) {
+    &[scrollbars='visible-margin'] {
+        &[vertical] {
+            #wrapper > div {
+                margin-right: @h5 + (@h5 / 2);
+            }
+
+            #vertical {
+                right: 0;
+            }
+        }
+    }
+
+    &:not([hovering]):not([scrolling]):not([scrollbars^='visible']) {
         .scrollbar {
-            display: none;
+            opacity: 0;
         }
     }
 
     .scrollbar {
         position: absolute;
         background-color: #797979;
+        opacity: 1;
+        border-radius: @h5;
+        -moz-transition: opacity 0.2s ease-in-out;
+        -o-transition: opacity 0.2s ease-in-out;
+        -webkit-transition: opacity 0.2s ease-in-out;
+        transition: opacity 0.2s ease-in-out;
     }
 
     #vertical {
@@ -32,11 +50,48 @@ vi-scroller {
         height: @h5;
     }
 
-    &:not([vertical]) #vertical {
+    &:not([vertical]):not([scrollbars^='visible']) #vertical {
         display: none;
     }
 
-    &:not([horizontal]) #horizontal {
+    &:not([horizontal]):not([scrollbars^='visible']) #horizontal {
         display: none;
+    }
+
+    .scroll-shadow {
+        position: absolute;
+        -webkit-box-shadow: 0 0 (@h2 / 2) rgba(0,0,0,0.3);
+        box-shadow: 0 0 (@h2 / 2) rgba(0,0,0,0.3);
+        bottom: 0;
+        height: @h2;
+        -moz-border-radius: 100%;
+        border-radius: 100%;
+        left: -@h2;
+        right: -@h2;
+        pointer-events: none;
+
+        &.top {
+            -moz-transition: top 0.2s ease-out;
+            -o-transition: top 0.2s ease-out;
+            -webkit-transition: top 0.2s ease-out;
+            transition: top 0.2s ease-out;
+            top: (-@h2 * 1.5);
+        }
+
+        &.bottom {
+            -moz-transition: bottom 0.2s ease-out;
+            -o-transition: bottom 0.2s ease-out;
+            -webkit-transition: bottom 0.2s ease-out;
+            transition: bottom 0.2s ease-out;
+            bottom: (-@h2 * 1.5);
+        }
+    }
+
+    &[scroll-top-shadow] .scroll-shadow.top {
+        top: -@h2;
+    }
+
+    &[scroll-bottom-shadow] .scroll-shadow.bottom {
+        bottom: -@h2;
     }
 }

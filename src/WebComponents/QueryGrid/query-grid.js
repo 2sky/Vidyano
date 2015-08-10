@@ -49,10 +49,6 @@ var Vidyano;
                 _super.prototype.attached.call(this);
             };
             QueryGrid.prototype.detached = function () {
-                if (this._styleElement) {
-                    document.head.removeChild(this._styleElement);
-                    this._styleElement = undefined;
-                }
                 this.items.detached();
                 _super.prototype.detached.call(this);
             };
@@ -87,6 +83,13 @@ var Vidyano;
             Object.defineProperty(QueryGrid.prototype, "items", {
                 get: function () {
                     return this._rows["items"];
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGrid.prototype, "_style", {
+                get: function () {
+                    return this.$["style"];
                 },
                 enumerable: true,
                 configurable: true
@@ -149,18 +152,18 @@ var Vidyano;
                 var _this = this;
                 e.stopPropagation();
                 var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
-                this._setStyle("ColumnWidths", []);
+                this._style.setStyle("ColumnWidths");
                 columns.forEach(function (c) {
                     for (var row in _this._rows)
                         c.currentWidth = Math.max(_this._rows[row].getColumnWidth(c), c.currentWidth || 0);
                 });
-                this._setStyle("ColumnWidths", Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(function (c) { return "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }"; }).toArray());
+                this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(function (c) { return "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }"; }).toArray()));
                 this._updateScrollBarsVisibility();
                 this._setInitializing(false);
             };
             QueryGrid.prototype._columnWidthUpdatedListener = function (e, detail) {
                 var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
-                this._setStyle("ColumnWidths", Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(function (c) { return "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }"; }).toArray());
+                this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(function (c) { return "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }"; }).toArray()));
             };
             QueryGrid.prototype._itemSelectListener = function (e, detail) {
                 if (!detail.item)
@@ -215,17 +218,6 @@ var Vidyano;
                 if (sender && sender !== this)
                     y -= this.items.data.getClientRects()[0].top;
                 this.items.updateHoverRow(y);
-            };
-            QueryGrid.prototype._setStyle = function (name, css) {
-                var _this = this;
-                var cssBody = "";
-                css.forEach(function (c) {
-                    cssBody += 'vi-query-grid[style-scope-id="' + _this._uniqueId + '"] ' + c + (css.length > 0 ? "\n" : "");
-                });
-                if (!this._styleElement)
-                    this._styleElement = document.head.appendChild(document.createElement("style"));
-                var node = this._styles[name] || (this._styles[name] = this._styleElement.appendChild(document.createTextNode("")));
-                node.textContent = cssBody;
             };
             QueryGrid.prototype._itemsTap = function (e, detail) {
                 var _this = this;
@@ -296,7 +288,7 @@ var Vidyano;
                 return !actions || !actions.some(function (a) { return a.definition.selectionRule != ExpressionParser.alwaysTrue; });
             };
             QueryGrid.prototype._computeRemainderWidth = function () {
-                this._setStyle("RemainderColumn", ["._RemainderColumn { width: " + this.viewport.width + "px; }"]);
+                this._style.setStyle("RemainderColumn", "._RemainderColumn { width: " + this.viewport.width + "px; }");
                 return this.viewport.width;
             };
             QueryGrid._isChrome = /chrome/i.test(navigator.userAgent);

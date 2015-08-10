@@ -25,7 +25,6 @@
         private _horizontalSpacerWidth: number = 0;
         private _pinnedColumns: QueryGridColumn[] = [];
         private _unpinnedColumns: QueryGridColumn[] = [];
-        private _styleElement: HTMLStyleElement;
         private _styles: { [key: string]: Text } = {};
         private _queryPropertyObservers: Vidyano.Common.SubjectDisposer[] = [];
         private _itemOpening: Vidyano.QueryResultItem;
@@ -79,11 +78,6 @@
         }
 
         detached() {
-            if (this._styleElement) {
-                document.head.removeChild(this._styleElement);
-                this._styleElement = undefined;
-            }
-
             this.items.detached();
 
             super.detached();
@@ -107,6 +101,10 @@
 
         get items(): QueryGridItems {
             return <QueryGridItems>this._rows["items"];
+        }
+
+        private get _style(): Style {
+            return <Style><any>this.$["style"];
         }
 
         private _columnsChanged(columns: QueryColumn[]) {
@@ -185,13 +183,13 @@
 
             var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
 
-            this._setStyle("ColumnWidths", []);
+            this._style.setStyle("ColumnWidths");
             columns.forEach(c => {
                 for (var row in this._rows)
                     c.currentWidth = Math.max(this._rows[row].getColumnWidth(c), c.currentWidth || 0);
             });
 
-            this._setStyle("ColumnWidths", Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(c => "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }").toArray());
+            this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(c => "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }").toArray()));
             this._updateScrollBarsVisibility();
 
             this._setInitializing(false);
@@ -199,7 +197,7 @@
 
         private _columnWidthUpdatedListener(e: CustomEvent, detail: { column: QueryGridColumn }) {
             var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
-            this._setStyle("ColumnWidths", Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(c => "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }").toArray());
+            this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(c => "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }").toArray()));
         }
 
         private _itemSelectListener(e: CustomEvent, detail: { item: Vidyano.QueryResultItem; rangeSelect: boolean }) {
@@ -274,19 +272,6 @@
                 y -= this.items.data.getClientRects()[0].top;
 
             this.items.updateHoverRow(y);
-        }
-
-        private _setStyle(name: string, css: string[]) {
-            var cssBody = "";
-            css.forEach(c => {
-                cssBody += 'vi-query-grid[style-scope-id="' + this._uniqueId + '"] ' + c + (css.length > 0 ? "\n" : "");
-            });
-
-            if (!this._styleElement)
-                this._styleElement = <HTMLStyleElement>document.head.appendChild(document.createElement("style"));
-
-            var node = this._styles[name] || (this._styles[name] = <Text>this._styleElement.appendChild(document.createTextNode("")));
-            node.textContent = cssBody;
         }
 
         private _itemsTap(e: TapEvent, detail: any) {
@@ -374,7 +359,7 @@
         }
 
         private _computeRemainderWidth(): number {
-            this._setStyle("RemainderColumn", ["._RemainderColumn { width: " + this.viewport.width + "px; }"]);
+            this._style.setStyle("RemainderColumn", "._RemainderColumn { width: " + this.viewport.width + "px; }");
             return this.viewport.width;
         }
     }

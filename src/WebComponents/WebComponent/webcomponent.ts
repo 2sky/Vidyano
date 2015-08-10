@@ -230,6 +230,31 @@
         fire: (type: string, detail: any, options?: { onNode?: Node; bubbles?: boolean; cancelable?: boolean; }) => CustomEvent;
 
         /**
+          * Adds new elements to the end of an array, returns the new length and notifies Polymer that the array has changed.
+        **/
+        push: (path: string, ...items: any[]) => number;
+
+        /**
+          * Removes the last element of an array, returns that element and notifies Polymer that the array has changed.
+        **/
+        pop: (path: string) => any;
+
+        /**
+          * Adds new elements to the beginning of an array, returns the new length and notifies Polymer that the array has changed.
+        **/
+        unshift: (path: string, items: any[]) => number;
+
+        /**
+          * Removes the first element of an array, returns that element and notifies Polymer that the array has changed.
+        **/
+        shift: (path: string) => any;
+
+        /**
+          * Adds/Removes elements from an array and notifies Polymer that the array has changed.
+        **/
+        splice: (path: string, index: number, removeCount?: number, items?: any[]) => any[];
+
+        /**
          * Dynamically imports an HTML document.
          */
         importHref: (href: string, onLoad?: (e: CustomEvent) => void, onFail?: (e: CustomEvent) => void) => void;

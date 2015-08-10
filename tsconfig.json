@@ -79,6 +79,7 @@
     "src/WebComponents/SizeTracker/size-tracker.ts",
     "src/WebComponents/Sortable/sortable.ts",
     "src/WebComponents/Spinner/spinner.ts",
+    "src/WebComponents/Style/style.ts",
     "src/WebComponents/TemplatePresenter/template-presenter.ts",
     "src/WebComponents/TimePicker/time-picker.ts",
     "src/WebComponents/User/user.ts",

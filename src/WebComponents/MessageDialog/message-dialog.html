@@ -13,7 +13,7 @@
             <pre id="pre"></pre>
             <footer class="horizontal layout end-justified">
                 <template is="dom-repeat" items="{{options.actions}}" as="action">
-                    <button is="vi-button" on-tap="_onSelectAction" type$="{{_getActionType(options, index)}}" inverse="{{!_isFirst(index)}}">{{action}}</button>
+                    <button is="vi-button" on-tap="_onSelectAction" type$="{{_getActionType(options, index)}}" inverse="{{!_isFirst(index)}}" label="{{action}}"></button>
                 </template>
             </footer>
         </vi-dialog>

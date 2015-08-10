@@ -14,6 +14,13 @@ namespace Vidyano.Web2
 
         public void Configure(IApplicationBuilder app)
         {
+            app.Use((context, next) =>
+            {
+                context.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
+                context.Response.Headers.Add("Access-Control-Allow-Headers", new[] { "*" });
+                context.Response.Headers.Add("Access-Control-Allow-Methods", new[] { "*" });
+                return next();
+            });
         }
     }
 }
