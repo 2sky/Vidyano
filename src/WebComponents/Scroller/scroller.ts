@@ -157,7 +157,7 @@
         }
 
         private _scroll(e: Event) {
-            Popup.closeAll();
+            Popup.closeAll(this);
 
             this._updateScrollOffsets();
         }

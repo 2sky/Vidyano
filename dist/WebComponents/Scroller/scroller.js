@@ -114,7 +114,7 @@ var Vidyano;
                 e.preventDefault();
             };
             Scroller.prototype._scroll = function (e) {
-                WebComponents.Popup.closeAll();
+                WebComponents.Popup.closeAll(this);
                 this._updateScrollOffsets();
             };
             Scroller.prototype._updateScrollOffsets = function () {

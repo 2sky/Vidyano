@@ -86,7 +86,7 @@ module Vidyano.WebComponents {
                 return;
 
             if (this.open) {
-                if(!this.sticky)
+                if (!this.sticky)
                     this.close();
 
                 return;
@@ -149,7 +149,7 @@ module Vidyano.WebComponents {
             var alignments = (this.contentAlign || "").toUpperCase().split(" ");
             var alignCenter = alignments.indexOf("CENTER") >= 0;
             var alignRight = alignments.indexOf("RIGHT") >= 0;
-             
+
             if (orientation == "vertical") {
                 if (alignRight ? (rootRect.right - contentWidth) < 0 : rootRect.left + contentWidth <= windowWidth) {
                     // Left-align
@@ -316,10 +316,22 @@ module Vidyano.WebComponents {
             return header != null && header.length > 0;
         }
 
-        static closeAll() {
+        static closeAll(parent?: HTMLElement | WebComponent) {
             var rootPopup = Popup._openPopups[0];
-            if (rootPopup)
+            if (rootPopup && (!parent || Popup._isDescendant(<HTMLElement>parent, rootPopup.asElement)))
                 rootPopup.close();
+        }
+
+        private static _isDescendant(parent: HTMLElement, child: HTMLElement): boolean {
+            var node = child.parentNode;
+            while (node != null) {
+                if (node == parent)
+                    return true;
+
+                node = node.parentNode;
+            }
+
+            return false;
         }
     }
 

@@ -246,10 +246,19 @@ var Vidyano;
             Popup.prototype._hasHeader = function (header) {
                 return header != null && header.length > 0;
             };
-            Popup.closeAll = function () {
+            Popup.closeAll = function (parent) {
                 var rootPopup = Popup._openPopups[0];
-                if (rootPopup)
+                if (rootPopup && (!parent || Popup._isDescendant(parent, rootPopup.asElement)))
                     rootPopup.close();
+            };
+            Popup._isDescendant = function (parent, child) {
+                var node = child.parentNode;
+                while (node != null) {
+                    if (node == parent)
+                        return true;
+                    node = node.parentNode;
+                }
+                return false;
             };
             Popup._openPopups = [];
             return Popup;
