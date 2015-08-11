@@ -1557,6 +1557,10 @@ module Vidyano {
             return this._type;
         }
 
+        get isBulkEdit(): boolean {
+            return this.bulkObjectIds && this.bulkObjectIds.length > 0;
+        }
+
         get tabs(): PersistentObjectTab[] {
             return this._tabs;
         }

@@ -387,6 +387,7 @@ var Vidyano;
                         resizing: inResizeDragMode
                     });
                 }
+                e.preventDefault();
                 e.stopPropagation();
             };
             return PersistentObjectTabItemPresenter;

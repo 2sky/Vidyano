@@ -23,6 +23,11 @@ vi-persistent-object-tab #items {
   overflow: hidden;
 }
 vi-persistent-object-tab[design-mode] {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   background-color: white;
 }
 vi-persistent-object-tab[design-mode] #cells {

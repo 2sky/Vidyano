@@ -467,6 +467,7 @@ module Vidyano.WebComponents {
                 });
             }
 
+            e.preventDefault();
             e.stopPropagation();
         }
     }

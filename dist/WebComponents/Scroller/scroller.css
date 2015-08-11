@@ -1,6 +1,7 @@
 vi-scroller {
-  position: relative;
+  display: block;
   overflow: hidden;
+  position: relative;
 }
 vi-scroller #wrapper {
   position: absolute;

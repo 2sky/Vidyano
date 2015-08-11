@@ -1320,6 +1320,13 @@ var Vidyano;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(PersistentObject.prototype, "isBulkEdit", {
+            get: function () {
+                return this.bulkObjectIds && this.bulkObjectIds.length > 0;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(PersistentObject.prototype, "tabs", {
             get: function () {
                 return this._tabs;

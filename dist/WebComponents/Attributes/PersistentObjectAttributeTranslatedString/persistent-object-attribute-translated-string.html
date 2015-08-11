@@ -47,8 +47,8 @@
                 </template>
             </ul>
             <footer class="horizontal layout end-justified">
-                <button on-tap="_ok">{{translateMessage('OK', isAttached)}}</button>
-                <button on-tap="_cancel">{{translateMessage('Cancel', isAttached)}}</button>
+                <button is="vi-button" on-tap="_ok" label="{{translateMessage('OK', isAttached)}}"></button>
+                <button is="vi-button" on-tap="_cancel" inverse label="{{translateMessage('Cancel', isAttached)}}"></button>
             </footer>
         </vi-dialog>
     </template>
