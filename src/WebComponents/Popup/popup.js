@@ -9,7 +9,6 @@ var Vidyano;
     var WebComponents;
     (function (WebComponents) {
         var _documentClosePopupListener;
-        var a = 0;
         document.addEventListener("mousedown", _documentClosePopupListener = function (e) {
             var el = e.target;
             var popup;
@@ -238,10 +237,6 @@ var Vidyano;
                         _this.close();
                     }, 300);
                 }
-            };
-            Popup.prototype._contentMousemove = function (e) {
-                if (this.open)
-                    e.stopPropagation();
             };
             Popup.prototype._hasHeader = function (header) {
                 return header != null && header.length > 0;

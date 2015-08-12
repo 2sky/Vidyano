@@ -13,6 +13,9 @@ var Vidyano;
             function PopupMenu() {
                 _super.apply(this, arguments);
             }
+            PopupMenu.prototype.popup = function () {
+                return this.$["popup"].popup();
+            };
             PopupMenu.prototype._hookContextMenu = function (isAttached, contextMenu) {
                 if (isAttached && contextMenu)
                     this.asElement.parentElement.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
@@ -42,7 +45,10 @@ var Vidyano;
             };
             PopupMenu.prototype._mouseenter = function () {
                 if (this.openOnHover)
-                    this.$["popup"].popup();
+                    this.popup();
+            };
+            PopupMenu.prototype._mousemove = function (e) {
+                e.stopPropagation();
             };
             return PopupMenu;
         })(WebComponents.WebComponent);
@@ -93,7 +99,8 @@ var Vidyano;
                 "_hookContextMenu(isAttached, contextMenuOnly)"
             ],
             listeners: {
-                "mouseenter": "_mouseenter"
+                "mouseenter": "_mouseenter",
+                "mousemove": "_mousemove"
             }
         });
         WebComponents.WebComponent.register(PopupMenuItem, WebComponents, "vi", {

@@ -241,13 +241,13 @@
         }
 
         private _onScrollVertical() {
-            WebComponents.Popup.closeAll();
+            WebComponents.Popup.closeAll(this);
 
             this.items.onScroll();
         }
 
         private _onScrollHorizontal(e: UIEvent) {
-            WebComponents.Popup.closeAll();
+            WebComponents.Popup.closeAll(this);
 
             var src = <HTMLElement>(e && e.target ? e.target : e.srcElement);
             var srcLeft = Math.max(Math.min(src.scrollLeft, this._horizontalSpacerWidth - this.remainderWidth + scrollbarWidth()), 0);
@@ -980,6 +980,10 @@
             this._updateActionItems = true;
         }
 
+        private _mousemove(e: MouseEvent) {
+            e.stopPropagation();
+        }
+
         popup(): Promise<any> {
             return (<Vidyano.WebComponents.Popup><any>this.$["popup"]).popup();
         }
@@ -1702,6 +1706,9 @@
                 type: Object,
                 observer: "_itemChanged"
             }
+        },
+        listeners: {
+            "mousemove": "_mousemove"
         }
     });
 }

@@ -1368,6 +1368,7 @@ declare module Vidyano {
         id: string;
         isSystem: boolean;
         type: string;
+        isBulkEdit: boolean;
         tabs: PersistentObjectTab[];
         isEditing: boolean;
         private setIsEditing(value);
@@ -2656,9 +2657,9 @@ declare module Vidyano.WebComponents {
         private _catchContentClick(e?);
         private _contentMouseEnter(e);
         private _contentMouseLeave(e);
-        private _contentMousemove(e);
         private _hasHeader(header);
-        static closeAll(): void;
+        static closeAll(parent?: HTMLElement | WebComponent): void;
+        private static _isDescendant(parent, child);
     }
 }
 declare module Vidyano.WebComponents {
@@ -2669,10 +2670,12 @@ declare module Vidyano.WebComponents {
         ctrlKey: boolean;
         rightAlign: boolean;
         openOnHover: boolean;
+        popup(): Promise<any>;
         private _hookContextMenu(isAttached, contextMenu);
         private _openContext(e);
         private _alignmentChanged();
         private _mouseenter();
+        private _mousemove(e);
     }
     class PopupMenuItem extends WebComponent {
         label: string;
@@ -2881,6 +2884,7 @@ declare module Vidyano.WebComponents {
         item: QueryResultItem;
         private _popupOpening();
         private _itemChanged();
+        private _mousemove(e);
         popup(): Promise<any>;
     }
     class QueryGridItemSelector extends WebComponent {

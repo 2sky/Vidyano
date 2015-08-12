@@ -1,6 +1,5 @@
 module Vidyano.WebComponents {
     var _documentClosePopupListener: EventListener;
-    var a = 0;
     document.addEventListener("mousedown", _documentClosePopupListener = e => {
         var el = <HTMLElement>e.target;
         var popup: Popup;
@@ -305,11 +304,6 @@ module Vidyano.WebComponents {
                     this.close();
                 }, 300);
             }
-        }
-
-        private _contentMousemove(e: MouseEvent) {
-            if (this.open)
-                e.stopPropagation();
         }
 
         private _hasHeader(header: string): boolean {

@@ -195,11 +195,11 @@ var Vidyano;
                 e.stopPropagation();
             };
             QueryGrid.prototype._onScrollVertical = function () {
-                WebComponents.Popup.closeAll();
+                WebComponents.Popup.closeAll(this);
                 this.items.onScroll();
             };
             QueryGrid.prototype._onScrollHorizontal = function (e) {
-                WebComponents.Popup.closeAll();
+                WebComponents.Popup.closeAll(this);
                 var src = (e && e.target ? e.target : e.srcElement);
                 var srcLeft = Math.max(Math.min(src.scrollLeft, this._horizontalSpacerWidth - this.remainderWidth + WebComponents.scrollbarWidth()), 0);
                 if (src.scrollLeftSync === undefined || src.scrollLeftSync != srcLeft)
@@ -829,6 +829,9 @@ var Vidyano;
             QueryGridItemActions.prototype._itemChanged = function () {
                 this._updateActionItems = true;
             };
+            QueryGridItemActions.prototype._mousemove = function (e) {
+                e.stopPropagation();
+            };
             QueryGridItemActions.prototype.popup = function () {
                 return this.$["popup"].popup();
             };
@@ -1446,6 +1449,9 @@ var Vidyano;
                     type: Object,
                     observer: "_itemChanged"
                 }
+            },
+            listeners: {
+                "mousemove": "_mousemove"
             }
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

@@ -7,6 +7,10 @@ module Vidyano.WebComponents {
         rightAlign: boolean;
         openOnHover: boolean;
 
+        popup(): Promise<any> {
+            return (<Popup><any>this.$["popup"]).popup();
+        }
+
         private _hookContextMenu(isAttached: boolean, contextMenu: boolean) {
             if (isAttached && contextMenu)
                 this.asElement.parentElement.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
@@ -44,7 +48,11 @@ module Vidyano.WebComponents {
 
         private _mouseenter() {
             if (this.openOnHover)
-                (<Popup><any>this.$["popup"]).popup();
+                this.popup();
+        }
+
+        private _mousemove(e: MouseEvent) {
+            e.stopPropagation();
         }
     }
 
@@ -86,7 +94,8 @@ module Vidyano.WebComponents {
             "_hookContextMenu(isAttached, contextMenuOnly)"
         ],
         listeners: {
-            "mouseenter": "_mouseenter"
+            "mouseenter": "_mouseenter",
+            "mousemove": "_mousemove"
         }
     });
 
