@@ -18,13 +18,7 @@
 
 <dom-module id="vi-persistent-object-attribute-boolean">
     <template>
-        <template is="dom-if" if="{{!value}}">
-            <vi-resource source="Icon_Unselected"></vi-resource>
-        </template>
-        <template is="dom-if" if="{{value}}">
-            <vi-resource source="Icon_Selected" class="selected"></vi-resource>
-        </template>
-        <span>{{attribute.displayValue}}</span>
+        <vi-checkbox value="{{value}}" label="{{attribute.displayValue}}" disabled$="{{attribute.isReadOnly}}"></vi-checkbox>
     </template>
 </dom-module>
 

@@ -3,14 +3,10 @@ vi-action-button {
   box-sizing: border-box;
 }
 vi-action-button button.vi-action-button {
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -ms-flex-direction: row;
-  -webkit-flex-direction: row;
-  flex-direction: row;
+  vertical-align: top;
   text-align: left;
   cursor: pointer;
+  height: 40px;
   line-height: 40px;
   width: 100%;
   padding: 0 12px;
@@ -27,6 +23,9 @@ vi-action-button button.vi-action-button > vi-resource[icon].options svg {
   width: 12px;
   height: 12px;
 }
+vi-action-button button.vi-action-button[header] vi-resource {
+  display: inline-block;
+}
 vi-action-button[overflow] vi-resource.options {
   -moz-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
@@ -34,12 +33,9 @@ vi-action-button[overflow] vi-resource.options {
   -webkit-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
-vi-action-button[no-label] button.vi-action-button > span.label,
-vi-action-button[pinned] button.vi-action-button > span.label {
+vi-action-button[no-label] button.vi-action-button > span,
+vi-action-button[pinned] button.vi-action-button > span {
   display: none;
-}
-vi-action-button:not([no-label]):not([pinned]) button.vi-action-button > vi-resource[icon][has-resource]:first-of-type {
-  margin-right: 6px;
 }
 vi-action-button[no-icon] button.vi-action-button > vi-resource[icon] {
   display: none;

@@ -17,22 +17,18 @@ button[is="vi-button"] {
 button[is="vi-button"][disabled] {
   cursor: default;
 }
-button[is="vi-button"]:not([custom-layout]) {
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -ms-flex-direction: row;
-  -webkit-flex-direction: row;
-  flex-direction: row;
-  -ms-flex-align: center;
-  -webkit-align-items: center;
-  align-items: center;
-  -ms-flex-pack: center;
-  -webkit-justify-content: center;
-  justify-content: center;
+button[is="vi-button"]:not([custom-layout]) > vi-resource {
+  display: inline-block;
 }
 button[is="vi-button"]:not([custom-layout]) > vi-resource[has-resource] + span {
-  margin-left: 6px;
+  margin-left: 2px;
+}
+button[is="vi-button"]:not([custom-layout]) > vi-resource:not([has-resource]) {
+  display: none;
+}
+button[is="vi-button"]:not([custom-layout]) > span {
+  display: inline-block;
+  vertical-align: top;
 }
 [theme-color-1] button[is="vi-button"][type=""]:not([inverse]),
 [theme-color-1] button[is="vi-button"]:not([type]):not([inverse]) {

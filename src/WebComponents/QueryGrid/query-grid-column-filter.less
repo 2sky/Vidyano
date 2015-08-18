@@ -17,17 +17,15 @@ vi-query-grid-column-filter {
     }
 
     button[header] {
-        .layout-horizontal();
-        .relative();
         box-sizing: border-box;
         overflow: hidden;
         text-align: left;
         font-weight: 500;
         width: 100%;
+        height: @h2;
         padding: 0;
 
         span {
-            .flex();
             padding: 0 @cell-padding;
             line-height: @cell-line-height;
             white-space: nowrap;
@@ -38,7 +36,9 @@ vi-query-grid-column-filter {
         }
 
         vi-resource {
+            display: inline-block;
             fill: #eee;
+            line-height: @h2;
             height: @h2;
             padding: 0 0 0 @cell-padding;
         }
@@ -75,6 +75,7 @@ vi-query-grid-column-filter {
             vi-resource {
                 text-align: center;
                 width: @cell-line-height;
+                height: @cell-line-height;
             }
 
             &[disabled] {
@@ -94,7 +95,6 @@ vi-query-grid-column-filter {
         }
 
         .advanced {
-            .layout-vertical();
             padding: 0 @cell-padding @cell-padding 0;
             position: relative;
 
@@ -117,7 +117,6 @@ vi-query-grid-column-filter {
             }
 
             > div {
-                .flex();
                 padding-left: @cell-line-height;
 
                 button#inverse {
@@ -169,7 +168,7 @@ vi-query-grid-column-filter {
                 cursor: pointer;
                 line-height: @h3;
                 height: @h3;
-                .layout-horizontal();
+                background-color: white;
                 .layout-center();
 
                 &:hover {
@@ -181,16 +180,16 @@ vi-query-grid-column-filter {
                 span {
                     line-height: @h3;
                     height: @h3;
-                    .flex();
+                    display: inline-block;
+                    vertical-align: top;
                 }
 
                 div.selector {
+                    display: inline-block;
                     line-height: @h3;
                     height: @h3;
-                    padding: 0 @h5;
+                    padding: 3px @h5;
                     text-align: center;
-                    .layout-horizontal();
-                    .layout-center();
 
                     svg {
                         width: @h2 / 2;
@@ -227,6 +226,7 @@ vi-query-grid-column-filter {
         button.close {
             border-top: 1px solid @separatorColor;
             line-height: @cell-line-height;
+            width: 100%;
         }
     }
 

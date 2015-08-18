@@ -47,8 +47,8 @@ var Vidyano;
                     this._setHidden(!this.action.isVisible);
                 }
             };
-            ActionButton.prototype._computeIcon = function () {
-                return this.action ? 'Icon_Action_' + this.action.definition.name : "";
+            ActionButton.prototype._computeIcon = function (action) {
+                return action ? 'Icon_Action_' + action.definition.name : "";
             };
             ActionButton.prototype._computeHasOptions = function (action) {
                 return action && action.options && action.options.length > 0;
@@ -70,6 +70,11 @@ var Vidyano;
                 icon: {
                     type: String,
                     computed: "_computeIcon(action)"
+                },
+                pinned: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "action.isPinned"
                 },
                 noLabel: {
                     type: Boolean,
@@ -100,7 +105,10 @@ var Vidyano;
                     type: Boolean,
                     reflectToAttribute: true
                 }
-            }
+            },
+            forwardObservers: [
+                "action.isPinned"
+            ]
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

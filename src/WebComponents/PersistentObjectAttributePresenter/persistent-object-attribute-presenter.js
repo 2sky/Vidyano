@@ -118,6 +118,7 @@ var Vidyano;
                             return;
                         }
                         var child = new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
+                        child.classList.add("attribute");
                         Polymer.dom(_this).appendChild(child.asElement);
                         child.attribute = attribute;
                     }

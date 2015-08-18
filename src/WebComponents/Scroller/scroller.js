@@ -22,8 +22,8 @@ var Vidyano;
             Scroller.prototype._outerSizeChanged = function (e, detail) {
                 if (!this._scrollbarWidth) {
                     var wrapper = this.$["wrapper"];
-                    wrapper.style.marginRight = -(this._scrollbarWidth = WebComponents.scrollbarWidth() || 20) + "px";
-                    wrapper.style.marginBottom = -this._scrollbarWidth + "px";
+                    wrapper.style.right = -(this._scrollbarWidth = WebComponents.scrollbarWidth() || 20) + "px";
+                    wrapper.style.bottom = -this._scrollbarWidth + "px";
                 }
                 this._setOuterWidth(detail.width);
                 this._setOuterHeight(detail.height);
@@ -36,7 +36,7 @@ var Vidyano;
                 this._updateScrollOffsets();
                 e.stopPropagation();
             };
-            Scroller.prototype._updateVerticalScrollbar = function (outerHeight, innerHeight, verticalScrollTop) {
+            Scroller.prototype._updateVerticalScrollbar = function (outerHeight, innerHeight, verticalScrollOffset, noVertical) {
                 var height = outerHeight < innerHeight ? outerHeight / innerHeight * outerHeight : 0;
                 if (height !== this._verticalScrollHeight) {
                     if (height > 0 && height < Scroller._minBarSize)
@@ -45,11 +45,12 @@ var Vidyano;
                         height = Math.floor(height);
                     if (height !== this._verticalScrollHeight) {
                         this._verticalScrollHeight = height;
-                        this._verticalScrollSpace = this.outerHeight - height;
+                        this._verticalScrollSpace = outerHeight - height;
                         this.$["vertical"].style.height = height + "px";
-                        this._setVertical(height > 0);
                     }
                 }
+                this._setVertical(!noVertical && height > 0);
+                var verticalScrollTop = verticalScrollOffset === 0 ? 0 : Math.round((1 / ((innerHeight - outerHeight) / verticalScrollOffset)) * this._verticalScrollSpace);
                 if (verticalScrollTop !== this._verticalScrollTop) {
                     this._verticalScrollTop = verticalScrollTop;
                     this.$["vertical"].style.top = verticalScrollTop + "px";
@@ -57,7 +58,7 @@ var Vidyano;
                 this._setScrollTopShadow(verticalScrollTop > 0);
                 this._setScrollBottomShadow(innerHeight - outerHeight - this.$["wrapper"].scrollTop > 0);
             };
-            Scroller.prototype._updateHorizontalScrollbar = function (outerWidth, innerWidth, horizontalScrollLeft) {
+            Scroller.prototype._updateHorizontalScrollbar = function (outerWidth, innerWidth, horizontalScrollOffset, noHorizontal) {
                 var width = outerWidth < innerWidth ? outerWidth / innerWidth * outerWidth : 0;
                 if (width !== this._horizontalScrollWidth) {
                     if (width > 0 && width < Scroller._minBarSize)
@@ -66,11 +67,12 @@ var Vidyano;
                         width = Math.floor(width);
                     if (width !== this._horizontalScrollWidth) {
                         this._horizontalScrollWidth = width;
-                        this._horizontalScrollSpace = this.outerWidth - width;
+                        this._horizontalScrollSpace = outerWidth - width;
                         this.$["horizontal"].style.width = width + "px";
-                        this._setHorizontal(width > 0);
                     }
                 }
+                this._setHorizontal(!noHorizontal && width > 0);
+                var horizontalScrollLeft = horizontalScrollOffset === 0 ? 0 : Math.round((1 / ((innerWidth - outerWidth) / horizontalScrollOffset)) * this._horizontalScrollSpace);
                 if (horizontalScrollLeft !== this._horizontalScrollLeft) {
                     this._horizontalScrollLeft = horizontalScrollLeft;
                     this.$["horizontal"].style.left = horizontalScrollLeft + "px";
@@ -100,8 +102,8 @@ var Vidyano;
                     this._trackStart = this._horizontalScrollLeft;
                 }
                 else if (detail.state == "track") {
-                    var newHorizontalScrollTop = this._trackStart + detail.dy;
-                    wrapper.scrollTop = newHorizontalScrollTop === 0 ? 0 : (this.innerWidth - this.outerWidth) * ((1 / this._horizontalScrollSpace) * newHorizontalScrollTop);
+                    var newHorizontalScrollLeft = this._trackStart + detail.dx;
+                    wrapper.scrollLeft = newHorizontalScrollLeft === 0 ? 0 : (this.innerWidth - this.outerWidth) * ((1 / this._horizontalScrollSpace) * newHorizontalScrollLeft);
                 }
                 else if (detail.state == "end") {
                     this._setScrolling(false);
@@ -120,9 +122,21 @@ var Vidyano;
             Scroller.prototype._updateScrollOffsets = function () {
                 var wrapper = this.$["wrapper"];
                 if (this.vertical)
-                    this._setVerticalScrollTop(wrapper.scrollTop === 0 ? 0 : Math.round((1 / ((this.innerHeight - this.outerHeight) / wrapper.scrollTop)) * this._verticalScrollSpace));
+                    this.verticalScrollOffset = wrapper.scrollTop;
                 if (this.horizontal)
-                    this._setHorizontalScrollLeft(wrapper.scrollLeft === 0 ? 0 : Math.round((1 / ((this.innerWidth - this.outerWidth) / wrapper.scrollLeft)) * this._horizontalScrollSpace));
+                    this.horizontalScrollOffset = wrapper.scrollLeft;
+            };
+            Scroller.prototype._verticalScrollOffsetChanged = function (newVerticalScrollOffset) {
+                var wrapper = this.$["wrapper"];
+                if (!this.vertical || wrapper.scrollTop === newVerticalScrollOffset)
+                    return;
+                wrapper.scrollTop = newVerticalScrollOffset;
+            };
+            Scroller.prototype._horizontalScrollOffsetChanged = function (newHorizontalScrollOffset) {
+                var wrapper = this.$["wrapper"];
+                if (!this.vertical || wrapper.scrollLeft === newHorizontalScrollOffset)
+                    return;
+                wrapper.scrollLeft = newHorizontalScrollOffset;
             };
             Scroller.prototype._mouseenter = function () {
                 this._setHovering(true);
@@ -187,24 +201,36 @@ var Vidyano;
                     readOnly: true,
                     reflectToAttribute: true
                 },
+                noHorizontal: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    value: false
+                },
                 vertical: {
                     type: Boolean,
                     readOnly: true,
                     reflectToAttribute: true
                 },
+                noVertical: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    value: false
+                },
                 scrollbars: {
                     type: String,
                     reflectToAttribute: true
                 },
-                verticalScrollTop: {
+                verticalScrollOffset: {
                     type: Number,
-                    readOnly: true,
-                    value: 0
+                    value: 0,
+                    notify: true,
+                    observer: "_verticalScrollOffsetChanged"
                 },
-                horizontalScrollLeft: {
+                horizontalScrollOffset: {
                     type: Number,
-                    readOnly: true,
-                    value: 0
+                    value: 0,
+                    notify: true,
+                    observer: "_horizontalScrollOffsetChanged"
                 },
                 scrollTopShadow: {
                     type: Boolean,
@@ -215,14 +241,18 @@ var Vidyano;
                     type: Boolean,
                     readOnly: true,
                     reflectToAttribute: true
+                },
+                forceScrollbars: {
+                    type: Boolean,
+                    reflectToAttribute: true
                 }
             },
             forwardObservers: [
                 "attribute.objects"
             ],
             observers: [
-                "_updateVerticalScrollbar(outerHeight, innerHeight, verticalScrollTop)",
-                "_updateHorizontalScrollbar(outerWidth, innerWidth, horizontalScrollTop)"
+                "_updateVerticalScrollbar(outerHeight, innerHeight, verticalScrollOffset, noVertical)",
+                "_updateHorizontalScrollbar(outerWidth, innerWidth, horizontalScrollOffset, noHorizontal)"
             ],
             listeners: {
                 "mouseenter": "_mouseenter",

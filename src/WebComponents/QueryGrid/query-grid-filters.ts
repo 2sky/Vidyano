@@ -57,7 +57,7 @@
 
         private _updateFiltering() {
             this._setFiltering(this.query && this.query.columns.some(c => (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0)));
-            Popup.closeAll();
+            Popup.closeAll(this);
         }
 
         private _getFilterObject(name: string): Vidyano.PersistentObject {

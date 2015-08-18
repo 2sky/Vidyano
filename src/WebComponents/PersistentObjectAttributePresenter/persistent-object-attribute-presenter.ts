@@ -150,6 +150,8 @@ module Vidyano.WebComponents {
                     }
 
                     var child = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
+                    child.classList.add("attribute");
+
                     Polymer.dom(this).appendChild(child.asElement);
 
                     child.attribute = attribute;

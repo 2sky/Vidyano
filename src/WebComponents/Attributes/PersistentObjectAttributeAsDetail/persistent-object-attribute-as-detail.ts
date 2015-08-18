@@ -8,40 +8,19 @@ module Vidyano.WebComponents.Attributes {
 
         private _setInitializing: (init: boolean) => void;
         private _setWidth: (width: number) => void;
+        private _setHeight: (height: number) => void;
         private _setNewAction: (action: Vidyano.Action) => void;
-        private _setNewActionPinned: (pinned: boolean) => void;
         private _setDeleteAction: (action: Vidyano.Action) => void;
 
         private _isColumnVisible(column: QueryColumn) {
             return !column.isHidden && column.width !== "0";
         }
 
-        protected _editingChanged() {
-            super._editingChanged();
-
-            var scroller = <Scroller><any>this.$["body"];
-            scroller.scrollbars = this.editing ? "visible-margin" : undefined;
-        }
-
         private _sizechanged(e: Event, detail: { width: number; height: number; }) {
             this._setWidth(detail.width);
+            this._setHeight(detail.height);
+
             e.stopPropagation();
-
-            if (detail.height > 0) {
-                if (!this.newAction) {
-                    this._setNewActionPinned(false);
-                    return;
-                }
-
-                var scroller = (<Scroller><any>this.$["body"]);
-                if (!this._inlineAddHeight) {
-                    var inlineAdd = <HTMLDivElement>this.$["body"].querySelector(".row.add.inline");
-                    this._inlineAddHeight = inlineAdd.offsetHeight;
-                }
-
-                var contentHeight = this.newActionPinned ? scroller.innerHeight : scroller.innerHeight - this._inlineAddHeight;
-                this._setNewActionPinned(contentHeight + this._inlineAddHeight > this.$["table"].offsetHeight - this.$["head"].offsetHeight);
-            }
         }
 
         private _computeColumns(columns: QueryColumn[]): QueryColumn[] {
@@ -50,6 +29,20 @@ module Vidyano.WebComponents.Attributes {
 
         private _computeCanDelete(editing: boolean, deleteAction: Vidyano.Action, objects: Vidyano.PersistentObject[]): boolean {
             return editing && !!deleteAction && !!objects && objects.some(o => !o.isDeleted);
+        }
+
+        private _computeNewActionPinned(height: number, newAction: Vidyano.Action): boolean {
+            if (!height || !newAction)
+                return false;
+
+            var scroller = (<Scroller><any>this.$["body"]);
+            if (!this._inlineAddHeight) {
+                var inlineAdd = <HTMLElement>scroller.asElement.querySelector(".row.add.inline");
+                this._inlineAddHeight = inlineAdd.offsetHeight;
+            }
+
+            var contentHeight = this.newActionPinned ? height : height - this._inlineAddHeight;
+            return contentHeight + this._inlineAddHeight > this.$["table"].offsetHeight - this.$["head"].offsetHeight;
         }
 
         private _updateActions(actions: Vidyano.Action[], editing: boolean) {
@@ -175,13 +168,17 @@ module Vidyano.WebComponents.Attributes {
             newActionPinned: {
                 type: Boolean,
                 reflectToAttribute: true,
-                readOnly: true
+                computed: "_computeNewActionPinned(height, newAction)"
             },
             deleteAction: {
                 type: Object,
                 readOnly: true
             },
             width: {
+                type: Number,
+                readOnly: true
+            },
+            height: {
                 type: Number,
                 readOnly: true
             },

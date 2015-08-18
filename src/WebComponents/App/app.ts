@@ -655,7 +655,7 @@
             signInImage: String,
             showMenu: {
                 type: Boolean,
-                computed: "_computeShowMenu(service.isSignedIn, noMenu)"
+                computed: "_computeShowMenu(service.isSignedIn, noMenu, isAttached)"
             }
         },
         observers: [

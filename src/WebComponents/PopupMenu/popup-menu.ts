@@ -58,6 +58,13 @@ module Vidyano.WebComponents {
 
     export class PopupMenuItem extends WebComponent {
         label: string;
+        split: boolean;
+
+        attached() {
+            super.attached();
+
+            this.split = Polymer.dom(this).children.length > 0;
+        }
 
         private _splitTap(e: Event) {
             e.stopPropagation();

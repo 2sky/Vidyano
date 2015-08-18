@@ -87,6 +87,7 @@ vi-persistent-object-attribute-as-detail[editing] #table #body {
 vi-persistent-object-attribute-as-detail[editing] #table #body .row {
   height: 32px;
   line-height: 32px;
+  overflow: hidden;
 }
 vi-persistent-object-attribute-as-detail[editing] #table #body .row div.delete-button {
   display: -ms-flexbox;
@@ -136,6 +137,9 @@ vi-persistent-object-attribute-as-detail[editing] #table #body .row:last-of-type
 vi-persistent-object-attribute-as-detail[editing] #table #body .row:last-of-type .column,
 vi-persistent-object-attribute-as-detail[editing] #table #body .row:last-of-type div.delete-button {
   padding-bottom: 0;
+}
+vi-persistent-object-attribute-as-detail[editing] #table #body[vertical] .row div.delete-button {
+  margin-right: 12px;
 }
 vi-persistent-object-attribute-as-detail[editing]:not([can-delete]) #table #head .column:last-of-type label {
   border-right: 0;

@@ -16,8 +16,12 @@
         innerWidth: number;
         innerHeight: number;
         horizontal: boolean;
+        noHorizontal: boolean;
         vertical: boolean;
-        scrollbars: string;
+        noVertical: boolean;
+        horizontalScrollOffset: number;
+        verticalScrollOffset: number;
+        forceScrollbars: boolean;
 
         private _setOuterWidth: (width: number) => void;
         private _setOuterHeight: (height: number) => void;
@@ -25,8 +29,6 @@
         private _setInnerHeight: (height: number) => void;
         private _setHorizontal: (val: boolean) => void;
         private _setVertical: (val: boolean) => void;
-        private _setHorizontalScrollLeft: (val: number) => void;
-        private _setVerticalScrollTop: (val: number) => void;
         private _setScrollTopShadow: (val: boolean) => void;
         private _setScrollBottomShadow: (val: boolean) => void;
 
@@ -42,8 +44,8 @@
             if (!this._scrollbarWidth) {
                 var wrapper = this.$["wrapper"];
 
-                wrapper.style.marginRight = -(this._scrollbarWidth = scrollbarWidth() || 20) + "px";
-                wrapper.style.marginBottom = -this._scrollbarWidth + "px";
+                wrapper.style.right = -(this._scrollbarWidth = scrollbarWidth() || 20) + "px";
+                wrapper.style.bottom = -this._scrollbarWidth + "px";
             }
 
             this._setOuterWidth(detail.width);
@@ -63,7 +65,7 @@
             e.stopPropagation();
         }
 
-        private _updateVerticalScrollbar(outerHeight: number, innerHeight: number, verticalScrollTop: number) {
+        private _updateVerticalScrollbar(outerHeight: number, innerHeight: number, verticalScrollOffset: number, noVertical: boolean) {
             var height = outerHeight < innerHeight ? outerHeight / innerHeight * outerHeight : 0;
             if (height !== this._verticalScrollHeight) {
                 if (height > 0 && height < Scroller._minBarSize)
@@ -73,13 +75,14 @@
 
                 if (height !== this._verticalScrollHeight) {
                     this._verticalScrollHeight = height;
-                    this._verticalScrollSpace = this.outerHeight - height;
+                    this._verticalScrollSpace = outerHeight - height;
                     this.$["vertical"].style.height = `${height}px`;
-
-                    this._setVertical(height > 0);
                 }
             }
 
+            this._setVertical(!noVertical && height > 0);
+
+            var verticalScrollTop = verticalScrollOffset === 0 ? 0 : Math.round((1 / ((innerHeight - outerHeight) / verticalScrollOffset)) * this._verticalScrollSpace);
             if (verticalScrollTop !== this._verticalScrollTop) {
                 this._verticalScrollTop = verticalScrollTop;
                 this.$["vertical"].style.top = `${verticalScrollTop}px`;
@@ -89,7 +92,7 @@
             this._setScrollBottomShadow(innerHeight - outerHeight - this.$["wrapper"].scrollTop > 0);
         }
 
-        private _updateHorizontalScrollbar(outerWidth: number, innerWidth: number, horizontalScrollLeft: number) {
+        private _updateHorizontalScrollbar(outerWidth: number, innerWidth: number, horizontalScrollOffset: number, noHorizontal: boolean) {
             var width = outerWidth < innerWidth ? outerWidth / innerWidth * outerWidth : 0;
             if (width !== this._horizontalScrollWidth) {
                 if (width > 0 && width < Scroller._minBarSize)
@@ -99,13 +102,14 @@
 
                 if (width !== this._horizontalScrollWidth) {
                     this._horizontalScrollWidth = width;
-                    this._horizontalScrollSpace = this.outerWidth - width;
+                    this._horizontalScrollSpace = outerWidth - width;
                     this.$["horizontal"].style.width = `${width}px`;
-
-                    this._setHorizontal(width > 0);
                 }
             }
 
+            this._setHorizontal(!noHorizontal && width > 0);
+
+            var horizontalScrollLeft = horizontalScrollOffset === 0 ? 0 : Math.round((1 / ((innerWidth - outerWidth) / horizontalScrollOffset)) * this._horizontalScrollSpace);
             if (horizontalScrollLeft !== this._horizontalScrollLeft) {
                 this._horizontalScrollLeft = horizontalScrollLeft;
                 this.$["horizontal"].style.left = `${horizontalScrollLeft}px`;
@@ -140,8 +144,8 @@
                 this._trackStart = this._horizontalScrollLeft;
             }
             else if (detail.state == "track") {
-                var newHorizontalScrollTop = this._trackStart + detail.dy;
-                wrapper.scrollTop = newHorizontalScrollTop === 0 ? 0 : (this.innerWidth - this.outerWidth) * ((1 / this._horizontalScrollSpace) * newHorizontalScrollTop);
+                var newHorizontalScrollLeft = this._trackStart + detail.dx;
+                wrapper.scrollLeft = newHorizontalScrollLeft === 0 ? 0 : (this.innerWidth - this.outerWidth) * ((1 / this._horizontalScrollSpace) * newHorizontalScrollLeft);
             }
             else if (detail.state == "end") {
                 this._setScrolling(false);
@@ -158,17 +162,32 @@
 
         private _scroll(e: Event) {
             Popup.closeAll(this);
-
             this._updateScrollOffsets();
         }
 
         private _updateScrollOffsets() {
             var wrapper = this.$["wrapper"];
             if (this.vertical)
-                this._setVerticalScrollTop(wrapper.scrollTop === 0 ? 0 : Math.round((1 / ((this.innerHeight - this.outerHeight) / wrapper.scrollTop)) * this._verticalScrollSpace));
+                this.verticalScrollOffset = wrapper.scrollTop;
 
             if (this.horizontal)
-                this._setHorizontalScrollLeft(wrapper.scrollLeft === 0 ? 0 : Math.round((1 / ((this.innerWidth - this.outerWidth) / wrapper.scrollLeft)) * this._horizontalScrollSpace));
+                this.horizontalScrollOffset = wrapper.scrollLeft;
+        }
+
+        private _verticalScrollOffsetChanged(newVerticalScrollOffset: number) {
+            var wrapper = this.$["wrapper"];
+            if (!this.vertical || wrapper.scrollTop === newVerticalScrollOffset)
+                return;
+
+            wrapper.scrollTop = newVerticalScrollOffset;
+        }
+
+        private _horizontalScrollOffsetChanged(newHorizontalScrollOffset: number) {
+            var wrapper = this.$["wrapper"];
+            if (!this.vertical || wrapper.scrollLeft === newHorizontalScrollOffset)
+                return;
+
+            wrapper.scrollLeft = newHorizontalScrollOffset;
         }
 
         private _mouseenter() {
@@ -237,24 +256,36 @@
                 readOnly: true,
                 reflectToAttribute: true
             },
+            noHorizontal: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
             vertical: {
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true
             },
+            noVertical: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
             scrollbars: {
                 type: String,
                 reflectToAttribute: true
             },
-            verticalScrollTop: {
+            verticalScrollOffset: {
                 type: Number,
-                readOnly: true,
-                value: 0
+                value: 0,
+                notify: true,
+                observer: "_verticalScrollOffsetChanged"
             },
-            horizontalScrollLeft: {
+            horizontalScrollOffset: {
                 type: Number,
-                readOnly: true,
-                value: 0
+                value: 0,
+                notify: true,
+                observer: "_horizontalScrollOffsetChanged"
             },
             scrollTopShadow: {
                 type: Boolean,
@@ -265,14 +296,18 @@
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true
+            },
+            forceScrollbars: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         forwardObservers: [
             "attribute.objects"
         ],
         observers: [
-            "_updateVerticalScrollbar(outerHeight, innerHeight, verticalScrollTop)",
-            "_updateHorizontalScrollbar(outerWidth, innerWidth, horizontalScrollTop)"
+            "_updateVerticalScrollbar(outerHeight, innerHeight, verticalScrollOffset, noVertical)",
+            "_updateHorizontalScrollbar(outerWidth, innerWidth, horizontalScrollOffset, noHorizontal)"
         ],
         listeners: {
             "mouseenter": "_mouseenter",

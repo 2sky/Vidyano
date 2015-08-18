@@ -1,5 +1,6 @@
 vi-menu-item {
   position: relative;
+  box-sizing: border-box;
   display: block;
   line-height: 30px;
   color: #fafafa;
@@ -55,6 +56,7 @@ vi-menu-item[has-items].program-unit-item {
 }
 vi-menu-item[has-items].program-unit-item .group {
   width: 32px;
+  height: 30px;
   text-align: center;
   -moz-transition: transform 0.2s ease-out;
   -o-transition: transform 0.2s ease-out;

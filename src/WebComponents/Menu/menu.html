@@ -11,8 +11,8 @@
             <content select="[menu-element~='start']"></content>
             <vi-input-search collapsed="{{collapsed}}" value="{{filter}}" on-search="_search"></vi-input-search>
         </header>
-        <vi-scroller id="programUnits" class="flex">
-            <template is="dom-if" if="{{!collapsed}}">
+        <template is="dom-if" if="{{!collapsed}}">
+            <vi-scroller class="flex programUnits" no-horizontal>
                 <template is="dom-repeat" items="{{items}}">
                     <vi-menu-item class="program-unit" item="{{item}}" filter="{{filter}}" program-unit="{{programUnit}}" collapsed="{{collapsed}}"></vi-menu-item>
                     <div class="subItems">
@@ -26,8 +26,10 @@
                         </template>
                     </div>
                 </template>
-            </template>
-            <template is="dom-if" if="{{collapsed}}">
+            </vi-scroller>
+        </template>
+        <template is="dom-if" if="{{collapsed}}">
+            <div class="flex programUnits">
                 <template is="dom-repeat" items="{{items}}">
                     <vi-popup orientation="horizontal" content-align="right" open-on-hover>
                         <vi-menu-item header class="program-unit" item="{{item}}" program-unit="{{programUnit}}" collapsed="{{collapsed}}"></vi-menu-item>
@@ -43,8 +45,8 @@
                         </div>
                     </vi-popup>
                 </template>
-            </template>
-        </vi-scroller>
+            </div>
+        </template>
         <footer>
             <content select="[menu-element~='end']"></content>
             <vi-user collapsed="{{collapsed}}"></vi-user>

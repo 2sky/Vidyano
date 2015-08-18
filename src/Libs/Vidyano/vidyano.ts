@@ -282,6 +282,7 @@ module Vidyano {
             super();
 
             (<any>this.hooks)._service = this;
+            this.staySignedIn = cookie("staySignedIn", undefined, { force: true });
         }
 
         private _createUri(method: string) {

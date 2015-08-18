@@ -5,9 +5,10 @@ vi-action-button {
     box-sizing: border-box;
 
     button.vi-action-button {
-        .layout-horizontal();
+        vertical-align: top;
         text-align: left;
         cursor: pointer;
+        height: @h1;
         line-height: @h1;
         width: 100%;
         padding: 0 @h4;
@@ -25,6 +26,12 @@ vi-action-button {
                 }
             }
         }
+
+        &[header] {
+            vi-resource {
+                display: inline-block;
+            }
+        }
     }
 
     &[overflow] {
@@ -38,14 +45,8 @@ vi-action-button {
     }
 
     &[no-label], &[pinned] {
-        button.vi-action-button > span.label {
+        button.vi-action-button > span {
             display: none;
-        }
-    }
-
-    &:not([no-label]):not([pinned]) {
-        button.vi-action-button > vi-resource[icon][has-resource]:first-of-type {
-            margin-right: @h5;
         }
     }
 

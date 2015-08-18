@@ -58,6 +58,10 @@ var Vidyano;
             function PopupMenuItem() {
                 _super.apply(this, arguments);
             }
+            PopupMenuItem.prototype.attached = function () {
+                _super.prototype.attached.call(this);
+                this.split = Polymer.dom(this).children.length > 0;
+            };
             PopupMenuItem.prototype._splitTap = function (e) {
                 e.stopPropagation();
             };

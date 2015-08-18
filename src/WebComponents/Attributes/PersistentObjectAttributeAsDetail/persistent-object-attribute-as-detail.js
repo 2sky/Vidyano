@@ -18,33 +18,27 @@ var Vidyano;
                 PersistentObjectAttributeAsDetail.prototype._isColumnVisible = function (column) {
                     return !column.isHidden && column.width !== "0";
                 };
-                PersistentObjectAttributeAsDetail.prototype._editingChanged = function () {
-                    _super.prototype._editingChanged.call(this);
-                    var scroller = this.$["body"];
-                    scroller.scrollbars = this.editing ? "visible-margin" : undefined;
-                };
                 PersistentObjectAttributeAsDetail.prototype._sizechanged = function (e, detail) {
                     this._setWidth(detail.width);
+                    this._setHeight(detail.height);
                     e.stopPropagation();
-                    if (detail.height > 0) {
-                        if (!this.newAction) {
-                            this._setNewActionPinned(false);
-                            return;
-                        }
-                        var scroller = this.$["body"];
-                        if (!this._inlineAddHeight) {
-                            var inlineAdd = this.$["body"].querySelector(".row.add.inline");
-                            this._inlineAddHeight = inlineAdd.offsetHeight;
-                        }
-                        var contentHeight = this.newActionPinned ? scroller.innerHeight : scroller.innerHeight - this._inlineAddHeight;
-                        this._setNewActionPinned(contentHeight + this._inlineAddHeight > this.$["table"].offsetHeight - this.$["head"].offsetHeight);
-                    }
                 };
                 PersistentObjectAttributeAsDetail.prototype._computeColumns = function (columns) {
                     return Enumerable.from(columns).where(function (c) { return !c.isHidden; }).toArray();
                 };
                 PersistentObjectAttributeAsDetail.prototype._computeCanDelete = function (editing, deleteAction, objects) {
                     return editing && !!deleteAction && !!objects && objects.some(function (o) { return !o.isDeleted; });
+                };
+                PersistentObjectAttributeAsDetail.prototype._computeNewActionPinned = function (height, newAction) {
+                    if (!height || !newAction)
+                        return false;
+                    var scroller = this.$["body"];
+                    if (!this._inlineAddHeight) {
+                        var inlineAdd = scroller.asElement.querySelector(".row.add.inline");
+                        this._inlineAddHeight = inlineAdd.offsetHeight;
+                    }
+                    var contentHeight = this.newActionPinned ? height : height - this._inlineAddHeight;
+                    return contentHeight + this._inlineAddHeight > this.$["table"].offsetHeight - this.$["head"].offsetHeight;
                 };
                 PersistentObjectAttributeAsDetail.prototype._updateActions = function (actions, editing) {
                     this._setNewAction(editing && !this.attribute.isReadOnly ? actions["New"] || null : null);
@@ -157,13 +151,17 @@ var Vidyano;
                     newActionPinned: {
                         type: Boolean,
                         reflectToAttribute: true,
-                        readOnly: true
+                        computed: "_computeNewActionPinned(height, newAction)"
                     },
                     deleteAction: {
                         type: Object,
                         readOnly: true
                     },
                     width: {
+                        type: Number,
+                        readOnly: true
+                    },
+                    height: {
                         type: Number,
                         readOnly: true
                     },

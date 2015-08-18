@@ -22,7 +22,6 @@
         private _uniqueId: string = Unique.get();
         private _rows: { [key: string]: QueryGridRow } = {};
         private _horizontalScrollPanels: HTMLElement[];
-        private _horizontalSpacerWidth: number = 0;
         private _pinnedColumns: QueryGridColumn[] = [];
         private _unpinnedColumns: QueryGridColumn[] = [];
         private _styles: { [key: string]: Text } = {};
@@ -30,6 +29,8 @@
         private _itemOpening: Vidyano.QueryResultItem;
         private _lastSelectedItemIndex: number;
         private remainderWidth: number;
+        private verticalScrollOffset: number;
+        private horizontalScrollOffset: number;
         viewport: Viewport;
         query: Vidyano.Query;
         initializing: boolean;
@@ -39,8 +40,6 @@
 
         _setInitializing: (val: boolean) => void;
         _setViewport: (viewport: Viewport) => void;
-        _setScrollTopShadow: (val: boolean) => void;
-        _setScrollBottomShadow: (val: boolean) => void;
         private _setDisableSelect: (val: boolean) => void;
 
         attached() {
@@ -70,8 +69,7 @@
             this._horizontalScrollPanels = [
                 this.headers.hosts.unpinned,
                 this.filters.hosts.unpinned,
-                this.items.hosts.unpinned,
-                <HTMLDivElement>this.$["horizontalScroll"]
+                this.items.hosts.unpinned
             ];
 
             super.attached();
@@ -130,52 +128,13 @@
         }
 
         private _itemsChanged() {
-            this.items.data.scrollTop = 0;
+            this.items.data.scrollToTop();
             this.items.updateRows();
             this.items.updateTablePosition(true, true);
         }
 
-        private _updateScrollBarsVisibility() {
-            var horizontalSpacer = <HTMLDivElement>this.$["horizontalSpacer"];
-
-            this.items.data.classList.remove("scroll");
-            horizontalSpacer.parentElement.style.marginRight = "0";
-
-            var widthRequired = this.items.hosts.pinned.offsetWidth + this.items.hosts.unpinned.offsetWidth - this.remainderWidth + this.items.hosts.header.offsetWidth;
-            var widthAvailable = this.items.verticalSpacer.offsetWidth;
-            var heightAvailable = this.items.data.offsetHeight;
-
-            var isVerticalScroll = this.items.virtualHeight > heightAvailable;
-            var isHorizontalScroll = widthRequired > widthAvailable;
-
-            if (isVerticalScroll)
-                widthAvailable -= scrollbarWidth();
-
-            isVerticalScroll = this.items.virtualHeight > heightAvailable;
-            isHorizontalScroll = widthRequired > widthAvailable;
-
-            if (isVerticalScroll)
-                this.items.data.classList.add("scroll");
-            else
-                this.items.data.classList.remove("scroll");
-
-            this._setScrollBottomShadow(isVerticalScroll);
-
-            if (isHorizontalScroll) {
-                horizontalSpacer.parentElement.removeAttribute("hidden");
-                horizontalSpacer.parentElement.style.marginRight = isVerticalScroll ? scrollbarWidth() + "px" : "0";
-            }
-            else {
-                horizontalSpacer.parentElement.setAttribute("hidden", "");
-                horizontalSpacer.parentElement.style.marginRight = "0";
-            }
-
-            horizontalSpacer.style.width = (this._horizontalSpacerWidth = this.items.hosts.pinned.offsetWidth + this.items.hosts.unpinned.offsetWidth - this.remainderWidth + this.items.hosts.header.offsetWidth) + "px";
-        }
-
-        private _updateScrollBarsListener(e: CustomEvent) {
-            e.stopPropagation();
-            this._updateScrollBarsVisibility();
+        private _updateHorizontalSpacer() {
+            this.$["horizontalSpacer"].style.width = (this.items.hosts.pinned.offsetWidth + this.items.hosts.unpinned.offsetWidth - this.remainderWidth + this.items.hosts.header.offsetWidth) + "px";
         }
 
         private _measureColumnsListener(e: CustomEvent) {
@@ -190,14 +149,16 @@
             });
 
             this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(c => "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }").toArray()));
-            this._updateScrollBarsVisibility();
+            this._updateHorizontalSpacer();
 
             this._setInitializing(false);
         }
 
         private _columnWidthUpdatedListener(e: CustomEvent, detail: { column: QueryGridColumn }) {
             var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
+
             this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(c => "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }").toArray()));
+            this._updateHorizontalSpacer();
         }
 
         private _itemSelectListener(e: CustomEvent, detail: { item: Vidyano.QueryResultItem; rangeSelect: boolean }) {
@@ -233,35 +194,32 @@
                 return;
 
             this._setViewport(detail);
-
             this.items.updateRows();
-            this._updateScrollBarsVisibility();
 
             e.stopPropagation();
         }
 
-        private _onScrollVertical() {
-            WebComponents.Popup.closeAll(this);
+        private _verticalScrollOffsetChanged(verticalScrollOffset: number) {
+            if (!this.items)
+                return;
 
-            this.items.onScroll();
+            this.items.onScroll(verticalScrollOffset);
+        }
+
+        private _horizontalScrollOffsetChanged(horizontalScrollOffset: number) {
+            if (!this._horizontalScrollPanels)
+                return;
+
+            this._horizontalScrollPanels.forEach(targetElement => {
+                if (targetElement.parentElement.scrollLeft !== horizontalScrollOffset)
+                    targetElement.parentElement.scrollLeft = horizontalScrollOffset;
+            });
         }
 
         private _onScrollHorizontal(e: UIEvent) {
-            WebComponents.Popup.closeAll(this);
-
             var src = <HTMLElement>(e && e.target ? e.target : e.srcElement);
-            var srcLeft = Math.max(Math.min(src.scrollLeft, this._horizontalSpacerWidth - this.remainderWidth + scrollbarWidth()), 0);
-            if ((<any>src).scrollLeftSync === undefined || (<any>src).scrollLeftSync != srcLeft)
-                (<any>src).scrollLeftSync = srcLeft;
-
-            if (src.scrollLeft != srcLeft)
-                src.scrollLeft = srcLeft;
-
-            this._horizontalScrollPanels.filter(panel => panel != src).forEach(targetElement => {
-                var target = <any>targetElement;
-                if (target.scrollLeftSync != srcLeft)
-                    target.scrollLeftSync = targetElement.parentElement.scrollLeft = srcLeft;
-            });
+            if (src.scrollLeft !== this.horizontalScrollOffset)
+                this.horizontalScrollOffset = src.scrollLeft;
         }
 
         private _updateHoverRow(e: MouseEvent) {
@@ -269,7 +227,7 @@
 
             var sender = e.srcElement || e.target;
             if (sender && sender !== <Element><any>this)
-                y -= this.items.data.getClientRects()[0].top;
+                y -= this.items.data.asElement.getClientRects()[0].top;
 
             this.items.updateHoverRow(y);
         }
@@ -361,6 +319,14 @@
         private _computeRemainderWidth(): number {
             this._style.setStyle("RemainderColumn", "._RemainderColumn { width: " + this.viewport.width + "px; }");
             return this.viewport.width;
+        }
+
+        private _itemsMouseenter() {
+            (<Scroller><any>this.$["horizontalScroll"]).forceScrollbars = this.items.data.forceScrollbars = true;
+        }
+
+        private _itemsMouseleave() {
+            (<Scroller><any>this.$["horizontalScroll"]).forceScrollbars = this.items.data.forceScrollbars = false;
         }
     }
 
@@ -545,13 +511,13 @@
         private _currentHoverRowIndex: number = -1;
         private _lastKnownMouseYPosition: number = -1;
         private _debouncedGetItems: Function;
-        private _data: HTMLElement;
+        private _data: Scroller;
         private _verticalSpacer: HTMLDivElement;
 
         constructor(grid: QueryGrid, hosts: QueryGridColumnHosts) {
             super(grid, hosts);
 
-            this._data = this.grid.$["data"];
+            this._data = <Scroller><any>this.grid.$["data"];
             this._verticalSpacer = <HTMLDivElement>this.grid.$["verticalSpacer"];
         }
 
@@ -563,7 +529,7 @@
             this._items = [];
         }
 
-        get data(): HTMLElement {
+        get data(): Scroller {
             return this._data;
         }
 
@@ -603,7 +569,7 @@
                 this._items.push(new QueryGridItem(this));
 
             var oldViewportEndRowIndex = this._viewportEndRowIndex || 0;
-            this._viewportEndRowIndex = this._rowHeight !== undefined ? Math.floor(this._data.scrollTop + this.grid.viewport.height / this._rowHeight) : 1;
+            this._viewportEndRowIndex = this._rowHeight !== undefined ? Math.floor(this._data.verticalScrollOffset + this.grid.viewport.height / this._rowHeight) : 1;
             if (this._viewportEndRowIndex > oldViewportEndRowIndex)
                 this.updateTablePosition(true);
         }
@@ -663,7 +629,6 @@
 
                     if (this._virtualHeight != this._rowHeight * this.grid.query.totalItems) {
                         this._verticalSpacer.style.height = (this._virtualHeight = (this._rowHeight * this.grid.query.totalItems)) + "px";
-                        this.grid.fire("update-scrollbars", null);
                     }
 
                     var numberOfItemRows = Math.min(this._rowsStartIndex + this._items.length, this.grid.query.totalItems);
@@ -701,7 +666,7 @@
         updateHoverRow(yPosition: number = this._lastKnownMouseYPosition) {
             this._lastKnownMouseYPosition = yPosition;
 
-            var newCurrentHoverRowIndex = Math.floor(yPosition / this._rowHeight + (this._data.scrollTop - this._dataTop) / this._rowHeight);
+            var newCurrentHoverRowIndex = Math.floor(yPosition / this._rowHeight + (this._data.verticalScrollOffset - this._dataTop) / this._rowHeight);
             if (newCurrentHoverRowIndex != this._currentHoverRowIndex) {
                 if (this._currentHoverRowIndex >= 0)
                     this._items[this._currentHoverRowIndex].hover = false;
@@ -712,15 +677,12 @@
             }
         }
 
-        onScroll() {
+        onScroll(verticalScrollOffset: number) {
             this.updateHoverRow();
 
-            var top = this._data.scrollTop;
-            this.grid._setScrollTopShadow(top > 0);
-            this.grid._setScrollBottomShadow(top < (this._data.scrollHeight - this._data.offsetHeight - this._rowHeight * 0.25));
+            this._viewportStartRowIndex = Math.floor(verticalScrollOffset / this._rowHeight);
+            this._viewportEndRowIndex = Math.ceil((verticalScrollOffset + this.grid.viewport.height) / this._rowHeight);
 
-            this._viewportStartRowIndex = Math.floor(top / this._rowHeight);
-            this._viewportEndRowIndex = Math.ceil((top + this.grid.viewport.height) / this._rowHeight);
             this.updateTablePosition();
         }
     }
@@ -1128,10 +1090,7 @@
         private _resizeMove(e: MouseEvent) {
             var newWidth = this._resizeStartWidth + e.clientX - this._resizeX;
             this.gridColumn.currentWidth = newWidth >= this._resizeMinWidth ? newWidth : this._resizeMinWidth;
-
             this.fire("column-width-updated", { column: this.gridColumn });
-            if (Vidyano.WebComponents.QueryGrid._isChrome)
-                (<any>this._grid)._updateScrollBarsVisibility();
 
             e.stopPropagation();
         }
@@ -1139,7 +1098,7 @@
         private _resizeEnd(e: Event) {
             (<HTMLElement>e.target).parentElement.removeChild(<HTMLElement>e.target);
             this.gridColumn.currentWidth = this.asElement.offsetWidth;
-            (<any>this._grid)._updateScrollBarsVisibility();
+            this.fire("column-width-updated", { column: this.gridColumn });
 
             e.stopPropagation();
         }
@@ -1591,16 +1550,6 @@
                 type: Number,
                 computed: "_computeRemainderWidth(viewport)"
             },
-            scrollTopShadow: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true,
-            },
-            scrollBottomShadow: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
             disableFilter: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -1615,6 +1564,14 @@
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "_computeDisableSelect(query.actions)"
+            },
+            verticalScrollOffset: {
+                type: Number,
+                observer: "_verticalScrollOffsetChanged"
+            },
+            horizontalScrollOffset: {
+                type: Number,
+                observer: "_horizontalScrollOffsetChanged"
             }
         },
         observers: [
@@ -1629,7 +1586,6 @@
         listeners: {
             "measure-columns": "_measureColumnsListener",
             "column-width-updated": "_columnWidthUpdatedListener",
-            "update-scrollbars": "_updateScrollBarsListener",
             "item-select": "_itemSelectListener",
             "filter-changed": "_filterChangedListener",
             "column-filter-changed": "_columnFilterChangedListener"

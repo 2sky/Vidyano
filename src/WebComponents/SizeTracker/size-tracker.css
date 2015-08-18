@@ -21,4 +21,6 @@ vi-size-tracker .resize-triggers > div {
 vi-size-tracker .resize-triggers .contract-trigger:before {
   width: 200%;
   height: 200%;
+  min-width: 1px;
+  min-height: 1px;
 }

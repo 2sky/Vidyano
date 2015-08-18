@@ -17,24 +17,23 @@ vi-query-grid {
 
     &:not([disable-inline-actions]), &:not([disable-select]) {
         .header {
-            min-width: @cell-width;
+            width: @cell-width;
         }
     }
 
     &:not([disable-inline-actions]):not([disable-select]) {
         .header {
-            min-width: @cell-width * 2;
+            width: @cell-width * 2;
         }
     }
 
     &[disable-inline-actions][disable-select] {
         .header {
-            min-width: @cell-width;
+            width: @cell-width;
         }
 
         &[disable-filter] {
             .header {
-                min-width: 0 !important;
                 width: 0 !important;
             }
         }
@@ -52,43 +51,6 @@ vi-query-grid {
 
     vi-spinner {
         z-index: 3;
-    }
-
-    .scroll-shadow {
-        position: absolute;
-        z-index: 1;
-        -webkit-box-shadow: 0 0 (@h2 / 2) rgba(0,0,0,0.4);
-        box-shadow: 0 0 (@h2 / 2) rgba(0,0,0,0.4);
-        bottom: 0;
-        height: @h2;
-        -moz-border-radius: 100%;
-        border-radius: 100%;
-        left: -@h2;
-        right: -@h2;
-
-        &.top {
-            -moz-transition: top 0.2s ease-out;
-            -o-transition: top 0.2s ease-out;
-            -webkit-transition: top 0.2s ease-out;
-            transition: top 0.2s ease-out;
-            top: (-@h2 * 1.5);
-        }
-
-        &.bottom {
-            -moz-transition: bottom 0.2s ease-out;
-            -o-transition: bottom 0.2s ease-out;
-            -webkit-transition: bottom 0.2s ease-out;
-            transition: bottom 0.2s ease-out;
-            bottom: (-@h2 * 1.5);
-        }
-    }
-
-    &[scroll-top-shadow] .scroll-shadow.top {
-        top: -@h2;
-    }
-
-    &[scroll-bottom-shadow] .scroll-shadow.bottom {
-        bottom: -@h2;
     }
 
     .columnHost {
@@ -160,7 +122,7 @@ vi-query-grid {
     &[disable-filter] {
         #filters {
             display: none;
-        }                 
+        }
     }
 
     #filters {
@@ -175,86 +137,79 @@ vi-query-grid {
         background-color: white;
     }
 
-    #dataContainer {
-        overflow: hidden;
+    #data {
+        -moz-transition: opacity 0.3s ease-out;
+        -o-transition: opacity 0.3s ease-out;
+        -webkit-transition: opacity 0.3s ease-out;
+        transition: opacity 0.3s ease-out;
+        opacity: 1;
 
-        #data {
-            -moz-transition: opacity 0.3s ease-out;
-            -o-transition: opacity 0.3s ease-out;
-            -webkit-transition: opacity 0.3s ease-out;
-            transition: opacity 0.3s ease-out;
-            opacity: 1;
+        #verticalSpacer {
+            position: relative;
+            display: block;
+            width: 100%;
+            white-space: nowrap;
 
-            &.scroll {
-                overflow-y: scroll;
-                -ms-overflow-style: scrollbar;
+            #topSpacer {
+                display: block;
+                height: 0;
+                width: 100%;
             }
 
-            #verticalSpacer {
-                position: relative;
-                display: block;
-                width: 100%;
-                white-space: nowrap;
+            .columnHost {
+                tr {
+                    line-height: @cell-line-height;
+                    height: @cell-line-height;
 
-                #topSpacer {
-                    display: block;
-                    height: 0;
-                    width: 100%;
-                }
-
-                .columnHost {
-                    tr {
-                        line-height: @cell-line-height;
-                        height: @cell-line-height;
-
-                        &:not([hover]) {
-                            &:nth-child(odd) {
-                                background-color: @oddRowColor;
-                            }
-
-                            &:nth-child(even) {
-                                background-color: @evenRowColor;
-                            }
+                    &:not([hover]) {
+                        &:nth-child(odd) {
+                            background-color: @oddRowColor;
                         }
 
-                        &.noData:not(:first-of-type) {
-                            display: none;
-                        }
-
-                        &.noData:first-of-type {
-                            visibility: hidden;
-                        }
-
-                        .cell {
-                            height: @h2;
-                            min-height: @h2;
-                            line-height: @h2;
-                            padding: 0 @cell-padding;
-                            -moz-box-sizing: border-box;
-                            -webkit-box-sizing: border-box;
-                            box-sizing: border-box;
-                            overflow: hidden;
-                            white-space: nowrap;
-                            -ms-text-overflow: ellipsis;
-                            -o-text-overflow: ellipsis;
-                            text-overflow: ellipsis;
-
-                            vi-resource {
-                                height: @cell-line-height;
-                            }
-                        }
-
-                        &[hover] {
-                            .colorize( {
-                                background-color: @@color-faint;
-                            });
+                        &:nth-child(even) {
+                            background-color: @evenRowColor;
                         }
                     }
 
-                    .pinned {
-                        tr:not(.noData) > td:last-of-type > div {
-                            border-right: 1px solid @separatorColor;
+                    &.noData:not(:first-of-type) {
+                        display: none;
+                    }
+
+                    &.noData:first-of-type {
+                        visibility: hidden;
+                    }
+
+                    .cell {
+                        height: @h2;
+                        min-height: @h2;
+                        line-height: @h2;
+                        padding: 0 @cell-padding;
+                        -moz-box-sizing: border-box;
+                        -webkit-box-sizing: border-box;
+                        box-sizing: border-box;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        -ms-text-overflow: ellipsis;
+                        -o-text-overflow: ellipsis;
+                        text-overflow: ellipsis;
+
+                        vi-resource {
+                            height: @cell-line-height;
                         }
+                    }
+
+                    &[hover] {
+                        .colorize( {
+                            background-color: @@color-faint;
+                        }
+
+                        );
+                    }
+                }
+
+                .pinned {
+                    tr:not(.noData) > td:last-of-type > div {
+                        border-right: 1px solid @separatorColor;
                     }
                 }
             }
@@ -281,25 +236,15 @@ vi-query-grid {
     }
 
     #horizontalScroll {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
         z-index: 1;
-        overflow: hidden;
-        margin-top: -1px;
-        overflow-x: scroll;
-        -ms-overflow-style: scrollbar;
+        height: @h4;
 
         #horizontalSpacer {
-            height: 1px;
-        }
-    }
-
-    &.safari {
-        #data.scroll {
-            overflow-y: scroll;
-            -webkit-overflow-scrolling: touch; // Inertia for iPad
-        }
-
-        #horizontalScroll #horizontalSpacer {
-            height: 1px;
+            height: @h4;
         }
     }
 }

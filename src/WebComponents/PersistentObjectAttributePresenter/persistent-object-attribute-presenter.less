@@ -4,7 +4,7 @@
 @non-edit-line-height: 16px;
 
 vi-persistent-object-attribute-presenter {
-    .layout-vertical();
+    display: block;
     flex-basis: 0.000000001px;
     position: relative;
     font-size: 13px;
@@ -23,6 +23,7 @@ vi-persistent-object-attribute-presenter {
 
     .label.vi-persistent-object-attribute-presenter {
         padding-top: @h5;
+        height: @h2 - @h5;
         min-height: @h2 - @h5;
         line-height: @h2 - @h5;
         vertical-align: top;
@@ -94,13 +95,21 @@ vi-persistent-object-attribute-presenter {
     }
 
     &[no-label] {
-        .label.vi-persistent-object-attribute-presenter {
+        > .label {
             display: none;
+        }
+
+        > .attribute {
+            top: 0;
         }
     }
 
-    & > *:last-child {
-        .flex();
+    & > .attribute {
+        position: absolute;
+        top: @h2;
+        left: 0;
+        right: 0;
+        bottom: 0;
         .layout-horizontal();
     }
 

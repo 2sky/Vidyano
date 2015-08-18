@@ -1,20 +1,20 @@
 @import (reference) "../vidyano.less";
 
 @indent: 16px;
+@expandWidth: 16em;
 
 vi-menu {
     .layout-vertical();
     .noSelection();
     height: 100%;
     color: @dark-foreground;
-    box-sizing: border-box;
 
     .colorize({
         background-color: @blue-grey-900;
     });
 
     &:not([collapsed]) {
-        width: 16em;
+        width: @expandWidth;
         
         header.vi-menu.style-scope {
             #toggleCollapse {
@@ -22,7 +22,7 @@ vi-menu {
             }
         }
 
-        #programUnits.vi-menu.style-scope {
+        .programUnits.vi-menu.style-scope {
             .subItems {
                 display: none;
                 margin-bottom: @h5;
@@ -71,7 +71,7 @@ vi-menu {
             }
         }
 
-        #programUnits.vi-menu.style-scope {
+        .programUnits.vi-menu.style-scope {
             :not(.program-unit) + .subItems {
                 display: none;
             }

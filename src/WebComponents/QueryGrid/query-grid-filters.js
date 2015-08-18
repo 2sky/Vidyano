@@ -51,7 +51,7 @@ var Vidyano;
             };
             QueryGridFilters.prototype._updateFiltering = function () {
                 this._setFiltering(this.query && this.query.columns.some(function (c) { return (c.includes && c.includes.length > 0) || (c.excludes && c.excludes.length > 0); }));
-                WebComponents.Popup.closeAll();
+                WebComponents.Popup.closeAll(this);
             };
             QueryGridFilters.prototype._getFilterObject = function (name) {
                 var filterAttr = this.query.filters.attributesByName["Filters"];

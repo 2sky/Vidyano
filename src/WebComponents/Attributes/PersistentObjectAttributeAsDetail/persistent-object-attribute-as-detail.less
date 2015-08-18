@@ -103,6 +103,7 @@ vi-persistent-object-attribute-as-detail {
                 .row {
                     height: @h2 + 2px;
                     line-height: @h2 + 2px;
+                    overflow: hidden;
 
                     div.delete-button {
                         .layout-horizontal();
@@ -143,6 +144,12 @@ vi-persistent-object-attribute-as-detail {
                         .column, div.delete-button {
                             padding-bottom: 0;
                         }
+                    }
+                }
+
+                &[vertical] {
+                    .row div.delete-button {
+                        margin-right: @h4;
                     }
                 }
             }

@@ -79,12 +79,6 @@ module Vidyano.WebComponents {
         private _setRows: (rows: number) => void;
         private _setItemDragging: (dragging: boolean) => void;
 
-        attached() {
-            super.attached();
-
-            this.style.marginRight = "-" + scrollbarWidth().toString(10) + "px";
-        }
-
         private _computeIsDesignModeAvailable(tab: Vidyano.PersistentObjectAttributeTab): boolean {
             return tab && tab.parent.actions["viConfigurePO"] !== undefined;
         }

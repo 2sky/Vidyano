@@ -37,25 +37,37 @@ button[is="vi-button"] {
     }
 
     &:not([custom-layout]) {
-        .layout-horizontal();
-        .layout-center-center();
+        > vi-resource {
+            display: inline-block;
 
-        > vi-resource[has-resource] + span {
-            margin-left: @h5;
+            &[has-resource] + span {
+                margin-left: 2px;
+            }
+
+            &:not([has-resource]) {
+                display: none;
+            }
+        }
+
+        > span {
+            display: inline-block;
+            vertical-align: top;
         }
     }
 
     &[type=""], &:not([type]) {
         &:not([inverse]) {
-            .colorize({
+            .colorize( {
                 .colorizer(@@color, white, @@color-light);
             });
         }
 
         &[inverse] {
-            .colorize({
+            .colorize( {
                 .colorizer(transparent, @@color, @@color-faint);
-            });
+            }
+
+            );
         }
     }
 
@@ -93,15 +105,19 @@ button[is="vi-button"] {
 vi-popup[open] > [toggle] button[is="vi-button"][header] {
     &[type=""], &:not([type]) {
         &:not([inverse]) {
-            .colorize({
+            .colorize( {
                 background-color: @@color-light;
-            });
+            }
+
+            );
         }
 
         &[inverse] {
-            .colorize({
+            .colorize( {
                 background-color: @@color-faint;
-            });
+            }
+
+            );
         }
     }
 

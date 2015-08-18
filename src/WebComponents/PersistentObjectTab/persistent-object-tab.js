@@ -66,10 +66,6 @@ var Vidyano;
             function PersistentObjectTab() {
                 _super.apply(this, arguments);
             }
-            PersistentObjectTab.prototype.attached = function () {
-                _super.prototype.attached.call(this);
-                this.style.marginRight = "-" + WebComponents.scrollbarWidth().toString(10) + "px";
-            };
             PersistentObjectTab.prototype._computeIsDesignModeAvailable = function (tab) {
                 return tab && tab.parent.actions["viConfigurePO"] !== undefined;
             };

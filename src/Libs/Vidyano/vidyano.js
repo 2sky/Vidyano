@@ -202,6 +202,7 @@ var Vidyano;
             this.environment = "Web";
             this.environmentVersion = "2";
             this.hooks._service = this;
+            this.staySignedIn = cookie("staySignedIn", undefined, { force: true });
         }
         Service.prototype._createUri = function (method) {
             var uri = this.serviceUri;

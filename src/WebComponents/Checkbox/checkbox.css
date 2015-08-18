@@ -5,6 +5,9 @@ vi-checkbox {
   -ms-flex-direction: row;
   -webkit-flex-direction: row;
   flex-direction: row;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
 }
 vi-checkbox:not([disabled]) {
   cursor: pointer;
@@ -22,7 +25,7 @@ vi-checkbox > span {
   -ms-flex: 1;
   -webkit-flex: 1;
   flex: 1;
-  padding-left: 6px;
+  padding-left: 2px;
 }
 vi-checkbox:not([checked]) #check {
   display: none;

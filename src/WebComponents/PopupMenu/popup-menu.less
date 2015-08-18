@@ -23,7 +23,6 @@ vi-popup-menu {
 
 vi-popup-menu-item {
     .layout-horizontal();
-    .relative();
     height: @h1;
     line-height: @h1;
     height: @h1;
@@ -34,6 +33,8 @@ vi-popup-menu-item {
     });
 
      > button {
+         .flex();
+         height: 100%;
          padding: 0;
          text-align: left;
 

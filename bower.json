@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "moment": "2sky/moment#^2.10.0",
-    "polymer": "polymer/polymer#^1.0.5",
+    "polymer": "polymer/polymer#^1.1.0",
     "paper-ripple": "polymerelements/paper-ripple#^1.0.1",
     "marked-element": "polymerelements/marked-element#^1.0.2",
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.2",

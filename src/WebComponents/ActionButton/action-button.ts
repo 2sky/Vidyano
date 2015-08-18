@@ -48,8 +48,8 @@ module Vidyano.WebComponents {
             }
         }
 
-        private _computeIcon(): string {
-            return this.action ? 'Icon_Action_' + this.action.definition.name : "";
+        private _computeIcon(action: Vidyano.Action): string {
+            return action ? 'Icon_Action_' + action.definition.name : "";
         }
 
         private _computeHasOptions(action: Vidyano.Action): boolean {
@@ -71,6 +71,11 @@ module Vidyano.WebComponents {
             icon: {
                 type: String,
                 computed: "_computeIcon(action)"
+            },
+            pinned: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "action.isPinned"
             },
             noLabel: {
                 type: Boolean,
@@ -101,6 +106,9 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true
             }
-        }
+        },
+        forwardObservers: [
+            "action.isPinned"
+        ]
     });
 }

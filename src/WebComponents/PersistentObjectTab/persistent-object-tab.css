@@ -2,7 +2,9 @@ vi-persistent-object-tab {
   position: relative;
   display: block;
   padding: 1px 0 6px 0;
-  overflow-y: scroll;
+}
+vi-persistent-object-tab > vi-scroller {
+  height: 100%;
 }
 vi-persistent-object-tab #cells {
   -webkit-touch-callout: none;
