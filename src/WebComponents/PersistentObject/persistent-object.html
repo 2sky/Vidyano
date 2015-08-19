@@ -10,13 +10,17 @@
             <div class="vertical layout master">
                 <vi-action-bar service-object="{{selectedMasterTab.target}}"></vi-action-bar>
                 <vi-notification service-object="{{selectedMasterTab.target}}"></vi-notification>
-                <vi-persistent-object-tab-presenter tab="{{selectedMasterTab}}" class="flex relative"></vi-persistent-object-tab-presenter>
+                <vi-scroller no-horizontal no-vertical="{{_disableTabScrolling(selectedMasterTab)}}" class="flex">
+                    <vi-persistent-object-tab-presenter tab="{{selectedMasterTab}}"></vi-persistent-object-tab-presenter>
+                </vi-scroller>
             </div>
             <div id="splitter" on-track="_trackSplitter"></div>
             <div class="vertical layout flex detail" theme-color-2>
                 <vi-action-bar service-object="{{selectedDetailTab.target}}"></vi-action-bar>
                 <vi-notification service-object="{{selectedDetailTab.target}}"></vi-notification>
-                <vi-persistent-object-tab-presenter tab="{{selectedDetailTab}}" class="flex relative"></vi-persistent-object-tab-presenter>
+                <vi-scroller no-horizontal no-vertical="{{_disableTabScrolling(selectedDetailTab)}}" class="flex">
+                    <vi-persistent-object-tab-presenter tab="{{selectedDetailTab}}"></vi-persistent-object-tab-presenter>
+                </vi-scroller>
             </div>
         </div>
         <div class="horizontal layout tabs">

@@ -4,34 +4,45 @@
 @hoverSize: @h4 - 2px;
 
 vi-scroller {
-    display: block;
     overflow: hidden;
+    .layout-horizontal();
     .relative();
 
     > #wrapper {
-        .fit();
+        .flex();
         overflow: scroll;
+    }
 
-        > #content {
-            position: absolute;
-            top: 0;
-            left: 0;
+    &[no-horizontal]:not([no-vertical]) {
+        > #wrapper {
+            .layout-vertical();
         }
     }
 
-    &[no-horizontal] {
+    &[no-vertical]:not([no-horizontal]) {
         > #wrapper {
-            > #content {
-                right: 0;
-            }
+            .layout-horizontal();
         }
     }
 
-    &[no-vertical] {
+    &[no-vertical][no-horizontal] {
         > #wrapper {
+            .layout-horizontal();
+            overflow: hidden;
+            margin: 0 !important;
+
             > #content {
-                bottom: 0;
+                .flex();
+                .layout-horizontal();
+
+                > :not(vi-size-tracker) {
+                    .flex();
+                }
             }
+        }
+
+        > .scrollbar-parent {
+            display: none !important;
         }
     }
 

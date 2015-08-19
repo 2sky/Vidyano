@@ -10,6 +10,10 @@
 
             this.checked = !!!this.checked;
         }
+
+        private _computeIsNull(checked: boolean): boolean {
+            return checked !== false && checked !== true;
+        }
     }
 
     WebComponent.register(Checkbox, WebComponents, "vi", {
@@ -20,6 +24,11 @@
                 notify: true
             },
             label: String,
+            isNull: {
+                type: Boolean,
+                value: true,
+                computed: "_computeIsNull(checked)"
+            },
             disabled: {
                 type: Boolean,
                 reflectToAttribute: true

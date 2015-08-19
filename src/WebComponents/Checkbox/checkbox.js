@@ -18,6 +18,9 @@ var Vidyano;
                     return;
                 this.checked = !!!this.checked;
             };
+            Checkbox.prototype._computeIsNull = function (checked) {
+                return checked !== false && checked !== true;
+            };
             return Checkbox;
         })(WebComponents.WebComponent);
         WebComponents.Checkbox = Checkbox;
@@ -29,6 +32,11 @@ var Vidyano;
                     notify: true
                 },
                 label: String,
+                isNull: {
+                    type: Boolean,
+                    value: true,
+                    computed: "_computeIsNull(checked)"
+                },
                 disabled: {
                     type: Boolean,
                     reflectToAttribute: true

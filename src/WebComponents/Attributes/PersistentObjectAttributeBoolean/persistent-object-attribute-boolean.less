@@ -3,22 +3,22 @@
 vi-persistent-object-attribute-boolean, vi-persistent-object-attribute-nullable-boolean {
     .noSelection();
     display: block;
-    fill: #aaa;
     cursor: default;
 
-    vi-resource[icon] {
-        margin-right: @h5;
+    vi-checkbox {
+        #box {
+            fill: #aaa !important;
+        }
 
-        &.selected #check {
+        &[checked] #check {
             .colorize({
-                fill: @@color;
+                fill: @@color !important;
             });
         }
-    }
 
-    span {
-        padding-right: @h5;
-        line-height: @h2;
+        > span {
+            padding-left: @h5;
+        }
     }
 
     &[editing]:not([read-only]) {
@@ -31,10 +31,6 @@ vi-persistent-object-attribute-boolean, vi-persistent-object-attribute-nullable-
 		vi-resource[icon] {
             height: @non-edit-line-height;
             line-height: @non-edit-line-height;
-
-             #box {
-                fill: @border-color;
-            }
         }
 
         vi-resource, span {
@@ -42,12 +38,6 @@ vi-persistent-object-attribute-boolean, vi-persistent-object-attribute-nullable-
 		    line-height: @non-edit-line-height;
         }
 	}
-
-	&[editing][read-only] {
-        vi-resource[icon] {
-            fill: @border-color;
-        }
-    }
 }
 
 vi-persistent-object-attribute-nullable-boolean {

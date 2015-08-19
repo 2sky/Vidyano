@@ -106,83 +106,63 @@ vi-dialog {
         }
     }
 
-    &[auto-size] {
-        > #dialogHost > #dialog {
-            .layout-vertical();
+    > #dialogHost > #dialog {
+        .layout-vertical();
 
-            .content {
-                .flex();
-            }
+        > .header {
+            -webkit-flex: 0 0 auto;
+            -moz-flex: 0 0 auto;
+            -ms-flex: 0 0 auto;
+            flex: 0 0 auto;
+        }
+
+        .content {
+            -webkit-flex: 0 1 auto;
+            -moz-flex: 0 1 auto;
+            -ms-flex: 0 1 auto;
+            flex: 0 1 auto;
+            overflow: hidden;
+        }
+
+        > footer {
+            -webkit-flex: 0 0 auto;
+            -moz-flex: 0 0 auto;
+            -ms-flex: 0 0 auto;
+            flex: 0 0 auto;
         }
     }
 }
 
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
-    vi-dialog {
-        &:not([auto-size]) {
-            > #dialogHost > #dialog {
-                .layout-vertical();
-
-                & > .content {
-                    .flex();
-                    overflow: auto;
-                }
-            }
-        }
-    }
 }
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991px) {
-    vi-dialog[auto-size] {
-        > #dialogHost > #dialog {
-            width: 800px;
-            height: 70%;
-        }
-    }
-
-    vi-dialog:not([auto-size]) {
+    vi-dialog {
         > #dialogHost > #dialog > .content {
             max-width: 800px;
             max-height: 75vh;
-            overflow: auto;
         }
     }
 }
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1199px) {
-    vi-dialog[auto-size] {
-        > #dialogHost > #dialog {
-            width: 900px;
-            height: 70%;
-        }
-    }
-
-    vi-dialog:not([auto-size]) {
+    vi-dialog {
         > #dialogHost > #dialog > .content {
             max-width: 900px;
             max-height: 75vh;
-            overflow: auto;
         }
     }
 }
 
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-    vi-dialog[auto-size] {
-        > #dialogHost > #dialog {
-            width: 1000px;
-            height: 70%;
-        }
-    }
-
-    vi-dialog:not([auto-size]) {
+    vi-dialog {
         > #dialogHost > #dialog > .content {
             max-width: 1000px;
             max-height: 75vh;
-            overflow: auto;
         }
     }
 }

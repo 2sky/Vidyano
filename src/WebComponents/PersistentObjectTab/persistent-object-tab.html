@@ -7,19 +7,18 @@
                 <vi-popup-menu-item icon="Icon_Design" label="Design-mode" on-tap="_toggleDesignMode"></vi-popup-menu-item>
             </vi-popup-menu>
         </template>
-        <vi-scroller no-horizontal>
-            <div class="fit">
-                <div id="cells"></div>
-                <vi-size-tracker></vi-size-tracker>
+
+        <div class="fit">
+            <div id="cells"></div>
+            <vi-size-tracker></vi-size-tracker>
+        </div>
+        <div>
+            <div id="items">
+                <template is="dom-repeat" items="{{items}}">
+                    <vi-persistent-object-tab-item-presenter design-mode="{{designMode}}" item="{{item}}" cell-width="{{cellWidth}}" cell-height="{{cellHeight}}"></vi-persistent-object-tab-item-presenter>
+                </template>
             </div>
-            <div>
-                <div id="items">
-                    <template is="dom-repeat" items="{{items}}">
-                        <vi-persistent-object-tab-item-presenter design-mode="{{designMode}}" item="{{item}}" cell-width="{{cellWidth}}" cell-height="{{cellHeight}}"></vi-persistent-object-tab-item-presenter>
-                    </template>
-                </div>
-            </div>
-        </vi-scroller>
+        </div>
     </template>
 </dom-module>
 

@@ -121,6 +121,10 @@
             return layoutFlags.join(" ");
         }
 
+        private _disableTabScrolling(tab: Vidyano.PersistentObjectTab): boolean {
+            return tab instanceof Vidyano.PersistentObjectQueryTab;
+        }
+
         private _hasMasterTabs(tabs: Vidyano.PersistentObjectAttributeTab[]): boolean {
             return tabs && tabs.length > 1;
         }

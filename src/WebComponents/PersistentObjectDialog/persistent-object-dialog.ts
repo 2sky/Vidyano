@@ -32,7 +32,10 @@
             if (!persistentObject)
                 return null;
 
-            return <Vidyano.PersistentObjectAttributeTab>Enumerable.from(persistentObject.tabs).firstOrDefault(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
+            var tab = <Vidyano.PersistentObjectAttributeTab>Enumerable.from(persistentObject.tabs).firstOrDefault(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
+            tab.columnCount = 1;
+
+            return tab;
         }
 
         private _onSelectAction(e: Event) {

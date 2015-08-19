@@ -3,10 +3,7 @@
 <dom-module id="vi-persistent-object-attribute-nullable-boolean">
     <template>
         <template is="dom-if" if="{{!editing}}" restamp>
-            <template is="dom-if" if="{{_notNull(value)}}">
-                <vi-resource source="Icon_Selected" class="selected"></vi-resource>
-            </template>
-            <span>{{attribute.displayValue}}</span>
+            <vi-checkbox checked="{{value}}" label="{{attribute.displayValue}}" disabled></vi-checkbox>
         </template>
         <template is="dom-if" if="{{editing}}">
             <vi-persistent-object-attribute-edit attribute="{{attribute}}">
@@ -18,7 +15,12 @@
 
 <dom-module id="vi-persistent-object-attribute-boolean">
     <template>
-        <vi-checkbox value="{{value}}" label="{{attribute.displayValue}}" disabled$="{{attribute.isReadOnly}}"></vi-checkbox>
+        <template is="dom-if" if="{{!editing}}" restamp>
+            <vi-checkbox checked="{{value}}" label="{{attribute.displayValue}}" disabled></vi-checkbox>
+        </template>
+        <template is="dom-if" if="{{editing}}">
+            <vi-checkbox checked="{{value}}" label="{{attribute.displayValue}}" disabled$="{{attribute.isReadOnly}}"></vi-checkbox>
+        </template>
     </template>
 </dom-module>
 

@@ -6,25 +6,23 @@ vi-persistent-object-attribute-nullable-boolean {
   -ms-user-select: none;
   user-select: none;
   display: block;
-  fill: #aaa;
   cursor: default;
 }
-vi-persistent-object-attribute-boolean vi-resource[icon],
-vi-persistent-object-attribute-nullable-boolean vi-resource[icon] {
-  margin-right: 6px;
+vi-persistent-object-attribute-boolean vi-checkbox #box,
+vi-persistent-object-attribute-nullable-boolean vi-checkbox #box {
+  fill: #aaa !important;
 }
-[theme-color-1] vi-persistent-object-attribute-boolean vi-resource[icon].selected #check,
-[theme-color-1] vi-persistent-object-attribute-nullable-boolean vi-resource[icon].selected #check {
-  fill: #4682b4;
+[theme-color-1] vi-persistent-object-attribute-boolean vi-checkbox[checked] #check,
+[theme-color-1] vi-persistent-object-attribute-nullable-boolean vi-checkbox[checked] #check {
+  fill: #4682b4 !important;
 }
-[theme-color-2] vi-persistent-object-attribute-boolean vi-resource[icon].selected #check,
-[theme-color-2] vi-persistent-object-attribute-nullable-boolean vi-resource[icon].selected #check {
-  fill: #009688;
+[theme-color-2] vi-persistent-object-attribute-boolean vi-checkbox[checked] #check,
+[theme-color-2] vi-persistent-object-attribute-nullable-boolean vi-checkbox[checked] #check {
+  fill: #009688 !important;
 }
-vi-persistent-object-attribute-boolean span,
-vi-persistent-object-attribute-nullable-boolean span {
-  padding-right: 6px;
-  line-height: 30px;
+vi-persistent-object-attribute-boolean vi-checkbox > span,
+vi-persistent-object-attribute-nullable-boolean vi-checkbox > span {
+  padding-left: 6px;
 }
 vi-persistent-object-attribute-boolean[editing]:not([read-only]),
 vi-persistent-object-attribute-nullable-boolean[editing]:not([read-only]) {
@@ -39,20 +37,12 @@ vi-persistent-object-attribute-nullable-boolean:not([editing]) vi-resource[icon]
   height: 16px;
   line-height: 16px;
 }
-vi-persistent-object-attribute-boolean:not([editing]) vi-resource[icon] #box,
-vi-persistent-object-attribute-nullable-boolean:not([editing]) vi-resource[icon] #box {
-  fill: #dddddd;
-}
 vi-persistent-object-attribute-boolean:not([editing]) vi-resource,
 vi-persistent-object-attribute-nullable-boolean:not([editing]) vi-resource,
 vi-persistent-object-attribute-boolean:not([editing]) span,
 vi-persistent-object-attribute-nullable-boolean:not([editing]) span {
   vertical-align: top;
   line-height: 16px;
-}
-vi-persistent-object-attribute-boolean[editing][read-only] vi-resource[icon],
-vi-persistent-object-attribute-nullable-boolean[editing][read-only] vi-resource[icon] {
-  fill: #dddddd;
 }
 vi-persistent-object-attribute-nullable-boolean {
   display: -ms-flexbox;

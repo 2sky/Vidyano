@@ -5,6 +5,7 @@ module Vidyano.WebComponents {
         private _renderedTab: Vidyano.PersistentObjectTab;
         tab: Vidyano.PersistentObjectTab;
         templated: boolean;
+        scroll: boolean;
 
         private _setLoading: (loading: boolean) => void;
         private _setTemplated: (templated: boolean) => void;
@@ -20,7 +21,7 @@ module Vidyano.WebComponents {
 
             this._setLoading(true);
 
-            var childClassName = "style-scope vi-persistent-object fit";
+            var childClassName = "style-scope vi-persistent-object";
 
             var config = this.app.configuration.getTabConfig(tab);
             this._setTemplated(!!config && !!config.template);

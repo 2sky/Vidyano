@@ -44,8 +44,8 @@
             if (!this._scrollbarWidth) {
                 var wrapper = this.$["wrapper"];
 
-                wrapper.style.right = -(this._scrollbarWidth = scrollbarWidth() || 20) + "px";
-                wrapper.style.bottom = -this._scrollbarWidth + "px";
+                wrapper.style.marginRight = -(this._scrollbarWidth = scrollbarWidth() || 20) + "px";
+                wrapper.style.marginBottom = -this._scrollbarWidth + "px";
             }
 
             this._setOuterWidth(detail.width);

@@ -1,15 +1,52 @@
 ﻿@import (reference) "../vidyano.less";
 
 vi-persistent-object-dialog {
-    vi-dialog .content {
-        min-width: 500px;
+    #dialog .content.vi-dialog {
+        .layout-horizontal();
         padding: 0;
+
+        > vi-scroller {
+            .flex();
+        }
     }
 }
 
+/* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
     vi-persistent-object-dialog vi-dialog .content {
-        min-width: 0;
         width: 85vw;
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+    vi-persistent-object-dialog vi-dialog {
+        > #dialogHost > #dialog > .content {
+            min-width: 500px;
+            max-width: 800px;
+            max-height: 75vh;
+        }
+    }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    vi-persistent-object-dialog vi-dialog {
+        > #dialogHost > #dialog > .content {
+            min-width: 500px;
+            max-width: 900px;
+            max-height: 75vh;
+        }
+    }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    vi-persistent-object-dialog vi-dialog {
+        > #dialogHost > #dialog > .content {
+            min-width: 500px;
+            max-width: 1000px;
+            max-height: 75vh;
+        }
     }
 }

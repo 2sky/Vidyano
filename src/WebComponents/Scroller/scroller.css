@@ -1,26 +1,63 @@
 vi-scroller {
-  display: block;
   overflow: hidden;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
   position: relative;
 }
 vi-scroller > #wrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
   overflow: scroll;
 }
-vi-scroller > #wrapper > #content {
-  position: absolute;
-  top: 0;
-  left: 0;
+vi-scroller[no-horizontal]:not([no-vertical]) > #wrapper {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
 }
-vi-scroller[no-horizontal] > #wrapper > #content {
-  right: 0;
+vi-scroller[no-vertical]:not([no-horizontal]) > #wrapper {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
 }
-vi-scroller[no-vertical] > #wrapper > #content {
-  bottom: 0;
+vi-scroller[no-vertical][no-horizontal] > #wrapper {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  overflow: hidden;
+  margin: 0 !important;
+}
+vi-scroller[no-vertical][no-horizontal] > #wrapper > #content {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+vi-scroller[no-vertical][no-horizontal] > #wrapper > #content > :not(vi-size-tracker) {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+vi-scroller[no-vertical][no-horizontal] > .scrollbar-parent {
+  display: none !important;
 }
 vi-scroller:not([force-scrollbars]):not([hovering]):not([scrolling]) > .scrollbar-parent > .scrollbar {
   opacity: 0;

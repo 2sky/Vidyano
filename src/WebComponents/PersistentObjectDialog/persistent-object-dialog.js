@@ -33,7 +33,9 @@ var Vidyano;
             PersistentObjectDialog.prototype._computeTab = function (persistentObject) {
                 if (!persistentObject)
                     return null;
-                return Enumerable.from(persistentObject.tabs).firstOrDefault(function (tab) { return tab instanceof Vidyano.PersistentObjectAttributeTab; });
+                var tab = Enumerable.from(persistentObject.tabs).firstOrDefault(function (tab) { return tab instanceof Vidyano.PersistentObjectAttributeTab; });
+                tab.columnCount = 1;
+                return tab;
             };
             PersistentObjectDialog.prototype._onSelectAction = function (e) {
                 this._dialog.resolve(parseInt(e.target.getAttribute("data-action-index"), 10));
