@@ -50,6 +50,12 @@ vi-scroller {
         opacity: 0;
     }
 
+    &[hidden-scrollbars] {
+        > .scrollbar-parent {
+            opacity: 0 !important;
+        }
+    }
+
     > .scrollbar-parent {
         position: absolute;
         background-color: transparent;

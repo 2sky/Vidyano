@@ -62,6 +62,9 @@ vi-scroller[no-vertical][no-horizontal] > .scrollbar-parent {
 vi-scroller:not([force-scrollbars]):not([hovering]):not([scrolling]) > .scrollbar-parent > .scrollbar {
   opacity: 0;
 }
+vi-scroller[hidden-scrollbars] > .scrollbar-parent {
+  opacity: 0 !important;
+}
 vi-scroller > .scrollbar-parent {
   position: absolute;
   background-color: transparent;

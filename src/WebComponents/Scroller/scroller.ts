@@ -31,6 +31,7 @@
         private _setVertical: (val: boolean) => void;
         private _setScrollTopShadow: (val: boolean) => void;
         private _setScrollBottomShadow: (val: boolean) => void;
+        private _setHiddenScrollbars: (val: boolean) => void;
 
         scrollToTop() {
             this.$["wrapper"].scrollTop = 0;
@@ -44,8 +45,11 @@
             if (!this._scrollbarWidth) {
                 var wrapper = this.$["wrapper"];
 
-                wrapper.style.marginRight = -(this._scrollbarWidth = scrollbarWidth() || 20) + "px";
-                wrapper.style.marginBottom = -this._scrollbarWidth + "px";
+                this._scrollbarWidth = scrollbarWidth() || 0;
+                if (this._scrollbarWidth)
+                    wrapper.style.marginRight = wrapper.style.marginBottom = -this._scrollbarWidth + "px";
+                else
+                    this._setHiddenScrollbars(true);
             }
 
             this._setOuterWidth(detail.width);
@@ -116,7 +120,7 @@
             }
         }
 
-        private _trackVertical(e: CustomEvent, detail: PolymerTrackDetail) {
+        private _trackVertical(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
             var wrapper = this.$["wrapper"];
 
             if (detail.state == "start") {
@@ -133,7 +137,9 @@
             }
 
             e.preventDefault();
-            e.detail.sourceEvent.preventDefault();
+
+            if (e.detail.sourceEvent)
+                e.detail.sourceEvent.preventDefault();
         }
 
         private _trackHorizontal(e: CustomEvent, detail: PolymerTrackDetail) {
@@ -153,7 +159,9 @@
             }
 
             e.preventDefault();
-            e.detail.sourceEvent.preventDefault();
+
+            if (e.detail.sourceEvent)
+                e.detail.sourceEvent.preventDefault();
         }
 
         private _trapEvent(e: Event) {
@@ -299,6 +307,11 @@
             },
             forceScrollbars: {
                 type: Boolean,
+                reflectToAttribute: true
+            },
+            hiddenScrollbars: {
+                type: Boolean,
+                readOnly: true,
                 reflectToAttribute: true
             }
         },

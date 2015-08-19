@@ -22,8 +22,11 @@ var Vidyano;
             Scroller.prototype._outerSizeChanged = function (e, detail) {
                 if (!this._scrollbarWidth) {
                     var wrapper = this.$["wrapper"];
-                    wrapper.style.marginRight = -(this._scrollbarWidth = WebComponents.scrollbarWidth() || 20) + "px";
-                    wrapper.style.marginBottom = -this._scrollbarWidth + "px";
+                    this._scrollbarWidth = WebComponents.scrollbarWidth() || 0;
+                    if (this._scrollbarWidth)
+                        wrapper.style.marginRight = wrapper.style.marginBottom = -this._scrollbarWidth + "px";
+                    else
+                        this._setHiddenScrollbars(true);
                 }
                 this._setOuterWidth(detail.width);
                 this._setOuterHeight(detail.height);
@@ -93,7 +96,8 @@ var Vidyano;
                     this._trackStart = undefined;
                 }
                 e.preventDefault();
-                e.detail.sourceEvent.preventDefault();
+                if (e.detail.sourceEvent)
+                    e.detail.sourceEvent.preventDefault();
             };
             Scroller.prototype._trackHorizontal = function (e, detail) {
                 var wrapper = this.$["wrapper"];
@@ -110,7 +114,8 @@ var Vidyano;
                     this._trackStart = undefined;
                 }
                 e.preventDefault();
-                e.detail.sourceEvent.preventDefault();
+                if (e.detail.sourceEvent)
+                    e.detail.sourceEvent.preventDefault();
             };
             Scroller.prototype._trapEvent = function (e) {
                 e.preventDefault();
@@ -244,6 +249,11 @@ var Vidyano;
                 },
                 forceScrollbars: {
                     type: Boolean,
+                    reflectToAttribute: true
+                },
+                hiddenScrollbars: {
+                    type: Boolean,
+                    readOnly: true,
                     reflectToAttribute: true
                 }
             },

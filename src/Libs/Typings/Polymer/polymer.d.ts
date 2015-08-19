@@ -43,6 +43,12 @@ interface PolymerDomApi {
     replaceChild(newChild: Node | Vidyano.WebComponents.WebComponent, oldChild: Node | Vidyano.WebComponents.WebComponent): Node;
 }
 
+interface PolymerTrackEvent extends CustomEvent {
+    detail: {
+        sourceEvent?: Event;
+    }
+}
+
 interface PolymerTrackDetail {
     /**
     state - a string indicating the tracking state:
