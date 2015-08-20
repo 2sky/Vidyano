@@ -16,7 +16,7 @@ module Vidyano.WebComponents.Attributes {
             return !column.isHidden && column.width !== "0";
         }
 
-        private _sizechanged(e: Event, detail: { width: number; height: number; }) {
+        private _rowSizechanged(e: Event, detail: { width: number; height: number; }) {
             this._setWidth(detail.width);
             this._setHeight(detail.height);
 
@@ -38,6 +38,9 @@ module Vidyano.WebComponents.Attributes {
             var scroller = (<Scroller><any>this.$["body"]);
             if (!this._inlineAddHeight) {
                 var inlineAdd = <HTMLElement>scroller.asElement.querySelector(".row.add.inline");
+                if (!inlineAdd)
+                    return false;
+
                 this._inlineAddHeight = inlineAdd.offsetHeight;
             }
 
@@ -101,7 +104,7 @@ module Vidyano.WebComponents.Attributes {
                 widths[0].width += width - usedWidth;
 
             var style = <Style><any>this.$["style"];
-            widths.forEach(w => style.setStyle(w.name, `.column[data-column='${w.name}'] { width: ${w.width}px; }`));
+            style.setStyle("ColumnStyles", ...widths.map(w => `.column[data-column='${w.name}'] { width: ${w.width}px; }`));
 
             this._setInitializing(false);
         }

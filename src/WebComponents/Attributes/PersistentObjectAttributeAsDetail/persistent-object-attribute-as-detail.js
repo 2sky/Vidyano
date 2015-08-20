@@ -18,7 +18,7 @@ var Vidyano;
                 PersistentObjectAttributeAsDetail.prototype._isColumnVisible = function (column) {
                     return !column.isHidden && column.width !== "0";
                 };
-                PersistentObjectAttributeAsDetail.prototype._sizechanged = function (e, detail) {
+                PersistentObjectAttributeAsDetail.prototype._rowSizechanged = function (e, detail) {
                     this._setWidth(detail.width);
                     this._setHeight(detail.height);
                     e.stopPropagation();
@@ -35,6 +35,8 @@ var Vidyano;
                     var scroller = this.$["body"];
                     if (!this._inlineAddHeight) {
                         var inlineAdd = scroller.asElement.querySelector(".row.add.inline");
+                        if (!inlineAdd)
+                            return false;
                         this._inlineAddHeight = inlineAdd.offsetHeight;
                     }
                     var contentHeight = this.newActionPinned ? height : height - this._inlineAddHeight;
@@ -86,7 +88,7 @@ var Vidyano;
                     if (usedWidth < width)
                         widths[0].width += width - usedWidth;
                     var style = this.$["style"];
-                    widths.forEach(function (w) { return style.setStyle(w.name, ".column[data-column='" + w.name + "'] { width: " + w.width + "px; }"); });
+                    style.setStyle.apply(style, ["ColumnStyles"].concat(widths.map(function (w) { return (".column[data-column='" + w.name + "'] { width: " + w.width + "px; }"); })));
                     this._setInitializing(false);
                 };
                 PersistentObjectAttributeAsDetail.prototype._rowAdded = function (e) {

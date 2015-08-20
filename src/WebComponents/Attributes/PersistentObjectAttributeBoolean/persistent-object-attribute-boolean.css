@@ -20,8 +20,8 @@ vi-persistent-object-attribute-nullable-boolean vi-checkbox #box {
 [theme-color-2] vi-persistent-object-attribute-nullable-boolean vi-checkbox[checked] #check {
   fill: #009688 !important;
 }
-vi-persistent-object-attribute-boolean vi-checkbox > span,
-vi-persistent-object-attribute-nullable-boolean vi-checkbox > span {
+vi-persistent-object-attribute-boolean vi-checkbox > vi-resource:not([hidden]) + span,
+vi-persistent-object-attribute-nullable-boolean vi-checkbox > vi-resource:not([hidden]) + span {
   padding-left: 6px;
 }
 vi-persistent-object-attribute-boolean[editing]:not([read-only]),
@@ -51,4 +51,9 @@ vi-persistent-object-attribute-nullable-boolean {
   -ms-flex-direction: row;
   -webkit-flex-direction: row;
   flex-direction: row;
+}
+vi-persistent-object-attribute-as-detail vi-persistent-object-attribute-boolean[editing] {
+  border: 1px solid #dddddd;
+  margin: 0 1px;
+  padding: 0 6px;
 }

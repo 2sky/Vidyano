@@ -1,10 +1,5 @@
 vi-persistent-object-attribute-as-detail {
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -ms-flex-direction: row;
-  -webkit-flex-direction: row;
-  flex-direction: row;
+  position: relative;
 }
 vi-persistent-object-attribute-as-detail[initializing] #table {
   opacity: 0;
@@ -16,9 +11,11 @@ vi-persistent-object-attribute-as-detail #table {
   -ms-flex-direction: column;
   -webkit-flex-direction: column;
   flex-direction: column;
-  -ms-flex: 1;
-  -webkit-flex: 1;
-  flex: 1;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   line-height: 30px;
 }
 vi-persistent-object-attribute-as-detail #table #head {
@@ -43,16 +40,27 @@ vi-persistent-object-attribute-as-detail #table #body {
   -webkit-flex: 1;
   flex: 1;
 }
+vi-persistent-object-attribute-as-detail #table #body #data {
+  overflow: hidden;
+}
 vi-persistent-object-attribute-as-detail #table #body .row {
   white-space: nowrap;
   font-size: 0;
+  height: 30px;
+  line-height: 30px;
 }
 vi-persistent-object-attribute-as-detail #table #body .row .column {
   padding: 0 1px 1px 0;
   vertical-align: top;
+  height: 30px;
+  line-height: 30px;
 }
 vi-persistent-object-attribute-as-detail #table #body .row .column:last-of-type {
   padding-right: 0;
+}
+vi-persistent-object-attribute-as-detail #table #body .row .column > vi-persistent-object-attribute-presenter {
+  height: 30px;
+  line-height: 30px;
 }
 vi-persistent-object-attribute-as-detail #table .row {
   font-size: 0;

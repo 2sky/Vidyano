@@ -1,9 +1,5 @@
 module Vidyano.WebComponents.Attributes {
     export class PersistentObjectAttributeBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
-        toggle() {
-            if (this.attribute.parent.isEditing && !this.attribute.isReadOnly)
-                this.attribute.setValue(!this.value); // If value was null, we also toggle to 'true'
-        }
     }
 
     export class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
@@ -41,7 +37,6 @@ module Vidyano.WebComponents.Attributes {
 
     PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeBoolean, {
         listeners: {
-            "tap": "toggle"
         }
     });
 

@@ -15,7 +15,7 @@
 }
 
 vi-persistent-object-attribute-as-detail {
-    .layout-horizontal();
+    .relative();
 
     &[initializing] {
         #table {
@@ -25,7 +25,7 @@ vi-persistent-object-attribute-as-detail {
 
     #table {
         .layout-vertical();
-        .flex();
+        .fit();
         line-height: @h2;
 
         #head {
@@ -52,16 +52,29 @@ vi-persistent-object-attribute-as-detail {
         #body {
             .flex();
 
+            #data {
+                overflow: hidden;
+            }
+
             .row {
                 white-space: nowrap;
                 font-size: 0;
+                height: @h2;
+                line-height: @h2;
 
                 .column {
                     padding: 0 1px 1px 0;
                     vertical-align: top;
+                    height: @h2;
+                    line-height: @h2;
 
                     &:last-of-type {
                         padding-right: 0;
+                    }
+
+                    > vi-persistent-object-attribute-presenter {
+                        height: @h2;
+                        line-height: @h2;
                     }
                 }
             }

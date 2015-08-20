@@ -1907,7 +1907,9 @@ var Vidyano;
             if ((!this.isReadOnly && this._refreshValue !== undefined ? this._refreshValue : this.value) != resultAttr.value) {
                 var oldDisplayValue = this.displayValue;
                 var oldValue = this.value;
-                this.notifyPropertyChanged("value", this.value = resultAttr.value, oldValue);
+                this._serviceValue = resultAttr._serviceValue;
+                this._lastParsedValue = undefined;
+                this.notifyPropertyChanged("value", this.value, oldValue);
                 this.notifyPropertyChanged("displayValue", this.displayValue, oldDisplayValue);
             }
             this._refreshValue = undefined;

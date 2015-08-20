@@ -1921,7 +1921,6 @@ module Vidyano {
         triggersRefresh: boolean;
         column: number;
         columnSpan: number;
-        //objects: PersistentObject[];
 
         constructor(service: Service, attr: any, public parent: PersistentObject) {
             super(service);
@@ -2214,7 +2213,10 @@ module Vidyano {
                 var oldDisplayValue = this.displayValue;
                 var oldValue = this.value;
 
-                this.notifyPropertyChanged("value", this.value = resultAttr.value, oldValue);
+                this._serviceValue = resultAttr._serviceValue;
+                this._lastParsedValue = undefined;
+
+                this.notifyPropertyChanged("value", this.value, oldValue);
                 this.notifyPropertyChanged("displayValue", this.displayValue, oldDisplayValue);
             }
 
