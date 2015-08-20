@@ -537,7 +537,7 @@
 
                                 this.app._unregisterKeybindings(reg);
 
-                                reg.element.removeEventListener(reg.listener);
+                                reg.element.removeEventListener("keys-pressed", reg.listener);
                                 Polymer.dom(this.root).removeChild(reg.element);
                             }
                         }
