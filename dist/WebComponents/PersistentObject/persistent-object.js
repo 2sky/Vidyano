@@ -103,6 +103,9 @@ var Vidyano;
                     layoutFlags.push("da");
                 return layoutFlags.join(" ");
             };
+            PersistentObject.prototype._disableTabScrolling = function (tab) {
+                return tab instanceof Vidyano.PersistentObjectQueryTab;
+            };
             PersistentObject.prototype._hasMasterTabs = function (tabs) {
                 return tabs && tabs.length > 1;
             };

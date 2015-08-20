@@ -1,4 +1,8 @@
 vi-resource {
+  position: relative;
+  display: block;
+}
+vi-resource > div {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
@@ -11,7 +15,7 @@ vi-resource {
   -ms-flex-pack: center;
   -webkit-justify-content: center;
   justify-content: center;
-  position: relative;
+  height: 100%;
   text-align: center;
 }
 vi-resource[icon] svg {

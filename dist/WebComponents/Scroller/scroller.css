@@ -1,26 +1,71 @@
 vi-scroller {
-  display: block;
   overflow: hidden;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
   position: relative;
 }
-vi-scroller #wrapper {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+vi-scroller > #wrapper {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
   overflow: scroll;
 }
-vi-scroller[scrollbars='visible-margin'][vertical] #wrapper > div {
-  margin-right: 9px;
+vi-scroller[no-horizontal]:not([no-vertical]) > #wrapper {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
 }
-vi-scroller[scrollbars='visible-margin'][vertical] #vertical {
-  right: 0;
+vi-scroller[no-vertical]:not([no-horizontal]) > #wrapper {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
 }
-vi-scroller:not([hovering]):not([scrolling]):not([scrollbars^='visible']) .scrollbar {
+vi-scroller[no-vertical][no-horizontal] > #wrapper {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  overflow: hidden;
+  margin: 0 !important;
+}
+vi-scroller[no-vertical][no-horizontal] > #wrapper > #content {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+vi-scroller[no-vertical][no-horizontal] > #wrapper > #content > :not(vi-size-tracker) {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+vi-scroller[no-vertical][no-horizontal] > .scrollbar-parent {
+  display: none !important;
+}
+vi-scroller:not([force-scrollbars]):not([hovering]):not([scrolling]) > .scrollbar-parent > .scrollbar {
   opacity: 0;
 }
-vi-scroller .scrollbar-parent {
+vi-scroller[hidden-scrollbars] > .scrollbar-parent {
+  opacity: 0 !important;
+}
+vi-scroller > .scrollbar-parent {
   position: absolute;
   background-color: transparent;
   -moz-transition: opacity 0.2s, background-color 0.2s;
@@ -32,7 +77,7 @@ vi-scroller .scrollbar-parent {
   -webkit-transition-timing-function: ease-in-out;
   transition-timing-function: ease-in-out;
 }
-vi-scroller .scrollbar-parent .scrollbar {
+vi-scroller > .scrollbar-parent > .scrollbar {
   position: absolute;
   background-color: #797979;
   opacity: 1;
@@ -42,65 +87,59 @@ vi-scroller .scrollbar-parent .scrollbar {
   -webkit-transition-timing-function: ease-in-out;
   transition-timing-function: ease-in-out;
 }
-vi-scroller .scrollbar-parent.horizontal {
+vi-scroller > .scrollbar-parent.horizontal {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 8px;
+  height: 10px;
 }
-vi-scroller .scrollbar-parent.horizontal .scrollbar {
+vi-scroller > .scrollbar-parent.horizontal > .scrollbar {
   -moz-transition: opacity 0.2s, height 0.2s;
   -o-transition: opacity 0.2s, height 0.2s;
   -webkit-transition: opacity 0.2s, height 0.2s;
   transition: opacity 0.2s, height 0.2s;
 }
-vi-scroller .scrollbar-parent.vertical {
+vi-scroller > .scrollbar-parent.vertical {
   top: 0;
   right: 0;
   bottom: 0;
-  width: 8px;
+  width: 10px;
 }
-vi-scroller .scrollbar-parent.vertical .scrollbar {
+vi-scroller > .scrollbar-parent.vertical > .scrollbar {
   -moz-transition: opacity 0.2s, width 0.2s;
   -o-transition: opacity 0.2s, width 0.2s;
   -webkit-transition: opacity 0.2s, width 0.2s;
   transition: opacity 0.2s, width 0.2s;
 }
-vi-scroller[vertical] .scrollbar-parent.vertical:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-vi-scroller[horizontal] .scrollbar-parent.horizontal:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-}
-vi-scroller #vertical {
+vi-scroller > .scrollbar-parent > #vertical {
   top: 0;
   right: 0;
   width: 6px;
 }
-vi-scroller #vertical:hover {
-  width: 8px;
+vi-scroller > .scrollbar-parent > #vertical:hover {
+  width: 10px;
 }
-vi-scroller #horizontal {
+vi-scroller > .scrollbar-parent > #horizontal {
   left: 0;
   bottom: 0;
   height: 6px;
 }
-vi-scroller #horizontal:hover {
-  height: 8px;
+vi-scroller > .scrollbar-parent > #horizontal:hover {
+  height: 10px;
+}
+vi-scroller[vertical] > .scrollbar-parent.vertical:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+vi-scroller[horizontal] > .scrollbar-parent.horizontal:hover {
+  background-color: rgba(0, 0, 0, 0.2);
 }
 vi-scroller[scrolling] #vertical,
 vi-scroller .scrollbar-parent:hover #vertical {
-  width: 8px;
+  width: 10px;
 }
 vi-scroller[scrolling] #horizontal,
 vi-scroller .scrollbar-parent:hover #horizontal {
-  height: 8px;
-}
-vi-scroller:not([vertical]):not([scrollbars^='visible']) #vertical {
-  display: none;
-}
-vi-scroller:not([horizontal]):not([scrollbars^='visible']) #horizontal {
-  display: none;
+  height: 10px;
 }
 vi-scroller .scroll-shadow {
   position: absolute;

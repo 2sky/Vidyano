@@ -17,3 +17,31 @@ vi-select-reference-dialog vi-dialog vi-input-search input:focus {
 [theme-color-2] vi-select-reference-dialog vi-dialog vi-input-search input:focus + button {
   background-color: #009688;
 }
+/* Extra small devices (phones, less than 768px) */
+@media (max-width: 767px) {
+  vi-select-reference-dialog vi-dialog .content {
+    width: 85vw;
+    height: 85vh;
+  }
+}
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+  vi-select-reference-dialog vi-dialog > #dialogHost > #dialog > .content {
+    height: 60vh;
+    width: 90vw;
+  }
+}
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  vi-select-reference-dialog vi-dialog > #dialogHost > #dialog > .content {
+    height: 60vh;
+    width: 90vw;
+  }
+}
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  vi-select-reference-dialog vi-dialog > #dialogHost > #dialog > .content {
+    height: 60vh;
+    width: 1000px;
+  }
+}

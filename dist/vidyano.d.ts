@@ -756,6 +756,12 @@ interface PolymerDomApi {
     replaceChild(newChild: Node | Vidyano.WebComponents.WebComponent, oldChild: Node | Vidyano.WebComponents.WebComponent): Node;
 }
 
+interface PolymerTrackEvent extends CustomEvent {
+    detail: {
+        sourceEvent?: Event;
+    }
+}
+
 interface PolymerTrackDetail {
     /**
     state - a string indicating the tracking state:
@@ -1844,7 +1850,7 @@ declare module Vidyano.WebComponents {
         private _executeWithOption(e);
         private _execute(option?);
         private _updateCanExecuteHook();
-        private _computeIcon();
+        private _computeIcon(action);
         private _computeHasOptions(action);
     }
 }
@@ -2006,14 +2012,14 @@ declare module Vidyano.WebComponents.Attributes {
         newActionPinned: boolean;
         private _setInitializing;
         private _setWidth;
+        private _setHeight;
         private _setNewAction;
-        private _setNewActionPinned;
         private _setDeleteAction;
         private _isColumnVisible(column);
-        protected _editingChanged(): void;
-        private _sizechanged(e, detail);
+        private _rowSizechanged(e, detail);
         private _computeColumns(columns);
         private _computeCanDelete(editing, deleteAction, objects);
+        private _computeNewActionPinned(height, newAction);
         private _updateActions(actions, editing);
         private _updateWidths(columns, width, deleteAction, editing, isAttached);
         private _rowAdded(e);
@@ -2040,7 +2046,6 @@ declare module Vidyano.WebComponents.Attributes {
 }
 declare module Vidyano.WebComponents.Attributes {
     class PersistentObjectAttributeBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
-        toggle(): void;
     }
     class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
         options: Common.KeyValuePair[];
@@ -2281,6 +2286,7 @@ declare module Vidyano.WebComponents {
         label: string;
         disabled: boolean;
         toggle(): void;
+        private _computeIsNull(checked);
     }
 }
 declare module Vidyano.WebComponents {
@@ -2466,6 +2472,7 @@ declare module Vidyano.WebComponents {
         private _selectedMasterTabChanged();
         private _selectedDetailTabChanged();
         private _computeLayout(persistentObject, masterTabs?, detailTabs?);
+        private _disableTabScrolling(tab);
         private _hasMasterTabs(tabs);
         private _hasDetailTabs(tabs);
         private _trackSplitter(e, detail);
@@ -2564,7 +2571,6 @@ declare module Vidyano.WebComponents {
         private _setCellHeight;
         private _setRows;
         private _setItemDragging;
-        attached(): void;
         private _computeIsDesignModeAvailable(tab);
         private _computeDesignModeCells(items, columns, rows);
         private _computeColumns(width, defaultColumnCount);
@@ -2623,6 +2629,7 @@ declare module Vidyano.WebComponents {
         private _renderedTab;
         tab: Vidyano.PersistentObjectTab;
         templated: boolean;
+        scroll: boolean;
         private _setLoading;
         private _setTemplated;
         private _renderTab(tab, isAttached);
@@ -2679,6 +2686,8 @@ declare module Vidyano.WebComponents {
     }
     class PopupMenuItem extends WebComponent {
         label: string;
+        split: boolean;
+        attached(): void;
         private _splitTap(e);
     }
     class PopupMenuItemSeparator extends WebComponent {
@@ -2760,7 +2769,6 @@ declare module Vidyano.WebComponents {
         private _uniqueId;
         private _rows;
         private _horizontalScrollPanels;
-        private _horizontalSpacerWidth;
         private _pinnedColumns;
         private _unpinnedColumns;
         private _styles;
@@ -2768,6 +2776,8 @@ declare module Vidyano.WebComponents {
         private _itemOpening;
         private _lastSelectedItemIndex;
         private remainderWidth;
+        private verticalScrollOffset;
+        private horizontalScrollOffset;
         viewport: Viewport;
         query: Vidyano.Query;
         initializing: boolean;
@@ -2776,8 +2786,6 @@ declare module Vidyano.WebComponents {
         asLookup: boolean;
         _setInitializing: (val: boolean) => void;
         _setViewport: (viewport: Viewport) => void;
-        _setScrollTopShadow: (val: boolean) => void;
-        _setScrollBottomShadow: (val: boolean) => void;
         private _setDisableSelect;
         attached(): void;
         detached(): void;
@@ -2789,15 +2797,15 @@ declare module Vidyano.WebComponents {
         private _style;
         private _columnsChanged(columns);
         private _itemsChanged();
-        private _updateScrollBarsVisibility();
-        private _updateScrollBarsListener(e);
+        private _updateHorizontalSpacer();
         private _measureColumnsListener(e);
         private _columnWidthUpdatedListener(e, detail);
         private _itemSelectListener(e, detail);
         private _filterChangedListener(e);
         private _columnFilterChangedListener(e);
         private _sizeChanged(e, detail);
-        private _onScrollVertical();
+        private _verticalScrollOffsetChanged(verticalScrollOffset);
+        private _horizontalScrollOffsetChanged(horizontalScrollOffset);
         private _onScrollHorizontal(e);
         private _updateHoverRow(e);
         private _itemsTap(e, detail);
@@ -2808,6 +2816,8 @@ declare module Vidyano.WebComponents {
         private _computeDisableInlineActions(actions);
         private _computeDisableSelect(actions);
         private _computeRemainderWidth();
+        private _itemsMouseenter();
+        private _itemsMouseleave();
     }
     class QueryGridColumn {
         private _column;
@@ -2867,7 +2877,7 @@ declare module Vidyano.WebComponents {
         private _verticalSpacer;
         constructor(grid: QueryGrid, hosts: QueryGridColumnHosts);
         detached(): void;
-        data: HTMLElement;
+        data: Scroller;
         verticalSpacer: HTMLElement;
         virtualHeight: number;
         protected _createRemainder(): HTMLElement;
@@ -2877,7 +2887,7 @@ declare module Vidyano.WebComponents {
         updateColumns(pinned: QueryGridColumn[], unpinned: QueryGridColumn[]): void;
         updateTablePosition(forceRender?: boolean, skipSearch?: boolean): void;
         updateHoverRow(yPosition?: number): void;
-        onScroll(): void;
+        onScroll(verticalScrollOffset: number): void;
     }
     class QueryGridItemActions extends WebComponent {
         private _updateActionItems;
@@ -3026,29 +3036,34 @@ declare module Vidyano.WebComponents {
         innerWidth: number;
         innerHeight: number;
         horizontal: boolean;
+        noHorizontal: boolean;
         vertical: boolean;
-        scrollbars: string;
+        noVertical: boolean;
+        horizontalScrollOffset: number;
+        verticalScrollOffset: number;
+        forceScrollbars: boolean;
         private _setOuterWidth;
         private _setOuterHeight;
         private _setInnerWidth;
         private _setInnerHeight;
         private _setHorizontal;
         private _setVertical;
-        private _setHorizontalScrollLeft;
-        private _setVerticalScrollTop;
         private _setScrollTopShadow;
         private _setScrollBottomShadow;
+        private _setHiddenScrollbars;
         scrollToTop(): void;
         scrollToBottom(): void;
         private _outerSizeChanged(e, detail);
         private _innerSizeChanged(e, detail);
-        private _updateVerticalScrollbar(outerHeight, innerHeight, verticalScrollTop);
-        private _updateHorizontalScrollbar(outerWidth, innerWidth, horizontalScrollLeft);
+        private _updateVerticalScrollbar(outerHeight, innerHeight, verticalScrollOffset, noVertical);
+        private _updateHorizontalScrollbar(outerWidth, innerWidth, horizontalScrollOffset, noHorizontal);
         private _trackVertical(e, detail);
         private _trackHorizontal(e, detail);
         private _trapEvent(e);
         private _scroll(e);
         private _updateScrollOffsets();
+        private _verticalScrollOffsetChanged(newVerticalScrollOffset);
+        private _horizontalScrollOffsetChanged(newHorizontalScrollOffset);
         private _mouseenter();
         private _mouseleave();
         private _verticalScrollbarParentTap(e);

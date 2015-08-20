@@ -15,7 +15,6 @@ var Vidyano;
                 this._queuedUnattachedWork = [];
                 this._uniqueId = Unique.get();
                 this._rows = {};
-                this._horizontalSpacerWidth = 0;
                 this._pinnedColumns = [];
                 this._unpinnedColumns = [];
                 this._styles = {};
@@ -43,8 +42,7 @@ var Vidyano;
                 this._horizontalScrollPanels = [
                     this.headers.hosts.unpinned,
                     this.filters.hosts.unpinned,
-                    this.items.hosts.unpinned,
-                    this.$["horizontalScroll"]
+                    this.items.hosts.unpinned
                 ];
                 _super.prototype.attached.call(this);
             };
@@ -112,41 +110,12 @@ var Vidyano;
                     this._rows[row].updateColumns(this._pinnedColumns, this._unpinnedColumns);
             };
             QueryGrid.prototype._itemsChanged = function () {
-                this.items.data.scrollTop = 0;
+                this.items.data.scrollToTop();
                 this.items.updateRows();
                 this.items.updateTablePosition(true, true);
             };
-            QueryGrid.prototype._updateScrollBarsVisibility = function () {
-                var horizontalSpacer = this.$["horizontalSpacer"];
-                this.items.data.classList.remove("scroll");
-                horizontalSpacer.parentElement.style.marginRight = "0";
-                var widthRequired = this.items.hosts.pinned.offsetWidth + this.items.hosts.unpinned.offsetWidth - this.remainderWidth + this.items.hosts.header.offsetWidth;
-                var widthAvailable = this.items.verticalSpacer.offsetWidth;
-                var heightAvailable = this.items.data.offsetHeight;
-                var isVerticalScroll = this.items.virtualHeight > heightAvailable;
-                var isHorizontalScroll = widthRequired > widthAvailable;
-                if (isVerticalScroll)
-                    widthAvailable -= WebComponents.scrollbarWidth();
-                isVerticalScroll = this.items.virtualHeight > heightAvailable;
-                isHorizontalScroll = widthRequired > widthAvailable;
-                if (isVerticalScroll)
-                    this.items.data.classList.add("scroll");
-                else
-                    this.items.data.classList.remove("scroll");
-                this._setScrollBottomShadow(isVerticalScroll);
-                if (isHorizontalScroll) {
-                    horizontalSpacer.parentElement.removeAttribute("hidden");
-                    horizontalSpacer.parentElement.style.marginRight = isVerticalScroll ? WebComponents.scrollbarWidth() + "px" : "0";
-                }
-                else {
-                    horizontalSpacer.parentElement.setAttribute("hidden", "");
-                    horizontalSpacer.parentElement.style.marginRight = "0";
-                }
-                horizontalSpacer.style.width = (this._horizontalSpacerWidth = this.items.hosts.pinned.offsetWidth + this.items.hosts.unpinned.offsetWidth - this.remainderWidth + this.items.hosts.header.offsetWidth) + "px";
-            };
-            QueryGrid.prototype._updateScrollBarsListener = function (e) {
-                e.stopPropagation();
-                this._updateScrollBarsVisibility();
+            QueryGrid.prototype._updateHorizontalSpacer = function () {
+                this.$["horizontalSpacer"].style.width = (this.items.hosts.pinned.offsetWidth + this.items.hosts.unpinned.offsetWidth - this.remainderWidth + this.items.hosts.header.offsetWidth) + "px";
             };
             QueryGrid.prototype._measureColumnsListener = function (e) {
                 var _this = this;
@@ -158,12 +127,13 @@ var Vidyano;
                         c.currentWidth = Math.max(_this._rows[row].getColumnWidth(c), c.currentWidth || 0);
                 });
                 this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(function (c) { return "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }"; }).toArray()));
-                this._updateScrollBarsVisibility();
+                this._updateHorizontalSpacer();
                 this._setInitializing(false);
             };
             QueryGrid.prototype._columnWidthUpdatedListener = function (e, detail) {
                 var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
                 this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(function (c) { return "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }"; }).toArray()));
+                this._updateHorizontalSpacer();
             };
             QueryGrid.prototype._itemSelectListener = function (e, detail) {
                 if (!detail.item)
@@ -191,32 +161,31 @@ var Vidyano;
                     return;
                 this._setViewport(detail);
                 this.items.updateRows();
-                this._updateScrollBarsVisibility();
                 e.stopPropagation();
             };
-            QueryGrid.prototype._onScrollVertical = function () {
-                WebComponents.Popup.closeAll(this);
-                this.items.onScroll();
+            QueryGrid.prototype._verticalScrollOffsetChanged = function (verticalScrollOffset) {
+                if (!this.items)
+                    return;
+                this.items.onScroll(verticalScrollOffset);
+            };
+            QueryGrid.prototype._horizontalScrollOffsetChanged = function (horizontalScrollOffset) {
+                if (!this._horizontalScrollPanels)
+                    return;
+                this._horizontalScrollPanels.forEach(function (targetElement) {
+                    if (targetElement.parentElement.scrollLeft !== horizontalScrollOffset)
+                        targetElement.parentElement.scrollLeft = horizontalScrollOffset;
+                });
             };
             QueryGrid.prototype._onScrollHorizontal = function (e) {
-                WebComponents.Popup.closeAll(this);
                 var src = (e && e.target ? e.target : e.srcElement);
-                var srcLeft = Math.max(Math.min(src.scrollLeft, this._horizontalSpacerWidth - this.remainderWidth + WebComponents.scrollbarWidth()), 0);
-                if (src.scrollLeftSync === undefined || src.scrollLeftSync != srcLeft)
-                    src.scrollLeftSync = srcLeft;
-                if (src.scrollLeft != srcLeft)
-                    src.scrollLeft = srcLeft;
-                this._horizontalScrollPanels.filter(function (panel) { return panel != src; }).forEach(function (targetElement) {
-                    var target = targetElement;
-                    if (target.scrollLeftSync != srcLeft)
-                        target.scrollLeftSync = targetElement.parentElement.scrollLeft = srcLeft;
-                });
+                if (src.scrollLeft !== this.horizontalScrollOffset)
+                    this.horizontalScrollOffset = src.scrollLeft;
             };
             QueryGrid.prototype._updateHoverRow = function (e) {
                 var y = e.pageY || e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
                 var sender = e.srcElement || e.target;
                 if (sender && sender !== this)
-                    y -= this.items.data.getClientRects()[0].top;
+                    y -= this.items.data.asElement.getClientRects()[0].top;
                 this.items.updateHoverRow(y);
             };
             QueryGrid.prototype._itemsTap = function (e, detail) {
@@ -290,6 +259,12 @@ var Vidyano;
             QueryGrid.prototype._computeRemainderWidth = function () {
                 this._style.setStyle("RemainderColumn", "._RemainderColumn { width: " + this.viewport.width + "px; }");
                 return this.viewport.width;
+            };
+            QueryGrid.prototype._itemsMouseenter = function () {
+                this.$["horizontalScroll"].forceScrollbars = this.items.data.forceScrollbars = true;
+            };
+            QueryGrid.prototype._itemsMouseleave = function () {
+                this.$["horizontalScroll"].forceScrollbars = this.items.data.forceScrollbars = false;
             };
             QueryGrid._isChrome = /chrome/i.test(navigator.userAgent);
             QueryGrid._isSafari = /safari/i.test(navigator.userAgent) && !/chrome/i.test(navigator.userAgent);
@@ -517,7 +492,7 @@ var Vidyano;
                 while (this._items.length < rowCount)
                     this._items.push(new QueryGridItem(this));
                 var oldViewportEndRowIndex = this._viewportEndRowIndex || 0;
-                this._viewportEndRowIndex = this._rowHeight !== undefined ? Math.floor(this._data.scrollTop + this.grid.viewport.height / this._rowHeight) : 1;
+                this._viewportEndRowIndex = this._rowHeight !== undefined ? Math.floor(this._data.verticalScrollOffset + this.grid.viewport.height / this._rowHeight) : 1;
                 if (this._viewportEndRowIndex > oldViewportEndRowIndex)
                     this.updateTablePosition(true);
             };
@@ -563,7 +538,6 @@ var Vidyano;
                         }
                         if (this._virtualHeight != this._rowHeight * this.grid.query.totalItems) {
                             this._verticalSpacer.style.height = (this._virtualHeight = (this._rowHeight * this.grid.query.totalItems)) + "px";
-                            this.grid.fire("update-scrollbars", null);
                         }
                         var numberOfItemRows = Math.min(this._rowsStartIndex + this._items.length, this.grid.query.totalItems);
                         this._items.slice(0, numberOfItemRows).forEach(function (row, i) { return row.item = items[i]; });
@@ -594,7 +568,7 @@ var Vidyano;
             QueryGridItems.prototype.updateHoverRow = function (yPosition) {
                 if (yPosition === void 0) { yPosition = this._lastKnownMouseYPosition; }
                 this._lastKnownMouseYPosition = yPosition;
-                var newCurrentHoverRowIndex = Math.floor(yPosition / this._rowHeight + (this._data.scrollTop - this._dataTop) / this._rowHeight);
+                var newCurrentHoverRowIndex = Math.floor(yPosition / this._rowHeight + (this._data.verticalScrollOffset - this._dataTop) / this._rowHeight);
                 if (newCurrentHoverRowIndex != this._currentHoverRowIndex) {
                     if (this._currentHoverRowIndex >= 0)
                         this._items[this._currentHoverRowIndex].hover = false;
@@ -603,13 +577,10 @@ var Vidyano;
                         this._items[this._currentHoverRowIndex].hover = true;
                 }
             };
-            QueryGridItems.prototype.onScroll = function () {
+            QueryGridItems.prototype.onScroll = function (verticalScrollOffset) {
                 this.updateHoverRow();
-                var top = this._data.scrollTop;
-                this.grid._setScrollTopShadow(top > 0);
-                this.grid._setScrollBottomShadow(top < (this._data.scrollHeight - this._data.offsetHeight - this._rowHeight * 0.25));
-                this._viewportStartRowIndex = Math.floor(top / this._rowHeight);
-                this._viewportEndRowIndex = Math.ceil((top + this.grid.viewport.height) / this._rowHeight);
+                this._viewportStartRowIndex = Math.floor(verticalScrollOffset / this._rowHeight);
+                this._viewportEndRowIndex = Math.ceil((verticalScrollOffset + this.grid.viewport.height) / this._rowHeight);
                 this.updateTablePosition();
             };
             return QueryGridItems;
@@ -948,14 +919,12 @@ var Vidyano;
                 var newWidth = this._resizeStartWidth + e.clientX - this._resizeX;
                 this.gridColumn.currentWidth = newWidth >= this._resizeMinWidth ? newWidth : this._resizeMinWidth;
                 this.fire("column-width-updated", { column: this.gridColumn });
-                if (Vidyano.WebComponents.QueryGrid._isChrome)
-                    this._grid._updateScrollBarsVisibility();
                 e.stopPropagation();
             };
             QueryGridColumnHeader.prototype._resizeEnd = function (e) {
                 e.target.parentElement.removeChild(e.target);
                 this.gridColumn.currentWidth = this.asElement.offsetWidth;
-                this._grid._updateScrollBarsVisibility();
+                this.fire("column-width-updated", { column: this.gridColumn });
                 e.stopPropagation();
             };
             QueryGridColumnHeader.prototype._getIsSorting = function (direction) {
@@ -1338,16 +1307,6 @@ var Vidyano;
                     type: Number,
                     computed: "_computeRemainderWidth(viewport)"
                 },
-                scrollTopShadow: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true,
-                },
-                scrollBottomShadow: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                },
                 disableFilter: {
                     type: Boolean,
                     reflectToAttribute: true,
@@ -1362,6 +1321,14 @@ var Vidyano;
                     type: Boolean,
                     reflectToAttribute: true,
                     computed: "_computeDisableSelect(query.actions)"
+                },
+                verticalScrollOffset: {
+                    type: Number,
+                    observer: "_verticalScrollOffsetChanged"
+                },
+                horizontalScrollOffset: {
+                    type: Number,
+                    observer: "_horizontalScrollOffsetChanged"
                 }
             },
             observers: [
@@ -1376,7 +1343,6 @@ var Vidyano;
             listeners: {
                 "measure-columns": "_measureColumnsListener",
                 "column-width-updated": "_columnWidthUpdatedListener",
-                "update-scrollbars": "_updateScrollBarsListener",
                 "item-select": "_itemSelectListener",
                 "filter-changed": "_filterChangedListener",
                 "column-filter-changed": "_columnFilterChangedListener"

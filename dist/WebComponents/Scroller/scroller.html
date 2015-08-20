@@ -1,6 +1,6 @@
 ﻿<dom-module id="vi-scroller">
     <template>
-        <vi-size-tracker on-sizechanged="_outerSizeChanged"></vi-size-tracker>
+        <vi-size-tracker class="fit" on-sizechanged="_outerSizeChanged"></vi-size-tracker>
         <div id="wrapper" on-scroll="_scroll">
             <div id="content" class="relative">
                 <vi-size-tracker on-sizechanged="_innerSizeChanged"></vi-size-tracker>

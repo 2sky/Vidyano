@@ -16,16 +16,15 @@ vi-query-grid {
 }
 vi-query-grid:not([disable-inline-actions]) .header,
 vi-query-grid:not([disable-select]) .header {
-  min-width: 30px;
+  width: 30px;
 }
 vi-query-grid:not([disable-inline-actions]):not([disable-select]) .header {
-  min-width: 60px;
+  width: 60px;
 }
 vi-query-grid[disable-inline-actions][disable-select] .header {
-  min-width: 30px;
+  width: 30px;
 }
 vi-query-grid[disable-inline-actions][disable-select][disable-filter] .header {
-  min-width: 0 !important;
   width: 0 !important;
 }
 vi-query-grid #initializingOverlay {
@@ -39,38 +38,6 @@ vi-query-grid #initializingOverlay {
 }
 vi-query-grid vi-spinner {
   z-index: 3;
-}
-vi-query-grid .scroll-shadow {
-  position: absolute;
-  z-index: 1;
-  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-  bottom: 0;
-  height: 30px;
-  -moz-border-radius: 100%;
-  border-radius: 100%;
-  left: -30px;
-  right: -30px;
-}
-vi-query-grid .scroll-shadow.top {
-  -moz-transition: top 0.2s ease-out;
-  -o-transition: top 0.2s ease-out;
-  -webkit-transition: top 0.2s ease-out;
-  transition: top 0.2s ease-out;
-  top: -45px;
-}
-vi-query-grid .scroll-shadow.bottom {
-  -moz-transition: bottom 0.2s ease-out;
-  -o-transition: bottom 0.2s ease-out;
-  -webkit-transition: bottom 0.2s ease-out;
-  transition: bottom 0.2s ease-out;
-  bottom: -45px;
-}
-vi-query-grid[scroll-top-shadow] .scroll-shadow.top {
-  top: -30px;
-}
-vi-query-grid[scroll-bottom-shadow] .scroll-shadow.bottom {
-  bottom: -30px;
 }
 vi-query-grid .columnHost {
   min-height: 30px;
@@ -137,48 +104,41 @@ vi-query-grid #filters {
   transition: opacity 0.3s ease-out;
   background-color: white;
 }
-vi-query-grid #dataContainer {
-  overflow: hidden;
-}
-vi-query-grid #dataContainer #data {
+vi-query-grid #data {
   -moz-transition: opacity 0.3s ease-out;
   -o-transition: opacity 0.3s ease-out;
   -webkit-transition: opacity 0.3s ease-out;
   transition: opacity 0.3s ease-out;
   opacity: 1;
 }
-vi-query-grid #dataContainer #data.scroll {
-  overflow-y: scroll;
-  -ms-overflow-style: scrollbar;
-}
-vi-query-grid #dataContainer #data #verticalSpacer {
+vi-query-grid #data #verticalSpacer {
   position: relative;
   display: block;
   width: 100%;
   white-space: nowrap;
 }
-vi-query-grid #dataContainer #data #verticalSpacer #topSpacer {
+vi-query-grid #data #verticalSpacer #topSpacer {
   display: block;
   height: 0;
   width: 100%;
 }
-vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr {
+vi-query-grid #data #verticalSpacer .columnHost tr {
   line-height: 30px;
   height: 30px;
 }
-vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr:not([hover]):nth-child(odd) {
+vi-query-grid #data #verticalSpacer .columnHost tr:not([hover]):nth-child(odd) {
   background-color: #fafafa;
 }
-vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr:not([hover]):nth-child(even) {
+vi-query-grid #data #verticalSpacer .columnHost tr:not([hover]):nth-child(even) {
   background-color: white;
 }
-vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr.noData:not(:first-of-type) {
+vi-query-grid #data #verticalSpacer .columnHost tr.noData:not(:first-of-type) {
   display: none;
 }
-vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr.noData:first-of-type {
+vi-query-grid #data #verticalSpacer .columnHost tr.noData:first-of-type {
   visibility: hidden;
 }
-vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr .cell {
+vi-query-grid #data #verticalSpacer .columnHost tr .cell {
   height: 30px;
   min-height: 30px;
   line-height: 30px;
@@ -192,16 +152,16 @@ vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr .cell {
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
 }
-vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr .cell vi-resource {
+vi-query-grid #data #verticalSpacer .columnHost tr .cell vi-resource {
   height: 30px;
 }
-[theme-color-1] vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr[hover] {
+[theme-color-1] vi-query-grid #data #verticalSpacer .columnHost tr[hover] {
   background-color: #ecf2f7;
 }
-[theme-color-2] vi-query-grid #dataContainer #data #verticalSpacer .columnHost tr[hover] {
+[theme-color-2] vi-query-grid #data #verticalSpacer .columnHost tr[hover] {
   background-color: #e0f2f1;
 }
-vi-query-grid #dataContainer #data #verticalSpacer .columnHost .pinned tr:not(.noData) > td:last-of-type > div {
+vi-query-grid #data #verticalSpacer .columnHost .pinned tr:not(.noData) > td:last-of-type > div {
   border-right: 1px solid #eaeaea;
 }
 vi-query-grid table {
@@ -222,19 +182,13 @@ vi-query-grid table tr th {
   cursor: pointer;
 }
 vi-query-grid #horizontalScroll {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 1;
-  overflow: hidden;
-  margin-top: -1px;
-  overflow-x: scroll;
-  -ms-overflow-style: scrollbar;
+  height: 12px;
 }
 vi-query-grid #horizontalScroll #horizontalSpacer {
-  height: 1px;
-}
-vi-query-grid.safari #data.scroll {
-  overflow-y: scroll;
-  -webkit-overflow-scrolling: touch;
-}
-vi-query-grid.safari #horizontalScroll #horizontalSpacer {
-  height: 1px;
+  height: 12px;
 }

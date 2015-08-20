@@ -16,8 +16,8 @@ vi-query-grid-item-actions,
 }
 vi-query-grid-item-actions > vi-resource,
 .vi-query-grid-item-actions-proxy > vi-resource,
-vi-query-grid-item-actions [toggle],
-.vi-query-grid-item-actions-proxy [toggle] {
+vi-query-grid-item-actions [toggle] > vi-resource,
+.vi-query-grid-item-actions-proxy [toggle] > vi-resource {
   fill: #333;
   height: 30px;
 }

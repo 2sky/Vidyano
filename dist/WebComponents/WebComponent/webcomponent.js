@@ -334,7 +334,7 @@ var Vidyano;
                                 while (this._keybindingRegistrations.length > 0) {
                                     var reg = this._keybindingRegistrations.splice(0, 1)[0];
                                     this.app._unregisterKeybindings(reg);
-                                    reg.element.removeEventListener(reg.listener);
+                                    reg.element.removeEventListener("keys-pressed", reg.listener);
                                     Polymer.dom(this.root).removeChild(reg.element);
                                 }
                             }

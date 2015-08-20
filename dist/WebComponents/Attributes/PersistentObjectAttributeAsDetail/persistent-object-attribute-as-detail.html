@@ -24,9 +24,9 @@
                     <div class="column" data-column$="{{column.name}}"><label>{{column.label}}</label></div>
                 </template>
             </div>
-            <vi-scroller id="body">
-                <div class="horizontal layout">
-                    <div class="flex relative" on-sizechanged="_sizechanged">
+            <vi-scroller id="body" no-horizontal force-scrollbars$="{{editing}}">
+                <div class="flex horizontal layout">
+                    <div id="data" class="flex relative" on-sizechanged="_rowSizechanged">
                         <vi-size-tracker></vi-size-tracker>
                         <div id="rows">
                             <template is="dom-repeat" items="{{attribute.objects}}" as="obj">

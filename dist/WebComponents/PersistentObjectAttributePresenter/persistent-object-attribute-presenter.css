@@ -1,10 +1,5 @@
 vi-persistent-object-attribute-presenter {
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -ms-flex-direction: column;
-  -webkit-flex-direction: column;
-  flex-direction: column;
+  display: block;
   flex-basis: 0.000000001px;
   position: relative;
   white-space: nowrap;
@@ -21,6 +16,7 @@ vi-persistent-object-attribute-presenter:not([loading]) {
 }
 vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter {
   padding-top: 6px;
+  height: 24px;
   min-height: 24px;
   line-height: 24px;
   vertical-align: top;
@@ -87,13 +83,18 @@ vi-persistent-object-attribute-presenter[editing][required] .required.vi-persist
 vi-persistent-object-attribute-presenter[editing][read-only] .locked.vi-persistent-object-attribute-presenter {
   display: inline-block;
 }
-vi-persistent-object-attribute-presenter[no-label] .label.vi-persistent-object-attribute-presenter {
+vi-persistent-object-attribute-presenter[no-label] > .label {
   display: none;
 }
-vi-persistent-object-attribute-presenter > *:last-child {
-  -ms-flex: 1;
-  -webkit-flex: 1;
-  flex: 1;
+vi-persistent-object-attribute-presenter[no-label] > .attribute {
+  top: 0;
+}
+vi-persistent-object-attribute-presenter > .attribute {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;

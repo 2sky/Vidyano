@@ -15,10 +15,6 @@ var Vidyano;
                 function PersistentObjectAttributeBoolean() {
                     _super.apply(this, arguments);
                 }
-                PersistentObjectAttributeBoolean.prototype.toggle = function () {
-                    if (this.attribute.parent.isEditing && !this.attribute.isReadOnly)
-                        this.attribute.setValue(!this.value);
-                };
                 return PersistentObjectAttributeBoolean;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeBoolean = PersistentObjectAttributeBoolean;
@@ -56,9 +52,7 @@ var Vidyano;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeNullableBoolean = PersistentObjectAttributeNullableBoolean;
             Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeBoolean, {
-                listeners: {
-                    "tap": "toggle"
-                }
+                listeners: {}
             });
             Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeNullableBoolean, {
                 properties: {

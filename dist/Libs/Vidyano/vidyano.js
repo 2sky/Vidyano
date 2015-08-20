@@ -202,6 +202,7 @@ var Vidyano;
             this.environment = "Web";
             this.environmentVersion = "2";
             this.hooks._service = this;
+            this.staySignedIn = cookie("staySignedIn", undefined, { force: true });
         }
         Service.prototype._createUri = function (method) {
             var uri = this.serviceUri;
@@ -1906,7 +1907,9 @@ var Vidyano;
             if ((!this.isReadOnly && this._refreshValue !== undefined ? this._refreshValue : this.value) != resultAttr.value) {
                 var oldDisplayValue = this.displayValue;
                 var oldValue = this.value;
-                this.notifyPropertyChanged("value", this.value = resultAttr.value, oldValue);
+                this._serviceValue = resultAttr._serviceValue;
+                this._lastParsedValue = undefined;
+                this.notifyPropertyChanged("value", this.value, oldValue);
                 this.notifyPropertyChanged("displayValue", this.displayValue, oldDisplayValue);
             }
             this._refreshValue = undefined;

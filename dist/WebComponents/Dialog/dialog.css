@@ -90,7 +90,7 @@ vi-dialog[shown] > #overlay {
 vi-dialog[shown] > #dialogHost > #dialog {
   opacity: 1;
 }
-vi-dialog[auto-size] > #dialogHost > #dialog {
+vi-dialog > #dialogHost > #dialog {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
@@ -98,61 +98,44 @@ vi-dialog[auto-size] > #dialogHost > #dialog {
   -webkit-flex-direction: column;
   flex-direction: column;
 }
-vi-dialog[auto-size] > #dialogHost > #dialog .content {
-  -ms-flex: 1;
-  -webkit-flex: 1;
-  flex: 1;
+vi-dialog > #dialogHost > #dialog > .header {
+  -webkit-flex: 0 0 auto;
+  -moz-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+}
+vi-dialog > #dialogHost > #dialog .content {
+  -webkit-flex: 0 1 auto;
+  -moz-flex: 0 1 auto;
+  -ms-flex: 0 1 auto;
+  flex: 0 1 auto;
+  overflow: hidden;
+}
+vi-dialog > #dialogHost > #dialog > footer {
+  -webkit-flex: 0 0 auto;
+  -moz-flex: 0 0 auto;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 /* Extra small devices (phones, less than 768px) */
-@media (max-width: 767px) {
-  vi-dialog:not([auto-size]) > #dialogHost > #dialog {
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    -ms-flex-direction: column;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-  }
-  vi-dialog:not([auto-size]) > #dialogHost > #dialog > .content {
-    -ms-flex: 1;
-    -webkit-flex: 1;
-    flex: 1;
-    overflow: auto;
-  }
-}
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991px) {
-  vi-dialog[auto-size] > #dialogHost > #dialog {
-    width: 800px;
-    height: 70%;
-  }
-  vi-dialog:not([auto-size]) > #dialogHost > #dialog > .content {
+  vi-dialog > #dialogHost > #dialog > .content {
     max-width: 800px;
     max-height: 75vh;
-    overflow: auto;
   }
 }
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1199px) {
-  vi-dialog[auto-size] > #dialogHost > #dialog {
-    width: 900px;
-    height: 70%;
-  }
-  vi-dialog:not([auto-size]) > #dialogHost > #dialog > .content {
+  vi-dialog > #dialogHost > #dialog > .content {
     max-width: 900px;
     max-height: 75vh;
-    overflow: auto;
   }
 }
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-  vi-dialog[auto-size] > #dialogHost > #dialog {
-    width: 1000px;
-    height: 70%;
-  }
-  vi-dialog:not([auto-size]) > #dialogHost > #dialog > .content {
+  vi-dialog > #dialogHost > #dialog > .content {
     max-width: 1000px;
     max-height: 75vh;
-    overflow: auto;
   }
 }

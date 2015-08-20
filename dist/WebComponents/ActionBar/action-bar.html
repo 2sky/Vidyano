@@ -9,7 +9,7 @@
             </template>
         </vi-overflow>
         <template is="dom-repeat" items="{{pinnedActions}}">
-            <vi-action-button pinned action="{{item}}"></vi-action-button>
+            <vi-action-button action="{{item}}" no-label></vi-action-button>
         </template>
         <template is="dom-if" if="{{canSearch}}">
             <vi-input-search pinned value="{{serviceObject.textSearch}}" on-search="_search"></vi-input-search>

@@ -21,7 +21,7 @@ var Vidyano;
                 if (!tab)
                     return;
                 this._setLoading(true);
-                var childClassName = "style-scope vi-persistent-object fit";
+                var childClassName = "style-scope vi-persistent-object";
                 var config = this.app.configuration.getTabConfig(tab);
                 this._setTemplated(!!config && !!config.template);
                 if (this.templated) {

@@ -42,6 +42,13 @@ vi-persistent-object .tabs {
 vi-persistent-object vi-persistent-object-tab-presenter {
   overflow: hidden;
 }
+vi-persistent-object vi-persistent-object-tab-presenter > vi-query-items-presenter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
 vi-persistent-object .content vi-action-bar {
   padding-top: 3px;
   border-bottom: 1px solid #f1f1f1;
