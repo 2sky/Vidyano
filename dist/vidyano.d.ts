@@ -2774,7 +2774,6 @@ declare module Vidyano.WebComponents {
         private _pinnedColumns;
         private _unpinnedColumns;
         private _styles;
-        private _queryPropertyObservers;
         private _itemOpening;
         private _lastSelectedItemIndex;
         private remainderWidth;
@@ -2798,7 +2797,7 @@ declare module Vidyano.WebComponents {
         items: QueryGridItems;
         private _style;
         private _columnsChanged(columns);
-        private _itemsChanged();
+        private _itemsChanged(items, isAttached, viewport);
         private _updateHorizontalSpacer();
         private _measureColumnsListener(e);
         private _columnWidthUpdatedListener(e, detail);
@@ -2905,6 +2904,7 @@ declare module Vidyano.WebComponents {
         item: QueryResultItem;
         isSelected: boolean;
         private _setIsSelected;
+        detached(): void;
         private _updateIsSelected(isAttached, item);
         private _selectedItemsChanged(source, detail);
         private _select(e);

@@ -18,7 +18,6 @@ var Vidyano;
                 this._pinnedColumns = [];
                 this._unpinnedColumns = [];
                 this._styles = {};
-                this._queryPropertyObservers = [];
             }
             QueryGrid.prototype.attached = function () {
                 this.asElement.setAttribute("style-scope-id", this._uniqueId);
@@ -109,7 +108,9 @@ var Vidyano;
                 for (var row in this._rows)
                     this._rows[row].updateColumns(this._pinnedColumns, this._unpinnedColumns);
             };
-            QueryGrid.prototype._itemsChanged = function () {
+            QueryGrid.prototype._itemsChanged = function (items, isAttached, viewport) {
+                if (!isAttached)
+                    return;
                 this.items.data.scrollToTop();
                 this.items.updateRows();
                 this.items.updateTablePosition(true, true);
@@ -814,6 +815,12 @@ var Vidyano;
             function QueryGridItemSelector() {
                 _super.apply(this, arguments);
             }
+            QueryGridItemSelector.prototype.detached = function () {
+                if (this._selectedItemsObserver) {
+                    this._selectedItemsObserver();
+                    this._selectedItemsObserver = null;
+                }
+            };
             QueryGridItemSelector.prototype._updateIsSelected = function (isAttached, item) {
                 if (!isAttached && this._selectedItemsObserver) {
                     this._selectedItemsObserver();

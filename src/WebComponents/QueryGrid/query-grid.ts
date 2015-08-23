@@ -25,7 +25,6 @@
         private _pinnedColumns: QueryGridColumn[] = [];
         private _unpinnedColumns: QueryGridColumn[] = [];
         private _styles: { [key: string]: Text } = {};
-        private _queryPropertyObservers: Vidyano.Common.SubjectDisposer[] = [];
         private _itemOpening: Vidyano.QueryResultItem;
         private _lastSelectedItemIndex: number;
         private remainderWidth: number;
@@ -127,7 +126,10 @@
                 this._rows[row].updateColumns(this._pinnedColumns, this._unpinnedColumns);
         }
 
-        private _itemsChanged() {
+        private _itemsChanged(items: Vidyano.QueryResultItem[], isAttached: boolean, viewport: Viewport) {
+            if (!isAttached)
+                return;
+
             this.items.data.scrollToTop();
             this.items.updateRows();
             this.items.updateTablePosition(true, true);
@@ -958,6 +960,13 @@
         isSelected: boolean;
 
         private _setIsSelected: (val: boolean) => void;
+
+        detached() {
+            if (this._selectedItemsObserver) {
+                this._selectedItemsObserver();
+                this._selectedItemsObserver = null;
+            }
+        }
 
         private _updateIsSelected(isAttached: boolean, item: Vidyano.QueryResultItem) {
             if (!isAttached && this._selectedItemsObserver) {

@@ -270,6 +270,8 @@ var Vidyano;
                                 this._forwardObservers = [];
                             while (this._forwardObservers.length > 0)
                                 this._forwardObservers.pop()();
+                            if (!attached)
+                                return;
                             properties.forEach(function (p) {
                                 var functionIndex = p.indexOf("(");
                                 var path = functionIndex > 0 ? p.substr(functionIndex + source.key().length + 2, p.length - (functionIndex + source.key().length + 2) - 1) : p.substr(source.key().length + 1);
