@@ -26,6 +26,9 @@ vi-action-button button.vi-action-button > vi-resource[icon].options svg {
 vi-action-button button.vi-action-button[header] vi-resource {
   display: inline-block;
 }
+vi-action-button button.vi-action-button > span {
+  vertical-align: top;
+}
 vi-action-button[overflow] vi-resource.options {
   -moz-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
