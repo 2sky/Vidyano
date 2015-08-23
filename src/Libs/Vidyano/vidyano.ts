@@ -1899,6 +1899,7 @@ module Vidyano {
         private _groupKey: string;
         private _isRequired: boolean;
         private _isReadOnly: boolean;
+        private _isValueChanged: boolean;
 
         private _backupData: any;
         protected _queueRefresh: boolean = false;
@@ -1907,7 +1908,6 @@ module Vidyano {
         id: string;
         name: string;
         label: string;
-        isValueChanged: boolean;
         options: string[]| Common.KeyValuePair[];
         offset: number;
         type: string;
@@ -1935,7 +1935,7 @@ module Vidyano {
             this._tabKey = attr.tab;
             this._isReadOnly = !!attr.isReadOnly;
             this._isRequired = !!attr.isRequired;
-            this.isValueChanged = !!attr.isValueChanged;
+            this._isValueChanged = !!attr.isValueChanged;
             this.offset = attr.offset || 0;
             this.toolTip = attr.toolTip;
             this.rules = attr.rules;
@@ -2065,7 +2065,11 @@ module Vidyano {
         get value(): any {
             if (this._lastParsedValue !== this._serviceValue) {
                 this._lastParsedValue = this._serviceValue;
-                this._cachedValue = Service.fromServiceString(this._serviceValue, this.type);
+
+                if (!this.parent.isBulkEdit || !!this._serviceValue)
+                    this._cachedValue = Service.fromServiceString(this._serviceValue, this.type);
+                else
+                    this._cachedValue = null;
             }
 
             return this._cachedValue;
@@ -2086,7 +2090,7 @@ module Vidyano {
                 var queuedTriggersRefresh = null;
 
                 // If value is equal
-                if ((this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || this._serviceValue == newServiceValue) {
+                if (this._cachedValue === val || (this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || this._serviceValue == newServiceValue) {
                     if (allowRefresh && this._queueRefresh)
                         queuedTriggersRefresh = this._triggerAttributeRefresh();
                 }
@@ -2115,6 +2119,18 @@ module Vidyano {
                 else
                     resolve(this.value);
             });
+        }
+
+        get isValueChanged(): boolean {
+            return this._isValueChanged;
+        }
+
+        set isValueChanged(isValueChanged: boolean) {
+            if (isValueChanged === this._isValueChanged)
+                return;
+
+            var oldIsValueChanged = this._isValueChanged;
+            this.notifyPropertyChanged("isValueChanged", this._isValueChanged = isValueChanged, oldIsValueChanged);
         }
 
         backup() {

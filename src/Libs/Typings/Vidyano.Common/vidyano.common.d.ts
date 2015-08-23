@@ -56,6 +56,7 @@ interface Array<T> {
 }
 
 interface BigNumber {
+    toNumber(): number;
 }
 
 declare var BigNumber: {

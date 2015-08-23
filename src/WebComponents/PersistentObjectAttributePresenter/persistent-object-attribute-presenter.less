@@ -53,7 +53,9 @@ vi-persistent-object-attribute-presenter {
 
             .colorize( {
                 background-color: @@color;
-            });
+            }
+
+            );
 
             &::before {
                 content: "";
@@ -66,7 +68,9 @@ vi-persistent-object-attribute-presenter {
 
                 .colorize( {
                     border-right: 7px solid @@color;
-                });
+                }
+
+                );
             }
         }
 
@@ -86,7 +90,7 @@ vi-persistent-object-attribute-presenter {
         }
     }
 
-    &[editing][required] .required.vi-persistent-object-attribute-presenter {
+    &[editing][required]:not([bulk-edit]) .required.vi-persistent-object-attribute-presenter {
         display: inline-block;
     }
 
@@ -104,13 +108,28 @@ vi-persistent-object-attribute-presenter {
         }
     }
 
-    & > .attribute {
+    & > .attribute, &[bulk-edit] > .bulk-edit-container {
         position: absolute;
         top: @h2;
         left: 0;
         right: 0;
         bottom: 0;
         .layout-horizontal();
+    }
+
+    &[bulk-edit] {
+        > .bulk-edit-container {
+            .layout-horizontal();
+
+            > vi-checkbox {
+                .self-start();
+                width: @h3;
+            }
+
+            > .attribute {
+                .flex();
+            }
+        }
     }
 
     a {

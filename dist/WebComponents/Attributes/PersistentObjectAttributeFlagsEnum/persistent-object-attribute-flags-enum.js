@@ -31,7 +31,7 @@ var Vidyano;
                         this.attribute.value = this.option.value;
                     else {
                         var currentOptions = Enumerable.from(this.attribute.options);
-                        var currentValue = this._values(this.attribute.value).sum(function (v) { return parseInt(currentOptions.first(function (o) { return o.value == v; }).key); });
+                        var currentValue = this.attribute.value ? this._values(this.attribute.value).sum(function (v) { return parseInt(currentOptions.first(function (o) { return o.value == v; }).key); }) : 0;
                         if (this.checked)
                             currentValue |= myValue;
                         else
@@ -60,7 +60,7 @@ var Vidyano;
                     try {
                         this._skipCheckedChanged = true;
                         var currentOptions = Enumerable.from(this.attribute.options);
-                        var currentValue = this._values(this.attribute.value).sum(function (v) { return parseInt(currentOptions.first(function (o) { return o.value == v; }).key); });
+                        var currentValue = this.attribute.value ? this._values(this.attribute.value).sum(function (v) { return parseInt(currentOptions.first(function (o) { return o.value == v; }).key); }) : 0;
                         var myValue = parseInt(this.option.key);
                         this.checked = (currentValue == 0 && myValue == 0) || (myValue != 0 && (currentValue & myValue) == myValue);
                     }

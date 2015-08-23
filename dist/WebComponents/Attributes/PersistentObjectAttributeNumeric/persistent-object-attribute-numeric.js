@@ -19,7 +19,7 @@ var Vidyano;
                     _super.prototype._attributeChanged.call(this);
                     if (this.attribute) {
                         this._allowDecimal = PersistentObjectAttributeNumeric._decimalTypes.indexOf(this.attribute.type) >= 0;
-                        this._isNullable = this.attribute.type.startsWith("Nullable");
+                        this._isNullable = this.attribute.type.startsWith("Nullable") && !this.attribute.parent.isBulkEdit;
                         this._decimalSeparator = Vidyano.CultureInfo.currentCulture.numberFormat.numberDecimalSeparator;
                     }
                 };
@@ -38,7 +38,7 @@ var Vidyano;
                     if (newValue != null && this._decimalSeparator !== ".")
                         newValue = newValue.replace(this._decimalSeparator, ".");
                     if (this.attribute)
-                        this.attribute.setValue(newValue, false);
+                        this.attribute.setValue(!StringEx.isNullOrEmpty(newValue) ? new BigNumber(newValue).toNumber() : null, false);
                 };
                 PersistentObjectAttributeNumeric.prototype._editInputBlur = function (e) {
                     if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh) {

@@ -77,7 +77,7 @@ vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-p
   width: 10px;
   height: 10px;
 }
-vi-persistent-object-attribute-presenter[editing][required] .required.vi-persistent-object-attribute-presenter {
+vi-persistent-object-attribute-presenter[editing][required]:not([bulk-edit]) .required.vi-persistent-object-attribute-presenter {
   display: inline-block;
 }
 vi-persistent-object-attribute-presenter[editing][read-only] .locked.vi-persistent-object-attribute-presenter {
@@ -89,7 +89,8 @@ vi-persistent-object-attribute-presenter[no-label] > .label {
 vi-persistent-object-attribute-presenter[no-label] > .attribute {
   top: 0;
 }
-vi-persistent-object-attribute-presenter > .attribute {
+vi-persistent-object-attribute-presenter > .attribute,
+vi-persistent-object-attribute-presenter[bulk-edit] > .bulk-edit-container {
   position: absolute;
   top: 30px;
   left: 0;
@@ -101,6 +102,25 @@ vi-persistent-object-attribute-presenter > .attribute {
   -ms-flex-direction: row;
   -webkit-flex-direction: row;
   flex-direction: row;
+}
+vi-persistent-object-attribute-presenter[bulk-edit] > .bulk-edit-container {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+}
+vi-persistent-object-attribute-presenter[bulk-edit] > .bulk-edit-container > vi-checkbox {
+  -ms-align-self: flex-start;
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+  width: 22px;
+}
+vi-persistent-object-attribute-presenter[bulk-edit] > .bulk-edit-container > .attribute {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
 }
 vi-persistent-object-attribute-presenter a {
   text-decoration: none;

@@ -906,6 +906,7 @@ interface Array<T> {
 }
 
 interface BigNumber {
+    toNumber(): number;
 }
 
 declare var BigNumber: {
@@ -1415,13 +1416,13 @@ declare module Vidyano {
         private _groupKey;
         private _isRequired;
         private _isReadOnly;
+        private _isValueChanged;
         private _backupData;
         protected _queueRefresh: boolean;
         private _refreshValue;
         id: string;
         name: string;
         label: string;
-        isValueChanged: boolean;
         options: string[] | Common.KeyValuePair[];
         offset: number;
         type: string;
@@ -1450,6 +1451,7 @@ declare module Vidyano {
         displayValue: string;
         value: any;
         setValue(val: any, allowRefresh?: boolean): Promise<any>;
+        isValueChanged: boolean;
         backup(): void;
         restore(): void;
         getTypeHint(name: string, defaultValue?: string, typeHints?: any): string;

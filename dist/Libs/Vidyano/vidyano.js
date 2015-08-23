@@ -1634,7 +1634,7 @@ var Vidyano;
             this._tabKey = attr.tab;
             this._isReadOnly = !!attr.isReadOnly;
             this._isRequired = !!attr.isRequired;
-            this.isValueChanged = !!attr.isValueChanged;
+            this._isValueChanged = !!attr.isValueChanged;
             this.offset = attr.offset || 0;
             this.toolTip = attr.toolTip;
             this.rules = attr.rules;
@@ -1782,7 +1782,10 @@ var Vidyano;
             get: function () {
                 if (this._lastParsedValue !== this._serviceValue) {
                     this._lastParsedValue = this._serviceValue;
-                    this._cachedValue = Service.fromServiceString(this._serviceValue, this.type);
+                    if (!this.parent.isBulkEdit || !!this._serviceValue)
+                        this._cachedValue = Service.fromServiceString(this._serviceValue, this.type);
+                    else
+                        this._cachedValue = null;
                 }
                 return this._cachedValue;
             },
@@ -1802,7 +1805,7 @@ var Vidyano;
                 }
                 var newServiceValue = Service.toServiceString(val, _this.type);
                 var queuedTriggersRefresh = null;
-                if ((_this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || _this._serviceValue == newServiceValue) {
+                if (_this._cachedValue === val || (_this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || _this._serviceValue == newServiceValue) {
                     if (allowRefresh && _this._queueRefresh)
                         queuedTriggersRefresh = _this._triggerAttributeRefresh();
                 }
@@ -1828,6 +1831,19 @@ var Vidyano;
                     resolve(_this.value);
             });
         };
+        Object.defineProperty(PersistentObjectAttribute.prototype, "isValueChanged", {
+            get: function () {
+                return this._isValueChanged;
+            },
+            set: function (isValueChanged) {
+                if (isValueChanged === this._isValueChanged)
+                    return;
+                var oldIsValueChanged = this._isValueChanged;
+                this.notifyPropertyChanged("isValueChanged", this._isValueChanged = isValueChanged, oldIsValueChanged);
+            },
+            enumerable: true,
+            configurable: true
+        });
         PersistentObjectAttribute.prototype.backup = function () {
             this._backupData = this.copyProperties(["isReadOnly", "isValueChanged", "objectId", "validationError", "visibility"], true);
             this._backupData.value = this._serviceValue;

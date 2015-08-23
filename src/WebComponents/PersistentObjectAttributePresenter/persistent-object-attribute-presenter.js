@@ -176,6 +176,11 @@ var Vidyano;
                     reflectToAttribute: true,
                     computed: "attribute.isReadOnly"
                 },
+                bulkEdit: {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "attribute.parent.isBulkEdit"
+                },
                 loading: {
                     type: Boolean,
                     reflectToAttribute: true,
@@ -190,7 +195,9 @@ var Vidyano;
                 "attribute.parent.isEditing",
                 "attribute.isRequired",
                 "attribute.isReadOnly",
-                "attribute.value"
+                "attribute.value",
+                "attribute.isValueChanged",
+                "attribute.parent.isBulkEdit"
             ]
         });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

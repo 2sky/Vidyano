@@ -13,7 +13,7 @@
 
             if (this.attribute) {
                 this._allowDecimal = PersistentObjectAttributeNumeric._decimalTypes.indexOf(this.attribute.type) >= 0;
-                this._isNullable = this.attribute.type.startsWith("Nullable");
+                this._isNullable = this.attribute.type.startsWith("Nullable") && !this.attribute.parent.isBulkEdit;
                 this._decimalSeparator = CultureInfo.currentCulture.numberFormat.numberDecimalSeparator;
             }
         }
@@ -36,7 +36,7 @@
                 newValue = newValue.replace(this._decimalSeparator, ".");
 
             if (this.attribute)
-                this.attribute.setValue(newValue, false);
+                this.attribute.setValue(!StringEx.isNullOrEmpty(newValue) ? new BigNumber(newValue).toNumber() : null, false);
         }
 
         private _editInputBlur(e: Event) {

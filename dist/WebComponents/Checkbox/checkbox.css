@@ -8,6 +8,7 @@ vi-checkbox {
   -ms-flex-align: center;
   -webkit-align-items: center;
   align-items: center;
+  fill: #bbb;
 }
 vi-checkbox:not([disabled]) {
   cursor: pointer;
