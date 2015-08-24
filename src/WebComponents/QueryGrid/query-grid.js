@@ -135,7 +135,7 @@ var Vidyano;
             };
             QueryGrid.prototype._updateColumnWidthsStyle = function (columns) {
                 (_a = this._style).setStyle.apply(_a, ["ColumnWidths"].concat(columns.select(function (c) { return ("[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }"); }).toArray()));
-                this._style.setStyle("ColumnHeaderOverflow", "vi-query-grid-column-header { -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; overflow: hidden; }");
+                this._style.setStyle("ColumnHeaderOverflow", "vi-query-grid-column-header button span { -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; overflow: hidden; }");
                 this._updateHorizontalSpacer();
                 var _a;
             };

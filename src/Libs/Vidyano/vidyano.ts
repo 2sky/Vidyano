@@ -253,7 +253,7 @@ module Vidyano {
         }
     }
 
-    interface ServiceClientData {
+    export interface ServiceClientData {
         defaultUser: string;
         exception: string;
         languages: { [code: string]: { name: string; isDefault: boolean; messages: { [key: string]: string; } } };
@@ -614,6 +614,8 @@ module Vidyano {
 
         initialize(skipDefaultCredentialLogin: boolean = false): Promise<Application> {
             return this._getJSON(this._createUri("GetClientData?v=2")).then((clientData: ServiceClientData) => {
+                this.hooks.onInitialize(clientData);
+
                 this._clientData = clientData;
 
                 var languages: Language[] = [];
@@ -1230,6 +1232,9 @@ module Vidyano {
         }
 
         setNotification(notification: string, type: NotificationType) {
+        }
+
+        onInitialize(clientData: ServiceClientData) {
         }
 
         onSessionExpired() {

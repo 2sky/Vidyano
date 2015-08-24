@@ -206,6 +206,11 @@ var Vidyano;
                 this._cache = [];
             };
             App.prototype.createServiceHooks = function () {
+                if (this.hooks) {
+                    var ctor = this.hooks.split(".").reduce(function (obj, path) { return obj[path]; }, window);
+                    if (ctor)
+                        return new ctor(this);
+                }
                 return new AppServiceHooks(this);
             };
             App.prototype.redirectToSignIn = function (keepUrl) {
@@ -495,6 +500,17 @@ var Vidyano;
             return AppServiceHooks;
         })(Vidyano.ServiceHooks);
         WebComponents.AppServiceHooks = AppServiceHooks;
+        var AppServiceHooksTest = (function (_super) {
+            __extends(AppServiceHooksTest, _super);
+            function AppServiceHooksTest() {
+                _super.apply(this, arguments);
+            }
+            AppServiceHooksTest.prototype.onInitialize = function (clientData) {
+                console.log(clientData);
+            };
+            return AppServiceHooksTest;
+        })(AppServiceHooks);
+        WebComponents.AppServiceHooksTest = AppServiceHooksTest;
         Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.AppRoute, Vidyano.WebComponents, "vi", {
             properties: {
                 route: {
@@ -519,6 +535,11 @@ var Vidyano;
                     type: String,
                     reflectToAttribute: true
                 },
+                hooks: {
+                    type: String,
+                    reflectToAttribute: true,
+                    value: null
+                },
                 noHistory: {
                     type: Boolean,
                     reflectToAttribute: true,
@@ -530,7 +551,7 @@ var Vidyano;
                 },
                 service: {
                     type: Object,
-                    computed: "_computeService(uri, user)"
+                    computed: "_computeService(uri, user, hooks)"
                 },
                 user: {
                     type: String,

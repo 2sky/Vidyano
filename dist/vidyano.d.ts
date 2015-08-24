@@ -1205,6 +1205,24 @@ declare module Vidyano {
         function reloadPage(): void;
         function showMessageBox(hooks: ServiceHooks, title: string, message: string, html?: boolean, delay?: number): void;
     }
+    interface ServiceClientData {
+        defaultUser: string;
+        exception: string;
+        languages: {
+            [code: string]: {
+                name: string;
+                isDefault: boolean;
+                messages: {
+                    [key: string]: string;
+                };
+            };
+        };
+        providers: {
+            [name: string]: {
+                parameters: ProviderParameters;
+            };
+        };
+    }
     class Service extends Vidyano.Common.Observable<Service> {
         serviceUri: string;
         hooks: ServiceHooks;
@@ -1273,6 +1291,7 @@ declare module Vidyano {
         service: Vidyano.Service;
         createData(data: any): void;
         setNotification(notification: string, type: NotificationType): void;
+        onInitialize(clientData: ServiceClientData): void;
         onSessionExpired(): void;
         onAction(args: ExecuteActionArgs): Promise<any>;
         onOpen(obj: ServiceObject, replaceCurrent?: boolean, fromAction?: boolean): void;
@@ -1951,6 +1970,7 @@ declare module Vidyano.WebComponents {
         currentRoute: AppRoute;
         initializing: boolean;
         uri: string;
+        hooks: string;
         noHistory: boolean;
         path: string;
         cacheSize: number;
@@ -1998,6 +2018,9 @@ declare module Vidyano.WebComponents {
         onSessionExpired(): void;
         onNavigate(path: string, replaceCurrent?: boolean): void;
         onClientOperation(operation: ClientOperations.ClientOperation): void;
+    }
+    class AppServiceHooksTest extends AppServiceHooks {
+        onInitialize(clientData: Vidyano.ServiceClientData): void;
     }
 }
 declare module Vidyano.WebComponents {
@@ -2574,7 +2597,7 @@ declare module Vidyano.WebComponents {
         private _setRows;
         private _setItemDragging;
         private _computeIsDesignModeAvailable(tab);
-        private _computeDesignModeCells(items, columns, rows);
+        private _computeDesignModeCells(items, columns, rows, width, isDesignModeAvailable, designMode);
         private _computeColumns(width, defaultColumnCount);
         private _arrangeAutoLayout(tab, groups, columns);
         private _sizeChanged(e, detail);

@@ -160,7 +160,7 @@
 
         private _updateColumnWidthsStyle(columns: linqjs.Enumerable<QueryGridColumn>) {
             this._style.setStyle("ColumnWidths", ...columns.select(c => `[data-vi-column-name='${c.safeName}'] { width: ${c.currentWidth}px; }`).toArray());
-            this._style.setStyle("ColumnHeaderOverflow", "vi-query-grid-column-header { -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; overflow: hidden; }");
+            this._style.setStyle("ColumnHeaderOverflow", "vi-query-grid-column-header button span { -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; overflow: hidden; }");
 
             this._updateHorizontalSpacer();
         }

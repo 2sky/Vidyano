@@ -31,10 +31,6 @@ vi-query-grid-column-header button span {
   display: block;
   line-height: 30px;
   white-space: nowrap;
-  -ms-text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
-  overflow: hidden;
   padding-right: 16px;
 }
 vi-query-grid-column-header button vi-resource {

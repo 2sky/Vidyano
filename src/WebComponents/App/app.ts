@@ -152,6 +152,7 @@
         currentRoute: AppRoute;
         initializing: boolean;
         uri: string;
+        hooks: string;
         noHistory: boolean;
         path: string;
         cacheSize: number;
@@ -243,6 +244,12 @@
         }
 
         createServiceHooks(): ServiceHooks {
+            if (this.hooks) {
+                var ctor = this.hooks.split(".").reduce((obj: any, path: string) => obj[path], window);
+                if(ctor)
+                    return new ctor(this);
+            }
+
             return new AppServiceHooks(this);
         }
 
@@ -572,6 +579,12 @@
         }
     }
 
+    export class AppServiceHooksTest extends AppServiceHooks {
+        onInitialize(clientData: Vidyano.ServiceClientData) {
+            console.log(clientData);
+        }
+    }
+
     Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.AppRoute, Vidyano.WebComponents, "vi", {
         properties: {
             route: {
@@ -597,6 +610,11 @@
                 type: String,
                 reflectToAttribute: true
             },
+            hooks: {
+                type: String,
+                reflectToAttribute: true,
+                value: null
+            },
             noHistory: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -608,7 +626,7 @@
             },
             service: {
                 type: Object,
-                computed: "_computeService(uri, user)"
+                computed: "_computeService(uri, user, hooks)"
             },
             user: {
                 type: String,

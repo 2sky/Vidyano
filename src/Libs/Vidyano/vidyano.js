@@ -476,6 +476,7 @@ var Vidyano;
             var _this = this;
             if (skipDefaultCredentialLogin === void 0) { skipDefaultCredentialLogin = false; }
             return this._getJSON(this._createUri("GetClientData?v=2")).then(function (clientData) {
+                _this.hooks.onInitialize(clientData);
                 _this._clientData = clientData;
                 var languages = [];
                 for (var name in clientData.languages) {
@@ -1042,6 +1043,8 @@ var Vidyano;
         ServiceHooks.prototype.createData = function (data) {
         };
         ServiceHooks.prototype.setNotification = function (notification, type) {
+        };
+        ServiceHooks.prototype.onInitialize = function (clientData) {
         };
         ServiceHooks.prototype.onSessionExpired = function () {
         };
