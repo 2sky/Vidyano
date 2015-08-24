@@ -2801,6 +2801,7 @@ declare module Vidyano.WebComponents {
         private _updateHorizontalSpacer();
         private _measureColumnsListener(e);
         private _columnWidthUpdatedListener(e, detail);
+        private _updateColumnWidthsStyle(columns);
         private _itemSelectListener(e, detail);
         private _filterChangedListener(e);
         private _columnFilterChangedListener(e);

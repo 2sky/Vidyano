@@ -121,20 +121,23 @@ var Vidyano;
             QueryGrid.prototype._measureColumnsListener = function (e) {
                 var _this = this;
                 e.stopPropagation();
-                var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
+                var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).memoize();
                 this._style.setStyle("ColumnWidths");
                 columns.forEach(function (c) {
                     for (var row in _this._rows)
                         c.currentWidth = Math.max(_this._rows[row].getColumnWidth(c), c.currentWidth || 0);
                 });
-                this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(function (c) { return "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }"; }).toArray()));
-                this._updateHorizontalSpacer();
+                this._updateColumnWidthsStyle(columns);
                 this._setInitializing(false);
             };
             QueryGrid.prototype._columnWidthUpdatedListener = function (e, detail) {
-                var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
-                this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(function (c) { return "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }"; }).toArray()));
+                this._updateColumnWidthsStyle(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).memoize());
+            };
+            QueryGrid.prototype._updateColumnWidthsStyle = function (columns) {
+                (_a = this._style).setStyle.apply(_a, ["ColumnWidths"].concat(columns.select(function (c) { return ("[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }"); }).toArray()));
+                this._style.setStyle("ColumnHeaderOverflow", "vi-query-grid-column-header { -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; overflow: hidden; }");
                 this._updateHorizontalSpacer();
+                var _a;
             };
             QueryGrid.prototype._itemSelectListener = function (e, detail) {
                 if (!detail.item)

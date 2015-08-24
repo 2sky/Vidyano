@@ -142,7 +142,7 @@
         private _measureColumnsListener(e: CustomEvent) {
             e.stopPropagation();
 
-            var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
+            var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).memoize();
 
             this._style.setStyle("ColumnWidths");
             columns.forEach(c => {
@@ -150,16 +150,18 @@
                     c.currentWidth = Math.max(this._rows[row].getColumnWidth(c), c.currentWidth || 0);
             });
 
-            this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(c => "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }").toArray()));
-            this._updateHorizontalSpacer();
-
+            this._updateColumnWidthsStyle(columns);
             this._setInitializing(false);
         }
 
         private _columnWidthUpdatedListener(e: CustomEvent, detail: { column: QueryGridColumn }) {
-            var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns);
+            this._updateColumnWidthsStyle(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).memoize());
+        }
 
-            this._style.setStyle.apply(this._style, ["ColumnWidths"].concat(Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).select(c => "[data-vi-column-name='" + c.safeName + "'] { width: " + c.currentWidth + "px; }").toArray()));
+        private _updateColumnWidthsStyle(columns: linqjs.Enumerable<QueryGridColumn>) {
+            this._style.setStyle("ColumnWidths", ...columns.select(c => `[data-vi-column-name='${c.safeName}'] { width: ${c.currentWidth}px; }`).toArray());
+            this._style.setStyle("ColumnHeaderOverflow", "vi-query-grid-column-header { -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; overflow: hidden; }");
+
             this._updateHorizontalSpacer();
         }
 
