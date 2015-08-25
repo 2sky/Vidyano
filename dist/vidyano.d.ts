@@ -2594,7 +2594,7 @@ declare module Vidyano.WebComponents {
         private _setRows;
         private _setItemDragging;
         private _computeIsDesignModeAvailable(tab);
-        private _computeDesignModeCells(items, columns, rows, width, isDesignModeAvailable, designMode);
+        private _computeDesignModeCells(items, columns, rows);
         private _computeColumns(width, defaultColumnCount);
         private _arrangeAutoLayout(tab, groups, columns);
         private _sizeChanged(e, detail);
@@ -2738,6 +2738,7 @@ declare module Vidyano.WebComponents {
     var QueryGridCellYesNo: typeof QueryGridCellBoolean;
     class QueryGridCellImage extends QueryGridCell {
         private _img;
+        private _hasImage;
         protected _render(dom: HTMLElement): void;
     }
 }

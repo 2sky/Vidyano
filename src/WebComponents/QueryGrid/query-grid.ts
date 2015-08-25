@@ -364,7 +364,7 @@
 
     export class QueryGridRow {
         private _remainder: HTMLElement;
-        private _columnsOrder: string;
+        private _columnsOrder: string = "";
 
         constructor(private _grid: QueryGrid, private _hosts: QueryGridColumnHosts) {
             if (this._remainder = this._createRemainder())
@@ -433,11 +433,16 @@
                     this._removedColumnElement(c);
                 });
 
-                // Sort/add columns
+                // Add elements to new fragment
+                var fragment = document.createDocumentFragment();
+                children.forEach(c => fragment.appendChild(c));
+
+                // Add the remainder
                 if (!pinned && this._remainder)
-                    children.forEach(c => host.insertBefore(c, this._remainder));
-                else
-                    children.forEach(c => host.appendChild(c));
+                    fragment.appendChild(this._remainder);
+
+                // Attach fragment to host
+                host.appendChild(fragment);
 
                 this._columnsOrder = columnsOrder;
             }

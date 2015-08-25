@@ -312,6 +312,7 @@ var Vidyano;
             function QueryGridRow(_grid, _hosts) {
                 this._grid = _grid;
                 this._hosts = _hosts;
+                this._columnsOrder = "";
                 if (this._remainder = this._createRemainder())
                     this.hosts.unpinned.appendChild(this._remainder);
             }
@@ -371,10 +372,11 @@ var Vidyano;
                         host.removeChild(c);
                         _this._removedColumnElement(c);
                     });
+                    var fragment = document.createDocumentFragment();
+                    children.forEach(function (c) { return fragment.appendChild(c); });
                     if (!pinned && this._remainder)
-                        children.forEach(function (c) { return host.insertBefore(c, _this._remainder); });
-                    else
-                        children.forEach(function (c) { return host.appendChild(c); });
+                        fragment.appendChild(this._remainder);
+                    host.appendChild(fragment);
                     this._columnsOrder = columnsOrder;
                 }
             };

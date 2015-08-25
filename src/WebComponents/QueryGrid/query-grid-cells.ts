@@ -28,6 +28,7 @@
 
     export class QueryGridCellImage extends QueryGridCell {
         private _img: HTMLElement;
+        private _hasImage: boolean;
 
         protected _render(dom: HTMLElement) {
             if (!this._img) {
@@ -38,12 +39,15 @@
 
             var value = <string>(this.item ? this.item.getValue(this.gridColumn.column.name) : null);
             if (StringEx.isNullOrEmpty(value)) {
-                if (!StringEx.isNullOrEmpty(dom.style.backgroundImage))
+                if (this._hasImage) {
+                    this._hasImage = false;
                     this._img.style.backgroundImage = "";
+                }
 
                 return;
             }
 
+            this._hasImage = true;
             this._img.style.backgroundImage = "url(" + value.asDataUri() + ")";
         }
     }
