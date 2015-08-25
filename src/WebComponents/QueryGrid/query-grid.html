@@ -68,41 +68,56 @@
 
 <dom-module id="vi-query-grid-column-filter">
     <template>
-        <vi-popup id="filter" on-popup-opening="_popupOpening" class="flex" disabled="{{!gridColumn.column.canFilter}}">
-            <button is="vi-button" header inverse>
-                <template is="dom-if" if="{{filtered}}">
-                    <span>{{label}}</span>
-                </template>
-                <template is="dom-if" if="{{!filtered}}">
-                    <vi-resource source="Icon_Filter"></vi-resource>
-                </template>
-            </button>
-            <div content>
-                <div class="filter" on-click="_catchClick">
-                    <div class="left"></div>
-                    <div class="menuItem horizontal layout" disabled$="{{!filtered}}" on-tap="_clear">
-                        <vi-resource source="Icon_Filter_Reset"></vi-resource>
-                        <span flex>{{translateMessage('ClearFilterFrom', gridColumn.column.label, isAttached)}}</span>
-                    </div>
-                    <div class="split"></div>
-                    <div class="advanced">
-                        <vi-input-search id="search" value="{{searchText}}" on-search="_search"></vi-input-search>
-                        <div class="relative">
-                            <button id="inverse" on-tap="_inverse" inversed$="{{inversed}}">
-                                <vi-resource source="Icon_Filter_Inverse"></vi-resource>
-                            </button>
-                            <template is="dom-if" if="{{loading}}">
-                                <vi-spinner></vi-spinner>
-                            </template>
-                            <vi-scroller id="distinctsContainer">
-                                <div id="distincts" on-tap="_distinctClick" inversed$="{{inversed}}"></div>
-                            </vi-scroller>
+        <template is="dom-if" if="{{!isUpgraded}}">
+            <div id="filter" class="proxy" on-tap="_upgrade" disabled$="{{!gridColumn.column.canFilter}}">
+                <button is="vi-button" header inverse>
+                    <template is="dom-if" if="{{filtered}}">
+                        <span>{{label}}</span>
+                    </template>
+                    <template is="dom-if" if="{{!filtered}}">
+                        <vi-resource source="Icon_Filter"></vi-resource>
+                    </template>
+                </button>
+            </div>
+        </template>
+        <template is="dom-if" if="{{isUpgraded}}">
+            <vi-popup id="filter" on-popup-opening="_popupOpening" class="flex" disabled="{{!gridColumn.column.canFilter}}">
+                <button is="vi-button" header inverse>
+                    <template is="dom-if" if="{{filtered}}">
+                        <span>{{label}}</span>
+                    </template>
+                    <template is="dom-if" if="{{!filtered}}">
+                        <vi-resource source="Icon_Filter"></vi-resource>
+                    </template>
+                </button>
+                <div content>
+                    <div class="filter" on-click="_catchClick">
+                        <div class="left"></div>
+                        <div class="menuItem horizontal layout" disabled$="{{!filtered}}" on-tap="_clear">
+                            <vi-resource source="Icon_Filter_Reset"></vi-resource>
+                            <span flex>{{translateMessage('ClearFilterFrom', gridColumn.column.label, isAttached)}}</span>
+                        </div>
+                        <div class="split"></div>
+                        <div class="advanced">
+                            <vi-input-search id="search" value="{{searchText}}" on-search="_search"></vi-input-search>
+                            <div class="relative">
+                                <button id="inverse" on-tap="_inverse" inversed$="{{inversed}}">
+                                    <vi-resource source="Icon_Filter_Inverse"></vi-resource>
+                                </button>
+                                <template is="dom-if" if="{{loading}}">
+                                    <vi-spinner></vi-spinner>
+                                </template>
+                                <vi-scroller id="distinctsContainer">
+                                    <div id="distincts" on-tap="_distinctClick" inversed$="{{inversed}}"></div>
+                                </vi-scroller>
+                            </div>
                         </div>
                     </div>
+                    <button is="vi-button" class="close" on-tap="_closePopup" label="{{translations.Close}}"></button>
                 </div>
-                <button is="vi-button" class="close" on-tap="_closePopup" label="{{translations.Close}}"></button>
-            </div>
-        </vi-popup>
+            </vi-popup>
+            <vi-attached-notifier on-attached="_openUpgradedElement"></vi-attached-notifier>
+        </template>
     </template>
 </dom-module>
 

@@ -6,13 +6,17 @@ vi-query-grid-column-filter {
     border-right: 1px solid @separatorColor !important;
     box-sizing: border-box;
 
-    vi-popup[disabled] {
+    #filter[disabled] {
         height: @cell-line-height;
         line-height: @cell-line-height;
         background-color: #F9F9F9;
 
         button {
             display: none;
+        }
+
+        [toggle] {
+            cursor: default;
         }
     }
 

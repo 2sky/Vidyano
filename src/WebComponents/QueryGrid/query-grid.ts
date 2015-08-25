@@ -1137,10 +1137,12 @@
         filtered: boolean;
         label: string;
         inversed: boolean;
+        isUpgraded: boolean;
 
         private _setGridColumn: (col: QueryGridColumn) => void;
         private _setLoading: (loading: boolean) => void;
         private _setInversed: (inverse: boolean) => void;
+        private _setIsUpgraded: (upgraded: boolean) => void;
 
         constructor(column: QueryGridColumn) {
             super();
@@ -1165,6 +1167,18 @@
 
         refresh() {
             this._updateFiltered();
+        }
+
+        private _upgrade() {
+            this._setIsUpgraded(true);
+        }
+
+        private _openUpgradedElement() {
+            this.$["distincts"] = <HTMLElement>this.asElement.querySelector("#distincts");
+            this.$["search"] = <HTMLElement>this.asElement.querySelector("#search");
+
+            var popup = <Popup><any>this.asElement.querySelector("vi-popup#filter");
+            popup.popup();
         }
 
         private _getTargetCollection(): string[] {
@@ -1316,8 +1330,8 @@
         }
 
         private _updateFiltered() {
-            if (this.filtered = (this.gridColumn.column.includes && this.gridColumn.column.includes.length > 0) ||
-                (this.gridColumn.column.excludes && this.gridColumn.column.excludes.length > 0)) {
+            if (this.filtered = (!!this.gridColumn.column.includes && this.gridColumn.column.includes.length > 0) ||
+                (!!this.gridColumn.column.excludes && this.gridColumn.column.excludes.length > 0)) {
 
                 var objects = [];
                 var textSearch = [];
@@ -1651,6 +1665,11 @@
             inversed: {
                 type: Boolean,
                 readOnly: true
+            },
+            isUpgraded: {
+                type: Boolean,
+                readOnly: true,
+                value: false
             }
         }
     });

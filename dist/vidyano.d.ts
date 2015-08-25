@@ -2957,12 +2957,16 @@ declare module Vidyano.WebComponents {
         filtered: boolean;
         label: string;
         inversed: boolean;
+        isUpgraded: boolean;
         private _setGridColumn;
         private _setLoading;
         private _setInversed;
+        private _setIsUpgraded;
         constructor(column: QueryGridColumn);
         attached(): void;
         refresh(): void;
+        private _upgrade();
+        private _openUpgradedElement();
         private _getTargetCollection();
         private _distinctClick(e);
         private __popupOpening(e);

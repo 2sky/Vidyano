@@ -4,13 +4,16 @@ vi-query-grid-column-filter {
   border-right: 1px solid #eaeaea !important;
   box-sizing: border-box;
 }
-vi-query-grid-column-filter vi-popup[disabled] {
+vi-query-grid-column-filter #filter[disabled] {
   height: 30px;
   line-height: 30px;
   background-color: #F9F9F9;
 }
-vi-query-grid-column-filter vi-popup[disabled] button {
+vi-query-grid-column-filter #filter[disabled] button {
   display: none;
+}
+vi-query-grid-column-filter #filter[disabled] [toggle] {
+  cursor: default;
 }
 vi-query-grid-column-filter button[header] {
   box-sizing: border-box;

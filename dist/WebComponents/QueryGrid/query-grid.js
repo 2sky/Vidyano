@@ -970,6 +970,15 @@ var Vidyano;
             QueryGridColumnFilter.prototype.refresh = function () {
                 this._updateFiltered();
             };
+            QueryGridColumnFilter.prototype._upgrade = function () {
+                this._setIsUpgraded(true);
+            };
+            QueryGridColumnFilter.prototype._openUpgradedElement = function () {
+                this.$["distincts"] = this.asElement.querySelector("#distincts");
+                this.$["search"] = this.asElement.querySelector("#search");
+                var popup = this.asElement.querySelector("vi-popup#filter");
+                popup.popup();
+            };
             QueryGridColumnFilter.prototype._getTargetCollection = function () {
                 return !this.inversed ? this.gridColumn.column.includes : this.gridColumn.column.excludes;
             };
@@ -1093,8 +1102,8 @@ var Vidyano;
             };
             QueryGridColumnFilter.prototype._updateFiltered = function () {
                 var _this = this;
-                if (this.filtered = (this.gridColumn.column.includes && this.gridColumn.column.includes.length > 0) ||
-                    (this.gridColumn.column.excludes && this.gridColumn.column.excludes.length > 0)) {
+                if (this.filtered = (!!this.gridColumn.column.includes && this.gridColumn.column.includes.length > 0) ||
+                    (!!this.gridColumn.column.excludes && this.gridColumn.column.excludes.length > 0)) {
                     var objects = [];
                     var textSearch = [];
                     ((!this.inversed ? this.gridColumn.column.includes : this.gridColumn.column.excludes) || []).forEach(function (value) {
@@ -1402,6 +1411,11 @@ var Vidyano;
                 inversed: {
                     type: Boolean,
                     readOnly: true
+                },
+                isUpgraded: {
+                    type: Boolean,
+                    readOnly: true,
+                    value: false
                 }
             }
         });
