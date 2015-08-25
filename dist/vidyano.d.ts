@@ -2019,9 +2019,6 @@ declare module Vidyano.WebComponents {
         onNavigate(path: string, replaceCurrent?: boolean): void;
         onClientOperation(operation: ClientOperations.ClientOperation): void;
     }
-    class AppServiceHooksTest extends AppServiceHooks {
-        onInitialize(clientData: Vidyano.ServiceClientData): void;
-    }
 }
 declare module Vidyano.WebComponents {
     class AttachedNotifier extends WebComponent {

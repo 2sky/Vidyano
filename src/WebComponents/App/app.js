@@ -500,17 +500,6 @@ var Vidyano;
             return AppServiceHooks;
         })(Vidyano.ServiceHooks);
         WebComponents.AppServiceHooks = AppServiceHooks;
-        var AppServiceHooksTest = (function (_super) {
-            __extends(AppServiceHooksTest, _super);
-            function AppServiceHooksTest() {
-                _super.apply(this, arguments);
-            }
-            AppServiceHooksTest.prototype.onInitialize = function (clientData) {
-                console.log(clientData);
-            };
-            return AppServiceHooksTest;
-        })(AppServiceHooks);
-        WebComponents.AppServiceHooksTest = AppServiceHooksTest;
         Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.AppRoute, Vidyano.WebComponents, "vi", {
             properties: {
                 route: {

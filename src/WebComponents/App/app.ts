@@ -579,12 +579,6 @@
         }
     }
 
-    export class AppServiceHooksTest extends AppServiceHooks {
-        onInitialize(clientData: Vidyano.ServiceClientData) {
-            console.log(clientData);
-        }
-    }
-
     Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.AppRoute, Vidyano.WebComponents, "vi", {
         properties: {
             route: {
