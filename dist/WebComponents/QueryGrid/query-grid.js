@@ -793,7 +793,7 @@ var Vidyano;
                 var _this = this;
                 if (this._updateActionItems) {
                     this.empty();
-                    var actions = (this.item.query.actions || []).filter(function (a) { return a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); });
+                    var actions = (this.item.query.actions || []).filter(function (a) { return a.isVisible && !a.isPinned && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); });
                     actions.forEach(function (action) {
                         var button = new Vidyano.WebComponents.ActionButton();
                         button.action = action;

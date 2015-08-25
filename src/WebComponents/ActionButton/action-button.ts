@@ -10,7 +10,7 @@ module Vidyano.WebComponents {
         private _setHidden: (val: boolean) => void;
 
         private _executeWithoutOptions(e: TapEvent) {
-            if(!this.hasOptions)
+            if (!this.hasOptions)
                 this._execute();
 
             e.preventDefault();
@@ -49,7 +49,11 @@ module Vidyano.WebComponents {
         }
 
         private _computeIcon(action: Vidyano.Action): string {
-            return action ? 'Icon_Action_' + action.definition.name : "";
+            if (!action)
+                return "";
+
+            var actionIcon = 'Icon_Action_' + action.definition.name;
+            return action.isPinned && !Resource.Exists(actionIcon) ? "Icon_Action_Default$" : actionIcon;
         }
 
         private _computeHasOptions(action: Vidyano.Action): boolean {

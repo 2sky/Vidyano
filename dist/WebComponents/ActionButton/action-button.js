@@ -48,7 +48,10 @@ var Vidyano;
                 }
             };
             ActionButton.prototype._computeIcon = function (action) {
-                return action ? 'Icon_Action_' + action.definition.name : "";
+                if (!action)
+                    return "";
+                var actionIcon = 'Icon_Action_' + action.definition.name;
+                return action.isPinned && !WebComponents.Resource.Exists(actionIcon) ? "Icon_Action_Default$" : actionIcon;
             };
             ActionButton.prototype._computeHasOptions = function (action) {
                 return action && action.options && action.options.length > 0;
