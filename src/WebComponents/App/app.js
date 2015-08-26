@@ -373,21 +373,25 @@ var Vidyano;
                 _super.call(this);
                 this.app = app;
             }
+            AppServiceHooks.prototype.onActionConfirmation = function (action) {
+                var _this = this;
+                return new Promise(function (resolve, reject) {
+                    _this.app.showMessageDialog({
+                        title: action.displayName,
+                        titleIcon: "Icon_Action" + action.name,
+                        message: _this.service.getTranslatedMessage(action.definition.confirmation),
+                        actions: [action.displayName, _this.service.getTranslatedMessage("Cancel")],
+                        actionTypes: action.name == "Delete" ? ["Danger"] : []
+                    }).then(function (result) {
+                        resolve(result == 0);
+                    }).catch(function (e) {
+                        resolve(false);
+                    });
+                });
+            };
             AppServiceHooks.prototype.onAction = function (args) {
                 var _this = this;
-                if (args.action == "Delete") {
-                    args.isHandled = true;
-                    return this.app.showMessageDialog({
-                        title: this.service.getTranslatedMessage("Delete"),
-                        titleIcon: "Icon_Action_Delete",
-                        message: this.service.getTranslatedMessage("AskForDeleteItems"),
-                        actions: [this.service.getTranslatedMessage("Delete"), this.service.getTranslatedMessage("Cancel")],
-                        actionTypes: ["Danger"]
-                    }).then(function (result) {
-                        return result == 0 ? args.executeServiceRequest() : null;
-                    });
-                }
-                else if (args.action == "AddReference") {
+                if (args.action == "AddReference") {
                     var dialog = new Vidyano.WebComponents.SelectReferenceDialog();
                     dialog.query = args.query.clone(true);
                     dialog.query.search();

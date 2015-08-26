@@ -1240,6 +1240,10 @@ module Vidyano {
         onSessionExpired() {
         }
 
+        onActionConfirmation(action: Action): Promise<boolean> {
+            return Promise.resolve(true);
+        }
+
         onAction(args: ExecuteActionArgs): Promise<any> {
             return Promise.resolve(null);
         }
@@ -3377,44 +3381,52 @@ module Vidyano {
         }
 
         _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
-            return this.owner.queueWork(() => {
-                return new Promise<PersistentObject>((resolve, reject) => {
-                    parameters = this._getParameters(parameters, option);
+            var confirmation = this.definition.confirmation ? this.service.hooks.onActionConfirmation(this) : Promise.resolve(true);
 
-                    if (selectedItems == null && this.query && this.query.selectedItems)
-                        selectedItems = this.query.selectedItems;
+            return confirmation.then(result => {
+                if (result) {
+                    return this.owner.queueWork(() => {
+                        return new Promise<PersistentObject>((resolve, reject) => {
+                            parameters = this._getParameters(parameters, option);
 
-                    this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters).then(po => {
-                        if (po != null) {
-                            if (po.fullTypeName == "Vidyano.Notification") {
-                                if (po.objectId != null && JSON.parse(po.objectId).dialog) {
-                                    this._setNotification();
-                                    this.service.hooks.setNotification(po.notification, po.notificationType);
+                            if (selectedItems == null && this.query && this.query.selectedItems)
+                                selectedItems = this.query.selectedItems;
+
+                            this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters).then(po => {
+                                if (po != null) {
+                                    if (po.fullTypeName == "Vidyano.Notification") {
+                                        if (po.objectId != null && JSON.parse(po.objectId).dialog) {
+                                            this._setNotification();
+                                            this.service.hooks.setNotification(po.notification, po.notificationType);
+                                        }
+                                        else
+                                            this._setNotification(po.notification, po.notificationType);
+                                    } else if (po.fullTypeName == "Vidyano.RegisteredStream") {
+                                        this.service._getStream(po);
+                                    } else if (this.parent != null && (po.fullTypeName == this.parent.fullTypeName || po.isNew == this.parent.isNew) && po.id == this.parent.id && po.objectId == this.parent.objectId) {
+                                        this.parent.refreshFromResult(po);
+                                        this.parent.setNotification(po.notification, po.notificationType);
+                                    } else {
+                                        po.ownerQuery = this.query;
+                                        po.ownerPersistentObject = this.parent;
+
+                                        if (!this.skipOpen)
+                                            this.service.hooks.onOpen(po, false, true);
+                                    }
                                 }
-                                else
-                                    this._setNotification(po.notification, po.notificationType);
-                            } else if (po.fullTypeName == "Vidyano.RegisteredStream") {
-                                this.service._getStream(po);
-                            } else if (this.parent != null && (po.fullTypeName == this.parent.fullTypeName || po.isNew == this.parent.isNew) && po.id == this.parent.id && po.objectId == this.parent.objectId) {
-                                this.parent.refreshFromResult(po);
-                                this.parent.setNotification(po.notification, po.notificationType);
-                            } else {
-                                po.ownerQuery = this.query;
-                                po.ownerPersistentObject = this.parent;
 
-                                if (!this.skipOpen)
-                                    this.service.hooks.onOpen(po, false, true);
-                            }
-                        }
+                                if (this.query != null && this.definition.refreshQueryOnCompleted)
+                                    this.query.search();
 
-                        if (this.query != null && this.definition.refreshQueryOnCompleted)
-                            this.query.search();
-
-                        resolve(po);
-                    }, error => {
-                        reject(error);
+                                resolve(po);
+                            }, error => {
+                                reject(error);
+                            });
+                        });
                     });
-                });
+                }
+                else
+                    return Promise.resolve(null);
             });
         }
 
@@ -3660,6 +3672,7 @@ module Vidyano {
         private _offset: number;
         private _iconData: string;
         private _reverseIconData: string;
+        private _confirmation: string;
         private _options: Array<string> = [];
         private _selectionRule: (count: number) => boolean;
 
@@ -3667,6 +3680,7 @@ module Vidyano {
             this._name = item.getValue("Name");
             this._displayName = item.getValue("DisplayName");
             this._isPinned = item.getValue("IsPinned");
+            this._confirmation = item.getValue("Confirmation");
             this._selectionRule = ExpressionParser.get(item.getValue("SelectionRule"));
             this._refreshQueryOnCompleted = item.getValue("RefreshQueryOnCompleted");
 
@@ -3736,6 +3750,10 @@ module Vidyano {
 
         get reverseIconData(): string {
             return this._reverseIconData;
+        }
+
+        get confirmation(): string {
+            return this._confirmation;
         }
 
         get options(): Array<string> {

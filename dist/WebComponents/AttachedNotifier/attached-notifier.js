@@ -15,14 +15,24 @@ var Vidyano;
             }
             AttachedNotifier.prototype.attached = function () {
                 _super.prototype.attached.call(this);
+                if (this._wasAttached && this.oneTime)
+                    return;
                 this.fire("attached", { id: this.asElement.id }, {
                     node: this.asElement,
                     bubbles: false
                 });
+                this._wasAttached = true;
             };
             return AttachedNotifier;
         })(WebComponents.WebComponent);
         WebComponents.AttachedNotifier = AttachedNotifier;
-        WebComponents.WebComponent.register(AttachedNotifier, WebComponents, "vi", {});
+        WebComponents.WebComponent.register(AttachedNotifier, WebComponents, "vi", {
+            properties: {
+                oneTime: {
+                    type: Boolean,
+                    reflectToAttribute: true
+                }
+            }
+        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

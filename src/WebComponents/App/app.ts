@@ -246,7 +246,7 @@
         createServiceHooks(): ServiceHooks {
             if (this.hooks) {
                 var ctor = this.hooks.split(".").reduce((obj: any, path: string) => obj[path], window);
-                if(ctor)
+                if (ctor)
                     return new ctor(this);
             }
 
@@ -440,21 +440,24 @@
             super();
         }
 
-        onAction(args: ExecuteActionArgs): Promise<any> {
-            if (args.action == "Delete") {
-                args.isHandled = true;
-
-                return this.app.showMessageDialog({
-                    title: this.service.getTranslatedMessage("Delete"),
-                    titleIcon: "Icon_Action_Delete",
-                    message: this.service.getTranslatedMessage("AskForDeleteItems"),
-                    actions: [this.service.getTranslatedMessage("Delete"), this.service.getTranslatedMessage("Cancel")],
-                    actionTypes: ["Danger"]
+        onActionConfirmation(action: Action): Promise<boolean> {
+            return new Promise((resolve, reject) => {
+                this.app.showMessageDialog({
+                    title: action.displayName,
+                    titleIcon: "Icon_Action" + action.name,
+                    message: this.service.getTranslatedMessage(action.definition.confirmation),
+                    actions: [action.displayName, this.service.getTranslatedMessage("Cancel")],
+                    actionTypes: action.name == "Delete" ? ["Danger"] : []
                 }).then(result => {
-                    return result == 0 ? args.executeServiceRequest() : null;
+                    resolve(result == 0);
+                }).catch(e => {
+                    resolve(false);
                 });
-            }
-            else if (args.action == "AddReference") {
+            });
+        }
+
+        onAction(args: ExecuteActionArgs): Promise<any> {
+            if (args.action == "AddReference") {
                 var dialog = new Vidyano.WebComponents.SelectReferenceDialog();
                 dialog.query = args.query.clone(true);
                 dialog.query.search();

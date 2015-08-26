@@ -899,8 +899,6 @@ var Vidyano;
             QueryGridColumnHeader.prototype._labelAttached = function (e) {
                 var _this = this;
                 e.stopPropagation();
-                if (this.gridColumn.isAttached)
-                    return;
                 this.async(function () {
                     _this.gridColumn.isAttached = true;
                     _this._grid.fire("measure-columns", {}, {

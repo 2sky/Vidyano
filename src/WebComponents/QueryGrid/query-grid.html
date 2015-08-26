@@ -58,7 +58,7 @@
             <template is="dom-if" if="{{_getIsSorting(sortDirection)}}">
                 <vi-resource source="{{_getSortingIcon(sortDirection)}}"></vi-resource>
             </template>
-            <vi-attached-notifier on-attached="_labelAttached"></vi-attached-notifier>
+            <vi-attached-notifier on-attached="_labelAttached" one-time></vi-attached-notifier>
         </button>
         <div class="resizer" on-mousedown="_resizeStart" on-touchstart="_resizeStart"></div>
     </template>

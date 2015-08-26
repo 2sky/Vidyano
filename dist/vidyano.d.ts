@@ -1293,6 +1293,7 @@ declare module Vidyano {
         setNotification(notification: string, type: NotificationType): void;
         onInitialize(clientData: ServiceClientData): void;
         onSessionExpired(): void;
+        onActionConfirmation(action: Action): Promise<boolean>;
         onAction(args: ExecuteActionArgs): Promise<any>;
         onOpen(obj: ServiceObject, replaceCurrent?: boolean, fromAction?: boolean): void;
         onClose(obj: ServiceObject): void;
@@ -1767,6 +1768,7 @@ declare module Vidyano {
         private _offset;
         private _iconData;
         private _reverseIconData;
+        private _confirmation;
         private _options;
         private _selectionRule;
         constructor(service: Service, item: QueryResultItem);
@@ -1777,6 +1779,7 @@ declare module Vidyano {
         offset: number;
         iconData: string;
         reverseIconData: string;
+        confirmation: string;
         options: Array<string>;
         selectionRule: (count: number) => boolean;
     }
@@ -2011,6 +2014,7 @@ declare module Vidyano.WebComponents {
     class AppServiceHooks extends Vidyano.ServiceHooks {
         app: App;
         constructor(app: App);
+        onActionConfirmation(action: Action): Promise<boolean>;
         onAction(args: ExecuteActionArgs): Promise<any>;
         onOpen(obj: ServiceObject, replaceCurrent?: boolean, fromAction?: boolean): Promise<any>;
         onClose(parent: Vidyano.ServiceObject): void;
@@ -2022,6 +2026,8 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents {
     class AttachedNotifier extends WebComponent {
+        private _wasAttached;
+        oneTime: boolean;
         attached(): void;
     }
 }

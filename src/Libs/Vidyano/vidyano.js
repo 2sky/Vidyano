@@ -1048,6 +1048,9 @@ var Vidyano;
         };
         ServiceHooks.prototype.onSessionExpired = function () {
         };
+        ServiceHooks.prototype.onActionConfirmation = function (action) {
+            return Promise.resolve(true);
+        };
         ServiceHooks.prototype.onAction = function (args) {
             return Promise.resolve(null);
         };
@@ -2938,42 +2941,49 @@ var Vidyano;
         Action.prototype._onExecute = function (option, parameters, selectedItems) {
             var _this = this;
             if (option === void 0) { option = -1; }
-            return this.owner.queueWork(function () {
-                return new Promise(function (resolve, reject) {
-                    parameters = _this._getParameters(parameters, option);
-                    if (selectedItems == null && _this.query && _this.query.selectedItems)
-                        selectedItems = _this.query.selectedItems;
-                    _this.service.executeAction(_this._targetType + "." + _this.definition.name, _this.parent, _this.query, selectedItems, parameters).then(function (po) {
-                        if (po != null) {
-                            if (po.fullTypeName == "Vidyano.Notification") {
-                                if (po.objectId != null && JSON.parse(po.objectId).dialog) {
-                                    _this._setNotification();
-                                    _this.service.hooks.setNotification(po.notification, po.notificationType);
+            var confirmation = this.definition.confirmation ? this.service.hooks.onActionConfirmation(this) : Promise.resolve(true);
+            return confirmation.then(function (result) {
+                if (result) {
+                    return _this.owner.queueWork(function () {
+                        return new Promise(function (resolve, reject) {
+                            parameters = _this._getParameters(parameters, option);
+                            if (selectedItems == null && _this.query && _this.query.selectedItems)
+                                selectedItems = _this.query.selectedItems;
+                            _this.service.executeAction(_this._targetType + "." + _this.definition.name, _this.parent, _this.query, selectedItems, parameters).then(function (po) {
+                                if (po != null) {
+                                    if (po.fullTypeName == "Vidyano.Notification") {
+                                        if (po.objectId != null && JSON.parse(po.objectId).dialog) {
+                                            _this._setNotification();
+                                            _this.service.hooks.setNotification(po.notification, po.notificationType);
+                                        }
+                                        else
+                                            _this._setNotification(po.notification, po.notificationType);
+                                    }
+                                    else if (po.fullTypeName == "Vidyano.RegisteredStream") {
+                                        _this.service._getStream(po);
+                                    }
+                                    else if (_this.parent != null && (po.fullTypeName == _this.parent.fullTypeName || po.isNew == _this.parent.isNew) && po.id == _this.parent.id && po.objectId == _this.parent.objectId) {
+                                        _this.parent.refreshFromResult(po);
+                                        _this.parent.setNotification(po.notification, po.notificationType);
+                                    }
+                                    else {
+                                        po.ownerQuery = _this.query;
+                                        po.ownerPersistentObject = _this.parent;
+                                        if (!_this.skipOpen)
+                                            _this.service.hooks.onOpen(po, false, true);
+                                    }
                                 }
-                                else
-                                    _this._setNotification(po.notification, po.notificationType);
-                            }
-                            else if (po.fullTypeName == "Vidyano.RegisteredStream") {
-                                _this.service._getStream(po);
-                            }
-                            else if (_this.parent != null && (po.fullTypeName == _this.parent.fullTypeName || po.isNew == _this.parent.isNew) && po.id == _this.parent.id && po.objectId == _this.parent.objectId) {
-                                _this.parent.refreshFromResult(po);
-                                _this.parent.setNotification(po.notification, po.notificationType);
-                            }
-                            else {
-                                po.ownerQuery = _this.query;
-                                po.ownerPersistentObject = _this.parent;
-                                if (!_this.skipOpen)
-                                    _this.service.hooks.onOpen(po, false, true);
-                            }
-                        }
-                        if (_this.query != null && _this.definition.refreshQueryOnCompleted)
-                            _this.query.search();
-                        resolve(po);
-                    }, function (error) {
-                        reject(error);
+                                if (_this.query != null && _this.definition.refreshQueryOnCompleted)
+                                    _this.query.search();
+                                resolve(po);
+                            }, function (error) {
+                                reject(error);
+                            });
+                        });
                     });
-                });
+                }
+                else
+                    return Promise.resolve(null);
             });
         };
         Action.prototype._getParameters = function (parameters, option) {
@@ -3230,6 +3240,7 @@ var Vidyano;
             this._name = item.getValue("Name");
             this._displayName = item.getValue("DisplayName");
             this._isPinned = item.getValue("IsPinned");
+            this._confirmation = item.getValue("Confirmation");
             this._selectionRule = ExpressionParser.get(item.getValue("SelectionRule"));
             this._refreshQueryOnCompleted = item.getValue("RefreshQueryOnCompleted");
             var icon = item.getFullValue("Icon");
@@ -3309,6 +3320,13 @@ var Vidyano;
         Object.defineProperty(ActionDefinition.prototype, "reverseIconData", {
             get: function () {
                 return this._reverseIconData;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ActionDefinition.prototype, "confirmation", {
+            get: function () {
+                return this._confirmation;
             },
             enumerable: true,
             configurable: true
