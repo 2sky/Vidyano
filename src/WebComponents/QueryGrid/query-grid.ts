@@ -143,6 +143,8 @@
             e.stopPropagation();
 
             var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).memoize();
+            if (!!columns.firstOrDefault(c => !c.isAttached))
+                return;
 
             this._style.setStyle("ColumnWidths");
             columns.forEach(c => {
@@ -574,8 +576,19 @@
             if (rowCount == this._items.length)
                 return;
 
+            var fragmentHosts = {
+                header: document.createDocumentFragment(),
+                pinned: document.createDocumentFragment(),
+                unpinned: document.createDocumentFragment()
+            };
+
+            var newItems = [];
             while (this._items.length < rowCount)
-                this._items.push(new QueryGridItem(this));
+                this._items.push(new QueryGridItem(this, fragmentHosts));
+
+            this.hosts.header.appendChild(fragmentHosts.header);
+            this.hosts.pinned.appendChild(fragmentHosts.pinned);
+            this.hosts.unpinned.appendChild(fragmentHosts.unpinned);
 
             var oldViewportEndRowIndex = this._viewportEndRowIndex || 0;
             this._viewportEndRowIndex = this._rowHeight !== undefined ? Math.floor(this._data.verticalScrollOffset + this.grid.viewport.height / this._rowHeight) : 1;
@@ -711,11 +724,11 @@
         private _actions: QueryGridItemActions;
         private _extraClass: string;
 
-        constructor(parent: QueryGridItems) {
+        constructor(parent: QueryGridItems, fragmentHosts: { header: DocumentFragment; pinned: DocumentFragment; unpinned: DocumentFragment }) {
             super(parent.grid, {
-                header: parent.hosts.header.appendChild(document.createElement("tr")),
-                pinned: parent.hosts.pinned.appendChild(document.createElement("tr")),
-                unpinned: parent.hosts.unpinned.appendChild(document.createElement("tr"))
+                header: fragmentHosts.header.appendChild(document.createElement("tr")),
+                pinned: fragmentHosts.pinned.appendChild(document.createElement("tr")),
+                unpinned: fragmentHosts.unpinned.appendChild(document.createElement("tr"))
             });
 
             var actions = (this.grid.query.actions || []).filter(a => a.isVisible);
@@ -1053,11 +1066,24 @@
 
             if (!this._grid)
                 this._grid = this.findParent<Vidyano.WebComponents.QueryGrid>(Vidyano.WebComponents.QueryGrid);
+        }
 
-            this.gridColumn.isAttached = true;
+        private _labelAttached(e: Event) {
+            e.stopPropagation();
+
+            this.async(() => {
+                this.gridColumn.isAttached = true;
+
+                this._grid.fire("measure-columns", {}, {
+                    bubbles: false
+                });
+            });
         }
 
         private _sort(e: Event) {
+            if (this.column.disableSort)
+                return;
+
             var multiSort = (<any>e).detail.sourceEvent.ctrlKey;
             var newSortingDirection: SortDirection;
             switch (this.gridColumn.column.sortDirection) {
@@ -1606,7 +1632,7 @@
         },
         observers: [
             "_columnsChanged(query.columns, isAttached)",
-            "_itemsChanged(query.items, isAttached, viewport)",
+            "_itemsChanged(query.items, isAttached, viewport)"
         ],
         forwardObservers: [
             "query.columns",

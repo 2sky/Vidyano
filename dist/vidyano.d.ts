@@ -2941,6 +2941,7 @@ declare module Vidyano.WebComponents {
         private _setGridColumn;
         constructor(column: QueryGridColumn);
         attached(): void;
+        private _labelAttached(e);
         private _sort(e);
         private _resizeStart(e);
         private _resizeMove(e);

@@ -122,6 +122,8 @@ var Vidyano;
                 var _this = this;
                 e.stopPropagation();
                 var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).memoize();
+                if (!!columns.firstOrDefault(function (c) { return !c.isAttached; }))
+                    return;
                 this._style.setStyle("ColumnWidths");
                 columns.forEach(function (c) {
                     for (var row in _this._rows)
@@ -495,8 +497,17 @@ var Vidyano;
                 var rowCount = this._rowHeight !== undefined ? Math.min((Math.ceil(this.grid.viewport.height / this._rowHeight * 1.25) + 1), this.grid.query.totalItems) : 1;
                 if (rowCount == this._items.length)
                     return;
+                var fragmentHosts = {
+                    header: document.createDocumentFragment(),
+                    pinned: document.createDocumentFragment(),
+                    unpinned: document.createDocumentFragment()
+                };
+                var newItems = [];
                 while (this._items.length < rowCount)
-                    this._items.push(new QueryGridItem(this));
+                    this._items.push(new QueryGridItem(this, fragmentHosts));
+                this.hosts.header.appendChild(fragmentHosts.header);
+                this.hosts.pinned.appendChild(fragmentHosts.pinned);
+                this.hosts.unpinned.appendChild(fragmentHosts.unpinned);
                 var oldViewportEndRowIndex = this._viewportEndRowIndex || 0;
                 this._viewportEndRowIndex = this._rowHeight !== undefined ? Math.floor(this._data.verticalScrollOffset + this.grid.viewport.height / this._rowHeight) : 1;
                 if (this._viewportEndRowIndex > oldViewportEndRowIndex)
@@ -594,12 +605,12 @@ var Vidyano;
         WebComponents.QueryGridItems = QueryGridItems;
         var QueryGridItem = (function (_super) {
             __extends(QueryGridItem, _super);
-            function QueryGridItem(parent) {
+            function QueryGridItem(parent, fragmentHosts) {
                 var _this = this;
                 _super.call(this, parent.grid, {
-                    header: parent.hosts.header.appendChild(document.createElement("tr")),
-                    pinned: parent.hosts.pinned.appendChild(document.createElement("tr")),
-                    unpinned: parent.hosts.unpinned.appendChild(document.createElement("tr"))
+                    header: fragmentHosts.header.appendChild(document.createElement("tr")),
+                    pinned: fragmentHosts.pinned.appendChild(document.createElement("tr")),
+                    unpinned: fragmentHosts.unpinned.appendChild(document.createElement("tr"))
                 });
                 this._cells = [];
                 var actions = (this.grid.query.actions || []).filter(function (a) { return a.isVisible; });
@@ -884,9 +895,20 @@ var Vidyano;
                 _super.prototype.attached.call(this);
                 if (!this._grid)
                     this._grid = this.findParent(Vidyano.WebComponents.QueryGrid);
-                this.gridColumn.isAttached = true;
+            };
+            QueryGridColumnHeader.prototype._labelAttached = function (e) {
+                var _this = this;
+                e.stopPropagation();
+                this.async(function () {
+                    _this.gridColumn.isAttached = true;
+                    _this._grid.fire("measure-columns", {}, {
+                        bubbles: false
+                    });
+                });
             };
             QueryGridColumnHeader.prototype._sort = function (e) {
+                if (this.column.disableSort)
+                    return;
                 var multiSort = e.detail.sourceEvent.ctrlKey;
                 var newSortingDirection;
                 switch (this.gridColumn.column.sortDirection) {
@@ -1354,7 +1376,7 @@ var Vidyano;
             },
             observers: [
                 "_columnsChanged(query.columns, isAttached)",
-                "_itemsChanged(query.items, isAttached, viewport)",
+                "_itemsChanged(query.items, isAttached, viewport)"
             ],
             forwardObservers: [
                 "query.columns",
