@@ -1072,6 +1072,9 @@
         private _labelAttached(e: Event) {
             e.stopPropagation();
 
+            if (this.gridColumn.isAttached)
+                return;
+
             this.async(() => {
                 this.gridColumn.isAttached = true;
 
