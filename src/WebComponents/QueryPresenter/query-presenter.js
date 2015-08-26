@@ -15,7 +15,11 @@ var Vidyano;
             }
             QueryPresenter.prototype.attached = function () {
                 _super.prototype.attached.call(this);
-                this._template = Polymer.dom(this).querySelector("template");
+                if (!this._customTemplate) {
+                    this._customTemplate = Polymer.dom(this).querySelector("template");
+                    if (this._customTemplate)
+                        this._customTemplate = this._customTemplate.cloneNode(true);
+                }
             };
             QueryPresenter.prototype._activating = function (e, detail) {
                 this._setApp(detail.route.app);
@@ -54,10 +58,10 @@ var Vidyano;
             };
             QueryPresenter.prototype._queryChanged = function (query, oldQuery) {
                 var _this = this;
-                if (oldQuery)
-                    this.empty();
                 if (query) {
-                    if (!this._template) {
+                    if (!this._customTemplate) {
+                        if (oldQuery)
+                            this.empty();
                         if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader) {
                             Vidyano.WebComponents.QueryPresenter._queryComponentLoader = new Promise(function (resolve) {
                                 _this.importHref(_this.resolveUrl("../Query/query.html"), function (e) {
@@ -71,11 +75,11 @@ var Vidyano;
                         this._renderQuery(query);
                     }
                     else {
-                        if (!this._templatePresenter)
-                            this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(this._template, "query");
-                        this._templatePresenter.dataContext = query;
-                        if (!this._templatePresenter.isAttached)
-                            Polymer.dom(this).appendChild(this._templatePresenter);
+                        if (!this._customTemplatePresenter)
+                            this._customTemplatePresenter = new Vidyano.WebComponents.TemplatePresenter(this._customTemplate, "query");
+                        this._customTemplatePresenter.dataContext = query;
+                        if (!this._customTemplatePresenter.isAttached)
+                            Polymer.dom(this).appendChild(this._customTemplatePresenter);
                     }
                 }
             };

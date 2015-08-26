@@ -16,6 +16,9 @@ module Vidyano.WebComponents {
             if (oldProgramUnit)
                 this.empty();
 
+            if (!programUnit)
+                return;
+
             var config = this.app.configuration.getProgramUnitConfig(programUnit.name);
             if (config && config.template) {
                 if (!this._templatePresenter)

@@ -1,8 +1,8 @@
 module Vidyano.WebComponents {
     export class QueryPresenter extends WebComponent {
         private static _queryComponentLoader: Promise<any>;
-        private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
-        private _template: HTMLElement;
+        private _customTemplatePresenter: Vidyano.WebComponents.TemplatePresenter;
+        private _customTemplate: HTMLElement;
         private _cacheEntry: QueryAppCacheEntry;
         queryId: string;
         query: Vidyano.Query;
@@ -13,7 +13,11 @@ module Vidyano.WebComponents {
         attached() {
             super.attached();
 
-            this._template = <HTMLElement>Polymer.dom(this).querySelector("template");
+            if (!this._customTemplate) {
+                this._customTemplate = <HTMLElement>Polymer.dom(this).querySelector("template");
+                if (this._customTemplate)
+                    this._customTemplate = <HTMLElement>this._customTemplate.cloneNode(true);
+            }
         }
 
         private _activating(e: CustomEvent, detail: { route: AppRoute; parameters: any; }) {
@@ -58,11 +62,11 @@ module Vidyano.WebComponents {
         }
 
         private _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
-            if (oldQuery)
-                this.empty();
-
             if (query) {
-                if (!this._template) {
+                if (!this._customTemplate) {
+                    if (oldQuery)
+                        this.empty();
+
                     if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader) {
                         Vidyano.WebComponents.QueryPresenter._queryComponentLoader = new Promise(resolve => {
                             this.importHref(this.resolveUrl("../Query/query.html"), e => {
@@ -77,13 +81,13 @@ module Vidyano.WebComponents {
                     this._renderQuery(query);
                 }
                 else {
-                    if (!this._templatePresenter)
-                        this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(this._template, "query");
+                    if (!this._customTemplatePresenter)
+                        this._customTemplatePresenter = new Vidyano.WebComponents.TemplatePresenter(this._customTemplate, "query");
 
-                    this._templatePresenter.dataContext = query;
+                    this._customTemplatePresenter.dataContext = query;
 
-                    if (!this._templatePresenter.isAttached)
-                        Polymer.dom(this).appendChild(this._templatePresenter);
+                    if (!this._customTemplatePresenter.isAttached)
+                        Polymer.dom(this).appendChild(this._customTemplatePresenter);
                 }
             }
         }
