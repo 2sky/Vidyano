@@ -32,6 +32,7 @@ var Vidyano;
                     component = new this._constructor();
                     Polymer.dom(this).appendChild(component);
                 }
+                component.app = this.app;
                 if (component.fire("activating", { route: this, parameters: this._parameters = parameters }, { bubbles: false, cancelable: true }).defaultPrevented)
                     return false;
                 this._setActive(true);

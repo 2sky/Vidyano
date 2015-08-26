@@ -3,6 +3,7 @@
         private _defaultAttributeConfig: PersistentObjectAttributeConfig;
         private _attributeConfigs: linqjs.Enumerable<PersistentObjectAttributeConfig>;
         private _tabConfigs: linqjs.Enumerable<PersistentObjectTabConfig>;
+        private _programUnitConfigs: linqjs.Enumerable<ProgramUnitConfig>;
 
         attached() {
             super.attached();
@@ -32,6 +33,13 @@
             
             return this._tabConfigs.firstOrDefault(c => c.name == tab.name && c.type == tab.parent.type && c.objectId == tab.parent.objectId) ||
                 this._tabConfigs.firstOrDefault(c => c.name == tab.name && c.type == tab.parent.type);
+        }
+
+        getProgramUnitConfig(name: string): ProgramUnitConfig {
+            if (!this._programUnitConfigs)
+                this._programUnitConfigs = this._getConfigs<ProgramUnitConfig>(Vidyano.WebComponents.ProgramUnitConfig);
+
+            return this._programUnitConfigs.firstOrDefault(c => c.name == name);
         }
 
         private _getConfigs<T>(type: any): linqjs.Enumerable<T> {

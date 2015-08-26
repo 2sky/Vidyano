@@ -1883,9 +1883,11 @@ declare module Vidyano.WebComponents {
         private _defaultAttributeConfig;
         private _attributeConfigs;
         private _tabConfigs;
+        private _programUnitConfigs;
         attached(): void;
         getAttributeConfig(attr: Vidyano.PersistentObjectAttribute): PersistentObjectAttributeConfig;
         getTabConfig(tab: Vidyano.PersistentObjectTab): PersistentObjectTabConfig;
+        getProgramUnitConfig(name: string): ProgramUnitConfig;
         private _getConfigs<T>(type);
     }
 }
@@ -1913,6 +1915,14 @@ declare module Vidyano.WebComponents {
         name: string;
         type: string;
         objectId: string;
+        template: any;
+        private _setTemplate;
+        attached(): void;
+    }
+}
+declare module Vidyano.WebComponents {
+    class ProgramUnitConfig extends WebComponent {
+        name: string;
         template: any;
         private _setTemplate;
         attached(): void;
@@ -2723,6 +2733,11 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents {
     class ProgramUnitPresenter extends WebComponent {
+        private _templatePresenter;
+        programUnit: Vidyano.ProgramUnit;
+        private _setProgramUnit;
+        private _activating(e, detail);
+        private _programUnitChanged(programUnit, oldProgramUnit);
     }
 }
 declare module Vidyano.WebComponents {

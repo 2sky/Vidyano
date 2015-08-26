@@ -36,6 +36,11 @@ var Vidyano;
                 return this._tabConfigs.firstOrDefault(function (c) { return c.name == tab.name && c.type == tab.parent.type && c.objectId == tab.parent.objectId; }) ||
                     this._tabConfigs.firstOrDefault(function (c) { return c.name == tab.name && c.type == tab.parent.type; });
             };
+            AppConfig.prototype.getProgramUnitConfig = function (name) {
+                if (!this._programUnitConfigs)
+                    this._programUnitConfigs = this._getConfigs(Vidyano.WebComponents.ProgramUnitConfig);
+                return this._programUnitConfigs.firstOrDefault(function (c) { return c.name == name; });
+            };
             AppConfig.prototype._getConfigs = function (type) {
                 return Enumerable.from(Polymer.dom(this).children).where(function (c) { return c.tagName != "TEMPLATE"; }).selectMany(function (element) {
                     if (element.tagName == "CONTENT")
