@@ -2,3 +2,22 @@ vi-query-presenter {
   display: block;
   position: relative;
 }
+vi-query-presenter[has-error] {
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  color: #a80511;
+  fill: #a80511;
+}
+vi-query-presenter[has-error] span {
+  display: block;
+  text-align: center;
+  padding: 6px 22px;
+}
+vi-query-presenter[has-error] svg {
+  width: 40px;
+  height: 40px;
+}

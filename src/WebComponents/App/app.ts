@@ -36,7 +36,7 @@
                 Polymer.dom(this).appendChild(component);
             }
 
-            component.app = this.app;
+            (<any>component)._setApp(this.app);
             if (component.fire("activating", { route: this, parameters: this._parameters = parameters }, { bubbles: false, cancelable: true }).defaultPrevented)
                 return false;
 

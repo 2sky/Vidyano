@@ -3039,12 +3039,16 @@ declare module Vidyano.WebComponents {
 declare module Vidyano.WebComponents {
     class QueryPresenter extends WebComponent {
         private static _queryComponentLoader;
+        private _templatePresenter;
+        private _template;
         private _cacheEntry;
         queryId: string;
         query: Vidyano.Query;
         private _setLoading;
         private _setError;
+        attached(): void;
         private _activating(e, detail);
+        private _computeHasError(error);
         private _computeQuery();
         private _queryChanged(query, oldQuery);
         private _renderQuery(query);

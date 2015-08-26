@@ -19,10 +19,7 @@ module Vidyano.WebComponents {
 
                 this._domBindTemplate.innerHTML = html;
 
-                var container = document.createElement("div");
-                container.appendChild(this._domBindTemplate);
-
-                Polymer.dom(this).appendChild(container);
+                Polymer.dom(this).appendChild(this._domBindTemplate);
             }
             else
                 this._domBindTemplate[dataContextName] = dataContext;
