@@ -629,6 +629,8 @@ Object.defineProperty(Array.prototype, "remove", {
 
         return success;
     },
+    configurable: true,
+    writable: true,
     enumerable: false
 })
 
@@ -643,6 +645,8 @@ Object.defineProperty(Array.prototype, "removeAll", {
              }
          }
     },
+    configurable: true,
+    writable: true,
     enumerable: false
 })
 
