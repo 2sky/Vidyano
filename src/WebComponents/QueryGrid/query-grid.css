@@ -36,7 +36,13 @@ vi-query-grid #initializingOverlay {
   background-color: white;
   z-index: 2;
 }
-vi-query-grid vi-spinner {
+vi-query-grid:not([initializing]) #initializingOverlay {
+  display: none;
+}
+vi-query-grid > vi-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   z-index: 3;
 }
 vi-query-grid .columnHost {

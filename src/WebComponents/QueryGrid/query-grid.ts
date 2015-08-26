@@ -141,17 +141,18 @@
 
         private _measureColumnsListener(e: CustomEvent) {
             e.stopPropagation();
-
+            
             var columns = Enumerable.from(this.pinnedColumns).concat(this.unpinnedColumns).memoize();
             if (!!columns.firstOrDefault(c => !c.isAttached))
                 return;
-
+            
             this._style.setStyle("ColumnWidths");
+            
             columns.forEach(c => {
                 for (var row in this._rows)
                     c.currentWidth = Math.max(this._rows[row].getColumnWidth(c), c.currentWidth || 0);
             });
-
+            
             this._updateColumnWidthsStyle(columns);
             this._setInitializing(false);
         }
@@ -1590,7 +1591,8 @@
             loading: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "query.isBusy"
+                computed: "query.isBusy",
+                value: true
             },
             initializing: {
                 type: Boolean,

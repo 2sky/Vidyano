@@ -1334,7 +1334,8 @@ var Vidyano;
                 loading: {
                     type: Boolean,
                     reflectToAttribute: true,
-                    computed: "query.isBusy"
+                    computed: "query.isBusy",
+                    value: true
                 },
                 initializing: {
                     type: Boolean,

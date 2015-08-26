@@ -44,10 +44,7 @@
         <vi-scroller id="horizontalScroll" horizontal-scroll-offset="{{horizontalScrollOffset}}" no-vertical>
             <div id="horizontalSpacer"></div>
         </vi-scroller>
-        <template is="dom-if" if="{{initializing}}" restamp>
-            <div id="initializingOverlay"></div>
-            <vi-spinner></vi-spinner>
-        </template>
+        <div id="initializingOverlay"></div>
         <template is="dom-if" if="{{loading}}">
             <vi-spinner></vi-spinner>
         </template>
