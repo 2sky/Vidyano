@@ -134,14 +134,14 @@ vi-scroller[horizontal] > .scrollbar-parent.horizontal:hover {
   background-color: rgba(0, 0, 0, 0.2);
 }
 vi-scroller[scrolling] #vertical,
-vi-scroller .scrollbar-parent:hover #vertical {
+vi-scroller > .scrollbar-parent:hover #vertical {
   width: 10px;
 }
 vi-scroller[scrolling] #horizontal,
-vi-scroller .scrollbar-parent:hover #horizontal {
+vi-scroller > .scrollbar-parent:hover #horizontal {
   height: 10px;
 }
-vi-scroller .scroll-shadow {
+vi-scroller > .scroll-shadow {
   position: absolute;
   -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
@@ -153,23 +153,23 @@ vi-scroller .scroll-shadow {
   right: -30px;
   pointer-events: none;
 }
-vi-scroller .scroll-shadow.top {
+vi-scroller > .scroll-shadow.top {
   -moz-transition: top 0.2s ease-out;
   -o-transition: top 0.2s ease-out;
   -webkit-transition: top 0.2s ease-out;
   transition: top 0.2s ease-out;
   top: -45px;
 }
-vi-scroller .scroll-shadow.bottom {
+vi-scroller > .scroll-shadow.bottom {
   -moz-transition: bottom 0.2s ease-out;
   -o-transition: bottom 0.2s ease-out;
   -webkit-transition: bottom 0.2s ease-out;
   transition: bottom 0.2s ease-out;
   bottom: -45px;
 }
-vi-scroller[scroll-top-shadow] .scroll-shadow.top {
+vi-scroller[scroll-top-shadow] > .scroll-shadow.top {
   top: -30px;
 }
-vi-scroller[scroll-bottom-shadow] .scroll-shadow.bottom {
+vi-scroller[scroll-bottom-shadow] > .scroll-shadow.bottom {
   bottom: -30px;
 }

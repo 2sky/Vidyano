@@ -3049,7 +3049,7 @@ declare module Vidyano.WebComponents {
         attached(): void;
         private _activating(e, detail);
         private _computeHasError(error);
-        private _computeQuery();
+        private _computeQuery(queryId, isAttached);
         private _queryChanged(query, oldQuery);
         private _renderQuery(query);
     }

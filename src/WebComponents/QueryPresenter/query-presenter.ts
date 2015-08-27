@@ -11,13 +11,13 @@ module Vidyano.WebComponents {
         private _setError: (error: string) => void;
 
         attached() {
-            super.attached();
-
             if (!this._customTemplate) {
                 this._customTemplate = <HTMLElement>Polymer.dom(this).querySelector("template");
                 if (this._customTemplate)
                     this._customTemplate = <HTMLElement>this._customTemplate.cloneNode(true);
             }
+
+            super.attached();
         }
 
         private _activating(e: CustomEvent, detail: { route: AppRoute; parameters: any; }) {
@@ -36,9 +36,12 @@ module Vidyano.WebComponents {
             return !StringEx.isNullOrEmpty(error);
         }
 
-        private _computeQuery() {
-            if (this.query && this.query.id == this.queryId)
+        private _computeQuery(queryId: string, isAttached: boolean) {
+            if (this.query && queryId && this.query.id.toUpperCase() == queryId.toUpperCase())
                 return;
+
+            if (isAttached && !this._customTemplate)
+                this.empty();
 
             if (this.queryId) {
                 if (this.query)
@@ -64,9 +67,6 @@ module Vidyano.WebComponents {
         private _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
             if (query) {
                 if (!this._customTemplate) {
-                    if (oldQuery)
-                        this.empty();
-
                     if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader) {
                         Vidyano.WebComponents.QueryPresenter._queryComponentLoader = new Promise(resolve => {
                             this.importHref(this.resolveUrl("../Query/query.html"), e => {

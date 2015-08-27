@@ -140,7 +140,7 @@ vi-scroller {
         }
     }
 
-    &[scrolling], .scrollbar-parent:hover {
+    &[scrolling], > .scrollbar-parent:hover {
         #vertical {
             width: @hoverSize;
         }
@@ -150,7 +150,7 @@ vi-scroller {
         }
     }
 
-    .scroll-shadow {
+    > .scroll-shadow {
         position: absolute;
         -webkit-box-shadow: 0 0 (@h2 / 2) rgba(0,0,0,0.3);
         box-shadow: 0 0 (@h2 / 2) rgba(0,0,0,0.3);
@@ -179,11 +179,11 @@ vi-scroller {
         }
     }
 
-    &[scroll-top-shadow] .scroll-shadow.top {
+    &[scroll-top-shadow] > .scroll-shadow.top {
         top: -@h2;
     }
 
-    &[scroll-bottom-shadow] .scroll-shadow.bottom {
+    &[scroll-bottom-shadow] > .scroll-shadow.bottom {
         bottom: -@h2;
     }
 }

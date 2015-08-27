@@ -14,12 +14,12 @@ var Vidyano;
                 _super.apply(this, arguments);
             }
             QueryPresenter.prototype.attached = function () {
-                _super.prototype.attached.call(this);
                 if (!this._customTemplate) {
                     this._customTemplate = Polymer.dom(this).querySelector("template");
                     if (this._customTemplate)
                         this._customTemplate = this._customTemplate.cloneNode(true);
                 }
+                _super.prototype.attached.call(this);
             };
             QueryPresenter.prototype._activating = function (e, detail) {
                 this._setApp(detail.route.app);
@@ -34,10 +34,12 @@ var Vidyano;
             QueryPresenter.prototype._computeHasError = function (error) {
                 return !StringEx.isNullOrEmpty(error);
             };
-            QueryPresenter.prototype._computeQuery = function () {
+            QueryPresenter.prototype._computeQuery = function (queryId, isAttached) {
                 var _this = this;
-                if (this.query && this.query.id == this.queryId)
+                if (this.query && queryId && this.query.id.toUpperCase() == queryId.toUpperCase())
                     return;
+                if (isAttached && !this._customTemplate)
+                    this.empty();
                 if (this.queryId) {
                     if (this.query)
                         this.query = null;
@@ -60,8 +62,6 @@ var Vidyano;
                 var _this = this;
                 if (query) {
                     if (!this._customTemplate) {
-                        if (oldQuery)
-                            this.empty();
                         if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader) {
                             Vidyano.WebComponents.QueryPresenter._queryComponentLoader = new Promise(function (resolve) {
                                 _this.importHref(_this.resolveUrl("../Query/query.html"), function (e) {
