@@ -2058,7 +2058,7 @@ declare module Vidyano.WebComponents.Attributes {
         private _computeColumns(columns);
         private _computeCanDelete(editing, deleteAction, objects);
         private _computeNewActionPinned(height, newAction);
-        private _updateActions(actions, editing);
+        private _updateActions(actions, editing, readOnly);
         private _updateWidths(columns, width, deleteAction, editing, isAttached);
         private _rowAdded(e);
         private _add(e);

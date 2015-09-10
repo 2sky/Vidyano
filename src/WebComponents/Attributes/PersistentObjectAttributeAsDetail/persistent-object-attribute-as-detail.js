@@ -42,9 +42,9 @@ var Vidyano;
                     var contentHeight = this.newActionPinned ? height : height - this._inlineAddHeight;
                     return contentHeight + this._inlineAddHeight > this.$["table"].offsetHeight - this.$["head"].offsetHeight;
                 };
-                PersistentObjectAttributeAsDetail.prototype._updateActions = function (actions, editing) {
-                    this._setNewAction(editing && !this.attribute.isReadOnly ? actions["New"] || null : null);
-                    this._setDeleteAction(editing && !this.attribute.isReadOnly ? actions["Delete"] || null : null);
+                PersistentObjectAttributeAsDetail.prototype._updateActions = function (actions, editing, readOnly) {
+                    this._setNewAction(editing && !readOnly ? actions["New"] || null : null);
+                    this._setDeleteAction(editing && !readOnly ? actions["Delete"] || null : null);
                 };
                 PersistentObjectAttributeAsDetail.prototype._updateWidths = function (columns, width, deleteAction, editing, isAttached) {
                     if (!isAttached || !columns || !columns.length || !width || this._lastComputedWidths === width)
@@ -181,7 +181,7 @@ var Vidyano;
                 },
                 observers: [
                     "_updateWidths(columns, width, deleteAction, editing, isAttached)",
-                    "_updateActions(attribute.details.actions, editing)"
+                    "_updateActions(attribute.details.actions, editing, readOnly)"
                 ],
                 forwardObservers: [
                     "attribute.objects.isDeleted"

@@ -48,9 +48,9 @@ module Vidyano.WebComponents.Attributes {
             return contentHeight + this._inlineAddHeight > this.$["table"].offsetHeight - this.$["head"].offsetHeight;
         }
 
-        private _updateActions(actions: Vidyano.Action[], editing: boolean) {
-            this._setNewAction(editing && !this.attribute.isReadOnly ? actions["New"] || null : null);
-            this._setDeleteAction(editing && !this.attribute.isReadOnly ? actions["Delete"] || null : null);
+        private _updateActions(actions: Vidyano.Action[], editing: boolean, readOnly: boolean) {
+            this._setNewAction(editing && !readOnly ? actions["New"] || null : null);
+            this._setDeleteAction(editing && !readOnly ? actions["Delete"] || null : null);
         }
 
         private _updateWidths(columns: QueryColumn[], width: number, deleteAction: Vidyano.Action, editing: boolean, isAttached: boolean) {
@@ -199,7 +199,7 @@ module Vidyano.WebComponents.Attributes {
         },
         observers: [
             "_updateWidths(columns, width, deleteAction, editing, isAttached)",
-            "_updateActions(attribute.details.actions, editing)"
+            "_updateActions(attribute.details.actions, editing, readOnly)"
         ],
         forwardObservers: [
             "attribute.objects.isDeleted"

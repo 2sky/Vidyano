@@ -1,10 +1,11 @@
 ﻿@import (reference) "../vidyano.less";
 
 vi-template-presenter {
+    .layout-horizontal();
     .relative();
 
     > :not(template):first-child:nth-last-child(2),
     > :not(template):first-child:nth-last-child(2) ~ :not(template) {
-        .fit();
+        .flex();
     }
 }
