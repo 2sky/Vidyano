@@ -4,9 +4,8 @@
 @non-edit-line-height: 16px;
 
 vi-persistent-object-attribute-presenter {
-    display: block;
+    .layout-vertical();
     flex-basis: 0.000000001px;
-    position: relative;
     font-size: 13px;
     white-space: nowrap;
     font-size: 13px;
@@ -109,11 +108,7 @@ vi-persistent-object-attribute-presenter {
     }
 
     & > .attribute, &[bulk-edit] > .bulk-edit-container {
-        position: absolute;
-        top: @h2;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        .flex();
         .layout-horizontal();
     }
 
