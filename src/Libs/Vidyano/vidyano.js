@@ -1851,7 +1851,7 @@ var Vidyano;
             configurable: true
         });
         PersistentObjectAttribute.prototype.backup = function () {
-            this._backupData = this.copyProperties(["isReadOnly", "isValueChanged", "objectId", "validationError", "visibility"], true);
+            this._backupData = this.copyProperties(["isReadOnly", "isRequired", "isValueChanged", "objectId", "validationError", "visibility"], true);
             this._backupData.value = this._serviceValue;
             this._backupData._serviceOptions = this._serviceOptions ? this._serviceOptions.slice() : this._serviceOptions;
             this._backupData.options = this.options ? this.options.slice() : this.options;
@@ -1869,7 +1869,13 @@ var Vidyano;
                         this.options = this._backupData.options;
                     else if (name == "_serviceOptions")
                         this._serviceOptions = this._backupData._serviceOptions;
-                    this.notifyPropertyChanged(name, this[name] = this._backupData[name], oldValue);
+                    else if (name == "isReadOnly")
+                        this._isReadOnly = this._backupData["isReadOnly"];
+                    else if (name == "isRequired")
+                        this._isRequired = this._backupData["isRequired"];
+                    else
+                        this[name] = this._backupData[name];
+                    this.notifyPropertyChanged(name, this[name], oldValue);
                 }
             }
             this._backupData = {};
