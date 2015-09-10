@@ -1,9 +1,11 @@
 vi-template-presenter {
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -ms-flex-direction: row;
-  -webkit-flex-direction: row;
-  flex-direction: row;
   position: relative;
+}
+vi-template-presenter > :not(template):first-child:nth-last-child(2),
+vi-template-presenter > :not(template):first-child:nth-last-child(2) ~ :not(template) {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
