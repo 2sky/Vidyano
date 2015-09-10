@@ -1,7 +1,11 @@
 vi-persistent-object-attribute-presenter {
-  display: block;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
   flex-basis: 0.000000001px;
-  position: relative;
   white-space: nowrap;
   font-size: 13px;
   color: #333;
@@ -91,11 +95,9 @@ vi-persistent-object-attribute-presenter[no-label] > .attribute {
 }
 vi-persistent-object-attribute-presenter > .attribute,
 vi-persistent-object-attribute-presenter[bulk-edit] > .bulk-edit-container {
-  position: absolute;
-  top: 30px;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
