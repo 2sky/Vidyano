@@ -2084,6 +2084,7 @@ declare module Vidyano.WebComponents.Attributes {
 }
 declare module Vidyano.WebComponents.Attributes {
     class PersistentObjectAttributeBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
+        protected _valueChanged(newValue: any): void;
     }
     class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
         options: Common.KeyValuePair[];

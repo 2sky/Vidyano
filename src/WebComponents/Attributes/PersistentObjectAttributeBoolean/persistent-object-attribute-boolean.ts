@@ -1,5 +1,9 @@
 module Vidyano.WebComponents.Attributes {
     export class PersistentObjectAttributeBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
+        protected _valueChanged(newValue: any) {
+            if (this.attribute && newValue != this.attribute.value)
+                this.attribute.setValue(newValue, true);
+        }
     }
 
     export class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {

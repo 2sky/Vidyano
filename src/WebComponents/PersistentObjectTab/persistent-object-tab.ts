@@ -80,7 +80,9 @@ module Vidyano.WebComponents {
         private _setItemDragging: (dragging: boolean) => void;
 
         private _computeIsDesignModeAvailable(tab: Vidyano.PersistentObjectAttributeTab): boolean {
-            return tab && tab.parent.actions["viConfigurePO"] !== undefined;
+            return false;
+            // Note: Currently not supported
+            //return tab && tab.parent.actions["viConfigurePO"] !== undefined;
         }
 
         private _computeDesignModeCells(items: PersistentObjectTabItem[], columns: number, rows: number): PersistentObjectTabCell[][]{

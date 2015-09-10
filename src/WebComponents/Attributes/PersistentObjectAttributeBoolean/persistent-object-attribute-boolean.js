@@ -15,6 +15,10 @@ var Vidyano;
                 function PersistentObjectAttributeBoolean() {
                     _super.apply(this, arguments);
                 }
+                PersistentObjectAttributeBoolean.prototype._valueChanged = function (newValue) {
+                    if (this.attribute && newValue != this.attribute.value)
+                        this.attribute.setValue(newValue, true);
+                };
                 return PersistentObjectAttributeBoolean;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeBoolean = PersistentObjectAttributeBoolean;

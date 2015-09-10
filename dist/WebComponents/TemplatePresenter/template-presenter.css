@@ -1,4 +1,4 @@
-vi-persistent-object-tab-presenter {
+vi-template-presenter {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
@@ -6,9 +6,4 @@ vi-persistent-object-tab-presenter {
   -webkit-flex-direction: row;
   flex-direction: row;
   position: relative;
-}
-vi-persistent-object-tab-presenter > * {
-  -ms-flex: 1;
-  -webkit-flex: 1;
-  flex: 1;
 }

@@ -67,7 +67,7 @@ var Vidyano;
                 _super.apply(this, arguments);
             }
             PersistentObjectTab.prototype._computeIsDesignModeAvailable = function (tab) {
-                return tab && tab.parent.actions["viConfigurePO"] !== undefined;
+                return false;
             };
             PersistentObjectTab.prototype._computeDesignModeCells = function (items, columns, rows) {
                 var _this = this;
