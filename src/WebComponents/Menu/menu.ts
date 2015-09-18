@@ -1,4 +1,24 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            menuTitle: String,
+            programUnit: Object,
+            items: Array,
+            collapsed: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            filter: {
+                type: String,
+                observer: "_filterChanged"
+            },
+            filtering: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            currentProgramUnit: Object,
+        }
+    })
     export class Menu extends WebComponent {
         filter: string;
         filtering: boolean;
@@ -40,6 +60,56 @@ module Vidyano.WebComponents {
         }
     }
 
+    @WebComponent.register({
+        properties: {
+            item: Object,
+            collapsed: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
+            programUnit: {
+                type: Object,
+                observer: "_programUnitChanged"
+            },
+            hasItems: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computedHasItems(item)"
+            },
+            expand: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            filtering: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
+            filter: {
+                type: String,
+                notify: true,
+                observer: "_filterChanged",
+                value: ""
+            },
+            filterParent: Object,
+            hide: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            href: {
+                type: String,
+                computed: "_computedHref(item, isAttached)"
+            }
+        },
+        observers: [
+            "_updateItemTitle(item, filter, filtering, collapsed)"
+        ],
+        listeners: {
+            "tap": "_tap"
+        }
+    })
     export class MenuItem extends WebComponent {
         item: Vidyano.ProgramUnitItem;
         programUnit: Vidyano.ProgramUnit;
@@ -109,13 +179,10 @@ module Vidyano.WebComponents {
         private _updateItemTitle(item: Vidyano.ProgramUnitItem, filter: string, filtering: boolean, collapsed: boolean) {
             if (collapsed) {
                 if (item instanceof ProgramUnit && !this.$["title"].querySelector("vi-resource")) {
-                    var resourceName = item.offset < 2147483647 ? "Icon_ProgramUnit_" + item.name : "Icon_Vidyano";
-                    if (Vidyano.WebComponents.Resource.Exists(resourceName)) {
+                    var resourceName = item.offset < 2147483647 ? "ProgramUnit_" + item.name : "Vidyano";
+                    if (Vidyano.WebComponents.Icon.Exists(resourceName)) {
                         this.$["title"].textContent = "";
-
-                        var resource = new Vidyano.WebComponents.Resource();
-                        resource.source = resourceName;
-                        this.$["title"].appendChild(resource);
+                        this.$["title"].appendChild(new Vidyano.WebComponents.Icon(resourceName));
 
                         return;
                     }
@@ -144,76 +211,4 @@ module Vidyano.WebComponents {
             return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? this.app.noHistory ? "#" : '#!/' + this.item.path : undefined;
         }
     }
-
-    WebComponent.register(Menu, WebComponents, "vi", {
-        properties: {
-            menuTitle: String,
-            programUnit: Object,
-            items: Array,
-            collapsed: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            filter: {
-                type: String,
-                observer: "_filterChanged"
-            },
-            filtering: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            currentProgramUnit: Object,
-        }
-    });
-
-    WebComponent.register(MenuItem, WebComponents, "vi", {
-        properties: {
-            item: Object,
-            collapsed: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
-            programUnit: {
-                type: Object,
-                observer: "_programUnitChanged"
-            },
-            hasItems: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computedHasItems(item)"
-            },
-            expand: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            filtering: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
-            filter: {
-                type: String,
-                notify: true,
-                observer: "_filterChanged",
-                value: ""
-            },
-            filterParent: Object,
-            hide: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            href: {
-                type: String,
-                computed: "_computedHref(item, isAttached)"
-            }
-        },
-        observers: [
-            "_updateItemTitle(item, filter, filtering, collapsed)"
-        ],
-        listeners: {
-            "tap": "_tap"
-        }
-    });
 }

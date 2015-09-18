@@ -1,7 +1,34 @@
 ﻿module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register
     export class PersistentObjectAttributeFlagsEnum extends WebComponents.Attributes.PersistentObjectAttribute {
     }
 
+    @WebComponent.register({
+        properties: {
+            attribute: Object,
+            checked: {
+                type: Boolean,
+                notify: true,
+                observer: "_checkedChanged",
+                value: false
+            },
+            label: {
+                type: String,
+                computed: "_computeLabel(option)"
+            },
+            option: Object,
+            value: {
+                type: String,
+                computed: "attribute.value"
+            }
+        },
+        observers: [
+            "_valueChanged(value, label)"
+        ],
+        forwardObservers: [
+            "attribute.value"
+        ]
+    })
     export class PersistentObjectAttributeFlagsEnumFlag extends WebComponents.WebComponent {
         private _skipCheckedChanged: boolean;
         attribute: Vidyano.PersistentObjectAttribute;
@@ -66,34 +93,4 @@
             return Enumerable.from(value.split(",")).select(v => v.trim());
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeFlagsEnum, {
-    });
-
-    WebComponent.register(PersistentObjectAttributeFlagsEnumFlag, WebComponents, "vi", {
-        properties: {
-            attribute: Object,
-            checked: {
-                type: Boolean,
-                notify: true,
-                observer: "_checkedChanged",
-                value: false
-            },
-            label: {
-                type: String,
-                computed: "_computeLabel(option)"
-            },
-            option: Object,
-            value: {
-                type: String,
-                computed: "attribute.value"
-            }
-        },
-        observers: [
-            "_valueChanged(value, label)"
-        ],
-        forwardObservers: [
-            "attribute.value"
-        ]
-    });
 }

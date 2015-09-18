@@ -1,84 +1,134 @@
 ﻿module Vidyano.WebComponents {
-	var _groups: Sortable[] = [];
+    var _groups: Sortable[] = [];
 
+    //@WebComponent.register({
+    //    properties: {
+    //        group: {
+    //            type: String,
+    //            reflectToAttribute: true
+    //        },
+    //        filter: {
+    //            type: String,
+    //            reflectToAttribute: true
+    //        },
+    //        isDragging: {
+    //            type: Boolean,
+    //            reflectToAttribute: true
+    //        },
+    //        isGroupDragging: {
+    //            type: Boolean,
+    //            reflectToAttribute: true,
+    //            readOnly: true
+    //        },
+    //        disabled: {
+    //            type: Boolean,
+    //            reflectToAttribute: true
+    //        }
+    //    }
+    //})
     export class Sortable extends WebComponent {
-		private _sortable: ISortable;
-		private _isDragging: boolean;
-		private _isGroupDragging: boolean;
-		group: string;
-		filter: string;
-		disabled: boolean;
+        private _sortable: ISortable;
+        group: string;
+        filter: string;
+        disabled: boolean;
 
-		attached() {
-			super.attached();
+        private _setIsDragging: (isDragging: boolean) => void;
+        private _setIsGroupDragging: (isGroupDragging: boolean) => void;
 
-			if (this.group)
-				_groups.push(this);
+        attached() {
+            super.attached();
 
-			this._create();
-		}
+            if (this.group)
+                _groups.push(this);
 
-		detached() {
-			if (this.group)
-				_groups.remove(this);
+            this._create();
+        }
 
-			this._destroy();
-			super.detached();
-		}
+        detached() {
+            if (this.group)
+                _groups.remove(this);
 
-		groupChanged() {
-			this._sortable.option("group", this.group);
-			if (this.group)
-				_groups.push(this);
-			else
-				_groups.remove(this);
-		}
+            this._destroy();
+            super.detached();
+        }
 
-		filterChanged() {
-			this._sortable.option("filter", this.filter);
-		}
+        groupChanged() {
+            this._sortable.option("group", this.group);
+            if (this.group)
+                _groups.push(this);
+            else
+                _groups.remove(this);
+        }
 
-		disabledChanged() {
-			this._sortable.option("filter", this.filter);
-		}
+        filterChanged() {
+            this._sortable.option("filter", this.filter);
+        }
 
-		private _create() {
-			this._destroy();
+        disabledChanged() {
+            this._sortable.option("filter", this.filter);
+        }
 
-			this._sortable = window["Sortable"].create(this, {
-				group: this.group,
-				filter: this.filter,
-				disabled: this.disabled,
-				onStart: () => {
-					this._isDragging = true;
-					if (this.group)
-						_groups.filter(s => s.group == this.group).forEach(s => s._isGroupDragging = true);
-				},
-				onEnd: () => {
-					this._isDragging = false;
-					if (this.group)
-						_groups.filter(s => s.group == this.group).forEach(s => s._isGroupDragging = false);
-				}
-			});
-		}
+        private _create() {
+            this._destroy();
 
-		private _destroy() {
-			if (this._sortable) {
-				this._sortable.destroy();
-				this._sortable = null;
-			}
-		}
+            this._sortable = window["Sortable"].create(this, {
+                group: this.group,
+                filter: this.filter,
+                disabled: this.disabled,
+                onStart: () => {
+                    this._setIsDragging(true);
+                    if (this.group)
+                        _groups.filter(s => s.group == this.group).forEach(s => s._setIsGroupDragging(true));
+                },
+                onEnd: () => {
+                    this._setIsDragging(false);
+                    if (this.group)
+                        _groups.filter(s => s.group == this.group).forEach(s => s._setIsGroupDragging(false));
+                }
+            });
+        }
+
+        private _destroy() {
+            if (this._sortable) {
+                this._sortable.destroy();
+                this._sortable = null;
+            }
+        }
+
+        static register(info: WebComponentRegistrationInfo = {}): any {
+            return (obj: Function) => {
+                info.properties = info.properties || {};
+
+                info.properties["group"] = {
+                    type: String,
+                    reflectToAttribute: true,
+                };
+                info.properties["filter"] =
+                {
+                    type: String,
+                    reflectToAttribute: true
+                };
+                info.properties["isDragging"] =
+                {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                };
+                info.properties["isGroupDragging"] =
+                {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                };
+                info.properties["disabled"] =
+                {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    value: true
+                };
+
+                return WebComponent.register(obj, info);
+            };
+        }
     }
-
-  //  Vidyano.WebComponents.WebComponent.registerTODO(Vidyano.WebComponents.Sortable, Vidyano.WebComponents, "vi",
-  //      {
-		//	group: { value: null, reflect: true },
-		//	filter: { value: null, reflect: true },
-		//	isDragging: { value: false, reflect: true },
-		//	isGroupDragging: { value: false, reflect: true },
-		//	disabled: { value: false, reflect: true }
-  //      }, {
-		//	isDragging: "_isDragging",
-		//	isGroupDragging: "_isGroupDragging"
-		//});
 }

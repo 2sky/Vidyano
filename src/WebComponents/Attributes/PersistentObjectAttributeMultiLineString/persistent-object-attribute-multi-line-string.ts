@@ -1,4 +1,9 @@
 module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register({
+        properties: {
+            maxlength: Number
+        }
+    })
     export class PersistentObjectAttributeMultiLineString extends PersistentObjectAttribute {
         maxlength: number;
         height: string; // TODO(sleeckx): Implement height
@@ -17,10 +22,4 @@ module Vidyano.WebComponents.Attributes {
                 this.attribute.setValue(this.value = this.attribute.value, true);
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeMultiLineString, {
-        properties: {
-            maxlength: Number
-        }
-    });
 }

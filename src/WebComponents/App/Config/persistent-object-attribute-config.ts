@@ -1,4 +1,24 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            type: String,
+            name: String,
+            parentId: String,
+            parentObjectId: String,
+            height: {
+                type: String,
+                value: "2"
+            },
+            width: {
+                type: String,
+                value: "1"
+            },
+            template: {
+                type: Object,
+                readOnly: true
+            }
+        }
+    })
     export class PersistentObjectAttributeConfig extends WebComponent {
         private _calculateHeight: (attr: Vidyano.PersistentObjectAttribute) => number;
         private _calculateWidth: (attr: Vidyano.PersistentObjectAttribute) => number;
@@ -46,25 +66,4 @@
             return this._calculateWidth(attr);
         }
     }
-
-    WebComponent.register(PersistentObjectAttributeConfig, WebComponents, "vi", {
-        properties: {
-            type: String,
-            name: String,
-            parentId: String,
-            parentObjectId: String,
-            height: {
-                type: String,
-                value: "2"
-            },
-            width: {
-                type: String,
-                value: "1"
-            },
-            template: {
-                type: Object,
-                readOnly: true
-            }
-        }
-    });
 }

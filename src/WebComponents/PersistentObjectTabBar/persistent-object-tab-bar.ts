@@ -1,4 +1,21 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            tabs: Array,
+            selectedTab: {
+                type: Object,
+                notify: true
+            },
+            mode: {
+                type: String,
+                value: "inline",
+                reflectToAttribute: true
+            }
+        },
+        observers: [
+            "_hookObservers(isAttached, tabs)"
+        ]
+    })
     export class PersistentObjectTabBar extends WebComponent {
         private _observeDisposer: ObserveChainDisposer;
         tabs: Vidyano.PersistentObjectTab[];
@@ -22,9 +39,9 @@ module Vidyano.WebComponents {
         }
 
         private _tabSelected(e: Event, detail: any) {
-            e.stopPropagation();
-
             this.selectedTab = detail.tab;
+
+            Popup.closeAll(this);
         }
 
         private isInline(mode: string): boolean {
@@ -40,44 +57,7 @@ module Vidyano.WebComponents {
         }
     }
 
-    export class PersistentObjectTabBarItem extends WebComponent {
-        tab: Vidyano.PersistentObjectTab;
-
-        private _select() {
-            this.fire("tab-selected", { tab: this.tab });
-        }
-
-        private _computeIsSelected(tab: Vidyano.PersistentObjectTab, selectedTab: Vidyano.PersistentObjectTab): boolean {
-            return tab == selectedTab;
-        }
-
-        private _computeHasBadge(badge: number): boolean {
-            return badge !== undefined && badge >= 0;
-        }
-    }
-
-    WebComponent.register(PersistentObjectTabBar, WebComponents, "vi", {
-        properties: {
-            tabs: Array,
-            selectedTab: {
-                type: Object,
-                notify: true
-            },
-            mode: {
-                type: String,
-                value: "inline",
-                reflectToAttribute: true
-            }
-        },
-        listeners: {
-            "tab-selected": "_tabSelected"
-        },
-        observers: [
-            "_hookObservers(isAttached, tabs)"
-        ]
-    });
-
-    WebComponent.register(PersistentObjectTabBarItem, WebComponents, "vi", {
+    @WebComponent.register({
         properties: {
             tab: Object,
             selectedTab: Object,
@@ -104,5 +84,20 @@ module Vidyano.WebComponents {
         forwardObservers: [
             "tab.query.totalItems"
         ]
-    });
+    })
+    export class PersistentObjectTabBarItem extends WebComponent {
+        tab: Vidyano.PersistentObjectTab;
+
+        private _select() {
+            this.fire("tab-selected", { tab: this.tab }, { bubbles: false });
+        }
+
+        private _computeIsSelected(tab: Vidyano.PersistentObjectTab, selectedTab: Vidyano.PersistentObjectTab): boolean {
+            return tab == selectedTab;
+        }
+
+        private _computeHasBadge(badge: number): boolean {
+            return badge !== undefined && badge >= 0;
+        }
+    }
 }

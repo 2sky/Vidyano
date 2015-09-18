@@ -1,6 +1,6 @@
 ﻿module Vidyano.WebComponents {
     var requestFrame = (function () {
-        var raf = window.requestAnimationFrame || (<any>window).mozRequestAnimationFrame || (<any>window).webkitRequestAnimationFrame ||
+        var raf = requestAnimationFrame || (<any>window).mozRequestAnimationFrame || (<any>window).webkitRequestAnimationFrame ||
             function (fn) { return window.setTimeout(fn, 20); };
         return function (fn) { return raf(fn); };
     })();
@@ -11,6 +11,14 @@
         return function (id) { return cancel(id); };
     })();
 
+    @WebComponent.register({
+        properties: {
+            deferred: {
+                type: Boolean,
+                reflectToAttribute: true
+            }
+        }
+    })
     export class SizeTracker extends WebComponent {
         private _resizeTimer: number;
         private _resizeTimerQueuedElements: HTMLElement[] = [];
@@ -35,7 +43,7 @@
 
         measure() {
             this.deferred = false;
-            
+
             var root = <any>this.$["root"];
             if (!this._scrollListener) {
                 this._resetTriggers(root);
@@ -61,7 +69,7 @@
                 this.fire("sizechanged", this._resizeLast = {
                     width: root.offsetWidth,
                     height: root.offsetHeight
-                });
+                }, { onNode: this, bubbles: false });
             }
         }
 
@@ -111,13 +119,4 @@
             expand.scrollTop = expand.scrollHeight;
         }
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.SizeTracker, Vidyano.WebComponents, "vi", {
-        properties: {
-            deferred: {
-                type: Boolean,
-                reflectToAttribute: true
-            }
-        }
-    });
 }

@@ -11,12 +11,12 @@
                 <input value="{{friendlyName}}" readonly content />
                 <template is="dom-if" if="{{canBrowseReference}}" restamp>
                     <button on-tap="_browseReference" tabindex="-1">
-                        <vi-resource source="Icon_Ellipsis" icon></vi-resource>
+                        <vi-icon source="Ellipsis"></vi-icon>
                     </button>
                 </template>
                 <template is="dom-if" if="{{canClear}}" restamp>
                     <button on-tap="_clearReference" tabindex="-1">
-                        <vi-resource source="Icon_Remove" icon></vi-resource>
+                        <vi-icon source="Remove"></vi-icon>
                     </button>
                 </template>
             </vi-persistent-object-attribute-edit>

@@ -5,13 +5,13 @@
         <vi-scroller no-horizontal>
             <template is="dom-if" if="{{isDesignModeAvailable}}">
                 <vi-popup-menu context-menu-only ctrl-key>
-                    <vi-popup-menu-item icon="Icon_Design" label="Design-mode" on-tap="_toggleDesignMode"></vi-popup-menu-item>
+                    <vi-popup-menu-item icon="Design" label="Design-mode" on-tap="_toggleDesignMode"></vi-popup-menu-item>
                 </vi-popup-menu>
             </template>
 
             <div class="fit">
                 <div id="cells"></div>
-                <vi-size-tracker></vi-size-tracker>
+                <vi-size-tracker on-sizechanged="_sizeChanged"></vi-size-tracker>
             </div>
             <div>
                 <div id="items">

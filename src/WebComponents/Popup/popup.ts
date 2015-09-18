@@ -6,12 +6,12 @@ module Vidyano.WebComponents {
 
         while (true) {
             if (!el || el == <any>document) {
-                WebComponents.Popup.closeAll();
+                WebComponents.PopupCore.closeAll();
                 break;
             }
-            else if (el instanceof WebComponents.Popup && (<WebComponents.Popup><any>el).open)
+            else if ((<any>el).__Vidyano_WebComponents_PopupCore__Instance__ && (<WebComponents.PopupCore><any>el).open)
                 break;
-            else if ((<any>el).popup instanceof WebComponents.Popup && (<WebComponents.Popup>(<any>el).popup).open)
+            else if ((<any>el).popup && (<any>el).popup.__Vidyano_WebComponents_PopupCore__Instance__ && (<WebComponents.PopupCore>(<any>el).popup).open)
                 break;
             else
                 el = el.parentElement;
@@ -19,45 +19,383 @@ module Vidyano.WebComponents {
     });
     document.addEventListener("touchstart", _documentClosePopupListener);
 
-    export class Popup extends WebComponent {
-        private static _openPopups: Vidyano.WebComponents.Popup[] = [];
-        private _tapHandler: EventListener;
-        private _enterHandler: EventListener;
-        private _leaveHandler: EventListener;
+    @WebComponent.register({
+        properties: {
+            disabled: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            open: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            sticky: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            contentAlign: {
+                type: String,
+                reflectToAttribute: true
+            },
+            orientation: {
+                type: String,
+                reflectToAttribute: true,
+                value: "auto"
+            },
+            hover: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true,
+                observer: "_hoverChanged"
+            }
+        },
+        listeners: {
+            "mouseenter": "_contentMouseEnter",
+            "mouseleave": "_contentMouseLeave",
+            "click": "_catchContentClick"
+        }
+    })
+    export class PopupCore extends WebComponent {
+        private static _isBuggyGetBoundingClientRect: boolean;
+        private static _openPopups: Vidyano.WebComponents.PopupCore[] = [];
+
+        private __Vidyano_WebComponents_PopupCore__Instance__ = true;
         private _resolver: Function;
         private _closeOnMoveoutTimer: number;
-        private _currentOrientation: string;
-        private _header: HTMLElement;
-        disabled: boolean;
-        contentAlign: string;
-        orientation: string;
-        sticky: boolean;
+        private _currentTarget: HTMLElement | WebComponent;
+        private _currentContent: HTMLElement;
+        protected _currentOrientation: string;
         open: boolean;
-        autoSizeContent: boolean;
-        openOnHover: boolean;
+        orientation: string;
+        contentAlign: string;
+        disabled: boolean;
+        sticky: boolean;
+        hover: boolean;
 
-        private _setOpen(val: boolean) { }
+        protected _setOpen: (val: boolean) => void;
+        private _setHover: (val: boolean) => void;
 
-        popup(): Promise<any> {
+        popup(target?: HTMLElement | WebComponent): Promise<any> {
             if (this.open)
                 return Promise.resolve();
 
             return new Promise(resolve => {
                 this._resolver = resolve;
-                this._open();
+                this._open(target);
             });
         }
 
-        private _hookTapAndHoverEvents() {
-            this._header = <HTMLElement>Polymer.dom(this.root).querySelector("[toggle]") || this.asElement.parentElement;
+        protected _open(target: HTMLElement | WebComponent, content: HTMLElement = this) {
+            if (this.open || this.hasAttribute("disabled"))
+                return;
 
-            if (this._header == this.asElement.parentElement)
+            this._currentOrientation = this.orientation.toUpperCase() === "AUTO" ? !this._findParentPopup() ? "vertical" : "horizontal" : this.orientation.toLowerCase();
+
+            if (this.fire("popup-opening", null, { bubbles: false, cancelable: true }).defaultPrevented)
+                return;
+
+            // Close non-parent popups
+            var parentPopup = this._findParentPopup();
+            var firstOpenNonParentChild = Popup._openPopups[parentPopup == null ? 0 : Popup._openPopups.indexOf(parentPopup) + 1];
+            if (firstOpenNonParentChild != null)
+                firstOpenNonParentChild.close();
+
+            // Position content
+            var {targetRect, transformedRect} = this._getTargetRect(<HTMLElement>target);
+            var windowWidth = window.innerWidth;
+            var windowHeight = window.innerHeight;
+            var contentWidth = content.offsetWidth;
+            var contentHeight = content.offsetHeight;
+
+            var alignments = (this.contentAlign || "").toUpperCase().split(" ");
+            var alignCenter = alignments.indexOf("CENTER") >= 0;
+            var alignRight = alignments.indexOf("RIGHT") >= 0;
+
+            if (this._currentOrientation == "vertical") {
+                if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + (transformedRect ? transformedRect.left : 0) + contentWidth <= windowWidth) {
+                    // Left-align
+                    var left = targetRect.left;
+                    if (alignments.indexOf("CENTER") >= 0)
+                        left = Math.max(0, left - contentWidth / 2 + targetRect.width / 2);
+
+                    content.style.left = left + "px";
+                    content.style.right = "auto";
+
+                    content.classList.add("left");
+                    content.classList.remove("right");
+                }
+                else {
+                    // Right-align
+                    content.style.left = "auto";
+                    content.style.right = Math.max((!transformedRect ? windowWidth : transformedRect.width) - (targetRect.left + targetRect.width), 0) + "px";
+
+                    content.classList.add("right");
+                    content.classList.remove("left");
+                }
+
+                if (targetRect.top + targetRect.height + contentHeight < windowHeight) {
+                    // Top-align
+                    content.style.top = (targetRect.top + targetRect.height) + "px";
+                    content.style.bottom = "auto";
+
+                    content.classList.add("top");
+                    content.classList.remove("bottom");
+                }
+                else {
+                    // Bottom-align
+                    content.style.top = "auto";
+                    content.style.bottom = Math.max(windowHeight - targetRect.top, 0) + "px";
+
+                    content.classList.add("bottom");
+                    content.classList.remove("top");
+                }
+            }
+            else if (this._currentOrientation == "horizontal") {
+                if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + targetRect.width + contentWidth <= windowWidth) {
+                    // Left-align
+                    content.style.left = (targetRect.left + targetRect.width) + "px";
+                    content.style.right = "auto";
+
+                    content.classList.add("left");
+                    content.classList.remove("right");
+                }
+                else {
+                    // Right-align
+                    content.style.left = "auto";
+                    content.style.right = Math.max(windowWidth - targetRect.left, 0) + "px";
+
+                    content.classList.add("right");
+                    content.classList.remove("left");
+                }
+
+                if (targetRect.top + contentHeight < windowHeight) {
+                    // Top-align
+                    content.style.top = targetRect.top + "px";
+                    content.style.bottom = "auto";
+
+                    content.classList.add("top");
+                    content.classList.remove("bottom");
+                }
+                else {
+                    // Bottom-align
+                    content.style.top = "auto";
+                    content.style.bottom = Math.max(windowHeight - targetRect.top, 0) + "px";
+
+                    content.classList.add("bottom");
+                    content.classList.remove("top");
+                }
+            }
+
+            this._currentTarget = target;
+            this._currentContent = content;
+
+            this._setOpen(true);
+            PopupCore._openPopups.push(this);
+
+            this.fire("popup-opened", null, { bubbles: false, cancelable: false });
+        }
+
+        private _getTargetRect(target: HTMLElement): { targetRect: ClientRect, transformedRect?: ClientRect } {
+            var targetRect = target.getBoundingClientRect();
+
+            if (Popup._isBuggyGetBoundingClientRect === undefined) {
+                var outer = document.createElement("div");
+                outer.style.webkitTransform = outer.style.transform = "translate(-100px, -100px)";
+
+                var inner = document.createElement("div");
+                inner.style.position = "fixed";
+
+                outer.appendChild(inner);
+
+                document.body.appendChild(outer);
+                var outerRect = outer.getBoundingClientRect();
+                var innerRect = inner.getBoundingClientRect();
+                document.body.removeChild(outer);
+
+                Popup._isBuggyGetBoundingClientRect = outerRect.left === innerRect.left;
+            }
+
+            if (Popup._isBuggyGetBoundingClientRect) {
+                var parent = this.parentElement;
+                while (parent != null) {
+                    var computedStyle = getComputedStyle(parent, null),
+                        transform = <string>(computedStyle.transform || computedStyle.webkitTransform);
+
+                    if (transform.startsWith("matrix")) {
+                        var transformedParentRect = parent.getBoundingClientRect();
+
+                        return {
+                            targetRect: {
+                                top: targetRect.top - transformedParentRect.top,
+                                left: targetRect.left - transformedParentRect.left,
+                                right: targetRect.right - transformedParentRect.right,
+                                bottom: targetRect.bottom - transformedParentRect.bottom,
+                                width: targetRect.width,
+                                height: targetRect.height
+                            },
+                            transformedRect: transformedParentRect
+                        };
+                    }
+
+                    parent = parent.parentElement;
+                }
+            }
+
+            return { targetRect: targetRect };
+        }
+
+        close() {
+            if (this.fire("popup-closing", null, { bubbles: false, cancelable: true }).defaultPrevented)
+                return;
+
+            if (!this.open && this._closeOnMoveoutTimer) {
+                clearTimeout(this._closeOnMoveoutTimer);
+                this._closeOnMoveoutTimer = undefined;
+            }
+
+            var openChild = Popup._openPopups[Popup._openPopups.indexOf(this) + 1];
+            if (openChild != null)
+                openChild.close();
+
+            this._currentTarget = this._currentContent = null;
+            this._setOpen(false);
+
+            if (this._resolver)
+                this._resolver();
+
+            Popup._openPopups.remove(this);
+
+            this.fire("popup-closed", null, { bubbles: false, cancelable: false });
+        }
+
+        protected _findParentPopup(): Popup {
+            var element = this.parentNode;
+            while (element != null && Popup._openPopups.indexOf(<any>element) == -1)
+                element = (<any>element).host || element.parentNode;
+
+            return <Popup><any>element;
+        }
+
+        private _catchContentClick(e?: Event) {
+            if (this.sticky)
+                e.stopPropagation();
+        }
+
+        protected _contentMouseEnter(e: MouseEvent) {
+            if (this._setHover)
+                this._setHover(true);
+
+            if (this._closeOnMoveoutTimer) {
+                clearTimeout(this._closeOnMoveoutTimer);
+                this._closeOnMoveoutTimer = undefined;
+            }
+        }
+
+        protected _contentMouseLeave(e: MouseEvent) {
+            if (this._setHover)
+                this._setHover(false);
+
+            if (!this.sticky) {
+                this._closeOnMoveoutTimer = setTimeout(() => {
+                    this.close();
+                }, 300);
+            }
+        }
+
+        private _hoverChanged(hover: boolean) {
+            this.toggleAttribute("hover", hover, this._currentTarget);
+        }
+
+        static closeAll(parent?: HTMLElement | WebComponent) {
+            var rootPopup = Popup._openPopups[0];
+            if (rootPopup && (!parent || Popup._isDescendant(<HTMLElement>parent, rootPopup)))
+                rootPopup.close();
+        }
+
+        private static _isDescendant(parent: HTMLElement, child: HTMLElement): boolean {
+            var node = child.parentNode;
+            while (node != null) {
+                if (node == parent)
+                    return true;
+
+                node = node.parentNode;
+            }
+
+            return false;
+        }
+    }
+
+    @WebComponent.register({
+        properties: {
+            disabled: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            open: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            sticky: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            autoSizeContent: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            openOnHover: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
+            contentAlign: {
+                type: String,
+                reflectToAttribute: true
+            },
+            orientation: {
+                type: String,
+                reflectToAttribute: true,
+                value: "auto"
+            }
+        },
+        observers: [
+            "_hookTapAndHoverEvents(isAttached, openOnHover)"
+        ],
+        listeners: {
+            "tap": "_tap"
+        }
+    })
+    export class Popup extends PopupCore {
+        private _tapHandler: EventListener;
+        private _enterHandler: EventListener;
+        private _leaveHandler: EventListener;
+        private _header: HTMLElement;
+        autoSizeContent: boolean;
+        openOnHover: boolean;
+
+        popup(): Promise<any> {
+            return super.popup(this._header);
+        }
+
+        protected _open(target: HTMLElement | WebComponent) {
+            super._open(target, this.$["content"]);
+
+            var rootSizeTracker = <WebComponents.SizeTracker><any>this.$["toggleSizeTracker"];
+            rootSizeTracker.measure();
+        }
+
+        private _hookTapAndHoverEvents() {
+            this._header = <HTMLElement>Polymer.dom(this.root).querySelector("[toggle]") || this.parentElement;
+
+            if (this._header == this.parentElement)
                 (<any>this._header).popup = this;
 
             if (this.isAttached) {
                 if (this.openOnHover) {
                     this._header.addEventListener("mouseenter", this._enterHandler = this._onOpen.bind(this))
-                    this.asElement.addEventListener("mouseleave", this._leaveHandler = this.close.bind(this));
+                    this.addEventListener("mouseleave", this._leaveHandler = this.close.bind(this));
                 }
                 else
                     this._header.addEventListener("tap", this._tapHandler = this._tap.bind(this));
@@ -69,13 +407,13 @@ module Vidyano.WebComponents {
                 }
 
                 if (this._leaveHandler) {
-                    this.asElement.removeEventListener("mouseleave", this._leaveHandler);
-                    this._leaveHandler = undefined
+                    this.removeEventListener("mouseleave", this._leaveHandler);
+                    this._leaveHandler = undefined;
                 }
 
                 if (this._tapHandler) {
                     this._header.removeEventListener("tap", this._tapHandler);
-                    this._tapHandler = undefined
+                    this._tapHandler = undefined;
                 }
             }
         }
@@ -102,163 +440,22 @@ module Vidyano.WebComponents {
 
                 el = el.parentElement;
             }
-            while (el && el != this.asElement);
+            while (el && el != this);
         }
 
         private _onOpen(e: Event) {
             if (!this.open)
-                this._open();
+                this._open(this._header);
 
             e.stopPropagation();
             e.preventDefault();
         }
 
-        private _open(orientation: string = this.orientation) {
-            if (orientation.toUpperCase() === "AUTO")
-                orientation = !this._findParentPopup() ? "vertical" : "horizontal";
-
-            if (this.open || this.asElement.hasAttribute("disabled"))
+        protected _contentMouseLeave(e: MouseEvent) {
+            if (this.openOnHover)
                 return;
 
-            this._currentOrientation = orientation;
-
-            if (this.fire("popup-opening", null, { bubbles: false, cancelable: true }).defaultPrevented)
-                return;
-
-            // Close non-parent popups
-            var parentPopup = this._findParentPopup();
-            var firstOpenNonParentChild = Popup._openPopups[parentPopup == null ? 0 : Popup._openPopups.indexOf(parentPopup) + 1];
-            if (firstOpenNonParentChild != null)
-                firstOpenNonParentChild.close();
-
-            // Position content
-            var root = this._header;
-
-            var rootSizeTracker = <WebComponents.SizeTracker><any>this.$["toggleSizeTracker"];
-            rootSizeTracker.measure();
-
-            var content = this.$["content"];
-
-            var rootRect = root.getBoundingClientRect();
-            var windowWidth = window.innerWidth;
-            var windowHeight = window.innerHeight;
-            var contentWidth = content.offsetWidth;
-            var contentHeight = content.offsetHeight;
-
-            var alignments = (this.contentAlign || "").toUpperCase().split(" ");
-            var alignCenter = alignments.indexOf("CENTER") >= 0;
-            var alignRight = alignments.indexOf("RIGHT") >= 0;
-
-            if (orientation == "vertical") {
-                if (alignRight ? (rootRect.right - contentWidth) < 0 : rootRect.left + contentWidth <= windowWidth) {
-                    // Left-align
-                    var left = rootRect.left;
-                    if (alignments.indexOf("CENTER") >= 0)
-                        left = Math.max(0, left - contentWidth / 2 + rootRect.width / 2);
-
-                    content.style.left = left + "px";
-                    content.style.right = "auto";
-
-                    content.classList.add("left");
-                    content.classList.remove("right");
-                }
-                else {
-                    // Right-align
-                    content.style.left = "auto";
-                    content.style.right = Math.max(windowWidth - (rootRect.left + rootRect.width), 0) + "px";
-
-                    content.classList.add("right");
-                    content.classList.remove("left");
-                }
-
-                if (rootRect.top + rootRect.height + contentHeight < windowHeight) {
-                    // Top-align
-                    content.style.top = (rootRect.top + rootRect.height) + "px";
-                    content.style.bottom = "auto";
-
-                    content.classList.add("top");
-                    content.classList.remove("bottom");
-                }
-                else {
-                    // Bottom-align
-                    content.style.top = "auto";
-                    content.style.bottom = Math.max(windowHeight - rootRect.top, 0) + "px";
-
-                    content.classList.add("bottom");
-                    content.classList.remove("top");
-                }
-            }
-            else if (orientation == "horizontal") {
-                if (alignRight ? (rootRect.right - contentWidth) < 0 : rootRect.left + rootRect.width + contentWidth <= windowWidth) {
-                    // Left-align
-                    content.style.left = (rootRect.left + rootRect.width) + "px";
-                    content.style.right = "auto";
-
-                    content.classList.add("left");
-                    content.classList.remove("right");
-                }
-                else {
-                    // Right-align
-                    content.style.left = "auto";
-                    content.style.right = Math.max(windowWidth - rootRect.left, 0) + "px";
-
-                    content.classList.add("right");
-                    content.classList.remove("left");
-                }
-
-                if (rootRect.top + contentHeight < windowHeight) {
-                    // Top-align
-                    content.style.top = rootRect.top + "px";
-                    content.style.bottom = "auto";
-
-                    content.classList.add("top");
-                    content.classList.remove("bottom");
-                }
-                else {
-                    // Bottom-align
-                    content.style.top = "auto";
-                    content.style.bottom = Math.max(windowHeight - rootRect.top, 0) + "px";
-
-                    content.classList.add("bottom");
-                    content.classList.remove("top");
-                }
-            }
-
-            this._setOpen(true);
-            Popup._openPopups.push(this);
-
-            this.fire("popup-opened", null, { bubbles: false, cancelable: false });
-        }
-
-        close() {
-            if (this.fire("popup-closing", null, { bubbles: false, cancelable: true }).defaultPrevented)
-                return;
-
-            if (this._closeOnMoveoutTimer) {
-                clearTimeout(this._closeOnMoveoutTimer);
-                this._closeOnMoveoutTimer = undefined;
-            }
-
-            var openChild = Popup._openPopups[Popup._openPopups.indexOf(this) + 1];
-            if (openChild != null)
-                openChild.close();
-
-            this._setOpen(false);
-            if (this._resolver)
-                this._resolver();
-
-            Popup._openPopups.remove(this);
-
-            this.fire("popup-closed", null, { bubbles: false, cancelable: false });
-        }
-
-        protected _findParentPopup(): Popup {
-            var self = this.asElement;
-            var element = <Node>self.parentNode;
-            while (element != null && Popup._openPopups.indexOf(<any>element) == -1)
-                element = (<any>element).host || element.parentNode;
-
-            return <Popup><any>element;
+            super._contentMouseLeave(e);
         }
 
         private _toggleSizeChanged(e: Event, detail: { width: number; height: number }) {
@@ -277,98 +474,5 @@ module Vidyano.WebComponents {
 
             e.stopPropagation();
         }
-
-        private _catchContentClick(e?: Event) {
-            if (this.sticky)
-                e.stopPropagation();
-        }
-
-        private _contentMouseEnter(e: MouseEvent) {
-            if (this._closeOnMoveoutTimer) {
-                var content = this.$["content"];
-                if (e.srcElement != content)
-                    return;
-
-                clearTimeout(this._closeOnMoveoutTimer);
-                this._closeOnMoveoutTimer = undefined;
-            }
-        }
-
-        private _contentMouseLeave(e: MouseEvent) {
-            var content = this.$["content"];
-            if (e.srcElement != content)
-                return;
-
-            if (!this.openOnHover && !this.sticky) {
-                this._closeOnMoveoutTimer = setTimeout(() => {
-                    this.close();
-                }, 300);
-            }
-        }
-
-        private _hasHeader(header: string): boolean {
-            return header != null && header.length > 0;
-        }
-
-        static closeAll(parent?: HTMLElement | WebComponent) {
-            var rootPopup = Popup._openPopups[0];
-            if (rootPopup && (!parent || Popup._isDescendant(<HTMLElement>parent, rootPopup.asElement)))
-                rootPopup.close();
-        }
-
-        private static _isDescendant(parent: HTMLElement, child: HTMLElement): boolean {
-            var node = child.parentNode;
-            while (node != null) {
-                if (node == parent)
-                    return true;
-
-                node = node.parentNode;
-            }
-
-            return false;
-        }
     }
-
-    WebComponent.register(Popup, WebComponents, "vi", {
-        properties: {
-            disabled: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            open: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            sticky: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            autoSizeContent: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            openOnHover: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
-            header: String,
-            contentAlign: {
-                type: String,
-                reflectToAttribute: true
-            },
-            orientation: {
-                type: String,
-                reflectToAttribute: true,
-                value: "auto"
-            }
-        },
-        observers: [
-            "_hookTapAndHoverEvents(isAttached, openOnHover)"
-        ],
-        listeners: {
-            "tap": "_tap"
-        }
-    });
 }

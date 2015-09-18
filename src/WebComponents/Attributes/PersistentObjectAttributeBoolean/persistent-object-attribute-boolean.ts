@@ -1,4 +1,5 @@
 module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register
     export class PersistentObjectAttributeBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
         protected _valueChanged(newValue: any) {
             if (this.attribute && newValue != this.attribute.value)
@@ -6,6 +7,11 @@ module Vidyano.WebComponents.Attributes {
         }
     }
 
+    @PersistentObjectAttribute.register({
+        properties: {
+            options: Array
+        }
+    })
     export class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
         options: Common.KeyValuePair[];
 
@@ -38,15 +44,4 @@ module Vidyano.WebComponents.Attributes {
             return value != null;
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeBoolean, {
-        listeners: {
-        }
-    });
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeNullableBoolean, {
-        properties: {
-            options: Array
-        }
-    });
 }

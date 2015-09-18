@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -18,9 +25,9 @@ var Vidyano;
             };
             PopupMenu.prototype._hookContextMenu = function (isAttached, contextMenu) {
                 if (isAttached && contextMenu)
-                    this.asElement.parentElement.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
+                    this.parentElement.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
                 else if (this._openContextEventListener) {
-                    this.asElement.parentElement.removeEventListener("contextmenu", this._openContextEventListener);
+                    this.parentElement.removeEventListener("contextmenu", this._openContextEventListener);
                     this._openContextEventListener = undefined;
                 }
             };
@@ -50,6 +57,39 @@ var Vidyano;
             PopupMenu.prototype._mousemove = function (e) {
                 e.stopPropagation();
             };
+            PopupMenu = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        disabled: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        },
+                        openOnHover: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        },
+                        contextMenuOnly: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: false
+                        },
+                        shiftKey: Boolean,
+                        ctrlKey: Boolean,
+                        rightAlign: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            observer: "_alignmentChanged"
+                        }
+                    },
+                    observers: [
+                        "_hookContextMenu(isAttached, contextMenuOnly)"
+                    ],
+                    listeners: {
+                        "mouseenter": "_mouseenter",
+                        "mousemove": "_mousemove"
+                    }
+                })
+            ], PopupMenu);
             return PopupMenu;
         })(WebComponents.WebComponent);
         WebComponents.PopupMenu = PopupMenu;
@@ -65,6 +105,22 @@ var Vidyano;
             PopupMenuItem.prototype._splitTap = function (e) {
                 e.stopPropagation();
             };
+            PopupMenuItem = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        label: String,
+                        icon: String,
+                        iconSpace: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        },
+                        split: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        }
+                    }
+                })
+            ], PopupMenuItem);
             return PopupMenuItem;
         })(WebComponents.WebComponent);
         WebComponents.PopupMenuItem = PopupMenuItem;
@@ -73,54 +129,11 @@ var Vidyano;
             function PopupMenuItemSeparator() {
                 _super.apply(this, arguments);
             }
+            PopupMenuItemSeparator = __decorate([
+                WebComponents.WebComponent.register()
+            ], PopupMenuItemSeparator);
             return PopupMenuItemSeparator;
         })(WebComponents.WebComponent);
         WebComponents.PopupMenuItemSeparator = PopupMenuItemSeparator;
-        WebComponents.WebComponent.register(PopupMenu, WebComponents, "vi", {
-            properties: {
-                disabled: {
-                    type: Boolean,
-                    reflectToAttribute: true
-                },
-                openOnHover: {
-                    type: Boolean,
-                    reflectToAttribute: true
-                },
-                contextMenuOnly: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    value: false
-                },
-                shiftKey: Boolean,
-                ctrlKey: Boolean,
-                rightAlign: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    observer: "_alignmentChanged"
-                }
-            },
-            observers: [
-                "_hookContextMenu(isAttached, contextMenuOnly)"
-            ],
-            listeners: {
-                "mouseenter": "_mouseenter",
-                "mousemove": "_mousemove"
-            }
-        });
-        WebComponents.WebComponent.register(PopupMenuItem, WebComponents, "vi", {
-            properties: {
-                label: String,
-                icon: String,
-                iconSpace: {
-                    type: Boolean,
-                    reflectToAttribute: true
-                },
-                split: {
-                    type: Boolean,
-                    reflectToAttribute: true
-                }
-            }
-        });
-        WebComponents.WebComponent.register(PopupMenuItemSeparator, WebComponents, "vi");
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

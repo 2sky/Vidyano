@@ -3,6 +3,11 @@
 @border-color: #ddd;
 
 vi-query-grid-filters {
+    display: block;
+    width: @cell-line-height;
+    height: @cell-line-height;
+    line-height: @cell-line-height;
+
     > vi-popup-menu {
         button[header] {
             .relative();
@@ -11,7 +16,12 @@ vi-query-grid-filters {
             text-align: center;
             line-height: @cell-line-height;
             height: @cell-line-height;
-            min-width: @cell-width;
+            width: @cell-width;
+            padding: 0;
+
+            > vi-icon {
+                height: @cell-line-height;
+            }
         }
 
         vi-popup-menu-item {

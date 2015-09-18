@@ -5,6 +5,24 @@
         new (): AppRouteComponentConstructor;
     }
 
+    @WebComponent.register({
+        properties: {
+            route: {
+                type: String,
+                reflectToAttribute: true
+            },
+            component: {
+                type: String,
+                reflectToAttribute: true,
+                observer: "_componentChanged"
+            },
+            active: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            }
+        }
+    })
     export class AppRoute extends WebComponent {
         private _constructor: AppRouteComponentConstructor;
         private _constructorChanged: boolean;
@@ -141,6 +159,94 @@
         }
     }
 
+    @WebComponent.register({
+        properties: {
+            uri: {
+                type: String,
+                reflectToAttribute: true
+            },
+            hooks: {
+                type: String,
+                reflectToAttribute: true,
+                value: null
+            },
+            noHistory: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
+            path: {
+                type: String,
+                reflectToAttribute: true
+            },
+            service: {
+                type: Object,
+                computed: "_computeService(uri, user, hooks)"
+            },
+            user: {
+                type: String,
+                reflectToAttribute: true,
+                value: null
+            },
+            keys: {
+                type: String,
+                readOnly: true
+            },
+            currentRoute: {
+                type: Object,
+                readOnly: true
+            },
+            application: Object,
+            programUnit: {
+                type: Object,
+                computed: "_computeProgramUnit(service.application, path, routeMapVersion)"
+            },
+            noMenu: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
+            initializing: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            },
+            label: {
+                type: String,
+                reflectToAttribute: true
+            },
+            cacheSize: {
+                type: Number,
+                value: 25,
+                reflectToAttribute: true
+            },
+            routeMapVersion: {
+                type: Number,
+                readOnly: true,
+                value: 0
+            },
+            signInImage: String,
+            showMenu: {
+                type: Boolean,
+                computed: "_computeShowMenu(service.isSignedIn, noMenu, isAttached)"
+            }
+        },
+        observers: [
+            "_start(initializing, path)",
+            "_updateRoute(path, routeMapVersion)"
+        ],
+        hostAttributes: {
+            "theme-color-1": true,
+            "tabindex": 0
+        },
+        listeners: {
+            "app-route-add": "_appRouteAdded"
+        },
+        forwardObservers: [
+            "service.isSignedIn",
+            "service.application"
+        ]
+    })
     export class App extends WebComponent {
         private _cache: AppCacheEntry[] = [];
         private _initializationError: string;
@@ -171,7 +277,7 @@
             super.attached();
 
             if (!this.label)
-                this.label = this.asElement.title;
+                this.label = this.title;
 
             var keys = <any>this.$$("iron-a11y-keys");
             keys.target = document.body;
@@ -445,7 +551,7 @@
             return new Promise((resolve, reject) => {
                 this.app.showMessageDialog({
                     title: action.displayName,
-                    titleIcon: "Icon_Action" + action.name,
+                    titleIcon: "Action" + action.name,
                     message: this.service.getTranslatedMessage(action.definition.confirmation),
                     actions: [action.displayName, this.service.getTranslatedMessage("Cancel")],
                     actionTypes: action.name == "Delete" ? ["Danger"] : []
@@ -582,112 +688,4 @@
             }
         }
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.AppRoute, Vidyano.WebComponents, "vi", {
-        properties: {
-            route: {
-                type: String,
-                reflectToAttribute: true
-            },
-            component: {
-                type: String,
-                reflectToAttribute: true,
-                observer: "_componentChanged"
-            },
-            active: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
-            }
-        }
-    });
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.App, Vidyano.WebComponents, "vi", {
-        properties: {
-            uri: {
-                type: String,
-                reflectToAttribute: true
-            },
-            hooks: {
-                type: String,
-                reflectToAttribute: true,
-                value: null
-            },
-            noHistory: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
-            path: {
-                type: String,
-                reflectToAttribute: true
-            },
-            service: {
-                type: Object,
-                computed: "_computeService(uri, user, hooks)"
-            },
-            user: {
-                type: String,
-                reflectToAttribute: true,
-                value: null
-            },
-            keys: {
-                type: String,
-                readOnly: true
-            },
-            currentRoute: {
-                type: Object,
-                readOnly: true
-            },
-            application: Object,
-            programUnit: {
-                type: Object,
-                computed: "_computeProgramUnit(service.application, path, routeMapVersion)"
-            },
-            noMenu: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
-            initializing: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
-            },
-            label: {
-                type: String,
-                reflectToAttribute: true
-            },
-            cacheSize: {
-                type: Number,
-                value: 25,
-                reflectToAttribute: true
-            },
-            routeMapVersion: {
-                type: Number,
-                readOnly: true,
-                value: 0
-            },
-            signInImage: String,
-            showMenu: {
-                type: Boolean,
-                computed: "_computeShowMenu(service.isSignedIn, noMenu, isAttached)"
-            }
-        },
-        observers: [
-            "_start(initializing, path)",
-            "_updateRoute(path, routeMapVersion)"
-        ],
-        hostAttributes: {
-            "theme-color-1": true,
-            "tabindex": 0
-        },
-        listeners: {
-            "app-route-add": "_appRouteAdded"
-        },
-        forwardObservers: [
-            "service.isSignedIn",
-            "service.application"
-        ]
-    });
 }

@@ -1,56 +1,89 @@
 vi-query-grid-column-header {
-  padding: 0;
-  position: relative;
   display: block;
-}
-vi-query-grid-column-header button {
-  width: 100%;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -ms-flex-direction: row;
-  -webkit-flex-direction: row;
-  flex-direction: row;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  overflow: hidden;
-  text-align: left;
-  background-color: transparent;
-  color: #333333;
-  border-right: 1px solid #eaeaea !important;
-  padding: 0 9px;
-  position: relative;
   min-width: 30px;
+  border-right: 1px solid #eaeaea;
 }
-vi-query-grid-column-header button span {
-  -ms-flex: 1;
-  -webkit-flex: 1;
-  flex: 1;
+vi-query-grid-column-header > div:first-child {
+  height: 30px;
+  padding: 0 9px;
+  cursor: pointer;
+  position: relative;
   color: #808080;
-  display: block;
-  line-height: 30px;
-  white-space: nowrap;
-  padding-right: 16px;
 }
-vi-query-grid-column-header button vi-resource {
+[theme-color-1] vi-query-grid-column-header > div:first-child {
+  background-color: transparent;
+  color: #2a4e6c;
+  fill: #595959;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -moz-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+[theme-color-1] vi-query-grid-column-header > div:first-child:hover {
+  background-color: #ecf2f7;
+}
+[theme-color-1] vi-query-grid-column-header > div:first-child:active {
+  background-color: #386890;
+  fill: white !important;
+  color: white !important;
+}
+[theme-color-1] vi-query-grid-column-header > div:first-child[disabled] {
+  fill: #ecf2f7;
+  color: rgba(0, 0, 0, 0.5);
+}
+[theme-color-2] vi-query-grid-column-header > div:first-child {
+  background-color: transparent;
+  color: #004d40;
+  fill: #595959;
+  -moz-transition-property: fill, color, background-color;
+  -o-transition-property: fill, color, background-color;
+  -webkit-transition-property: fill, color, background-color;
+  transition-property: fill, color, background-color;
+  -moz-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -moz-transition-timing-function: ease-in-out;
+  -o-transition-timing-function: ease-in-out;
+  -webkit-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+[theme-color-2] vi-query-grid-column-header > div:first-child:hover {
+  background-color: #e0f2f1;
+}
+[theme-color-2] vi-query-grid-column-header > div:first-child:active {
+  background-color: #00796b;
+  fill: white !important;
+  color: white !important;
+}
+[theme-color-2] vi-query-grid-column-header > div:first-child[disabled] {
+  fill: #e0f2f1;
+  color: rgba(0, 0, 0, 0.5);
+}
+vi-query-grid-column-header > div:first-child > label {
+  display: inline-block;
+  line-height: 30px;
+  padding-right: 16px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+vi-query-grid-column-header > div:first-child > vi-icon {
+  display: inline-block;
   fill: #555;
   position: absolute;
   right: 9px;
   top: 0;
   bottom: 0;
   margin-left: 18px;
-}
-vi-query-grid-column-header .resizer {
-  position: absolute;
-  right: -9px;
-  height: 30px;
-  top: 0;
-  bottom: 0;
-  width: 18px;
-  cursor: col-resize;
-  z-index: 1;
-}
-vi-sortable[isGroupDragging] vi-query-grid-column:not([dragging="true"]) button {
-  background-color: transparent !important;
 }

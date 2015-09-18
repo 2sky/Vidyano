@@ -1,4 +1,19 @@
 module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register({
+        properties: {
+            canClear: {
+                type: Boolean,
+                computed: "_computeCanClear(value, readOnly)"
+            },
+            fileName: {
+                type: String,
+                computed: "_computeFileName(value)"
+            }
+        },
+        observers: [
+            "_registerInput(attribute, isAttached)"
+        ]
+    })
     export class PersistentObjectAttributeBinaryFile extends WebComponents.Attributes.PersistentObjectAttribute {
         private _inputContainer: HTMLDivElement;
         private _inputAttribute: Vidyano.PersistentObjectAttribute;
@@ -50,20 +65,4 @@ module Vidyano.WebComponents.Attributes {
             return value.split("|")[0];
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeBinaryFile, {
-        properties: {
-            canClear: {
-                type: Boolean,
-                computed: "_computeCanClear(value, readOnly)"
-            },
-            fileName: {
-                type: String,
-                computed: "_computeFileName(value)"
-            }
-        },
-        observers: [
-            "_registerInput(attribute, isAttached)"
-        ]
-    });
 }

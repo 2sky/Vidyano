@@ -23,7 +23,7 @@
                     <template is="dom-if" if="{{hasTimeComponent}}">
                         <vi-popup content-align="right">
                             <button header tabindex="-1">
-                                <vi-resource source="Icon_Clock" icon></vi-resource>
+                                <vi-icon source="Clock"></vi-icon>
                             </button>
                             <div class="clock" content>
                                 <vi-time-picker time="{{selectedDate}}"></vi-time-picker>
@@ -33,7 +33,7 @@
                     <template is="dom-if" if="{{hasDateComponent}}">
                         <vi-popup content-align="right">
                             <button header tabindex="-1">
-                                <vi-resource source="Icon_Calendar" icon></vi-resource>
+                                <vi-icon source="Calendar"></vi-icon>
                             </button>
                             <div class="calendar" content>
                                 <vi-date-picker selected-date="{{selectedDate}}"></vi-date-picker>
@@ -42,7 +42,7 @@
                     </template>
                     <template is="dom-if" if="{{canClear}}">
                         <button on-tap="_clear" tabindex="-1">
-                            <vi-resource source="Icon_Remove" icon></vi-resource>
+                            <vi-icon source="Remove"></vi-icon>
                         </button>
                     </template>
                 </template>

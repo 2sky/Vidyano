@@ -3,13 +3,6 @@
     var verboseLogFunctions = [];
     var verboseSkipLogFunctions = [];
 
-    export enum PathObserverState {
-        Unopened,
-        Opened,
-        Closed,
-        Resetting
-    };
-
     export module Keyboard {
         export enum KeyCodes {
             backspace = 8,
@@ -116,6 +109,16 @@
         }
     }
 
+    export interface Position {
+        x: number;
+        y: number;
+    }
+
+    export interface Size {
+        width: number;
+        height: number;
+    }
+
     ////////////////////////////////////////////////////
     // Get browser scrollbar width and height
     ////////////////////////////////////////////////////
@@ -187,15 +190,15 @@
         (): void;
     }
 
-    export class WebComponent {
+    export class PolymerBase extends HTMLElement {
         /**
          * $ contains all names of elements in the shady DOM with an id attribute.
          */
         $: { [id: string]: HTMLElement };
 
         /**
-        * Convenience method to run `querySelector` on this local DOM scope.
-        */
+         * Convenience method to run `querySelector` on this local DOM scope.
+         */
         $$: (selector: string) => HTMLElement | WebComponents.WebComponent;
 
         /**
@@ -204,21 +207,23 @@
         root: HTMLElement | WebComponent;
 
         /**
-          * Invokes a function asynchronously. The context of the callback
-          * function is bound to 'this' automatically.
-          * @method async
-          * @param {Function|String} method
-          * @param {any|Array} args
-          * @param {number} timeout
-          */
+         * Invokes a function asynchronously. The context of the callback
+         * function is bound to 'this' automatically.
+         * @method async
+         * @param {Function|String} method
+         * @param {any|Array} args
+         * @param {number} timeout
+         */
         async: {
             (method: string, args?: any, timeout?: number): number;
             (method: Function, args?: any, timeout?: number): number;
         };
+
         /**
          * Cancels the async function call.
          */
         cancelAsync: (handle: number) => void;
+
         /**
           * Fire an event.
           * @method fire
@@ -228,6 +233,11 @@
           * @param {Node} onNode Target node.
           */
         fire: (type: string, detail: any, options?: { onNode?: Node; bubbles?: boolean; cancelable?: boolean; }) => CustomEvent;
+
+        /**
+         * Call debounce to collapse multiple requests for a named task into one invocation, which is made after the wait time has elapsed with no new request. If no wait time is given, the callback is called at microtask timing (guaranteed to be before paint).
+         */
+        debounce: (jobName: string, callback: Function, wait?: number) => void;
 
         /**
           * Adds new elements to the end of an array, returns the new length and notifies Polymer that the array has changed.
@@ -265,38 +275,58 @@
          */
         resolveUrl: (href: string) => string;
 
+        /**
+         * Sets a path's value and notifies Polymer for a change for that path.
+         */
         set: (path: string, value: any, root?: WebComponent) => void;
 
+        /**
+         * Notifies Polymer for a change in the given path.
+         */
         notifyPath: (path: string, value: any, fromAbove?: boolean) => void;
 
         /**
-         * Appends the node or webComponent to this component.
+         *  Applies a CSS transform to the specified node, or host element if no node is specified.
          */
-        appendChild: { <TNode extends Node>(node: TNode): TNode; <TWebComponent>(component: TWebComponent): TWebComponent; };
+        transform: (transform: string, node?: Node | WebComponent) => void;
 
         /**
-         * Gets the attribute value with the specified name.
+         * Transforms the specified node, or host element if no node is specified.
          */
-        getAttribute: (name?: string) => string;
+        translate3d: (x: string, y: string, z: string, node?: Node | WebComponent) => void;
+
+        /**
+         * Toggles the named boolean class on the host element, adding the class if bool is truthy and removing it if bool is falsey.
+         * If node is specified, sets the class on node instead of the host element.
+         */
+        toggleClass: (name: string, bool: boolean, node?: Node | WebComponent) => void;
+
+        /**
+         * Toggles the named boolean attribute on the host element, adding the attribute if bool is truthy and removing it if bool is falsey.
+         * If node is specified, sets the attribute on node instead of the host element.
+        */
+        toggleAttribute: (name: string, bool: boolean, node?: Node | WebComponent) => void;
+    }
+
+    // HACK: This fixes the default __extends for extending from HTMLElement
+    eval("PolymerBase = (function (_super) { function PolymerBase() { } return PolymerBase; })(HTMLElement); WebComponents.PolymerBase = PolymerBase;");
+
+    export abstract class WebComponent extends PolymerBase {
+        private _appRequested: boolean;
+        protected translations: any;
+
         className: string;
         classList: DOMTokenList;
         tagName: string;
         style: CSSStyleDeclaration;
         isAttached: boolean;
         app: Vidyano.WebComponents.App;
-        private _setIsAttached: (val: boolean) => void;
-        private _appRequested: boolean;
-        protected translations: any;
 
         protected _setApp: (app: Vidyano.WebComponents.App) => void;
 
-        get asElement(): HTMLElement {
-            return <HTMLElement><any>this;
-        }
-
         attached() {
             if (!this.app)
-                this._setApp(<Vidyano.WebComponents.App>(this instanceof Vidyano.WebComponents.App ? this : this.findParent<Vidyano.WebComponents.App>(Vidyano.WebComponents.App)));
+                this._setApp(<Vidyano.WebComponents.App>(this instanceof Vidyano.WebComponents.App ? this : this.findParent(e => e instanceof Vidyano.WebComponents.App)));
 
             if (!this.translations && this.app && this.app.service && this.app.service.language)
                 this.translations = this.app.service.language.messages;
@@ -308,7 +338,9 @@
             this._setIsAttached(false);
         }
 
-        attributeChanged(attribute?: string, oldValue?: any, newValue?: any) {
+        // Note: Keep this setter since isAttached isn't always defined as a readOnly Polymer property
+        private _setIsAttached(attached: boolean) {
+            this.isAttached = attached;
         }
 
         empty() {
@@ -317,10 +349,10 @@
             });
         }
 
-        findParent<T>(type: any): T {
-            var element = <Node>this.asElement;
-            while (element != null && !(element instanceof type)) {
-                element = (<any>element).host || element.parentNode;
+        findParent<T>(condition: (element: Node) => boolean): T {
+            var element = this;
+            while (element != null && !condition(element)) {
+                element = (<any>element).host || element.parentElement;
             }
 
             return <T><any>element;
@@ -402,7 +434,7 @@
             return results && results[1] || "";
         }
 
-        static register(obj: any, ns?: any, prefix: string = "vi", info: WebComponentRegistrationInfo = {}, finalized?: (ctor: any) => void) {
+        private static _register(obj: Function, info: WebComponentRegistrationInfo = {}, prefix: string = "vi", ns?: any) {
             var name = WebComponent.getName(obj);
             var elementName = prefix + name.replace(/([A-Z])/g, m => "-" + m[0].toLowerCase());
 
@@ -419,23 +451,44 @@
                 type: Object,
                 readOnly: true
             };
-            if (!info.properties["isAttached"]) {
-                info.properties["isAttached"] = {
-                    type: Boolean,
-                    notify: true
-                };
-            }
-            info.properties["isAttached"]["readOnly"] = true;
             info.properties["translations"] = Object;
 
             for (var prop in info.properties) {
                 if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed)) {
-                    if(wcPrototype.properties[prop].computed[0] !== "!")
+                    if (wcPrototype.properties[prop].computed[0] !== "!")
                         info.properties[prop]["computed"] = "_forwardComputed(" + wcPrototype.properties[prop].computed + ")";
                     else
                         info.properties[prop]["computed"] = "_forwardNegate(" + wcPrototype.properties[prop].computed.substring(1) + ")";
                 }
             }
+
+            if (!info.properties["isAttached"]) {
+                // forwardObservers and keybindings count on isAttached
+                var isAttached = (info.forwardObservers || info.keybindings) && !info.properties["isAttached"];
+
+                // Check computed properties
+                if (!isAttached) {
+                    for (var p in info.properties) {
+                        var propInfo = <any>info.properties[p];
+                        if (propInfo.computed && propInfo.computed.indexOf("isAttached") >= 0) {
+                            isAttached = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Check observers
+                if (!isAttached)
+                    isAttached = !!info.observers && info.observers.some(o => o.indexOf("isAttached") >= 0);
+
+                if (isAttached) {
+                    info.properties["isAttached"] = {
+                        type: Boolean,
+                        readOnly: true
+                    };
+                }
+            } else if (!info.properties["isAttached"]["readOnly"])
+                info.properties["isAttached"]["readOnly"] = true;
 
             if (info.forwardObservers) {
                 info.observers = info.observers || [];
@@ -587,14 +640,28 @@
             }
 
 
-            ns[name] = Polymer(wcPrototype);
+            var wc = Polymer(wcPrototype);
             for (var method in obj) {
-                if (obj.hasOwnProperty(method) && method != "register" && method != "getName" && method != "registerOverride" && method != "_finalizeRegistration" && method != "publish")
-                    ns[name][method] = obj[method];
+                if (obj.hasOwnProperty(method) && method != "getName" && method != "registerOverride" && method != "_finalizeRegistration" && method != "publish")
+                    wc[method] = obj[method];
             }
 
-            if (typeof finalized == 'function')
-                finalized(ns[name]);
+            if (ns)
+                ns[name] = wc;
+
+            return wc;
+        }
+
+        static register(obj: Function, info: WebComponentRegistrationInfo, prefix?: string, ns?: any): Function;
+        static register(info?: WebComponentRegistrationInfo, prefix?: string);
+        static register(info?: WebComponentRegistrationInfo, prefix?: string): Function {
+            if (!info || typeof info === "object") {
+                return (obj: Function) => {
+                    return WebComponent._register(obj, info, prefix);
+                };
+            }
+            else if (typeof info === "function")
+                return WebComponent._register.apply(this, arguments);
         }
     }
 }

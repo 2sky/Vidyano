@@ -45,7 +45,7 @@ vi-menu[collapsed] header.vi-menu.style-scope #toggleCollapse {
 [theme-color-2] vi-menu[collapsed] header.vi-menu.style-scope #toggleCollapse {
   background-color: #00796b;
 }
-vi-menu[collapsed] header.vi-menu.style-scope #toggleCollapse vi-resource {
+vi-menu[collapsed] header.vi-menu.style-scope #toggleCollapse vi-icon {
   -moz-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
   -o-transform: rotate(180deg);
@@ -116,13 +116,13 @@ header.vi-menu.style-scope #toggleCollapse {
   width: 40px;
   fill: rgba(255, 255, 255, 0.5);
 }
-header.vi-menu.style-scope #toggleCollapse vi-resource {
+header.vi-menu.style-scope #toggleCollapse vi-icon {
   -moz-transition: transform 0.3s ease-in-out;
   -o-transition: transform 0.3s ease-in-out;
   -webkit-transition: transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out;
 }
-header.vi-menu.style-scope #toggleCollapse vi-resource svg {
+header.vi-menu.style-scope #toggleCollapse vi-icon svg {
   width: 12px;
   height: 12px;
 }

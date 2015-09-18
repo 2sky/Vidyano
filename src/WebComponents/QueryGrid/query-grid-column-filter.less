@@ -1,56 +1,84 @@
 ﻿@import (reference) "query-grid.less";
 
-vi-query-grid-column-filter {
+.labelContainerStyle() {
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: left;
+    font-weight: 500;
+    width: 100%;
+    height: @h2;
+    padding: 0;
+}
+
+vi-query-grid-column-filter-proxy {
+    .labelContainerStyle();
+
+    &:not([disabled]) {
+        .colorize-button-inverse();
+    }
+
+    &[disabled] {
+        vi-icon, #label {
+            display: none !important;
+        }
+    }
+}
+
+vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
     position: relative;
     display: block;
-    border-right: 1px solid @separatorColor !important;
+    border-top: 1px solid @separatorColor !important;
     box-sizing: border-box;
+    height: @cell-line-height;
+    line-height: @cell-line-height;
+    cursor: pointer;
 
-    #filter[disabled] {
-        height: @cell-line-height;
-        line-height: @cell-line-height;
+    &[disabled] {
+        cursor: default;
         background-color: #F9F9F9;
 
-        button {
-            display: none;
-        }
+        #filter {
+            button {
+                display: none;
+            }
 
-        [toggle] {
-            cursor: default;
+            [toggle] {
+                cursor: default;
+            }
         }
     }
 
     button[header] {
-        box-sizing: border-box;
-        overflow: hidden;
-        text-align: left;
-        font-weight: 500;
-        width: 100%;
-        height: @h2;
-        padding: 0;
-
-        span {
-            padding: 0 @cell-padding;
-            line-height: @cell-line-height;
-            white-space: nowrap;
-            -ms-text-overflow: ellipsis;
-            -o-text-overflow: ellipsis;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-
-        vi-resource {
-            display: inline-block;
-            fill: #eee;
-            line-height: @h2;
-            height: @h2;
-            padding: 0 0 0 @cell-padding;
-        }
+        .labelContainerStyle();
     }
 
-    &:not([filtered]) {
-        button.vi-query-grid-column-filter label {
-            opacity: 0.4;
+    #label {
+        display: none;
+        padding: 0 @cell-padding;
+        line-height: @cell-line-height;
+        white-space: nowrap;
+        -ms-text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    vi-icon[source="Filter"] {
+        display: inline-block;
+        fill: #eee;
+        line-height: @h2;
+        height: @h2;
+        padding: 0 0 0 @cell-padding;
+    }
+
+    &[filtered] {
+        #label {
+            display: inline-block;
+        }
+
+        vi-icon[source="Filter"] {
+            display: none;
         }
     }
 
@@ -76,7 +104,7 @@ vi-query-grid-column-filter {
             line-height: @cell-line-height;
             font-weight: normal;
 
-            vi-resource {
+            vi-icon {
                 text-align: center;
                 width: @cell-line-height;
                 height: @cell-line-height;
@@ -142,7 +170,7 @@ vi-query-grid-column-filter {
                         fill: #aaa !important;
                     }
 
-                    vi-resource svg {
+                    vi-icon svg {
                         width: @h4;
                         height: @h4;
                     }
@@ -178,7 +206,9 @@ vi-query-grid-column-filter {
                 &:hover {
                     .colorize( {
                         background-color: @@color-faint;
-                    });
+                    }
+
+                    );
                 }
 
                 span {
@@ -233,7 +263,9 @@ vi-query-grid-column-filter {
             width: 100%;
         }
     }
+}
 
+vi-query-grid-column-filter {
     &[loading] {
         #distincts {
             opacity: 0.5;

@@ -1,4 +1,19 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            session: {
+                type: Object,
+                computed: "_computeSession(application.session, isAttached)"
+            },
+            application: {
+                type: Object,
+                computed: "_computeApplication(isAttached)"
+            }
+        },
+        forwardObservers: [
+            "application.session"
+        ]
+    })
     export class SessionPresenter extends WebComponent {
         private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
 
@@ -18,20 +33,4 @@ module Vidyano.WebComponents {
             return session;
         }
     }
-
-    WebComponent.register(SessionPresenter, WebComponents, "vi", {
-        properties: {
-            session: {
-                type: Object,
-                computed: "_computeSession(application.session, isAttached)"
-            },
-            application: {
-                type: Object,
-                computed: "_computeApplication(isAttached)"
-            }
-        },
-        forwardObservers: [
-            "application.session"
-        ]
-    });
 }

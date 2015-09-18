@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -34,7 +41,7 @@ var Vidyano;
                         return false;
                     var scroller = this.$["body"];
                     if (!this._inlineAddHeight) {
-                        var inlineAdd = scroller.asElement.querySelector(".row.add.inline");
+                        var inlineAdd = scroller.querySelector(".row.add.inline");
                         if (!inlineAdd)
                             return false;
                         this._inlineAddHeight = inlineAdd.offsetHeight;
@@ -115,6 +122,55 @@ var Vidyano;
                     this.attribute.isValueChanged = true;
                     this.attribute.parent.triggerDirty();
                 };
+                PersistentObjectAttributeAsDetail = __decorate([
+                    Attributes.PersistentObjectAttribute.register({
+                        properties: {
+                            columns: {
+                                type: Array,
+                                computed: "_computeColumns(attribute.details.columns)"
+                            },
+                            newAction: {
+                                type: Object,
+                                readOnly: true
+                            },
+                            newActionPinned: {
+                                type: Boolean,
+                                reflectToAttribute: true,
+                                computed: "_computeNewActionPinned(height, newAction)"
+                            },
+                            deleteAction: {
+                                type: Object,
+                                readOnly: true
+                            },
+                            width: {
+                                type: Number,
+                                readOnly: true
+                            },
+                            height: {
+                                type: Number,
+                                readOnly: true
+                            },
+                            canDelete: {
+                                type: Boolean,
+                                reflectToAttribute: true,
+                                computed: "_computeCanDelete(editing, deleteAction, attribute.objects)"
+                            },
+                            initializing: {
+                                type: Boolean,
+                                reflectToAttribute: true,
+                                value: true,
+                                readOnly: true
+                            }
+                        },
+                        observers: [
+                            "_updateWidths(columns, width, deleteAction, editing, isAttached)",
+                            "_updateActions(attribute.details.actions, editing, readOnly)"
+                        ],
+                        forwardObservers: [
+                            "attribute.objects.isDeleted"
+                        ]
+                    })
+                ], PersistentObjectAttributeAsDetail);
                 return PersistentObjectAttributeAsDetail;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeAsDetail = PersistentObjectAttributeAsDetail;
@@ -135,68 +191,23 @@ var Vidyano;
                 };
                 PersistentObjectAttributeAsDetailRow.prototype._scrollNewDetailRowIntoView = function (serviceObject, columns, editing, isAttached) {
                     if (editing && isAttached && !!serviceObject && serviceObject.isNew && !!columns)
-                        this.asElement.scrollIntoView(false);
+                        this.scrollIntoView(false);
                 };
+                PersistentObjectAttributeAsDetailRow = __decorate([
+                    WebComponents.WebComponent.register({
+                        properties: {
+                            serviceObject: Object,
+                            columns: Array,
+                            editing: Boolean
+                        },
+                        observers: [
+                            "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached)"
+                        ]
+                    })
+                ], PersistentObjectAttributeAsDetailRow);
                 return PersistentObjectAttributeAsDetailRow;
             })(WebComponents.WebComponent);
             Attributes.PersistentObjectAttributeAsDetailRow = PersistentObjectAttributeAsDetailRow;
-            Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeAsDetail, {
-                properties: {
-                    columns: {
-                        type: Array,
-                        computed: "_computeColumns(attribute.details.columns)"
-                    },
-                    newAction: {
-                        type: Object,
-                        readOnly: true
-                    },
-                    newActionPinned: {
-                        type: Boolean,
-                        reflectToAttribute: true,
-                        computed: "_computeNewActionPinned(height, newAction)"
-                    },
-                    deleteAction: {
-                        type: Object,
-                        readOnly: true
-                    },
-                    width: {
-                        type: Number,
-                        readOnly: true
-                    },
-                    height: {
-                        type: Number,
-                        readOnly: true
-                    },
-                    canDelete: {
-                        type: Boolean,
-                        reflectToAttribute: true,
-                        computed: "_computeCanDelete(editing, deleteAction, attribute.objects)"
-                    },
-                    initializing: {
-                        type: Boolean,
-                        reflectToAttribute: true,
-                        value: true,
-                        readOnly: true
-                    }
-                },
-                observers: [
-                    "_updateWidths(columns, width, deleteAction, editing, isAttached)",
-                    "_updateActions(attribute.details.actions, editing, readOnly)"
-                ],
-                forwardObservers: [
-                    "attribute.objects.isDeleted"
-                ]
-            });
-            WebComponents.WebComponent.register(PersistentObjectAttributeAsDetailRow, WebComponents.Attributes, "vi", {
-                properties: {
-                    serviceObject: Object,
-                    columns: Array,
-                    editing: Boolean
-                },
-                observers: [
-                    "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached)"
-                ]
-            });
         })(Attributes = WebComponents.Attributes || (WebComponents.Attributes = {}));
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

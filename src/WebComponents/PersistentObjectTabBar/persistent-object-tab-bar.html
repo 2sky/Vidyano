@@ -2,7 +2,7 @@
     <template>
         <vi-overflow class="fit">
             <template is="dom-repeat" items="{{tabs}}" filter="_isVisible" observe="isVisible">
-                <vi-persistent-object-tab-bar-item tab="{{item}}" selected-tab="{{selectedTab}}"></vi-persistent-object-tab-bar-item>
+                <vi-persistent-object-tab-bar-item tab="{{item}}" selected-tab="{{selectedTab}}" on-tab-selected="_tabSelected"></vi-persistent-object-tab-bar-item>
             </template>
         </vi-overflow>
     </template>

@@ -62,6 +62,9 @@ vi-app.dragging * {
   -ms-user-select: none !important;
   user-select: none !important;
 }
+vi-app template {
+  display: none;
+}
 vi-app-route {
   display: -ms-flexbox;
   display: -webkit-flex;

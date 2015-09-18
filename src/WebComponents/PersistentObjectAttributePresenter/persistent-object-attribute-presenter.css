@@ -8,7 +8,7 @@ vi-persistent-object-attribute-presenter {
   flex-basis: 0.000000001px;
   white-space: nowrap;
   font-size: 13px;
-  color: #333;
+  color: #222;
   opacity: 0;
   -moz-transition: opacity ease-out 0.3s;
   -o-transition: opacity ease-out 0.3s;
@@ -77,7 +77,7 @@ vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-p
   -webkit-transform: translateY(1px);
   transform: translateY(1px);
 }
-vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter .locked > vi-resource svg {
+vi-persistent-object-attribute-presenter .label.vi-persistent-object-attribute-presenter .locked > vi-icon svg {
   width: 10px;
   height: 10px;
 }

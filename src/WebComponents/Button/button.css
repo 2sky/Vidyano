@@ -17,13 +17,13 @@ button[is="vi-button"] {
 button[is="vi-button"][disabled] {
   cursor: default;
 }
-button[is="vi-button"]:not([custom-layout]) > vi-resource {
+button[is="vi-button"]:not([custom-layout]) > vi-icon {
   display: inline-block;
 }
-button[is="vi-button"]:not([custom-layout]) > vi-resource[has-resource] + span {
+button[is="vi-button"]:not([custom-layout]) > vi-icon[has-resource] + span {
   margin-left: 2px;
 }
-button[is="vi-button"]:not([custom-layout]) > vi-resource:not([has-resource]) {
+button[is="vi-button"]:not([custom-layout]) > vi-icon:not([has-resource]) {
   display: none;
 }
 button[is="vi-button"]:not([custom-layout]) > span {

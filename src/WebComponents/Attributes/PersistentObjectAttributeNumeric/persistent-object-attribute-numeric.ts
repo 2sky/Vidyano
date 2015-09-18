@@ -1,4 +1,5 @@
 ﻿module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register
     export class PersistentObjectAttributeNumeric extends WebComponents.Attributes.PersistentObjectAttribute {
         private _allowDecimal: boolean;
         private _isNullable: boolean;
@@ -134,6 +135,4 @@
                 e.preventDefault();
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeNumeric);
 }

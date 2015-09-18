@@ -1,4 +1,16 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            programUnit: {
+                type: Object,
+                readOnly: true,
+                observer: "_programUnitChanged"
+            }
+        },
+        listeners: {
+            "activating": "_activating"
+        },
+    })
     export class ProgramUnitPresenter extends WebComponent {
         private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
         programUnit: Vidyano.ProgramUnit;
@@ -31,17 +43,4 @@ module Vidyano.WebComponents {
             }
         }
     }
-
-    WebComponent.register(ProgramUnitPresenter, WebComponents, "vi", {
-        properties: {
-            programUnit: {
-                type: Object,
-                readOnly: true,
-                observer: "_programUnitChanged"
-            }
-        },
-        listeners: {
-            "activating": "_activating"
-        },
-    });
 }

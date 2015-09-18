@@ -1,3 +1,9 @@
+vi-query-grid-filters {
+  display: block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+}
 vi-query-grid-filters > vi-popup-menu button[header] {
   position: relative;
   -ms-flex: 1;
@@ -7,7 +13,11 @@ vi-query-grid-filters > vi-popup-menu button[header] {
   text-align: center;
   line-height: 30px;
   height: 30px;
-  min-width: 30px;
+  width: 30px;
+  padding: 0;
+}
+vi-query-grid-filters > vi-popup-menu button[header] > vi-icon {
+  height: 30px;
 }
 vi-query-grid-filters > vi-popup-menu vi-popup-menu-item {
   line-height: 30px;

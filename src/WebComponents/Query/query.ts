@@ -1,4 +1,26 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            query: {
+                type: Object,
+                observer: "_queryChanged"
+            },
+            loading: {
+                type: Boolean,
+                value: true,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            noActions: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeNoActions(query.actions)"
+            }
+        },
+        forwardObservers: [
+            "query.labelWithTotalItems"
+        ]
+    })
     export class Query extends WebComponent {
         private _cacheEntry: QueryAppCacheEntry;
         query: Vidyano.Query;
@@ -26,27 +48,4 @@
             return noActions && query && query.actions["Filter"] != null;
         }
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.Query, Vidyano.WebComponents, "vi", {
-        properties: {
-            query: {
-                type: Object,
-                observer: "_queryChanged"
-            },
-            loading: {
-                type: Boolean,
-                value: true,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            noActions: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeNoActions(query.actions)"
-            }
-        },
-        forwardObservers: [
-            "query.labelWithTotalItems"
-        ]
-    });
 }

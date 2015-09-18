@@ -18,7 +18,7 @@ vi-action-bar([isEmpty]) {
 vi-action-bar .actions {
   overflow: hidden;
 }
-vi-action-bar .action vi-resource[hasResource] {
+vi-action-bar .action vi-icon[hasResource] {
   padding-right: 2px;
 }
 vi-action-bar vi-overflow vi-action-button {

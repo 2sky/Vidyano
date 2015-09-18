@@ -1,4 +1,13 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            dataContextName: String,
+            dataContext: Object
+        },
+        observers: [
+            "_render(dataContextName, dataContext)"
+        ]
+    })
     export class TemplatePresenter extends WebComponent {
         private _domBindTemplate: any;
 
@@ -11,13 +20,7 @@ module Vidyano.WebComponents {
                 this._domBindTemplate = (<any>document).createElement("template", "dom-bind");
                 this._domBindTemplate[dataContextName] = dataContext;
 
-                var fragmentClone = <HTMLElement>this._sourceTemplate.content;
-                var html = "";
-                Enumerable.from(fragmentClone.children).forEach(child => {
-                    html += (<HTMLElement>child).outerHTML;
-                });
-
-                this._domBindTemplate.innerHTML = html;
+                this._domBindTemplate.innerHTML = this._sourceTemplate.innerHTML;
 
                 Polymer.dom(this).appendChild(this._domBindTemplate);
             }
@@ -25,14 +28,4 @@ module Vidyano.WebComponents {
                 this._domBindTemplate[dataContextName] = dataContext;
         }
     }
-
-    WebComponent.register(TemplatePresenter, WebComponents, "vi", {
-        properties: {
-            dataContextName: String,
-            dataContext: Object
-        },
-        observers: [
-            "_render(dataContextName, dataContext)"
-        ]
-    });
 }

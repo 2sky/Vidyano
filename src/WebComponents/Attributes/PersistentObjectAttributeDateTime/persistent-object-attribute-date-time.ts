@@ -1,4 +1,53 @@
 ﻿module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register({
+        properties: {
+            selectedDate: {
+                type: Object,
+                observer: "_selectedDateChanged"
+            },
+            time: {
+                type: Object
+            },
+            hasDateComponent: {
+                type: Boolean,
+                computed: "_computeHasComponent(attribute, 'Date')"
+            },
+            hasTimeComponent: {
+                type: Boolean,
+                computed: "_computeHasComponent(attribute, 'Time')"
+            },
+            dateFormat: {
+                type: String,
+                computed: "_computeDateFormat(isAttached)"
+            },
+            dateSeparator: {
+                type: String,
+                computed: "_computeDateSeparator(isAttached)"
+            },
+            timeFormat: {
+                type: String,
+                computed: "_computeTimeFormat(isAttached)"
+            },
+            timeSeparator: {
+                type: String,
+                computed: "_computeTimeSeparator(isAttached)"
+            },
+            hasInvalidDate: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            hasInvalidTime: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            canClear: {
+                type: Boolean,
+                computed: "_computeCanClear(attribute.value, attribute.isRequired)"
+            }
+        }
+    })
     export class PersistentObjectAttributeDateTime extends WebComponents.Attributes.PersistentObjectAttribute {
         private _dateInput: HTMLInputElement;
         private _timeInput: HTMLInputElement;
@@ -204,54 +253,4 @@
             return value != null && !required;
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeDateTime, {
-        properties: {
-            selectedDate: {
-                type: Object,
-                observer: "_selectedDateChanged"
-            },
-            time: {
-                type: Object
-            },
-            hasDateComponent: {
-                type: Boolean,
-                computed: "_computeHasComponent(attribute, 'Date')"
-            },
-            hasTimeComponent: {
-                type: Boolean,
-                computed: "_computeHasComponent(attribute, 'Time')"
-            },
-            dateFormat: {
-                type: String,
-                computed: "_computeDateFormat(isAttached)"
-            },
-            dateSeparator: {
-                type: String,
-                computed: "_computeDateSeparator(isAttached)"
-            },
-            timeFormat: {
-                type: String,
-                computed: "_computeTimeFormat(isAttached)"
-            },
-            timeSeparator: {
-                type: String,
-                computed: "_computeTimeSeparator(isAttached)"
-            },
-            hasInvalidDate: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            hasInvalidTime: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            canClear: {
-                type: Boolean,
-                computed: "_computeCanClear(attribute.value, attribute.isRequired)"
-            }
-        }
-	});
 }

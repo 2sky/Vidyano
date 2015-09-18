@@ -1,0 +1,71 @@
+﻿@import (reference) "query-grid.less";
+
+vi-query-grid-header {
+    float: left;
+    background-color: white;
+    position: relative;
+    z-index: 1;
+
+    .spacer {
+        height: @cell-line-height;
+        line-height: @cell-line-height;
+    }
+
+    .selectAll {
+        visibility: hidden !important;
+    }
+
+    &:not([can-filter]) {
+        .spacer {
+            display: none;
+        }
+
+        .bottom {
+            border-top: none;
+        }
+    }
+
+    &:not([can-select-all]) {
+        .bottom {
+            .selectAll {
+                visibility: hidden;
+            }
+        }
+    }
+
+    .bottom {
+        .layout-horizontal();
+        border-top: 1px solid @separatorColor;
+
+        .selectAll {
+            position: relative;
+            cursor: pointer;
+            width: @cell-line-height;
+            height: @cell-line-height;
+            line-height: @cell-line-height;
+
+            > vi-icon {
+                fill: #bbb;
+                height: @cell-line-height;
+
+                #check {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    &[all-selected] {
+        .selectAll {
+            > vi-icon {
+                fill: #888;
+
+                .colorize( {
+                    #check {
+                        fill: @@color;
+                    }
+                });
+            }
+        }
+    }
+}

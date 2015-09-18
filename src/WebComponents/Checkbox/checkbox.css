@@ -19,7 +19,7 @@ vi-checkbox:not([disabled]) {
 [theme-color-2] vi-checkbox:not([disabled])[checked] {
   fill: #009688;
 }
-vi-checkbox[disabled] vi-resource {
+vi-checkbox[disabled] vi-icon {
   fill: #aaa;
 }
 vi-checkbox > span {

@@ -26,9 +26,9 @@ declare module linqjs {
         make<T>(element: T): Enumerable<T>;
         matches<T>(input: string, pattern: RegExp): Enumerable<T>;
         matches<T>(input: string, pattern: string, flags?: string): Enumerable<T>;
-        range<T>(start: number, count: number, step?: number): Enumerable<T>;
-        rangeDown<T>(start: number, count: number, step?: number): Enumerable<T>;
-        rangeTo<T>(start: number, to: number, step?: number): Enumerable<T>;
+        range(start: number, count: number, step?: number): Enumerable<number>;
+        rangeDown(start: number, count: number, step?: number): Enumerable<number>;
+        rangeTo(start: number, to: number, step?: number): Enumerable<number>;
         repeat<T>(element: T, count?: number): Enumerable<T>;
         repeatWithFinalize<T>(initializer: () => T, finalizer: (element) => void): Enumerable<T>;
         generate<T>(func: () => T, count?: number): Enumerable<T>;

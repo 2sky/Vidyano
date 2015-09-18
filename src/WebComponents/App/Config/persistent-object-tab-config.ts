@@ -1,4 +1,15 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            name: String,
+            type: String,
+            objectId: String,
+            template: {
+                type: Object,
+                readOnly: true
+            }
+        }
+    })
     export class PersistentObjectTabConfig extends WebComponent {
         name: string;
         type: string;
@@ -13,16 +24,4 @@
             this._setTemplate(<HTMLElement>Polymer.dom(this).querySelector("template"));
         }
     }
-
-    WebComponent.register(PersistentObjectTabConfig, WebComponents, "vi", {
-        properties: {
-            name: String,
-            type: String,
-            objectId: String,
-            template: {
-                type: Object,
-                readOnly: true
-            }
-        }
-    });
 }

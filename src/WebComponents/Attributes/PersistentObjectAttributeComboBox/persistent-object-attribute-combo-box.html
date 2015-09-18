@@ -10,7 +10,7 @@
                 <vi-select content options="{{comboBoxOptions}}" selected-option="{{value}}" input-value="{{newValue}}" readonly="{{readOnly}}"></vi-select>
                 <template is="dom-if" if="{{!readOnly}}">
                     <button on-tap="_add" id="add" hidden$="{{!canAdd}}" tabindex="-1">
-                        <vi-resource source="Icon_Add" icon></vi-resource>
+                        <vi-icon source="Add"></vi-icon>
                     </button>
                 </template>
             </vi-persistent-object-attribute-edit>

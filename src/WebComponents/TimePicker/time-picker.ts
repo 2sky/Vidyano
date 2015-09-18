@@ -1,4 +1,29 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            time: {
+                type: Date,
+                notify: true,
+                observer: "_timeChanged"
+            },
+            state: {
+                type: String,
+                reflectToAttribute: true,
+                value: "hours"
+            },
+            hours: {
+                type: Number,
+                readOnly: true
+            },
+            minutes: {
+                type: Number,
+                readOnly: true
+            }
+        },
+        listeners: {
+            "click": "_catchClick"
+        }
+    })
     export class TimePicker extends WebComponent {
         hours: number;
         minutes: number;
@@ -73,7 +98,7 @@
             this._setHours(this.time ? this.time.getHours() : 0);
             this._setMinutes(this.time ? this.time.getMinutes() : 0);
 
-            var items = this.asElement.querySelectorAll(".item");
+            var items = this.querySelectorAll(".item");
             [].forEach.apply(items, [(item: HTMLElement) => {
                 var hours = parseInt(item.getAttribute("data-hours"), 10);
                 var minutes = parseInt(item.getAttribute("data-minutes"), 10);
@@ -93,31 +118,4 @@
             return n < 10 ? '0' + n : n.toString();
         }
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.TimePicker, Vidyano.WebComponents, "vi",
-        {
-            properties: {
-                time: {
-                    type: Date,
-                    notify: true,
-                    observer: "_timeChanged"
-                },
-                state: {
-                    type: String,
-                    reflectToAttribute: true,
-                    value: "hours"
-                },
-                hours: {
-                    type: Number,
-                    readOnly: true
-                },
-                minutes: {
-                    type: Number,
-                    readOnly: true
-                }
-            },
-            listeners: {
-                "click": "_catchClick"
-            }
-        });
 }

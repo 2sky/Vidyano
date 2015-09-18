@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -16,7 +23,7 @@ var Vidyano;
             SelectReferenceDialog.prototype.detached = function () {
                 _super.prototype.detached.call(this);
                 if (this._itemClickCallback && this._grid) {
-                    this._grid.asElement.removeEventListener("item-click", this._itemClickCallback);
+                    this._grid.removeEventListener("item-click", this._itemClickCallback);
                     this._itemClickCallback = null;
                 }
             };
@@ -24,7 +31,7 @@ var Vidyano;
                 var dialog = this.$["dialog"];
                 this.empty();
                 this._grid = new WebComponents.QueryGrid();
-                this._grid.asElement.addEventListener("item-click", this._itemClickCallback = this._selectReference.bind(this));
+                this._grid.addEventListener("item-click", this._itemClickCallback = this._selectReference.bind(this));
                 this._grid.classList.add("fit");
                 this._grid.asLookup = true;
                 this._grid.query = this.query;
@@ -69,20 +76,22 @@ var Vidyano;
                 else
                     detail.item.isSelected = !detail.item.isSelected;
             };
+            SelectReferenceDialog = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        query: Object,
+                        canSelect: Boolean
+                    },
+                    hostAttributes: {
+                        "dialog": ""
+                    },
+                    forwardObservers: [
+                        "_selectedItemsChanged(query.selectedItems)"
+                    ]
+                })
+            ], SelectReferenceDialog);
             return SelectReferenceDialog;
         })(WebComponents.WebComponent);
         WebComponents.SelectReferenceDialog = SelectReferenceDialog;
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.SelectReferenceDialog, Vidyano.WebComponents, "vi", {
-            properties: {
-                query: Object,
-                canSelect: Boolean
-            },
-            hostAttributes: {
-                "dialog": ""
-            },
-            forwardObservers: [
-                "_selectedItemsChanged(query.selectedItems)"
-            ]
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

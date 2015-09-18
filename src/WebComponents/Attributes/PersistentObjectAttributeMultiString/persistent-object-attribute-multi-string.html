@@ -1,24 +1,24 @@
-<vi-resource name="vi-persistent-object-attribute-multi-string">
+<vi-icon name="vi-persistent-object-attribute-multi-string">
 	<template>
 		<pre>{{value || '&mdash;'}}</pre>
 	</template>
-</vi-resource>
+</vi-icon>
 
-<vi-resource name="vi-persistent-object-attribute-multi-string+part:edit">
+<vi-icon name="vi-persistent-object-attribute-multi-string+part:edit">
 	<template>
 		<div horizontal layout class="string">
-			<vi-resource source="Icon_Hamburger" class="sort-handle"></vi-resource>
+			<vi-icon source="Hamburger" class="sort-handle"></vi-icon>
 			<input flex value="{{value}}" type="text">
 		</div>
 	</template>
-</vi-resource>
+</vi-icon>
 
-<vi-resource name="vi-persistent-object-attribute-multi-string:edit">
+<vi-icon name="vi-persistent-object-attribute-multi-string:edit">
 	<template>
 		<div id="inputs"></div>
 		<div id="new"></div>
 	</template>
-</vi-resource>
+</vi-icon>
 
 <polymer-element name="vi-persistent-object-attribute-multi-string" extends="vi-persistent-object-attribute">
 </polymer-element>

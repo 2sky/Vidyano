@@ -1,4 +1,39 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            query: {
+                type: Object,
+                observer: "_queryChanged"
+            },
+            filters: {
+                type: Array,
+                readOnly: true
+            },
+            filtering: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true,
+                value: false
+            },
+            canOpen: {
+                type: Boolean,
+                computed: "_computeCanOpen(filters, filtering)"
+            },
+            currentFilter: {
+                type: Object,
+                readOnly: true,
+                observer: "_currentFilterChanged",
+                value: null
+            },
+            editLabel: {
+                type: String,
+                computed: "query.filters.actions.Edit.displayName"
+            }
+        },
+        listeners: {
+            "column-filter-changed": "_columnFilterChangedListener"
+        }
+    })
     export class QueryGridFilters extends WebComponent {
         private _dialog: WebComponents.DialogInstance;
         private _preventColumnFilterChangedListener: boolean;
@@ -198,7 +233,7 @@
 
             this.app.showMessageDialog({
                 title: name,
-                titleIcon: "Icon_Action_Delete",
+                titleIcon: "Action_Delete",
                 message: this.translateMessage("AskForDeleteFilter", name),
                 actions: [this.translateMessage("Delete"), this.translateMessage("Cancel")],
                 actionTypes: ["Danger"]
@@ -231,40 +266,4 @@
             return this.translateMessage("Save") + " '" + currentFilter + "'";
         }
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.QueryGridFilters, Vidyano.WebComponents, "vi", {
-        properties: {
-            query: {
-                type: Object,
-                observer: "_queryChanged"
-            },
-            filters: {
-                type: Array,
-                readOnly: true
-            },
-            filtering: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true,
-                value: false
-            },
-            canOpen: {
-                type: Boolean,
-                computed: "_computeCanOpen(filters, filtering)"
-            },
-            currentFilter: {
-                type: Object,
-                readOnly: true,
-                observer: "_currentFilterChanged",
-                value: null
-            },
-            editLabel: {
-                type: String,
-                computed: "query.filters.actions.Edit.displayName"
-            }
-        },
-        listeners: {
-            "column-filter-changed": "_columnFilterChangedListener"
-        }
-    });
 }

@@ -1,4 +1,38 @@
 module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register({
+        properties: {
+            href: String,
+            canClear: {
+                type: Boolean,
+                readOnly: true
+            },
+            canAddNewReference: {
+                type: Boolean,
+                readOnly: true
+            },
+            canBrowseReference: {
+                type: Boolean,
+                readOnly: true
+            },
+            filter: {
+                type: String,
+                notify: true
+            },
+            objectId: {
+                type: String,
+                observer: "_objectIdChanged",
+                value: null
+            },
+            selectInPlace: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "attribute.selectInPlace"
+            }
+        },
+        observers: [
+            "_update(attribute.isReadOnly)"
+        ]
+    })
     export class PersistentObjectAttributeReference extends WebComponents.Attributes.PersistentObjectAttribute {
         objectId: string;
         attribute: Vidyano.PersistentObjectAttributeWithReference;
@@ -115,39 +149,4 @@ module Vidyano.WebComponents.Attributes {
             e.preventDefault();
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeReference, {
-        properties: {
-            href: String,
-            canClear: {
-                type: Boolean,
-                readOnly: true
-            },
-            canAddNewReference: {
-                type: Boolean,
-                readOnly: true
-            },
-            canBrowseReference: {
-                type: Boolean,
-                readOnly: true
-            },
-            filter: {
-                type: String,
-                notify: true
-            },
-            objectId: {
-                type: String,
-                observer: "_objectIdChanged",
-                value: null
-            },
-            selectInPlace: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "attribute.selectInPlace"
-            }
-        },
-        observers: [
-            "_update(attribute.isReadOnly)"
-        ]
-    });
 }

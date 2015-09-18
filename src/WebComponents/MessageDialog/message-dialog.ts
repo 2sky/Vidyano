@@ -10,6 +10,23 @@
         html?: boolean;
     }
 
+    @WebComponent.register({
+        properties: {
+            options: {
+                type: Object,
+                readOnly: true
+            }
+        },
+        hostAttributes: {
+            "dialog": ""
+        },
+        keybindings: {
+            "esc": {
+                listener: "_close",
+                priority: Number.MAX_VALUE
+            }
+        }
+    })
     export class MessageDialog extends WebComponent {
         private _dialog: WebComponents.DialogInstance;
         options: MessageDialogOptions;
@@ -55,23 +72,4 @@
             return index === 0;
         }
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.MessageDialog, Vidyano.WebComponents, "vi",
-        {
-            properties: {
-                options: {
-                    type: Object,
-                    readOnly: true
-                }
-            },
-            hostAttributes: {
-                "dialog": ""
-            },
-            keybindings: {
-                "esc": {
-                    listener: "_close",
-                    priority: Number.MAX_VALUE
-                }
-            }
-        });
 }

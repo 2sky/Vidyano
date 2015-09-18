@@ -842,8 +842,11 @@ module Vidyano {
             var isObjectAction = action.startsWith("PersistentObject.") || query == null;
             return new Promise<PersistentObject>((resolve, reject) => {
                 if (!skipHooks) {
-                    if (!isObjectAction)
+                    if (!isObjectAction) {
                         query.setNotification(null);
+                        if (query.selectAll.allSelected && !query.selectAll.inverse)
+                            selectedItems = [];
+                    }
                     else if (parent)
                         parent.setNotification(null);
 
@@ -2177,7 +2180,7 @@ module Vidyano {
             this._backupData = {};
         }
 
-        getTypeHint(name: string, defaultValue?: string, typeHints?: any): string {
+        getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string {
             if (typeHints != null) {
                 if (this.typeHints != null)
                     typeHints = Vidyano.extend({}, typeHints, this.typeHints);
@@ -2186,17 +2189,7 @@ module Vidyano {
                 typeHints = this.typeHints;
 
             if (typeHints != null) {
-                var typeHint = typeHints[name];
-                if (typeHint == null) {
-                    // NOTE: Look again case-insensitive
-                    var lowerName = name.toLowerCase();
-                    for (var prop in typeHints) {
-                        if (lowerName == prop.toLowerCase()) {
-                            typeHint = typeHints[prop];
-                            break;
-                        }
-                    }
-                }
+                var typeHint = typeHints[ignoreCasing ? name : name.toLowerCase()];
 
                 if (typeHint != null)
                     return typeHint;
@@ -2608,14 +2601,16 @@ module Vidyano {
         private _queriedPages: Array<number> = [];
         private _filters: PersistentObject;
         private _canFilter: boolean;
+        private _canRead: boolean;
+        private _canReorder: boolean;
         private _lastSearched: Date;
+        private _isReorderable: boolean;
 
         persistentObject: PersistentObject;
         columns: QueryColumn[];
         id: string;
         name: string;
         autoQuery: boolean;
-        canRead: boolean;
         isHidden: boolean;
         hasSearched: boolean;
         label: string;
@@ -2627,7 +2622,6 @@ module Vidyano {
         top: number;
         totalItem: QueryResultItem;
         items: QueryResultItem[];
-        allSelected: boolean;
         groupingInfo: {
             groupedBy: string;
             type: string;
@@ -2637,6 +2631,11 @@ module Vidyano {
                 count: number;
                 end: number;
             }[];
+        };
+        selectAll: {
+            isAvailable: boolean,
+            allSelected?: boolean,
+            inverse?: boolean
         };
 
         constructor(service: Service, query: any, public parent?: PersistentObject, asLookup: boolean = false, public maxSelectedItems?: number) {
@@ -2649,9 +2648,10 @@ module Vidyano {
             if (!this.autoQuery)
                 this.items = [];
 
-            this.canRead = query.canRead;
+            this._canRead = query.canRead;
+            this._canReorder = query.canReorder;
             this.isHidden = query.isHidden;
-            this.label = query.label;
+            this.label = query.label; 
             this.notification = query.notification;
             this.notificationType = typeof (query.notificationType) == "number" ? query.notificationType : NotificationType[<string>query.notificationType];
             this.offset = query.offset;
@@ -2660,6 +2660,9 @@ module Vidyano {
             this.skip = query.skip;
             this.top = query.top;
             this.groupingInfo = query.groupingInfo;
+            this.selectAll = {
+                isAvailable: !!query.isSystem
+            };
 
             this.persistentObject = query.persistentObject instanceof Vidyano.PersistentObject ? query.persistentObject : service.hooks.onConstructPersistentObject(service, query.persistentObject);
             this.singularLabel = this.persistentObject.label;
@@ -2685,6 +2688,8 @@ module Vidyano {
 
             if (query.result)
                 this._setResult(query.result);
+            else
+                this._labelWithTotalItems = this.label;
         }
 
         get filters(): PersistentObject {
@@ -2693,6 +2698,10 @@ module Vidyano {
 
         get canFilter(): boolean {
             return this._canFilter;
+        }
+
+        get canRead(): boolean {
+            return this._canRead;
         }
 
         get selectedItems(): QueryResultItem[] {
@@ -2804,6 +2813,12 @@ module Vidyano {
 
         _toServiceObject() {
             var result = this.copyProperties(["id", "name", "label", "pageSize", "skip", "top", "textSearch"]);
+            if (this.selectAll.allSelected) {
+                result["allSelected"] = true;
+                if (this.selectAll.inverse)
+                    result["allSelectedInversed"] = true;
+            }
+
             result["sortOptions"] = this.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction == SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
 
             if (this.persistentObject)
@@ -2876,9 +2891,9 @@ module Vidyano {
             return null;
         }
 
-        getItems(start: number, length: number): Promise<QueryResultItem[]> {
+        getItems(start: number, length: number = this.pageSize): Promise<QueryResultItem[]> {
             if (!this.hasSearched)
-                return this.search(0).then(() => this.getItems(start, length || this.pageSize));
+                return this.search(0).then(() => this.getItems(start, length));
             else {
                 if (this.totalItems >= 0) {
                     if (start > this.totalItems)
@@ -2907,6 +2922,9 @@ module Vidyano {
                 clonedQuery.top = (endPage - startPage + 1) * this.pageSize;
 
                 return this.queueWork(() => {
+                    if (Enumerable.rangeTo(startPage, endPage).all(p => this._queriedPages.indexOf(p) >= 0))
+                        return Promise.resolve(this.items.slice(start, start + length));
+
                     return this.service.executeQuery(this.parent, clonedQuery, this._asLookup).then(result => {
                         for (var p = startPage; p <= endPage; p++)
                             this._queriedPages.push(p);
@@ -3006,15 +3024,19 @@ module Vidyano {
 
             columns.sort((c1, c2) => c1.offset - c2.offset);
 
-            if (this.columns != columns)
-                this.columns = columns;
+            if (columnsChanged) {
+                if (this.columns != columns)
+                    this.columns = columns;
 
-            this.notifyPropertyChanged("columns", this.columns, oldColumns);
+                this.notifyPropertyChanged("columns", this.columns, oldColumns);
+            }
         }
 
         private _updateItems(items: QueryResultItem[], reset: boolean = false) {
-            if (reset)
+            if (reset) {
                 this.hasSearched = false;
+                this._setTotalItems(null);
+            }
 
             var oldItems = this.items;
             this.notifyPropertyChanged("items", this.items = items, oldItems);
@@ -3099,7 +3121,7 @@ module Vidyano {
             return this.copyProperties(["id", "name", "label", "includes", "excludes", "type", "displayAttribute"]);
         }
 
-        getTypeHint(name: string, defaultValue?: string, typeHints?: any): string {
+        getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string {
             return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);
         }
 
@@ -3181,7 +3203,7 @@ module Vidyano {
             if (!this._values) {
                 this._values = {};
                 this.rawValues.forEach(v => {
-                    this._values[v.key] = Service.fromServiceString(v.value, this.query.getColumn(v.key).type);
+                    this._values[v.key] = Service.fromServiceString(v.value, this.query.columns[v.key].type);
                 });
             }
 
@@ -3215,7 +3237,7 @@ module Vidyano {
                 });
             }
 
-            return this._fullValuesByName[key];
+            return this._fullValuesByName[key] || (this._fullValuesByName[key] = null);
         }
 
         getTypeHint(name: string, defaultValue?: string, typeHints?: any): string {

@@ -10,34 +10,276 @@
 
 vi-query-grid {
     font-size: 13px;
-    background-color: white;
+    line-height: @h2;
     overflow: hidden;
-    .layout-vertical();
-    .noSelection();
 
-    &:not([disable-inline-actions]), &:not([disable-select]) {
-        .header {
-            width: @cell-width;
-        }
-    }
+    #dataHeaderHost {
+        position: relative;
+        white-space: nowrap;
+        border-bottom: 1px solid @separatorColor;
+        z-index: 1;
 
-    &:not([disable-inline-actions]):not([disable-select]) {
-        .header {
-            width: @cell-width * 2;
-        }
-    }
+        table {
+            display: inline-table;
+            border-spacing: 0 !important;
+            vertical-align: top;
+            background-color: white;
 
-    &[disable-inline-actions][disable-select] {
-        .header {
-            width: @cell-width;
-        }
+            tr {
+                padding: 0 !important;
 
-        &[disable-filter] {
-            .header {
-                width: 0 !important;
+                td {
+                    padding: 0 !important;
+
+                    &.pinned {
+                        background-color: white;
+                        position: relative;
+                        z-index: 1;
+                    }
+
+                    &[is="vi-query-grid-table-header-column"] {
+                        &[name=""], &:not([name]) {
+                            display: none;
+                        }
+                    }
+                }
             }
         }
     }
+
+    #dataHost {
+        white-space: nowrap;
+
+        table {
+            display: inline-table;
+            border-spacing: 0 !important;
+            vertical-align: top;
+            background-color: white;
+
+            tr[is="vi-query-grid-table-data-row"] {
+                padding: 0 !important;
+                line-height: @cell-line-height;
+                height: @cell-line-height;
+
+                td {
+                    padding: 0;
+                    cursor: pointer;
+
+                    > * {
+                        padding: 0 @cell-padding;
+                        min-height: @h2;
+                        height: @h2;
+                        line-height: @h2;
+                        box-sizing: border-box;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+
+                        vi-icon {
+                            height: @cell-line-height;
+                        }
+
+                        vi-template-presenter {
+                            height: @cell-line-height;
+                        }
+                    }
+
+                    > .icon {
+                        .layout-horizontal();
+                        .layout-center-center();
+                        height: @cell-line-height;
+                        width: @h2;
+                        padding: 0;
+
+                        > svg {
+                            width: 16px;
+                            height: 16px;
+                        }
+                    }
+
+                    &[is="vi-query-grid-table-data-column-selector"] {
+                        > .icon {
+                            fill: #bbb;
+
+                            #check {
+                                display: none;
+                            }
+                        }
+
+                        > paper-ripple {
+                            pointer-events: none;
+                            .colorize({
+                                color: @@color;
+                            });
+                        }
+
+                        &:hover {
+                            .colorize( {
+                                > .icon {
+                                    background-color: fadeout(black, 95%) !important;
+                                }
+                            });
+                        }
+                    }
+
+                    &[is="vi-query-grid-table-data-column-actions"] {
+                        > .icon {
+                            fill: #333;
+                        }
+
+                        > paper-ripple {
+                            pointer-events: none;
+                            .colorize({
+                                color: @@color;
+                            });
+                        }
+
+                        &:hover, &[hover] {
+                            .colorize({
+                                > .icon {
+                                    background-color: fadeout(black, 95%) !important;
+                                }
+                            });
+                        }
+                    }
+
+                    &[is="vi-query-grid-table-data-column"] {
+                        min-width: @cell-width;
+
+                        &[name=""], &:not([name]) {
+                            display: none;
+                        }
+                    }
+
+                    &.pinned {
+                        position: relative;
+                    }
+                }
+
+                &[is-selected] {
+                    td[is="vi-query-grid-table-data-column-selector"] {
+                        .colorize({
+                            fill: #888;
+
+                            #check {
+                                fill: @@color;
+                            }
+                        });
+
+                        #check {
+                            display: block;
+                        }
+                    }
+
+                    .colorize( {
+                        background-color: @@color-semi-faint;
+
+                        td.pinned {
+                            background-color: @@color-semi-faint;
+                        }
+                    }
+
+                    );
+                }
+
+                &:not(:hover):not([hover]):not([is-selected]) {
+                    &:nth-child(odd) {
+                        background-color: @oddRowColor;
+
+                        td.pinned {
+                            background-color: @oddRowColor;
+                        }
+                    }
+
+                    &:nth-child(even) {
+                        background-color: @evenRowColor;
+
+                        td.pinned {
+                            background-color: @evenRowColor;
+                        }
+                    }
+                }
+
+                &[no-data]:not(:first-of-type) {
+                    display: none;
+                }
+
+                &[no-data]:first-of-type {
+                    visibility: hidden;
+                }
+
+                &:hover, &[hover], &:hover td.pinned, &[hover] td.pinned {
+                    .colorize({
+                        background-color: @@color-faint;
+                    });
+                }
+            }
+
+            &.pinned {
+                tr:not(.no-data) > td:last-of-type > div {
+                    border-right: 1px solid @separatorColor;
+                }
+            }
+        }
+    }
+
+    // FLAG COMBINATIONS //////////////////////////////////////////////////////////
+    &:not([can-select]):not([inline-actions]):not([can-filter]) {
+        td[is="vi-query-grid-table-data-column-selector"] {
+            display: none;
+        }
+
+        td[is="vi-query-grid-table-data-column-actions"] {
+            display: none;
+        }
+
+        vi-query-grid-header, vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
+            display: none;
+        }
+    }
+
+    &[can-select]:not([inline-actions]):not([can-filter]) {
+        td[is="vi-query-grid-table-data-column-actions"] {
+            display: none;
+        }
+
+        vi-query-grid-filters, vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
+            display: none;
+        }
+    }
+
+    &[can-select][inline-actions]:not([can-filter]) {
+        vi-query-grid-filters, vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
+            display: none;
+        }
+    }
+
+    &[can-filter]:not([can-select]):not([inline-actions]) {
+        td[is="vi-query-grid-table-data-column-selector"] {
+            .icon {
+                visibility: hidden;
+            }
+        }
+
+        td[is="vi-query-grid-table-data-column-actions"] {
+            display: none;
+        }
+
+        vi-query-grid-header {
+            .selectAll {
+                display: none;
+            }
+        }
+    }
+
+    &[can-filter][can-select]:not([inline-actions]) {
+        td[is="vi-query-grid-table-data-column-actions"] {
+            .icon {
+                visibility: hidden;
+            }
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////////
 
     #initializingOverlay {
         position: absolute;
@@ -55,205 +297,16 @@ vi-query-grid {
         }
     }
 
-    > vi-spinner {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        z-index: 3;
-    }
-
-    .columnHost {
-        min-height: @h2;
-
-        > * {
-            display: inline-block;
-            white-space: nowrap;
-        }
-
-        > *:nth-child(3) {
-            overflow-x: auto;
-            -ms-overflow-style: none;
-            overflow: -moz-scrollbars-none;
-
-            &::-webkit-scrollbar {
-                width: 0 !important;
-                height: 0 !important;
-            }
-
-            > * {
-                white-space: nowrap;
-
-                > :not(tr) {
-                    display: inline-block;
-                    vertical-align: top;
-                }
-            }
-        }
-    }
-
-    #headers {
-        z-index: 2;
-        line-height: @cell-line-height;
-        background-color: @light-background;
-        border-bottom: 1px solid @separatorColor;
-
-        > * {
-            min-height: @cell-line-height;
-            height: @cell-line-height;
-            line-height: @cell-line-height;
-        }
-    }
-
-    &.header-sorting {
-        #headers {
-            position: relative;
-
-            vi-sortable.pinned {
-                min-width: @cell-line-height;
-                height: @cell-line-height;
-                background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAH0lEQVQIW2NkQAWSjEh8SQYGhucwATAHJAkSgHNAAgBJLgMeVQZnUgAAAABJRU5ErkJggg==) repeat !important;
-            }
-        }
-
-        #data {
-            opacity: 0.4;
-        }
-
-        #filters {
-            opacity: 0.4;
-        }
-
-        #configure {
+    &:not([is-busy]):not([initializing]) {
+        > vi-spinner {
             display: none;
         }
     }
 
-    &[disable-filter] {
-        #filters {
-            display: none;
-        }
+    #verticalSpacer {
     }
 
-    #filters {
-        z-index: 2;
-        line-height: @h2;
-        height: @h2;
-        border-bottom: 1px solid @separatorColor;
-        -moz-transition: opacity 0.3s ease-out;
-        -o-transition: opacity 0.3s ease-out;
-        -webkit-transition: opacity 0.3s ease-out;
-        transition: opacity 0.3s ease-out;
-        background-color: white;
-    }
-
-    #data {
-        -moz-transition: opacity 0.3s ease-out;
-        -o-transition: opacity 0.3s ease-out;
-        -webkit-transition: opacity 0.3s ease-out;
-        transition: opacity 0.3s ease-out;
-        opacity: 1;
-
-        #verticalSpacer {
-            position: relative;
-            display: block;
-            width: 100%;
-            white-space: nowrap;
-
-            #topSpacer {
-                display: block;
-                height: 0;
-                width: 100%;
-            }
-
-            .columnHost {
-                tr {
-                    line-height: @cell-line-height;
-                    height: @cell-line-height;
-
-                    &:not([hover]) {
-                        &:nth-child(odd) {
-                            background-color: @oddRowColor;
-                        }
-
-                        &:nth-child(even) {
-                            background-color: @evenRowColor;
-                        }
-                    }
-
-                    &.noData:not(:first-of-type) {
-                        display: none;
-                    }
-
-                    &.noData:first-of-type {
-                        visibility: hidden;
-                    }
-
-                    .cell {
-                        height: @h2;
-                        min-height: @h2;
-                        line-height: @h2;
-                        padding: 0 @cell-padding;
-                        -moz-box-sizing: border-box;
-                        -webkit-box-sizing: border-box;
-                        box-sizing: border-box;
-                        overflow: hidden;
-                        white-space: nowrap;
-                        -ms-text-overflow: ellipsis;
-                        -o-text-overflow: ellipsis;
-                        text-overflow: ellipsis;
-
-                        vi-resource {
-                            height: @cell-line-height;
-                        }
-                    }
-
-                    &[hover] {
-                        .colorize( {
-                            background-color: @@color-faint;
-                        }
-
-                        );
-                    }
-                }
-
-                .pinned {
-                    tr:not(.noData) > td:last-of-type > div {
-                        border-right: 1px solid @separatorColor;
-                    }
-                }
-            }
-        }
-    }
-
-    table {
-        border-spacing: 0 !important;
-
-        tr {
-            padding: 0 !important;
-
-            td, th {
-                min-width: @cell-width;
-                white-space: nowrap;
-                -ms-text-overflow: ellipsis;
-                -o-text-overflow: ellipsis;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                padding: 0 !important;
-                cursor: pointer;
-            }
-        }
-    }
-
-    #horizontalScroll {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 1;
-        height: @h4;
-
-        #horizontalSpacer {
-            height: @h4;
-        }
+    > vi-size-tracker {
+        pointer-events: none;
     }
 }

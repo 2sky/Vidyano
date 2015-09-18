@@ -1,11 +1,10 @@
 module Vidyano.WebComponents {
     var resources: { [name: string]: Resource } = {};
 
-    export class Resource extends WebComponent {
+    export abstract class Resource extends WebComponent {
         private _loadedSource: string;
         name: string;
         source: string;
-        icon: boolean;
         model: any;
         hasResource: boolean;
 
@@ -15,35 +14,63 @@ module Vidyano.WebComponents {
             this._load();
         }
 
-        private _nameChanged() {
-            if (this.name)
-                resources[this.name.toUpperCase()] = this;
+        private _nameChanged(name: string, oldName: string) {
+            if (name)
+                resources[`${this.tagName}+${name.toUpperCase()}`] = this;
             else
-                delete resources[this.name.toUpperCase()];
+                delete resources[`${this.tagName}+${oldName.toUpperCase() }`];
         }
 
-        private _setIcon(value: boolean) { }
         private _setHasResource(value: boolean) { }
 
         private _load() {
-            if (this.isAttached && this.source) {
+            if (this.source) {
                 if (this.source == this._loadedSource)
                     return;
 
                 this.empty();
 
-                var resource = Resource.LoadResource(this.source);
+                var resource = Resource.LoadResource(this.source, this.tagName);
                 if (resource)
-                    Polymer.dom(this).appendChild(Resource.Load(resource));
+                    Polymer.dom(this).appendChild(Resource.Load(resource, this.tagName));
 
-                this.icon = resource != null ? resource.icon : false;
                 this._setHasResource(resource != null);
                 this._loadedSource = this.source;
             }
         }
 
-        static Load(source: string | Resource): DocumentFragment {
-            var resource = (typeof source === "string") ? resources[source.toUpperCase()] : source;
+        static register(info: WebComponentRegistrationInfo = {}): any {
+            if (typeof info == "function")
+                return Resource.register({})(info);
+
+            return (obj: Function) => {
+                info.properties = info.properties || {};
+
+                info.properties["name"] = {
+                    type: String,
+                    observer: "_nameChanged"
+                };
+                info.properties["model"] = {
+                    type: Object,
+                    observer: "_load"
+                };
+                info.properties["source"] = {
+                    type: String,
+                    reflectToAttribute: true,
+                    observer: "_load"
+                };
+                info.properties["hasResource"] = {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                };
+
+                return WebComponent.register(obj, info);
+            };
+        }
+
+        protected static Load(source: string | Resource, tagName: string): DocumentFragment {
+            var resource = (typeof source === "string") ? resources[`${tagName}+${source.toUpperCase() }`] : source;
 
             var copy = document.createDocumentFragment();
             Enumerable.from(Polymer.dom(resource).children).forEach((child: HTMLElement) => {
@@ -53,39 +80,12 @@ module Vidyano.WebComponents {
             return copy;
         }
 
-        static LoadResource(source: string): Resource {
-            return resources[source.toUpperCase()];
+        protected static LoadResource(source: string, tagName: string): Resource {
+            return resources[`${tagName}+${source.toUpperCase() }`];
         }
 
-        static Exists(name: string): boolean {
-            return resources[name.toUpperCase()] != undefined;
+        protected static Exists(name: string, tagName: string): boolean {
+            return resources[`${tagName}+${name.toUpperCase() }`] != undefined;
         }
     }
-
-    WebComponent.register(Resource, WebComponents, "vi", {
-        properties: {
-            name: {
-                type: String,
-                observer: "_nameChanged"
-            },
-            model: {
-                type: Object,
-                observer: "_load"
-            },
-            source: {
-                type: String,
-                reflectToAttribute: true,
-                observer: "_load"
-            },
-            hasResource: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
-            },
-            icon: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-        }
-    });
 }

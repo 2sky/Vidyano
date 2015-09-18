@@ -1,4 +1,19 @@
 ﻿module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register({
+        properties: {
+            characterCasing: {
+                type: String,
+                observer: "_characterCasingChanged"
+            },
+            editInputStyle: {
+                type: String,
+                readOnly: true
+            },
+            suggestions: Array,
+            inputtype: String,
+            maxlength: Number,
+        },
+    })
     export class PersistentObjectAttributeString extends PersistentObjectAttribute {
         characterCasing: string;
         editInputStyle: string;
@@ -65,20 +80,4 @@
             return this.characterCasing == "Upper" ? val.toUpperCase() : val.toLowerCase();
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeString, {
-        properties: {
-            characterCasing: {
-                type: String,
-                observer: "_characterCasingChanged"
-            },
-            editInputStyle: {
-                type: String,
-                readOnly: true
-            },
-            suggestions: Array,
-            inputtype: String,
-            maxlength: Number,
-        },
-    });
 }

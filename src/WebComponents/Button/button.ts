@@ -1,15 +1,5 @@
 ﻿module Vidyano.WebComponents {
-    export class Button extends WebComponents.WebComponent {
-        private _setCustomLayout: (custom: boolean) => void;
-
-        attached() {
-            super.attached();
-
-            this._setCustomLayout(Polymer.dom(this).children.length > 0);
-        }
-    }
-
-    WebComponent.register(Button, WebComponents, "vi", {
+    @WebComponent.register({
         extends: "button",
         properties: {
             disabled: {
@@ -28,5 +18,14 @@
             icon: String,
             label: String
         }
-    });
+    })
+    export class Button extends WebComponents.WebComponent {
+        private _setCustomLayout: (custom: boolean) => void;
+
+        attached() {
+            super.attached();
+
+            this._setCustomLayout(Polymer.dom(this).children.length > 0);
+        }
+    }
 }

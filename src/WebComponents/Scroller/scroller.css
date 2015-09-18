@@ -59,6 +59,9 @@ vi-scroller[no-vertical][no-horizontal] > #wrapper > #content > :not(vi-size-tra
 vi-scroller[no-vertical][no-horizontal] > .scrollbar-parent {
   display: none !important;
 }
+vi-scroller:not([no-vertical]):not([no-horizontal]) > #wrapper > #content {
+  display: inline-block;
+}
 vi-scroller:not([force-scrollbars]):not([hovering]):not([scrolling]) > .scrollbar-parent > .scrollbar {
   opacity: 0;
 }
@@ -132,6 +135,9 @@ vi-scroller[vertical] > .scrollbar-parent.vertical:hover {
 }
 vi-scroller[horizontal] > .scrollbar-parent.horizontal:hover {
   background-color: rgba(0, 0, 0, 0.2);
+}
+vi-scroller[scrolling] > #wrapper {
+  pointer-events: none;
 }
 vi-scroller[scrolling] #vertical,
 vi-scroller > .scrollbar-parent:hover #vertical {

@@ -46,6 +46,14 @@ vi-scroller {
         }
     }
 
+    &:not([no-vertical]):not([no-horizontal]) {
+        > #wrapper {
+            > #content {
+                display: inline-block;
+            }
+        }
+    }
+
     &:not([force-scrollbars]):not([hovering]):not([scrolling]) > .scrollbar-parent > .scrollbar {
         opacity: 0;
     }
@@ -137,6 +145,12 @@ vi-scroller {
     &[horizontal] {
         > .scrollbar-parent.horizontal:hover {
             background-color: @scrollbar-parent-color;
+        }
+    }
+
+    &[scrolling] {
+        > #wrapper {
+            pointer-events: none;
         }
     }
 

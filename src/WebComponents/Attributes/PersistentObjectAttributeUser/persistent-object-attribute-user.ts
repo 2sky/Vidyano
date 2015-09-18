@@ -1,4 +1,20 @@
 module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register({
+        properties: {
+            friendlyName: {
+                type: String,
+                computed: "_computeFriendlyName(attribute.options)"
+            },
+            canClear: {
+                type: Boolean,
+                computed: "_computeCanClear(attribute.isRequired, value)"
+            },
+            canBrowseReference: {
+                type: Boolean,
+                computed: "_computeCanBrowseReference(attribute.isReadOnly)",
+            },
+        }
+    })
     export class PersistentObjectAttributeUser extends WebComponents.Attributes.PersistentObjectAttribute {
         private _browseReference() {
             this.app.service.getQuery(this.attribute.getTypeHint("IncludeGroups") === "True" ? "98b12f32-3f2d-4f54-b963-cb9206f74355" : "273a8302-ddc8-43db-a7f6-c3c28fc8f593", true).then(query => {
@@ -37,21 +53,4 @@ module Vidyano.WebComponents.Attributes {
             return !isReadOnly;
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeUser, {
-        properties: {
-            friendlyName: {
-                type: String,
-                computed: "_computeFriendlyName(attribute.options)"
-            },
-            canClear: {
-                type: Boolean,
-                computed: "_computeCanClear(attribute.isRequired, value)"
-            },
-            canBrowseReference: {
-                type: Boolean,
-                computed: "_computeCanBrowseReference(attribute.isReadOnly)",
-            },
-        }
-    });
 }

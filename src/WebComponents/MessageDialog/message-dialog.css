@@ -16,23 +16,23 @@ vi-message-dialog vi-dialog .content pre {
 vi-message-dialog vi-dialog .content pre a {
   color: inherit;
 }
-vi-message-dialog header > vi-resource[icon] {
+vi-message-dialog header > vi-icon {
   padding-right: 12px;
   height: 40px;
 }
-vi-message-dialog header > vi-resource[icon] svg {
+vi-message-dialog header > vi-icon svg {
   width: 22px;
   height: 22px;
 }
-vi-message-dialog header > vi-resource[icon][source$="Error"] {
+vi-message-dialog header > vi-icon[source$="Error"] {
   fill: #a80511;
 }
-vi-message-dialog header > vi-resource[icon][source$="Warning"] {
+vi-message-dialog header > vi-icon[source$="Warning"] {
   fill: #e5a300;
 }
-vi-message-dialog header > vi-resource[icon][source$="Notice"] {
+vi-message-dialog header > vi-icon[source$="Notice"] {
   fill: #48545e;
 }
-vi-message-dialog header > vi-resource[icon][source$="OK"] {
+vi-message-dialog header > vi-icon[source$="OK"] {
   fill: #339f7b;
 }

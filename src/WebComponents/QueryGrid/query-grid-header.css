@@ -1,0 +1,54 @@
+vi-query-grid-header {
+  float: left;
+  background-color: white;
+  position: relative;
+  z-index: 1;
+}
+vi-query-grid-header .spacer {
+  height: 30px;
+  line-height: 30px;
+}
+vi-query-grid-header .selectAll {
+  visibility: hidden !important;
+}
+vi-query-grid-header:not([can-filter]) .spacer {
+  display: none;
+}
+vi-query-grid-header:not([can-filter]) .bottom {
+  border-top: none;
+}
+vi-query-grid-header:not([can-select-all]) .bottom .selectAll {
+  visibility: hidden;
+}
+vi-query-grid-header .bottom {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  border-top: 1px solid #eaeaea;
+}
+vi-query-grid-header .bottom .selectAll {
+  position: relative;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+}
+vi-query-grid-header .bottom .selectAll > vi-icon {
+  fill: #bbb;
+  height: 30px;
+}
+vi-query-grid-header .bottom .selectAll > vi-icon #check {
+  display: none;
+}
+vi-query-grid-header[all-selected] .selectAll > vi-icon {
+  fill: #888;
+}
+[theme-color-1] vi-query-grid-header[all-selected] .selectAll > vi-icon #check {
+  fill: #4682b4;
+}
+[theme-color-2] vi-query-grid-header[all-selected] .selectAll > vi-icon #check {
+  fill: #009688;
+}
