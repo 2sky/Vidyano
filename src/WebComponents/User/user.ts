@@ -1,4 +1,37 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            isSignedIn: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            },
+            userName: {
+                type: String,
+                readOnly: true
+            },
+            service: {
+                type: Object,
+                readOnly: true
+            },
+            canFeedback: {
+                type: Boolean,
+                readOnly: true
+            },
+            canUserSettings: {
+                type: Boolean,
+                readOnly: true
+            },
+            collapsed: {
+                type: Boolean,
+                reflectToAttribute: true
+            }
+        },
+        forwardObservers: [
+            "_signedInChanged(service.isSignedIn)",
+            "_signedInChanged(service.isUsingDefaultCredentials)"
+        ]
+    })
     export class User extends WebComponent {
         private service: Vidyano.Service;
         isSignedIn: boolean;
@@ -47,38 +80,4 @@ module Vidyano.WebComponents {
             this._setCanUserSettings(isSignedIn && !!this.service.application.userSettingsId);
         }
     }
-
-    WebComponent.register(User, WebComponents, "vi", {
-        properties: {
-            isSignedIn: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
-            },
-            userName: {
-                type: String,
-                readOnly: true
-            },
-            service: {
-                type: Object,
-                readOnly: true
-            },
-            canFeedback: {
-                type: Boolean,
-                readOnly: true
-            },
-            canUserSettings: {
-                type: Boolean,
-                readOnly: true
-            },
-            collapsed: {
-                type: Boolean,
-                reflectToAttribute: true
-            }
-        },
-        forwardObservers: [
-            "_signedInChanged(service.isSignedIn)",
-            "_signedInChanged(service.isUsingDefaultCredentials)"
-        ]
-    });
 }

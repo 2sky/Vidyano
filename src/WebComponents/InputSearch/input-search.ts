@@ -1,4 +1,26 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            value: {
+                type: String,
+                notify: true,
+                value: ""
+            },
+            focused: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            autofocus: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            collapsed: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            }
+        }
+    })
     export class InputSearch extends WebComponent {
         value: string;
         focused: boolean;
@@ -42,27 +64,4 @@ module Vidyano.WebComponents {
             }, 100);
         }
     }
-
-    WebComponent.register(InputSearch, WebComponents, "vi", {
-        properties: {
-            value: {
-                type: String,
-                notify: true,
-                value: ""
-            },
-            focused: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            autofocus: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            collapsed: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            }
-        }
-    });
 }

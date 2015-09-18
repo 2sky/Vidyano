@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -67,7 +74,7 @@ var Vidyano;
                 var _this = this;
                 this._setHours(this.time ? this.time.getHours() : 0);
                 this._setMinutes(this.time ? this.time.getMinutes() : 0);
-                var items = this.asElement.querySelectorAll(".item");
+                var items = this.querySelectorAll(".item");
                 [].forEach.apply(items, [function (item) {
                         var hours = parseInt(item.getAttribute("data-hours"), 10);
                         var minutes = parseInt(item.getAttribute("data-minutes"), 10);
@@ -83,33 +90,35 @@ var Vidyano;
             TimePicker.prototype._zeroPrefix = function (n) {
                 return n < 10 ? '0' + n : n.toString();
             };
+            TimePicker = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        time: {
+                            type: Date,
+                            notify: true,
+                            observer: "_timeChanged"
+                        },
+                        state: {
+                            type: String,
+                            reflectToAttribute: true,
+                            value: "hours"
+                        },
+                        hours: {
+                            type: Number,
+                            readOnly: true
+                        },
+                        minutes: {
+                            type: Number,
+                            readOnly: true
+                        }
+                    },
+                    listeners: {
+                        "click": "_catchClick"
+                    }
+                })
+            ], TimePicker);
             return TimePicker;
         })(WebComponents.WebComponent);
         WebComponents.TimePicker = TimePicker;
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.TimePicker, Vidyano.WebComponents, "vi", {
-            properties: {
-                time: {
-                    type: Date,
-                    notify: true,
-                    observer: "_timeChanged"
-                },
-                state: {
-                    type: String,
-                    reflectToAttribute: true,
-                    value: "hours"
-                },
-                hours: {
-                    type: Number,
-                    readOnly: true
-                },
-                minutes: {
-                    type: Number,
-                    readOnly: true
-                }
-            },
-            listeners: {
-                "click": "_catchClick"
-            }
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

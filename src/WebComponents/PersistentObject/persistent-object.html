@@ -16,9 +16,7 @@
             <div class="vertical layout flex detail" theme-color-2>
                 <vi-action-bar service-object="{{selectedDetailTab.target}}"></vi-action-bar>
                 <vi-notification service-object="{{selectedDetailTab.target}}"></vi-notification>
-                <vi-scroller no-horizontal no-vertical="{{_disableTabScrolling(selectedDetailTab)}}" class="flex">
-                    <vi-persistent-object-tab-presenter tab="{{selectedDetailTab}}"></vi-persistent-object-tab-presenter>
-                </vi-scroller>
+                <vi-persistent-object-tab-presenter class="flex" tab="{{selectedDetailTab}}"></vi-persistent-object-tab-presenter>
             </div>
         </div>
         <div class="horizontal layout tabs">

@@ -1,15 +1,22 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
     var WebComponents;
     (function (WebComponents) {
         var requestFrame = (function () {
-            var raf = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame ||
+            var raf = requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame ||
                 function (fn) { return window.setTimeout(fn, 20); };
             return function (fn) { return raf(fn); };
         })();
@@ -59,7 +66,7 @@ var Vidyano;
                     this.fire("sizechanged", this._resizeLast = {
                         width: root.offsetWidth,
                         height: root.offsetHeight
-                    });
+                    }, { onNode: this, bubbles: false });
                 }
             };
             SizeTracker.prototype._resizeTimerMicroTask = function () {
@@ -97,16 +104,18 @@ var Vidyano;
                 expand.scrollLeft = expand.scrollWidth;
                 expand.scrollTop = expand.scrollHeight;
             };
+            SizeTracker = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        deferred: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        }
+                    }
+                })
+            ], SizeTracker);
             return SizeTracker;
         })(WebComponents.WebComponent);
         WebComponents.SizeTracker = SizeTracker;
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.SizeTracker, Vidyano.WebComponents, "vi", {
-            properties: {
-                deferred: {
-                    type: Boolean,
-                    reflectToAttribute: true
-                }
-            }
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

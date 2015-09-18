@@ -1,4 +1,25 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            error: {
+                type: String,
+                notify: true
+            },
+            label: String,
+            image: {
+                type: String,
+                observer: "_imageChanged"
+            },
+            vidyanoOnly: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            }
+        },
+        listeners: {
+            "activating": "_activating"
+        }
+    })
     export class SignIn extends WebComponent {
         error: string;
         vidyanoOnly: boolean;
@@ -45,6 +66,57 @@
         }
     }
 
+    @WebComponent.register({
+        extends: "li",
+        properties: {
+            label: {
+                type: String,
+                computed: "_computeLabel(isAttached)",
+            },
+            description: {
+                type: String,
+                computed: "_computeDescription(isAttached)",
+            },
+            isVidyano: {
+                type: Boolean,
+                computed: "_computeIsVidyano(isAttached)",
+                reflectToAttribute: true
+            },
+            userName: {
+                type: String,
+                notify: true
+            },
+            password: {
+                type: String,
+                notify: true
+            },
+            staySignedIn: {
+                type: Boolean
+            },
+            expand: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            signingIn: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true,
+                value: false
+            },
+            signingInCounter: {
+                type: Number,
+                value: 0
+            },
+            signInLabel: {
+                type: String,
+                computed: "_computeSigninButtonLabel(signingIn, signingInCounter, isAttached)"
+            }
+        },
+        listeners: {
+            "tap": "_tap"
+        }
+    })
     export class SignInProvider extends WebComponent {
         private _signInButton: HTMLButtonElement;
         private _signInButtonWidth = 0;
@@ -153,78 +225,4 @@
             return this._signingInMessage + Array(signingInCounter + 1).join(".");
         }
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.SignIn, Vidyano.WebComponents, "vi", {
-        properties: {
-            error: {
-                type: String,
-                notify: true
-            },
-            label: String,
-            image: {
-                type: String,
-                observer: "_imageChanged"
-            },
-            vidyanoOnly: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
-            }
-        },
-        listeners: {
-            "activating": "_activating"
-        }
-    });
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.SignInProvider, Vidyano.WebComponents, "vi", {
-        properties: {
-            label: {
-                type: String,
-                computed: "_computeLabel(isAttached)",
-            },
-            description: {
-                type: String,
-                computed: "_computeDescription(isAttached)",
-            },
-            isVidyano: {
-                type: Boolean,
-                computed: "_computeIsVidyano(isAttached)",
-                reflectToAttribute: true
-            },
-            userName: {
-                type: String,
-                notify: true
-            },
-            password: {
-                type: String,
-                notify: true
-            },
-            staySignedIn: {
-                type: Boolean
-            },
-            expand: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            signingIn: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true,
-                value: false
-            },
-            signingInCounter: {
-                type: Number,
-                value: 0
-            },
-            signInLabel: {
-                type: String,
-                computed: "_computeSigninButtonLabel(signingIn, signingInCounter, isAttached)"
-            }
-        },
-        listeners: {
-            "tap": "_tap"
-        },
-        extends: "li"
-    });
 }

@@ -1,4 +1,13 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            hasOverflow: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            }
+        }
+    })
     export class Overflow extends WebComponent {
         private _overflownChildren: linqjs.Enumerable<HTMLElement>;
         private _visibibleSizeChangedSkip: { width: number; height: number };
@@ -11,12 +20,14 @@ module Vidyano.WebComponents {
             if (popup.open)
                 return;
 
-            var children = this._getChildren();
-            children.forEach(child => {
-                Polymer.dom(child).removeAttribute("overflow");
-            });
+            requestAnimationFrame(() => {
+                var children = this._getChildren();
+                children.forEach(child => {
+                    Polymer.dom(child).removeAttribute("overflow");
+                });
 
-            this._setHasOverflow(children.toArray().some(child => child.offsetTop > 0));
+                this._setHasOverflow(children.toArray().some(child => child.offsetTop > 0));
+            });
         }
 
         protected _getChildren(): linqjs.Enumerable<HTMLElement> {
@@ -79,17 +90,4 @@ module Vidyano.WebComponents {
             e.stopPropagation();
         }
     }
-
-    WebComponent.register(Overflow, WebComponents, "vi", {
-        properties: {
-            hasOverflow: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
-            }
-        },
-        listeners: {
-            "sizechanged": "_visibleSizeChanged"
-        }
-    });
 }

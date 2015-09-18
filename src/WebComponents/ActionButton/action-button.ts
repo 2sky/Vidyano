@@ -1,4 +1,58 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            action: {
+                type: Object,
+                observer: "_updateCanExecuteHook"
+            },
+            isAttached: {
+                type: Boolean,
+                observer: "_updateCanExecuteHook"
+            },
+            item: Object,
+            icon: {
+                type: String,
+                computed: "_computeIcon(action)"
+            },
+            pinned: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "action.isPinned"
+            },
+            noLabel: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            noIcon: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            canExecute: {
+                type: Boolean,
+                readOnly: true
+            },
+            hidden: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            },
+            hasOptions: {
+                type: Boolean,
+                computed: "_computeHasOptions(action)"
+            },
+            options: {
+                type: Array,
+                computed: "action.options"
+            },
+            overflow: {
+                type: Boolean,
+                reflectToAttribute: true
+            }
+        },
+        forwardObservers: [
+            "action.isPinned"
+        ]
+    })
     export class ActionButton extends WebComponent {
         private _propertyChangedObserver: Vidyano.Common.SubjectDisposer;
         action: Vidyano.Action;
@@ -52,67 +106,12 @@ module Vidyano.WebComponents {
             if (!action)
                 return "";
 
-            var actionIcon = 'Icon_Action_' + action.definition.name;
-            return action.isPinned && !Resource.Exists(actionIcon) ? "Icon_Action_Default$" : actionIcon;
+            var actionIcon = "Action_" + action.definition.name;
+            return action.isPinned && !Icon.Exists(actionIcon) ? "Action_Default$" : actionIcon;
         }
 
         private _computeHasOptions(action: Vidyano.Action): boolean {
             return action && action.options && action.options.length > 0;
         }
     }
-
-    WebComponent.register(ActionButton, WebComponents, "vi", {
-        properties: {
-            action: {
-                type: Object,
-                observer: "_updateCanExecuteHook"
-            },
-            isAttached: {
-                type: Boolean,
-                observer: "_updateCanExecuteHook"
-            },
-            item: Object,
-            icon: {
-                type: String,
-                computed: "_computeIcon(action)"
-            },
-            pinned: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "action.isPinned"
-            },
-            noLabel: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            noIcon: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            canExecute: {
-                type: Boolean,
-                readOnly: true
-            },
-            hidden: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
-            },
-            hasOptions: {
-                type: Boolean,
-                computed: "_computeHasOptions(action)"
-            },
-            options: {
-                type: Array,
-                computed: "action.options"
-            },
-            overflow: {
-                type: Boolean,
-                reflectToAttribute: true
-            }
-        },
-        forwardObservers: [
-            "action.isPinned"
-        ]
-    });
 }

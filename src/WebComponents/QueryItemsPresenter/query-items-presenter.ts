@@ -1,4 +1,21 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            query: {
+                type: Object,
+                observer: "_queryChanged"
+            }
+        },
+        hostAttributes: {
+            "tabindex": "0"
+        },
+        keybindings: {
+            "f5 ctrl+r": "_refresh",
+            "ctrl+n": "_new",
+            "del": "_delete",
+            "f2": "_bulkEdit"
+        }
+    })
     export class QueryItemsPresenter extends WebComponent {
         private static _queryGridComponentLoader: Promise<any>;
         private _content: HTMLElement | WebComponent;
@@ -80,22 +97,4 @@ module Vidyano.WebComponents {
                 action.execute();
         }
     }
-
-    WebComponent.register(QueryItemsPresenter, WebComponents, "vi", {
-        properties: {
-            query: {
-                type: Object,
-                observer: "_queryChanged"
-            }
-        },
-        hostAttributes: {
-            "tabindex": "0"
-        },
-        keybindings: {
-            "f5 ctrl+r": "_refresh",
-            "ctrl+n": "_new",
-            "del": "_delete",
-            "f2": "_bulkEdit"
-        }
-    });
 }

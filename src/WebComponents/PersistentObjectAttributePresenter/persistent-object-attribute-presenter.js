@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -119,7 +126,7 @@ var Vidyano;
                         }
                         var child = new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
                         child.classList.add("attribute");
-                        Polymer.dom(_this).appendChild(child.asElement);
+                        Polymer.dom(_this).appendChild(child);
                         child.attribute = attribute;
                     }
                     finally {
@@ -150,55 +157,57 @@ var Vidyano;
                 "TranslatedString": undefined,
                 "User": undefined
             };
+            PersistentObjectAttributePresenter = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        attribute: Object,
+                        noLabel: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: false
+                        },
+                        editing: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "attribute.parent.isEditing"
+                        },
+                        required: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "_computeRequired(attribute.isRequired, attribute.value)"
+                        },
+                        readOnly: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "attribute.isReadOnly"
+                        },
+                        bulkEdit: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "attribute.parent.isBulkEdit"
+                        },
+                        loading: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            readOnly: true,
+                            value: true
+                        }
+                    },
+                    observers: [
+                        "_attributeChanged(attribute, isAttached)"
+                    ],
+                    forwardObservers: [
+                        "attribute.parent.isEditing",
+                        "attribute.isRequired",
+                        "attribute.isReadOnly",
+                        "attribute.value",
+                        "attribute.isValueChanged",
+                        "attribute.parent.isBulkEdit"
+                    ]
+                })
+            ], PersistentObjectAttributePresenter);
             return PersistentObjectAttributePresenter;
         })(WebComponents.WebComponent);
         WebComponents.PersistentObjectAttributePresenter = PersistentObjectAttributePresenter;
-        WebComponents.WebComponent.register(PersistentObjectAttributePresenter, WebComponents, "vi", {
-            properties: {
-                attribute: Object,
-                noLabel: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    value: false
-                },
-                editing: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "attribute.parent.isEditing"
-                },
-                required: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "_computeRequired(attribute.isRequired, attribute.value)"
-                },
-                readOnly: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "attribute.isReadOnly"
-                },
-                bulkEdit: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "attribute.parent.isBulkEdit"
-                },
-                loading: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true,
-                    value: true
-                }
-            },
-            observers: [
-                "_attributeChanged(attribute, isAttached)"
-            ],
-            forwardObservers: [
-                "attribute.parent.isEditing",
-                "attribute.isRequired",
-                "attribute.isReadOnly",
-                "attribute.value",
-                "attribute.isValueChanged",
-                "attribute.parent.isBulkEdit"
-            ]
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

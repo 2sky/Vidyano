@@ -1,8 +1,7 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Vidyano;
 (function (Vidyano) {
@@ -47,14 +46,14 @@ var Vidyano;
                     filter: this.filter,
                     disabled: this.disabled,
                     onStart: function () {
-                        _this._isDragging = true;
+                        _this._setIsDragging(true);
                         if (_this.group)
-                            _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._isGroupDragging = true; });
+                            _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._setIsGroupDragging(true); });
                     },
                     onEnd: function () {
-                        _this._isDragging = false;
+                        _this._setIsDragging(false);
                         if (_this.group)
-                            _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._isGroupDragging = false; });
+                            _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._setIsGroupDragging(false); });
                     }
                 });
             };
@@ -63,6 +62,40 @@ var Vidyano;
                     this._sortable.destroy();
                     this._sortable = null;
                 }
+            };
+            Sortable.register = function (info) {
+                if (info === void 0) { info = {}; }
+                return function (obj) {
+                    info.properties = info.properties || {};
+                    info.properties["group"] = {
+                        type: String,
+                        reflectToAttribute: true,
+                    };
+                    info.properties["filter"] =
+                        {
+                            type: String,
+                            reflectToAttribute: true
+                        };
+                    info.properties["isDragging"] =
+                        {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            readOnly: true
+                        };
+                    info.properties["isGroupDragging"] =
+                        {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            readOnly: true
+                        };
+                    info.properties["disabled"] =
+                        {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: true
+                        };
+                    return WebComponents.WebComponent.register(obj, info);
+                };
             };
             return Sortable;
         })(WebComponents.WebComponent);

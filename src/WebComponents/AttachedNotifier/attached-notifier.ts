@@ -1,4 +1,12 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            oneTime: {
+                type: Boolean,
+                reflectToAttribute: true
+            }
+        }
+    })
     export class AttachedNotifier extends WebComponent {
         private _wasAttached;
         oneTime: boolean;
@@ -9,22 +17,11 @@
             if (this._wasAttached && this.oneTime)
                 return;
 
-            this.fire("attached", { id: this.asElement.id }, {
-                node: this.asElement,
+            this._wasAttached = true;
+            this.fire("attached", { id: this.id }, {
+                onNode: this,
                 bubbles: false
             });
-
-            this._wasAttached = true;
         }
     }
-
-
-    WebComponent.register(AttachedNotifier, WebComponents, "vi", {
-        properties: {
-            oneTime: {
-                type: Boolean,
-                reflectToAttribute: true
-            }
-        }
-    });
 }

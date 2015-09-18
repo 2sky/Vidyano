@@ -1,4 +1,16 @@
 module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register({
+        properties: {
+            markedElementLoaded: {
+                type: Boolean,
+                readOnly: true
+            },
+            notEditing: {
+                type: Boolean,
+                computed: "_computeNotEditing(markedElementLoaded, editing)"
+            }
+        }
+    })
     export class PersistentObjectAttributeCommonMark extends PersistentObjectAttribute {
         private _setMarkedElementLoaded: (ValidityState: boolean) => void;
 
@@ -19,17 +31,4 @@ module Vidyano.WebComponents.Attributes {
             return markedElementLoaded && !editing;
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeCommonMark, {
-        properties: {
-            markedElementLoaded: {
-                type: Boolean,
-                readOnly: true
-            },
-            notEditing: {
-                type: Boolean,
-                computed: "_computeNotEditing(markedElementLoaded, editing)"
-            }
-        }
-    });
 }

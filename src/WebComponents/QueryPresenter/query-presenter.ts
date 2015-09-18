@@ -1,4 +1,37 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            queryId: {
+                type: String,
+                reflectToAttribute: true
+            },
+            query: {
+                type: Object,
+                observer: "_queryChanged"
+            },
+            loading: {
+                type: Boolean,
+                readOnly: true,
+                value: true,
+                reflectToAttribute: true
+            },
+            error: {
+                type: String,
+                readOnly: true
+            },
+            hasError: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeHasError(error)"
+            }
+        },
+        observers: [
+            "_computeQuery(queryId, isAttached)"
+        ],
+        listeners: {
+            "activating": "_activating"
+        }
+    })
     export class QueryPresenter extends WebComponent {
         private static _queryComponentLoader: Promise<any>;
         private _customTemplatePresenter: Vidyano.WebComponents.TemplatePresenter;
@@ -65,7 +98,13 @@ module Vidyano.WebComponents {
         }
 
         private _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
+            if (this.isAttached && oldQuery)
+                this.empty();
+
             if (query) {
+                if(this.queryId !== query.id)
+                    this.queryId = query.id;
+
                 if (!this._customTemplate) {
                     if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader) {
                         Vidyano.WebComponents.QueryPresenter._queryComponentLoader = new Promise(resolve => {
@@ -105,38 +144,4 @@ module Vidyano.WebComponents {
             });
         }
     }
-
-    WebComponent.register(QueryPresenter, WebComponents, "vi", {
-        properties: {
-            queryId: {
-                type: String,
-                reflectToAttribute: true
-            },
-            query: {
-                type: Object,
-                observer: "_queryChanged"
-            },
-            loading: {
-                type: Boolean,
-                readOnly: true,
-                value: true,
-                reflectToAttribute: true
-            },
-            error: {
-                type: String,
-                readOnly: true
-            },
-            hasError: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeHasError(error)"
-            }
-        },
-        observers: [
-            "_computeQuery(queryId, isAttached)"
-        ],
-        listeners: {
-            "activating": "_activating"
-        }
-    });
 }

@@ -1,4 +1,23 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            tab: Object,
+            loading: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true,
+                value: true
+            },
+            templated: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            }
+        },
+        observers: [
+            "_renderTab(tab, isAttached)"
+        ]
+    })
     export class PersistentObjectTabPresenter extends WebComponent {
         private static _persistentObjectTabComponentLoader: Promise<any>;
         private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
@@ -77,24 +96,4 @@ module Vidyano.WebComponents {
             }
         }
     }
-
-    WebComponent.register(PersistentObjectTabPresenter, WebComponents, "vi", {
-        properties: {
-            tab: Object,
-            loading: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true,
-                value: true
-            },
-            templated: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
-            }
-        },
-        observers: [
-            "_renderTab(tab, isAttached)"
-        ]
-    });
 }

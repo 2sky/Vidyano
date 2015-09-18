@@ -38,10 +38,10 @@ vi-popup-menu-item > button {
   padding: 0;
   text-align: left;
 }
-vi-popup-menu-item > button > vi-resource {
+vi-popup-menu-item > button > vi-icon {
   width: 30px;
 }
-vi-popup-menu-item > button > vi-resource:not([has-resource]) {
+vi-popup-menu-item > button > vi-icon:not([has-resource]) {
   display: none;
 }
 vi-popup-menu-item > button > span {
@@ -50,7 +50,7 @@ vi-popup-menu-item > button > span {
   flex: 1;
   padding: 0 6px;
 }
-vi-popup-menu-item > button > vi-resource[has-resource] ~ span {
+vi-popup-menu-item > button > vi-icon[has-resource] ~ span {
   padding-left: 0;
 }
 vi-popup-menu-item[icon-space] > div > span {

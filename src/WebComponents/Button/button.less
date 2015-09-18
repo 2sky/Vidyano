@@ -37,7 +37,7 @@ button[is="vi-button"] {
     }
 
     &:not([custom-layout]) {
-        > vi-resource {
+        > vi-icon {
             display: inline-block;
 
             &[has-resource] + span {
@@ -65,9 +65,7 @@ button[is="vi-button"] {
         &[inverse] {
             .colorize( {
                 .colorizer(transparent, @@color, @@color-faint);
-            }
-
-            );
+            });
         }
     }
 

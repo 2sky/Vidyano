@@ -1,4 +1,21 @@
 module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register({
+        properties: {
+            newValue: {
+                type: String,
+                value: null,
+                notify: true
+            },
+            comboBoxOptions: {
+                type: Array,
+                readOnly: true
+            },
+            canAdd: {
+                type: Boolean,
+                computed: "_computeCanAdd(newValue, comboBoxOptions)"
+            }
+        }
+    })
     export class PersistentObjectAttributeComboBox extends WebComponents.Attributes.PersistentObjectAttribute {
         comboBoxOptions: string[];
         newValue: string;
@@ -37,22 +54,4 @@ module Vidyano.WebComponents.Attributes {
             return newValue != null && options && !options.some(o => o == newValue);
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeComboBox, {
-        properties: {
-            newValue: {
-                type: String,
-                value: null,
-                notify: true
-            },
-            comboBoxOptions: {
-                type: Array,
-                readOnly: true
-            },
-            canAdd: {
-                type: Boolean,
-                computed: "_computeCanAdd(newValue, comboBoxOptions)"
-            }
-        }
-    });
 }

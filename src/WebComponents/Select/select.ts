@@ -4,6 +4,64 @@ module Vidyano.WebComponents {
         option: string | Common.KeyValuePair;
     }
 
+    @WebComponent.register({
+        properties: {
+            options: Array,
+            selectedOption: {
+                type: Object,
+                observer: "_selectedOptionChanged",
+                notify: true
+            },
+            suggestion: {
+                type: Object,
+                readOnly: true,
+                observer: "_suggestionChanged"
+            },
+            items: {
+                type: Array,
+                computed: "_computeItems(options)"
+            },
+            filteredItems: {
+                type: Array,
+                computed: "_computeFilteredItems(items, inputValue, filtering, selectedOption)"
+            },
+            selectedItem: {
+                type: Object,
+                readOnly: true,
+                observer: "_selectedItemChanged"
+            },
+            inputValue: {
+                type: String,
+                notify: true,
+                computed: "_forwardComputed(_inputValue)"
+            },
+            _inputValue: {
+                type: String,
+                notify: true,
+                value: ""
+            },
+            filtering: {
+                type: Boolean,
+                readOnly: true,
+                value: false
+            },
+            readonly: {
+                type: Boolean,
+                value: false
+            },
+            disableFiltering: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            }
+        },
+        listeners: {
+            "keydown": "_keydown"
+        },
+        observers: [
+            "_computeSuggestionFeedback(inputValue, suggestion, filtering)"
+        ]
+    })
     export class Select extends WebComponent {
         private items: SelectOption[];
         private filteredItems: SelectOption[];
@@ -272,63 +330,4 @@ module Vidyano.WebComponents {
             return readonly || disableFiltering;
         }
     }
-
-    WebComponent.register(Select, WebComponents, "vi", {
-        properties: {
-            options: Array,
-            selectedOption: {
-                type: Object,
-                observer: "_selectedOptionChanged",
-                notify: true
-            },
-            suggestion: {
-                type: Object,
-                readOnly: true,
-                observer: "_suggestionChanged"
-            },
-            items: {
-                type: Array,
-                computed: "_computeItems(options)"
-            },
-            filteredItems: {
-                type: Array,
-                computed: "_computeFilteredItems(items, inputValue, filtering, selectedOption)"
-            },
-            selectedItem: {
-                type: Object,
-                readOnly: true,
-                observer: "_selectedItemChanged"
-            },
-            inputValue: {
-                type: String,
-                notify: true,
-                computed: "_forwardComputed(_inputValue)"
-            },
-            _inputValue: {
-                type: String,
-                notify: true,
-                value: ""
-            },
-            filtering: {
-                type: Boolean,
-                readOnly: true,
-                value: false
-            },
-            readonly: {
-                type: Boolean,
-                value: false
-            },
-            disableFiltering: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            }
-        },
-        listeners: {
-            "keydown": "_keydown"
-        },
-        observers: [
-            "_computeSuggestionFeedback(inputValue, suggestion, filtering)"
-        ]
-    });
 }

@@ -1,22 +1,5 @@
 ﻿module Vidyano.WebComponents {
-    export class Checkbox extends WebComponents.WebComponent {
-        checked: boolean;
-        label: string;
-        disabled: boolean;
-
-        toggle() {
-            if (this.disabled)
-                return;
-
-            this.checked = !!!this.checked;
-        }
-
-        private _computeIsNull(checked: boolean): boolean {
-            return checked !== false && checked !== true;
-        }
-    }
-
-    WebComponent.register(Checkbox, WebComponents, "vi", {
+    @WebComponent.register({
         properties: {
             checked: {
                 type: Boolean,
@@ -37,5 +20,21 @@
         listeners: {
             "tap": "toggle"
         }
-    });
+    })
+    export class Checkbox extends WebComponents.WebComponent {
+        checked: boolean;
+        label: string;
+        disabled: boolean;
+
+        toggle() {
+            if (this.disabled)
+                return;
+
+            this.checked = !!!this.checked;
+        }
+
+        private _computeIsNull(checked: boolean): boolean {
+            return checked !== false && checked !== true;
+        }
+    }
 }

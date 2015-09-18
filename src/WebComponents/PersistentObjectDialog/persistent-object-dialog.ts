@@ -1,4 +1,25 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            persistentObject: {
+                type: Object,
+                readOnly: true
+            },
+            tab: {
+                type: Object,
+                computed: "_computeTab(persistentObject)"
+            }
+        },
+        hostAttributes: {
+            "dialog": ""
+        },
+        keybindings: {
+            "esc": {
+                listener: "_cancel",
+                priority: Number.MAX_VALUE
+            }
+        }
+    })
     export class PersistentObjectDialog extends WebComponent {
         private _dialog: WebComponents.DialogInstance;
         private _saveHook: (po: Vidyano.PersistentObject) => Promise<any>;
@@ -44,27 +65,4 @@
             e.stopPropagation();
         }
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.PersistentObjectDialog, Vidyano.WebComponents, "vi",
-        {
-            properties: {
-                persistentObject: {
-                    type: Object,
-                    readOnly: true
-                },
-                tab: {
-                    type: Object,
-                    computed: "_computeTab(persistentObject)"
-                }
-            },
-            hostAttributes: {
-                "dialog": ""
-            },
-            keybindings: {
-                "esc": {
-                    listener: "_cancel",
-                    priority: Number.MAX_VALUE
-                }
-            }
-        });
 }

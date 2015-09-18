@@ -27,7 +27,6 @@ vi-persistent-object-tab #cells {
 vi-persistent-object-tab #items {
   position: relative;
   margin: auto;
-  overflow: hidden;
 }
 vi-persistent-object-tab[design-mode] {
   -webkit-touch-callout: none;

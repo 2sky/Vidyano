@@ -1,25 +1,6 @@
 module Vidyano.WebComponents {
-    export class MaskedInput extends WebComponent {
-        format: string;
-        separator: string;
-
-        private _initialize(format: string, separator: string, isAttached: boolean) {
-            if (!isAttached)
-                return;
-
-            var mi = new window["MaskedInput"]({
-                elm: this.asElement,
-                format: format,
-                separator: separator,
-                onfilled: () => {
-                    var input = <HTMLInputElement>this.asElement;
-                    this.fire("filled", { value: input.value });
-                }
-            });
-        }
-    }
-
-    WebComponent.register(MaskedInput, WebComponents, "vi", {
+    @WebComponent.register({
+        extends: "input",
         properties: {
             format: {
                 type: String,
@@ -32,7 +13,24 @@ module Vidyano.WebComponents {
         },
         observers: [
             "_initialize(format, separator, isAttached)"
-        ],
-        extends: "input"
-    });
+        ]
+    })
+    export class MaskedInput extends WebComponent {
+        format: string;
+        separator: string;
+
+        private _initialize(format: string, separator: string, isAttached: boolean) {
+            if (!isAttached)
+                return;
+
+            var mi = new window["MaskedInput"]({
+                elm: this,
+                format: format,
+                separator: separator,
+                onfilled: () => {
+                    this.fire("filled", { value: (<HTMLInputElement><any>this).value });
+                }
+            });
+        }
+    }
 }

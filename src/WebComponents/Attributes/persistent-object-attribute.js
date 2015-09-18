@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 !function () {
     var w = window, d = w.document;
@@ -58,75 +65,74 @@ var Vidyano;
                 PersistentObjectAttribute.prototype._computeHasError = function (validationError) {
                     return !StringEx.isNullOrEmpty(validationError);
                 };
-                PersistentObjectAttribute.registerAttribute = function (obj, info, finalized) {
+                PersistentObjectAttribute.register = function (info) {
                     if (info === void 0) { info = {}; }
-                    info.properties = info.properties || {};
-                    info.properties["attribute"] = {
-                        type: Object,
-                        observer: "_attributeChanged"
-                    };
-                    info.properties["editing"] =
-                        {
-                            type: Boolean,
-                            reflectToAttribute: true,
-                            computed: "attribute.parent.isEditing"
-                        };
-                    info.properties["readOnly"] =
-                        {
-                            type: Boolean,
-                            reflectToAttribute: true,
-                            computed: "attribute.isReadOnly"
-                        };
-                    info.properties["required"] =
-                        {
-                            type: Boolean,
-                            reflectToAttribute: true,
-                            computed: "attribute.isRequired"
-                        };
-                    info.properties["value"] =
-                        {
+                    if (typeof info == "function")
+                        return PersistentObjectAttribute.register({})(info);
+                    return function (obj) {
+                        info.properties = info.properties || {};
+                        info.properties["isAttached"] =
+                            {
+                                type: Boolean,
+                                readOnly: true
+                            };
+                        info.properties["attribute"] = {
                             type: Object,
-                            notify: true,
-                            observer: "_valueChanged"
+                            observer: "_attributeChanged"
                         };
-                    info.properties["validationError"] =
-                        {
-                            type: Object,
-                            notify: true,
-                            computed: "attribute.validationError"
-                        };
-                    info.properties["hasError"] =
-                        {
-                            type: Boolean,
-                            reflectToAttribute: true,
-                            computed: "_computeHasError(attribute.validationError)"
-                        };
-                    info.forwardObservers = info.forwardObservers || [];
-                    info.forwardObservers.push("attribute.displayValue");
-                    info.forwardObservers.push("attribute.isRequired");
-                    info.forwardObservers.push("attribute.isReadOnly");
-                    info.forwardObservers.push("attribute.validationError");
-                    info.forwardObservers.push("_optionsChanged(attribute.options)");
-                    info.forwardObservers.push("_editingChanged(attribute.parent.isEditing)");
-                    info.forwardObservers.push("_attributeValueChanged(attribute.value)");
-                    var synonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[WebComponents.WebComponent.getName(obj).replace("PersistentObjectAttribute", "")];
-                    if (synonyms) {
-                        var synonymFinalizer = function (ctor) {
+                        info.properties["editing"] =
+                            {
+                                type: Boolean,
+                                reflectToAttribute: true,
+                                computed: "attribute.parent.isEditing"
+                            };
+                        info.properties["readOnly"] =
+                            {
+                                type: Boolean,
+                                reflectToAttribute: true,
+                                computed: "attribute.isReadOnly"
+                            };
+                        info.properties["required"] =
+                            {
+                                type: Boolean,
+                                reflectToAttribute: true,
+                                computed: "attribute.isRequired"
+                            };
+                        info.properties["value"] =
+                            {
+                                type: Object,
+                                notify: true,
+                                observer: "_valueChanged"
+                            };
+                        info.properties["validationError"] =
+                            {
+                                type: Object,
+                                notify: true,
+                                computed: "attribute.validationError"
+                            };
+                        info.properties["hasError"] =
+                            {
+                                type: Boolean,
+                                reflectToAttribute: true,
+                                computed: "_computeHasError(attribute.validationError)"
+                            };
+                        info.forwardObservers = info.forwardObservers || [];
+                        info.forwardObservers.push("attribute.displayValue");
+                        info.forwardObservers.push("attribute.isRequired");
+                        info.forwardObservers.push("attribute.isReadOnly");
+                        info.forwardObservers.push("attribute.validationError");
+                        info.forwardObservers.push("_optionsChanged(attribute.options)");
+                        info.forwardObservers.push("_editingChanged(attribute.parent.isEditing)");
+                        info.forwardObservers.push("_attributeValueChanged(attribute.value)");
+                        var ctor = WebComponents.WebComponent.register(obj, info);
+                        var synonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[WebComponents.WebComponent.getName(obj).replace("PersistentObjectAttribute", "")];
+                        if (synonyms) {
                             synonyms.forEach(function (ss) {
                                 Attributes["PersistentObjectAttribute" + ss] = ctor;
                             });
-                        };
-                        if (finalized) {
-                            var oldFinalized = finalized;
-                            finalized = function (ctor) {
-                                oldFinalized(ctor);
-                                synonymFinalizer(ctor);
-                            };
                         }
-                        else
-                            finalized = synonymFinalizer;
-                    }
-                    WebComponents.WebComponent.register(obj, Attributes, "vi", info, finalized);
+                        return ctor;
+                    };
                 };
                 PersistentObjectAttribute.typeSynonyms = {
                     "Boolean": ["YesNo"],
@@ -154,7 +160,7 @@ var Vidyano;
                         return;
                     this.app.showMessageDialog({
                         title: this.app.translateMessage(Vidyano.NotificationType[Vidyano.NotificationType.Error]),
-                        titleIcon: "Icon_Notification_Error",
+                        titleIcon: "Notification_Error",
                         actions: [this.translations.OK],
                         message: this.attribute.validationError
                     });
@@ -162,31 +168,33 @@ var Vidyano;
                 PersistentObjectAttributeEdit.prototype._computeHasError = function (validationError) {
                     return !StringEx.isNullOrEmpty(validationError);
                 };
+                PersistentObjectAttributeEdit = __decorate([
+                    WebComponents.WebComponent.register({
+                        properties: {
+                            attribute: Object,
+                            focus: {
+                                type: Boolean,
+                                readOnly: true,
+                                reflectToAttribute: true
+                            },
+                            hasError: {
+                                type: Boolean,
+                                reflectToAttribute: true,
+                                computed: "_computeHasError(attribute.validationError)"
+                            }
+                        },
+                        listeners: {
+                            "focusin": "_focus",
+                            "focusout": "_blur",
+                        },
+                        forwardObservers: [
+                            "attribute.validationError"
+                        ]
+                    })
+                ], PersistentObjectAttributeEdit);
                 return PersistentObjectAttributeEdit;
             })(WebComponents.WebComponent);
             Attributes.PersistentObjectAttributeEdit = PersistentObjectAttributeEdit;
-            WebComponents.WebComponent.register(PersistentObjectAttributeEdit, Attributes, "vi", {
-                properties: {
-                    attribute: Object,
-                    focus: {
-                        type: Boolean,
-                        readOnly: true,
-                        reflectToAttribute: true
-                    },
-                    hasError: {
-                        type: Boolean,
-                        reflectToAttribute: true,
-                        computed: "_computeHasError(attribute.validationError)"
-                    }
-                },
-                listeners: {
-                    "focusin": "_focus",
-                    "focusout": "_blur",
-                },
-                forwardObservers: [
-                    "attribute.validationError"
-                ]
-            });
         })(Attributes = WebComponents.Attributes || (WebComponents.Attributes = {}));
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

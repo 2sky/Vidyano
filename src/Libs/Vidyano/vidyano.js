@@ -1,8 +1,7 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Vidyano;
 (function (Vidyano) {
@@ -673,8 +672,11 @@ var Vidyano;
             var isObjectAction = action.startsWith("PersistentObject.") || query == null;
             return new Promise(function (resolve, reject) {
                 if (!skipHooks) {
-                    if (!isObjectAction)
+                    if (!isObjectAction) {
                         query.setNotification(null);
+                        if (query.selectAll.allSelected && !query.selectAll.inverse)
+                            selectedItems = [];
+                    }
                     else if (parent)
                         parent.setNotification(null);
                     var args = new ExecuteActionArgs(_this, action, parent, query, selectedItems, parameters);
@@ -1880,7 +1882,7 @@ var Vidyano;
             }
             this._backupData = {};
         };
-        PersistentObjectAttribute.prototype.getTypeHint = function (name, defaultValue, typeHints) {
+        PersistentObjectAttribute.prototype.getTypeHint = function (name, defaultValue, typeHints, ignoreCasing) {
             if (typeHints != null) {
                 if (this.typeHints != null)
                     typeHints = Vidyano.extend({}, typeHints, this.typeHints);
@@ -1888,16 +1890,7 @@ var Vidyano;
             else
                 typeHints = this.typeHints;
             if (typeHints != null) {
-                var typeHint = typeHints[name];
-                if (typeHint == null) {
-                    var lowerName = name.toLowerCase();
-                    for (var prop in typeHints) {
-                        if (lowerName == prop.toLowerCase()) {
-                            typeHint = typeHints[prop];
-                            break;
-                        }
-                    }
-                }
+                var typeHint = typeHints[ignoreCasing ? name : name.toLowerCase()];
                 if (typeHint != null)
                     return typeHint;
             }
@@ -2280,7 +2273,8 @@ var Vidyano;
             this.autoQuery = query.autoQuery;
             if (!this.autoQuery)
                 this.items = [];
-            this.canRead = query.canRead;
+            this._canRead = query.canRead;
+            this._canReorder = query.canReorder;
             this.isHidden = query.isHidden;
             this.label = query.label;
             this.notification = query.notification;
@@ -2291,6 +2285,9 @@ var Vidyano;
             this.skip = query.skip;
             this.top = query.top;
             this.groupingInfo = query.groupingInfo;
+            this.selectAll = {
+                isAvailable: !!query.isSystem
+            };
             this.persistentObject = query.persistentObject instanceof Vidyano.PersistentObject ? query.persistentObject : service.hooks.onConstructPersistentObject(service, query.persistentObject);
             this.singularLabel = this.persistentObject.label;
             this._updateColumns(query.columns);
@@ -2309,6 +2306,8 @@ var Vidyano;
             this._canFilter = this._filters && this.actions.some(function (a) { return a.name === "Filter"; }) && this.columns.some(function (c) { return c.canFilter; });
             if (query.result)
                 this._setResult(query.result);
+            else
+                this._labelWithTotalItems = this.label;
         }
         Object.defineProperty(Query.prototype, "filters", {
             get: function () {
@@ -2320,6 +2319,13 @@ var Vidyano;
         Object.defineProperty(Query.prototype, "canFilter", {
             get: function () {
                 return this._canFilter;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Query.prototype, "canRead", {
+            get: function () {
+                return this._canRead;
             },
             enumerable: true,
             configurable: true
@@ -2432,6 +2438,11 @@ var Vidyano;
         };
         Query.prototype._toServiceObject = function () {
             var result = this.copyProperties(["id", "name", "label", "pageSize", "skip", "top", "textSearch"]);
+            if (this.selectAll.allSelected) {
+                result["allSelected"] = true;
+                if (this.selectAll.inverse)
+                    result["allSelectedInversed"] = true;
+            }
             result["sortOptions"] = this.sortOptions.filter(function (option) { return option.direction !== SortDirection.None; }).map(function (option) { return option.column.name + (option.direction == SortDirection.Ascending ? " ASC" : " DESC"); }).join("; ");
             if (this.persistentObject)
                 result.persistentObject = this.persistentObject.toServiceObject();
@@ -2488,8 +2499,9 @@ var Vidyano;
         };
         Query.prototype.getItems = function (start, length) {
             var _this = this;
+            if (length === void 0) { length = this.pageSize; }
             if (!this.hasSearched)
-                return this.search(0).then(function () { return _this.getItems(start, length || _this.pageSize); });
+                return this.search(0).then(function () { return _this.getItems(start, length); });
             else {
                 if (this.totalItems >= 0) {
                     if (start > this.totalItems)
@@ -2511,6 +2523,8 @@ var Vidyano;
                 clonedQuery.skip = startPage * this.pageSize;
                 clonedQuery.top = (endPage - startPage + 1) * this.pageSize;
                 return this.queueWork(function () {
+                    if (Enumerable.rangeTo(startPage, endPage).all(function (p) { return _this._queriedPages.indexOf(p) >= 0; }))
+                        return Promise.resolve(_this.items.slice(start, start + length));
                     return _this.service.executeQuery(_this.parent, clonedQuery, _this._asLookup).then(function (result) {
                         for (var p = startPage; p <= endPage; p++)
                             _this._queriedPages.push(p);
@@ -2597,14 +2611,18 @@ var Vidyano;
                 }
             });
             columns.sort(function (c1, c2) { return c1.offset - c2.offset; });
-            if (this.columns != columns)
-                this.columns = columns;
-            this.notifyPropertyChanged("columns", this.columns, oldColumns);
+            if (columnsChanged) {
+                if (this.columns != columns)
+                    this.columns = columns;
+                this.notifyPropertyChanged("columns", this.columns, oldColumns);
+            }
         };
         Query.prototype._updateItems = function (items, reset) {
             if (reset === void 0) { reset = false; }
-            if (reset)
+            if (reset) {
                 this.hasSearched = false;
+                this._setTotalItems(null);
+            }
             var oldItems = this.items;
             this.notifyPropertyChanged("items", this.items = items, oldItems);
             this.selectedItems = this.selectedItems;
@@ -2673,7 +2691,7 @@ var Vidyano;
         QueryColumn.prototype._toServiceObject = function () {
             return this.copyProperties(["id", "name", "label", "includes", "excludes", "type", "displayAttribute"]);
         };
-        QueryColumn.prototype.getTypeHint = function (name, defaultValue, typeHints) {
+        QueryColumn.prototype.getTypeHint = function (name, defaultValue, typeHints, ignoreCasing) {
             return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);
         };
         QueryColumn.prototype.refreshDistincts = function () {
@@ -2742,7 +2760,7 @@ var Vidyano;
                 if (!this._values) {
                     this._values = {};
                     this.rawValues.forEach(function (v) {
-                        _this._values[v.key] = Service.fromServiceString(v.value, _this.query.getColumn(v.key).type);
+                        _this._values[v.key] = Service.fromServiceString(v.value, _this.query.columns[v.key].type);
                     });
                 }
                 return this._values;
@@ -2776,7 +2794,7 @@ var Vidyano;
                     _this._fullValuesByName[v.key] = v;
                 });
             }
-            return this._fullValuesByName[key];
+            return this._fullValuesByName[key] || (this._fullValuesByName[key] = null);
         };
         QueryResultItem.prototype.getTypeHint = function (name, defaultValue, typeHints) {
             return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);

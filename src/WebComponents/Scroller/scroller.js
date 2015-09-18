@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -54,12 +61,10 @@ var Vidyano;
                 }
                 this._setVertical(!noVertical && height > 0);
                 var verticalScrollTop = verticalScrollOffset === 0 ? 0 : Math.round((1 / ((innerHeight - outerHeight) / verticalScrollOffset)) * this._verticalScrollSpace);
-                if (verticalScrollTop !== this._verticalScrollTop) {
-                    this._verticalScrollTop = verticalScrollTop;
-                    this.$["vertical"].style.top = verticalScrollTop + "px";
-                }
+                if (verticalScrollTop !== this._verticalScrollTop)
+                    this.$["vertical"].style.transform = "translate3d(0, " + (this._verticalScrollTop = verticalScrollTop) + "px, 0)";
                 this._setScrollTopShadow(verticalScrollTop > 0);
-                this._setScrollBottomShadow(innerHeight - outerHeight - this.$["wrapper"].scrollTop > 0);
+                this._setScrollBottomShadow(innerHeight - outerHeight - verticalScrollTop > 0);
             };
             Scroller.prototype._updateHorizontalScrollbar = function (outerWidth, innerWidth, horizontalScrollOffset, noHorizontal) {
                 var width = outerWidth < innerWidth ? outerWidth / innerWidth * outerWidth : 0;
@@ -76,10 +81,8 @@ var Vidyano;
                 }
                 this._setHorizontal(!noHorizontal && width > 0);
                 var horizontalScrollLeft = horizontalScrollOffset === 0 ? 0 : Math.round((1 / ((innerWidth - outerWidth) / horizontalScrollOffset)) * this._horizontalScrollSpace);
-                if (horizontalScrollLeft !== this._horizontalScrollLeft) {
-                    this._horizontalScrollLeft = horizontalScrollLeft;
-                    this.$["horizontal"].style.left = horizontalScrollLeft + "px";
-                }
+                if (horizontalScrollLeft !== this._horizontalScrollLeft)
+                    this.$["horizontal"].style.transform = "translate3d(" + (this._horizontalScrollLeft = horizontalScrollLeft) + "px, 0, 0)";
             };
             Scroller.prototype._trackVertical = function (e, detail) {
                 var wrapper = this.$["wrapper"];
@@ -170,105 +173,107 @@ var Vidyano;
                 }
             };
             Scroller._minBarSize = 20;
+            Scroller = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        hovering: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        },
+                        scrolling: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        },
+                        outerWidth: {
+                            type: Number,
+                            readOnly: true
+                        },
+                        outerHeight: {
+                            type: Number,
+                            readOnly: true
+                        },
+                        innerWidth: {
+                            type: Number,
+                            readOnly: true
+                        },
+                        innerHeight: {
+                            type: Number,
+                            readOnly: true
+                        },
+                        horizontal: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        },
+                        noHorizontal: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: false
+                        },
+                        vertical: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        },
+                        noVertical: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: false
+                        },
+                        scrollbars: {
+                            type: String,
+                            reflectToAttribute: true
+                        },
+                        verticalScrollOffset: {
+                            type: Number,
+                            value: 0,
+                            notify: true,
+                            observer: "_verticalScrollOffsetChanged"
+                        },
+                        horizontalScrollOffset: {
+                            type: Number,
+                            value: 0,
+                            notify: true,
+                            observer: "_horizontalScrollOffsetChanged"
+                        },
+                        scrollTopShadow: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true,
+                        },
+                        scrollBottomShadow: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        },
+                        forceScrollbars: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        },
+                        hiddenScrollbars: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        }
+                    },
+                    forwardObservers: [
+                        "attribute.objects"
+                    ],
+                    observers: [
+                        "_updateVerticalScrollbar(outerHeight, innerHeight, verticalScrollOffset, noVertical)",
+                        "_updateHorizontalScrollbar(outerWidth, innerWidth, horizontalScrollOffset, noHorizontal)"
+                    ],
+                    listeners: {
+                        "mouseenter": "_mouseenter",
+                        "mouseleave": "_mouseleave",
+                        "scroll": "_trapEvent"
+                    }
+                })
+            ], Scroller);
             return Scroller;
         })(WebComponents.WebComponent);
         WebComponents.Scroller = Scroller;
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.Scroller, Vidyano.WebComponents, "vi", {
-            properties: {
-                hovering: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                },
-                scrolling: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                },
-                outerWidth: {
-                    type: Number,
-                    readOnly: true
-                },
-                outerHeight: {
-                    type: Number,
-                    readOnly: true
-                },
-                innerWidth: {
-                    type: Number,
-                    readOnly: true
-                },
-                innerHeight: {
-                    type: Number,
-                    readOnly: true
-                },
-                horizontal: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                },
-                noHorizontal: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    value: false
-                },
-                vertical: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                },
-                noVertical: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    value: false
-                },
-                scrollbars: {
-                    type: String,
-                    reflectToAttribute: true
-                },
-                verticalScrollOffset: {
-                    type: Number,
-                    value: 0,
-                    notify: true,
-                    observer: "_verticalScrollOffsetChanged"
-                },
-                horizontalScrollOffset: {
-                    type: Number,
-                    value: 0,
-                    notify: true,
-                    observer: "_horizontalScrollOffsetChanged"
-                },
-                scrollTopShadow: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true,
-                },
-                scrollBottomShadow: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                },
-                forceScrollbars: {
-                    type: Boolean,
-                    reflectToAttribute: true
-                },
-                hiddenScrollbars: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                }
-            },
-            forwardObservers: [
-                "attribute.objects"
-            ],
-            observers: [
-                "_updateVerticalScrollbar(outerHeight, innerHeight, verticalScrollOffset, noVertical)",
-                "_updateHorizontalScrollbar(outerWidth, innerWidth, horizontalScrollOffset, noHorizontal)"
-            ],
-            listeners: {
-                "mouseenter": "_mouseenter",
-                "mouseleave": "_mouseleave",
-                "scroll": "_trapEvent"
-            }
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

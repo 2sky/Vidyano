@@ -23,7 +23,7 @@ vi-date-picker header button {
   line-height: 30px;
   cursor: pointer;
 }
-vi-date-picker header button > vi-resource {
+vi-date-picker header button > vi-icon {
   height: 30px;
 }
 [theme-color-1] vi-date-picker header button:hover {

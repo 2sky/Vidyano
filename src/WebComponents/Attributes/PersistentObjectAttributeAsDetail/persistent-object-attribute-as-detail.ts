@@ -1,4 +1,51 @@
 module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register({
+        properties: {
+            columns: {
+                type: Array,
+                computed: "_computeColumns(attribute.details.columns)"
+            },
+            newAction: {
+                type: Object,
+                readOnly: true
+            },
+            newActionPinned: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeNewActionPinned(height, newAction)"
+            },
+            deleteAction: {
+                type: Object,
+                readOnly: true
+            },
+            width: {
+                type: Number,
+                readOnly: true
+            },
+            height: {
+                type: Number,
+                readOnly: true
+            },
+            canDelete: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeCanDelete(editing, deleteAction, attribute.objects)"
+            },
+            initializing: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: true,
+                readOnly: true
+            }
+        },
+        observers: [
+            "_updateWidths(columns, width, deleteAction, editing, isAttached)",
+            "_updateActions(attribute.details.actions, editing, readOnly)"
+        ],
+        forwardObservers: [
+            "attribute.objects.isDeleted"
+        ]
+    })
     export class PersistentObjectAttributeAsDetail extends WebComponents.Attributes.PersistentObjectAttribute {
         private _inlineAddHeight: number;
         private _lastComputedWidths: number;
@@ -37,7 +84,7 @@ module Vidyano.WebComponents.Attributes {
 
             var scroller = (<Scroller><any>this.$["body"]);
             if (!this._inlineAddHeight) {
-                var inlineAdd = <HTMLElement>scroller.asElement.querySelector(".row.add.inline");
+                var inlineAdd = <HTMLElement>scroller.querySelector(".row.add.inline");
                 if (!inlineAdd)
                     return false;
 
@@ -138,6 +185,16 @@ module Vidyano.WebComponents.Attributes {
         }
     }
 
+    @WebComponent.register({
+        properties: {
+            serviceObject: Object,
+            columns: Array,
+            editing: Boolean
+        },
+        observers: [
+            "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached)"
+        ]
+    })
     export class PersistentObjectAttributeAsDetailRow extends WebComponents.WebComponent {
         private _isColumnVisible(column: QueryColumn) {
             return !column.isHidden && column.width !== "0";
@@ -154,66 +211,7 @@ module Vidyano.WebComponents.Attributes {
 
         private _scrollNewDetailRowIntoView(serviceObject: Vidyano.PersistentObject, columns: Vidyano.QueryColumn[], editing: boolean, isAttached: boolean) {
             if (editing && isAttached && !!serviceObject && serviceObject.isNew && !!columns)
-                this.asElement.scrollIntoView(false);
+                this.scrollIntoView(false);
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeAsDetail, {
-        properties: {
-            columns: {
-                type: Array,
-                computed: "_computeColumns(attribute.details.columns)"
-            },
-            newAction: {
-                type: Object,
-                readOnly: true
-            },
-            newActionPinned: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeNewActionPinned(height, newAction)"
-            },
-            deleteAction: {
-                type: Object,
-                readOnly: true
-            },
-            width: {
-                type: Number,
-                readOnly: true
-            },
-            height: {
-                type: Number,
-                readOnly: true
-            },
-            canDelete: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeCanDelete(editing, deleteAction, attribute.objects)"
-            },
-            initializing: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: true,
-                readOnly: true
-            }
-        },
-        observers: [
-            "_updateWidths(columns, width, deleteAction, editing, isAttached)",
-            "_updateActions(attribute.details.actions, editing, readOnly)"
-        ],
-        forwardObservers: [
-            "attribute.objects.isDeleted"
-        ]
-    });
-
-    WebComponent.register(PersistentObjectAttributeAsDetailRow, WebComponents.Attributes, "vi", {
-        properties: {
-            serviceObject: Object,
-            columns: Array,
-            editing: Boolean
-        },
-        observers: [
-            "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached)"
-        ]
-    });
 }

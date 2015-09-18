@@ -18,7 +18,7 @@
                     temp.innerHTML = xhr.responseText;
 
                     var icons = document.querySelector("#icons");
-                    Array.prototype.forEach.call(temp.querySelectorAll("vi-resource[icon]"), function (resource) {
+                    Array.prototype.forEach.call(temp.querySelectorAll("vi-icon[icon]"), function (resource) {
                         var row = document.createElement("tr");
 
                         var icon = document.createElement("td");

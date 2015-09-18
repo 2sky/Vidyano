@@ -16,6 +16,32 @@ module Vidyano.WebComponents {
         }
     }
 
+    @WebComponent.register({
+        properties: {
+            shown:
+            {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            autoSize:
+            {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            dragging: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
+            _translate: {
+                type: Object,
+                readOnly: true,
+                observer: "_translateChanged"
+            }
+        }
+    })
     export class Dialog extends WebComponent {
         private _translate: { x: number; y: number };
         private _instance: DialogInstance;
@@ -73,31 +99,4 @@ module Vidyano.WebComponents {
             dialog.style.webkitTransform = dialog.style.transform = "translate(" + this._translate.x + "px, " + this._translate.y + "px)";
         }
     }
-
-    WebComponent.register(Dialog, WebComponents, "vi", {
-        properties: {
-            shown:
-            {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            autoSize:
-            {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            dragging: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            _translate: {
-                type: Object,
-                readOnly: true,
-                observer: "_translateChanged"
-            }
-        }
-    });
 }

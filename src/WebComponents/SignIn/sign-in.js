@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -42,6 +49,29 @@ var Vidyano;
                 else
                     this.$["image"].classList.remove("has-image");
             };
+            SignIn = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        error: {
+                            type: String,
+                            notify: true
+                        },
+                        label: String,
+                        image: {
+                            type: String,
+                            observer: "_imageChanged"
+                        },
+                        vidyanoOnly: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            readOnly: true
+                        }
+                    },
+                    listeners: {
+                        "activating": "_activating"
+                    }
+                })
+            ], SignIn);
             return SignIn;
         })(WebComponents.WebComponent);
         WebComponents.SignIn = SignIn;
@@ -128,80 +158,61 @@ var Vidyano;
                 }, 500);
                 return this._signingInMessage + Array(signingInCounter + 1).join(".");
             };
+            SignInProvider = __decorate([
+                WebComponents.WebComponent.register({
+                    extends: "li",
+                    properties: {
+                        label: {
+                            type: String,
+                            computed: "_computeLabel(isAttached)",
+                        },
+                        description: {
+                            type: String,
+                            computed: "_computeDescription(isAttached)",
+                        },
+                        isVidyano: {
+                            type: Boolean,
+                            computed: "_computeIsVidyano(isAttached)",
+                            reflectToAttribute: true
+                        },
+                        userName: {
+                            type: String,
+                            notify: true
+                        },
+                        password: {
+                            type: String,
+                            notify: true
+                        },
+                        staySignedIn: {
+                            type: Boolean
+                        },
+                        expand: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        },
+                        signingIn: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true,
+                            value: false
+                        },
+                        signingInCounter: {
+                            type: Number,
+                            value: 0
+                        },
+                        signInLabel: {
+                            type: String,
+                            computed: "_computeSigninButtonLabel(signingIn, signingInCounter, isAttached)"
+                        }
+                    },
+                    listeners: {
+                        "tap": "_tap"
+                    }
+                })
+            ], SignInProvider);
             return SignInProvider;
         })(WebComponents.WebComponent);
         WebComponents.SignInProvider = SignInProvider;
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.SignIn, Vidyano.WebComponents, "vi", {
-            properties: {
-                error: {
-                    type: String,
-                    notify: true
-                },
-                label: String,
-                image: {
-                    type: String,
-                    observer: "_imageChanged"
-                },
-                vidyanoOnly: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                }
-            },
-            listeners: {
-                "activating": "_activating"
-            }
-        });
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.SignInProvider, Vidyano.WebComponents, "vi", {
-            properties: {
-                label: {
-                    type: String,
-                    computed: "_computeLabel(isAttached)",
-                },
-                description: {
-                    type: String,
-                    computed: "_computeDescription(isAttached)",
-                },
-                isVidyano: {
-                    type: Boolean,
-                    computed: "_computeIsVidyano(isAttached)",
-                    reflectToAttribute: true
-                },
-                userName: {
-                    type: String,
-                    notify: true
-                },
-                password: {
-                    type: String,
-                    notify: true
-                },
-                staySignedIn: {
-                    type: Boolean
-                },
-                expand: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                },
-                signingIn: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true,
-                    value: false
-                },
-                signingInCounter: {
-                    type: Number,
-                    value: 0
-                },
-                signInLabel: {
-                    type: String,
-                    computed: "_computeSigninButtonLabel(signingIn, signingInCounter, isAttached)"
-                }
-            },
-            listeners: {
-                "tap": "_tap"
-            },
-            extends: "li"
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

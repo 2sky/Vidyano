@@ -3,6 +3,39 @@
     var findUri = /(https?:\/\/[-\w]+(\.[-\w]+)*(:\d+)?(\/#?!?[^\.\s]*(\.[^\.\s]+)*)?)/g;
     var findNewLine = /\r?\n|\r/g;
 
+    @WebComponent.register({
+        properties: {
+            serviceObject: Object,
+            type: {
+                type: Number,
+                reflectToAttribute: true,
+                computed: "serviceObject.notificationType"
+            },
+            text: {
+                type: String,
+                notify: true,
+                observer: "_textChanged",
+                computed: "_computeText(serviceObject.notification)"
+            },
+            shown: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeShown(text)"
+            },
+            icon: {
+                type: String,
+                computed: "_computeIcon(type)"
+            },
+            isOverflowing: {
+                type: Boolean,
+                readOnly: true
+            }
+        },
+        forwardObservers: [
+            "serviceObject.notification",
+            "serviceObject.notificationType"
+        ]
+    })
     export class Notification extends WebComponent {
         serviceObject: Vidyano.ServiceObjectWithActions;
         isOverflowing: boolean;
@@ -44,7 +77,7 @@
 
                 this.app.showMessageDialog({
                     title: header,
-                    titleIcon: "Icon_Notification_" + headerIcon,
+                    titleIcon: "Notification_" + headerIcon,
                     message: this.text.replace(findNewLine, "<br />").replace(/class="style-scope vi-notification"/g, "class=\"style-scope vi-message-dialog\""),
                     html: true,
                     actions: [this.translations.OK]
@@ -105,48 +138,14 @@
         private _computeIcon(type: NotificationType | string): string {
             switch (this._getIconType(type)) {
                 case NotificationType.Error:
-                    return "Icon_Notification_Error";
+                    return "Notification_Error";
                 case NotificationType.Notice:
-                    return "Icon_Notification_Notice";
+                    return "Notification_Notice";
                 case NotificationType.OK:
-                    return "Icon_Notification_OK";
+                    return "Notification_OK";
                 case NotificationType.Warning:
-                    return "Icon_Notification_Warning";
+                    return "Notification_Warning";
             }
         }
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.Notification, Vidyano.WebComponents, "vi", {
-        properties: {
-            serviceObject: Object,
-            type: {
-                type: Number,
-                reflectToAttribute: true,
-                computed: "serviceObject.notificationType"
-            },
-            text: {
-                type: String,
-                notify: true,
-                observer: "_textChanged",
-                computed: "_computeText(serviceObject.notification)"
-            },
-            shown: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeShown(text)"
-            },
-            icon: {
-                type: String,
-                computed: "_computeIcon(type)"
-            },
-            isOverflowing: {
-                type: Boolean,
-                readOnly: true
-            }
-        },
-        forwardObservers: [
-            "serviceObject.notification",
-            "serviceObject.notificationType"
-        ]
-    });
 }

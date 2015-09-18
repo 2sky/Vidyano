@@ -15,7 +15,7 @@ vi-action-button {
         white-space: nowrap;
         overflow: hidden;
 
-        > vi-resource[icon] {
+        > vi-icon {
             height: @h1;
 
             &.options {
@@ -28,7 +28,7 @@ vi-action-button {
         }
 
         &[header] {
-            vi-resource {
+            vi-icon {
                 display: inline-block;
             }
         }
@@ -39,7 +39,7 @@ vi-action-button {
     }
 
     &[overflow] {
-        vi-resource.options {
+        vi-icon.options {
             -moz-transform: rotate(-90deg);
             -ms-transform: rotate(-90deg);
             -o-transform: rotate(-90deg);
@@ -55,7 +55,7 @@ vi-action-button {
     }
 
     &[no-icon] {
-        button.vi-action-button > vi-resource[icon] {
+        button.vi-action-button > vi-icon {
             display: none;
         }
     }

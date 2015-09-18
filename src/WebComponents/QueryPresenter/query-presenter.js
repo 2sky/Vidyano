@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -60,7 +67,11 @@ var Vidyano;
             };
             QueryPresenter.prototype._queryChanged = function (query, oldQuery) {
                 var _this = this;
+                if (this.isAttached && oldQuery)
+                    this.empty();
                 if (query) {
+                    if (this.queryId !== query.id)
+                        this.queryId = query.id;
                     if (!this._customTemplate) {
                         if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader) {
                             Vidyano.WebComponents.QueryPresenter._queryComponentLoader = new Promise(function (resolve) {
@@ -94,41 +105,43 @@ var Vidyano;
                     _this._setLoading(false);
                 });
             };
+            QueryPresenter = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        queryId: {
+                            type: String,
+                            reflectToAttribute: true
+                        },
+                        query: {
+                            type: Object,
+                            observer: "_queryChanged"
+                        },
+                        loading: {
+                            type: Boolean,
+                            readOnly: true,
+                            value: true,
+                            reflectToAttribute: true
+                        },
+                        error: {
+                            type: String,
+                            readOnly: true
+                        },
+                        hasError: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "_computeHasError(error)"
+                        }
+                    },
+                    observers: [
+                        "_computeQuery(queryId, isAttached)"
+                    ],
+                    listeners: {
+                        "activating": "_activating"
+                    }
+                })
+            ], QueryPresenter);
             return QueryPresenter;
         })(WebComponents.WebComponent);
         WebComponents.QueryPresenter = QueryPresenter;
-        WebComponents.WebComponent.register(QueryPresenter, WebComponents, "vi", {
-            properties: {
-                queryId: {
-                    type: String,
-                    reflectToAttribute: true
-                },
-                query: {
-                    type: Object,
-                    observer: "_queryChanged"
-                },
-                loading: {
-                    type: Boolean,
-                    readOnly: true,
-                    value: true,
-                    reflectToAttribute: true
-                },
-                error: {
-                    type: String,
-                    readOnly: true
-                },
-                hasError: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "_computeHasError(error)"
-                }
-            },
-            observers: [
-                "_computeQuery(queryId, isAttached)"
-            ],
-            listeners: {
-                "activating": "_activating"
-            }
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

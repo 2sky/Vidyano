@@ -1,4 +1,51 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            attribute: Object,
+            noLabel: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
+            editing: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "attribute.parent.isEditing"
+            },
+            required: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeRequired(attribute.isRequired, attribute.value)"
+            },
+            readOnly: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "attribute.isReadOnly"
+            },
+            bulkEdit: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "attribute.parent.isBulkEdit"
+            },
+            loading: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true,
+                value: true
+            }
+        },
+        observers: [
+            "_attributeChanged(attribute, isAttached)"
+        ],
+        forwardObservers: [
+            "attribute.parent.isEditing",
+            "attribute.isRequired",
+            "attribute.isReadOnly",
+            "attribute.value",
+            "attribute.isValueChanged",
+            "attribute.parent.isBulkEdit"
+        ]
+    })
     export class PersistentObjectAttributePresenter extends WebComponent {
         private static _attributeImports: {
             [key: string]: Promise<boolean>;
@@ -152,7 +199,7 @@ module Vidyano.WebComponents {
                     var child = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
                     child.classList.add("attribute");
 
-                    Polymer.dom(this).appendChild(child.asElement);
+                    Polymer.dom(this).appendChild(child);
 
                     child.attribute = attribute;
                 }
@@ -166,52 +213,4 @@ module Vidyano.WebComponents {
             return required && (value === "" || value == null);
         }
     }
-
-    WebComponent.register(PersistentObjectAttributePresenter, WebComponents, "vi", {
-        properties: {
-            attribute: Object,
-            noLabel: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
-            editing: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "attribute.parent.isEditing"
-            },
-            required: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeRequired(attribute.isRequired, attribute.value)"
-            },
-            readOnly: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "attribute.isReadOnly"
-            },
-            bulkEdit: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "attribute.parent.isBulkEdit"
-            },
-            loading: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true,
-                value: true
-            }
-        },
-        observers: [
-            "_attributeChanged(attribute, isAttached)"
-        ],
-        forwardObservers: [
-            "attribute.parent.isEditing",
-            "attribute.isRequired",
-            "attribute.isReadOnly",
-            "attribute.value",
-            "attribute.isValueChanged",
-            "attribute.parent.isBulkEdit"
-        ]
-    });
 }

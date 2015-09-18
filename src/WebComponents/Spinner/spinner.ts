@@ -1,6 +1,5 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register
     export class Spinner extends WebComponent {
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.Spinner, Vidyano.WebComponents);
 }

@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -46,33 +53,35 @@ var Vidyano;
                     return true;
                 return Enumerable.from(actions).where(function (a) { return a.isVisible; }).count() == 0;
             };
+            ActionBar = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        serviceObject: {
+                            type: Object,
+                            observer: "_serviceObjectChanged"
+                        },
+                        pinnedActions: {
+                            type: Array,
+                            computed: "_computePinnedActions(serviceObject)"
+                        },
+                        unpinnedActions: {
+                            type: Array,
+                            computed: "_computeUnpinnedActions(serviceObject)"
+                        },
+                        canSearch: {
+                            type: Boolean,
+                            computed: "_computeCanSearch(serviceObject)"
+                        },
+                        noActions: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "_computeNoActions(pinnedActions, unpinnedActions)"
+                        }
+                    }
+                })
+            ], ActionBar);
             return ActionBar;
         })(WebComponents.WebComponent);
         WebComponents.ActionBar = ActionBar;
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));
-Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.ActionBar, Vidyano.WebComponents, "vi", {
-    properties: {
-        serviceObject: {
-            type: Object,
-            observer: "_serviceObjectChanged"
-        },
-        pinnedActions: {
-            type: Array,
-            computed: "_computePinnedActions(serviceObject)"
-        },
-        unpinnedActions: {
-            type: Array,
-            computed: "_computeUnpinnedActions(serviceObject)"
-        },
-        canSearch: {
-            type: Boolean,
-            computed: "_computeCanSearch(serviceObject)"
-        },
-        noActions: {
-            type: Boolean,
-            reflectToAttribute: true,
-            computed: "_computeNoActions(pinnedActions, unpinnedActions)"
-        }
-    }
-});

@@ -6,9 +6,9 @@
         <template is="dom-if" if="{{hasOptions}}">
             <vi-popup-menu open-on-hover="{{overflow}}">
                 <button is="vi-button" disabled="{{!canExecute}}" header inverse>
-                    <vi-resource source="{{icon}}"></vi-resource>
+                    <vi-icon source="{{icon}}"></vi-icon>
                     <span class="label">{{action.definition.displayName}}</span>
-                    <vi-resource source="Icon_Down"></vi-resource>
+                    <vi-icon source="Down"></vi-icon>
                 </button>
                 <template is="dom-repeat" items="{{options}}">
                     <vi-popup-menu-item label="{{item}}" on-tap="_executeWithOption" data-option-index$="{{index}}"></vi-popup-menu-item>

@@ -31,6 +31,9 @@
     },
     "bignumber.js": {
       "": "*.min.js"
+    },
+    "sortable": {
+      "":  "sortable.min.js"
     }
   },
   "devDependencies": {
@@ -39,10 +42,10 @@
     "paper-ripple": "polymerelements/paper-ripple#^1.0.1",
     "marked-element": "polymerelements/marked-element#^1.0.2",
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.2",
-    "es6-promise": "2sky/es6-promise#^2.3.0",
+    "es6-promise": "^3.0.2",
     "linqjs": "2sky/linqjs#3.0.3-Beta4",
     "pathjs": "2sky/pathjs#master",
-    "sortable": "2sky/sortable#^1.2.0",
+    "sortable": "RubaXa/sortable#^1.2.1",
     "layout": "2sky/layout#master",
     "bignumber.js": "^2.0.7"
   }

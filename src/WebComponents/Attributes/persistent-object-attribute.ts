@@ -68,112 +68,83 @@ module Vidyano.WebComponents.Attributes {
             return !StringEx.isNullOrEmpty(validationError);
         }
 
-        static registerAttribute(obj: any, info: WebComponentRegistrationInfo = {}, finalized?: (ctor: any) => void) {
-            info.properties = info.properties || {};
+        static register(info: WebComponentRegistrationInfo = {}): any {
+            if (typeof info == "function")
+                return PersistentObjectAttribute.register({})(info);
 
-            info.properties["attribute"] = {
-                type: Object,
-                observer: "_attributeChanged"
-            };
-            info.properties["editing"] =
-            {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "attribute.parent.isEditing"
-            };
-            info.properties["readOnly"] =
-            {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "attribute.isReadOnly"
-            };
-            info.properties["required"] =
-            {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "attribute.isRequired"
-            };
-            info.properties["value"] =
-            {
-                type: Object,
-                notify: true,
-                observer: "_valueChanged"
-            };
-            info.properties["validationError"] =
-            {
-                type: Object,
-                notify: true,
-                computed: "attribute.validationError"
-            };
-            info.properties["hasError"] =
-            {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeHasError(attribute.validationError)"
-            };
+            return (obj: Function) => {
+                info.properties = info.properties || {};
 
-            info.forwardObservers = info.forwardObservers || [];
-            info.forwardObservers.push("attribute.displayValue");
-            info.forwardObservers.push("attribute.isRequired");
-            info.forwardObservers.push("attribute.isReadOnly");
-            info.forwardObservers.push("attribute.validationError");
-            info.forwardObservers.push("_optionsChanged(attribute.options)");
-            info.forwardObservers.push("_editingChanged(attribute.parent.isEditing)");
-            info.forwardObservers.push("_attributeValueChanged(attribute.value)");
+                info.properties["isAttached"] =
+                {
+                    type: Boolean,
+                    readOnly: true
+                };
+                info.properties["attribute"] = {
+                    type: Object,
+                    observer: "_attributeChanged"
+                };
+                info.properties["editing"] =
+                {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "attribute.parent.isEditing"
+                };
+                info.properties["readOnly"] =
+                {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "attribute.isReadOnly"
+                };
+                info.properties["required"] =
+                {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "attribute.isRequired"
+                };
+                info.properties["value"] =
+                {
+                    type: Object,
+                    notify: true,
+                    observer: "_valueChanged"
+                };
+                info.properties["validationError"] =
+                {
+                    type: Object,
+                    notify: true,
+                    computed: "attribute.validationError"
+                };
+                info.properties["hasError"] =
+                {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "_computeHasError(attribute.validationError)"
+                };
 
-            var synonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[WebComponent.getName(obj).replace("PersistentObjectAttribute", "")];
-            if (synonyms) {
-                var synonymFinalizer = (ctor: any) => {
+                info.forwardObservers = info.forwardObservers || [];
+                info.forwardObservers.push("attribute.displayValue");
+                info.forwardObservers.push("attribute.isRequired");
+                info.forwardObservers.push("attribute.isReadOnly");
+                info.forwardObservers.push("attribute.validationError");
+                info.forwardObservers.push("_optionsChanged(attribute.options)");
+                info.forwardObservers.push("_editingChanged(attribute.parent.isEditing)");
+                info.forwardObservers.push("_attributeValueChanged(attribute.value)");
+
+                var ctor = WebComponent.register(obj, info);
+
+                var synonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[WebComponent.getName(obj).replace("PersistentObjectAttribute", "")];
+                if (synonyms) {
                     synonyms.forEach(ss => {
                         Attributes["PersistentObjectAttribute" + ss] = ctor;
                     });
-                };
-
-                if (finalized) {
-                    var oldFinalized = finalized;
-                    finalized = (ctor: any) => {
-                        oldFinalized(ctor);
-                        synonymFinalizer(ctor);
-                    };
                 }
-                else
-                    finalized = synonymFinalizer;
-            }
 
-            WebComponent.register(obj, Attributes, "vi", info, finalized);
+                return ctor;
+            };
         }
     }
 
-    export class PersistentObjectAttributeEdit extends WebComponent {
-        private _setFocus: (val: boolean) => void;
-        attribute: Vidyano.PersistentObjectAttribute;
-
-        private _focus(e: Event) {
-            this._setFocus(true);
-        }
-
-        private _blur(e: Event) {
-            this._setFocus(false);
-        }
-
-        private _showError() {
-            if (!this.attribute || !this.attribute.validationError)
-                return;
-
-            this.app.showMessageDialog({
-                title: this.app.translateMessage(NotificationType[NotificationType.Error]),
-                titleIcon: "Icon_Notification_Error",
-                actions: [this.translations.OK],
-                message: this.attribute.validationError
-            });
-        }
-
-        private _computeHasError(validationError: string): boolean {
-            return !StringEx.isNullOrEmpty(validationError);
-        }
-    }
-
-    WebComponent.register(PersistentObjectAttributeEdit, Attributes, "vi", {
+    @WebComponent.register({
         properties: {
             attribute: Object,
             focus: {
@@ -194,5 +165,33 @@ module Vidyano.WebComponents.Attributes {
         forwardObservers: [
             "attribute.validationError"
         ]
-    });
+    })
+    export class PersistentObjectAttributeEdit extends WebComponent {
+        private _setFocus: (val: boolean) => void;
+        attribute: Vidyano.PersistentObjectAttribute;
+
+        private _focus(e: Event) {
+            this._setFocus(true);
+        }
+
+        private _blur(e: Event) {
+            this._setFocus(false);
+        }
+
+        private _showError() {
+            if (!this.attribute || !this.attribute.validationError)
+                return;
+
+            this.app.showMessageDialog({
+                title: this.app.translateMessage(NotificationType[NotificationType.Error]),
+                titleIcon: "Notification_Error",
+                actions: [this.translations.OK],
+                message: this.attribute.validationError
+            });
+        }
+
+        private _computeHasError(validationError: string): boolean {
+            return !StringEx.isNullOrEmpty(validationError);
+        }
+    }
 }

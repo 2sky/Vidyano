@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -47,7 +54,7 @@ var Vidyano;
                     }
                     this.app.showMessageDialog({
                         title: header,
-                        titleIcon: "Icon_Notification_" + headerIcon,
+                        titleIcon: "Notification_" + headerIcon,
                         message: this.text.replace(findNewLine, "<br />").replace(/class="style-scope vi-notification"/g, "class=\"style-scope vi-message-dialog\""),
                         html: true,
                         actions: [this.translations.OK]
@@ -99,50 +106,52 @@ var Vidyano;
             Notification.prototype._computeIcon = function (type) {
                 switch (this._getIconType(type)) {
                     case Vidyano.NotificationType.Error:
-                        return "Icon_Notification_Error";
+                        return "Notification_Error";
                     case Vidyano.NotificationType.Notice:
-                        return "Icon_Notification_Notice";
+                        return "Notification_Notice";
                     case Vidyano.NotificationType.OK:
-                        return "Icon_Notification_OK";
+                        return "Notification_OK";
                     case Vidyano.NotificationType.Warning:
-                        return "Icon_Notification_Warning";
+                        return "Notification_Warning";
                 }
             };
+            Notification = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        serviceObject: Object,
+                        type: {
+                            type: Number,
+                            reflectToAttribute: true,
+                            computed: "serviceObject.notificationType"
+                        },
+                        text: {
+                            type: String,
+                            notify: true,
+                            observer: "_textChanged",
+                            computed: "_computeText(serviceObject.notification)"
+                        },
+                        shown: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "_computeShown(text)"
+                        },
+                        icon: {
+                            type: String,
+                            computed: "_computeIcon(type)"
+                        },
+                        isOverflowing: {
+                            type: Boolean,
+                            readOnly: true
+                        }
+                    },
+                    forwardObservers: [
+                        "serviceObject.notification",
+                        "serviceObject.notificationType"
+                    ]
+                })
+            ], Notification);
             return Notification;
         })(WebComponents.WebComponent);
         WebComponents.Notification = Notification;
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.Notification, Vidyano.WebComponents, "vi", {
-            properties: {
-                serviceObject: Object,
-                type: {
-                    type: Number,
-                    reflectToAttribute: true,
-                    computed: "serviceObject.notificationType"
-                },
-                text: {
-                    type: String,
-                    notify: true,
-                    observer: "_textChanged",
-                    computed: "_computeText(serviceObject.notification)"
-                },
-                shown: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "_computeShown(text)"
-                },
-                icon: {
-                    type: String,
-                    computed: "_computeIcon(type)"
-                },
-                isOverflowing: {
-                    type: Boolean,
-                    readOnly: true
-                }
-            },
-            forwardObservers: [
-                "serviceObject.notification",
-                "serviceObject.notificationType"
-            ]
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

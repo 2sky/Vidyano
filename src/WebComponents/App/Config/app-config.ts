@@ -1,4 +1,5 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register
     export class AppConfig extends WebComponent {
         private _defaultAttributeConfig: PersistentObjectAttributeConfig;
         private _attributeConfigs: linqjs.Enumerable<PersistentObjectAttributeConfig>;
@@ -51,6 +52,4 @@
             }).where(child => child instanceof type).select(child => <T><any>child).memoize();
         }
     }
-
-    WebComponent.register(AppConfig, WebComponents, "vi");
 }

@@ -1,4 +1,49 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            persistentObjectId: {
+                type: String,
+                reflectToAttribute: true
+            },
+            persistentObjectObjectId: {
+                type: String,
+                reflectToAttribute: true
+            },
+            persistentObject: {
+                type: Object,
+                observer: "_persistentObjectChanged"
+            },
+            loading: {
+                type: Boolean,
+                readOnly: true,
+                value: true,
+                reflectToAttribute: true
+            },
+            error: {
+                type: String,
+                readOnly: true
+            },
+            hasError: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeHasError(error)"
+            }
+        },
+        observers: [
+            "_computePersistentObject(persistentObjectId, persistentObjectObjectId, isAttached)"
+        ],
+        listeners: {
+            "activating": "_activating"
+        },
+        keybindings: {
+            "f2": {
+                listener: "_edit",
+                priority: 10
+            },
+            "ctrl+s": "_save",
+            "esc": "_cancelSave"
+        }
+    })
     export class PersistentObjectPresenter extends WebComponent {
         private static _persistentObjectComponentLoader: Promise<any>;
         private _cacheEntry: PersistentObjectAppCacheEntry;
@@ -126,50 +171,4 @@ module Vidyano.WebComponents {
                 action.execute();
         }
     }
-
-    WebComponent.register(PersistentObjectPresenter, WebComponents, "vi", {
-        properties: {
-            persistentObjectId: {
-                type: String,
-                reflectToAttribute: true
-            },
-            persistentObjectObjectId: {
-                type: String,
-                reflectToAttribute: true
-            },
-            persistentObject: {
-                type: Object,
-                observer: "_persistentObjectChanged"
-            },
-            loading: {
-                type: Boolean,
-                readOnly: true,
-                value: true,
-                reflectToAttribute: true
-            },
-            error: {
-                type: String,
-                readOnly: true
-            },
-            hasError: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeHasError(error)"
-            }
-        },
-        observers: [
-            "_computePersistentObject(persistentObjectId, persistentObjectObjectId, isAttached)"
-        ],
-        listeners: {
-            "activating": "_activating"
-        },
-        keybindings: {
-            "f2": {
-                listener: "_edit",
-                priority: 10
-            },
-            "ctrl+s": "_save",
-            "esc": "_cancelSave"
-        }
-    });
 }

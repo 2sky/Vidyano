@@ -1,8 +1,7 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Vidyano;
 (function (Vidyano) {
@@ -18,69 +17,68 @@ var Vidyano;
                 _super.prototype.attached.call(this);
                 this._load();
             };
-            Resource.prototype._nameChanged = function () {
-                if (this.name)
-                    resources[this.name.toUpperCase()] = this;
+            Resource.prototype._nameChanged = function (name, oldName) {
+                if (name)
+                    resources[(this.tagName + "+" + name.toUpperCase())] = this;
                 else
-                    delete resources[this.name.toUpperCase()];
+                    delete resources[(this.tagName + "+" + oldName.toUpperCase())];
             };
-            Resource.prototype._setIcon = function (value) { };
             Resource.prototype._setHasResource = function (value) { };
             Resource.prototype._load = function () {
-                if (this.isAttached && this.source) {
+                if (this.source) {
                     if (this.source == this._loadedSource)
                         return;
                     this.empty();
-                    var resource = Resource.LoadResource(this.source);
+                    var resource = Resource.LoadResource(this.source, this.tagName);
                     if (resource)
-                        Polymer.dom(this).appendChild(Resource.Load(resource));
-                    this.icon = resource != null ? resource.icon : false;
+                        Polymer.dom(this).appendChild(Resource.Load(resource, this.tagName));
                     this._setHasResource(resource != null);
                     this._loadedSource = this.source;
                 }
             };
-            Resource.Load = function (source) {
-                var resource = (typeof source === "string") ? resources[source.toUpperCase()] : source;
+            Resource.register = function (info) {
+                if (info === void 0) { info = {}; }
+                if (typeof info == "function")
+                    return Resource.register({})(info);
+                return function (obj) {
+                    info.properties = info.properties || {};
+                    info.properties["name"] = {
+                        type: String,
+                        observer: "_nameChanged"
+                    };
+                    info.properties["model"] = {
+                        type: Object,
+                        observer: "_load"
+                    };
+                    info.properties["source"] = {
+                        type: String,
+                        reflectToAttribute: true,
+                        observer: "_load"
+                    };
+                    info.properties["hasResource"] = {
+                        type: Boolean,
+                        reflectToAttribute: true,
+                        readOnly: true
+                    };
+                    return WebComponents.WebComponent.register(obj, info);
+                };
+            };
+            Resource.Load = function (source, tagName) {
+                var resource = (typeof source === "string") ? resources[(tagName + "+" + source.toUpperCase())] : source;
                 var copy = document.createDocumentFragment();
                 Enumerable.from(Polymer.dom(resource).children).forEach(function (child) {
                     copy.appendChild(child.cloneNode(true));
                 });
                 return copy;
             };
-            Resource.LoadResource = function (source) {
-                return resources[source.toUpperCase()];
+            Resource.LoadResource = function (source, tagName) {
+                return resources[(tagName + "+" + source.toUpperCase())];
             };
-            Resource.Exists = function (name) {
-                return resources[name.toUpperCase()] != undefined;
+            Resource.Exists = function (name, tagName) {
+                return resources[(tagName + "+" + name.toUpperCase())] != undefined;
             };
             return Resource;
         })(WebComponents.WebComponent);
         WebComponents.Resource = Resource;
-        WebComponents.WebComponent.register(Resource, WebComponents, "vi", {
-            properties: {
-                name: {
-                    type: String,
-                    observer: "_nameChanged"
-                },
-                model: {
-                    type: Object,
-                    observer: "_load"
-                },
-                source: {
-                    type: String,
-                    reflectToAttribute: true,
-                    observer: "_load"
-                },
-                hasResource: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                },
-                icon: {
-                    type: Boolean,
-                    reflectToAttribute: true
-                },
-            }
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

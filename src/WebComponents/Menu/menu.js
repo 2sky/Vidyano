@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -38,6 +45,28 @@ var Vidyano;
             Menu.prototype._countItems = function (programUnitItems) {
                 return !!programUnitItems ? programUnitItems.length : 0;
             };
+            Menu = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        menuTitle: String,
+                        programUnit: Object,
+                        items: Array,
+                        collapsed: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        },
+                        filter: {
+                            type: String,
+                            observer: "_filterChanged"
+                        },
+                        filtering: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        },
+                        currentProgramUnit: Object,
+                    }
+                })
+            ], Menu);
             return Menu;
         })(WebComponents.WebComponent);
         WebComponents.Menu = Menu;
@@ -92,12 +121,10 @@ var Vidyano;
             MenuItem.prototype._updateItemTitle = function (item, filter, filtering, collapsed) {
                 if (collapsed) {
                     if (item instanceof Vidyano.ProgramUnit && !this.$["title"].querySelector("vi-resource")) {
-                        var resourceName = item.offset < 2147483647 ? "Icon_ProgramUnit_" + item.name : "Icon_Vidyano";
-                        if (Vidyano.WebComponents.Resource.Exists(resourceName)) {
+                        var resourceName = item.offset < 2147483647 ? "ProgramUnit_" + item.name : "Vidyano";
+                        if (Vidyano.WebComponents.Icon.Exists(resourceName)) {
                             this.$["title"].textContent = "";
-                            var resource = new Vidyano.WebComponents.Resource();
-                            resource.source = resourceName;
-                            this.$["title"].appendChild(resource);
+                            this.$["title"].appendChild(new Vidyano.WebComponents.Icon(resourceName));
                             return;
                         }
                     }
@@ -119,78 +146,60 @@ var Vidyano;
                     return undefined;
                 return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? this.app.noHistory ? "#" : '#!/' + this.item.path : undefined;
             };
+            MenuItem = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        item: Object,
+                        collapsed: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: false
+                        },
+                        programUnit: {
+                            type: Object,
+                            observer: "_programUnitChanged"
+                        },
+                        hasItems: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "_computedHasItems(item)"
+                        },
+                        expand: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        },
+                        filtering: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: false
+                        },
+                        filter: {
+                            type: String,
+                            notify: true,
+                            observer: "_filterChanged",
+                            value: ""
+                        },
+                        filterParent: Object,
+                        hide: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        },
+                        href: {
+                            type: String,
+                            computed: "_computedHref(item, isAttached)"
+                        }
+                    },
+                    observers: [
+                        "_updateItemTitle(item, filter, filtering, collapsed)"
+                    ],
+                    listeners: {
+                        "tap": "_tap"
+                    }
+                })
+            ], MenuItem);
             return MenuItem;
         })(WebComponents.WebComponent);
         WebComponents.MenuItem = MenuItem;
-        WebComponents.WebComponent.register(Menu, WebComponents, "vi", {
-            properties: {
-                menuTitle: String,
-                programUnit: Object,
-                items: Array,
-                collapsed: {
-                    type: Boolean,
-                    reflectToAttribute: true
-                },
-                filter: {
-                    type: String,
-                    observer: "_filterChanged"
-                },
-                filtering: {
-                    type: Boolean,
-                    reflectToAttribute: true
-                },
-                currentProgramUnit: Object,
-            }
-        });
-        WebComponents.WebComponent.register(MenuItem, WebComponents, "vi", {
-            properties: {
-                item: Object,
-                collapsed: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    value: false
-                },
-                programUnit: {
-                    type: Object,
-                    observer: "_programUnitChanged"
-                },
-                hasItems: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "_computedHasItems(item)"
-                },
-                expand: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                },
-                filtering: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    value: false
-                },
-                filter: {
-                    type: String,
-                    notify: true,
-                    observer: "_filterChanged",
-                    value: ""
-                },
-                filterParent: Object,
-                hide: {
-                    type: Boolean,
-                    reflectToAttribute: true
-                },
-                href: {
-                    type: String,
-                    computed: "_computedHref(item, isAttached)"
-                }
-            },
-            observers: [
-                "_updateItemTitle(item, filter, filtering, collapsed)"
-            ],
-            listeners: {
-                "tap": "_tap"
-            }
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

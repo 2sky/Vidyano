@@ -76,7 +76,7 @@ vi-user button.vi-user {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
-vi-user button.vi-user#signIn > vi-resource {
+vi-user button.vi-user#signIn > vi-icon {
   height: 40px !important;
   margin-left: 6px;
 }
@@ -138,7 +138,7 @@ vi-user button.vi-user#settings {
   fill: rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
 }
-vi-user button.vi-user > vi-resource {
+vi-user button.vi-user > vi-icon {
   fill: white;
 }
 vi-user:not([is-signed-in]) button.vi-user {
@@ -150,7 +150,7 @@ vi-user[collapsed] #signedIn {
 vi-user[collapsed] #signIn > span {
   display: none;
 }
-vi-user[collapsed] #signIn vi-resource {
+vi-user[collapsed] #signIn vi-icon {
   margin-left: 0 !important;
 }
 vi-user[collapsed] button.vi-user#settings {

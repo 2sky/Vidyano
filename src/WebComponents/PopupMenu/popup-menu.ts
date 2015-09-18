@@ -1,4 +1,35 @@
 module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            disabled: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            openOnHover: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            contextMenuOnly: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
+            shiftKey: Boolean,
+            ctrlKey: Boolean,
+            rightAlign: {
+                type: Boolean,
+                reflectToAttribute: true,
+                observer: "_alignmentChanged"
+            }
+        },
+        observers: [
+            "_hookContextMenu(isAttached, contextMenuOnly)"
+        ],
+        listeners: {
+            "mouseenter": "_mouseenter",
+            "mousemove": "_mousemove"
+        }
+    })
     export class PopupMenu extends WebComponent {
         private _openContextEventListener: EventListener;
         contextMenuOnly: boolean;
@@ -13,9 +44,9 @@ module Vidyano.WebComponents {
 
         private _hookContextMenu(isAttached: boolean, contextMenu: boolean) {
             if (isAttached && contextMenu)
-                this.asElement.parentElement.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
+                this.parentElement.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
             else if (this._openContextEventListener) {
-                this.asElement.parentElement.removeEventListener("contextmenu", this._openContextEventListener);
+                this.parentElement.removeEventListener("contextmenu", this._openContextEventListener);
                 this._openContextEventListener = undefined;
             }
         }
@@ -56,6 +87,20 @@ module Vidyano.WebComponents {
         }
     }
 
+    @WebComponent.register({
+        properties: {
+            label: String,
+            icon: String,
+            iconSpace: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            split: {
+                type: Boolean,
+                reflectToAttribute: true
+            }
+        }
+    })
     export class PopupMenuItem extends WebComponent {
         label: string;
         split: boolean;
@@ -71,55 +116,7 @@ module Vidyano.WebComponents {
         }
     }
 
+    @WebComponent.register()
     export class PopupMenuItemSeparator extends WebComponent {
     }
-
-    WebComponent.register(PopupMenu, WebComponents, "vi", {
-        properties: {
-            disabled: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            openOnHover: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            contextMenuOnly: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
-            shiftKey: Boolean,
-            ctrlKey: Boolean,
-            rightAlign: {
-                type: Boolean,
-                reflectToAttribute: true,
-                observer: "_alignmentChanged"
-            }
-        },
-        observers: [
-            "_hookContextMenu(isAttached, contextMenuOnly)"
-        ],
-        listeners: {
-            "mouseenter": "_mouseenter",
-            "mousemove": "_mousemove"
-        }
-    });
-
-    WebComponent.register(PopupMenuItem, WebComponents, "vi", {
-        properties: {
-            label: String,
-            icon: String,
-            iconSpace: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            split: {
-                type: Boolean,
-                reflectToAttribute: true
-            }
-        }
-    });
-
-    WebComponent.register(PopupMenuItemSeparator, WebComponents, "vi");
 }

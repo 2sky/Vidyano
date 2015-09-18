@@ -3,11 +3,11 @@
         <vi-dialog id="dialog">
             <header class="horizontal layout">
                 <template is="dom-if" if="{{_hasHeaderIcon(options)}}">
-                    <vi-resource source="{{options.titleIcon}}" icon></vi-resource>
+                    <vi-icon source="{{options.titleIcon}}"></vi-icon>
                 </template>
                 <h4 class="flex">{{options.title}}</h4>
                 <template is="dom-if" if="{{!options.noClose}}">
-                    <button class="close" on-tap="_close"><vi-resource source="Icon_Remove"></vi-resource></button>
+                    <button class="close" on-tap="_close"><vi-icon source="Remove"></vi-icon></button>
                 </template>
             </header>
             <pre id="pre"></pre>

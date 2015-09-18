@@ -1,4 +1,16 @@
 module Vidyano.WebComponents.Attributes {
+    @PersistentObjectAttribute.register({
+        properties: {
+            canClear: {
+                type: Boolean,
+                computed: "_computeCanClear(value)"
+            },
+            image: {
+                type: String,
+                computed: "_computeImage(value)"
+            }
+        }
+    })
     export class PersistentObjectAttributeImage extends WebComponents.Attributes.PersistentObjectAttribute {
         private _pasteListener: EventListener;
 
@@ -87,17 +99,4 @@ module Vidyano.WebComponents.Attributes {
             pastedImage.src = source;
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeImage, {
-        properties: {
-            canClear: {
-                type: Boolean,
-                computed: "_computeCanClear(value)"
-            },
-            image: {
-                type: String,
-                computed: "_computeImage(value)"
-            }
-        }
-    });
 }

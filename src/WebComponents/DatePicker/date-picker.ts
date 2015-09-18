@@ -1,4 +1,21 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            zoom: {
+                type: String,
+                reflectToAttribute: true,
+                observer: "_zoomChanged"
+            },
+            selectedDate: {
+                type: Object,
+                notify: true,
+                observer: "_selectedDateChanged"
+            }
+        },
+        listeners: {
+            "click": "_catchClick"
+        }
+    })
     export class DatePicker extends WebComponent {
         private _today = new Date();
         private _daysBody: HTMLElement;
@@ -286,22 +303,4 @@
             e.stopPropagation();
         }
     }
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.DatePicker, Vidyano.WebComponents, "vi", {
-        properties: {
-            zoom: {
-                type: String,
-                reflectToAttribute: true,
-                observer: "_zoomChanged"
-            },
-            selectedDate: {
-                type: Object,
-                notify: true,
-                observer: "_selectedDateChanged"
-            }
-        },
-        listeners: {
-            "click": "_catchClick"
-        }
-    });
 }

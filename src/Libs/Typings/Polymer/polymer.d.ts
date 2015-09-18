@@ -1,11 +1,15 @@
-﻿interface PolymerProperties {
-    [name: string]: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor | {
-        type: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor;
-        computed?: string;
-        reflectToAttribute?: boolean;
-        readOnly?: boolean;
-        observer?: string;
-    };
+﻿interface PolymerProperty {
+    type: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor;
+    computed?: string;
+    reflectToAttribute?: boolean;
+    readOnly?: boolean;
+    observer?: string;
+    value?: number | boolean | string | Function;
+    notify?: boolean;
+}
+
+interface PolymerProperties {
+    [name: string]: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor | PolymerProperty;
 }
 
 interface PolymerDomApiClassList {
@@ -88,6 +92,10 @@ interface TapEvent extends CustomEvent {
     model?: TemplateInstance | any;
 }
 
+interface PolymerGestures {
+    add: (node: HTMLElement, eventName: string, handler: Function) => void;
+}
+
 declare var Polymer: {
     (polymer: any): void;
     dom(element: Node | Vidyano.WebComponents.WebComponent): PolymerDomApi;
@@ -101,6 +109,8 @@ declare var Polymer: {
     nop(): void;
 
     api: any;
+
+    Gestures: PolymerGestures;
 };
 declare var CustomElements: {
     registry: {

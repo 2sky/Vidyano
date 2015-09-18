@@ -8,6 +8,23 @@
         value: string;
     }
 
+    @PersistentObjectAttribute.register({
+        properties: {
+            strings: {
+                type: Array,
+                readOnly: true
+            },
+            multiline: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeMultiLine(attribute)"
+            },
+            canShowDialog: {
+                type: Boolean,
+                computed: "_computeCanShowDialog(readOnly, strings)"
+            }
+        }
+    })
     export class PersistentObjectAttributeTranslatedString extends PersistentObjectAttribute {
         private _defaultLanguage: string;
         strings: TranslatedString[];
@@ -87,6 +104,16 @@
         }
     }
 
+    @WebComponent.register({
+        properties: {
+            label: String,
+            strings: Array,
+            multiline: {
+                type: Boolean,
+                reflectToAttribute: true,
+            }
+        }
+    })
     export class PersistentObjectAttributeTranslatedStringDialog extends WebComponent {
         private _dialog: DialogInstance;
         label: string;
@@ -107,34 +134,4 @@
             this._dialog.reject(null);
         }
     }
-
-    PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeTranslatedString, {
-        properties: {
-            strings: {
-                type: Array,
-                readOnly: true
-            },
-            multiline: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeMultiLine(attribute)"
-            },
-            canShowDialog: {
-                type: Boolean,
-                computed: "_computeCanShowDialog(readOnly, strings)"
-            }
-        }
-    });
-
-    Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.Attributes.PersistentObjectAttributeTranslatedStringDialog, Vidyano.WebComponents, "vi",
-        {
-            properties: {
-                label: String,
-                strings: Array,
-                multiline: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                }
-            }
-        });
 }

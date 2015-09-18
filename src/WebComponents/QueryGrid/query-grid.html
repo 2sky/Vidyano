@@ -1,148 +1,108 @@
 ﻿<link rel="import" href="../ActionButton/action-button.html" />
 <link rel="import" href="../InputSearch/input-search.html" />
 <link rel="import" href="../Style/style.html" />
-<!--<link rel="import" href="../Sortable/sortable.html" />-->
+<link rel="import" href="../Sortable/sortable.html" />
+<link rel="import" href="query-grid-filters.html" />
 
 <dom-module id="vi-query-grid">
     <template>
+        <vi-size-tracker on-sizechanged="_sizeChanged"></vi-size-tracker>
         <vi-style id="style" key="vi-query-grid"></vi-style>
-        <div on-sizechanged="_sizeChanged">
-            <vi-size-tracker></vi-size-tracker>
-        </div>
-        <div class="vertical layout flex relative">
-            <div id="headers" class="columnHost horizontal layout" on-start="_sortingStart" on-end="_sortingEnd">
-                <div class="header"></div>
-                <div>
-                    <vi-sortable class="pinned" group="{{_uniqueId + ':columns'}}" on-add="_updateColumnPinning" on-update="_updateColumnOffset"></vi-sortable>
-                </div>
-                <div class="flex" on-scroll="_onScrollHorizontal">
-                    <vi-sortable class="unpinned" group="{{_uniqueId + ':columns'}}" filter="._RemainderColumn" on-add="_updateColumnPinning" on-update="_updateColumnOffset"></vi-sortable>
-                </div>
+        <div class="vertical layout fit">
+            <div id="dataHeaderHost">
+                <vi-query-grid-header query="{{query}}" can-select-all="{{canSelectAll}}" can-filter="{{canFilter}}"></vi-query-grid-header>
             </div>
-            <div id="filters" class="columnHost horizontal layout">
-                <div class="header">
-                    <vi-query-grid-filters query="{{query}}"></vi-query-grid-filters>
-                </div>
-                <div class="pinned"></div>
-                <div class="flex" on-scroll="_onScrollHorizontal">
-                    <div class="unpinned"></div>
-                </div>
-            </div>
-            <vi-scroller id="data" class="flex relative" vertical-scroll-offset="{{verticalScrollOffset}}" no-horizontal on-mousemove="_updateHoverRow" on-mousewheel="_updateHoverRow" on-mouseenter="_itemsMouseenter" on-mouseleave="_itemsMouseleave">
+            <vi-scroller class="flex" vertical-scroll-offset="{{_verticalScrollOffset}}" horizontal-scroll-offset="{{_horizontalScrollOffset}}">
                 <div id="verticalSpacer">
-                    <div id="topSpacer"></div>
-                    <div class="columnHost horizontal layout" on-tap="_itemsTap">
-                        <table class="header"></table>
-                        <table class="pinned"></table>
-                        <div class="flex" on-scroll="_onScrollHorizontal">
-                            <table class="unpinned"></table>
-                        </div>
-                    </div>
+                    <div id="dataHost"></div>
                 </div>
             </vi-scroller>
         </div>
-        <vi-scroller id="horizontalScroll" horizontal-scroll-offset="{{horizontalScrollOffset}}" no-vertical>
-            <div id="horizontalSpacer"></div>
-        </vi-scroller>
         <div id="initializingOverlay"></div>
-        <template is="dom-if" if="{{loading}}">
-            <vi-spinner></vi-spinner>
-        </template>
+        <vi-spinner></vi-spinner>
+        <vi-popup-core id="actions"></vi-popup-core>
+    </template>
+</dom-module>
+
+<dom-module id="vi-query-grid-header">
+    <template>
+        <div class="spacer"></div>
+        <div class="bottom">
+            <div class="selectAll" on-tap="_toggleSelectAll">
+                <paper-ripple></paper-ripple>
+                <vi-icon source="Selected"></vi-icon>
+            </div>
+            <vi-query-grid-filters query="{{query}}"></vi-query-grid-filters>
+        </div>
     </template>
 </dom-module>
 
 <dom-module id="vi-query-grid-column-header">
     <template>
-        <button is="vi-button" inverse id="header" on-tap="_sort">
-            <span flex>{{column.label}}</span>
-            <template is="dom-if" if="{{_getIsSorting(sortDirection)}}">
-                <vi-resource source="{{_getSortingIcon(sortDirection)}}"></vi-resource>
-            </template>
-            <vi-attached-notifier on-attached="_labelAttached" one-time></vi-attached-notifier>
-        </button>
+        <div on-tap="_sort">
+            <label class="flex" id="label"></label>
+            <content select="vi-icon"></content>
+        </div>
+        <content select="vi-query-grid-column-filter-proxy, vi-query-grid-column-filter"></content>
         <div class="resizer" on-mousedown="_resizeStart" on-touchstart="_resizeStart"></div>
+    </template>
+</dom-module>
+
+<dom-module id="vi-query-grid-column-filter-proxy">
+    <template>
+        <label id="label"></label>
+        <vi-icon source="Filter"></vi-icon>
     </template>
 </dom-module>
 
 <dom-module id="vi-query-grid-column-filter">
     <template>
-        <template is="dom-if" if="{{!isUpgraded}}">
-            <div id="filter" class="proxy" on-tap="_upgrade" disabled$="{{!gridColumn.column.canFilter}}">
-                <button is="vi-button" header inverse>
-                    <template is="dom-if" if="{{filtered}}">
-                        <span>{{label}}</span>
-                    </template>
-                    <template is="dom-if" if="{{!filtered}}">
-                        <vi-resource source="Icon_Filter"></vi-resource>
-                    </template>
-                </button>
-            </div>
-        </template>
-        <template is="dom-if" if="{{isUpgraded}}">
-            <vi-popup id="filter" on-popup-opening="_popupOpening" class="flex" disabled="{{!gridColumn.column.canFilter}}">
-                <button is="vi-button" header inverse>
-                    <template is="dom-if" if="{{filtered}}">
-                        <span>{{label}}</span>
-                    </template>
-                    <template is="dom-if" if="{{!filtered}}">
-                        <vi-resource source="Icon_Filter"></vi-resource>
-                    </template>
-                </button>
-                <div content>
-                    <div class="filter" on-click="_catchClick">
-                        <div class="left"></div>
-                        <div class="menuItem horizontal layout" disabled$="{{!filtered}}" on-tap="_clear">
-                            <vi-resource source="Icon_Filter_Reset"></vi-resource>
-                            <span flex>{{translateMessage('ClearFilterFrom', gridColumn.column.label, isAttached)}}</span>
-                        </div>
-                        <div class="split"></div>
-                        <div class="advanced">
-                            <vi-input-search id="search" value="{{searchText}}" on-search="_search"></vi-input-search>
-                            <div class="relative">
-                                <button id="inverse" on-tap="_inverse" inversed$="{{inversed}}">
-                                    <vi-resource source="Icon_Filter_Inverse"></vi-resource>
-                                </button>
-                                <template is="dom-if" if="{{loading}}">
-                                    <vi-spinner></vi-spinner>
-                                </template>
-                                <vi-scroller id="distinctsContainer">
-                                    <div id="distincts" on-tap="_distinctClick" inversed$="{{inversed}}"></div>
-                                </vi-scroller>
-                            </div>
+        <vi-popup id="filter" on-popup-opening="_popupOpening" class="flex" disabled="{{!column.canFilter}}">
+            <button is="vi-button" header inverse>
+                <span id="label"></span>
+                <vi-icon source="Filter"></vi-icon>
+            </button>
+            <div content>
+                <div class="filter" on-click="_catchClick">
+                    <div class="left"></div>
+                    <div class="menuItem horizontal layout" disabled$="{{!filtered}}" on-tap="_clear">
+                        <vi-icon source="Filter_Reset"></vi-icon>
+                        <span flex>{{translateMessage('ClearFilterFrom', column.label, isAttached)}}</span>
+                    </div>
+                    <div class="split"></div>
+                    <div class="advanced">
+                        <vi-input-search id="search" value="{{searchText}}" on-search="_search"></vi-input-search>
+                        <div class="relative">
+                            <button id="inverse" on-tap="_inverse" inversed$="{{inversed}}">
+                                <vi-icon source="Filter_Inverse"></vi-icon>
+                            </button>
+                            <template is="dom-if" if="{{loading}}">
+                                <vi-spinner></vi-spinner>
+                            </template>
+                            <vi-scroller id="distinctsContainer">
+                                <div id="distincts" on-tap="_distinctClick" inversed$="{{inversed}}"></div>
+                            </vi-scroller>
                         </div>
                     </div>
-                    <button is="vi-button" class="close" on-tap="_closePopup" label="{{translations.Close}}"></button>
                 </div>
-            </vi-popup>
-            <vi-attached-notifier on-attached="_openUpgradedElement"></vi-attached-notifier>
-        </template>
-    </template>
-</dom-module>
-
-<dom-module id="vi-query-grid-item-actions">
-    <template>
-        <vi-popup id="popup" on-popup-opening="_popupOpening" class="flex" disabled="{{!gridColumn.column.canFilter}}">
-            <vi-resource class="flex" source="Icon_EllipsisVertical" header></vi-resource>
-            <content content></content>
+                <button is="vi-button" class="close" on-tap="_closePopup" label="{{translations.Close}}"></button>
+            </div>
         </vi-popup>
     </template>
 </dom-module>
 
-<dom-module id="vi-query-grid-item-selector">
+<vi-query-grid-cell-template name="Image">
     <template>
-        <vi-resource source="Icon_Selected"></vi-resource>
+        <vi-query-grid-cell-image value="{{value}}"></vi-query-grid-cell-image>
     </template>
-</dom-module>
+</vi-query-grid-cell-template>
 
 <link rel="stylesheet" href="query-grid.css" />
 <link rel="stylesheet" href="query-grid-cells.css" />
 <link rel="stylesheet" href="query-grid-colors.css" />
 <link rel="stylesheet" href="query-grid-column-filter.css" />
 <link rel="stylesheet" href="query-grid-column-header.css" />
-<link rel="stylesheet" href="query-grid-item-selector.css" />
-<link rel="stylesheet" href="query-grid-item-actions.css" />
+<link rel="stylesheet" href="query-grid-header.css" />
 
 <script src="query-grid.js"></script>
 <script src="query-grid-cells.js"></script>
-
-<link rel="import" href="query-grid-filters.html" />

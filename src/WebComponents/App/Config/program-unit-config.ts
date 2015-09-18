@@ -1,4 +1,13 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            name: String,
+            template: {
+                type: Object,
+                readOnly: true
+            }
+        }
+    })
     export class ProgramUnitConfig extends WebComponent {
         name: string;
         template: any;
@@ -11,14 +20,4 @@
             this._setTemplate(<HTMLElement>Polymer.dom(this).querySelector("template"));
         }
     }
-
-    WebComponent.register(ProgramUnitConfig, WebComponents, "vi", {
-        properties: {
-            name: String,
-            template: {
-                type: Object,
-                readOnly: true
-            }
-        }
-    });
 }

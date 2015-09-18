@@ -1,4 +1,16 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties: {
+            query: Object,
+            canSelect: Boolean
+        },
+        hostAttributes: {
+            "dialog": ""
+        },
+        forwardObservers: [
+            "_selectedItemsChanged(query.selectedItems)"
+        ]
+    })
     export class SelectReferenceDialog extends WebComponent {
         private _grid: WebComponents.QueryGrid;
         private _itemClickCallback: EventListener;
@@ -10,7 +22,7 @@
             super.detached();
 
             if (this._itemClickCallback && this._grid) {
-                this._grid.asElement.removeEventListener("item-click", this._itemClickCallback);
+                this._grid.removeEventListener("item-click", this._itemClickCallback);
                 this._itemClickCallback = null;
             }
         }
@@ -20,7 +32,7 @@
             this.empty();
 
             this._grid = new WebComponents.QueryGrid();
-            this._grid.asElement.addEventListener("item-click", this._itemClickCallback = this._selectReference.bind(this));
+            this._grid.addEventListener("item-click", this._itemClickCallback = this._selectReference.bind(this));
             this._grid.classList.add("fit");
             this._grid.asLookup = true;
             this._grid.query = this.query;
@@ -79,18 +91,4 @@
 				detail.item.isSelected = !detail.item.isSelected;
 		}
     }
-
-	Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.SelectReferenceDialog, Vidyano.WebComponents, "vi",
-        {
-            properties: {
-                query: Object,
-                canSelect: Boolean
-            },
-            hostAttributes: {
-                "dialog": ""
-            },
-            forwardObservers: [
-                "_selectedItemsChanged(query.selectedItems)"
-            ]
-        });
 }

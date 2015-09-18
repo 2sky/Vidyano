@@ -1,4 +1,30 @@
 ﻿module Vidyano.WebComponents {
+    @WebComponent.register({
+        properties:
+        {
+            serviceObject: {
+                type: Object,
+                observer: "_serviceObjectChanged"
+            },
+            pinnedActions: {
+                type: Array,
+                computed: "_computePinnedActions(serviceObject)"
+            },
+            unpinnedActions: {
+                type: Array,
+                computed: "_computeUnpinnedActions(serviceObject)"
+            },
+            canSearch: {
+                type: Boolean,
+                computed: "_computeCanSearch(serviceObject)"
+            },
+            noActions: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeNoActions(pinnedActions, unpinnedActions)"
+            }
+        }
+    })
     export class ActionBar extends WebComponent {
         accent: boolean = false;
         serviceObject: Vidyano.ServiceObjectWithActions;
@@ -49,31 +75,3 @@
         }
     }
 }
-
-Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.ActionBar, Vidyano.WebComponents, "vi",
-    {
-        properties:
-        {
-            serviceObject: {
-                type: Object,
-                observer: "_serviceObjectChanged"
-            },
-            pinnedActions: {
-                type: Array,
-                computed: "_computePinnedActions(serviceObject)"
-            },
-            unpinnedActions: {
-                type: Array,
-                computed: "_computeUnpinnedActions(serviceObject)"
-            },
-            canSearch: {
-                type: Boolean,
-                computed: "_computeCanSearch(serviceObject)"
-            },
-            noActions: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeNoActions(pinnedActions, unpinnedActions)"
-            }
-        }
-    });

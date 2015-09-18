@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "version": "1.5.3",
+    "version": "1.6.2",
     "target": "es5",
-    "removeComments": true
+    "removeComments": true,
+    "experimentalDecorators": true
   },
   "files": [
     "src/Libs/Typings/Linq/linq.d.ts",
@@ -48,6 +49,7 @@
     "src/WebComponents/Checkbox/checkbox.ts",
     "src/WebComponents/DatePicker/date-picker.ts",
     "src/WebComponents/Dialog/dialog.ts",
+    "src/WebComponents/Icon/icon.ts",
     "src/WebComponents/InputSearch/input-search.ts",
     "src/WebComponents/MaskedInput/masked-input.ts",
     "src/WebComponents/Menu/menu.ts",

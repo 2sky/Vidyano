@@ -12,6 +12,6 @@
     "grunt-tsconfig": "^0.2.0",
     "less": "^2.1.2",
     "dts-generator": "^1.5.0",
-    "typescript": "^1.5.3"
+    "typescript": "^1.6.2"
   }
 }
