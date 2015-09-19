@@ -46,7 +46,7 @@ var Vidyano;
                 _super.apply(this, arguments);
             }
             QueryGridCellImage.prototype._valueChanged = function (value) {
-                if (!value || !value.value) {
+                if (this._image && (!value || !value.value)) {
                     if (this._image && !this._image.hasAttribute("hidden")) {
                         this._image.style.backgroundImage = "";
                         this._image.setAttribute("hidden", "");
@@ -73,5 +73,46 @@ var Vidyano;
             return QueryGridCellImage;
         })(WebComponents.WebComponent);
         WebComponents.QueryGridCellImage = QueryGridCellImage;
+        var QueryGridCellBoolean = (function (_super) {
+            __extends(QueryGridCellBoolean, _super);
+            function QueryGridCellBoolean() {
+                _super.apply(this, arguments);
+            }
+            QueryGridCellBoolean.prototype._valueChanged = function (value) {
+                if (!value) {
+                    if (this._icon)
+                        this._icon.setAttribute("hidden");
+                    if (this._textNode && this._textNode.nodeValue)
+                        this._textNode.nodeValue = "";
+                }
+                else if (value === undefined || value === null) {
+                    if (this._icon)
+                        this._icon.setAttribute("hidden");
+                    if (!this._textNode)
+                        this._textNode = this.appendChild(document.createTextNode("—"));
+                    else
+                        this._textNode.nodeValue = "—";
+                }
+                else {
+                    if (this._textNode && this._textNode.nodeValue)
+                        this._textNode.nodeValue = "";
+                    if (!this._icon)
+                        this._icon = Polymer.dom(this).appendChild(WebComponents.Icon.Load("Selected"));
+                    this.classList.toggle("unchecked", !value.getValue());
+                }
+            };
+            QueryGridCellBoolean = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        value: {
+                            type: Object,
+                            observer: "_valueChanged"
+                        }
+                    }
+                })
+            ], QueryGridCellBoolean);
+            return QueryGridCellBoolean;
+        })(WebComponents.WebComponent);
+        WebComponents.QueryGridCellBoolean = QueryGridCellBoolean;
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

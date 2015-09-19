@@ -65,11 +65,7 @@ var Vidyano;
             };
             Resource.Load = function (source, tagName) {
                 var resource = (typeof source === "string") ? resources[(tagName + "+" + source.toUpperCase())] : source;
-                var copy = document.createDocumentFragment();
-                Enumerable.from(Polymer.dom(resource).children).forEach(function (child) {
-                    copy.appendChild(child.cloneNode(true));
-                });
-                return copy;
+                return document.createRange().createContextualFragment(resource.innerHTML);
             };
             Resource.LoadResource = function (source, tagName) {
                 return resources[(tagName + "+" + source.toUpperCase())];

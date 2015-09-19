@@ -289,7 +289,7 @@ var Vidyano;
                                 var columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
                                 columnWidthsStyle.push("table td[name=\"" + columnName + "\"] > * { width: " + _this._columnWidths[col.name] + "px; } ");
                             });
-                            (_a = _this._style).setStyle.apply(_a, ["columnWidths"].concat(columnWidthsStyle));
+                            (_a = _this._style).setStyle.apply(_a, ["ColumnWidths"].concat(columnWidthsStyle));
                         }
                         var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                         console.info("Column Widths Updated: " + timeTaken + "ms");
@@ -690,7 +690,7 @@ var Vidyano;
                 this._isPinned = _isPinned;
                 this._host = document.createElement("td", is);
                 if (_cell)
-                    this.host.appendChild(_cell);
+                    this._cell = this.host.appendChild(_cell);
                 if (this._isPinned)
                     this.host.classList.add("pinned");
             }
@@ -807,8 +807,10 @@ var Vidyano;
                         if (this._customCellTemplate = WebComponents.QueryGridCellTemplate.Load(this.column.type)) {
                             this._lastColumnType = this.column.type;
                             this.cell.appendChild(this._customCellTemplate);
-                            if (this._textNode)
+                            if (this._textNode) {
                                 this.cell.removeChild(this._textNode);
+                                this._textNode = null;
+                            }
                         }
                         else
                             this._lastColumnType = null;
@@ -920,11 +922,9 @@ var Vidyano;
             __extends(QueryGridTableDataColumnSelector, _super);
             function QueryGridTableDataColumnSelector(_row) {
                 var _this = this;
-                _super.call(this, "vi-query-grid-table-data-column-selector", document.createElement("div"), true);
+                _super.call(this, "vi-query-grid-table-data-column-selector", WebComponents.Icon.Load("Selected"), true);
                 this._row = _row;
-                this.cell.classList.add("icon");
-                this.cell.appendChild(WebComponents.Icon.Load("Selected"));
-                Polymer.Gestures.add(this.cell, "tap", this._tap.bind(this));
+                Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
                 this._row.table.grid.async(function () { return _this.host.appendChild(document.createElement("paper-ripple")); });
             }
             Object.defineProperty(QueryGridTableDataColumnSelector.prototype, "item", {
@@ -950,11 +950,9 @@ var Vidyano;
             __extends(QueryGridTableDataColumnActions, _super);
             function QueryGridTableDataColumnActions(_row) {
                 var _this = this;
-                _super.call(this, "vi-query-grid-table-data-column-actions", document.createElement("div"), true);
+                _super.call(this, "vi-query-grid-table-data-column-actions", WebComponents.Icon.Load("EllipsisVertical"), true);
                 this._row = _row;
-                this.cell.classList.add("icon");
-                this.cell.appendChild(WebComponents.Icon.Load("EllipsisVertical"));
-                Polymer.Gestures.add(this.cell, "tap", this._tap.bind(this));
+                Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
                 this._row.table.grid.async(function () { return _this.host.appendChild(document.createElement("paper-ripple")); });
             }
             Object.defineProperty(QueryGridTableDataColumnActions.prototype, "item", {

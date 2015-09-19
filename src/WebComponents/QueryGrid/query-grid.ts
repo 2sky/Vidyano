@@ -434,7 +434,7 @@
                             columnWidthsStyle.push(`table td[name="${columnName}"] > * { width: ${this._columnWidths[col.name]}px; } `);
                         });
 
-                        this._style.setStyle("columnWidths", ...columnWidthsStyle);
+                        this._style.setStyle("ColumnWidths", ...columnWidthsStyle);
                     }
 
                     var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
@@ -778,11 +778,11 @@
         private _column: Vidyano.QueryColumn;
         private _hasContent: boolean;
 
-        constructor(is: string, private _cell?: HTMLElement, private _isPinned?: boolean) {
+        constructor(is: string, private _cell?: HTMLElement | DocumentFragment, private _isPinned?: boolean) {
             this._host = (<any>document).createElement("td", is);
 
             if (_cell)
-                this.host.appendChild(_cell);
+                this._cell = this.host.appendChild(_cell);
 
             if (this._isPinned)
                 this.host.classList.add("pinned");
@@ -793,7 +793,7 @@
         }
 
         get cell(): HTMLElement {
-            return this._cell;
+            return <HTMLElement>this._cell;
         }
 
         get column(): Vidyano.QueryColumn {
@@ -898,8 +898,10 @@
                         this._lastColumnType = this.column.type;
                         this.cell.appendChild(this._customCellTemplate);
 
-                        if (this._textNode)
+                        if (this._textNode) {
                             this.cell.removeChild(this._textNode);
+                            this._textNode = null;
+                        }
                     }
                     else
                         this._lastColumnType = null;
@@ -1027,12 +1029,9 @@
         private _item: QueryResultItem;
 
         constructor(private _row: QueryGridTableDataRow) {
-            super("vi-query-grid-table-data-column-selector", document.createElement("div"), true);
+            super("vi-query-grid-table-data-column-selector", Icon.Load("Selected"), true);
 
-            this.cell.classList.add("icon");
-            this.cell.appendChild(Icon.Load("Selected"));
-
-            Polymer.Gestures.add(this.cell, "tap", this._tap.bind(this));
+            Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
             this._row.table.grid.async(() => this.host.appendChild(document.createElement("paper-ripple")));
         }
 
@@ -1057,12 +1056,9 @@
         private _item: QueryResultItem;
 
         constructor(private _row: QueryGridTableDataRow) {
-            super("vi-query-grid-table-data-column-actions", document.createElement("div"), true);
+            super("vi-query-grid-table-data-column-actions", Icon.Load("EllipsisVertical"), true);
 
-            this.cell.classList.add("icon");
-            this.cell.appendChild(Icon.Load("EllipsisVertical"));
-
-            Polymer.Gestures.add(this.cell, "tap", this._tap.bind(this));
+            Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
             this._row.table.grid.async(() => this.host.appendChild(document.createElement("paper-ripple")));
         }
 

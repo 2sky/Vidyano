@@ -1,25 +1,25 @@
 ﻿@import (reference) "query-grid.less";
 
 vi-query-grid-cell-image {
-    padding: 1px;
+    padding: 0 1px;
     overflow: hidden;
 
     .image {
-        height: @h2;
+        height: @h2 - 2px;
         background-position: center center;
         background-size: contain;
         background-repeat: no-repeat;
     }
 }
 
-.cell {
-    &[data-vi-column-type='Boolean'], &[data-vi-column-type='NullableBoolean'], &[data-vi-column-type='YesNo'] {
-        text-align: center;
+vi-query-grid-cell-boolean {
+    > div {
+        height: @cell-line-height;
+    }
 
-        vi-icon.unchecked {
-            #check {
-                display: none;
-            }
+    &.unchecked {
+        #check {
+            display: none;
         }
     }
 }

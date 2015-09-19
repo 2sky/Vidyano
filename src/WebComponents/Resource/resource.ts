@@ -72,12 +72,7 @@ module Vidyano.WebComponents {
         protected static Load(source: string | Resource, tagName: string): DocumentFragment {
             var resource = (typeof source === "string") ? resources[`${tagName}+${source.toUpperCase() }`] : source;
 
-            var copy = document.createDocumentFragment();
-            Enumerable.from(Polymer.dom(resource).children).forEach((child: HTMLElement) => {
-                copy.appendChild(child.cloneNode(true));
-            });
-
-            return copy;
+            return document.createRange().createContextualFragment(resource.innerHTML);
         }
 
         protected static LoadResource(source: string, tagName: string): Resource {

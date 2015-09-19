@@ -1090,8 +1090,8 @@ var Vidyano;
         ServiceHooks.prototype.onConstructQueryResultItem = function (service, item, query) {
             return new QueryResultItem(service, item, query);
         };
-        ServiceHooks.prototype.onConstructQueryResultItemValue = function (service, value) {
-            return new QueryResultItemValue(service, value);
+        ServiceHooks.prototype.onConstructQueryResultItemValue = function (service, item, value) {
+            return new QueryResultItemValue(service, item, value);
         };
         ServiceHooks.prototype.onConstructQueryColumn = function (service, col, query) {
             return new QueryColumn(service, col, query);
@@ -2749,7 +2749,7 @@ var Vidyano;
             this.id = item.id;
             this.breadcrumb = item.breadcrumb;
             if (item.values)
-                this.rawValues = Enumerable.from(item.values).select(function (v) { return service.hooks.onConstructQueryResultItemValue(_this.service, v); }).memoize();
+                this.rawValues = Enumerable.from(item.values).select(function (v) { return service.hooks.onConstructQueryResultItemValue(_this.service, _this, v); }).memoize();
             else
                 this.rawValues = Enumerable.empty();
             this.typeHints = item.typeHints;
@@ -2821,8 +2821,9 @@ var Vidyano;
     Vidyano.QueryResultItem = QueryResultItem;
     var QueryResultItemValue = (function (_super) {
         __extends(QueryResultItemValue, _super);
-        function QueryResultItemValue(service, value) {
+        function QueryResultItemValue(service, _item, value) {
             _super.call(this, service);
+            this._item = _item;
             this.key = value.key;
             this.value = value.value;
             this.persistentObjectId = value.persistentObjectId;
@@ -2831,6 +2832,13 @@ var Vidyano;
         }
         QueryResultItemValue.prototype.getTypeHint = function (name, defaultValue, typeHints) {
             return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);
+        };
+        QueryResultItemValue.prototype.getValue = function () {
+            if (this._valueParsed)
+                return this._value;
+            this._value = Service.fromServiceString(this.value, this._item.query.getColumn(this.key).type);
+            this._valueParsed = true;
+            return this._value;
         };
         QueryResultItemValue.prototype._toServiceObject = function () {
             return this.copyProperties(["key", "value", "persistentObjectId", "objectId"]);

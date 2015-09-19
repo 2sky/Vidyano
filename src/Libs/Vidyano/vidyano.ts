@@ -1293,8 +1293,8 @@ module Vidyano {
             return new QueryResultItem(service, item, query);
         }
 
-        onConstructQueryResultItemValue(service: Service, value: any): QueryResultItemValue {
-            return new QueryResultItemValue(service, value);
+        onConstructQueryResultItemValue(service: Service, item: QueryResultItem, value: any): QueryResultItemValue {
+            return new QueryResultItemValue(service, item, value);
         }
 
         onConstructQueryColumn(service: Service, col: any, query: Query): QueryColumn {
@@ -3192,7 +3192,7 @@ module Vidyano {
             this.breadcrumb = item.breadcrumb;
 
             if (item.values)
-                this.rawValues = Enumerable.from(item.values).select(v => service.hooks.onConstructQueryResultItemValue(this.service, v)).memoize();
+                this.rawValues = Enumerable.from(item.values).select(v => service.hooks.onConstructQueryResultItemValue(this.service, this, v)).memoize();
             else
                 this.rawValues = Enumerable.empty<QueryResultItemValue>();
 
@@ -3266,13 +3266,16 @@ module Vidyano {
     }
 
     export class QueryResultItemValue extends ServiceObject {
+        private _value: any;
+        private _valueParsed: boolean;
+
         key: string;
         value: string;
         typeHints: any;
         persistentObjectId: string;
         objectId: string;
 
-        constructor(service: Service, value: any) {
+        constructor(service: Service, private _item: QueryResultItem, value: any) {
             super(service);
 
             this.key = value.key;
@@ -3284,6 +3287,16 @@ module Vidyano {
 
         getTypeHint(name: string, defaultValue?: string, typeHints?: any): string {
             return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);
+        }
+
+        getValue(): any {
+            if (this._valueParsed)
+                return this._value;
+
+            this._value = Service.fromServiceString(this.value, this._item.query.getColumn(this.key).type);
+            this._valueParsed = true;
+
+            return this._value;
         }
 
         _toServiceObject() {

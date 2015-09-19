@@ -21,33 +21,6 @@
         }
     }
 
-    //export class QueryGridCellBoolean extends QueryGridCell {
-    //    private _resource: Vidyano.WebComponents.Resource;
-
-    //    protected _render(dom: HTMLElement) {
-    //        var value = this.item ? this.item.getValue(this.gridColumn.column.name) : null;
-    //        if (value === undefined || value === null) {
-    //            dom.innerText = "—";
-    //            this._resource = null;
-    //        }
-    //        else {
-    //            if (!this._resource) {
-    //                this._resource = new Vidyano.WebComponents.Resource();
-    //                this._resource.source = "Selected";
-    //                dom.appendChild(this._resource);
-    //            }
-
-    //            if (value === true)
-    //                this._resource.className = "checked";
-    //            else if (value === false)
-    //                this._resource.className = "unchecked";
-    //        }
-    //    }
-    //}
-
-    //export var QueryGridCellNullableBoolean = QueryGridCellBoolean;
-    //export var QueryGridCellYesNo = QueryGridCellBoolean;
-
     @WebComponent.register({
         properties: {
             value: {
@@ -60,7 +33,7 @@
         private _image: HTMLDivElement;
 
         private _valueChanged(value: QueryResultItemValue) {
-            if (!value || !value.value) {
+            if (this._image && (!value || !value.value)) {
                 if (this._image && !this._image.hasAttribute("hidden")) {
                     this._image.style.backgroundImage = "";
                     this._image.setAttribute("hidden", "");
@@ -76,6 +49,45 @@
 
             this._image.removeAttribute("hidden");
             this._image.style.backgroundImage = "url(" + value.value.asDataUri() + ")";
+        }
+    }
+
+    @WebComponent.register({
+        properties: {
+            value: {
+                type: Object,
+                observer: "_valueChanged"
+            }
+        }
+    })
+    export class QueryGridCellBoolean extends WebComponent {
+        private _icon: HTMLElement;
+        private _textNode: Text;
+
+        private _valueChanged(value: QueryResultItemValue) {
+            if (!value) {
+                if (this._icon)
+                    this._icon.setAttribute("hidden");
+
+                if (this._textNode && this._textNode.nodeValue)
+                    this._textNode.nodeValue = "";
+            } else if (value === undefined || value === null) {
+                if (this._icon)
+                    this._icon.setAttribute("hidden");
+
+                if (!this._textNode)
+                    this._textNode = this.appendChild(document.createTextNode("—"));
+                else
+                    this._textNode.nodeValue = "—";
+            } else {
+                if (this._textNode && this._textNode.nodeValue)
+                    this._textNode.nodeValue = "";
+
+                if (!this._icon)
+                    this._icon = <HTMLElement>Polymer.dom(this).appendChild(Icon.Load("Selected"));
+
+                this.classList.toggle("unchecked", !value.getValue());
+            }
         }
     }
 }
