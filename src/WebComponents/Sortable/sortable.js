@@ -35,16 +35,13 @@ var Vidyano;
             Sortable.prototype.filterChanged = function () {
                 this._sortable.option("filter", this.filter);
             };
-            Sortable.prototype.disabledChanged = function () {
-                this._sortable.option("filter", this.filter);
-            };
             Sortable.prototype._create = function () {
                 var _this = this;
                 this._destroy();
                 this._sortable = window["Sortable"].create(this, {
                     group: this.group,
                     filter: this.filter,
-                    disabled: this.disabled,
+                    disabled: !this.enabled,
                     onStart: function () {
                         _this._setIsDragging(true);
                         if (_this.group)
@@ -62,6 +59,9 @@ var Vidyano;
                     this._sortable.destroy();
                     this._sortable = null;
                 }
+            };
+            Sortable.prototype._enabledChanged = function (enabled) {
+                this._sortable.option("disabled", !enabled);
             };
             Sortable.register = function (info) {
                 if (info === void 0) { info = {}; }
@@ -88,11 +88,10 @@ var Vidyano;
                             reflectToAttribute: true,
                             readOnly: true
                         };
-                    info.properties["disabled"] =
+                    info.properties["enabled"] =
                         {
                             type: Boolean,
-                            reflectToAttribute: true,
-                            value: true
+                            observer: "_enabledChanged"
                         };
                     return WebComponents.WebComponent.register(obj, info);
                 };

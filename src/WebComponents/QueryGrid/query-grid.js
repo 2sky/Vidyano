@@ -320,6 +320,64 @@ var Vidyano;
                 if (detail.item.isSelected = !detail.item.isSelected)
                     this._lastSelectedItemIndex = indexOfItem;
             };
+            QueryGrid.prototype._itemActions = function (e, detail) {
+                var _this = this;
+                var actions = (detail.row.item.query.actions || []).filter(function (a) { return a.isVisible && !a.isPinned && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); });
+                if (actions.length == 0)
+                    return;
+                var host = detail.host;
+                if (!host && detail.position) {
+                    host = this.$$("#actionsAnchor");
+                    if (!host) {
+                        host = document.createElement("div");
+                        host.id = "actionsAnchor";
+                        host.style.position = "fixed";
+                        Polymer.dom(this.root).appendChild(host);
+                    }
+                    else
+                        host.removeAttribute("hidden");
+                    host.style.left = detail.position.x + "px";
+                    host.style.top = detail.position.y + "px";
+                }
+                actions.forEach(function (action) {
+                    var button = new Vidyano.WebComponents.ActionButton();
+                    button.action = action;
+                    button.item = detail.row.item;
+                    Polymer.dom(_this._actions).appendChild(button);
+                });
+                Polymer.dom(this._actions).flush();
+                detail.row.host.setAttribute("hover", "");
+                this._actions.popup(host).then(function () {
+                    if (host !== detail.host)
+                        host.setAttribute("hidden", "");
+                    _this._actions.empty();
+                    detail.row.host.removeAttribute("hover");
+                });
+            };
+            QueryGrid.prototype._contextmenu = function (e) {
+                var src = e.target;
+                while (src && src.tagName !== "TR") {
+                    src = src.parentElement;
+                }
+                if (!src)
+                    return true;
+                var row = Enumerable.from(this._tableData.rows).firstOrDefault(function (r) { return r.host === src; });
+                if (!row)
+                    return true;
+                this.fire("item-actions", {
+                    row: row,
+                    position: {
+                        x: e.clientX,
+                        y: e.clientY
+                    }
+                }, { bubbles: false });
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            };
+            QueryGrid.prototype._closeActions = function () {
+                this._actions.close();
+            };
             QueryGrid.prototype._preventScroll = function (e) {
                 if (this.scrollLeft > 0 || this.scrollTop > 0) {
                     console.error("Attempt to scroll query grid");
@@ -428,6 +486,8 @@ var Vidyano;
                     ],
                     listeners: {
                         "item-select": "_itemSelect",
+                        "item-actions": "_itemActions",
+                        "contextmenu": "_contextmenu",
                         "scroll": "_preventScroll"
                     }
                 })
@@ -552,6 +612,10 @@ var Vidyano;
             function QueryGridTableDataBody() {
                 _super.apply(this, arguments);
             }
+            QueryGridTableDataBody.prototype.attached = function () {
+                _super.prototype.attached.call(this);
+                this.enabled = false;
+            };
             QueryGridTableDataBody = __decorate([
                 WebComponents.Sortable.register({
                     extends: "tbody"
@@ -1017,20 +1081,9 @@ var Vidyano;
                 configurable: true
             });
             QueryGridTableDataColumnActions.prototype._tap = function (e) {
-                var _this = this;
-                var gridActions = this._row.table.grid.$["actions"];
-                gridActions.empty();
-                var actions = (this.item.query.actions || []).filter(function (a) { return a.isVisible && !a.isPinned && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); });
-                actions.forEach(function (action) {
-                    var button = new Vidyano.WebComponents.ActionButton();
-                    button.action = action;
-                    button.item = _this.item;
-                    Polymer.dom(gridActions).appendChild(button);
-                });
-                this.host.parentElement.setAttribute("hover", "");
-                gridActions.popup(this.host).then(function () {
-                    _this.host.parentElement.removeAttribute("hover");
-                });
+                if (!this.item)
+                    return;
+                this._row.table.grid.fire("item-actions", { row: this._row, host: this.host }, { bubbles: false });
                 e.stopPropagation();
             };
             return QueryGridTableDataColumnActions;

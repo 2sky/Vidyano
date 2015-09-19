@@ -36,6 +36,7 @@ vi-query-grid #dataHost {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  position: relative;
   white-space: nowrap;
 }
 vi-query-grid #dataHost table {

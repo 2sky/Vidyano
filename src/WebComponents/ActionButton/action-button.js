@@ -21,11 +21,19 @@ var Vidyano;
                 _super.apply(this, arguments);
             }
             ActionButton.prototype._executeWithoutOptions = function (e) {
+                if (!this.canExecute) {
+                    e.stopPropagation();
+                    return;
+                }
                 if (!this.hasOptions)
                     this._execute();
                 e.preventDefault();
             };
             ActionButton.prototype._executeWithOption = function (e) {
+                if (!this.canExecute) {
+                    e.stopPropagation();
+                    return;
+                }
                 this._execute(e.model.index);
             };
             ActionButton.prototype._execute = function (option) {

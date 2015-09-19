@@ -7,6 +7,7 @@
   -o-transition: opacity 0.1s ease-out;
   -webkit-transition: opacity 0.1s ease-out;
   transition: opacity 0.1s ease-out;
+  overflow: visible;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);

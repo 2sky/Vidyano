@@ -62,8 +62,8 @@ var Vidyano;
                 var _a = this._getTargetRect(target), targetRect = _a.targetRect, transformedRect = _a.transformedRect;
                 var windowWidth = window.innerWidth;
                 var windowHeight = window.innerHeight;
-                var contentWidth = content.offsetWidth;
-                var contentHeight = content.offsetHeight;
+                var contentWidth = content.scrollWidth;
+                var contentHeight = content.scrollHeight;
                 var alignments = (this.contentAlign || "").toUpperCase().split(" ");
                 var alignCenter = alignments.indexOf("CENTER") >= 0;
                 var alignRight = alignments.indexOf("RIGHT") >= 0;
@@ -130,6 +130,16 @@ var Vidyano;
             };
             PopupCore.prototype._getTargetRect = function (target) {
                 var targetRect = target.getBoundingClientRect();
+                if (target === this) {
+                    targetRect = {
+                        left: targetRect.left,
+                        top: targetRect.top,
+                        bottom: targetRect.top,
+                        right: targetRect.left,
+                        width: 0,
+                        height: 0
+                    };
+                }
                 if (Popup._isBuggyGetBoundingClientRect === undefined) {
                     var outer = document.createElement("div");
                     outer.style.webkitTransform = outer.style.transform = "translate(-100px, -100px)";

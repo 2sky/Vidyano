@@ -64,6 +64,11 @@ module Vidyano.WebComponents {
         private _setHidden: (val: boolean) => void;
 
         private _executeWithoutOptions(e: TapEvent) {
+            if (!this.canExecute) {
+                e.stopPropagation();
+                return;
+            }
+
             if (!this.hasOptions)
                 this._execute();
 
@@ -71,6 +76,11 @@ module Vidyano.WebComponents {
         }
 
         private _executeWithOption(e: TapEvent) {
+            if (!this.canExecute) {
+                e.stopPropagation();
+                return;
+            }
+
             this._execute(e.model.index);
         }
 

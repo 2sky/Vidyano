@@ -88,6 +88,8 @@
         ],
         listeners: {
             "item-select": "_itemSelect",
+            "item-actions": "_itemActions",
+            "contextmenu": "_contextmenu",
             "scroll": "_preventScroll"
         }
     })
@@ -287,7 +289,7 @@
             var tablesUpdating = this._tablesUpdating = (this._tablesUpdating || Promise.resolve()).then(() => new Promise(resolve => {
                 if (_tablesUpdatingTimestamp !== this._tablesUpdatingTimestamp)
                     return resolve(null);
-                
+
                 this._requestAnimationFrame(() => {
                     var start = Vidyano.WebComponents.QueryGrid.perf.now();
 
@@ -296,7 +298,7 @@
 
                     if (!this._tableData)
                         this.$["dataHost"].appendChild((this._tableData = new Vidyano.WebComponents.QueryGridTableData(this)).host);
-                    
+
                     Promise.all([this._tableHeader.update(1, columns.length), this._tableData.update(items.length, columns.length)]).then(() => {
                         var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                         console.info(`Tables Updated: ${Math.round(timeTaken) }ms`);
@@ -485,6 +487,79 @@
                 this._lastSelectedItemIndex = indexOfItem;
         }
 
+        private _itemActions(e: CustomEvent, detail: { row: QueryGridTableDataRow; host: HTMLElement; position: Position; }) {
+            var actions = (detail.row.item.query.actions || []).filter(a => a.isVisible && !a.isPinned && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1));
+            if (actions.length == 0)
+                return;
+
+            var host = detail.host;
+            if (!host && detail.position) {
+                host = this.$$("#actionsAnchor");
+                if (!host) {
+                    host = document.createElement("div");
+                    host.id = "actionsAnchor";
+                    host.style.position = "fixed";
+
+                    Polymer.dom(this.root).appendChild(host);
+                }
+                else
+                    host.removeAttribute("hidden");
+
+                host.style.left = `${detail.position.x}px`;
+                host.style.top = `${detail.position.y}px`;
+            }
+
+            actions.forEach(action => {
+                var button = new Vidyano.WebComponents.ActionButton();
+                button.action = action;
+                button.item = detail.row.item;
+
+                Polymer.dom(this._actions).appendChild(button);
+            });
+
+            Polymer.dom(this._actions).flush();
+
+            detail.row.host.setAttribute("hover", "");
+            this._actions.popup(host).then(() => {
+                if (host !== detail.host)
+                    host.setAttribute("hidden", "");
+
+                this._actions.empty();
+                detail.row.host.removeAttribute("hover");
+            });
+        }
+
+        private _contextmenu(e: MouseEvent): boolean {
+            var src = <HTMLElement>e.target;
+            while (src && src.tagName !== "TR") {
+                src = src.parentElement;
+            }
+
+            if (!src)
+                return true;
+
+            var row = Enumerable.from(this._tableData.rows).firstOrDefault(r => r.host === src);
+            if (!row)
+                return true;
+
+            this.fire("item-actions", {
+                row: row,
+                position: {
+                    x: e.clientX,
+                    y: e.clientY
+                }
+            }, { bubbles: false });
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            return false;
+        }
+
+        private _closeActions() {
+            this._actions.close();
+        }
+
         private _preventScroll(e: Event) {
             if (this.scrollLeft > 0 || this.scrollTop > 0) {
                 console.error("Attempt to scroll query grid");
@@ -631,6 +706,11 @@
         extends: "tbody"
     })
     export class QueryGridTableDataBody extends Sortable {
+        attached() {
+            super.attached();
+
+            this.enabled = false;
+        }
     }
 
     export abstract class QueryGridTableRow {
@@ -713,6 +793,7 @@
             specialColumns.appendChild((this._actions = new Vidyano.WebComponents.QueryGridTableDataColumnActions(this)).host);
 
             this.host.insertBefore(specialColumns, this.host.firstChild);
+
             Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
         }
 
@@ -1132,21 +1213,10 @@
         }
 
         private _tap(e: TapEvent) {
-            var gridActions = <PopupCore><any>this._row.table.grid.$["actions"];
-            gridActions.empty();
+            if (!this.item)
+                return;
 
-            var actions = (this.item.query.actions || []).filter(a => a.isVisible && !a.isPinned && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1));
-            actions.forEach(action => {
-                var button = new Vidyano.WebComponents.ActionButton();
-                button.action = action;
-                button.item = this.item;
-                Polymer.dom(gridActions).appendChild(button);
-            });
-
-            this.host.parentElement.setAttribute("hover", "");
-            gridActions.popup(this.host).then(() => {
-                this.host.parentElement.removeAttribute("hover");
-            });
+            this._row.table.grid.fire("item-actions", { row: this._row, host: this.host }, { bubbles: false });
 
             e.stopPropagation();
         }

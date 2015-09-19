@@ -76,7 +76,7 @@ module Vidyano.WebComponents {
         protected _setOpen: (val: boolean) => void;
         private _setHover: (val: boolean) => void;
 
-        popup(target?: HTMLElement | WebComponent): Promise<any> {
+        popup(target: HTMLElement | WebComponent): Promise<any> {
             if (this.open)
                 return Promise.resolve();
 
@@ -105,8 +105,8 @@ module Vidyano.WebComponents {
             var {targetRect, transformedRect} = this._getTargetRect(<HTMLElement>target);
             var windowWidth = window.innerWidth;
             var windowHeight = window.innerHeight;
-            var contentWidth = content.offsetWidth;
-            var contentHeight = content.offsetHeight;
+            var contentWidth = content.scrollWidth;
+            var contentHeight = content.scrollHeight;
 
             var alignments = (this.contentAlign || "").toUpperCase().split(" ");
             var alignCenter = alignments.indexOf("CENTER") >= 0;
@@ -198,6 +198,16 @@ module Vidyano.WebComponents {
 
         private _getTargetRect(target: HTMLElement): { targetRect: ClientRect, transformedRect?: ClientRect } {
             var targetRect = target.getBoundingClientRect();
+            if (target === this) {
+                targetRect = {
+                    left: targetRect.left,
+                    top: targetRect.top,
+                    bottom: targetRect.top,
+                    right: targetRect.left,
+                    width: 0,
+                    height: 0
+                };
+            }
 
             if (Popup._isBuggyGetBoundingClientRect === undefined) {
                 var outer = document.createElement("div");

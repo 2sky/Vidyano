@@ -1,36 +1,11 @@
 ﻿module Vidyano.WebComponents {
     var _groups: Sortable[] = [];
 
-    //@WebComponent.register({
-    //    properties: {
-    //        group: {
-    //            type: String,
-    //            reflectToAttribute: true
-    //        },
-    //        filter: {
-    //            type: String,
-    //            reflectToAttribute: true
-    //        },
-    //        isDragging: {
-    //            type: Boolean,
-    //            reflectToAttribute: true
-    //        },
-    //        isGroupDragging: {
-    //            type: Boolean,
-    //            reflectToAttribute: true,
-    //            readOnly: true
-    //        },
-    //        disabled: {
-    //            type: Boolean,
-    //            reflectToAttribute: true
-    //        }
-    //    }
-    //})
     export class Sortable extends WebComponent {
         private _sortable: ISortable;
         group: string;
         filter: string;
-        disabled: boolean;
+        enabled: boolean;
 
         private _setIsDragging: (isDragging: boolean) => void;
         private _setIsGroupDragging: (isGroupDragging: boolean) => void;
@@ -64,17 +39,13 @@
             this._sortable.option("filter", this.filter);
         }
 
-        disabledChanged() {
-            this._sortable.option("filter", this.filter);
-        }
-
         private _create() {
             this._destroy();
 
             this._sortable = window["Sortable"].create(this, {
                 group: this.group,
                 filter: this.filter,
-                disabled: this.disabled,
+                disabled: !this.enabled,
                 onStart: () => {
                     this._setIsDragging(true);
                     if (this.group)
@@ -93,6 +64,10 @@
                 this._sortable.destroy();
                 this._sortable = null;
             }
+        }
+
+        private _enabledChanged(enabled: boolean) {
+            this._sortable.option("disabled", !enabled);
         }
 
         static register(info: WebComponentRegistrationInfo = {}): any {
@@ -120,11 +95,10 @@
                     reflectToAttribute: true,
                     readOnly: true
                 };
-                info.properties["disabled"] =
+                info.properties["enabled"] = // Use enabled before disabled to prevent IE from blocking all events
                 {
                     type: Boolean,
-                    reflectToAttribute: true,
-                    value: true
+                    observer: "_enabledChanged"
                 };
 
                 return WebComponent.register(obj, info);
