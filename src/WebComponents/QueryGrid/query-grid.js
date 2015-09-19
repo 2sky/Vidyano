@@ -676,7 +676,6 @@ var Vidyano;
                 if (!this.item)
                     return;
                 if (!this.table.grid.query.asLookup && !this.table.grid.asLookup) {
-                    1;
                     if (!this.table.grid.app.noHistory && e.detail.sourceEvent && (e.detail.sourceEvent.ctrlKey || e.detail.sourceEvent.shiftKey)) {
                         window.open(document.location.origin + document.location.pathname + "#!/" + this.table.grid.app.getUrlForPersistentObject(this.item.query.persistentObject.id, this.item.id));
                         e.stopPropagation();
@@ -692,6 +691,8 @@ var Vidyano;
                         }
                     });
                 }
+                else
+                    this.table.grid.fire("item-tap", { item: this.item }, { bubbles: false });
             };
             QueryGridTableDataRow.prototype._itemPropertyChanged = function (sender, args) {
                 if (args.propertyName === "isSelected")

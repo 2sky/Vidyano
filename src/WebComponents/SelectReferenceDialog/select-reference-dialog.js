@@ -31,7 +31,7 @@ var Vidyano;
                 var dialog = this.$["dialog"];
                 this.empty();
                 this._grid = new WebComponents.QueryGrid();
-                this._grid.addEventListener("item-click", this._itemClickCallback = this._selectReference.bind(this));
+                this._grid.addEventListener("item-tap", this._itemClickCallback = this._selectReference.bind(this));
                 this._grid.classList.add("fit");
                 this._grid.asLookup = true;
                 this._grid.query = this.query;

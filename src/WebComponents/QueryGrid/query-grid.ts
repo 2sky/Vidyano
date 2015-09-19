@@ -1,4 +1,8 @@
 ﻿module Vidyano.WebComponents {
+    export interface QueryGridItemTapEventArgs {
+        item: Vidyano.QueryResultItem;
+    }
+
     @WebComponent.register({
         properties: {
             initializing: {
@@ -759,7 +763,6 @@
                 return;
 
             if (!this.table.grid.query.asLookup && !this.table.grid.asLookup) {
-                1
                 if (!this.table.grid.app.noHistory && e.detail.sourceEvent && ((<KeyboardEvent>e.detail.sourceEvent).ctrlKey || (<KeyboardEvent>e.detail.sourceEvent).shiftKey)) {
                     // Open in new window/tab
                     window.open(document.location.origin + document.location.pathname + "#!/" + this.table.grid.app.getUrlForPersistentObject(this.item.query.persistentObject.id, this.item.id));
@@ -780,6 +783,8 @@
                     }
                 });
             }
+            else
+                this.table.grid.fire("item-tap", { item: this.item }, { bubbles: false });
         }
 
         private _itemPropertyChanged(sender: Vidyano.QueryResultItem, args: Vidyano.Common.PropertyChangedArgs) {

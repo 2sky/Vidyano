@@ -32,7 +32,7 @@
             this.empty();
 
             this._grid = new WebComponents.QueryGrid();
-            this._grid.addEventListener("item-click", this._itemClickCallback = this._selectReference.bind(this));
+            this._grid.addEventListener("item-tap", this._itemClickCallback = this._selectReference.bind(this));
             this._grid.classList.add("fit");
             this._grid.asLookup = true;
             this._grid.query = this.query;
@@ -84,7 +84,7 @@
         private _selectReference(e: CustomEvent) {
             e.preventDefault();
 
-            var detail = <QueryGridItemClickEventArgs>e.detail;
+            var detail = <QueryGridItemTapEventArgs>e.detail;
 			if (this.query.maxSelectedItems == 1)
                 this._dialog.resolve([detail.item]);
 			else
