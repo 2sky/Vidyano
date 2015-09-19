@@ -23,6 +23,9 @@
     "webcomponentsjs": {
       "": "*-lite*.js"
     },
+    "marked": {
+      "lib": "lib/marked.js"
+    },
     "marked-element": {
       "": "marked*.html"
     },
@@ -33,7 +36,7 @@
       "": "*.min.js"
     },
     "sortable": {
-      "":  "sortable.min.js"
+      "": "sortable.min.js"
     }
   },
   "devDependencies": {
