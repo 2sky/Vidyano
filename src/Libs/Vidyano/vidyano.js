@@ -2713,15 +2713,19 @@ var Vidyano;
                     this._isSelectionModifying = false;
                 }
             }
-            if (this.selectAll.isAvailable && this.selectAll.allSelected) {
-                if (!this.items.some(function (i) { return i.isSelected; }))
-                    this.selectAll.allSelected = false;
-                else {
-                    if (!item.isSelected)
-                        this.selectAll.inverse = true;
-                    else if (!this.items.some(function (i) { return !i.isSelected; }))
-                        this.selectAll.inverse = false;
+            if (this.selectAll.isAvailable) {
+                if (this.selectAll.allSelected) {
+                    if (!this.items.some(function (i) { return i.isSelected; }))
+                        this.selectAll.allSelected = false;
+                    else {
+                        if (!item.isSelected)
+                            this.selectAll.inverse = true;
+                        else if (!this.items.some(function (i) { return !i.isSelected; }))
+                            this.selectAll.inverse = false;
+                    }
                 }
+                else if (selectedItems.length == this.totalItems)
+                    this.selectAll.allSelected = true;
             }
             this.notifyPropertyChanged("selectedItems", selectedItems);
         };
