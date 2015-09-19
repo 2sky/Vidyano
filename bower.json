@@ -37,16 +37,16 @@
     }
   },
   "devDependencies": {
-    "moment": "2sky/moment#^2.10.0",
+    "es6-promise": "^3.0.2",
     "polymer": "polymer/polymer#^1.1.0",
     "paper-ripple": "polymerelements/paper-ripple#^1.0.1",
     "marked-element": "polymerelements/marked-element#^1.0.2",
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.2",
-    "es6-promise": "^3.0.2",
+    "bignumber.js": "^2.0.7",
+    "moment": "^2.10.6",
+    "sortable": "RubaXa/sortable#^1.2.1",
     "linqjs": "2sky/linqjs#3.0.3-Beta4",
     "pathjs": "2sky/pathjs#master",
-    "sortable": "RubaXa/sortable#^1.2.1",
-    "layout": "2sky/layout#master",
-    "bignumber.js": "^2.0.7"
+    "layout": "2sky/layout#master"
   }
 }
