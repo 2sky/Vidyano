@@ -1,13 +1,6 @@
 ﻿module Vidyano.WebComponents {
     @Resource.register
     export class QueryGridCellTemplate extends Resource {
-        asDataUri(value: string): string {
-            if (!value)
-                return "";
-
-            return value.asDataUri();
-        }
-
         static Load(source: string): TemplatePresenter {
             var cellTemplate = <QueryGridCellTemplate>Resource.LoadResource(source, "VI-QUERY-GRID-CELL-TEMPLATE");
             if (!cellTemplate)
@@ -33,7 +26,7 @@
         private _image: HTMLDivElement;
 
         private _valueChanged(value: QueryResultItemValue) {
-            if (this._image && (!value || !value.value)) {
+            if (!value || !value.value) {
                 if (this._image && !this._image.hasAttribute("hidden")) {
                     this._image.style.backgroundImage = "";
                     this._image.setAttribute("hidden", "");

@@ -20,11 +20,6 @@ var Vidyano;
             function QueryGridCellTemplate() {
                 _super.apply(this, arguments);
             }
-            QueryGridCellTemplate.prototype.asDataUri = function (value) {
-                if (!value)
-                    return "";
-                return value.asDataUri();
-            };
             QueryGridCellTemplate.Load = function (source) {
                 var cellTemplate = WebComponents.Resource.LoadResource(source, "VI-QUERY-GRID-CELL-TEMPLATE");
                 if (!cellTemplate)
@@ -46,7 +41,7 @@ var Vidyano;
                 _super.apply(this, arguments);
             }
             QueryGridCellImage.prototype._valueChanged = function (value) {
-                if (this._image && (!value || !value.value)) {
+                if (!value || !value.value) {
                     if (this._image && !this._image.hasAttribute("hidden")) {
                         this._image.style.backgroundImage = "";
                         this._image.setAttribute("hidden", "");
