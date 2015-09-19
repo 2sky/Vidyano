@@ -47,7 +47,12 @@
             canSelectAll: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeCanSelectAll(query, canSelect)"
+                computed: "query.selectAll.isAvailable"
+            },
+            selectAllSelected: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "query.selectAll.allSelected"
             },
             inlineActions: {
                 type: Boolean,
@@ -73,7 +78,9 @@
             "query.columns",
             "query.items",
             "query.isBusy",
-            "query.totalItems"
+            "query.totalItems",
+            "query.selectAll.isAvailable",
+            "query.selectAll.allSelected"
         ],
         listeners: {
             "scroll": "_preventScroll"
@@ -489,23 +496,38 @@
             query: Object,
             canSelectAll: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                computed: "query.selectAll.isAvailable"
+            },
+            selectAllSelected: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "query.selectAll.allSelected"
+            },
+            selectAllInversed: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "query.selectAll.inverse"
             },
             canFilter: {
                 type: Boolean,
                 reflectToAttribute: true
             }
-        }
+        },
+        forwardObservers: [
+            "query.selectAll.isAvailable",
+            "query.selectAll.allSelected",
+            "query.selectAll.inverse"
+        ]
     })
     export class QueryGridHeader extends WebComponent {
         query: Vidyano.Query;
-        canSelectAll: boolean;
 
         private _toggleSelectAll() {
-            if (!this.query || !this.canSelectAll)
+            if (!this.query || !this.query.selectAll.isAvailable)
                 return;
 
-            this.query.selectAll.inverse = !this.query.selectAll.inverse;
+            this.query.selectAll.allSelected = !this.query.selectAll.allSelected;
         }
     }
 
@@ -647,6 +669,7 @@
 
     export class QueryGridTableDataRow extends QueryGridTableRow {
         private _itemPropertyChangedListener: Vidyano.Common.SubjectDisposer;
+        private _itemQueryPropertyChangedListener: Vidyano.Common.SubjectDisposer;
         private _selector: QueryGridTableDataColumnSelector;
         private _actions: QueryGridTableDataColumnActions;
         private _item: Vidyano.QueryResultItem;
@@ -688,6 +711,9 @@
                 if (this._itemPropertyChangedListener) {
                     this._itemPropertyChangedListener();
                     this._itemPropertyChangedListener = null;
+
+                    this._itemQueryPropertyChangedListener();
+                    this._itemQueryPropertyChangedListener = null;
                 }
 
                 this._item = this.selector.item = this.actions.item = item;
@@ -699,8 +725,10 @@
                         this.host.removeAttribute("no-data");
                 }
 
-                if (!!this._item)
+                if (!!this._item) {
                     this._itemPropertyChangedListener = this._item.propertyChanged.attach(this._itemPropertyChanged.bind(this));
+                    this._itemQueryPropertyChangedListener = this._item.query.propertyChanged.attach(this._itemQueryPropertyChanged.bind(this));
+                }
 
                 this._updateIsSelected();
             }
@@ -756,6 +784,11 @@
 
         private _itemPropertyChanged(sender: Vidyano.QueryResultItem, args: Vidyano.Common.PropertyChangedArgs) {
             if (args.propertyName === "isSelected")
+                this._updateIsSelected();
+        }
+
+        private _itemQueryPropertyChanged(sender: Vidyano.QueryResultItem, args: Vidyano.Common.PropertyChangedArgs) {
+            if (args.propertyName === "selectedItems")
                 this._updateIsSelected();
         }
 

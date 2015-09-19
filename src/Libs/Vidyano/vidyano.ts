@@ -2592,6 +2592,80 @@ module Vidyano {
         direction: SortDirection;
     }
 
+    export interface QuerySelectAll {
+        isAvailable: boolean;
+        allSelected: boolean;
+        inverse: boolean;
+    }
+
+    class QuerySelectAllImpl extends Vidyano.Common.Observable<QuerySelectAll> implements QuerySelectAll {
+        private _allSelected: boolean = false;
+        private _inverse: boolean = false;
+
+        constructor(private _query: Query, private _isAvailable: boolean, observer: Common.PropertyChangedObserver<QuerySelectAllImpl>) {
+            super();
+
+            this.propertyChanged.attach(observer);
+        }
+
+        get isAvailable(): boolean {
+            if (this._query.maxSelectedItems)
+                return;
+
+            return this._isAvailable;
+        }
+
+        set isAvailable(isAvailable: boolean) {
+            if (this._query.maxSelectedItems)
+                return;
+
+            if (this._isAvailable === isAvailable)
+                return;
+
+            this.allSelected = this.inverse = false;
+
+            var oldValue = this._isAvailable;
+            this.notifyPropertyChanged("isAvailable", this._isAvailable = isAvailable, oldValue);
+        }
+
+        get allSelected(): boolean {
+            return this._allSelected;
+        }
+
+        set allSelected(allSelected: boolean) {
+            if (!this.isAvailable)
+                return;
+
+            if (this._allSelected === allSelected)
+                return;
+
+            var oldInverse = this._inverse;
+            if (oldInverse)
+                this._inverse = false;
+
+            var oldValue = this._allSelected;
+            this.notifyPropertyChanged("allSelected", this._allSelected = allSelected, oldValue);
+
+            if (oldInverse)
+                this.notifyPropertyChanged("inverse", this._inverse, oldValue);
+        }
+
+        get inverse(): boolean {
+            return this._inverse;
+        }
+
+        set inverse(inverse: boolean) {
+            if (!this.isAvailable)
+                return;
+
+            if (this._inverse === inverse)
+                return;
+
+            var oldValue = this._inverse;
+            this.notifyPropertyChanged("inverse", this._inverse = inverse, oldValue);
+        }
+    }
+
     export class Query extends ServiceObjectWithActions {
         private _asLookup: boolean;
         private _isSelectionModifying: boolean;
@@ -2632,11 +2706,7 @@ module Vidyano {
                 end: number;
             }[];
         };
-        selectAll: {
-            isAvailable: boolean,
-            allSelected?: boolean,
-            inverse?: boolean
-        };
+        selectAll: QuerySelectAll;
 
         constructor(service: Service, query: any, public parent?: PersistentObject, asLookup: boolean = false, public maxSelectedItems?: number) {
             super(service, query._actionNames || query.actions);
@@ -2660,9 +2730,7 @@ module Vidyano {
             this.skip = query.skip;
             this.top = query.top;
             this.groupingInfo = query.groupingInfo;
-            this.selectAll = {
-                isAvailable: !!query.isSystem
-            };
+            this.selectAll = new QuerySelectAllImpl(this, !!query.isSystem && !query.maxSelectedItems, this._selectAllPropertyChanged.bind(this));
 
             this.persistentObject = query.persistentObject instanceof Vidyano.PersistentObject ? query.persistentObject : service.hooks.onConstructPersistentObject(service, query.persistentObject);
             this.singularLabel = this.persistentObject.label;
@@ -2723,6 +2791,11 @@ module Vidyano {
             finally {
                 this._isSelectionModifying = false;
             }
+        }
+
+        private _selectAllPropertyChanged(selectAll: QuerySelectAllImpl, args: Vidyano.Common.PropertyChangedArgs) {
+            if (args.propertyName == "allSelected")
+                    this.selectedItems = this.selectAll.allSelected ? this.items : [];
         }
 
         selectRange(from: number, to: number): boolean {
@@ -2941,8 +3014,11 @@ module Vidyano {
                         }
 
                         for (var n = 0; n < clonedQuery.top && (clonedQuery.skip + n < clonedQuery.totalItems); n++) {
-                            if (this.items[clonedQuery.skip + n] == null)
-                                this.items[clonedQuery.skip + n] = this.service.hooks.onConstructQueryResultItem(this.service, result.items[n], this);
+                            if (this.items[clonedQuery.skip + n] == null) {
+                                var item = this.items[clonedQuery.skip + n] = this.service.hooks.onConstructQueryResultItem(this.service, result.items[n], this);
+                                if (this.selectAll.allSelected)
+                                    (<any>item)._isSelected = true;
+                            }
                         }
 
                         if (isChanged)
@@ -3038,6 +3114,8 @@ module Vidyano {
                 this._setTotalItems(null);
             }
 
+            this.selectAll.inverse = this.selectAll.allSelected = false;
+
             var oldItems = this.items;
             this.notifyPropertyChanged("items", this.items = items, oldItems);
             this.selectedItems = this.selectedItems;
@@ -3055,6 +3133,17 @@ module Vidyano {
                     selectedItems = this.selectedItems;
                 } finally {
                     this._isSelectionModifying = false;
+                }
+            }
+
+            if (this.selectAll.isAvailable && this.selectAll.allSelected) {
+                if (!this.items.some(i => i.isSelected))
+                    this.selectAll.allSelected = false;
+                else {
+                    if (!item.isSelected)
+                        this.selectAll.inverse = true;
+                    else if (!this.items.some(i => !i.isSelected))
+                        this.selectAll.inverse = false;
                 }
             }
 
@@ -3215,12 +3304,11 @@ module Vidyano {
         }
 
         set isSelected(val: boolean) {
-            var oldIsSelected = this._isSelected;
-            if (oldIsSelected == val)
+            if (this._isSelected == val)
                 return;
 
-            this._isSelected = val;
-            this.notifyPropertyChanged("isSelected", val, oldIsSelected);
+            var oldIsSelected = this._isSelected;
+            this.notifyPropertyChanged("isSelected", this._isSelected = val, oldIsSelected);
 
             (<any>this.query)._notifyItemSelectionChanged(this);
         }
@@ -3430,8 +3518,16 @@ module Vidyano {
                         return new Promise<PersistentObject>((resolve, reject) => {
                             parameters = this._getParameters(parameters, option);
 
-                            if (selectedItems == null && this.query && this.query.selectedItems)
-                                selectedItems = this.query.selectedItems;
+                            if (selectedItems == null && this.query) {
+                                if (this.query.selectAll.allSelected) {
+                                    if (!this.query.selectAll.inverse)
+                                        selectedItems = [];
+                                    else
+                                        selectedItems = this.query.items.filter(i => !i.isSelected);
+                                }
+                                else
+                                    selectedItems = this.query.selectedItems;
+                            }
 
                             this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters).then(po => {
                                 if (po != null) {

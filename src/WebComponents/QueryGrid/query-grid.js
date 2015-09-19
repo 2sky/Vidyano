@@ -378,7 +378,12 @@ var Vidyano;
                         canSelectAll: {
                             type: Boolean,
                             reflectToAttribute: true,
-                            computed: "_computeCanSelectAll(query, canSelect)"
+                            computed: "query.selectAll.isAvailable"
+                        },
+                        selectAllSelected: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "query.selectAll.allSelected"
                         },
                         inlineActions: {
                             type: Boolean,
@@ -404,7 +409,9 @@ var Vidyano;
                         "query.columns",
                         "query.items",
                         "query.isBusy",
-                        "query.totalItems"
+                        "query.totalItems",
+                        "query.selectAll.isAvailable",
+                        "query.selectAll.allSelected"
                     ],
                     listeners: {
                         "scroll": "_preventScroll"
@@ -420,9 +427,9 @@ var Vidyano;
                 _super.apply(this, arguments);
             }
             QueryGridHeader.prototype._toggleSelectAll = function () {
-                if (!this.query || !this.canSelectAll)
+                if (!this.query || !this.query.selectAll.isAvailable)
                     return;
-                this.query.selectAll.inverse = !this.query.selectAll.inverse;
+                this.query.selectAll.allSelected = !this.query.selectAll.allSelected;
             };
             QueryGridHeader = __decorate([
                 WebComponents.WebComponent.register({
@@ -430,13 +437,29 @@ var Vidyano;
                         query: Object,
                         canSelectAll: {
                             type: Boolean,
-                            reflectToAttribute: true
+                            reflectToAttribute: true,
+                            computed: "query.selectAll.isAvailable"
+                        },
+                        selectAllSelected: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "query.selectAll.allSelected"
+                        },
+                        selectAllInversed: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "query.selectAll.inverse"
                         },
                         canFilter: {
                             type: Boolean,
                             reflectToAttribute: true
                         }
-                    }
+                    },
+                    forwardObservers: [
+                        "query.selectAll.isAvailable",
+                        "query.selectAll.allSelected",
+                        "query.selectAll.inverse"
+                    ]
                 })
             ], QueryGridHeader);
             return QueryGridHeader;
@@ -615,6 +638,8 @@ var Vidyano;
                     if (this._itemPropertyChangedListener) {
                         this._itemPropertyChangedListener();
                         this._itemPropertyChangedListener = null;
+                        this._itemQueryPropertyChangedListener();
+                        this._itemQueryPropertyChangedListener = null;
                     }
                     this._item = this.selector.item = this.actions.item = item;
                     if (this._noData != !item) {
@@ -623,8 +648,10 @@ var Vidyano;
                         else
                             this.host.removeAttribute("no-data");
                     }
-                    if (!!this._item)
+                    if (!!this._item) {
                         this._itemPropertyChangedListener = this._item.propertyChanged.attach(this._itemPropertyChanged.bind(this));
+                        this._itemQueryPropertyChangedListener = this._item.query.propertyChanged.attach(this._itemQueryPropertyChanged.bind(this));
+                    }
                     this._updateIsSelected();
                 }
                 this._firstCellWithPendingUpdates = -1;
@@ -668,6 +695,10 @@ var Vidyano;
             };
             QueryGridTableDataRow.prototype._itemPropertyChanged = function (sender, args) {
                 if (args.propertyName === "isSelected")
+                    this._updateIsSelected();
+            };
+            QueryGridTableDataRow.prototype._itemQueryPropertyChanged = function (sender, args) {
+                if (args.propertyName === "selectedItems")
                     this._updateIsSelected();
             };
             QueryGridTableDataRow.prototype._updateIsSelected = function () {

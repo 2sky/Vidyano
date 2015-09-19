@@ -2259,6 +2259,71 @@ var Vidyano;
         SortDirection[SortDirection["Descending"] = 2] = "Descending";
     })(Vidyano.SortDirection || (Vidyano.SortDirection = {}));
     var SortDirection = Vidyano.SortDirection;
+    var QuerySelectAllImpl = (function (_super) {
+        __extends(QuerySelectAllImpl, _super);
+        function QuerySelectAllImpl(_query, _isAvailable, observer) {
+            _super.call(this);
+            this._query = _query;
+            this._isAvailable = _isAvailable;
+            this._allSelected = false;
+            this._inverse = false;
+            this.propertyChanged.attach(observer);
+        }
+        Object.defineProperty(QuerySelectAllImpl.prototype, "isAvailable", {
+            get: function () {
+                if (this._query.maxSelectedItems)
+                    return;
+                return this._isAvailable;
+            },
+            set: function (isAvailable) {
+                if (this._query.maxSelectedItems)
+                    return;
+                if (this._isAvailable === isAvailable)
+                    return;
+                this.allSelected = this.inverse = false;
+                var oldValue = this._isAvailable;
+                this.notifyPropertyChanged("isAvailable", this._isAvailable = isAvailable, oldValue);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(QuerySelectAllImpl.prototype, "allSelected", {
+            get: function () {
+                return this._allSelected;
+            },
+            set: function (allSelected) {
+                if (!this.isAvailable)
+                    return;
+                if (this._allSelected === allSelected)
+                    return;
+                var oldInverse = this._inverse;
+                if (oldInverse)
+                    this._inverse = false;
+                var oldValue = this._allSelected;
+                this.notifyPropertyChanged("allSelected", this._allSelected = allSelected, oldValue);
+                if (oldInverse)
+                    this.notifyPropertyChanged("inverse", this._inverse, oldValue);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(QuerySelectAllImpl.prototype, "inverse", {
+            get: function () {
+                return this._inverse;
+            },
+            set: function (inverse) {
+                if (!this.isAvailable)
+                    return;
+                if (this._inverse === inverse)
+                    return;
+                var oldValue = this._inverse;
+                this.notifyPropertyChanged("inverse", this._inverse = inverse, oldValue);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        return QuerySelectAllImpl;
+    })(Vidyano.Common.Observable);
     var Query = (function (_super) {
         __extends(Query, _super);
         function Query(service, query, parent, asLookup, maxSelectedItems) {
@@ -2285,9 +2350,7 @@ var Vidyano;
             this.skip = query.skip;
             this.top = query.top;
             this.groupingInfo = query.groupingInfo;
-            this.selectAll = {
-                isAvailable: !!query.isSystem
-            };
+            this.selectAll = new QuerySelectAllImpl(this, !!query.isSystem && !query.maxSelectedItems, this._selectAllPropertyChanged.bind(this));
             this.persistentObject = query.persistentObject instanceof Vidyano.PersistentObject ? query.persistentObject : service.hooks.onConstructPersistentObject(service, query.persistentObject);
             this.singularLabel = this.persistentObject.label;
             this._updateColumns(query.columns);
@@ -2351,6 +2414,10 @@ var Vidyano;
             enumerable: true,
             configurable: true
         });
+        Query.prototype._selectAllPropertyChanged = function (selectAll, args) {
+            if (args.propertyName == "allSelected")
+                this.selectedItems = this.selectAll.allSelected ? this.items : [];
+        };
         Query.prototype.selectRange = function (from, to) {
             try {
                 this._isSelectionModifying = true;
@@ -2537,8 +2604,11 @@ var Vidyano;
                             _this._setTotalItems(result.totalItems);
                         }
                         for (var n = 0; n < clonedQuery.top && (clonedQuery.skip + n < clonedQuery.totalItems); n++) {
-                            if (_this.items[clonedQuery.skip + n] == null)
-                                _this.items[clonedQuery.skip + n] = _this.service.hooks.onConstructQueryResultItem(_this.service, result.items[n], _this);
+                            if (_this.items[clonedQuery.skip + n] == null) {
+                                var item = _this.items[clonedQuery.skip + n] = _this.service.hooks.onConstructQueryResultItem(_this.service, result.items[n], _this);
+                                if (_this.selectAll.allSelected)
+                                    item._isSelected = true;
+                            }
                         }
                         if (isChanged)
                             return _this.getItems(start, length);
@@ -2623,6 +2693,7 @@ var Vidyano;
                 this.hasSearched = false;
                 this._setTotalItems(null);
             }
+            this.selectAll.inverse = this.selectAll.allSelected = false;
             var oldItems = this.items;
             this.notifyPropertyChanged("items", this.items = items, oldItems);
             this.selectedItems = this.selectedItems;
@@ -2640,6 +2711,16 @@ var Vidyano;
                 }
                 finally {
                     this._isSelectionModifying = false;
+                }
+            }
+            if (this.selectAll.isAvailable && this.selectAll.allSelected) {
+                if (!this.items.some(function (i) { return i.isSelected; }))
+                    this.selectAll.allSelected = false;
+                else {
+                    if (!item.isSelected)
+                        this.selectAll.inverse = true;
+                    else if (!this.items.some(function (i) { return !i.isSelected; }))
+                        this.selectAll.inverse = false;
                 }
             }
             this.notifyPropertyChanged("selectedItems", selectedItems);
@@ -2773,11 +2854,10 @@ var Vidyano;
                 return this._isSelected;
             },
             set: function (val) {
-                var oldIsSelected = this._isSelected;
-                if (oldIsSelected == val)
+                if (this._isSelected == val)
                     return;
-                this._isSelected = val;
-                this.notifyPropertyChanged("isSelected", val, oldIsSelected);
+                var oldIsSelected = this._isSelected;
+                this.notifyPropertyChanged("isSelected", this._isSelected = val, oldIsSelected);
                 this.query._notifyItemSelectionChanged(this);
             },
             enumerable: true,
@@ -2979,8 +3059,16 @@ var Vidyano;
                     return _this.owner.queueWork(function () {
                         return new Promise(function (resolve, reject) {
                             parameters = _this._getParameters(parameters, option);
-                            if (selectedItems == null && _this.query && _this.query.selectedItems)
-                                selectedItems = _this.query.selectedItems;
+                            if (selectedItems == null && _this.query) {
+                                if (_this.query.selectAll.allSelected) {
+                                    if (!_this.query.selectAll.inverse)
+                                        selectedItems = [];
+                                    else
+                                        selectedItems = _this.query.items.filter(function (i) { return !i.isSelected; });
+                                }
+                                else
+                                    selectedItems = _this.query.selectedItems;
+                            }
                             _this.service.executeAction(_this._targetType + "." + _this.definition.name, _this.parent, _this.query, selectedItems, parameters).then(function (po) {
                                 if (po != null) {
                                     if (po.fullTypeName == "Vidyano.Notification") {

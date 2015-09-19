@@ -11,10 +11,6 @@ vi-query-grid-header {
         line-height: @cell-line-height;
     }
 
-    .selectAll {
-        visibility: hidden !important;
-    }
-
     &:not([can-filter]) {
         .spacer {
             display: none;
@@ -47,15 +43,19 @@ vi-query-grid-header {
             > vi-icon {
                 fill: #bbb;
                 height: @cell-line-height;
-
-                #check {
-                    display: none;
-                }
             }
         }
     }
 
-    &[all-selected] {
+    &:not([select-all-selected]) {
+        .selectAll > vi-icon {
+            #check {
+                display: none;
+            }
+        }
+    }
+
+    &[select-all-selected] {
         .selectAll {
             > vi-icon {
                 fill: #888;
@@ -65,6 +65,14 @@ vi-query-grid-header {
                         fill: @@color;
                     }
                 });
+            }
+        }
+
+        &[select-all-inversed] {
+            .selectAll {
+                > vi-icon #check {
+                    opacity: 0.5;
+                }
             }
         }
     }

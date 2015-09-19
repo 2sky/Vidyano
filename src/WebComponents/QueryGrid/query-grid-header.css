@@ -8,9 +8,6 @@ vi-query-grid-header .spacer {
   height: 30px;
   line-height: 30px;
 }
-vi-query-grid-header .selectAll {
-  visibility: hidden !important;
-}
 vi-query-grid-header:not([can-filter]) .spacer {
   display: none;
 }
@@ -40,15 +37,18 @@ vi-query-grid-header .bottom .selectAll > vi-icon {
   fill: #bbb;
   height: 30px;
 }
-vi-query-grid-header .bottom .selectAll > vi-icon #check {
+vi-query-grid-header:not([select-all-selected]) .selectAll > vi-icon #check {
   display: none;
 }
-vi-query-grid-header[all-selected] .selectAll > vi-icon {
+vi-query-grid-header[select-all-selected] .selectAll > vi-icon {
   fill: #888;
 }
-[theme-color-1] vi-query-grid-header[all-selected] .selectAll > vi-icon #check {
+[theme-color-1] vi-query-grid-header[select-all-selected] .selectAll > vi-icon #check {
   fill: #4682b4;
 }
-[theme-color-2] vi-query-grid-header[all-selected] .selectAll > vi-icon #check {
+[theme-color-2] vi-query-grid-header[select-all-selected] .selectAll > vi-icon #check {
   fill: #009688;
+}
+vi-query-grid-header[select-all-selected][select-all-inversed] .selectAll > vi-icon #check {
+  opacity: 0.5;
 }
