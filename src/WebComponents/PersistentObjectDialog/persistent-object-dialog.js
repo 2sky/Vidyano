@@ -21,11 +21,15 @@ var Vidyano;
                 _super.apply(this, arguments);
             }
             PersistentObjectDialog.prototype.show = function (persistentObject, save) {
+                var _this = this;
                 this._setPersistentObject(persistentObject);
                 this.persistentObject.beginEdit();
                 this._saveHook = save;
                 this._dialog = this.$["dialog"].show();
-                return this._dialog.result;
+                return this._dialog.result.then(function (result) {
+                    _this._dialog = null;
+                    return result;
+                });
             };
             PersistentObjectDialog.prototype._save = function () {
                 var _this = this;
@@ -34,8 +38,10 @@ var Vidyano;
                 });
             };
             PersistentObjectDialog.prototype._cancel = function () {
-                this.persistentObject.cancelEdit();
-                this._dialog.resolve();
+                if (this.persistentObject && this._dialog) {
+                    this.persistentObject.cancelEdit();
+                    this._dialog.resolve();
+                }
             };
             PersistentObjectDialog.prototype._computeTab = function (persistentObject) {
                 if (!persistentObject)

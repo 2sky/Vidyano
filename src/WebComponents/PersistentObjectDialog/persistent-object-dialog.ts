@@ -35,7 +35,10 @@
             this._saveHook = save;
 
             this._dialog = (<WebComponents.Dialog><any>this.$["dialog"]).show();
-            return this._dialog.result;
+            return this._dialog.result.then(result => {
+                this._dialog = null;
+                return result;
+            });
         }
 
         private _save() {
@@ -45,8 +48,10 @@
         }
 
         private _cancel() {
-            this.persistentObject.cancelEdit();
-            this._dialog.resolve();
+            if (this.persistentObject && this._dialog) {
+                this.persistentObject.cancelEdit();
+                this._dialog.resolve();
+            }
         }
 
         private _computeTab(persistentObject: Vidyano.PersistentObject): Vidyano.PersistentObjectAttributeTab {

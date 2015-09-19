@@ -23,6 +23,7 @@
         }
     })
     export class QueryGridCellImage extends WebComponent {
+        private _isHidden: boolean;
         private _image: HTMLDivElement;
 
         private _valueChanged(value: QueryResultItemValue) {
@@ -30,6 +31,7 @@
                 if (this._image && !this._image.hasAttribute("hidden")) {
                     this._image.style.backgroundImage = "";
                     this._image.setAttribute("hidden", "");
+                    this._isHidden = true;
                 }
 
                 return;
@@ -40,7 +42,11 @@
                 this._image.classList.add("image");
             }
 
-            this._image.removeAttribute("hidden");
+            if (this._isHidden) {
+                this._image.removeAttribute("hidden");
+                this._isHidden = false;
+            }
+
             this._image.style.backgroundImage = "url(" + value.value.asDataUri() + ")";
         }
     }
