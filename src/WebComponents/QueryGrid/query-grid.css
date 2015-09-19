@@ -31,6 +31,11 @@ vi-query-grid #dataHeaderHost table tr td[is="vi-query-grid-table-header-column"
   display: none;
 }
 vi-query-grid #dataHost {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   white-space: nowrap;
 }
 vi-query-grid #dataHost table {

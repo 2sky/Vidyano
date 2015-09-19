@@ -2419,6 +2419,7 @@ var Vidyano;
                 this.selectedItems = this.selectAll.allSelected ? this.items : [];
         };
         Query.prototype.selectRange = function (from, to) {
+            var selectionUpdated;
             try {
                 this._isSelectionModifying = true;
                 var itemsToSelect = this.items.slice(from, ++to);
@@ -2428,6 +2429,7 @@ var Vidyano;
                     itemsToSelect.forEach(function (item) {
                         item.isSelected = true;
                     });
+                    selectionUpdated = itemsToSelect.length > 0;
                     this.notifyPropertyChanged("selectedItems", this.selectedItems);
                     return true;
                 }
@@ -2435,6 +2437,8 @@ var Vidyano;
             }
             finally {
                 this._isSelectionModifying = false;
+                if (selectionUpdated)
+                    this._updateSelectAll();
             }
         };
         Object.defineProperty(Query.prototype, "asLookup", {
@@ -2713,12 +2717,17 @@ var Vidyano;
                     this._isSelectionModifying = false;
                 }
             }
+            this._updateSelectAll(item, selectedItems);
+            this.notifyPropertyChanged("selectedItems", selectedItems);
+        };
+        Query.prototype._updateSelectAll = function (item, selectedItems) {
+            if (selectedItems === void 0) { selectedItems = this.selectedItems; }
             if (this.selectAll.isAvailable) {
                 if (this.selectAll.allSelected) {
                     if (!this.items.some(function (i) { return i.isSelected; }))
                         this.selectAll.allSelected = false;
                     else {
-                        if (!item.isSelected)
+                        if (item && !item.isSelected)
                             this.selectAll.inverse = true;
                         else if (!this.items.some(function (i) { return !i.isSelected; }))
                             this.selectAll.inverse = false;
@@ -2727,7 +2736,6 @@ var Vidyano;
                 else if (selectedItems.length == this.totalItems)
                     this.selectAll.allSelected = true;
             }
-            this.notifyPropertyChanged("selectedItems", selectedItems);
         };
         return Query;
     })(ServiceObjectWithActions);

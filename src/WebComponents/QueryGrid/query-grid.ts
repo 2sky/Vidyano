@@ -87,6 +87,7 @@
             "query.selectAll.allSelected"
         ],
         listeners: {
+            "item-select": "_itemSelect",
             "scroll": "_preventScroll"
         }
     })
@@ -109,6 +110,7 @@
         private _columnWidths: { [key: string]: number };
         private _columnOffsets: { [key: string]: number };
         private _itemOpening: Vidyano.QueryResultItem;
+        private _lastSelectedItemIndex: number;
         private _remainderWidth: number;
         rowHeight: number;
         viewportSize: Size;
@@ -465,6 +467,22 @@
 
                 action();
             });
+        }
+
+        private _itemSelect(e: CustomEvent, detail: { item: Vidyano.QueryResultItem; rangeSelect: boolean }) {
+            if (!detail.item)
+                return;
+
+            var indexOfItem = this.query.items.indexOf(detail.item);
+            if (!detail.item.isSelected && this._lastSelectedItemIndex >= 0 && detail.rangeSelect) {
+                if (this.query.selectRange(Math.min(this._lastSelectedItemIndex, indexOfItem), Math.max(this._lastSelectedItemIndex, indexOfItem))) {
+                    this._lastSelectedItemIndex = indexOfItem;
+                    return;
+                }
+            }
+
+            if (detail.item.isSelected = !detail.item.isSelected)
+                this._lastSelectedItemIndex = indexOfItem;
         }
 
         private _preventScroll(e: Event) {
@@ -1082,9 +1100,13 @@
                 this._item = item;
         }
 
-        private _tap(e: TapEvent) {
-            if (this._item)
-                this._item.isSelected = !this._item.isSelected;
+        private _tap(e: CustomEvent) {
+            if (this._item) {
+                this._row.table.grid.fire("item-select", {
+                    item: this.item,
+                    rangeSelect: e.detail.sourceEvent && e.detail.sourceEvent.shiftKey
+                }, { bubbles: false });
+            }
 
             e.stopPropagation();
         }

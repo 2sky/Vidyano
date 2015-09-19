@@ -2799,6 +2799,8 @@ module Vidyano {
         }
 
         selectRange(from: number, to: number): boolean {
+            var selectionUpdated: boolean;
+
             try {
                 this._isSelectionModifying = true;
                 var itemsToSelect = this.items.slice(from, ++to);
@@ -2812,6 +2814,7 @@ module Vidyano {
                         item.isSelected = true;
                     });
 
+                    selectionUpdated = itemsToSelect.length > 0;
                     this.notifyPropertyChanged("selectedItems", this.selectedItems);
                     return true;
                 }
@@ -2820,6 +2823,9 @@ module Vidyano {
             }
             finally {
                 this._isSelectionModifying = false;
+
+                if (selectionUpdated)
+                    this._updateSelectAll();
             }
         }
 
@@ -3136,12 +3142,18 @@ module Vidyano {
                 }
             }
 
+            this._updateSelectAll(item, selectedItems);
+
+            this.notifyPropertyChanged("selectedItems", selectedItems);
+        }
+
+        private _updateSelectAll(item?: QueryResultItem, selectedItems: QueryResultItem[] = this.selectedItems) {
             if (this.selectAll.isAvailable) {
                 if (this.selectAll.allSelected) {
                     if (!this.items.some(i => i.isSelected))
                         this.selectAll.allSelected = false;
                     else {
-                        if (!item.isSelected)
+                        if (item && !item.isSelected)
                             this.selectAll.inverse = true;
                         else if (!this.items.some(i => !i.isSelected))
                             this.selectAll.inverse = false;
@@ -3150,8 +3162,6 @@ module Vidyano {
                 else if (selectedItems.length == this.totalItems)
                     this.selectAll.allSelected = true;
             }
-
-            this.notifyPropertyChanged("selectedItems", selectedItems);
         }
     }
 
