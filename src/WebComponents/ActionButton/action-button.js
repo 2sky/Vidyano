@@ -96,6 +96,10 @@ var Vidyano;
                             type: Boolean,
                             reflectToAttribute: true
                         },
+                        forceLabel: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        },
                         noIcon: {
                             type: Boolean,
                             reflectToAttribute: true

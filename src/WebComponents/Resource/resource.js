@@ -65,7 +65,13 @@ var Vidyano;
             };
             Resource.Load = function (source, tagName) {
                 var resource = (typeof source === "string") ? resources[(tagName + "+" + source.toUpperCase())] : source;
-                return document.createRange().createContextualFragment(resource.innerHTML);
+                var fragment = document.createDocumentFragment();
+                var copy = document.createElement(tagName);
+                fragment.appendChild(copy);
+                Enumerable.from(Polymer.dom(resource).children).forEach(function (child) {
+                    Polymer.dom(copy).appendChild(child.cloneNode(true));
+                });
+                return fragment;
             };
             Resource.LoadResource = function (source, tagName) {
                 return resources[(tagName + "+" + source.toUpperCase())];

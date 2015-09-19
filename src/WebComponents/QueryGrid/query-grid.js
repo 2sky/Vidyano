@@ -322,7 +322,7 @@ var Vidyano;
             };
             QueryGrid.prototype._itemActions = function (e, detail) {
                 var _this = this;
-                var actions = (detail.row.item.query.actions || []).filter(function (a) { return a.isVisible && !a.isPinned && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); });
+                var actions = (detail.row.item.query.actions || []).filter(function (a) { return a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); });
                 if (actions.length == 0)
                     return;
                 var host = detail.host;
@@ -343,6 +343,7 @@ var Vidyano;
                     var button = new Vidyano.WebComponents.ActionButton();
                     button.action = action;
                     button.item = detail.row.item;
+                    button.forceLabel = true;
                     Polymer.dom(_this._actions).appendChild(button);
                 });
                 Polymer.dom(this._actions).flush();

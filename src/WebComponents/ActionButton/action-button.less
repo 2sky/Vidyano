@@ -48,7 +48,7 @@ vi-action-button {
         }
     }
 
-    &[no-label], &[pinned] {
+    &[no-label]:not([force-label]), &[pinned]:not([force-label]) {
         button.vi-action-button > span {
             display: none;
         }

@@ -488,7 +488,7 @@
         }
 
         private _itemActions(e: CustomEvent, detail: { row: QueryGridTableDataRow; host: HTMLElement; position: Position; }) {
-            var actions = (detail.row.item.query.actions || []).filter(a => a.isVisible && !a.isPinned && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1));
+            var actions = (detail.row.item.query.actions || []).filter(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1));
             if (actions.length == 0)
                 return;
 
@@ -513,6 +513,7 @@
                 var button = new Vidyano.WebComponents.ActionButton();
                 button.action = action;
                 button.item = detail.row.item;
+                button.forceLabel = true;
 
                 Polymer.dom(this._actions).appendChild(button);
             });

@@ -86,7 +86,7 @@ vi-query-grid {
                         }
                     }
 
-                    > .vi-icon {
+                    > vi-icon {
                         .layout-horizontal();
                         .layout-center-center();
                         height: @cell-line-height;
@@ -100,7 +100,7 @@ vi-query-grid {
                     }
 
                     &[is="vi-query-grid-table-data-column-selector"] {
-                        > .vi-icon {
+                        > vi-icon {
                             fill: #bbb;
 
                             #check {
@@ -117,7 +117,7 @@ vi-query-grid {
 
                         &:hover {
                             .colorize( {
-                                > .vi-icon {
+                                > vi-icon {
                                     background-color: fadeout(black, 95%) !important;
                                 }
                             });
@@ -125,7 +125,7 @@ vi-query-grid {
                     }
 
                     &[is="vi-query-grid-table-data-column-actions"] {
-                        > .vi-icon {
+                        > vi-icon {
                             fill: #333;
                         }
 
@@ -138,7 +138,7 @@ vi-query-grid {
 
                         &:hover, &[hover] {
                             .colorize({
-                                > .vi-icon {
+                                > vi-icon {
                                     background-color: fadeout(black, 95%) !important;
                                 }
                             });
@@ -225,7 +225,7 @@ vi-query-grid {
         }
     }
 
-    .vi-icon > svg {
+    vi-icon > svg {
         width: @cell-line-height / 2;
         height: @cell-line-height / 2;
     }
@@ -263,7 +263,7 @@ vi-query-grid {
 
     &[can-filter]:not([can-select]):not([inline-actions]) {
         td[is="vi-query-grid-table-data-column-selector"] {
-            .vi-icon {
+            vi-icon {
                 visibility: hidden;
             }
         }
@@ -281,7 +281,7 @@ vi-query-grid {
 
     &[can-filter][can-select]:not([inline-actions]) {
         td[is="vi-query-grid-table-data-column-actions"] {
-            .vi-icon {
+            vi-icon {
                 visibility: hidden;
             }
         }

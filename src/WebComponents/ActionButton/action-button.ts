@@ -23,6 +23,10 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true
             },
+            forceLabel: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             noIcon: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -59,6 +63,8 @@ module Vidyano.WebComponents {
         item: Vidyano.QueryResultItem;
         canExecute: boolean;
         hasOptions: boolean;
+        noLabel: boolean;
+        forceLabel: boolean;
 
         private _setCanExecute: (val: boolean) => void;
         private _setHidden: (val: boolean) => void;

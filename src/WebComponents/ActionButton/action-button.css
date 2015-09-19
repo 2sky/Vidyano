@@ -36,8 +36,8 @@ vi-action-button[overflow] vi-icon.options {
   -webkit-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
-vi-action-button[no-label] button.vi-action-button > span,
-vi-action-button[pinned] button.vi-action-button > span {
+vi-action-button[no-label]:not([force-label]) button.vi-action-button > span,
+vi-action-button[pinned]:not([force-label]) button.vi-action-button > span {
   display: none;
 }
 vi-action-button[no-icon] button.vi-action-button > vi-icon {
