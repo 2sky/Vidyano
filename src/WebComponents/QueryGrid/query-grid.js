@@ -355,6 +355,8 @@ var Vidyano;
                 });
             };
             QueryGrid.prototype._contextmenu = function (e) {
+                if (!this.query || this.query.asLookup || this.asLookup)
+                    return true;
                 var src = e.target;
                 while (src && src.tagName !== "TR") {
                     src = src.parentElement;

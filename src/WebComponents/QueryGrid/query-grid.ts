@@ -530,6 +530,9 @@
         }
 
         private _contextmenu(e: MouseEvent): boolean {
+            if (!this.query || this.query.asLookup || this.asLookup)
+                return true;
+
             var src = <HTMLElement>e.target;
             while (src && src.tagName !== "TR") {
                 src = src.parentElement;
