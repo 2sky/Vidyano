@@ -1,134 +1,100 @@
 @import (reference) "../vidyano.less";
 
-vi-dialog {
-    display: none;
+vi-dialog-host {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    background-color: rgba(0, 0, 0, 0.1);
     z-index: 1000;
+    .layout-horizontal();
+    .layout-center();
+    .layout-center-justified();
 
-    &[dragging] {
-        cursor: move !important;
-    }
-
-    > #overlay, > #dialogHost {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
-
-    > #overlay {
-        background-color: rgba(0, 0, 0, 0.1);
+    &:not([shown]) {
         display: none;
     }
 
-    > #dialogHost {
-        z-index: 50001;
-
-        > #dialog {
-            max-height: 90vh;
-            max-width: 90vw;
-            opacity: 0;
-            -moz-transition: opacity 3000ms ease-out;
-            -o-transition: opacity 3000ms ease-out;
-            -webkit-transition: opacity 3000ms ease-out;
-            transition: opacity 3000ms ease-out;
-            background-color: white;
-            .z-index1();
-
-            > .header > header, > footer {
-                background-color: #FAFAFA;
-            }
-
-            & .header > header {
-                line-height: @h1;
-                padding: @h5 @h4;
-                border-bottom: 1px solid #EEE;
-
-                h4 {
-                    margin: 0;
-                    font-weight: 500;
-                    font-size: 120%;
-                }
-
-                button.close {
-                    margin: 0;
-                    padding: 0 @h5;
-                    fill: #888;
-                    background: none;
-                    border: none;
-                    cursor: pointer;
-
-                    &:hover {
-                        fill: #555;
-                    }
-
-                    &:active {
-                        fill: #333;
-                    }
-
-                    &:focus {
-                        outline: none;
-                    }
-                }
-            }
-
-            & > footer {
-                padding: @h4;
-                border-top: 1px solid #EEE;
-
-                > button {
-                    line-height: @h2;
-                    padding: 0 @h5;
-                    margin-left: @h5;
-                }
-            }
-
-            .content {
-                position: relative;
-            }
-        }
-    }
-
-    &[shown] {
-        display: block;
-
-        > #overlay {
-            display: block;
-        }
-
-        > #dialogHost > #dialog {
-            opacity: 1;
-        }
-    }
-
-    > #dialogHost > #dialog {
+    > * {
         .layout-vertical();
+        max-height: 90vh;
+        max-width: 90vw;
+        background-color: white;
+        .z-index1();
 
-        > .header {
+        &[dragging] {
+            .noSelection();
+            cursor: move !important;
+        }
+
+        > *:not(header):not(footer):not(main) {
+            display: none;
+        }
+
+        > header, > footer {
+            background-color: #FAFAFA;
+        }
+
+        > header {
             -webkit-flex: 0 0 auto;
             -moz-flex: 0 0 auto;
             -ms-flex: 0 0 auto;
             flex: 0 0 auto;
+            line-height: @h1;
+            padding: @h5 @h4;
+            border-bottom: 1px solid #EEE;
+
+            h4 {
+                margin: 0;
+                font-weight: 500;
+                font-size: 120%;
+            }
+
+            button.close {
+                margin: 0;
+                padding: 0 @h5;
+                fill: #888;
+                background: none;
+                border: none;
+                cursor: pointer;
+
+                &:hover {
+                    fill: #555;
+                }
+
+                &:active {
+                    fill: #333;
+                }
+
+                &:focus {
+                    outline: none;
+                }
+            }
         }
 
-        .content {
+        > footer {
+            padding: @h4;
+            border-top: 1px solid #EEE;
+            -webkit-flex: 0 0 auto;
+            -moz-flex: 0 0 auto;
+            -ms-flex: 0 0 auto;
+            flex: 0 0 auto;
+
+            > button {
+                line-height: @h2;
+                padding: 0 @h5;
+                margin-left: @h5;
+            }
+        }
+
+        > main {
+            position: relative;
             -webkit-flex: 0 1 auto;
             -moz-flex: 0 1 auto;
             -ms-flex: 0 1 auto;
             flex: 0 1 auto;
             overflow: hidden;
-        }
-
-        > footer {
-            -webkit-flex: 0 0 auto;
-            -moz-flex: 0 0 auto;
-            -ms-flex: 0 0 auto;
-            flex: 0 0 auto;
         }
     }
 }
@@ -139,8 +105,8 @@ vi-dialog {
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991px) {
-    vi-dialog {
-        > #dialogHost > #dialog > .content {
+    vi-dialog-host {
+        > * > main {
             max-width: 800px;
             max-height: 75vh;
         }
@@ -149,8 +115,8 @@ vi-dialog {
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1199px) {
-    vi-dialog {
-        > #dialogHost > #dialog > .content {
+    vi-dialog-host {
+        > * > main {
             max-width: 900px;
             max-height: 75vh;
         }
@@ -159,8 +125,8 @@ vi-dialog {
 
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-    vi-dialog {
-        > #dialogHost > #dialog > .content {
+    vi-dialog-host {
+        > * > main {
             max-width: 1000px;
             max-height: 75vh;
         }

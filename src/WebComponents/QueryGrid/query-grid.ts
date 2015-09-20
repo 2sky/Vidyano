@@ -16,24 +16,26 @@
                 reflectToAttribute: true,
                 computed: "query.isBusy"
             },
-            query: {
-                type: Object
-            },
-            asLookup: {
-                type: Boolean,
-                reflectToAttribute: true
+            query: Object,
+            _settings: {
+                type: Object,
+                computed: "_computeSettings(query)"
             },
             _columns: {
                 type: Object,
-                computed: "_computeColumns(query.columns)"
+                computed: "_computeColumns(query.columns, _settings.columns)"
+            },
+            _forceUpdate: {
+                type: Object,
+                value: null
             },
             _items: {
                 type: Object,
                 computed: "_computeItems(query.items, viewportSize, _verticalScrollOffset, rowHeight, _forceUpdate)"
             },
-            _forceUpdate: {
-                type: Object,
-                value: null
+            asLookup: {
+                type: Boolean,
+                reflectToAttribute: true
             },
             viewportSize: {
                 type: Object,
@@ -75,7 +77,7 @@
             }
         },
         observers: [
-            "_updateTables(_columns, _items, isAttached)",
+            "_updateTables(_items, _columns, isAttached)",
             "_updateVerticalSpacer(query.totalItems, rowHeight)",
         ],
         forwardObservers: [
@@ -84,12 +86,15 @@
             "query.isBusy",
             "query.totalItems",
             "query.selectAll.isAvailable",
-            "query.selectAll.allSelected"
+            "query.selectAll.allSelected",
+            "_settings.columns"
         ],
         listeners: {
             "item-select": "_itemSelect",
             "item-actions": "_itemActions",
-            "contextmenu": "_contextmenu",
+            "column-widths-updated": "_columnWidthsUpdated",
+            "dataHeaderHost.contextmenu": "_contextmenuColumn",
+            "dataHost.contextmenu": "_contextmenuData",
             "scroll": "_preventScroll"
         }
     })
@@ -108,12 +113,13 @@
         private _horizontalScrollOffset: number;
         private _horizontalScrollOffsetCurrent: number;
         private _items: Vidyano.QueryResultItem[];
-        private _columns: Vidyano.QueryColumn[];
-        private _columnWidths: { [key: string]: number };
-        private _columnOffsets: { [key: string]: number };
+        private _columns: QueryGridColumn[];
+        private _hasPendingUpdates: boolean;
         private _itemOpening: Vidyano.QueryResultItem;
         private _lastSelectedItemIndex: number;
         private _remainderWidth: number;
+        private _settings: QueryGridUserSettings;
+        private _columnMenuColumn: QueryGridColumn;
         rowHeight: number;
         viewportSize: Size;
         query: Vidyano.Query;
@@ -143,6 +149,8 @@
 
         detached() {
             super.detached();
+
+            this._columnMenuColumn = null;
 
             if (this._tableData) {
                 var headerFragment = document.createDocumentFragment();
@@ -181,43 +189,49 @@
 
                     row.setItem(null, null);
                 });
+
+                this._hasPendingUpdates = false;
             }
         }
 
-        isColumnInView(column: QueryColumn): boolean {
-            if (column.isPinned || !this._columnOffsets)
+        isColumnInView(column: QueryGridColumn): boolean {
+            if (column.isPinned || !column.calculatedOffset)
                 return true;
 
-            return (this._columnOffsets[column.name] || 0) < this.viewportSize.width + this._horizontalScrollOffset;
+            return (column.calculatedOffset || 0) < this.viewportSize.width + this._horizontalScrollOffset;
         }
 
         private get _style(): Style {
             return <Style><any>this.$["style"];
         }
 
-        private get _actions(): PopupCore {
+        private get _actionMenu(): PopupCore {
             return <PopupCore><any>this.$["actions"];
+        }
+
+        private get _columnMenu(): PopupMenu {
+            return <PopupMenu><any>this.$["columnMenu"];
         }
 
         private _sizeChanged(e: CustomEvent, detail: Size) {
             this._setViewportSize(detail);
             this._setRowHeight(parseInt(getComputedStyle(this).lineHeight));
 
-            this._requestAnimationFrame(() => {
+            if (!this._hasPendingUpdates) {
                 this._updateTableDataPendingUpdates();
                 if (!this._remainderWidth || this._remainderWidth < detail.width) {
                     this._style.setStyle("Remainder", `td[is="vi-query-grid-table-column-remainder"] { width: ${detail.width}px; }`);
                     this._remainderWidth = detail.width * 2;
                 }
-            });
+            }
         }
 
         private _horizontalScrollOffsetChanged(horizontalScrollOffset: number) {
             if (!this._tableData || (!horizontalScrollOffset && !this._horizontalScrollOffsetCurrent))
                 return;
 
-            if (this._actions.open)
-                this._actions.close();
+            if (this._actionMenu.open)
+                this._actionMenu.close();
 
             this.transform(`translate(${-(this._horizontalScrollOffsetCurrent = horizontalScrollOffset) }px, 0)`, this._tableHeader.host);
             [this._tableHeader, this._tableData].forEach(table => {
@@ -237,16 +251,27 @@
             this._updateTableDataPendingUpdates();
         }
 
-        private _computeColumns(columns: Vidyano.QueryColumn[] = []): Vidyano.QueryColumn[] {
-            return Enumerable.from(columns).where(c => !c.isHidden && c.isPinned).orderBy(c => c.offset).concat(Enumerable.from(columns).where(c => !c.isHidden && !c.isPinned).orderBy(c => c.offset).toArray()).toArray();
+        private _computeSettings(query: Vidyano.Query): QueryGridUserSettings {
+            return query ? QueryGridUserSettings.Load(query) : null;
+        }
+
+        private _computeColumns(columns: QueryColumn[]): QueryGridColumn[] {
+            if (!columns || columns.length === 0)
+                return [];
+
+            var visibleColumns = Enumerable.from(this._settings.columns).where(c => !c.isHidden).memoize();
+            var pinnedColumns = visibleColumns.where(c => c.isPinned).orderBy(c => c.offset).toArray();
+            var unpinnedColumns = visibleColumns.where(c => !c.isPinned).orderBy(c => c.offset).toArray();
+
+            return pinnedColumns.concat(unpinnedColumns);
         }
 
         private _computeItems(items: Vidyano.QueryResultItem[], viewportSize: Size, verticalScrollOffset: number, rowHeight: number): Vidyano.QueryResultItem[] {
             if (!rowHeight || !viewportSize.height)
                 return [];
 
-            if (this._actions.open)
-                this._actions.close();
+            if (this._actionMenu.open)
+                this._actionMenu.close();
 
             var maxTableRowCount = Math.floor(viewportSize.height * 1.5 / rowHeight);
             var viewportStartRowIndex = Math.floor(verticalScrollOffset / rowHeight);
@@ -283,7 +308,26 @@
             return newItems;
         }
 
-        private _updateTables(columns: Vidyano.QueryColumn[], items: Vidyano.QueryResultItem[]) {
+        private _computeCanSelect(query: Vidyano.Query): boolean {
+            return !!query && query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue);
+        }
+
+        private _computeCanSelectAll(query: Vidyano.Query, canSelect: boolean): boolean {
+            return canSelect && query.selectAll.isAvailable;
+        }
+
+        private _computeInlineActions(query: Vidyano.Query): boolean {
+            return !!query && !query.asLookup && !this.asLookup && (query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1)));
+        }
+
+        private _computeCanFilter(query: Vidyano.Query): boolean {
+            return !!query && query.canFilter;
+        }
+
+        private _updateTables(items: Vidyano.QueryResultItem[], columns: QueryGridColumn[], isAttached: boolean) {
+            if (!isAttached)
+                return;
+
             var _tablesUpdatingTimestamp = this._tablesUpdatingTimestamp = new Date();
 
             var tablesUpdating = this._tablesUpdating = (this._tablesUpdating || Promise.resolve()).then(() => new Promise(resolve => {
@@ -307,7 +351,7 @@
                             if (!cont)
                                 return Promise.resolve();
 
-                            return this._updateTableData(items);
+                            return this._updateTableData(items, columns);
                         }).then(() => {
                             resolve(null);
 
@@ -323,13 +367,10 @@
             this._requestAnimationFrame(() => {
                 var newHeight = totalItems * rowHeight;
                 this.$["verticalSpacer"].style.height = `${newHeight}px`;
-
-                if (newHeight > this._virtualTableOffset)
-                    this.set("_forceUpdate", new Date());
             });
         }
 
-        private _updateTableHeaders(columns: Vidyano.QueryColumn[]): Promise<boolean> {
+        private _updateTableHeaders(columns: QueryGridColumn[]): Promise<boolean> {
             return new Promise(resolve => {
                 this._requestAnimationFrame(() => {
                     if (columns !== this._columns) {
@@ -344,25 +385,30 @@
             });
         }
 
-        private _updateTableData(items: Vidyano.QueryResultItem[]): Promise<any> {
+        private _updateTableData(items: Vidyano.QueryResultItem[], columns: QueryGridColumn[]): Promise<any> {
             var horizontalScrollOffset = this._horizontalScrollOffset;
             var virtualTableStartIndex = this._virtualTableStartIndex;
 
             return new Promise(resolve => {
                 var start = Vidyano.WebComponents.QueryGrid.perf.now();
-
+                
                 var rowCount = this._tableData && this._tableData.rows && this._tableData.rows.length > 0 ? this._tableData.rows.length : 0;
                 var virtualTableOffset = this._virtualTableOffset;
 
                 this._requestAnimationFrame(() => {
+                    var lastPinnedColumnIndex = Enumerable.from(columns).lastIndexOf(c => c.isPinned);
+                    var hasPendingUpdates = false;
+
                     for (var index = 0; index < rowCount; index++) {
                         if (items != this._items || virtualTableStartIndex !== this._virtualTableStartIndex) {
                             resolve(false);
                             return;
                         }
 
-                        (<QueryGridTableDataRow>this._tableData.rows[index]).setItem(items[index], this._columns);
+                        hasPendingUpdates = (<QueryGridTableDataRow>this._tableData.rows[index]).setItem(items[index], columns, lastPinnedColumnIndex) || hasPendingUpdates;
                     }
+
+                    this._hasPendingUpdates = hasPendingUpdates;
 
                     if (this._virtualTableOffsetCurrent !== this._virtualTableOffset && this._virtualTableOffset === virtualTableOffset)
                         this.translate3d("0", `${this._virtualTableOffsetCurrent = this._virtualTableOffset}px`, "0", this.$["dataHost"]);
@@ -378,20 +424,27 @@
         }
 
         private _updateTableDataPendingUpdatesRAF: number;
-        private _updateTableDataPendingUpdates() {
-            if (!this._tableData)
-                return;
+        private _updateTableDataPendingUpdates(): Promise<boolean> {
+            if (!this._tableData || !this._hasPendingUpdates)
+                return Promise.resolve(this._hasPendingUpdates);
 
-            if (this._updateTableDataPendingUpdatesRAF)
-                cancelAnimationFrame(this._updateTableDataPendingUpdatesRAF);
+            return new Promise(resolve => {
+                if (this._updateTableDataPendingUpdatesRAF)
+                    cancelAnimationFrame(this._updateTableDataPendingUpdatesRAF);
 
-            this._updateTableDataPendingUpdatesRAF = this._requestAnimationFrame(() => {
-                var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                this._updateTableDataPendingUpdatesRAF = this._requestAnimationFrame(() => {
+                    var start = Vidyano.WebComponents.QueryGrid.perf.now();
 
-                Enumerable.from((<QueryGridTableDataRow[]>this._tableData.rows)).forEach(row => row.updatePendingCellUpdates());
+                    var hasPendingUpdates = false;
+                    Enumerable.from((<QueryGridTableDataRow[]>this._tableData.rows)).forEach(row => {
+                        hasPendingUpdates = row.updatePendingCellUpdates() || hasPendingUpdates;
+                    });
 
-                var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
-                console.info(`Pending Data Updated: ${timeTaken }ms`);
+                    var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                    console.info(`Pending Data Updated: ${timeTaken }ms`);
+
+                    resolve(this._hasPendingUpdates = hasPendingUpdates);
+                });
             });
         }
 
@@ -409,15 +462,17 @@
                     var start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                     var invalidateColumnWidths: boolean;
-                    var columnWidths = this._columnWidths || {};
-                    var columnOffsets = this._columnOffsets || {};
+                    var columnWidths: { [key: string]: number; } = {};
+                    var columnOffsets: { [key: string]: number; } = {};
 
                     [this._tableHeader, this._tableData].some(table => {
                         if (table.rows && table.rows.length > 0) {
                             var offset = 0;
 
-                            return table.rows[0].columns.filter(cell => !!cell.column && (!this._columnWidths || !this._columnWidths[cell.column.name])).some(cell => {
-                                var width = cell.cell.offsetWidth;
+                            return table.rows[0].columns.filter(cell => !!cell.column && !cell.column.calculatedWidth).some(cell => {
+                                var width = parseInt(cell.column.width);
+                                if (isNaN(width))
+                                    width = cell.cell.offsetWidth;
 
                                 if (width !== columnWidths[cell.column.name]) {
                                     columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
@@ -436,20 +491,15 @@
                     });
 
                     if (invalidateColumnWidths) {
-                        if (columnWidths !== this._columnWidths)
-                            this._columnWidths = columnWidths;
-
-                        if (columnOffsets !== this._columnOffsets)
-                            this._columnOffsets = columnOffsets;
-
-                        var columnWidthsStyle: string[] = [];
-
-                        this._columns.forEach((col, index) => {
-                            var columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
-                            columnWidthsStyle.push(`table td[name="${columnName}"] > * { width: ${this._columnWidths[col.name]}px; } `);
+                        this._columns.forEach(c => {
+                            var width = columnWidths[c.name];
+                            if (width >= 0) {
+                                c.calculatedWidth = width;
+                                c.calculatedOffset = columnOffsets[c.name];
+                            }
                         });
 
-                        this._style.setStyle("ColumnWidths", ...columnWidthsStyle);
+                        this._columnWidthsUpdated();
                     }
 
                     var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
@@ -460,6 +510,23 @@
                     resolve(null);
                 });
             });
+        }
+
+        private _columnWidthsUpdated(e?: CustomEvent, detail?: { column: QueryGridColumn; }) {
+            var columnWidthsStyle: string[] = [];
+
+            this._columns.forEach((col, index) => {
+                var columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
+                columnWidthsStyle.push(`table td[name="${columnName}"] > * { width: ${col.calculatedWidth}px; } `);
+            });
+
+            this._style.setStyle("ColumnWidths", ...columnWidthsStyle);
+
+            if (detail && detail.column)
+                this._settings.save(false);
+
+            if (e)
+                e.stopPropagation();
         }
 
         private _requestAnimationFrame(action: () => void): number {
@@ -515,22 +582,22 @@
                 button.item = detail.row.item;
                 button.forceLabel = true;
 
-                Polymer.dom(this._actions).appendChild(button);
+                Polymer.dom(this._actionMenu).appendChild(button);
             });
 
-            Polymer.dom(this._actions).flush();
+            Polymer.dom(this._actionMenu).flush();
 
             detail.row.host.setAttribute("hover", "");
-            this._actions.popup(host).then(() => {
+            this._actionMenu.popup(host).then(() => {
                 if (host !== detail.host)
                     host.setAttribute("hidden", "");
 
-                this._actions.empty();
+                this._actionMenu.empty();
                 detail.row.host.removeAttribute("hover");
             });
         }
 
-        private _contextmenu(e: MouseEvent): boolean {
+        private _contextmenuData(e: MouseEvent): boolean {
             if (e.which !== 3 || e.shiftKey || e.ctrlKey ||
                 !this.query || this.query.asLookup || this.asLookup)
                 return true;
@@ -561,7 +628,48 @@
         }
 
         private _closeActions() {
-            this._actions.close();
+            this._actionMenu.close();
+        }
+
+        private _contextmenuColumn(e: MouseEvent): boolean {
+            if (!this.query || this.query.asLookup || this.asLookup)
+                return true;
+
+            var src: HTMLElement | QueryGridColumnHeader = <HTMLElement>e.target;
+            while (src && src.tagName !== "VI-QUERY-GRID-COLUMN-HEADER")
+                src = src.parentElement;
+
+            var column = this._columnMenuColumn = src instanceof QueryGridColumnHeader ? src.column : null;
+            var togglePin = <PopupMenuItem>this.$["columnMenuTogglePin"];
+
+            if (column) {
+                togglePin.removeAttribute("hidden");
+                togglePin.label = column.isPinned ? this.translations.Unpin : this.translations.Pin;
+                togglePin.checked = column.isPinned;
+            }
+            else
+                togglePin.setAttribute("hidden", "");
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            return false;
+        }
+
+        private _togglePin() {
+            if (!this._columnMenuColumn) {
+                console.error("No column was previously set");
+                return;
+            }
+
+            this._columnMenuColumn.isPinned = !this._columnMenuColumn.isPinned;
+            this._horizontalScrollOffset = 0;
+
+            this._settings.save();
+        }
+
+        private _configureColumns() {
+            this.app.showDialog(new Vidyano.WebComponents.QueryGridConfigureDialog(this, this._settings));
         }
 
         private _preventScroll(e: Event) {
@@ -574,21 +682,162 @@
                 e.stopPropagation();
             }
         }
+    }
 
-        private _computeCanSelect(query: Vidyano.Query): boolean {
-            return !!query && query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue);
+    export class QueryGridColumn implements QueryGridUserSettingsColumnData {
+        calculatedWidth: number;
+        calculatedOffset: number;
+
+        constructor(private _column: Vidyano.QueryColumn, private _userSettingsColumnData: QueryGridUserSettingsColumnData) {
         }
 
-        private _computeCanSelectAll(query: Vidyano.Query, canSelect: boolean): boolean {
-            return canSelect && query.selectAll.isAvailable;
+        get column(): Vidyano.QueryColumn {
+            return this._column;
         }
 
-        private _computeInlineActions(query: Vidyano.Query): boolean {
-            return !!query && !query.asLookup && !this.asLookup && (query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1)));
+        get query(): Vidyano.Query {
+            return this._column.query;
         }
 
-        private _computeCanFilter(query: Vidyano.Query): boolean {
-            return !!query && query.canFilter;
+        get name(): string {
+            return this._column.name;
+        }
+
+        get label(): string {
+            return this._column.label;
+        }
+
+        get type(): string {
+            return this._column.type;
+        }
+
+        get canSort(): boolean {
+            return this._column.canSort;
+        }
+
+        get canFilter(): boolean {
+            return this._column.canFilter;
+        }
+
+        get includes(): string[] {
+            return this._column.includes;
+        }
+
+        set includes(includes: string[]) {
+            this._column.includes = includes;
+        }
+
+        get excludes(): string[] {
+            return this._column.excludes;
+        }
+
+        set excludes(excludes: string[]) {
+            this._column.excludes = excludes;
+        }
+
+        get sortDirection(): SortDirection {
+            return this._column.sortDirection;
+        }
+
+        get distincts(): QueryColumnDistincts {
+            return this._column.distincts;
+        }
+
+        get offset(): number {
+            return this._userSettingsColumnData.offset != null ? this._userSettingsColumnData.offset : this._column.offset;
+        }
+
+        set offset(offset: number) {
+            this._userSettingsColumnData.offset = offset;
+        }
+
+        get isPinned(): boolean {
+            return this._userSettingsColumnData.isPinned != null ? this._userSettingsColumnData.isPinned : this._column.isPinned;
+        }
+
+        set isPinned(isPinned: boolean) {
+            this._userSettingsColumnData.isPinned = isPinned;
+        }
+
+        get isHidden(): boolean {
+            return this._userSettingsColumnData.isHidden != null ? this._userSettingsColumnData.isHidden : this._column.isHidden;
+        }
+
+        set isHidden(isHidden: boolean) {
+            this._userSettingsColumnData.isHidden = isHidden;
+        }
+
+        get width(): string {
+            return this._userSettingsColumnData.width != null ? this._userSettingsColumnData.width : this._column.width;
+        }
+
+        set width(width: string) {
+            this._userSettingsColumnData.width = width;
+        }
+    }
+
+    interface QueryGridUserSettingsColumnData {
+        offset?: number;
+        isPinned?: boolean;
+        isHidden?: boolean;
+        width?: string;
+    }
+
+    export class QueryGridUserSettings extends Vidyano.Common.Observable<QueryGridUserSettings> {
+        private _columnsByName: { [key: string]: QueryGridColumn; } = {};
+        private _columns: QueryGridColumn[] = [];
+
+        constructor(private _query: Vidyano.Query, data: { [key: string]: QueryGridUserSettingsColumnData; } = {}) {
+            super();
+
+            this._columns = this._query.columns.filter(c => c.width != "0").map(c => this._columnsByName[c.name] = new QueryGridColumn(c, data[c.name] || {
+                offset: c.offset,
+                isPinned: c.isPinned,
+                isHidden: c.isHidden,
+                width: c.width
+            }));
+        }
+
+        getColumn(name: string): QueryGridColumn {
+            return this._columnsByName[name];
+        }
+
+        get columns(): QueryGridColumn[] {
+            return this._columns;
+        }
+
+        save(refreshOnComplete: boolean = true): Promise<any> {
+            var queryData: { [key: string]: QueryGridUserSettingsColumnData; };
+            var columnData = (name: string) => (queryData || (queryData = {}))[name] || (queryData[name] = {});
+
+            this._columns.forEach(c => {
+                if (c.offset !== c.column.offset)
+                    columnData(c.name).offset = c.offset;
+
+                if (c.isPinned !== c.column.isPinned)
+                    columnData(c.name).isPinned = c.isPinned;
+
+                if (c.isHidden !== c.column.isHidden)
+                    columnData(c.name).isHidden = c.isHidden;
+
+                if (c.width !== c.column.width)
+                    columnData(c.name).width = c.width;
+            });
+
+            if (queryData)
+                this._query.service.application.userSettings["QueryGridSettings"][this._query.id] = queryData;
+            else if (this._query.service.application.userSettings["QueryGridSettings"][this._query.id])
+                delete this._query.service.application.userSettings["QueryGridSettings"][this._query.id];
+
+            return this._query.service.application.saveUserSettings().then(() => {
+                if (refreshOnComplete)
+                    this.notifyPropertyChanged("columns", this._columns = this.columns.slice());
+            });
+        }
+
+        static Load(query: Vidyano.Query): QueryGridUserSettings {
+            var queryGridSettings = query.service.application.service.application.userSettings["QueryGridSettings"] || (query.service.application.userSettings["QueryGridSettings"] = {});
+            return new QueryGridUserSettings(query, queryGridSettings[query.id]);
         }
     }
 
@@ -644,7 +893,7 @@
         update(rowCount: number, columnCount: number): Promise<any> {
             if (!this.section)
                 this._section = this._createSection();
-
+            
             if (this.rows.length < rowCount) {
                 var fragment = document.createDocumentFragment();
 
@@ -764,8 +1013,9 @@
             super("vi-query-grid-table-header-row", table);
         }
 
-        setColumns(columns: Vidyano.QueryColumn[]) {
-            this.columns.forEach((col, index) => col.setColumn(columns[index]));
+        setColumns(columns: QueryGridColumn[]) {
+            var lastPinnedColumn = Enumerable.from(columns).lastOrDefault(c => c.isPinned);
+            this.columns.forEach((col, index) => col.setColumn(columns[index], columns[index] === lastPinnedColumn));
         }
 
         protected _createColumn(): QueryGridTableColumn {
@@ -783,6 +1033,7 @@
         private _firstCellWithPendingUpdates: number;
         private _isSelected: boolean;
         private _noData: boolean;
+        private _columnsInUse: number;
         columns: QueryGridTableDataColumn[];
 
         constructor(table: QueryGridTableData) {
@@ -813,7 +1064,7 @@
             return this._item;
         }
 
-        setItem(item: Vidyano.QueryResultItem, columns: Vidyano.QueryColumn[]) {
+        setItem(item: Vidyano.QueryResultItem, columns: QueryGridColumn[], lastPinnedIndex?: number): boolean {
             if (this._item !== item) {
                 if (this._itemPropertyChangedListener) {
                     this._itemPropertyChangedListener();
@@ -840,25 +1091,36 @@
                 this._updateIsSelected();
             }
 
+            // Cleanup extra columns first
+            if(this._columnCount >= columns.length)
+                this.columns.slice(columns.length, this.columns.length).forEach(gridColumn => gridColumn.setItem(null, null, false));
+
             this._firstCellWithPendingUpdates = -1;
-            this.columns.slice(0, columns ? this._columnCount = columns.length : this._columnCount).forEach((column, index) => {
-                if (!column.setItem(item, columns ? columns[index] : null) && this._firstCellWithPendingUpdates < 0)
+            this.columns.slice(0, columns ? this._columnCount = columns.length : this._columnCount).forEach((gridColumn, index) => {
+                if (!gridColumn.setItem(item, columns ? columns[index] : null, lastPinnedIndex === index) && this._firstCellWithPendingUpdates < 0)
                     this._firstCellWithPendingUpdates = index;
             });
+
+            return this._firstCellWithPendingUpdates >= 0;
         }
 
-        updatePendingCellUpdates() {
+        updatePendingCellUpdates(): boolean {
             if (this._firstCellWithPendingUpdates < 0)
-                return;
+                return false;
 
             for (var i = this._firstCellWithPendingUpdates; i < this.columns.length; i++) {
                 if (this.columns[i].update())
                     this._firstCellWithPendingUpdates++;
                 else
-                    return;
+                    break;
             }
 
-            this._firstCellWithPendingUpdates = -1;
+            if (this._firstCellWithPendingUpdates == this.columns.length) {
+                this._firstCellWithPendingUpdates = -1;
+                return false;
+            }
+
+            return true;
         }
 
         private _tap(e: TapEvent) {
@@ -916,8 +1178,9 @@
 
     export abstract class QueryGridTableColumn {
         private _host: HTMLTableColElement;
-        private _column: Vidyano.QueryColumn;
+        private _column: QueryGridColumn;
         private _hasContent: boolean;
+        private _isLastPinned: boolean;
 
         constructor(is: string, private _cell?: HTMLElement | DocumentFragment, private _isPinned?: boolean) {
             this._host = (<any>document).createElement("td", is);
@@ -925,7 +1188,7 @@
             if (_cell)
                 this._cell = this.host.appendChild(_cell);
 
-            if (this._isPinned)
+            if (_isPinned)
                 this.host.classList.add("pinned");
         }
 
@@ -937,7 +1200,7 @@
             return <HTMLElement>this._cell;
         }
 
-        get column(): Vidyano.QueryColumn {
+        get column(): QueryGridColumn {
             return this._column;
         }
 
@@ -945,18 +1208,28 @@
             return this._isPinned;
         }
 
-        setColumn(column: Vidyano.QueryColumn) {
-            if (column == this._column)
-                return;
+        setColumn(column: QueryGridColumn, lastPinned?: boolean) {
+            if (this._column !== column)
+                this.host.setAttribute("name", (this._column = column) ? Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(this._column.name) : "");
 
-            if (!(this._column = column) || this._column.isPinned != this._isPinned) {
-                if (this._isPinned = this._column ? this._column.isPinned : false)
+            if (!this.column || !this.column.isPinned) {
+                this._isPinned = this._isLastPinned = false;
+
+                this.host.classList.remove("pinned");
+                this.host.classList.remove("last-pinned");
+            } else {
+                if (!this._isPinned) {
+                    this._isPinned = this.column.isPinned;
                     this.host.classList.add("pinned");
-                else
-                    this.host.classList.remove("pinned");
-            }
+                }
 
-            this.host.setAttribute("name", this._column ? Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(this._column.name) : "");
+                if (this._isLastPinned !== lastPinned) {
+                    if (this._isLastPinned = lastPinned)
+                        this.host.classList.add("last-pinned");
+                    else
+                        this.host.classList.remove("last-pinned");
+                }
+            }
         }
 
         get hasContent(): boolean {
@@ -982,11 +1255,8 @@
             super("vi-query-grid-table-header-column", new Vidyano.WebComponents.QueryGridColumnHeader());
         }
 
-        setColumn(column: Vidyano.QueryColumn) {
-            if (this.column === column)
-                return;
-
-            super.setColumn((<QueryGridColumnHeader><any>this.cell).column = column);
+        setColumn(column: QueryGridColumn, isLastPinned: boolean) {
+            super.setColumn((<QueryGridColumnHeader><any>this.cell).column = column, isLastPinned);
         }
     }
 
@@ -1015,8 +1285,8 @@
             return this._hasPendingUpdate;
         }
 
-        setItem(item: Vidyano.QueryResultItem, column: Vidyano.QueryColumn): boolean {
-            this.setColumn(column);
+        setItem(item: Vidyano.QueryResultItem, column: QueryGridColumn, isLastPinned: boolean): boolean {
+            this.setColumn(column, isLastPinned);
             this._item = item;
 
             return !(this._hasPendingUpdate = !this._render());
@@ -1129,7 +1399,7 @@
                 if (textAlign != this._textAlign.currentValue)
                     this.cell.style.textAlign = this._textAlign.currentValue = textAlign || this._textAlign.originalValue;
 
-                var extraClass = this.column.getTypeHint("extraclass", undefined, value && value.typeHints, true);
+                var extraClass = this.column.column.getTypeHint("extraclass", undefined, value && value.typeHints, true);
                 if (extraClass != this._extraClass) {
                     if (!StringEx.isNullOrEmpty(this._extraClass))
                         this._extraClass.split(' ').forEach(cls => this.cell.classList.remove(cls));
@@ -1156,13 +1426,13 @@
         }
 
         protected _getTypeHint(name: string, defaultValue?: string): string {
-            return this.column.getTypeHint(name, defaultValue, this._typeHints, true);
+            return this.column.column.getTypeHint(name, defaultValue, this._typeHints, true);
         }
     }
 
     export class QueryGridTableColumnRemainder extends QueryGridTableColumn {
         constructor() {
-            super("vi-query-grid-table-column-remainder");
+            super("vi-query-grid-table-column-remainder", document.createElement("div"));
         }
     }
 
@@ -1232,10 +1502,7 @@
         }
     })
     export class QueryGridColumnHeader extends WebComponent {
-        //private _resizeX: number;
-        //private _resizeStartWidth: number;
-        //private _resizeMinWidth: number;
-        private _column: QueryColumn;
+        private _column: QueryGridColumn;
         private _columnObserver: Vidyano.Common.SubjectDisposer;
         private _sortingIcon: Resource;
         private _labelTextNode: Text;
@@ -1247,11 +1514,11 @@
             Polymer.dom(this).appendChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilterProxy());
         }
 
-        get column(): QueryColumn {
+        get column(): QueryGridColumn {
             return this._column;
         }
 
-        set column(column: QueryColumn) {
+        set column(column: QueryGridColumn) {
             this._filter.column = column;
 
             if (this._column === column)
@@ -1263,7 +1530,7 @@
             }
 
             if (this._column = column) {
-                this._columnObserver = this.column.propertyChanged.attach(this._columnPropertyChanged.bind(this));
+                this._columnObserver = this.column.column.propertyChanged.attach(this._columnPropertyChanged.bind(this));
 
                 this._updateLabel(column.label);
                 this._updateSortingIcon(this.column.sortDirection);
@@ -1285,7 +1552,7 @@
         }
 
         private _sort(e: Event) {
-            if (this._column.disableSort)
+            if (!this._column.canSort)
                 return;
 
             var multiSort = (<any>e).detail.sourceEvent.ctrlKey;
@@ -1305,7 +1572,7 @@
                 }
             }
 
-            this._column.sort(newSortingDirection, multiSort);
+            this._column.column.sort(newSortingDirection, multiSort);
             this._column.query.search().catch(() => { });
         }
 
@@ -1337,55 +1604,29 @@
                 this._sortingIcon.setAttribute("hidden", "");
         }
 
-        //private _resizeStart(e: MouseEvent) {
-        //    this._resizeX = e.clientX;
-        //    this._resizeStartWidth = this.gridColumn.currentWidth;
-        //    this._resizeMinWidth = this.asElement.offsetHeight;
+        private _resizeTrack(e: TrackEvent, detail: PolymerTrackDetail) {
+            if (detail.state == "track") {
+                requestAnimationFrame(() => {
+                    this.style.width = `${this.column.calculatedWidth + detail.dx}px`;
+                });
+            }
+            else if (detail.state == "end") {
+                this.style.width = "";
+                this.column.width = `${this.column.calculatedWidth += detail.dx}px`;
 
-        //    var overlay = document.createElement("div");
-        //    overlay.style.position = "fixed";
-        //    overlay.style.zIndex = "100000";
-        //    overlay.style.top = "0";
-        //    overlay.style.left = "0";
-        //    overlay.style.bottom = "0";
-        //    overlay.style.right = "0";
-        //    overlay.style.backgroundColor = "rgba(0,0,0,0.001)";
-        //    overlay.style.cursor = "col-resize";
-        //    overlay.addEventListener("mousemove", this._resizeMove.bind(this));
-        //    overlay.addEventListener("touchmove", this._resizeMove.bind(this));
-        //    overlay.addEventListener("mouseup", this._resizeEnd.bind(this));
-        //    overlay.addEventListener("touchend", this._resizeEnd.bind(this));
-        //    overlay.addEventListener("touchcancel", this._resizeEnd.bind(this));
-        //    document.body.appendChild(overlay);
-
-        //    e.stopPropagation();
-        //}
-
-        //private _resizeMove(e: MouseEvent) {
-        //    var newWidth = this._resizeStartWidth + e.clientX - this._resizeX;
-        //    this.gridColumn.currentWidth = newWidth >= this._resizeMinWidth ? newWidth : this._resizeMinWidth;
-        //    this.fire("column-width-updated", { column: this.gridColumn });
-
-        //    e.stopPropagation();
-        //}
-
-        //private _resizeEnd(e: Event) {
-        //    (<HTMLElement>e.target).parentElement.removeChild(<HTMLElement>e.target);
-        //    this.gridColumn.currentWidth = this.asElement.offsetWidth;
-        //    this.fire("column-width-updated", { column: this.gridColumn });
-
-        //    e.stopPropagation();
-        //}
+                this.fire("column-widths-updated", { column: this.column });
+            }
+        }
     }
 
     export class QueryGridColumnFilterProxyBase extends WebComponent {
         private _label: string;
         private _labelTextNode: Text;
-        column: QueryColumn;
+        column: QueryGridColumn;
         inversed: boolean;
         filtered: boolean;
 
-        protected _updateFiltered(column?: QueryColumn) {
+        protected _updateFiltered(column?: QueryGridColumn) {
             var filtered = this.filtered;
             if (this.filtered = !!this.column && ((!!this.column.includes && this.column.includes.length > 0) || (!!this.column.excludes && this.column.excludes.length > 0))) {
                 var objects = [];
@@ -1564,9 +1805,9 @@
             if (!this.column.canFilter)
                 return;
 
-            if (!this.column.distincts || this.column.distincts.isDirty) {
+            if (!this.column.column.distincts || this.column.distincts.isDirty) {
                 this._setLoading(true);
-                this.column.refreshDistincts().then(distincts => {
+                this.column.column.refreshDistincts().then(distincts => {
                     if (!this.column.includes)
                         this.column.includes = [];
                     if (!this.column.excludes)
@@ -1618,7 +1859,7 @@
 
             this._setLoading(true);
             this.column.query.search().then(() => {
-                return this.column.refreshDistincts().then(distincts => {
+                return this.column.column.refreshDistincts().then(distincts => {
                     this._setLoading(false);
                     this._renderDistincts(distinctsDiv);
                 });

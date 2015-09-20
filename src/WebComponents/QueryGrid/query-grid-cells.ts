@@ -85,7 +85,10 @@
                 if (!this._icon)
                     this._icon = <HTMLElement>Polymer.dom(this).appendChild(Icon.Load("Selected"));
 
-                this.classList.toggle("unchecked", !value.getValue());
+                if (!value.getValue())
+                    this.classList.add("unchecked");
+                else
+                    this.classList.remove("unchecked");
             }
         }
     }

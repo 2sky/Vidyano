@@ -94,6 +94,7 @@ interface TapEvent extends CustomEvent {
 
 interface PolymerGestures {
     add: (node: HTMLElement, eventName: string, handler: Function) => void;
+    remove: (node: HTMLElement, eventName: string, handler: Function) => void;
 }
 
 declare var Polymer: {

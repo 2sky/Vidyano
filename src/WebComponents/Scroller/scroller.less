@@ -177,27 +177,45 @@ vi-scroller {
         pointer-events: none;
 
         &.top {
-            -moz-transition: top 0.2s ease-out;
-            -o-transition: top 0.2s ease-out;
-            -webkit-transition: top 0.2s ease-out;
-            transition: top 0.2s ease-out;
-            top: (-@h2 * 1.5);
+            -moz-transition: transform 0.2s ease-out;
+            -o-transition: transform 0.2s ease-out;
+            -webkit-transition: transform 0.2s ease-out;
+            transition: transform 0.2s ease-out;
+            top: 0;
+            -moz-transform: translateY(-@h2 * 1.5);
+            -ms-transform: translateY(-@h2 * 1.5);
+            -o-transform: translateY(-@h2 * 1.5);
+            -webkit-transform: translateY(-@h2 * 1.5);
+            transform: translateY(-@h2 * 1.5);
         }
 
         &.bottom {
-            -moz-transition: bottom 0.2s ease-out;
-            -o-transition: bottom 0.2s ease-out;
-            -webkit-transition: bottom 0.2s ease-out;
-            transition: bottom 0.2s ease-out;
-            bottom: (-@h2 * 1.5);
+            -moz-transition: transform 0.2s ease-out;
+            -o-transition: transform 0.2s ease-out;
+            -webkit-transition: transform 0.2s ease-out;
+            transition: transform 0.2s ease-out;
+            bottom: 0;
+            -moz-transform: translateY(@h2 * 1.5);
+            -ms-transform: translateY(@h2 * 1.5);
+            -o-transform: translateY(@h2 * 1.5);
+            -webkit-transform: translateY(@h2 * 1.5);
+            transform: translateY(@h2 * 1.5);
         }
     }
 
     &[scroll-top-shadow] > .scroll-shadow.top {
-        top: -@h2;
+        -moz-transform: translateY(-@h2);
+        -ms-transform: translateY(-@h2);
+        -o-transform: translateY(-@h2);
+        -webkit-transform: translateY(-@h2);
+        transform: translateY(-@h2);
     }
 
     &[scroll-bottom-shadow] > .scroll-shadow.bottom {
-        bottom: -@h2;
+        -moz-transform: translateY(@h2);
+        -ms-transform: translateY(@h2);
+        -o-transform: translateY(@h2);
+        -webkit-transform: translateY(@h2);
+        transform: translateY(@h2);
     }
 }

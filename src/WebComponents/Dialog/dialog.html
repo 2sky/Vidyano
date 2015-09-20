@@ -1,18 +1,13 @@
-<dom-module id="vi-dialog">
-    <template>
-        <div id="overlay"></div>
-        <div id="dialogHost" class="horizontal center-justified center layout">
-            <div id="dialog">
-                <div class="header" on-track="_track">
-                    <content select="header"></content>
-                </div>
-                <div class="content">
-                    <content select=":not(footer):not(header)"></content>
-                </div>
-                <content select="footer"></content>
-            </div>
+<dom-module id="vi-dialog-host">
+    <!--<template>
+        <div class="header" on-track="_track">
+            <content select="header"></content>
         </div>
-    </template>
+        <div class="content">
+            <content select=":not(footer):not(header)"></content>
+        </div>
+        <content select="footer"></content>
+    </template>-->
 </dom-module>
 
 <link rel="stylesheet" href="dialog.css" />

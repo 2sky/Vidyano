@@ -44,7 +44,7 @@
                 <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
                 <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
                 <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
-                <content select="[dialog]"></content>
+                <content select="vi-dialog-host"></content>
             </div>
         </template>
         <vi-app-route class="fit" route="SignIn(/:returnUrl)">

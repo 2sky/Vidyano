@@ -368,17 +368,24 @@
             }
         }
 
-        showMessageDialog(options: MessageDialogOptions): Promise<number> {
-            var messageDialog = new Vidyano.WebComponents.MessageDialog();
-            Polymer.dom(this).appendChild(messageDialog);
+        showDialog(dialog: Dialog, options?: DialogOptions): Promise<any> {
+            var dialogHost = new Vidyano.WebComponents.DialogHost(dialog);
 
-            return messageDialog.show(options).then(result => {
-                Polymer.dom(this).removeChild(messageDialog);
+            Polymer.dom(this).appendChild(dialogHost);
+
+            return dialogHost.show(options).then(result => {
+                Polymer.dom(this).removeChild(dialogHost);
+
                 return result;
-            }, e => {
-                Polymer.dom(this).removeChild(messageDialog);
-                throw e;
+            }).catch(e => {
+                Polymer.dom(this).removeChild(dialogHost);
+                if(e)
+                    throw e;
             });
+        }
+
+        showMessageDialog(options: MessageDialogOptions): Promise<any> {
+            return this.showDialog(new Vidyano.WebComponents.MessageDialog(), options);
         }
 
         private _computeService(uri: string, user: string): Vidyano.Service {
@@ -565,22 +572,20 @@
 
         onAction(args: ExecuteActionArgs): Promise<any> {
             if (args.action == "AddReference") {
-                var dialog = new Vidyano.WebComponents.SelectReferenceDialog();
-                dialog.query = args.query.clone(true);
-                dialog.query.search();
+                this.app.importHref(this.app.resolveUrl("../SelectReferenceDialog/select-reference-dialog.html"), () => {
+                    var query = args.query.clone(true);
+                    query.search();
 
-                Polymer.dom(this.app).appendChild(dialog);
+                    this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then((result: QueryResultItem[]) => {
+                        if (result && result.length > 0) {
+                            args.selectedItems = result;
+                            return args.executeServiceRequest().then(result => {
+                                args.query.search();
 
-                return dialog.show().then((result: QueryResultItem[]) => {
-                    Polymer.dom(this.app).removeChild(dialog);
-
-                    if (result && result.length > 0) {
-                        args.selectedItems = result;
-                        return args.executeServiceRequest();
-                    }
-                }).catch(e => {
-                    Polymer.dom(this.app).removeChild(dialog);
-                    return null;
+                                return result;
+                            });
+                        }
+                    });
                 });
             }
 
@@ -592,18 +597,7 @@
                 var po = <Vidyano.PersistentObject>obj;
 
                 if (po.stateBehavior.indexOf("OpenAsDialog") >= 0) {
-                    var dialog = new Vidyano.WebComponents.PersistentObjectDialog();
-                    Polymer.dom(this.app).appendChild(dialog);
-                    Polymer.dom(this.app).flush();
-
-                    return dialog.show(po).then(result => {
-                        Polymer.dom(this.app).removeChild(dialog);
-                        return result;
-                    }, e => {
-                        Polymer.dom(this.app).removeChild(dialog);
-                        throw e;
-                    });
-
+                    this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po));
                     return;
                 }
 

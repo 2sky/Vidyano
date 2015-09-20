@@ -1,7 +1,7 @@
 ﻿module Vidyano.WebComponents {
     var _groups: Sortable[] = [];
 
-    export class Sortable extends WebComponent {
+    export abstract class Sortable extends WebComponent {
         private _sortable: ISortable;
         group: string;
         filter: string;
@@ -39,6 +39,12 @@
             this._sortable.option("filter", this.filter);
         }
 
+        protected _dragStart() {
+        }
+
+        protected _dragEnd() {
+        }
+
         private _create() {
             this._destroy();
 
@@ -50,11 +56,15 @@
                     this._setIsDragging(true);
                     if (this.group)
                         _groups.filter(s => s.group == this.group).forEach(s => s._setIsGroupDragging(true));
+
+                    this._dragStart();
                 },
                 onEnd: () => {
                     this._setIsDragging(false);
                     if (this.group)
                         _groups.filter(s => s.group == this.group).forEach(s => s._setIsGroupDragging(false));
+
+                    this._dragEnd();
                 }
             });
         }
@@ -67,10 +77,14 @@
         }
 
         private _enabledChanged(enabled: boolean) {
-            this._sortable.option("disabled", !enabled);
+            if(this._sortable)
+                this._sortable.option("disabled", !enabled);
         }
 
         static register(info: WebComponentRegistrationInfo = {}): any {
+            if (typeof info == "function")
+                return Sortable.register({})(info);
+
             return (obj: Function) => {
                 info.properties = info.properties || {};
 

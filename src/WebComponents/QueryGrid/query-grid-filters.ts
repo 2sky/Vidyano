@@ -118,10 +118,10 @@
             action.skipOpen = true;
 
             action.execute().then(po => {
-                var dialog = <PersistentObjectDialog><any>this.$["dialog"];
-                dialog.show(po, () => {
+                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, true)).then(po => {
                     po.attributesByName["Columns"].setValue(this._getColumnsFilterData(this.query));
                     filterAttr.objects.push(po);
+
                     return this.query.filters.save().then(result => {
                         this._setFilters(this._computeFilters(this.query.filters));
                         this._setCurrentFilter(po.getAttributeValue("Name"));
@@ -174,10 +174,9 @@
 
             var isCurrentFilter = po.getAttributeValue("Name") === this.currentFilter && this.currentFilter != null;
 
-            var dialog = <PersistentObjectDialog><any>this.$["dialog"];
             po.breadcrumb = po.actions["Edit"].displayName + " '" + name + "'";
 
-            dialog.show(po, () => {
+            this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po)).then(po => {
                 if (isCurrentFilter)
                     po.attributesByName["Columns"].setValue(this._getColumnsFilterData(this.query));
 

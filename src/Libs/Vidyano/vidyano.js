@@ -2746,14 +2746,14 @@ var Vidyano;
             _super.call(this, service);
             this.query = query;
             this.displayAttribute = col.displayAttribute;
-            this.disableSort = col.disableSort;
-            this.canFilter = !!col.canFilter;
+            this._canSort = !col.disableSort;
+            this._canFilter = !!col.canFilter;
             this.includes = col.includes;
             this.excludes = col.excludes;
-            this.label = col.label;
-            this.name = col.name;
+            this._label = col.label;
+            this._name = col.name;
             this.offset = col.offset;
-            this.type = col.type;
+            this._type = col.type;
             this.isPinned = !!col.isPinned;
             this.isHidden = !!col.isHidden;
             this.width = col.width;
@@ -2761,6 +2761,41 @@ var Vidyano;
             this._sortDirection = SortDirection.None;
             query.propertyChanged.attach(this._queryPropertyChanged.bind(this));
         }
+        Object.defineProperty(QueryColumn.prototype, "name", {
+            get: function () {
+                return this._name;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(QueryColumn.prototype, "type", {
+            get: function () {
+                return this._type;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(QueryColumn.prototype, "label", {
+            get: function () {
+                return this._label;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(QueryColumn.prototype, "canFilter", {
+            get: function () {
+                return this._canFilter;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(QueryColumn.prototype, "canSort", {
+            get: function () {
+                return this._canFilter;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(QueryColumn.prototype, "isSorting", {
             get: function () {
                 return this._sortDirection !== SortDirection.None;
@@ -2771,6 +2806,13 @@ var Vidyano;
         Object.defineProperty(QueryColumn.prototype, "sortDirection", {
             get: function () {
                 return this._sortDirection;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(QueryColumn.prototype, "distincts", {
+            get: function () {
+                return this._distincts;
             },
             enumerable: true,
             configurable: true
@@ -2794,7 +2836,7 @@ var Vidyano;
                     if (col.distincts)
                         col.distincts.isDirty = true;
                 });
-                return _this.distincts = {
+                return _this._distincts = {
                     matching: result.attributesByName["MatchingDistincts"].options,
                     remaining: result.attributesByName["RemainingDistincts"].options,
                     isDirty: false
@@ -3559,6 +3601,18 @@ var Vidyano;
             enumerable: true,
             configurable: true
         });
+        Application.prototype.saveUserSettings = function () {
+            var _this = this;
+            if (this.userSettingsId != "00000000-0000-0000-0000-000000000000") {
+                return this.service.getPersistentObject(null, this.userSettingsId, null).then(function (po) {
+                    po.attributesByName["Settings"].value = JSON.stringify(_this.userSettings);
+                    return po.save().then(function () { return _this.userSettings; });
+                });
+            }
+            else
+                localStorage["UserSettings"] = JSON.stringify(this.userSettings);
+            return Promise.resolve(this.userSettings);
+        };
         Application.prototype._updateSession = function (session) {
             var oldSession = this._session;
             if (!session) {

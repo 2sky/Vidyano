@@ -283,10 +283,12 @@ var Vidyano;
                             var _this = this;
                             if (sourceObj == null)
                                 return;
-                            if (!this._forwardObservers)
-                                this._forwardObservers = [];
-                            while (this._forwardObservers.length > 0)
-                                this._forwardObservers.pop()();
+                            var forwardObserversCollectionName = "_forwardObservers_" + source.key();
+                            var forwardObservers = this[forwardObserversCollectionName] || (this[forwardObserversCollectionName] = []);
+                            if (!forwardObservers)
+                                forwardObservers = [];
+                            while (forwardObservers.length > 0)
+                                forwardObservers.pop()();
                             if (!attached)
                                 return;
                             properties.forEach(function (p) {
@@ -295,7 +297,7 @@ var Vidyano;
                                 var observer = functionIndex > 0 ? _this[p.substr(0, functionIndex)] : null;
                                 if (observer)
                                     observer = observer.bind(_this);
-                                _this._forwardObservers.push(_this._forwardObservable(sourceObj, path, source.key(), observer));
+                                forwardObservers.push(_this._forwardObservable(sourceObj, path, source.key(), observer));
                                 if (observer && sourceObj && attached) {
                                     var valuePath = path.slice().split(".").reverse();
                                     var value = sourceObj;

@@ -1,4 +1,5 @@
 vi-query-grid-column-header {
+  position: relative;
   display: block;
   box-sizing: border-box;
   min-width: 30px;
@@ -86,4 +87,25 @@ vi-query-grid-column-header > div:first-child > vi-icon {
   top: 0;
   bottom: 0;
   margin-left: 18px;
+}
+vi-query-grid-column-header .resizer {
+  width: 0.5em;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: transparent;
+  z-index: 2;
+  cursor: ew-resize;
+  -webkit-transform: translate3d(0.25em, 0, 0);
+  transform: translate3d(0.25em, 0, 0);
+}
+vi-query-grid-column-header .resizer:hover::after {
+  position: absolute;
+  left: 3px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #888;
+  content: " ";
 }

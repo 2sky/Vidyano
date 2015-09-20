@@ -20,10 +20,7 @@ module Vidyano.WebComponents.Attributes {
             this.app.service.getQuery(this.attribute.getTypeHint("IncludeGroups") === "True" ? "98b12f32-3f2d-4f54-b963-cb9206f74355" : "273a8302-ddc8-43db-a7f6-c3c28fc8f593", true).then(query => {
                 query.maxSelectedItems = 1;
 
-                var dialog = <SelectReferenceDialog>this.$$("#browseReferenceDialog");
-                dialog.query = query;
-
-                dialog.show().then((result: QueryResultItem[]) => {
+                this.app.showDialog(new SelectReferenceDialog(query)).then((result: QueryResultItem[]) => {
                     if (!result)
                         return;
 

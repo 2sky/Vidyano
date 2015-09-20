@@ -97,7 +97,10 @@ var Vidyano;
                         this._textNode.nodeValue = "";
                     if (!this._icon)
                         this._icon = Polymer.dom(this).appendChild(WebComponents.Icon.Load("Selected"));
-                    this.classList.toggle("unchecked", !value.getValue());
+                    if (!value.getValue())
+                        this.classList.add("unchecked");
+                    else
+                        this.classList.remove("unchecked");
                 }
             };
             QueryGridCellBoolean = __decorate([

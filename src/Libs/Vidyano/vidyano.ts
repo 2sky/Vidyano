@@ -2927,7 +2927,7 @@ module Vidyano {
             }
             else
                 this._setTotalItems(result.items.length);
-
+            
             this.hasSearched = true;
             this._updateColumns(result.columns);
             this._updateItems(Enumerable.from(result.items).select(item => this.service.hooks.onConstructQueryResultItem(this.service, item, this)).toArray());
@@ -3168,16 +3168,16 @@ module Vidyano {
     export class QueryColumn extends ServiceObject {
         private displayAttribute: string;
         private _sortDirection: SortDirection;
+        private _distincts: QueryColumnDistincts;
+        private _canSort: boolean;
+        private _canFilter: boolean;
+        private _name: string;
+        private _type: string;
+        private _label: string;
 
-        disableSort: boolean;
-        canFilter: boolean;
         includes: string[];
         excludes: string[];
-        distincts: QueryColumnDistincts;
-        label: string;
-        name: string;
         offset: number;
-        type: string;
         isPinned: boolean;
         isHidden: boolean;
         width: string;
@@ -3187,14 +3187,14 @@ module Vidyano {
             super(service);
 
             this.displayAttribute = col.displayAttribute;
-            this.disableSort = col.disableSort;
-            this.canFilter = !!col.canFilter;
+            this._canSort = !col.disableSort;
+            this._canFilter = !!col.canFilter;
             this.includes = col.includes;
             this.excludes = col.excludes;
-            this.label = col.label;
-            this.name = col.name;
+            this._label = col.label;
+            this._name = col.name;
             this.offset = col.offset;
-            this.type = col.type;
+            this._type = col.type;
             this.isPinned = !!col.isPinned;
             this.isHidden = !!col.isHidden;
             this.width = col.width;
@@ -3204,12 +3204,36 @@ module Vidyano {
             query.propertyChanged.attach(this._queryPropertyChanged.bind(this));
         }
 
+        get name(): string {
+            return this._name;
+        }
+
+        get type(): string {
+            return this._type;
+        }
+
+        get label(): string {
+            return this._label;
+        }
+
+        get canFilter(): boolean {
+            return this._canFilter;
+        }
+
+        get canSort(): boolean {
+            return this._canFilter;
+        }
+
         get isSorting(): boolean {
             return this._sortDirection !== SortDirection.None;
         }
 
         get sortDirection(): SortDirection {
             return this._sortDirection;
+        }
+
+        get distincts(): QueryColumnDistincts {
+            return this._distincts;
         }
 
         private _setSortDirection(direction: SortDirection) {
@@ -3235,7 +3259,7 @@ module Vidyano {
                         col.distincts.isDirty = true;
                 });
 
-                return this.distincts = {
+                return this._distincts = {
                     matching: <string[]>result.attributesByName["MatchingDistincts"].options,
                     remaining: <string[]>result.attributesByName["RemainingDistincts"].options,
                     isDirty: false
@@ -3979,6 +4003,19 @@ module Vidyano {
 
         get session(): Vidyano.PersistentObject {
             return this._session;
+        }
+
+        saveUserSettings(): Promise<any> {
+            if (this.userSettingsId != "00000000-0000-0000-0000-000000000000") {
+                return this.service.getPersistentObject(null, this.userSettingsId, null).then(po => {
+                    po.attributesByName["Settings"].value = JSON.stringify(this.userSettings);
+                    return po.save().then(() => this.userSettings);
+                });
+            }
+            else
+                localStorage["UserSettings"] = JSON.stringify(this.userSettings);
+
+            return Promise.resolve(this.userSettings);
         }
 
         _updateSession(session: any) {

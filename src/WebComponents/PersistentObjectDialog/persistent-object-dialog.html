@@ -2,19 +2,19 @@
 
 <dom-module id="vi-persistent-object-dialog">
     <template>
-        <vi-dialog id="dialog">
-            <header class="horizontal layout">
-                <h4 class="flex">{{persistentObject.breadcrumb}}</h4>
-            </header>
+        <header class="horizontal layout">
+            <h4 class="flex">{{persistentObject.breadcrumb}}</h4>
+        </header>
+        <main>
             <vi-scroller no-horizontal>
                 <vi-notification service-object="{{persistentObject}}"></vi-notification>
                 <vi-persistent-object-tab-presenter tab="{{tab}}"></vi-persistent-object-tab-presenter>
             </vi-scroller>
-            <footer class="horizontal layout end-justified">
-                <button is="vi-button" on-tap="_save" action-type="Default" label="{{translations.Save}}"></button>
-                <button is="vi-button" inverse on-tap="_cancel" label="{{translations.Cancel}}"></button>
-            </footer>
-        </vi-dialog>
+        </main>
+        <footer class="horizontal layout end-justified">
+            <button is="vi-button" on-tap="_save" action-type="Default" label="{{translations.Save}}"></button>
+            <button is="vi-button" inverse on-tap="_cancel" label="{{translations.Cancel}}"></button>
+        </footer>
     </template>
 </dom-module>
 

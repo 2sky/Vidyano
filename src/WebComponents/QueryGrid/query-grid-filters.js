@@ -80,8 +80,7 @@ var Vidyano;
                 var action = filterAttr.details.actions["New"];
                 action.skipOpen = true;
                 action.execute().then(function (po) {
-                    var dialog = _this.$["dialog"];
-                    dialog.show(po, function () {
+                    _this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, true)).then(function (po) {
                         po.attributesByName["Columns"].setValue(_this._getColumnsFilterData(_this.query));
                         filterAttr.objects.push(po);
                         return _this.query.filters.save().then(function (result) {
@@ -124,9 +123,8 @@ var Vidyano;
                     return;
                 this.query.filters.beginEdit();
                 var isCurrentFilter = po.getAttributeValue("Name") === this.currentFilter && this.currentFilter != null;
-                var dialog = this.$["dialog"];
                 po.breadcrumb = po.actions["Edit"].displayName + " '" + name + "'";
-                dialog.show(po, function () {
+                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po)).then(function (po) {
                     if (isCurrentFilter)
                         po.attributesByName["Columns"].setValue(_this._getColumnsFilterData(_this.query));
                     return _this.query.filters.save().then(function (result) {

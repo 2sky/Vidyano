@@ -1,6 +1,5 @@
 module Vidyano.WebComponents {
     export interface DialogOptions {
-        autoSize?: boolean;
     }
 
     export class DialogInstance {
@@ -16,68 +15,97 @@ module Vidyano.WebComponents {
         }
     }
 
+    export abstract class Dialog extends WebComponent {
+        private _instance: DialogInstance;
+
+        private _show(e: CustomEvent, details: DialogInstance) {
+            this._instance = details;
+
+            this.show(details.options);
+        }
+
+        get instance(): DialogInstance {
+            return this._instance;
+        }
+
+        protected show(options: DialogOptions) {
+        }
+
+        protected close(result?: any) {
+            this._instance.resolve(result);
+        }
+
+        protected cancel(result?: any) {
+            if (result instanceof Event)
+                result = undefined;
+
+            this._instance.reject(result);
+        }
+
+        static register(info: WebComponentRegistrationInfo = {}): any {
+            if (typeof info == "function")
+                return Dialog.register({})(info);
+
+            return (obj: Function) => {
+                info.properties = info.properties || {};
+
+                info.properties["dialog"] = {
+                    type: Boolean,
+                    readOnly: true,
+                    reflectToAttribute: true,
+                    value: true
+                };
+
+                info.listeners = info.listeners || {};
+                info.listeners["show"] = "_show";
+
+                info.keybindings = info.keybindings || {};
+                if(!info.keybindings["esc"]) {
+                    info.keybindings["esc"] = {
+                        listener: "cancel",
+                        priority: Number.MAX_VALUE
+                    };
+                }
+
+                return WebComponent.register(obj, info);
+            };
+        }
+    }
+
     @WebComponent.register({
         properties: {
-            shown:
-            {
+            "shown": {
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true
             },
-            autoSize:
-            {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            dragging: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            _translate: {
+            "_translate": {
                 type: Object,
                 readOnly: true,
                 observer: "_translateChanged"
             }
         }
     })
-    export class Dialog extends WebComponent {
+    export class DialogHost extends WebComponent {
         private _translate: { x: number; y: number };
-        private _instance: DialogInstance;
+        shown: boolean;
+
         private _setShown: (shown: boolean) => void;
-        private _setAutoSize: (autoSize: boolean) => void;
-        private _setDragging: (dragging: boolean) => void;
         private _set_translate: (translate: { x: number; y: number }) => void;
 
-        show(options: DialogOptions = {}): DialogInstance {
-            var resolve: Function;
-            var reject: Function;
-            var promise = new Promise((_resolve, _reject) => {
-                resolve = _resolve;
-                reject = _reject;
+        constructor(private _dialog: Dialog) {
+            super();
 
-                this._setAutoSize(options.autoSize);
-                this._setShown(true);
-            }).then(result => {
-                this._setShown(false);
-                return result;
-            }).catch(e => {
-                this._setShown(false);
-                reject(e);
-            });
-
-            this.set("_instance", new DialogInstance(options, promise, resolve, reject));
-            return this._instance;
+            Polymer.dom(this).appendChild(_dialog);
         }
 
-        private _close() {
-            this._setShown(false);
-
-            this._instance.reject();
+        private _translateChanged() {
+            this._dialog.style.webkitTransform = this._dialog.style.transform = "translate(" + this._translate.x + "px, " + this._translate.y + "px)";
         }
 
-        private _track(e: CustomEvent, detail: PolymerTrackDetail) {
+        private _track(e: PolymerTrackEvent) {
+            var detail = <PolymerTrackDetail>e.detail;
+
             if (detail.state == "track") {
                 this._set_translate({
                     x: this._translate.x + detail.ddx,
@@ -88,15 +116,52 @@ module Vidyano.WebComponents {
                 if (!this._translate)
                     this._set_translate({ x: 0, y: 0 });
 
-                this._setDragging(true);
+                this._dialog.setAttribute("dragging", "");
             }
             else if (detail.state == "end")
-                this._setDragging(false);
+                this._dialog.removeAttribute("dragging");
         }
 
-        private _translateChanged() {
-            var dialog = this.$["dialog"];
-            dialog.style.webkitTransform = dialog.style.transform = "translate(" + this._translate.x + "px, " + this._translate.y + "px)";
+        show(options: DialogOptions = {}): Promise<any> {
+            var header = <HTMLElement>this.querySelector("[dialog] > header");
+            if (header) {
+                var trackHandler: Function;
+                Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));
+            }
+
+            var resolve: Function;
+            var reject: Function;
+            var promise = new Promise((_resolve, _reject) => {
+                resolve = _resolve;
+                reject = _reject;
+
+                this._setShown(true);
+            }).then(result => {
+                if (trackHandler)
+                    Polymer.Gestures.remove(header, "track", trackHandler);
+
+                this._setShown(false);
+
+                Polymer.dom(this).removeChild(this._dialog);
+                this._dialog = null;
+
+                return result;
+            }).catch(e => {
+                if (trackHandler)
+                    Polymer.Gestures.remove(header, "track", trackHandler);
+
+                this._setShown(false);
+
+                Polymer.dom(this).removeChild(this._dialog);
+                this._dialog = null;
+
+                if (e)
+                    throw e;
+            });
+
+            this._dialog.fire("show", new DialogInstance(options, promise, resolve, reject), { bubbles: false });
+
+            return promise;
         }
     }
 }

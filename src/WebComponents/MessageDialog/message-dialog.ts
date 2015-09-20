@@ -10,45 +10,32 @@
         html?: boolean;
     }
 
-    @WebComponent.register({
+    @Dialog.register({
         properties: {
             options: {
                 type: Object,
                 readOnly: true
             }
         },
-        hostAttributes: {
-            "dialog": ""
-        },
         keybindings: {
             "esc": {
-                listener: "_close",
+                listener: "cancel",
                 priority: Number.MAX_VALUE
             }
         }
     })
-    export class MessageDialog extends WebComponent {
-        private _dialog: WebComponents.DialogInstance;
+    export class MessageDialog extends Dialog {
         options: MessageDialogOptions;
 
         private _setOptions: (options: MessageDialogOptions) => void;
 
-        show(options: MessageDialogOptions): Promise<any> {
+        protected show(options: MessageDialogOptions) {
             this._setOptions(options);
 
             if (options.html)
                 this.$["pre"].innerHTML = options.message;
             else
                 this.$["pre"].textContent = options.message;
-
-            var dialog = <WebComponents.Dialog><any>this.$["dialog"];
-            this._dialog = dialog.show(options);
-
-            return this._dialog.result;
-        }
-
-        private _close() {
-            this._dialog.reject();
         }
 
         private _hasHeaderIcon(options: MessageDialogOptions): boolean {
@@ -63,7 +50,7 @@
         }
 
         private _onSelectAction(e: TapEvent) {
-            this._dialog.resolve(e.model.index);
+            this.instance.resolve(e.model.index);
 
             e.stopPropagation();
         }

@@ -3,6 +3,7 @@
 <link rel="import" href="../InputSearch/input-search.html" />
 <link rel="import" href="../Style/style.html" />
 <link rel="import" href="../Sortable/sortable.html" />
+<link rel="import" href="query-grid-configure-dialog.html" />
 <link rel="import" href="query-grid-filters.html" />
 
 <dom-module id="vi-query-grid">
@@ -13,8 +14,9 @@
             <header>
                 <vi-query-grid-header query="{{query}}" can-select-all="{{canSelectAll}}" can-filter="{{canFilter}}"></vi-query-grid-header>
                 <div id="dataHeaderHost">
-                    <vi-popup-menu context-menu-only>
-                        <vi-popup-menu-item icon="Design" label="Design-mode" on-tap="_toggleDesignMode"></vi-popup-menu-item>
+                    <vi-popup-menu id="columnMenu" context-menu-only>
+                        <vi-popup-menu-item id="columnMenuTogglePin" icon="Pin" on-tap="_togglePin"></vi-popup-menu-item>
+                        <vi-popup-menu-item id="columnMenuConfigure" label="{{translations.Manage}}" icon="Configure" on-tap="_configureColumns"></vi-popup-menu-item>
                     </vi-popup-menu>
                 </div>
             </header>
@@ -50,7 +52,7 @@
             <content select="vi-icon"></content>
         </div>
         <content select="vi-query-grid-column-filter-proxy, vi-query-grid-column-filter"></content>
-        <div class="resizer" on-mousedown="_resizeStart" on-touchstart="_resizeStart"></div>
+        <div class="resizer" on-track="_resizeTrack"></div>
     </template>
 </dom-module>
 
