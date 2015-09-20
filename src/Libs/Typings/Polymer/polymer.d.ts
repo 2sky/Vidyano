@@ -40,7 +40,7 @@ interface PolymerDomApi {
     insertBefore(newChild: Node | Vidyano.WebComponents.WebComponent, refChild?: Node | Vidyano.WebComponents.WebComponent): Node;
     removeAttribute(name?: string): void;
     setAttribute(name?: string, value?: string): void;
-    querySelector(selectors: string): Element | Vidyano.WebComponents.WebComponent;
+    querySelector(selectors: string): HTMLElement | Vidyano.WebComponents.WebComponent;
     querySelectorAll(selectors: string): NodeList;
     appendChild(newChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;
     removeChild(oldChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;

@@ -23,6 +23,15 @@ var Vidyano;
             PopupMenu.prototype.popup = function () {
                 return this.$["popup"].popup();
             };
+            PopupMenu.prototype._popupOpening = function () {
+                var children = Enumerable.from(Polymer.dom(this.$["popup"]).querySelector("[content]").children).where(function (c) { return c.tagName === "VI-POPUP-MENU-ITEM" && c.style.display !== "none"; }).toArray();
+                var hasIcons = children.filter(function (c) { return c.hasAttribute("icon"); }).length > 0;
+                var hasSplits = children.filter(function (c) { return c.hasAttribute("split"); }).length > 0;
+                children.forEach(function (c) {
+                    c.toggleAttribute("icon-space", hasIcons && !c.icon);
+                    c.toggleAttribute("split-space", hasSplits && !c.split);
+                });
+            };
             PopupMenu.prototype._hookContextMenu = function (isAttached, contextMenu) {
                 if (isAttached && contextMenu)
                     this.parentElement.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
@@ -110,10 +119,6 @@ var Vidyano;
                     properties: {
                         label: String,
                         icon: String,
-                        iconSpace: {
-                            type: Boolean,
-                            reflectToAttribute: true
-                        },
                         split: {
                             type: Boolean,
                             reflectToAttribute: true

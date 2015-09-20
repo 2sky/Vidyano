@@ -356,12 +356,12 @@ var Vidyano;
                 });
             };
             QueryGrid.prototype._contextmenu = function (e) {
-                if (!this.query || this.query.asLookup || this.asLookup)
+                if (e.which !== 3 || e.shiftKey || e.ctrlKey ||
+                    !this.query || this.query.asLookup || this.asLookup)
                     return true;
                 var src = e.target;
-                while (src && src.tagName !== "TR") {
+                while (src && src.tagName !== "TR")
                     src = src.parentElement;
-                }
                 if (!src)
                     return true;
                 var row = Enumerable.from(this._tableData.rows).firstOrDefault(function (r) { return r.host === src; });

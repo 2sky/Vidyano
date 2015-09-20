@@ -10,9 +10,14 @@
         <vi-size-tracker on-sizechanged="_sizeChanged"></vi-size-tracker>
         <vi-style id="style" key="vi-query-grid"></vi-style>
         <div class="vertical layout fit">
-            <div id="dataHeaderHost">
+            <header>
                 <vi-query-grid-header query="{{query}}" can-select-all="{{canSelectAll}}" can-filter="{{canFilter}}"></vi-query-grid-header>
-            </div>
+                <div id="dataHeaderHost">
+                    <vi-popup-menu context-menu-only>
+                        <vi-popup-menu-item icon="Design" label="Design-mode" on-tap="_toggleDesignMode"></vi-popup-menu-item>
+                    </vi-popup-menu>
+                </div>
+            </header>
             <vi-scroller class="flex" vertical-scroll-offset="{{_verticalScrollOffset}}" horizontal-scroll-offset="{{_horizontalScrollOffset}}">
                 <div id="verticalSpacer">
                     <div id="dataHost"></div>

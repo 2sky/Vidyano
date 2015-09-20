@@ -6,6 +6,7 @@ vi-popup-menu {
 
         [content] {
             background-color: white;
+            padding: 1px;
         }
     }
 
@@ -23,6 +24,7 @@ vi-popup-menu {
 
 vi-popup-menu-item {
     .layout-horizontal();
+    .relative();
     height: @h1;
     line-height: @h1;
     height: @h1;
@@ -32,13 +34,13 @@ vi-popup-menu-item {
         fill: @@color;
     });
 
-     > button {
-         .flex();
-         height: 100%;
-         padding: 0;
-         text-align: left;
+    > button {
+        .flex();
+        height: 100%;
+        padding: 0;
+        text-align: left;
 
-         > vi-icon {
+        > vi-icon {
             width: @h2;
 
             &:not([has-resource]) {
@@ -49,25 +51,60 @@ vi-popup-menu-item {
         > span {
             .flex();
             padding: 0 @h5;
+            margin-right: 2px;
         }
 
         > vi-icon[has-resource] ~ span {
             padding-left: 0;
         }
-     }
+    }
 
-    &[icon-space] > div > span {
-        padding-left: @h2;
+    .icon-spacer {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: @h2;
+        background-color: #fAfAfA;
+    }
+
+    &[icon-space], &[icon] {
+        > .icon-spacer {
+            display: block;
+        }
+
+        > button > span {
+            padding-left: 4px !important;
+        }
+    }
+
+    &[icon-space] {
+        > button {
+             > vi-icon {
+                display: inline-block !important;
+                visibility: hidden !important;
+            }
+        }
+    }
+
+    &[split-space] > button > span {
+        margin-right: @h2;
     }
 
     &[split] {
         > vi-popup {
             [header] {
                 box-sizing: border-box;
-                border-left: 1px solid #ddd;
+                border-left: 1px solid #eee;
                 padding: 0;
                 width: @h2;
-                height: @h2;
+                height: @h1;
+
+                > vi-icon {
+                    width: @h2;
+                    height: @h1;
+                }
             }
         }
     }

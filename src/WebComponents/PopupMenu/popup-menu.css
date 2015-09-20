@@ -3,6 +3,7 @@ vi-popup-menu #popup {
 }
 vi-popup-menu #popup [content] {
   background-color: white;
+  padding: 1px;
 }
 vi-popup-menu[context-menu-only] #popup {
   position: fixed;
@@ -18,6 +19,7 @@ vi-popup-menu-item {
   -ms-flex-direction: row;
   -webkit-flex-direction: row;
   flex-direction: row;
+  position: relative;
   line-height: 40px;
   height: 40px;
   cursor: pointer;
@@ -49,19 +51,45 @@ vi-popup-menu-item > button > span {
   -webkit-flex: 1;
   flex: 1;
   padding: 0 6px;
+  margin-right: 2px;
 }
 vi-popup-menu-item > button > vi-icon[has-resource] ~ span {
   padding-left: 0;
 }
-vi-popup-menu-item[icon-space] > div > span {
-  padding-left: 30px;
+vi-popup-menu-item .icon-spacer {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  background-color: #fAfAfA;
+}
+vi-popup-menu-item[icon-space] > .icon-spacer,
+vi-popup-menu-item[icon] > .icon-spacer {
+  display: block;
+}
+vi-popup-menu-item[icon-space] > button > span,
+vi-popup-menu-item[icon] > button > span {
+  padding-left: 4px !important;
+}
+vi-popup-menu-item[icon-space] > button > vi-icon {
+  display: inline-block !important;
+  visibility: hidden !important;
+}
+vi-popup-menu-item[split-space] > button > span {
+  margin-right: 30px;
 }
 vi-popup-menu-item[split] > vi-popup [header] {
   box-sizing: border-box;
-  border-left: 1px solid #ddd;
+  border-left: 1px solid #eee;
   padding: 0;
   width: 30px;
-  height: 30px;
+  height: 40px;
+}
+vi-popup-menu-item[split] > vi-popup [header] > vi-icon {
+  width: 30px;
+  height: 40px;
 }
 vi-popup-menu-item-separator {
   display: block;

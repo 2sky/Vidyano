@@ -13,33 +13,36 @@ vi-query-grid {
     line-height: @h2;
     overflow: hidden;
 
-    #dataHeaderHost {
-        position: relative;
-        white-space: nowrap;
+    header {
         border-bottom: 1px solid @separatorColor;
-        z-index: 1;
 
-        table {
-            display: inline-table;
-            border-spacing: 0 !important;
-            vertical-align: top;
-            background-color: white;
+        #dataHeaderHost {
+            position: relative;
+            white-space: nowrap;
+            z-index: 1;
 
-            tr {
-                padding: 0 !important;
+            table {
+                display: inline-table;
+                border-spacing: 0 !important;
+                vertical-align: top;
+                background-color: white;
 
-                td {
+                tr {
                     padding: 0 !important;
 
-                    &.pinned {
-                        background-color: white;
-                        position: relative;
-                        z-index: 1;
-                    }
+                    td {
+                        padding: 0 !important;
 
-                    &[is="vi-query-grid-table-header-column"] {
-                        &[name=""], &:not([name]) {
-                            display: none;
+                        &.pinned {
+                            background-color: white;
+                            position: relative;
+                            z-index: 1;
+                        }
+
+                        &[is="vi-query-grid-table-header-column"] {
+                            &[name=""], &:not([name]) {
+                                display: none;
+                            }
                         }
                     }
                 }
@@ -150,6 +153,12 @@ vi-query-grid {
 
                         &[name=""], &:not([name]) {
                             display: none;
+                        }
+
+                        &.pinned {
+                            > * {
+                                border-right: 1px solid @separatorColor;
+                            }
                         }
                     }
 

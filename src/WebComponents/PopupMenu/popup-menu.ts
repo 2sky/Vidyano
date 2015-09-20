@@ -39,7 +39,19 @@ module Vidyano.WebComponents {
         openOnHover: boolean;
 
         popup(): Promise<any> {
-            return (<Popup><any>this.$["popup"]).popup();
+            return (<Popup>this.$["popup"]).popup();
+        }
+
+        private _popupOpening() {
+            var children = Enumerable.from(Polymer.dom(this.$["popup"]).querySelector("[content]").children).where((c: HTMLElement) => c.tagName === "VI-POPUP-MENU-ITEM" && c.style.display !== "none").toArray();
+
+            var hasIcons = children.filter(c => c.hasAttribute("icon")).length > 0;
+            var hasSplits = children.filter(c => c.hasAttribute("split")).length > 0;
+
+            children.forEach((c: PopupMenuItem) => {
+                c.toggleAttribute("icon-space", hasIcons && !c.icon);
+                c.toggleAttribute("split-space", hasSplits && !c.split);
+            });
         }
 
         private _hookContextMenu(isAttached: boolean, contextMenu: boolean) {
@@ -91,10 +103,6 @@ module Vidyano.WebComponents {
         properties: {
             label: String,
             icon: String,
-            iconSpace: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
             split: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -103,6 +111,7 @@ module Vidyano.WebComponents {
     })
     export class PopupMenuItem extends WebComponent {
         label: string;
+        icon: string;
         split: boolean;
 
         attached() {

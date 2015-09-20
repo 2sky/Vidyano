@@ -3,31 +3,33 @@ vi-query-grid {
   line-height: 30px;
   overflow: hidden;
 }
-vi-query-grid #dataHeaderHost {
+vi-query-grid header {
+  border-bottom: 1px solid #eaeaea;
+}
+vi-query-grid header #dataHeaderHost {
   position: relative;
   white-space: nowrap;
-  border-bottom: 1px solid #eaeaea;
   z-index: 1;
 }
-vi-query-grid #dataHeaderHost table {
+vi-query-grid header #dataHeaderHost table {
   display: inline-table;
   border-spacing: 0 !important;
   vertical-align: top;
   background-color: white;
 }
-vi-query-grid #dataHeaderHost table tr {
+vi-query-grid header #dataHeaderHost table tr {
   padding: 0 !important;
 }
-vi-query-grid #dataHeaderHost table tr td {
+vi-query-grid header #dataHeaderHost table tr td {
   padding: 0 !important;
 }
-vi-query-grid #dataHeaderHost table tr td.pinned {
+vi-query-grid header #dataHeaderHost table tr td.pinned {
   background-color: white;
   position: relative;
   z-index: 1;
 }
-vi-query-grid #dataHeaderHost table tr td[is="vi-query-grid-table-header-column"][name=""],
-vi-query-grid #dataHeaderHost table tr td[is="vi-query-grid-table-header-column"]:not([name]) {
+vi-query-grid header #dataHeaderHost table tr td[is="vi-query-grid-table-header-column"][name=""],
+vi-query-grid header #dataHeaderHost table tr td[is="vi-query-grid-table-header-column"]:not([name]) {
   display: none;
 }
 vi-query-grid #dataHost {
@@ -138,6 +140,9 @@ vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-qu
 vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-query-grid-table-data-column"][name=""],
 vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-query-grid-table-data-column"]:not([name]) {
   display: none;
+}
+vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-query-grid-table-data-column"].pinned > * {
+  border-right: 1px solid #eaeaea;
 }
 vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td.pinned {
   position: relative;

@@ -37,12 +37,10 @@ button[is="vi-button"] {
     }
 
     &:not([custom-layout]) {
+        white-space: nowrap;
+
         > vi-icon {
             display: inline-block;
-
-            &[has-resource] + span {
-                margin-left: 2px;
-            }
 
             &:not([has-resource]) {
                 display: none;
@@ -52,6 +50,7 @@ button[is="vi-button"] {
         > span {
             display: inline-block;
             vertical-align: top;
+            margin-left: 2px;
         }
     }
 
@@ -105,17 +104,13 @@ vi-popup[open] > [toggle] button[is="vi-button"][header] {
         &:not([inverse]) {
             .colorize( {
                 background-color: @@color-light;
-            }
-
-            );
+            });
         }
 
         &[inverse] {
             .colorize( {
                 background-color: @@color-faint;
-            }
-
-            );
+            });
         }
     }
 
