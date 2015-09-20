@@ -160,22 +160,40 @@ vi-scroller > .scroll-shadow {
   pointer-events: none;
 }
 vi-scroller > .scroll-shadow.top {
-  -moz-transition: top 0.2s ease-out;
-  -o-transition: top 0.2s ease-out;
-  -webkit-transition: top 0.2s ease-out;
-  transition: top 0.2s ease-out;
-  top: -45px;
+  -moz-transition: transform 0.2s ease-out;
+  -o-transition: transform 0.2s ease-out;
+  -webkit-transition: transform 0.2s ease-out;
+  transition: transform 0.2s ease-out;
+  top: 0;
+  -moz-transform: translateY(-45px);
+  -ms-transform: translateY(-45px);
+  -o-transform: translateY(-45px);
+  -webkit-transform: translateY(-45px);
+  transform: translateY(-45px);
 }
 vi-scroller > .scroll-shadow.bottom {
-  -moz-transition: bottom 0.2s ease-out;
-  -o-transition: bottom 0.2s ease-out;
-  -webkit-transition: bottom 0.2s ease-out;
-  transition: bottom 0.2s ease-out;
-  bottom: -45px;
+  -moz-transition: transform 0.2s ease-out;
+  -o-transition: transform 0.2s ease-out;
+  -webkit-transition: transform 0.2s ease-out;
+  transition: transform 0.2s ease-out;
+  bottom: 0;
+  -moz-transform: translateY(45px);
+  -ms-transform: translateY(45px);
+  -o-transform: translateY(45px);
+  -webkit-transform: translateY(45px);
+  transform: translateY(45px);
 }
 vi-scroller[scroll-top-shadow] > .scroll-shadow.top {
-  top: -30px;
+  -moz-transform: translateY(-30px);
+  -ms-transform: translateY(-30px);
+  -o-transform: translateY(-30px);
+  -webkit-transform: translateY(-30px);
+  transform: translateY(-30px);
 }
 vi-scroller[scroll-bottom-shadow] > .scroll-shadow.bottom {
-  bottom: -30px;
+  -moz-transform: translateY(30px);
+  -ms-transform: translateY(30px);
+  -o-transform: translateY(30px);
+  -webkit-transform: translateY(30px);
+  transform: translateY(30px);
 }

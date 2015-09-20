@@ -258,7 +258,10 @@
         }
 
         private _trapEvent(e: Event) {
+            this.scrollTop = this.scrollLeft = 0;
+
             e.preventDefault();
+            e.stopPropagation();
         }
 
         private _scroll(e: Event) {

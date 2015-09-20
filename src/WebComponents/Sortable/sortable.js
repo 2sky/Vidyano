@@ -35,6 +35,10 @@ var Vidyano;
             Sortable.prototype.filterChanged = function () {
                 this._sortable.option("filter", this.filter);
             };
+            Sortable.prototype._dragStart = function () {
+            };
+            Sortable.prototype._dragEnd = function () {
+            };
             Sortable.prototype._create = function () {
                 var _this = this;
                 this._destroy();
@@ -46,11 +50,13 @@ var Vidyano;
                         _this._setIsDragging(true);
                         if (_this.group)
                             _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._setIsGroupDragging(true); });
+                        _this._dragStart();
                     },
                     onEnd: function () {
                         _this._setIsDragging(false);
                         if (_this.group)
                             _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._setIsGroupDragging(false); });
+                        _this._dragEnd();
                     }
                 });
             };
@@ -61,10 +67,13 @@ var Vidyano;
                 }
             };
             Sortable.prototype._enabledChanged = function (enabled) {
-                this._sortable.option("disabled", !enabled);
+                if (this._sortable)
+                    this._sortable.option("disabled", !enabled);
             };
             Sortable.register = function (info) {
                 if (info === void 0) { info = {}; }
+                if (typeof info == "function")
+                    return Sortable.register({})(info);
                 return function (obj) {
                     info.properties = info.properties || {};
                     info.properties["group"] = {

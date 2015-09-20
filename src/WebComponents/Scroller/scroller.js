@@ -121,7 +121,9 @@ var Vidyano;
                     e.detail.sourceEvent.preventDefault();
             };
             Scroller.prototype._trapEvent = function (e) {
+                this.scrollTop = this.scrollLeft = 0;
                 e.preventDefault();
+                e.stopPropagation();
             };
             Scroller.prototype._scroll = function (e) {
                 WebComponents.Popup.closeAll(this);

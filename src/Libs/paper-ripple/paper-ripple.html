@@ -566,6 +566,11 @@ Apply `circle` class to make the rippling effect within a circle.
         }
       },
 
+      detached: function(){
+          this.unlisten(this.target, 'up', 'upAction');
+          this.unlisten(this.target, 'down', 'downAction');
+      },
+
       get shouldKeepAnimating () {
         for (var index = 0; index < this.ripples.length; ++index) {
           if (!this.ripples[index].isAnimationComplete) {
@@ -601,7 +606,7 @@ Apply `circle` class to make the rippling effect within a circle.
       },
 
       /** @param {Event=} event */
-      upAction: function(event) {
+      upAction: function (event) {
         if (this.holdDown) {
           return;
         }

@@ -172,7 +172,7 @@
                     if (cell.column && cell.column.isPinned)
                         this.transform("", cell.cell.parentElement);
 
-                    cell.setColumn(null, false);
+                    cell.setColumn(null);
                 });
 
                 Enumerable.from(this._tableData.rows).forEach((row: QueryGridTableDataRow) => {
@@ -331,7 +331,7 @@
                             if (!cont)
                                 return Promise.resolve();
 
-                            return this._updateTableData(items);
+                            return this._updateTableData(items, columns);
                         }).then(() => {
                             resolve(null);
 
@@ -368,7 +368,7 @@
             });
         }
 
-        private _updateTableData(items: Vidyano.QueryResultItem[]): Promise<any> {
+        private _updateTableData(items: Vidyano.QueryResultItem[], columns: Vidyano.QueryColumn[]): Promise<any> {
             var horizontalScrollOffset = this._horizontalScrollOffset;
             var virtualTableStartIndex = this._virtualTableStartIndex;
 
@@ -379,13 +379,15 @@
                 var virtualTableOffset = this._virtualTableOffset;
 
                 this._requestAnimationFrame(() => {
+                    var lastPinnedColumnIndex = Enumerable.from(columns).lastIndexOf(c => c.isPinned);
+
                     for (var index = 0; index < rowCount; index++) {
                         if (items != this._items || virtualTableStartIndex !== this._virtualTableStartIndex) {
                             resolve(false);
                             return;
                         }
 
-                        (<QueryGridTableDataRow>this._tableData.rows[index]).setItem(items[index], this._columns);
+                        (<QueryGridTableDataRow>this._tableData.rows[index]).setItem(items[index], columns, lastPinnedColumnIndex);
                     }
 
                     if (this._virtualTableOffsetCurrent !== this._virtualTableOffset && this._virtualTableOffset === virtualTableOffset)
@@ -812,7 +814,7 @@
 
         setColumns(columns: Vidyano.QueryColumn[]) {
             var lastPinnedColumn = Enumerable.from(columns).lastOrDefault(c => c.isPinned);
-            this.columns.forEach((col, index) => col.setColumn(columns[index], lastPinnedColumn === columns[index]));
+            this.columns.forEach((col, index) => col.setColumn(columns[index], columns[index] === lastPinnedColumn));
         }
 
         protected _createColumn(): QueryGridTableColumn {
@@ -860,7 +862,7 @@
             return this._item;
         }
 
-        setItem(item: Vidyano.QueryResultItem, columns: Vidyano.QueryColumn[]) {
+        setItem(item: Vidyano.QueryResultItem, columns: Vidyano.QueryColumn[], lastPinnedIndex?: number) {
             if (this._item !== item) {
                 if (this._itemPropertyChangedListener) {
                     this._itemPropertyChangedListener();
@@ -887,11 +889,9 @@
                 this._updateIsSelected();
             }
 
-            var lastPinnedColumn = Enumerable.from(columns).lastOrDefault(c => c.isPinned);
-
             this._firstCellWithPendingUpdates = -1;
             this.columns.slice(0, columns ? this._columnCount = columns.length : this._columnCount).forEach((gridColumn, index) => {
-                if (!gridColumn.setItem(item, columns ? columns[index] : null, columns && columns[index] === lastPinnedColumn) && this._firstCellWithPendingUpdates < 0)
+                if (!gridColumn.setItem(item, columns ? columns[index] : null, lastPinnedIndex === index) && this._firstCellWithPendingUpdates < 0)
                     this._firstCellWithPendingUpdates = index;
             });
         }
@@ -967,6 +967,7 @@
         private _host: HTMLTableColElement;
         private _column: Vidyano.QueryColumn;
         private _hasContent: boolean;
+        private _isLastPinned: boolean;
 
         constructor(is: string, private _cell?: HTMLElement | DocumentFragment, private _isPinned?: boolean) {
             this._host = (<any>document).createElement("td", is);
@@ -974,7 +975,7 @@
             if (_cell)
                 this._cell = this.host.appendChild(_cell);
 
-            if (this._isPinned)
+            if (_isPinned)
                 this.host.classList.add("pinned");
         }
 
@@ -994,23 +995,28 @@
             return this._isPinned;
         }
 
-        setColumn(column: Vidyano.QueryColumn, lastPinned: boolean = false) {
-            if (column == this._column)
-                return;
+        setColumn(column: Vidyano.QueryColumn, lastPinned?: boolean) {
+            if (this._column !== column)
+                this.host.setAttribute("name", (this._column = column) ? Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(this._column.name) : "");
 
-            if (!(this._column = column) || this._column.isPinned != this._isPinned) {
-                if (this._isPinned = this._column ? this._column.isPinned : false)
-                    this.host.classList.add("pinned");
-                else
-                    this.host.classList.remove("pinned");
-            }
+            if (!this.column || !this.column.isPinned) {
+                this._isPinned = this._isLastPinned = false;
 
-            if (this._isPinned && lastPinned)
-                this.host.classList.add("last-pinned");
-            else
+                this.host.classList.remove("pinned");
                 this.host.classList.remove("last-pinned");
+            } else {
+                if (!this._isPinned) {
+                    this._isPinned = this.column.isPinned;
+                    this.host.classList.add("pinned");
+                }
 
-            this.host.setAttribute("name", this._column ? Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(this._column.name) : "");
+                if (this._isLastPinned !== lastPinned) {
+                    if(this._isLastPinned = lastPinned)
+                        this.host.classList.add("last-pinned");
+                    else
+                        this.host.classList.remove("last-pinned");
+                }
+            }
         }
 
         get hasContent(): boolean {
@@ -1036,11 +1042,8 @@
             super("vi-query-grid-table-header-column", new Vidyano.WebComponents.QueryGridColumnHeader());
         }
 
-        setColumn(column: Vidyano.QueryColumn, lastPinned: boolean) {
-            if (this.column === column)
-                return;
-
-            super.setColumn((<QueryGridColumnHeader><any>this.cell).column = column, lastPinned);
+        setColumn(column: Vidyano.QueryColumn, isLastPinned: boolean) {
+            super.setColumn((<QueryGridColumnHeader><any>this.cell).column = column, isLastPinned);
         }
     }
 
@@ -1069,8 +1072,8 @@
             return this._hasPendingUpdate;
         }
 
-        setItem(item: Vidyano.QueryResultItem, column: Vidyano.QueryColumn, lastPinned: boolean): boolean {
-            this.setColumn(column, lastPinned);
+        setItem(item: Vidyano.QueryResultItem, column: Vidyano.QueryColumn, isLastPinned: boolean): boolean {
+            this.setColumn(column, isLastPinned);
             this._item = item;
 
             return !(this._hasPendingUpdate = !this._render());

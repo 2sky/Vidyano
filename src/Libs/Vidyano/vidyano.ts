@@ -3981,6 +3981,19 @@ module Vidyano {
             return this._session;
         }
 
+        saveUserSettings(): Promise<any> {
+            if (this.userSettingsId != "00000000-0000-0000-0000-000000000000") {
+                return this.service.getPersistentObject(null, this.userSettingsId, null).then(po => {
+                    po.attributesByName["Settings"].value = JSON.stringify(this.userSettings);
+                    return po.save().then(() => this.userSettings);
+                });
+            }
+            else
+                localStorage["UserSettings"] = JSON.stringify(this.userSettings);
+
+            return Promise.resolve(this.userSettings);
+        }
+
         _updateSession(session: any) {
             var oldSession = this._session;
 

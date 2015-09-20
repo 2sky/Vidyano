@@ -3559,6 +3559,18 @@ var Vidyano;
             enumerable: true,
             configurable: true
         });
+        Application.prototype.saveUserSettings = function () {
+            var _this = this;
+            if (this.userSettingsId != "00000000-0000-0000-0000-000000000000") {
+                return this.service.getPersistentObject(null, this.userSettingsId, null).then(function (po) {
+                    po.attributesByName["Settings"].value = JSON.stringify(_this.userSettings);
+                    return po.save().then(function () { return _this.userSettings; });
+                });
+            }
+            else
+                localStorage["UserSettings"] = JSON.stringify(this.userSettings);
+            return Promise.resolve(this.userSettings);
+        };
         Application.prototype._updateSession = function (session) {
             var oldSession = this._session;
             if (!session) {

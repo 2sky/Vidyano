@@ -3,9 +3,31 @@
 
 <dom-module id="vi-query-grid-configure-dialog">
     <template>
-        <header>{{query.label}}</header>
-        <main>MAIN</main>
-        <footer>FOOTER</footer>
+        <header>{{grid.query.label}}</header>
+        <main>
+            <ul is="vi-query-grid-configure-dialog-column-list" id="pinned" enabled group="pinned"></ul>
+            <vi-scroller no-horizontal>
+                <ul is="vi-query-grid-configure-dialog-column-list" id="unpinned" enabled group="unpinned"></ul>
+            </vi-scroller>
+        </main>
+        <footer class="horizontal layout justified">
+            <button is="vi-button" inverse class="self-end" on-tap="_reset" action-type="Default" label="{{translations.Reset}}"></button>
+            <div class="buttons horizontal layout">
+                <button is="vi-button" on-tap="_save" action-type="Default" label="{{translations.Save}}"></button>
+                <button is="vi-button" inverse on-tap="cancel" label="{{translations.Cancel}}"></button>
+            </div>
+        </footer>
+    </template>
+</dom-module>
+
+<dom-module id="vi-query-grid-configure-dialog-column">
+    <template>
+        <vi-icon source="Hamburger"></vi-icon>
+        <label>{{label}}</label>
+        <div class="buttons layout horizontal">
+            <button is="vi-button" inverse icon="Pin" on-tap="_togglePin"></button>
+            <button is="vi-button" inverse icon="Eye" on-tap="_toggleVisible"></button>
+        </div>
     </template>
 </dom-module>
 
