@@ -35,7 +35,7 @@ vi-popup-menu-item {
     });
 
     > button {
-        .flex();
+        flex: 1 1 auto;
         height: 100%;
         padding: 0;
         text-align: left;
@@ -94,6 +94,8 @@ vi-popup-menu-item {
 
     &[split] {
         > vi-popup {
+            min-width: @h2;
+
             [header] {
                 box-sizing: border-box;
                 border-left: 1px solid #eee;

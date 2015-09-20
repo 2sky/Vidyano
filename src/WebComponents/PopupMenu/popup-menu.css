@@ -33,9 +33,7 @@ vi-popup-menu-item {
   fill: #009688;
 }
 vi-popup-menu-item > button {
-  -ms-flex: 1;
-  -webkit-flex: 1;
-  flex: 1;
+  flex: 1 1 auto;
   height: 100%;
   padding: 0;
   text-align: left;
@@ -79,6 +77,9 @@ vi-popup-menu-item[icon-space] > button > vi-icon {
 }
 vi-popup-menu-item[split-space] > button > span {
   margin-right: 30px;
+}
+vi-popup-menu-item[split] > vi-popup {
+  min-width: 30px;
 }
 vi-popup-menu-item[split] > vi-popup [header] {
   box-sizing: border-box;

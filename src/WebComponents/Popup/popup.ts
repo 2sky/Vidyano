@@ -105,8 +105,8 @@ module Vidyano.WebComponents {
             var {targetRect, transformedRect} = this._getTargetRect(<HTMLElement>target);
             var windowWidth = window.innerWidth;
             var windowHeight = window.innerHeight;
-            var contentWidth = content.scrollWidth;
-            var contentHeight = content.scrollHeight;
+            var contentWidth = content.offsetWidth;
+            var contentHeight = content.offsetHeight;
 
             var alignments = (this.contentAlign || "").toUpperCase().split(" ");
             var alignCenter = alignments.indexOf("CENTER") >= 0;
