@@ -1,4 +1,4 @@
-vi-persistent-object-dialog #dialog .content.vi-dialog {
+vi-persistent-object-dialog main {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
@@ -7,20 +7,20 @@ vi-persistent-object-dialog #dialog .content.vi-dialog {
   flex-direction: row;
   padding: 0;
 }
-vi-persistent-object-dialog #dialog .content.vi-dialog > vi-scroller {
+vi-persistent-object-dialog main > vi-scroller {
   -ms-flex: 1;
   -webkit-flex: 1;
   flex: 1;
 }
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
-  vi-persistent-object-dialog vi-dialog .content {
+  vi-persistent-object-dialog main {
     width: 85vw;
   }
 }
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991px) {
-  vi-persistent-object-dialog vi-dialog > #dialogHost > #dialog > .content {
+  vi-persistent-object-dialog main {
     min-width: 500px;
     max-width: 800px;
     max-height: 75vh;
@@ -28,7 +28,7 @@ vi-persistent-object-dialog #dialog .content.vi-dialog > vi-scroller {
 }
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1199px) {
-  vi-persistent-object-dialog vi-dialog > #dialogHost > #dialog > .content {
+  vi-persistent-object-dialog main {
     min-width: 500px;
     max-width: 900px;
     max-height: 75vh;
@@ -36,7 +36,7 @@ vi-persistent-object-dialog #dialog .content.vi-dialog > vi-scroller {
 }
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-  vi-persistent-object-dialog vi-dialog > #dialogHost > #dialog > .content {
+  vi-persistent-object-dialog main {
     min-width: 500px;
     max-width: 1000px;
     max-height: 75vh;

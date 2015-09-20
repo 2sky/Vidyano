@@ -22,12 +22,13 @@ vi-popup-menu {
     }
 }
 
+@menuItemHeight: @h2 + 5px;
+
 vi-popup-menu-item {
     .layout-horizontal();
     .relative();
-    height: @h1;
-    line-height: @h1;
-    height: @h1;
+    height: @menuItemHeight;
+    line-height: @menuItemHeight;
     cursor: pointer;
     .colorize({
         color: @@color;
@@ -66,7 +67,8 @@ vi-popup-menu-item {
         top: 0;
         bottom: 0;
         width: @h2;
-        background-color: #fAfAfA;
+        background-color: rgba(0, 0, 0, 0.04);
+        pointer-events: none;
     }
 
     &[icon-space], &[icon] {
@@ -101,11 +103,11 @@ vi-popup-menu-item {
                 border-left: 1px solid #eee;
                 padding: 0;
                 width: @h2;
-                height: @h1;
+                height: @menuItemHeight;
 
                 > vi-icon {
                     width: @h2;
-                    height: @h1;
+                    height: @menuItemHeight;
                 }
             }
         }

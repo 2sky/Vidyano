@@ -1,4 +1,4 @@
-vi-message-dialog vi-dialog .content {
+vi-message-dialog main {
   padding: 12px;
   display: -ms-flexbox;
   display: -webkit-flex;
@@ -7,13 +7,13 @@ vi-message-dialog vi-dialog .content {
   -webkit-flex-direction: row;
   flex-direction: row;
 }
-vi-message-dialog vi-dialog .content pre {
+vi-message-dialog main pre {
   -ms-flex: 1;
   -webkit-flex: 1;
   flex: 1;
   white-space: pre-wrap;
 }
-vi-message-dialog vi-dialog .content pre a {
+vi-message-dialog main pre a {
   color: inherit;
 }
 vi-message-dialog header > vi-icon {

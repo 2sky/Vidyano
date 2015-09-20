@@ -69,6 +69,7 @@
     "src/WebComponents/ProgramUnitPresenter/program-unit-presenter.ts",
     "src/WebComponents/Query/query.ts",
     "src/WebComponents/QueryGrid/query-grid-cells.ts",
+    "src/WebComponents/QueryGrid/query-grid-configure-dialog.ts",
     "src/WebComponents/QueryGrid/query-grid-filters.ts",
     "src/WebComponents/QueryGrid/query-grid.ts",
     "src/WebComponents/QueryItemsPresenter/query-items-presenter.ts",

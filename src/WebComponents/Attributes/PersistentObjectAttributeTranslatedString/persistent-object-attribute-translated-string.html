@@ -22,17 +22,16 @@
                     </button>
                 </template>
             </vi-persistent-object-attribute-edit>
-            <vi-persistent-object-attribute-translated-string-dialog id="dialog" label="{{attribute.label}}" multiline="{{multiline}}"></vi-persistent-object-attribute-translated-string-dialog>
         </template>
     </template>
 </dom-module>
 
 <dom-module id="vi-persistent-object-attribute-translated-string-dialog">
     <template>
-        <vi-dialog id="dialog">
-            <header class="horizontal layout">
-                <h4 class="flex">{{label}}</h4>
-            </header>
+        <header class="horizontal layout">
+            <h4 class="flex">{{label}}</h4>
+        </header>
+        <main>
             <ul id="content">
                 <template is="dom-repeat" items="{{strings}}">
                     <li>
@@ -46,11 +45,11 @@
                     </li>
                 </template>
             </ul>
-            <footer class="horizontal layout end-justified">
-                <button is="vi-button" on-tap="_ok" label="{{translateMessage('OK', isAttached)}}"></button>
-                <button is="vi-button" on-tap="_cancel" inverse label="{{translateMessage('Cancel', isAttached)}}"></button>
-            </footer>
-        </vi-dialog>
+        </main>
+        <footer class="horizontal layout end-justified">
+            <button is="vi-button" on-tap="_ok" label="{{translateMessage('OK', isAttached)}}"></button>
+            <button is="vi-button" on-tap="cancel" inverse label="{{translateMessage('Cancel', isAttached)}}"></button>
+        </footer>
     </template>
 </dom-module>
 

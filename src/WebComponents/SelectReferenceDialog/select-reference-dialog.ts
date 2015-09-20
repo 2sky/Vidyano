@@ -1,50 +1,19 @@
 ﻿module Vidyano.WebComponents {
-    @WebComponent.register({
+    @Dialog.register({
         properties: {
             query: Object,
             canSelect: Boolean
-        },
-        hostAttributes: {
-            "dialog": ""
         },
         forwardObservers: [
             "_selectedItemsChanged(query.selectedItems)"
         ]
     })
-    export class SelectReferenceDialog extends WebComponent {
-        private _grid: WebComponents.QueryGrid;
-        private _itemClickCallback: EventListener;
-        private _dialog: WebComponents.DialogInstance;
+    export class SelectReferenceDialog extends Dialog {
         canSelect: boolean;
-        query: Vidyano.Query;
 
-        detached() {
-            super.detached();
-
-            if (this._itemClickCallback && this._grid) {
-                this._grid.removeEventListener("item-click", this._itemClickCallback);
-                this._itemClickCallback = null;
-            }
+        constructor(public query: Vidyano.Query) {
+            super();
         }
-
-        show(): Promise<any> {
-            var dialog = <WebComponents.Dialog><any>this.$["dialog"];
-            this.empty();
-
-            this._grid = new WebComponents.QueryGrid();
-            this._grid.addEventListener("item-tap", this._itemClickCallback = this._selectReference.bind(this));
-            this._grid.classList.add("fit");
-            this._grid.asLookup = true;
-            this._grid.query = this.query;
-
-            Polymer.dom(this).appendChild(this._grid);
-
-            this._dialog = dialog.show({
-                autoSize: true
-            });
-
-            return this._dialog.result;
-		}
 
         private _selectedItemsChanged() {
             if (!this.isAttached)
@@ -66,12 +35,8 @@
             if (!this.canSelect)
                 return;
 
-            this._dialog.resolve(this.query.selectedItems);
+            this.instance.resolve(this.query.selectedItems);
 		}
-
-        private _cancel() {
-            this._dialog.resolve();
-        }
 
         private _search(e: CustomEvent, detail: string) {
             if (!this.query)
@@ -86,7 +51,7 @@
 
             var detail = <QueryGridItemTapEventArgs>e.detail;
 			if (this.query.maxSelectedItems == 1)
-                this._dialog.resolve([detail.item]);
+                this.instance.resolve([detail.item]);
 			else
 				detail.item.isSelected = !detail.item.isSelected;
 		}

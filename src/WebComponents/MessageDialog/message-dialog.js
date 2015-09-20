@@ -26,12 +26,6 @@ var Vidyano;
                     this.$["pre"].innerHTML = options.message;
                 else
                     this.$["pre"].textContent = options.message;
-                var dialog = this.$["dialog"];
-                this._dialog = dialog.show(options);
-                return this._dialog.result;
-            };
-            MessageDialog.prototype._close = function () {
-                this._dialog.reject();
             };
             MessageDialog.prototype._hasHeaderIcon = function (options) {
                 return this.options && typeof this.options.titleIcon == "string";
@@ -42,33 +36,30 @@ var Vidyano;
                 return options.actionTypes[index];
             };
             MessageDialog.prototype._onSelectAction = function (e) {
-                this._dialog.resolve(e.model.index);
+                this.instance.resolve(e.model.index);
                 e.stopPropagation();
             };
             MessageDialog.prototype._isFirst = function (index) {
                 return index === 0;
             };
             MessageDialog = __decorate([
-                WebComponents.WebComponent.register({
+                WebComponents.Dialog.register({
                     properties: {
                         options: {
                             type: Object,
                             readOnly: true
                         }
                     },
-                    hostAttributes: {
-                        "dialog": ""
-                    },
                     keybindings: {
                         "esc": {
-                            listener: "_close",
+                            listener: "cancel",
                             priority: Number.MAX_VALUE
                         }
                     }
                 })
             ], MessageDialog);
             return MessageDialog;
-        })(WebComponents.WebComponent);
+        })(WebComponents.Dialog);
         WebComponents.MessageDialog = MessageDialog;
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

@@ -249,17 +249,14 @@ var Vidyano;
                         this._routeMap[route].empty();
                 }
             };
+            App.prototype.showDialog = function (dialog, options) {
+                var dialogHost = new Vidyano.WebComponents.DialogHost();
+                Polymer.dom(dialogHost).appendChild(dialog);
+                Polymer.dom(this).appendChild(dialogHost);
+                return dialogHost.show(options);
+            };
             App.prototype.showMessageDialog = function (options) {
-                var _this = this;
-                var messageDialog = new Vidyano.WebComponents.MessageDialog();
-                Polymer.dom(this).appendChild(messageDialog);
-                return messageDialog.show(options).then(function (result) {
-                    Polymer.dom(_this).removeChild(messageDialog);
-                    return result;
-                }, function (e) {
-                    Polymer.dom(_this).removeChild(messageDialog);
-                    throw e;
-                });
+                return this.showDialog(new Vidyano.WebComponents.MessageDialog(), options);
             };
             App.prototype._computeService = function (uri, user) {
                 var _this = this;
@@ -510,40 +507,29 @@ var Vidyano;
             AppServiceHooks.prototype.onAction = function (args) {
                 var _this = this;
                 if (args.action == "AddReference") {
-                    var dialog = new Vidyano.WebComponents.SelectReferenceDialog();
-                    dialog.query = args.query.clone(true);
-                    dialog.query.search();
-                    Polymer.dom(this.app).appendChild(dialog);
-                    return dialog.show().then(function (result) {
-                        Polymer.dom(_this.app).removeChild(dialog);
-                        if (result && result.length > 0) {
-                            args.selectedItems = result;
-                            return args.executeServiceRequest();
-                        }
-                    }).catch(function (e) {
-                        Polymer.dom(_this.app).removeChild(dialog);
-                        return null;
+                    this.app.importHref(this.app.resolveUrl("../SelectReferenceDialog/select-reference-dialog.html"), function () {
+                        var query = args.query.clone(true);
+                        query.search();
+                        _this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then(function (result) {
+                            if (result && result.length > 0) {
+                                args.selectedItems = result;
+                                return args.executeServiceRequest().then(function (result) {
+                                    args.query.search();
+                                    return result;
+                                });
+                            }
+                        });
                     });
                 }
                 return _super.prototype.onAction.call(this, args);
             };
             AppServiceHooks.prototype.onOpen = function (obj, replaceCurrent, fromAction) {
-                var _this = this;
                 if (replaceCurrent === void 0) { replaceCurrent = false; }
                 if (fromAction === void 0) { fromAction = false; }
                 if (obj instanceof Vidyano.PersistentObject) {
                     var po = obj;
                     if (po.stateBehavior.indexOf("OpenAsDialog") >= 0) {
-                        var dialog = new Vidyano.WebComponents.PersistentObjectDialog();
-                        Polymer.dom(this.app).appendChild(dialog);
-                        Polymer.dom(this.app).flush();
-                        return dialog.show(po).then(function (result) {
-                            Polymer.dom(_this.app).removeChild(dialog);
-                            return result;
-                        }, function (e) {
-                            Polymer.dom(_this.app).removeChild(dialog);
-                            throw e;
-                        });
+                        this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po));
                         return;
                     }
                     var path;

@@ -36,31 +36,62 @@ var Vidyano;
             function Dialog() {
                 _super.apply(this, arguments);
             }
+            Dialog.prototype._show = function (e, details) {
+                this._instance = details;
+                this._setAutoSize(details.options.autoSize);
+                this.show(details.options);
+            };
+            Object.defineProperty(Dialog.prototype, "instance", {
+                get: function () {
+                    return this._instance;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Dialog.prototype.show = function (options) {
-                var _this = this;
-                if (options === void 0) { options = {}; }
-                var resolve;
-                var reject;
-                var promise = new Promise(function (_resolve, _reject) {
-                    resolve = _resolve;
-                    reject = _reject;
-                    _this._setAutoSize(options.autoSize);
-                    _this._setShown(true);
-                }).then(function (result) {
-                    _this._setShown(false);
-                    return result;
-                }).catch(function (e) {
-                    _this._setShown(false);
-                    reject(e);
-                });
-                this.set("_instance", new DialogInstance(options, promise, resolve, reject));
-                return this._instance;
             };
-            Dialog.prototype._close = function () {
-                this._setShown(false);
-                this._instance.reject();
+            Dialog.prototype.close = function (result) {
+                this._instance.resolve(result);
             };
-            Dialog.prototype._track = function (e, detail) {
+            Dialog.prototype.cancel = function (result) {
+                this._instance.reject(result);
+            };
+            Dialog.register = function (info) {
+                if (info === void 0) { info = {}; }
+                if (typeof info == "function")
+                    return Dialog.register({})(info);
+                return function (obj) {
+                    info.properties = info.properties || {};
+                    info.properties["dialog"] = {
+                        type: Boolean,
+                        readOnly: true,
+                        reflectToAttribute: true,
+                        value: true
+                    };
+                    info.properties["autoSize"] = {
+                        type: Boolean,
+                        readOnly: true,
+                        reflectToAttribute: true
+                    };
+                    if (!info.listeners)
+                        info.listeners = {};
+                    info.listeners["show"] = "_show";
+                    return WebComponents.WebComponent.register(obj, info);
+                };
+            };
+            return Dialog;
+        })(WebComponents.WebComponent);
+        WebComponents.Dialog = Dialog;
+        var DialogHost = (function (_super) {
+            __extends(DialogHost, _super);
+            function DialogHost() {
+                _super.apply(this, arguments);
+            }
+            DialogHost.prototype._translateChanged = function () {
+                this._dialog.style.webkitTransform = this._dialog.style.transform = "translate(" + this._translate.x + "px, " + this._translate.y + "px)";
+            };
+            DialogHost.prototype._track = function (e) {
+                var detail = e.detail;
                 if (detail.state == "track") {
                     this._set_translate({
                         x: this._translate.x + detail.ddx,
@@ -70,43 +101,62 @@ var Vidyano;
                 else if (detail.state == "start") {
                     if (!this._translate)
                         this._set_translate({ x: 0, y: 0 });
-                    this._setDragging(true);
+                    this._dialog.setAttribute("dragging", "");
                 }
                 else if (detail.state == "end")
-                    this._setDragging(false);
+                    this._dialog.removeAttribute("dragging");
             };
-            Dialog.prototype._translateChanged = function () {
-                var dialog = this.$["dialog"];
-                dialog.style.webkitTransform = dialog.style.transform = "translate(" + this._translate.x + "px, " + this._translate.y + "px)";
+            DialogHost.prototype.show = function (options) {
+                var _this = this;
+                if (options === void 0) { options = {}; }
+                this._dialog = this.firstElementChild;
+                if (!this._dialog)
+                    return Promise.reject("No dialog child element found");
+                var header = this.querySelector("[dialog] > header");
+                if (header) {
+                    var trackHandler;
+                    Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));
+                }
+                var resolve;
+                var reject;
+                var promise = new Promise(function (_resolve, _reject) {
+                    resolve = _resolve;
+                    reject = _reject;
+                    _this._setShown(true);
+                }).then(function (result) {
+                    if (trackHandler)
+                        Polymer.Gestures.remove(header, "track", trackHandler);
+                    _this._setShown(false);
+                    _this._dialog = null;
+                    return result;
+                }).catch(function (e) {
+                    if (trackHandler)
+                        Polymer.Gestures.remove(header, "track", trackHandler);
+                    _this._setShown(false);
+                    _this._dialog = null;
+                    reject(e);
+                });
+                this._dialog.fire("show", new DialogInstance(options, promise, resolve, reject), { bubbles: false });
+                return promise;
             };
-            Dialog = __decorate([
+            DialogHost = __decorate([
                 WebComponents.WebComponent.register({
                     properties: {
-                        shown: {
+                        "shown": {
                             type: Boolean,
                             readOnly: true,
                             reflectToAttribute: true
                         },
-                        autoSize: {
-                            type: Boolean,
-                            readOnly: true,
-                            reflectToAttribute: true
-                        },
-                        dragging: {
-                            type: Boolean,
-                            readOnly: true,
-                            reflectToAttribute: true
-                        },
-                        _translate: {
+                        "_translate": {
                             type: Object,
                             readOnly: true,
                             observer: "_translateChanged"
                         }
                     }
                 })
-            ], Dialog);
-            return Dialog;
+            ], DialogHost);
+            return DialogHost;
         })(WebComponents.WebComponent);
-        WebComponents.Dialog = Dialog;
+        WebComponents.DialogHost = DialogHost;
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

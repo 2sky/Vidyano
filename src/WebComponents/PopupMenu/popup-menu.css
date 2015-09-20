@@ -20,8 +20,8 @@ vi-popup-menu-item {
   -webkit-flex-direction: row;
   flex-direction: row;
   position: relative;
-  line-height: 40px;
-  height: 40px;
+  height: 35px;
+  line-height: 35px;
   cursor: pointer;
 }
 [theme-color-1] vi-popup-menu-item {
@@ -61,7 +61,8 @@ vi-popup-menu-item .icon-spacer {
   top: 0;
   bottom: 0;
   width: 30px;
-  background-color: #fAfAfA;
+  background-color: rgba(0, 0, 0, 0.04);
+  pointer-events: none;
 }
 vi-popup-menu-item[icon-space] > .icon-spacer,
 vi-popup-menu-item[icon] > .icon-spacer {
@@ -86,11 +87,11 @@ vi-popup-menu-item[split] > vi-popup [header] {
   border-left: 1px solid #eee;
   padding: 0;
   width: 30px;
-  height: 40px;
+  height: 35px;
 }
 vi-popup-menu-item[split] > vi-popup [header] > vi-icon {
   width: 30px;
-  height: 40px;
+  height: 35px;
 }
 vi-popup-menu-item-separator {
   display: block;

@@ -1,10 +1,7 @@
 ﻿module Vidyano.WebComponents {
-    @WebComponent.register({
+    @Dialog.register({
         properties: {
-            persistentObject: {
-                type: Object,
-                readOnly: true
-            },
+            persistentObject: Object,
             tab: {
                 type: Object,
                 computed: "_computeTab(persistentObject)"
@@ -20,37 +17,26 @@
             }
         }
     })
-    export class PersistentObjectDialog extends WebComponent {
-        private _dialog: WebComponents.DialogInstance;
+    export class PersistentObjectDialog extends Dialog {
         private _saveHook: (po: Vidyano.PersistentObject) => Promise<any>;
-        persistentObject: Vidyano.PersistentObject;
         tab: Vidyano.PersistentObjectAttributeTab;
 
-        private _setPersistentObject: (persistentObject: Vidyano.PersistentObject) => void;
+        constructor(public persistentObject: Vidyano.PersistentObject) {
+            super();
 
-        show(persistentObject: Vidyano.PersistentObject, save?: (po: Vidyano.PersistentObject) => Promise<any>): Promise<any> {
-            this._setPersistentObject(persistentObject);
-            this.persistentObject.beginEdit();
-
-            this._saveHook = save;
-
-            this._dialog = (<WebComponents.Dialog><any>this.$["dialog"]).show();
-            return this._dialog.result.then(result => {
-                this._dialog = null;
-                return result;
-            });
+            persistentObject.beginEdit();
         }
 
         private _save() {
             (this._saveHook ? this._saveHook(this.persistentObject) : this.persistentObject.save()).then(() => {
-                this._dialog.resolve(this.persistentObject);
+                this.instance.resolve(this.persistentObject);
             });
         }
 
         private _cancel() {
-            if (this.persistentObject && this._dialog) {
+            if (this.persistentObject) {
                 this.persistentObject.cancelEdit();
-                this._dialog.resolve();
+                this.cancel();
             }
         }
 
@@ -65,7 +51,7 @@
         }
 
         private _onSelectAction(e: Event) {
-            this._dialog.resolve(parseInt((<HTMLElement>e.target).getAttribute("data-action-index"), 10));
+            this.instance.resolve(parseInt((<HTMLElement>e.target).getAttribute("data-action-index"), 10));
 
             e.stopPropagation();
         }

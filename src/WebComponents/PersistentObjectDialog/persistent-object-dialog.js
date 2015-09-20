@@ -17,30 +17,21 @@ var Vidyano;
     (function (WebComponents) {
         var PersistentObjectDialog = (function (_super) {
             __extends(PersistentObjectDialog, _super);
-            function PersistentObjectDialog() {
-                _super.apply(this, arguments);
+            function PersistentObjectDialog(persistentObject) {
+                _super.call(this);
+                this.persistentObject = persistentObject;
+                persistentObject.beginEdit();
             }
-            PersistentObjectDialog.prototype.show = function (persistentObject, save) {
-                var _this = this;
-                this._setPersistentObject(persistentObject);
-                this.persistentObject.beginEdit();
-                this._saveHook = save;
-                this._dialog = this.$["dialog"].show();
-                return this._dialog.result.then(function (result) {
-                    _this._dialog = null;
-                    return result;
-                });
-            };
             PersistentObjectDialog.prototype._save = function () {
                 var _this = this;
                 (this._saveHook ? this._saveHook(this.persistentObject) : this.persistentObject.save()).then(function () {
-                    _this._dialog.resolve(_this.persistentObject);
+                    _this.instance.resolve(_this.persistentObject);
                 });
             };
             PersistentObjectDialog.prototype._cancel = function () {
-                if (this.persistentObject && this._dialog) {
+                if (this.persistentObject) {
                     this.persistentObject.cancelEdit();
-                    this._dialog.resolve();
+                    this.cancel();
                 }
             };
             PersistentObjectDialog.prototype._computeTab = function (persistentObject) {
@@ -51,16 +42,13 @@ var Vidyano;
                 return tab;
             };
             PersistentObjectDialog.prototype._onSelectAction = function (e) {
-                this._dialog.resolve(parseInt(e.target.getAttribute("data-action-index"), 10));
+                this.instance.resolve(parseInt(e.target.getAttribute("data-action-index"), 10));
                 e.stopPropagation();
             };
             PersistentObjectDialog = __decorate([
-                WebComponents.WebComponent.register({
+                WebComponents.Dialog.register({
                     properties: {
-                        persistentObject: {
-                            type: Object,
-                            readOnly: true
-                        },
+                        persistentObject: Object,
                         tab: {
                             type: Object,
                             computed: "_computeTab(persistentObject)"
@@ -78,7 +66,7 @@ var Vidyano;
                 })
             ], PersistentObjectDialog);
             return PersistentObjectDialog;
-        })(WebComponents.WebComponent);
+        })(WebComponents.Dialog);
         WebComponents.PersistentObjectDialog = PersistentObjectDialog;
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

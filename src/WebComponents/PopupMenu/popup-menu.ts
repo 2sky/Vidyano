@@ -49,7 +49,7 @@ module Vidyano.WebComponents {
             var hasSplits = children.filter(c => c.hasAttribute("split")).length > 0;
 
             children.forEach((c: PopupMenuItem) => {
-                c.toggleAttribute("icon-space", hasIcons && !c.icon);
+                c.toggleAttribute("icon-space", hasIcons && (!c.icon || !Icon.Exists(c.icon)));
                 c.toggleAttribute("split-space", hasSplits && !c.split);
             });
         }
@@ -68,10 +68,10 @@ module Vidyano.WebComponents {
                 return true;
 
             if (e.which == 3 && (!this.shiftKey || e.shiftKey) && (!this.ctrlKey || e.ctrlKey)) {
-                var popup = <WebComponents.Popup><any>this.$["popup"];
+                var popup = <Popup><any>this.$["popup"];
 
-                this.$["popup"].style.left = e.pageX + "px";
-                this.$["popup"].style.top = e.pageY + "px";
+                popup.style.left = e.pageX + "px";
+                popup.style.top = e.pageY + "px";
 
                 if (!popup.open)
                     popup.popup();
@@ -103,6 +103,11 @@ module Vidyano.WebComponents {
         properties: {
             label: String,
             icon: String,
+            checked: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
             split: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -112,6 +117,7 @@ module Vidyano.WebComponents {
     export class PopupMenuItem extends WebComponent {
         label: string;
         icon: string;
+        checked: boolean;
         split: boolean;
 
         attached() {

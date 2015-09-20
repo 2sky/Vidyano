@@ -9,7 +9,7 @@
                     <vi-icon source="Up"></vi-icon>
                 </button>
                 <template is="dom-if" if="{{canUserSettings}}">
-                    <vi-popup-menu-item icon="UserSettings" label="{{translations.UserSettings}}" on-tap="userSettings"></vi-popup-menu-item>
+                    <vi-popup-menu-item icon="Configure" label="{{translations.UserSettings}}" on-tap="userSettings"></vi-popup-menu-item>
                 </template>
                 <template is="dom-if" if="{{canFeedback}}">
                     <vi-popup-menu-item icon="UserFeedback" label="{{translations.Feedback}}" on-tap="feedback"></vi-popup-menu-item>

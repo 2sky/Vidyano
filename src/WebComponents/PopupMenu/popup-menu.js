@@ -28,7 +28,7 @@ var Vidyano;
                 var hasIcons = children.filter(function (c) { return c.hasAttribute("icon"); }).length > 0;
                 var hasSplits = children.filter(function (c) { return c.hasAttribute("split"); }).length > 0;
                 children.forEach(function (c) {
-                    c.toggleAttribute("icon-space", hasIcons && !c.icon);
+                    c.toggleAttribute("icon-space", hasIcons && (!c.icon || !WebComponents.Icon.Exists(c.icon)));
                     c.toggleAttribute("split-space", hasSplits && !c.split);
                 });
             };
@@ -45,8 +45,8 @@ var Vidyano;
                     return true;
                 if (e.which == 3 && (!this.shiftKey || e.shiftKey) && (!this.ctrlKey || e.ctrlKey)) {
                     var popup = this.$["popup"];
-                    this.$["popup"].style.left = e.pageX + "px";
-                    this.$["popup"].style.top = e.pageY + "px";
+                    popup.style.left = e.pageX + "px";
+                    popup.style.top = e.pageY + "px";
                     if (!popup.open)
                         popup.popup();
                     else
@@ -119,6 +119,11 @@ var Vidyano;
                     properties: {
                         label: String,
                         icon: String,
+                        checked: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: false
+                        },
                         split: {
                             type: Boolean,
                             reflectToAttribute: true

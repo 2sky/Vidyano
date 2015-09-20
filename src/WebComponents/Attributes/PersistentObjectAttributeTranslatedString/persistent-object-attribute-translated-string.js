@@ -53,7 +53,7 @@ var Vidyano;
                     if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)
                         this.attribute.setValue(this.value = this.attribute.value, true);
                 };
-                PersistentObjectAttributeTranslatedString.prototype._computeMultiLine = function (attribute) {
+                PersistentObjectAttributeTranslatedString.prototype._computeMultiline = function (attribute) {
                     return attribute && attribute.getTypeHint("MultiLine") == "True";
                 };
                 PersistentObjectAttributeTranslatedString.prototype._computeCanShowDialog = function (readOnly, strings) {
@@ -61,9 +61,7 @@ var Vidyano;
                 };
                 PersistentObjectAttributeTranslatedString.prototype._showLanguagesDialog = function () {
                     var _this = this;
-                    var dialog = this.$$("#dialog");
-                    dialog.strings = this.strings.slice();
-                    return dialog.show().then(function (result) {
+                    this.app.showDialog(new Vidyano.WebComponents.Attributes.PersistentObjectAttributeTranslatedStringDialog(this.attribute.label, this.strings.slice(), this.multiline)).then(function (result) {
                         if (!result)
                             return;
                         var newData = {};
@@ -88,7 +86,7 @@ var Vidyano;
                             multiline: {
                                 type: Boolean,
                                 reflectToAttribute: true,
-                                computed: "_computeMultiLine(attribute)"
+                                computed: "_computeMultiline(attribute)"
                             },
                             canShowDialog: {
                                 type: Boolean,
@@ -102,22 +100,17 @@ var Vidyano;
             Attributes.PersistentObjectAttributeTranslatedString = PersistentObjectAttributeTranslatedString;
             var PersistentObjectAttributeTranslatedStringDialog = (function (_super) {
                 __extends(PersistentObjectAttributeTranslatedStringDialog, _super);
-                function PersistentObjectAttributeTranslatedStringDialog() {
-                    _super.apply(this, arguments);
+                function PersistentObjectAttributeTranslatedStringDialog(label, strings, multiline) {
+                    _super.call(this);
+                    this.label = label;
+                    this.strings = strings;
+                    this.multiline = multiline;
                 }
-                PersistentObjectAttributeTranslatedStringDialog.prototype.show = function () {
-                    var dialog = this.$["dialog"];
-                    this._dialog = dialog.show();
-                    return this._dialog.result;
-                };
                 PersistentObjectAttributeTranslatedStringDialog.prototype._ok = function () {
-                    this._dialog.resolve(this.strings);
-                };
-                PersistentObjectAttributeTranslatedStringDialog.prototype._cancel = function () {
-                    this._dialog.reject(null);
+                    this.instance.resolve(this.strings);
                 };
                 PersistentObjectAttributeTranslatedStringDialog = __decorate([
-                    WebComponents.WebComponent.register({
+                    WebComponents.Dialog.register({
                         properties: {
                             label: String,
                             strings: Array,
@@ -129,7 +122,7 @@ var Vidyano;
                     })
                 ], PersistentObjectAttributeTranslatedStringDialog);
                 return PersistentObjectAttributeTranslatedStringDialog;
-            })(WebComponents.WebComponent);
+            })(WebComponents.Dialog);
             Attributes.PersistentObjectAttributeTranslatedStringDialog = PersistentObjectAttributeTranslatedStringDialog;
         })(Attributes = WebComponents.Attributes || (WebComponents.Attributes = {}));
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));

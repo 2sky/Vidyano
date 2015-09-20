@@ -13,8 +13,8 @@
 
 <dom-module id="vi-popup-menu-item">
     <template>
+        <button is="vi-button" inverse$="{{!checked}}" icon="{{icon}}" label="{{label}}"></button>
         <div class="icon-spacer"></div>
-        <button is="vi-button" inverse icon="{{icon}}" label="{{label}}"></button>
         <vi-popup open-on-hover hidden$="{{!split}}">
             <button is="vi-button" header on-tap="_splitTap" inverse icon="Forward"></button>
             <div content class="vertical layout">

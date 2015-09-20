@@ -1,46 +1,46 @@
-vi-select-reference-dialog vi-dialog vi-input-search {
+vi-select-reference-dialog vi-input-search {
   line-height: 30px;
   height: 30px;
   border: 1px solid rgba(128, 128, 128, 0.2);
   box-sizing: border-box;
 }
-vi-select-reference-dialog vi-dialog vi-input-search input {
+vi-select-reference-dialog vi-input-search input {
   padding: 10px;
   color: #333;
 }
-vi-select-reference-dialog vi-dialog vi-input-search input:focus {
+vi-select-reference-dialog vi-input-search input:focus {
   background-color: white;
 }
-[theme-color-1] vi-select-reference-dialog vi-dialog vi-input-search input:focus + button {
+[theme-color-1] vi-select-reference-dialog vi-input-search input:focus + button {
   background-color: #4682b4;
 }
-[theme-color-2] vi-select-reference-dialog vi-dialog vi-input-search input:focus + button {
+[theme-color-2] vi-select-reference-dialog vi-input-search input:focus + button {
   background-color: #009688;
 }
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
-  vi-select-reference-dialog vi-dialog .content {
+  vi-select-reference-dialog main {
     width: 85vw;
     height: 85vh;
   }
 }
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991px) {
-  vi-select-reference-dialog vi-dialog > #dialogHost > #dialog > .content {
+  vi-select-reference-dialog main {
     height: 60vh;
     width: 90vw;
   }
 }
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1199px) {
-  vi-select-reference-dialog vi-dialog > #dialogHost > #dialog > .content {
+  vi-select-reference-dialog main {
     height: 60vh;
     width: 90vw;
   }
 }
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-  vi-select-reference-dialog vi-dialog > #dialogHost > #dialog > .content {
+  vi-select-reference-dialog main {
     height: 60vh;
     width: 1000px;
   }

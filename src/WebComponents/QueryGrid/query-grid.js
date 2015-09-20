@@ -37,6 +37,7 @@ var Vidyano;
             QueryGrid.prototype.detached = function () {
                 var _this = this;
                 _super.prototype.detached.call(this);
+                this._columnMenuColumn = null;
                 if (this._tableData) {
                     var headerFragment = document.createDocumentFragment();
                     var dataFragment = document.createDocumentFragment();
@@ -55,7 +56,7 @@ var Vidyano;
                     this._tableHeader.rows[0].columns.forEach(function (cell) {
                         if (cell.column && cell.column.isPinned)
                             _this.transform("", cell.cell.parentElement);
-                        cell.setColumn(null);
+                        cell.setColumn(null, false);
                     });
                     Enumerable.from(this._tableData.rows).forEach(function (row) {
                         row.columns.forEach(function (cell) {
@@ -80,9 +81,16 @@ var Vidyano;
                 enumerable: true,
                 configurable: true
             });
-            Object.defineProperty(QueryGrid.prototype, "_actions", {
+            Object.defineProperty(QueryGrid.prototype, "_actionMenu", {
                 get: function () {
                     return this.$["actions"];
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGrid.prototype, "_columnMenu", {
+                get: function () {
+                    return this.$["columnMenu"];
                 },
                 enumerable: true,
                 configurable: true
@@ -103,8 +111,8 @@ var Vidyano;
                 var _this = this;
                 if (!this._tableData || (!horizontalScrollOffset && !this._horizontalScrollOffsetCurrent))
                     return;
-                if (this._actions.open)
-                    this._actions.close();
+                if (this._actionMenu.open)
+                    this._actionMenu.close();
                 this.transform("translate(" + -(this._horizontalScrollOffsetCurrent = horizontalScrollOffset) + "px, 0)", this._tableHeader.host);
                 [this._tableHeader, this._tableData].forEach(function (table) {
                     table.rows.forEach(function (row) {
@@ -128,8 +136,8 @@ var Vidyano;
                 var _this = this;
                 if (!rowHeight || !viewportSize.height)
                     return [];
-                if (this._actions.open)
-                    this._actions.close();
+                if (this._actionMenu.open)
+                    this._actionMenu.close();
                 var maxTableRowCount = Math.floor(viewportSize.height * 1.5 / rowHeight);
                 var viewportStartRowIndex = Math.floor(verticalScrollOffset / rowHeight);
                 var viewportEndRowIndex = Math.ceil((verticalScrollOffset + viewportSize.height) / rowHeight);
@@ -157,6 +165,18 @@ var Vidyano;
                 else if (newVirtualTableStartIndex === undefined && this._items && this._items.length === newItems.length)
                     return this._items;
                 return newItems;
+            };
+            QueryGrid.prototype._computeCanSelect = function (query) {
+                return !!query && query.actions.some(function (a) { return a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue; });
+            };
+            QueryGrid.prototype._computeCanSelectAll = function (query, canSelect) {
+                return canSelect && query.selectAll.isAvailable;
+            };
+            QueryGrid.prototype._computeInlineActions = function (query) {
+                return !!query && !query.asLookup && !this.asLookup && (query.actions.some(function (a) { return a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); }));
+            };
+            QueryGrid.prototype._computeCanFilter = function (query) {
+                return !!query && query.canFilter;
             };
             QueryGrid.prototype._updateTables = function (columns, items) {
                 var _this = this;
@@ -344,18 +364,18 @@ var Vidyano;
                     button.action = action;
                     button.item = detail.row.item;
                     button.forceLabel = true;
-                    Polymer.dom(_this._actions).appendChild(button);
+                    Polymer.dom(_this._actionMenu).appendChild(button);
                 });
-                Polymer.dom(this._actions).flush();
+                Polymer.dom(this._actionMenu).flush();
                 detail.row.host.setAttribute("hover", "");
-                this._actions.popup(host).then(function () {
+                this._actionMenu.popup(host).then(function () {
                     if (host !== detail.host)
                         host.setAttribute("hidden", "");
-                    _this._actions.empty();
+                    _this._actionMenu.empty();
                     detail.row.host.removeAttribute("hover");
                 });
             };
-            QueryGrid.prototype._contextmenu = function (e) {
+            QueryGrid.prototype._contextmenuData = function (e) {
                 if (e.which !== 3 || e.shiftKey || e.ctrlKey ||
                     !this.query || this.query.asLookup || this.asLookup)
                     return true;
@@ -379,7 +399,34 @@ var Vidyano;
                 return false;
             };
             QueryGrid.prototype._closeActions = function () {
-                this._actions.close();
+                this._actionMenu.close();
+            };
+            QueryGrid.prototype._contextmenuColumn = function (e) {
+                if (!this.query || this.query.asLookup || this.asLookup)
+                    return true;
+                var src = e.target;
+                while (src && src.tagName !== "VI-QUERY-GRID-COLUMN-HEADER")
+                    src = src.parentElement;
+                if (!(src instanceof QueryGridColumnHeader) || !src.column)
+                    return true;
+                var column = this._columnMenuColumn = src.column;
+                var togglePin = this.$["columnMenuTogglePin"];
+                togglePin.label = column.isPinned ? this.translations.Unpin : this.translations.Pin;
+                togglePin.checked = column.isPinned;
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            };
+            QueryGrid.prototype._togglePin = function () {
+                if (!this._columnMenuColumn) {
+                    console.error("No column was previously set");
+                    return;
+                }
+                this._columnMenuColumn.isPinned = !this._columnMenuColumn.isPinned;
+                this._horizontalScrollOffset = 0;
+                this.notifyPath("query.columns", this.query.columns.slice());
+            };
+            QueryGrid.prototype._configureColumns = function () {
             };
             QueryGrid.prototype._preventScroll = function (e) {
                 if (this.scrollLeft > 0 || this.scrollTop > 0) {
@@ -388,18 +435,6 @@ var Vidyano;
                     e.preventDefault();
                     e.stopPropagation();
                 }
-            };
-            QueryGrid.prototype._computeCanSelect = function (query) {
-                return !!query && query.actions.some(function (a) { return a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue; });
-            };
-            QueryGrid.prototype._computeCanSelectAll = function (query, canSelect) {
-                return canSelect && query.selectAll.isAvailable;
-            };
-            QueryGrid.prototype._computeInlineActions = function (query) {
-                return !!query && !query.asLookup && !this.asLookup && (query.actions.some(function (a) { return a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1); }));
-            };
-            QueryGrid.prototype._computeCanFilter = function (query) {
-                return !!query && query.canFilter;
             };
             QueryGrid.tableCache = [];
             QueryGrid.perf = performance;
@@ -490,7 +525,8 @@ var Vidyano;
                     listeners: {
                         "item-select": "_itemSelect",
                         "item-actions": "_itemActions",
-                        "contextmenu": "_contextmenu",
+                        "dataHeaderHost.contextmenu": "_contextmenuColumn",
+                        "dataHost.contextmenu": "_contextmenuData",
                         "scroll": "_preventScroll"
                     }
                 })
@@ -672,7 +708,8 @@ var Vidyano;
                 _super.call(this, "vi-query-grid-table-header-row", table);
             }
             QueryGridTableHeaderRow.prototype.setColumns = function (columns) {
-                this.columns.forEach(function (col, index) { return col.setColumn(columns[index]); });
+                var lastPinnedColumn = Enumerable.from(columns).lastOrDefault(function (c) { return c.isPinned; });
+                this.columns.forEach(function (col, index) { return col.setColumn(columns[index], lastPinnedColumn === columns[index]); });
             };
             QueryGridTableHeaderRow.prototype._createColumn = function () {
                 return new Vidyano.WebComponents.QueryGridTableHeaderColumn();
@@ -735,9 +772,10 @@ var Vidyano;
                     }
                     this._updateIsSelected();
                 }
+                var lastPinnedColumn = Enumerable.from(columns).lastOrDefault(function (c) { return c.isPinned; });
                 this._firstCellWithPendingUpdates = -1;
-                this.columns.slice(0, columns ? this._columnCount = columns.length : this._columnCount).forEach(function (column, index) {
-                    if (!column.setItem(item, columns ? columns[index] : null) && _this._firstCellWithPendingUpdates < 0)
+                this.columns.slice(0, columns ? this._columnCount = columns.length : this._columnCount).forEach(function (gridColumn, index) {
+                    if (!gridColumn.setItem(item, columns ? columns[index] : null, columns && columns[index] === lastPinnedColumn) && _this._firstCellWithPendingUpdates < 0)
                         _this._firstCellWithPendingUpdates = index;
                 });
             };
@@ -835,15 +873,12 @@ var Vidyano;
                 enumerable: true,
                 configurable: true
             });
-            QueryGridTableColumn.prototype.setColumn = function (column) {
+            QueryGridTableColumn.prototype.setColumn = function (column, lastPinned) {
                 if (column == this._column)
                     return;
-                if (!(this._column = column) || this._column.isPinned != this._isPinned) {
-                    if (this._isPinned = this._column ? this._column.isPinned : false)
-                        this.host.classList.add("pinned");
-                    else
-                        this.host.classList.remove("pinned");
-                }
+                if (!(this._column = column) || this._column.isPinned != this._isPinned)
+                    this.host.classList.toggle("pinned", this._isPinned = this._column ? this._column.isPinned : false);
+                this.host.classList.toggle("last-pinned", this._isPinned && lastPinned);
                 this.host.setAttribute("name", this._column ? Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(this._column.name) : "");
             };
             Object.defineProperty(QueryGridTableColumn.prototype, "hasContent", {
@@ -870,10 +905,10 @@ var Vidyano;
             function QueryGridTableHeaderColumn() {
                 _super.call(this, "vi-query-grid-table-header-column", new Vidyano.WebComponents.QueryGridColumnHeader());
             }
-            QueryGridTableHeaderColumn.prototype.setColumn = function (column) {
+            QueryGridTableHeaderColumn.prototype.setColumn = function (column, lastPinned) {
                 if (this.column === column)
                     return;
-                _super.prototype.setColumn.call(this, this.cell.column = column);
+                _super.prototype.setColumn.call(this, this.cell.column = column, lastPinned);
             };
             return QueryGridTableHeaderColumn;
         })(QueryGridTableColumn);
@@ -901,8 +936,8 @@ var Vidyano;
                 enumerable: true,
                 configurable: true
             });
-            QueryGridTableDataColumn.prototype.setItem = function (item, column) {
-                this.setColumn(column);
+            QueryGridTableDataColumn.prototype.setItem = function (item, column, lastPinned) {
+                this.setColumn(column, lastPinned);
                 this._item = item;
                 return !(this._hasPendingUpdate = !this._render());
             };
@@ -1026,7 +1061,7 @@ var Vidyano;
         var QueryGridTableColumnRemainder = (function (_super) {
             __extends(QueryGridTableColumnRemainder, _super);
             function QueryGridTableColumnRemainder() {
-                _super.call(this, "vi-query-grid-table-column-remainder");
+                _super.call(this, "vi-query-grid-table-column-remainder", document.createElement("div"));
             }
             return QueryGridTableColumnRemainder;
         })(QueryGridTableColumn);

@@ -4,24 +4,24 @@
 <link rel="import" href="../Select/select.html" />
 
 <dom-module id="vi-select-reference-dialog">
-	<template>
-        <vi-dialog id="dialog">
-            <header class="horizontal layout center">
-                <h4 class="flex">{{query.label}}</h4>
-                <vi-input-search value="{{query.textSearch}}" on-search="_search" autofocus></vi-input-search>
-            </header>
+    <template>
+        <header class="horizontal layout center">
+            <h4 class="flex">{{query.label}}</h4>
+            <vi-input-search value="{{query.textSearch}}" on-search="_search" autofocus></vi-input-search>
+        </header>
+        <main>
             <div class="fit vertical layout">
                 <vi-notification service-object="{{query}}"></vi-notification>
                 <div class="flex relative">
-                    <content select="vi-query-grid"></content>
+                    <vi-query-grid query="{{query}}" on-item-tap="_selectReference" as-lookup></vi-query-grid>
                 </div>
             </div>
-            <footer class="horizontal layout end-justified">
-                <button is="vi-button" on-tap="_select" disabled$="{{!canSelect}}" label="{{translateMessage('OK', isAttached)}}"></button>
-                <button is="vi-button" inverse on-tap="_cancel" label="{{translateMessage('Cancel', isAttached)}}"></button>
-            </footer>
-        </vi-dialog>
-	</template>
+        </main>
+        <footer class="horizontal layout end-justified">
+            <button is="vi-button" on-tap="_select" disabled$="{{!canSelect}}" label="{{translateMessage('OK', isAttached)}}"></button>
+            <button is="vi-button" inverse on-tap="cancel" label="{{translateMessage('Cancel', isAttached)}}"></button>
+        </footer>
+    </template>
 </dom-module>
 
 <link rel="stylesheet" href="select-reference-dialog.css" />
