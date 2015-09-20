@@ -118,7 +118,7 @@
             action.skipOpen = true;
 
             action.execute().then(po => {
-                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po)).then(po => {
+                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, true)).then(po => {
                     po.attributesByName["Columns"].setValue(this._getColumnsFilterData(this.query));
                     filterAttr.objects.push(po);
 

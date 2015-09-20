@@ -250,10 +250,16 @@ var Vidyano;
                 }
             };
             App.prototype.showDialog = function (dialog, options) {
-                var dialogHost = new Vidyano.WebComponents.DialogHost();
-                Polymer.dom(dialogHost).appendChild(dialog);
+                var _this = this;
+                var dialogHost = new Vidyano.WebComponents.DialogHost(dialog);
                 Polymer.dom(this).appendChild(dialogHost);
-                return dialogHost.show(options);
+                return dialogHost.show(options).then(function (result) {
+                    Polymer.dom(_this).removeChild(dialogHost);
+                    return result;
+                }).catch(function (e) {
+                    Polymer.dom(_this).removeChild(dialogHost);
+                    throw e;
+                });
             };
             App.prototype.showMessageDialog = function (options) {
                 return this.showDialog(new Vidyano.WebComponents.MessageDialog(), options);

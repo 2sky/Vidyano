@@ -61,10 +61,16 @@ module Vidyano.WebComponents {
                     reflectToAttribute: true
                 };
 
-                if (!info.listeners)
-                    info.listeners = {};
-
+                info.listeners = info.listeners || {};
                 info.listeners["show"] = "_show";
+
+                info.keybindings = info.keybindings || {};
+                if(!info.keybindings["esc"]) {
+                    info.keybindings["esc"] = {
+                        listener: "cancel",
+                        priority: Number.MAX_VALUE
+                    };
+                }
 
                 return WebComponent.register(obj, info);
             };
@@ -86,12 +92,17 @@ module Vidyano.WebComponents {
         }
     })
     export class DialogHost extends WebComponent {
-        private _dialog: Dialog;
         private _translate: { x: number; y: number };
         shown: boolean;
 
         private _setShown: (shown: boolean) => void;
         private _set_translate: (translate: { x: number; y: number }) => void;
+
+        constructor(private _dialog: Dialog) {
+            super();
+
+            Polymer.dom(this).appendChild(_dialog);
+        }
 
         private _translateChanged() {
             this._dialog.style.webkitTransform = this._dialog.style.transform = "translate(" + this._translate.x + "px, " + this._translate.y + "px)";
@@ -117,10 +128,6 @@ module Vidyano.WebComponents {
         }
 
         show(options: DialogOptions = {}): Promise<any> {
-            this._dialog = <Dialog>this.firstElementChild;
-            if (!this._dialog)
-                return Promise.reject("No dialog child element found");
-
             var header = <HTMLElement>this.querySelector("[dialog] > header");
             if (header) {
                 var trackHandler: Function;
@@ -139,6 +146,8 @@ module Vidyano.WebComponents {
                     Polymer.Gestures.remove(header, "track", trackHandler);
 
                 this._setShown(false);
+
+                Polymer.dom(this).removeChild(this._dialog);
                 this._dialog = null;
 
                 return result;
@@ -147,8 +156,11 @@ module Vidyano.WebComponents {
                     Polymer.Gestures.remove(header, "track", trackHandler);
 
                 this._setShown(false);
+
+                Polymer.dom(this).removeChild(this._dialog);
                 this._dialog = null;
-                reject(e);
+
+                throw e;
             });
 
             this._dialog.fire("show", new DialogInstance(options, promise, resolve, reject), { bubbles: false });

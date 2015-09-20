@@ -80,7 +80,7 @@ var Vidyano;
                 var action = filterAttr.details.actions["New"];
                 action.skipOpen = true;
                 action.execute().then(function (po) {
-                    _this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po)).then(function (po) {
+                    _this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, true)).then(function (po) {
                         po.attributesByName["Columns"].setValue(_this._getColumnsFilterData(_this.query));
                         filterAttr.objects.push(po);
                         return _this.query.filters.save().then(function (result) {

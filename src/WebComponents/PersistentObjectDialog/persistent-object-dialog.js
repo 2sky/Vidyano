@@ -17,16 +17,22 @@ var Vidyano;
     (function (WebComponents) {
         var PersistentObjectDialog = (function (_super) {
             __extends(PersistentObjectDialog, _super);
-            function PersistentObjectDialog(persistentObject) {
+            function PersistentObjectDialog(persistentObject, _forwardSave) {
+                if (_forwardSave === void 0) { _forwardSave = false; }
                 _super.call(this);
                 this.persistentObject = persistentObject;
+                this._forwardSave = _forwardSave;
                 persistentObject.beginEdit();
             }
             PersistentObjectDialog.prototype._save = function () {
                 var _this = this;
-                (this._saveHook ? this._saveHook(this.persistentObject) : this.persistentObject.save()).then(function () {
-                    _this.instance.resolve(_this.persistentObject);
-                });
+                if (this._forwardSave)
+                    this.instance.resolve(this.persistentObject);
+                else {
+                    this.persistentObject.save().then(function () {
+                        _this.instance.resolve(_this.persistentObject);
+                    });
+                }
             };
             PersistentObjectDialog.prototype._cancel = function () {
                 if (this.persistentObject) {
@@ -56,12 +62,6 @@ var Vidyano;
                     },
                     hostAttributes: {
                         "dialog": ""
-                    },
-                    keybindings: {
-                        "esc": {
-                            listener: "_cancel",
-                            priority: Number.MAX_VALUE
-                        }
                     }
                 })
             ], PersistentObjectDialog);

@@ -369,12 +369,19 @@
         }
 
         showDialog(dialog: Dialog, options?: DialogOptions): Promise<any> {
-            var dialogHost = new Vidyano.WebComponents.DialogHost();
+            var dialogHost = new Vidyano.WebComponents.DialogHost(dialog);
 
-            Polymer.dom(dialogHost).appendChild(dialog);
             Polymer.dom(this).appendChild(dialogHost);
 
-            return dialogHost.show(options);
+            return dialogHost.show(options).then(result => {
+                Polymer.dom(this).removeChild(dialogHost);
+
+                return result;
+            }).catch(e => {
+                Polymer.dom(this).removeChild(dialogHost);
+
+                throw e;
+            });
         }
 
         showMessageDialog(options: MessageDialogOptions): Promise<any> {

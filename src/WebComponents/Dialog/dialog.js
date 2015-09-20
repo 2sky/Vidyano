@@ -73,9 +73,15 @@ var Vidyano;
                         readOnly: true,
                         reflectToAttribute: true
                     };
-                    if (!info.listeners)
-                        info.listeners = {};
+                    info.listeners = info.listeners || {};
                     info.listeners["show"] = "_show";
+                    info.keybindings = info.keybindings || {};
+                    if (!info.keybindings["esc"]) {
+                        info.keybindings["esc"] = {
+                            listener: "cancel",
+                            priority: Number.MAX_VALUE
+                        };
+                    }
                     return WebComponents.WebComponent.register(obj, info);
                 };
             };
@@ -84,8 +90,10 @@ var Vidyano;
         WebComponents.Dialog = Dialog;
         var DialogHost = (function (_super) {
             __extends(DialogHost, _super);
-            function DialogHost() {
-                _super.apply(this, arguments);
+            function DialogHost(_dialog) {
+                _super.call(this);
+                this._dialog = _dialog;
+                Polymer.dom(this).appendChild(_dialog);
             }
             DialogHost.prototype._translateChanged = function () {
                 this._dialog.style.webkitTransform = this._dialog.style.transform = "translate(" + this._translate.x + "px, " + this._translate.y + "px)";
@@ -109,9 +117,6 @@ var Vidyano;
             DialogHost.prototype.show = function (options) {
                 var _this = this;
                 if (options === void 0) { options = {}; }
-                this._dialog = this.firstElementChild;
-                if (!this._dialog)
-                    return Promise.reject("No dialog child element found");
                 var header = this.querySelector("[dialog] > header");
                 if (header) {
                     var trackHandler;
@@ -127,14 +132,16 @@ var Vidyano;
                     if (trackHandler)
                         Polymer.Gestures.remove(header, "track", trackHandler);
                     _this._setShown(false);
+                    Polymer.dom(_this).removeChild(_this._dialog);
                     _this._dialog = null;
                     return result;
                 }).catch(function (e) {
                     if (trackHandler)
                         Polymer.Gestures.remove(header, "track", trackHandler);
                     _this._setShown(false);
+                    Polymer.dom(_this).removeChild(_this._dialog);
                     _this._dialog = null;
-                    reject(e);
+                    throw e;
                 });
                 this._dialog.fire("show", new DialogInstance(options, promise, resolve, reject), { bubbles: false });
                 return promise;

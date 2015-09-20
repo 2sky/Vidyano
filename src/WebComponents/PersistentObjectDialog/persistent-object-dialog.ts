@@ -9,28 +9,26 @@
         },
         hostAttributes: {
             "dialog": ""
-        },
-        keybindings: {
-            "esc": {
-                listener: "_cancel",
-                priority: Number.MAX_VALUE
-            }
         }
     })
     export class PersistentObjectDialog extends Dialog {
         private _saveHook: (po: Vidyano.PersistentObject) => Promise<any>;
         tab: Vidyano.PersistentObjectAttributeTab;
 
-        constructor(public persistentObject: Vidyano.PersistentObject) {
+        constructor(public persistentObject: Vidyano.PersistentObject, private _forwardSave: boolean = false) {
             super();
 
             persistentObject.beginEdit();
         }
 
         private _save() {
-            (this._saveHook ? this._saveHook(this.persistentObject) : this.persistentObject.save()).then(() => {
+            if (this._forwardSave)
                 this.instance.resolve(this.persistentObject);
-            });
+            else {
+                this.persistentObject.save().then(() => {
+                    this.instance.resolve(this.persistentObject);
+                });
+            }
         }
 
         private _cancel() {
