@@ -99,7 +99,7 @@ module Vidyano.WebComponents.Attributes {
             this.attribute.lookup.selectedItems = [];
             this.attribute.lookup.search();
 
-            return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup), { autoSize: true }).then(result => {
+            return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup)).then(result => {
                 if (!result) {
                     if (throwExceptions === true)
                         return Promise.reject("Nothing selected");

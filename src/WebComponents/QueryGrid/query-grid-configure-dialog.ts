@@ -1,7 +1,15 @@
 ﻿module Vidyano.WebComponents {
-    @Dialog.register
+    @Dialog.register({
+        properties: {
+            grid: Object,
+            query: {
+                type: Object,
+                computed: "grid.query"
+            }
+        }
+    })
     export class QueryGridConfigureDialog extends Dialog {
-        constructor(private _grid: QueryGrid) {
+        constructor(public grid: QueryGrid) {
             super();
         }
     }

@@ -623,8 +623,7 @@
         }
 
         private _configureColumns() {
-            // TODO
-            // this.app.showDialog(new Vidyano.WebComponents.QueryGridConfigureDialog(this));
+            this.app.showDialog(new Vidyano.WebComponents.QueryGridConfigureDialog(this));
         }
 
         private _preventScroll(e: Event) {
@@ -995,14 +994,21 @@
             return this._isPinned;
         }
 
-        setColumn(column: Vidyano.QueryColumn, lastPinned: boolean) {
+        setColumn(column: Vidyano.QueryColumn, lastPinned: boolean = false) {
             if (column == this._column)
                 return;
 
-            if (!(this._column = column) || this._column.isPinned != this._isPinned)
-                this.host.classList.toggle("pinned", this._isPinned = this._column ? this._column.isPinned : false);
+            if (!(this._column = column) || this._column.isPinned != this._isPinned) {
+                if (this._isPinned = this._column ? this._column.isPinned : false)
+                    this.host.classList.add("pinned");
+                else
+                    this.host.classList.remove("pinned");
+            }
 
-            this.host.classList.toggle("last-pinned", this._isPinned && lastPinned);
+            if (this._isPinned && lastPinned)
+                this.host.classList.add("last-pinned");
+            else
+                this.host.classList.remove("last-pinned");
 
             this.host.setAttribute("name", this._column ? Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(this._column.name) : "");
         }

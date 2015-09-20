@@ -427,6 +427,7 @@ var Vidyano;
                 this.notifyPath("query.columns", this.query.columns.slice());
             };
             QueryGrid.prototype._configureColumns = function () {
+                this.app.showDialog(new Vidyano.WebComponents.QueryGridConfigureDialog(this));
             };
             QueryGrid.prototype._preventScroll = function (e) {
                 if (this.scrollLeft > 0 || this.scrollTop > 0) {
@@ -874,11 +875,19 @@ var Vidyano;
                 configurable: true
             });
             QueryGridTableColumn.prototype.setColumn = function (column, lastPinned) {
+                if (lastPinned === void 0) { lastPinned = false; }
                 if (column == this._column)
                     return;
-                if (!(this._column = column) || this._column.isPinned != this._isPinned)
-                    this.host.classList.toggle("pinned", this._isPinned = this._column ? this._column.isPinned : false);
-                this.host.classList.toggle("last-pinned", this._isPinned && lastPinned);
+                if (!(this._column = column) || this._column.isPinned != this._isPinned) {
+                    if (this._isPinned = this._column ? this._column.isPinned : false)
+                        this.host.classList.add("pinned");
+                    else
+                        this.host.classList.remove("pinned");
+                }
+                if (this._isPinned && lastPinned)
+                    this.host.classList.add("last-pinned");
+                else
+                    this.host.classList.remove("last-pinned");
                 this.host.setAttribute("name", this._column ? Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(this._column.name) : "");
             };
             Object.defineProperty(QueryGridTableColumn.prototype, "hasContent", {

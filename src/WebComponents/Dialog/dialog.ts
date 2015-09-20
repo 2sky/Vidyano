@@ -1,6 +1,5 @@
 module Vidyano.WebComponents {
     export interface DialogOptions {
-        autoSize?: boolean;
     }
 
     export class DialogInstance {
@@ -18,11 +17,9 @@ module Vidyano.WebComponents {
 
     export abstract class Dialog extends WebComponent {
         private _instance: DialogInstance;
-        private _setAutoSize: (autoSize: boolean) => void;
 
         private _show(e: CustomEvent, details: DialogInstance) {
             this._instance = details;
-            this._setAutoSize(details.options.autoSize);
 
             this.show(details.options);
         }
@@ -54,11 +51,6 @@ module Vidyano.WebComponents {
                     readOnly: true,
                     reflectToAttribute: true,
                     value: true
-                };
-                info.properties["autoSize"] = {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
                 };
 
                 info.listeners = info.listeners || {};

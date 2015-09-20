@@ -38,7 +38,6 @@ var Vidyano;
             }
             Dialog.prototype._show = function (e, details) {
                 this._instance = details;
-                this._setAutoSize(details.options.autoSize);
                 this.show(details.options);
             };
             Object.defineProperty(Dialog.prototype, "instance", {
@@ -67,11 +66,6 @@ var Vidyano;
                         readOnly: true,
                         reflectToAttribute: true,
                         value: true
-                    };
-                    info.properties["autoSize"] = {
-                        type: Boolean,
-                        readOnly: true,
-                        reflectToAttribute: true
                     };
                     info.listeners = info.listeners || {};
                     info.listeners["show"] = "_show";

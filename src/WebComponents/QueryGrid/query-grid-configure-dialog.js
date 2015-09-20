@@ -17,12 +17,20 @@ var Vidyano;
     (function (WebComponents) {
         var QueryGridConfigureDialog = (function (_super) {
             __extends(QueryGridConfigureDialog, _super);
-            function QueryGridConfigureDialog(_grid) {
+            function QueryGridConfigureDialog(grid) {
                 _super.call(this);
-                this._grid = _grid;
+                this.grid = grid;
             }
             QueryGridConfigureDialog = __decorate([
-                WebComponents.Dialog.register
+                WebComponents.Dialog.register({
+                    properties: {
+                        grid: Object,
+                        query: {
+                            type: Object,
+                            computed: "grid.query"
+                        }
+                    }
+                })
             ], QueryGridConfigureDialog);
             return QueryGridConfigureDialog;
         })(WebComponents.Dialog);

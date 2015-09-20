@@ -69,7 +69,7 @@ var Vidyano;
                     var _this = this;
                     this.attribute.lookup.selectedItems = [];
                     this.attribute.lookup.search();
-                    return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup), { autoSize: true }).then(function (result) {
+                    return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup)).then(function (result) {
                         if (!result) {
                             if (throwExceptions === true)
                                 return Promise.reject("Nothing selected");
