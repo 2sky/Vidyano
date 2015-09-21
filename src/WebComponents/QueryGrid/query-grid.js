@@ -67,6 +67,7 @@ var Vidyano;
                         _this.transform("", row.actions.host);
                         row.setItem(null, null);
                     });
+                    this._hasPendingUpdates = false;
                 }
             };
             QueryGrid.prototype.isColumnInView = function (column) {
@@ -96,16 +97,15 @@ var Vidyano;
                 configurable: true
             });
             QueryGrid.prototype._sizeChanged = function (e, detail) {
-                var _this = this;
                 this._setViewportSize(detail);
                 this._setRowHeight(parseInt(getComputedStyle(this).lineHeight));
-                this._requestAnimationFrame(function () {
-                    _this._updateTableDataPendingUpdates();
-                    if (!_this._remainderWidth || _this._remainderWidth < detail.width) {
-                        _this._style.setStyle("Remainder", "td[is=\"vi-query-grid-table-column-remainder\"] { width: " + detail.width + "px; }");
-                        _this._remainderWidth = detail.width * 2;
+                if (!this._hasPendingUpdates) {
+                    this._updateTableDataPendingUpdates();
+                    if (!this._remainderWidth || this._remainderWidth < detail.width) {
+                        this._style.setStyle("Remainder", "td[is=\"vi-query-grid-table-column-remainder\"] { width: " + detail.width + "px; }");
+                        this._remainderWidth = detail.width * 2;
                     }
-                });
+                }
             };
             QueryGrid.prototype._horizontalScrollOffsetChanged = function (horizontalScrollOffset) {
                 var _this = this;
@@ -134,7 +134,7 @@ var Vidyano;
             QueryGrid.prototype._computeColumns = function (columns) {
                 if (!columns || columns.length === 0)
                     return [];
-                var visibleColumns = Enumerable.from(columns).where(function (c) { return !c.isHidden; }).memoize();
+                var visibleColumns = Enumerable.from(this._settings.columns).where(function (c) { return !c.isHidden; }).memoize();
                 var pinnedColumns = visibleColumns.where(function (c) { return c.isPinned; }).orderBy(function (c) { return c.offset; }).toArray();
                 var unpinnedColumns = visibleColumns.where(function (c) { return !c.isPinned; }).orderBy(function (c) { return c.offset; }).toArray();
                 return pinnedColumns.concat(unpinnedColumns);
@@ -185,8 +185,10 @@ var Vidyano;
             QueryGrid.prototype._computeCanFilter = function (query) {
                 return !!query && query.canFilter;
             };
-            QueryGrid.prototype._updateTables = function (items, columns) {
+            QueryGrid.prototype._updateTables = function (items, columns, isAttached) {
                 var _this = this;
+                if (!isAttached)
+                    return;
                 var _tablesUpdatingTimestamp = this._tablesUpdatingTimestamp = new Date();
                 var tablesUpdating = this._tablesUpdating = (this._tablesUpdating || Promise.resolve()).then(function () { return new Promise(function (resolve) {
                     if (_tablesUpdatingTimestamp !== _this._tablesUpdatingTimestamp)
@@ -218,8 +220,6 @@ var Vidyano;
                 this._requestAnimationFrame(function () {
                     var newHeight = totalItems * rowHeight;
                     _this.$["verticalSpacer"].style.height = newHeight + "px";
-                    if (newHeight > _this._virtualTableOffset)
-                        _this.set("_forceUpdate", new Date());
                 });
             };
             QueryGrid.prototype._updateTableHeaders = function (columns) {
@@ -245,13 +245,15 @@ var Vidyano;
                     var virtualTableOffset = _this._virtualTableOffset;
                     _this._requestAnimationFrame(function () {
                         var lastPinnedColumnIndex = Enumerable.from(columns).lastIndexOf(function (c) { return c.isPinned; });
+                        var hasPendingUpdates = false;
                         for (var index = 0; index < rowCount; index++) {
                             if (items != _this._items || virtualTableStartIndex !== _this._virtualTableStartIndex) {
                                 resolve(false);
                                 return;
                             }
-                            _this._tableData.rows[index].setItem(items[index], columns, lastPinnedColumnIndex);
+                            hasPendingUpdates = _this._tableData.rows[index].setItem(items[index], columns, lastPinnedColumnIndex) || hasPendingUpdates;
                         }
+                        _this._hasPendingUpdates = hasPendingUpdates;
                         if (_this._virtualTableOffsetCurrent !== _this._virtualTableOffset && _this._virtualTableOffset === virtualTableOffset)
                             _this.translate3d("0", (_this._virtualTableOffsetCurrent = _this._virtualTableOffset) + "px", "0", _this.$["dataHost"]);
                         var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
@@ -264,15 +266,21 @@ var Vidyano;
             };
             QueryGrid.prototype._updateTableDataPendingUpdates = function () {
                 var _this = this;
-                if (!this._tableData)
-                    return;
-                if (this._updateTableDataPendingUpdatesRAF)
-                    cancelAnimationFrame(this._updateTableDataPendingUpdatesRAF);
-                this._updateTableDataPendingUpdatesRAF = this._requestAnimationFrame(function () {
-                    var start = Vidyano.WebComponents.QueryGrid.perf.now();
-                    Enumerable.from(_this._tableData.rows).forEach(function (row) { return row.updatePendingCellUpdates(); });
-                    var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
-                    console.info("Pending Data Updated: " + timeTaken + "ms");
+                if (!this._tableData || !this._hasPendingUpdates)
+                    return Promise.resolve(this._hasPendingUpdates);
+                return new Promise(function (resolve) {
+                    if (_this._updateTableDataPendingUpdatesRAF)
+                        cancelAnimationFrame(_this._updateTableDataPendingUpdatesRAF);
+                    _this._updateTableDataPendingUpdatesRAF = _this._requestAnimationFrame(function () {
+                        var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                        var hasPendingUpdates = false;
+                        Enumerable.from(_this._tableData.rows).forEach(function (row) {
+                            hasPendingUpdates = row.updatePendingCellUpdates() || hasPendingUpdates;
+                        });
+                        var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                        console.info("Pending Data Updated: " + timeTaken + "ms");
+                        resolve(_this._hasPendingUpdates = hasPendingUpdates);
+                    });
                 });
             };
             QueryGrid.prototype._updateColumnWidths = function () {
@@ -464,11 +472,11 @@ var Vidyano;
                         query: Object,
                         _settings: {
                             type: Object,
-                            computed: "_computeSettings(query, isAttached)"
+                            computed: "_computeSettings(query)"
                         },
                         _columns: {
                             type: Object,
-                            computed: "_computeColumns(_settings.columns)"
+                            computed: "_computeColumns(query.columns, _settings.columns)"
                         },
                         _forceUpdate: {
                             type: Object,
@@ -546,6 +554,192 @@ var Vidyano;
             return QueryGrid;
         })(WebComponents.WebComponent);
         WebComponents.QueryGrid = QueryGrid;
+        var QueryGridColumn = (function () {
+            function QueryGridColumn(_column, _userSettingsColumnData) {
+                this._column = _column;
+                this._userSettingsColumnData = _userSettingsColumnData;
+            }
+            Object.defineProperty(QueryGridColumn.prototype, "column", {
+                get: function () {
+                    return this._column;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "query", {
+                get: function () {
+                    return this._column.query;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "name", {
+                get: function () {
+                    return this._column.name;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "label", {
+                get: function () {
+                    return this._column.label;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "type", {
+                get: function () {
+                    return this._column.type;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "canSort", {
+                get: function () {
+                    return this._column.canSort;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "canFilter", {
+                get: function () {
+                    return this._column.canFilter;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "includes", {
+                get: function () {
+                    return this._column.includes;
+                },
+                set: function (includes) {
+                    this._column.includes = includes;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "excludes", {
+                get: function () {
+                    return this._column.excludes;
+                },
+                set: function (excludes) {
+                    this._column.excludes = excludes;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "sortDirection", {
+                get: function () {
+                    return this._column.sortDirection;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "distincts", {
+                get: function () {
+                    return this._column.distincts;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "offset", {
+                get: function () {
+                    return this._userSettingsColumnData.offset != null ? this._userSettingsColumnData.offset : this._column.offset;
+                },
+                set: function (offset) {
+                    this._userSettingsColumnData.offset = offset;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "isPinned", {
+                get: function () {
+                    return this._userSettingsColumnData.isPinned != null ? this._userSettingsColumnData.isPinned : this._column.isPinned;
+                },
+                set: function (isPinned) {
+                    this._userSettingsColumnData.isPinned = isPinned;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "isHidden", {
+                get: function () {
+                    return this._userSettingsColumnData.isHidden != null ? this._userSettingsColumnData.isHidden : this._column.isHidden;
+                },
+                set: function (isHidden) {
+                    this._userSettingsColumnData.isHidden = isHidden;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            Object.defineProperty(QueryGridColumn.prototype, "width", {
+                get: function () {
+                    return this._userSettingsColumnData.width != null ? this._userSettingsColumnData.width : this._column.width;
+                },
+                set: function (width) {
+                    this._userSettingsColumnData.width = width;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            return QueryGridColumn;
+        })();
+        WebComponents.QueryGridColumn = QueryGridColumn;
+        var QueryGridUserSettings = (function (_super) {
+            __extends(QueryGridUserSettings, _super);
+            function QueryGridUserSettings(_query, data) {
+                var _this = this;
+                if (data === void 0) { data = {}; }
+                _super.call(this);
+                this._query = _query;
+                this._columnsByName = {};
+                this._columns = [];
+                this._columns = this._query.columns.filter(function (c) { return c.width != "0"; }).map(function (c) { return _this._columnsByName[c.name] = new QueryGridColumn(c, data[c.name] || {
+                    offset: c.offset,
+                    isPinned: c.isPinned,
+                    isHidden: c.isHidden,
+                    width: c.width
+                }); });
+            }
+            QueryGridUserSettings.prototype.getColumn = function (name) {
+                return this._columnsByName[name];
+            };
+            Object.defineProperty(QueryGridUserSettings.prototype, "columns", {
+                get: function () {
+                    return this._columns;
+                },
+                enumerable: true,
+                configurable: true
+            });
+            QueryGridUserSettings.prototype.save = function () {
+                var _this = this;
+                var queryData;
+                var columnData = function (name) { return (queryData || (queryData = {}))[name] || (queryData[name] = {}); };
+                this._columns.forEach(function (c) {
+                    if (c.offset !== c.column.offset)
+                        columnData(c.name).offset = c.offset;
+                    if (c.isPinned !== c.column.isPinned)
+                        columnData(c.name).isPinned = c.isPinned;
+                    if (c.isHidden !== c.column.isHidden)
+                        columnData(c.name).isHidden = c.isHidden;
+                    if (c.width !== c.column.width)
+                        columnData(c.name).width = c.width;
+                });
+                if (queryData)
+                    this._query.service.application.userSettings["QueryGridSettings"][this._query.id] = queryData;
+                else if (this._query.service.application.userSettings["QueryGridSettings"][this._query.id])
+                    delete this._query.service.application.userSettings["QueryGridSettings"][this._query.id];
+                return this._query.service.application.saveUserSettings().then(function () {
+                    _this.notifyPropertyChanged("columns", _this._columns = _this.columns.slice());
+                });
+            };
+            QueryGridUserSettings.Load = function (query) {
+                var queryGridSettings = query.service.application.service.application.userSettings["QueryGridSettings"] || (query.service.application.userSettings["QueryGridSettings"] = {});
+                return new QueryGridUserSettings(query, queryGridSettings[query.id]);
+            };
+            return QueryGridUserSettings;
+        })(Vidyano.Common.Observable);
+        WebComponents.QueryGridUserSettings = QueryGridUserSettings;
         var QueryGridHeader = (function (_super) {
             __extends(QueryGridHeader, _super);
             function QueryGridHeader() {
@@ -789,17 +983,22 @@ var Vidyano;
                     if (!gridColumn.setItem(item, columns ? columns[index] : null, lastPinnedIndex === index) && _this._firstCellWithPendingUpdates < 0)
                         _this._firstCellWithPendingUpdates = index;
                 });
+                return this._firstCellWithPendingUpdates >= 0;
             };
             QueryGridTableDataRow.prototype.updatePendingCellUpdates = function () {
                 if (this._firstCellWithPendingUpdates < 0)
-                    return;
+                    return false;
                 for (var i = this._firstCellWithPendingUpdates; i < this.columns.length; i++) {
                     if (this.columns[i].update())
                         this._firstCellWithPendingUpdates++;
                     else
-                        return;
+                        break;
                 }
-                this._firstCellWithPendingUpdates = -1;
+                if (this._firstCellWithPendingUpdates == this.columns.length) {
+                    this._firstCellWithPendingUpdates = -1;
+                    return false;
+                }
+                return true;
             };
             QueryGridTableDataRow.prototype._tap = function (e) {
                 var _this = this;
@@ -1539,191 +1738,5 @@ var Vidyano;
             return QueryGridColumnFilter;
         })(QueryGridColumnFilterProxyBase);
         WebComponents.QueryGridColumnFilter = QueryGridColumnFilter;
-        var QueryGridColumn = (function () {
-            function QueryGridColumn(_column, _userSettingsColumnData) {
-                this._column = _column;
-                this._userSettingsColumnData = _userSettingsColumnData;
-            }
-            Object.defineProperty(QueryGridColumn.prototype, "column", {
-                get: function () {
-                    return this._column;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "query", {
-                get: function () {
-                    return this._column.query;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "name", {
-                get: function () {
-                    return this._column.name;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "label", {
-                get: function () {
-                    return this._column.label;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "type", {
-                get: function () {
-                    return this._column.type;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "canSort", {
-                get: function () {
-                    return this._column.canSort;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "canFilter", {
-                get: function () {
-                    return this._column.canFilter;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "includes", {
-                get: function () {
-                    return this._column.includes;
-                },
-                set: function (includes) {
-                    this._column.includes = includes;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "excludes", {
-                get: function () {
-                    return this._column.excludes;
-                },
-                set: function (excludes) {
-                    this._column.excludes = excludes;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "sortDirection", {
-                get: function () {
-                    return this._column.sortDirection;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "distincts", {
-                get: function () {
-                    return this._column.distincts;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "offset", {
-                get: function () {
-                    return this._userSettingsColumnData.offset != null ? this._userSettingsColumnData.offset : this._column.offset;
-                },
-                set: function (offset) {
-                    this._userSettingsColumnData.offset = offset;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "isPinned", {
-                get: function () {
-                    return this._userSettingsColumnData.isPinned != null ? this._userSettingsColumnData.isPinned : this._column.isPinned;
-                },
-                set: function (isPinned) {
-                    this._userSettingsColumnData.isPinned = isPinned;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "isHidden", {
-                get: function () {
-                    return this._userSettingsColumnData.isHidden != null ? this._userSettingsColumnData.isHidden : this._column.isHidden;
-                },
-                set: function (isHidden) {
-                    this._userSettingsColumnData.isHidden = isHidden;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            Object.defineProperty(QueryGridColumn.prototype, "width", {
-                get: function () {
-                    return this._userSettingsColumnData.width != null ? this._userSettingsColumnData.width : this._column.width;
-                },
-                set: function (width) {
-                    this._userSettingsColumnData.width = width;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            return QueryGridColumn;
-        })();
-        WebComponents.QueryGridColumn = QueryGridColumn;
-        var QueryGridUserSettings = (function (_super) {
-            __extends(QueryGridUserSettings, _super);
-            function QueryGridUserSettings(_query, data) {
-                var _this = this;
-                if (data === void 0) { data = {}; }
-                _super.call(this);
-                this._query = _query;
-                this._columnsByName = {};
-                this._columns = [];
-                this._columns = this._query.columns.filter(function (c) { return c.width != "0"; }).map(function (c) { return _this._columnsByName[c.name] = new QueryGridColumn(c, data[c.name] || {
-                    offset: c.offset,
-                    isPinned: c.isPinned,
-                    isHidden: c.isHidden,
-                    width: c.width
-                }); });
-            }
-            QueryGridUserSettings.prototype.getColumn = function (name) {
-                return this._columnsByName[name];
-            };
-            Object.defineProperty(QueryGridUserSettings.prototype, "columns", {
-                get: function () {
-                    return this._columns;
-                },
-                enumerable: true,
-                configurable: true
-            });
-            QueryGridUserSettings.prototype.save = function () {
-                var _this = this;
-                var queryData;
-                var columnData = function (name) { return (queryData || (queryData = {}))[name] || (queryData[name] = {}); };
-                this._columns.forEach(function (c) {
-                    if (c.offset !== c.column.offset)
-                        columnData(c.name).offset = c.offset;
-                    if (c.isPinned !== c.column.isPinned)
-                        columnData(c.name).isPinned = c.isPinned;
-                    if (c.isHidden !== c.column.isHidden)
-                        columnData(c.name).isHidden = c.isHidden;
-                    if (c.width !== c.column.width)
-                        columnData(c.name).width = c.width;
-                });
-                if (queryData)
-                    this._query.service.application.userSettings["QueryGridSettings"][this._query.id] = queryData;
-                else if (this._query.service.application.userSettings["QueryGridSettings"][this._query.id])
-                    delete this._query.service.application.userSettings["QueryGridSettings"][this._query.id];
-                return this._query.service.application.saveUserSettings().then(function () {
-                    _this.notifyPropertyChanged("columns", _this._columns = _this.columns.slice());
-                });
-            };
-            QueryGridUserSettings.Load = function (query) {
-                var queryGridSettings = query.service.application.service.application.userSettings["QueryGridSettings"] || (query.service.application.userSettings["QueryGridSettings"] = {});
-                return new QueryGridUserSettings(query, queryGridSettings[query.id]);
-            };
-            return QueryGridUserSettings;
-        })(Vidyano.Common.Observable);
-        WebComponents.QueryGridUserSettings = QueryGridUserSettings;
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

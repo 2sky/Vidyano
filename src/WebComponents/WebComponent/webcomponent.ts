@@ -505,11 +505,14 @@
                         if (sourceObj == null)
                             return;
 
-                        if (!this._forwardObservers)
-                            this._forwardObservers = [];
+                        var forwardObserversCollectionName = `_forwardObservers_${source.key()}`;
+                        var forwardObservers = this[forwardObserversCollectionName] || (this[forwardObserversCollectionName] = []);
 
-                        while (this._forwardObservers.length > 0)
-                            this._forwardObservers.pop()();
+                        if (!forwardObservers)
+                            forwardObservers = [];
+
+                        while (forwardObservers.length > 0)
+                            forwardObservers.pop()();
 
                         if (!attached)
                             return;
@@ -522,7 +525,7 @@
                             if (observer)
                                 observer = observer.bind(this);
 
-                            this._forwardObservers.push(this._forwardObservable(sourceObj, path, source.key(), observer));
+                            forwardObservers.push(this._forwardObservable(sourceObj, path, source.key(), observer));
                             if (observer && sourceObj && attached) {
                                 var valuePath = path.slice().split(".").reverse();
                                 var value = sourceObj;
