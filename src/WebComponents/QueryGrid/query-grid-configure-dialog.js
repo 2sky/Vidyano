@@ -17,15 +17,16 @@ var Vidyano;
     (function (WebComponents) {
         var QueryGridConfigureDialog = (function (_super) {
             __extends(QueryGridConfigureDialog, _super);
-            function QueryGridConfigureDialog(grid) {
+            function QueryGridConfigureDialog(grid, _settings) {
                 _super.call(this);
                 this.grid = grid;
-                this._set_columns(grid.query.columns.filter(function (c) { return c.width != "0"; }).map(function (c) { return new Vidyano.WebComponents.QueryGridConfigureDialogColumn(c); }));
+                this._settings = _settings;
+                this._set_columnElements(this._settings.columns.filter(function (c) { return c.width != "0"; }).map(function (c) { return new Vidyano.WebComponents.QueryGridConfigureDialogColumn(c); }));
                 this._distributeColumns();
             }
             QueryGridConfigureDialog.prototype._distributeColumns = function (e) {
                 var _this = this;
-                var columns = Enumerable.from(this._columns).orderBy(function (c) { return c.offset; }).memoize();
+                var columns = Enumerable.from(this._columnElements).orderBy(function (c) { return c.column.offset; }).memoize();
                 requestAnimationFrame(function () {
                     _this._updateColumns(_this.$["pinned"], columns.where(function (c) { return c.isPinned; }).toArray());
                     _this._updateColumns(_this.$["unpinned"], columns.where(function (c) { return !c.isPinned; }).toArray());
@@ -38,41 +39,42 @@ var Vidyano;
             };
             QueryGridConfigureDialog.prototype._reorderColumns = function (e) {
                 var children = Polymer.dom(e.srcElement).children;
-                var offsets = Enumerable.from(children).orderBy(function (c) { return c.offset; }).select(function (c) { return c.offset; }).toArray();
+                var offsets = Enumerable.from(children).orderBy(function (c) { return c.column.offset; }).select(function (c) { return c.column.offset; }).toArray();
                 children.forEach(function (child, index) {
                     child.offset = offsets[index];
                 });
+                e.stopPropagation();
             };
             QueryGridConfigureDialog.prototype._save = function () {
-                var settings = this.app.service.application.userSettings["QueryGridSettings"] || (this.app.service.application.userSettings["QueryGridSettings"] = {});
-                var querySettings = settings[this.grid.query.id] || (settings[this.grid.query.id] = {});
-                Polymer.dom(this.$["pinned"]).children.concat(Polymer.dom(this.$["unpinned"]).children).forEach(function (c) {
-                    var cr = querySettings[c.column.name];
-                    querySettings[c.column.name] = { offset: c.offset, isPinned: c.isPinned, isHidden: c.isHidden, dragWidth: cr != null ? cr.dragWidth : null };
+                var _this = this;
+                this._columnElements.forEach(function (c) {
+                    c.column.isPinned = c.isPinned;
+                    c.column.isHidden = c.isHidden;
+                    c.column.offset = c.offset;
                 });
-                this.app.service.application.saveUserSettings();
-                this.instance.resolve();
+                this._settings.save().then(function () {
+                    _this.instance.resolve();
+                });
             };
             QueryGridConfigureDialog.prototype._reset = function () {
-                var settings = this.app.service.application.userSettings["QueryGridSettings"];
-                if (settings != null) {
-                    if (settings[this.grid.query.id] != null) {
-                        delete settings[this.grid.query.id];
-                        this.app.service.application.saveUserSettings();
-                    }
-                }
+                this._columnElements.forEach(function (c) {
+                    c.column.isPinned = c.isPinned;
+                    c.column.isHidden = c.isHidden;
+                    c.column.offset = c.offset;
+                });
+                this._distributeColumns();
             };
             QueryGridConfigureDialog = __decorate([
                 WebComponents.Dialog.register({
                     properties: {
                         grid: Object,
-                        _columns: {
+                        _columnElements: {
                             type: Object,
                             readOnly: true
                         }
                     },
                     listeners: {
-                        "redistribute-columns": "_distributeColumns",
+                        "distribute-columns": "_distributeColumns",
                         "reorder-columns": "_reorderColumns"
                     }
                 })
@@ -101,35 +103,29 @@ var Vidyano;
             function QueryGridConfigureDialogColumn(column) {
                 _super.call(this);
                 this.column = column;
-                this.offset = column.offset;
-                this._setLabel(column.label);
-                this._setIsPinned(column.isPinned);
-                this._setIsHidden(column.isHidden);
+                this.offset = this.column.offset;
+                this.isPinned = this.column.isPinned;
+                this.isHidden = this.column.isHidden;
             }
             QueryGridConfigureDialogColumn.prototype._togglePin = function () {
-                this._setIsPinned(!this.isPinned);
-                this.fire("redistribute-columns", {}, { bubbles: true });
+                this.isPinned = !this.isPinned;
+                this.fire("distribute-columns", {}, { bubbles: true });
             };
             QueryGridConfigureDialogColumn.prototype._toggleVisible = function () {
-                this._setIsHidden(!this.isHidden);
+                this.isHidden = !this.isHidden;
             };
             QueryGridConfigureDialogColumn = __decorate([
                 WebComponents.WebComponent.register({
                     extends: "li",
                     properties: {
-                        label: {
-                            type: String,
-                            readOnly: true
-                        },
+                        column: Object,
                         isPinned: {
                             type: Boolean,
-                            reflectToAttribute: true,
-                            readOnly: true
+                            reflectToAttribute: true
                         },
                         isHidden: {
                             type: Boolean,
-                            reflectToAttribute: true,
-                            readOnly: true
+                            reflectToAttribute: true
                         }
                     }
                 })

@@ -2,30 +2,29 @@
     @Dialog.register({
         properties: {
             grid: Object,
-            _columns: {
+            _columnElements: {
                 type: Object,
                 readOnly: true
             }
         },
         listeners: {
-            "redistribute-columns": "_distributeColumns",
+            "distribute-columns": "_distributeColumns",
             "reorder-columns": "_reorderColumns"
         }
     })
     export class QueryGridConfigureDialog extends Dialog {
-        private _columns: QueryGridConfigureDialogColumn[];
+        private _columnElements: QueryGridConfigureDialogColumn[];
+        private _set_columnElements: (columns: QueryGridConfigureDialogColumn[]) => void;
 
-        private _set_columns: (columns: QueryGridConfigureDialogColumn[]) => void;
-
-        constructor(public grid: QueryGrid) {
+        constructor(public grid: QueryGrid, private _settings: QueryGridUserSettings) {
             super();
 
-            this._set_columns(grid.query.columns.filter(c => c.width != "0").map(c => new Vidyano.WebComponents.QueryGridConfigureDialogColumn(c)));
+            this._set_columnElements(this._settings.columns.filter(c => c.width != "0").map(c => new Vidyano.WebComponents.QueryGridConfigureDialogColumn(c)));
             this._distributeColumns();
         }
 
         private _distributeColumns(e?: CustomEvent) {
-            var columns = Enumerable.from(this._columns).orderBy(c => c.offset).memoize();
+            var columns = Enumerable.from(this._columnElements).orderBy(c => c.column.offset).memoize();
 
             requestAnimationFrame(() => {
                 this._updateColumns(this.$["pinned"], columns.where(c => c.isPinned).toArray());
@@ -42,36 +41,35 @@
 
         private _reorderColumns(e: CustomEvent) {
             var children = <QueryGridConfigureDialogColumn[]>Polymer.dom(e.srcElement).children;
-            var offsets = Enumerable.from(children).orderBy(c => c.offset).select(c => c.offset).toArray();
+            var offsets = Enumerable.from(children).orderBy(c => c.column.offset).select(c => c.column.offset).toArray();
 
             children.forEach((child: QueryGridConfigureDialogColumn, index: number) => {
                 child.offset = offsets[index];
             });
+
+            e.stopPropagation();
         }
 
         private _save() {
-            var settings = this.app.service.application.userSettings["QueryGridSettings"] || (this.app.service.application.userSettings["QueryGridSettings"] = {});
-            var querySettings = settings[this.grid.query.id] || (settings[this.grid.query.id] = {});
-
-            (<QueryGridConfigureDialogColumn[]>Polymer.dom(this.$["pinned"]).children.concat(Polymer.dom(this.$["unpinned"]).children)).forEach(c => {
-                var cr = querySettings[c.column.name];
-                querySettings[c.column.name] = { offset: c.offset, isPinned: c.isPinned, isHidden: c.isHidden, dragWidth: cr != null ? cr.dragWidth : null };
+            this._columnElements.forEach(c => {
+                c.column.isPinned = c.isPinned;
+                c.column.isHidden = c.isHidden;
+                c.column.offset = c.offset;
             });
 
-            this.app.service.application.saveUserSettings();
-
-            this.instance.resolve();
+            this._settings.save().then(() => {
+                this.instance.resolve();
+            });
         }
 
         private _reset() {
-            var settings = this.app.service.application.userSettings["QueryGridSettings"];
-            if (settings != null) {
-                if (settings[this.grid.query.id] != null) {
-                    delete settings[this.grid.query.id];
+            this._columnElements.forEach(c => {
+                c.column.isPinned = c.isPinned;
+                c.column.isHidden = c.isHidden;
+                c.column.offset = c.offset;
+            });
 
-                    this.app.service.application.saveUserSettings();
-                }
-            }
+            this._distributeColumns();
         }
     }
 
@@ -87,48 +85,38 @@
     @WebComponent.register({
         extends: "li",
         properties: {
-            label: {
-                type: String,
-                readOnly: true
-            },
+            column: Object,
             isPinned: {
                 type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
+                reflectToAttribute: true
             },
             isHidden: {
                 type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
+                reflectToAttribute: true
             }
         }
     })
     export class QueryGridConfigureDialogColumn extends WebComponent {
+        offset: number;
         isPinned: boolean;
         isHidden: boolean;
-        offset: number;
 
-        private _setLabel: (val: string) => void;
-        private _setIsPinned: (val: boolean) => void;
-        private _setIsHidden: (val: boolean) => void;
-
-        constructor(public column: Vidyano.QueryColumn) {
+        constructor(public column: QueryGridColumn) {
             super();
 
-            this.offset = column.offset;
-            this._setLabel(column.label);
-            this._setIsPinned(column.isPinned);
-            this._setIsHidden(column.isHidden);
+            this.offset = this.column.offset;
+            this.isPinned = this.column.isPinned;
+            this.isHidden = this.column.isHidden;
         }
 
         private _togglePin() {
-            this._setIsPinned(!this.isPinned);
+            this.isPinned = !this.isPinned;
 
-            this.fire("redistribute-columns", {}, { bubbles: true });
+            this.fire("distribute-columns", {}, { bubbles: true });
         }
 
         private _toggleVisible() {
-            this._setIsHidden(!this.isHidden);
+            this.isHidden = !this.isHidden;
         }
     }
 }

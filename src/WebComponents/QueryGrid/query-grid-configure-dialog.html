@@ -23,7 +23,7 @@
 <dom-module id="vi-query-grid-configure-dialog-column">
     <template>
         <vi-icon source="Hamburger"></vi-icon>
-        <label>{{label}}</label>
+        <label>{{column.column.label}}</label>
         <div class="buttons layout horizontal">
             <button is="vi-button" inverse icon="Pin" on-tap="_togglePin"></button>
             <button is="vi-button" inverse icon="Eye" on-tap="_toggleVisible"></button>
