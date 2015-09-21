@@ -1,6 +1,7 @@
 @import (reference) "query-grid.less";
 
 vi-query-grid-column-header {
+    .relative();
     display: block;
     box-sizing: border-box;
     min-width: @cell-width;
@@ -33,6 +34,31 @@ vi-query-grid-column-header {
             top: 0;
             bottom: 0;
             margin-left: (@cell-padding * 2);
+        }
+    }
+
+    .resizer {
+        width: 0.5em;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: transparent;
+        z-index: 2;
+        cursor: ew-resize;
+        -webkit-transform: translate3d(0.25em, 0, 0);
+        transform: translate3d(0.25em, 0, 0);
+
+        &:hover {
+            &::after {
+                position: absolute;
+                left: @h5 / 2;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background-color: #888;
+                content: " ";
+            }
         }
     }
 }

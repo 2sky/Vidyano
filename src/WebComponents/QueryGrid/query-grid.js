@@ -71,9 +71,9 @@ var Vidyano;
                 }
             };
             QueryGrid.prototype.isColumnInView = function (column) {
-                if (column.isPinned || !this._columnOffsets)
+                if (column.isPinned || !column.calculatedOffset)
                     return true;
-                return (this._columnOffsets[column.name] || 0) < this.viewportSize.width + this._horizontalScrollOffset;
+                return (column.calculatedOffset || 0) < this.viewportSize.width + this._horizontalScrollOffset;
             };
             Object.defineProperty(QueryGrid.prototype, "_style", {
                 get: function () {
@@ -295,13 +295,15 @@ var Vidyano;
                         }
                         var start = Vidyano.WebComponents.QueryGrid.perf.now();
                         var invalidateColumnWidths;
-                        var columnWidths = _this._columnWidths || {};
-                        var columnOffsets = _this._columnOffsets || {};
+                        var columnWidths = {};
+                        var columnOffsets = {};
                         [_this._tableHeader, _this._tableData].some(function (table) {
                             if (table.rows && table.rows.length > 0) {
                                 var offset = 0;
-                                return table.rows[0].columns.filter(function (cell) { return !!cell.column && (!_this._columnWidths || !_this._columnWidths[cell.column.name]); }).some(function (cell) {
-                                    var width = cell.cell.offsetWidth;
+                                return table.rows[0].columns.filter(function (cell) { return !!cell.column && !cell.column.calculatedWidth; }).some(function (cell) {
+                                    var width = parseInt(cell.column.width);
+                                    if (isNaN(width))
+                                        width = cell.cell.offsetWidth;
                                     if (width !== columnWidths[cell.column.name]) {
                                         columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
                                         invalidateColumnWidths = true;
@@ -316,24 +318,34 @@ var Vidyano;
                             }
                         });
                         if (invalidateColumnWidths) {
-                            if (columnWidths !== _this._columnWidths)
-                                _this._columnWidths = columnWidths;
-                            if (columnOffsets !== _this._columnOffsets)
-                                _this._columnOffsets = columnOffsets;
-                            var columnWidthsStyle = [];
-                            _this._columns.forEach(function (col, index) {
-                                var columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
-                                columnWidthsStyle.push("table td[name=\"" + columnName + "\"] > * { width: " + _this._columnWidths[col.name] + "px; } ");
+                            _this._columns.forEach(function (c) {
+                                var width = columnWidths[c.name];
+                                if (width >= 0) {
+                                    c.calculatedWidth = width;
+                                    c.calculatedOffset = columnOffsets[c.name];
+                                }
                             });
-                            (_a = _this._style).setStyle.apply(_a, ["ColumnWidths"].concat(columnWidthsStyle));
+                            _this._columnWidthsUpdated();
                         }
                         var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                         console.info("Column Widths Updated: " + timeTaken + "ms");
                         _this._setInitializing(false);
                         resolve(null);
-                        var _a;
                     });
                 });
+            };
+            QueryGrid.prototype._columnWidthsUpdated = function (e, detail) {
+                var columnWidthsStyle = [];
+                this._columns.forEach(function (col, index) {
+                    var columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
+                    columnWidthsStyle.push("table td[name=\"" + columnName + "\"] > * { width: " + col.calculatedWidth + "px; } ");
+                });
+                (_a = this._style).setStyle.apply(_a, ["ColumnWidths"].concat(columnWidthsStyle));
+                if (detail && detail.column)
+                    this._settings.save(false);
+                if (e)
+                    e.stopPropagation();
+                var _a;
             };
             QueryGrid.prototype._requestAnimationFrame = function (action) {
                 var _this = this;
@@ -548,6 +560,7 @@ var Vidyano;
                     listeners: {
                         "item-select": "_itemSelect",
                         "item-actions": "_itemActions",
+                        "column-widths-updated": "_columnWidthsUpdated",
                         "dataHeaderHost.contextmenu": "_contextmenuColumn",
                         "dataHost.contextmenu": "_contextmenuData",
                         "scroll": "_preventScroll"
@@ -714,8 +727,9 @@ var Vidyano;
                 enumerable: true,
                 configurable: true
             });
-            QueryGridUserSettings.prototype.save = function () {
+            QueryGridUserSettings.prototype.save = function (refreshOnComplete) {
                 var _this = this;
+                if (refreshOnComplete === void 0) { refreshOnComplete = true; }
                 var queryData;
                 var columnData = function (name) { return (queryData || (queryData = {}))[name] || (queryData[name] = {}); };
                 this._columns.forEach(function (c) {
@@ -733,7 +747,8 @@ var Vidyano;
                 else if (this._query.service.application.userSettings["QueryGridSettings"][this._query.id])
                     delete this._query.service.application.userSettings["QueryGridSettings"][this._query.id];
                 return this._query.service.application.saveUserSettings().then(function () {
-                    _this.notifyPropertyChanged("columns", _this._columns = _this.columns.slice());
+                    if (refreshOnComplete)
+                        _this.notifyPropertyChanged("columns", _this._columns = _this.columns.slice());
                 });
             };
             QueryGridUserSettings.Load = function (query) {
@@ -1436,6 +1451,19 @@ var Vidyano;
                 }
                 else if (this._sortingIcon && !this._sortingIcon.hasAttribute("hidden"))
                     this._sortingIcon.setAttribute("hidden", "");
+            };
+            QueryGridColumnHeader.prototype._resizeTrack = function (e, detail) {
+                var _this = this;
+                if (detail.state == "track") {
+                    requestAnimationFrame(function () {
+                        _this.style.width = (_this.column.calculatedWidth + detail.dx) + "px";
+                    });
+                }
+                else if (detail.state == "end") {
+                    this.style.width = "";
+                    this.column.width = (this.column.calculatedWidth += detail.dx) + "px";
+                    this.fire("column-widths-updated", { column: this.column });
+                }
             };
             QueryGridColumnHeader = __decorate([
                 WebComponents.WebComponent.register({
