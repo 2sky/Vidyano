@@ -379,8 +379,8 @@
                 return result;
             }).catch(e => {
                 Polymer.dom(this).removeChild(dialogHost);
-
-                throw e;
+                if(e)
+                    throw e;
             });
         }
 

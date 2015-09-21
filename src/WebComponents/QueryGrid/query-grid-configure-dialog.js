@@ -58,9 +58,9 @@ var Vidyano;
             };
             QueryGridConfigureDialog.prototype._reset = function () {
                 this._columnElements.forEach(function (c) {
-                    c.column.isPinned = c.isPinned;
-                    c.column.isHidden = c.isHidden;
-                    c.column.offset = c.offset;
+                    c.isPinned = c.column.isPinned = c.column.column.isPinned;
+                    c.isHidden = c.column.isHidden = c.column.column.isHidden;
+                    c.offset = c.column.offset = c.column.column.offset;
                 });
                 this._distributeColumns();
             };

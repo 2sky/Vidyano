@@ -258,7 +258,8 @@ var Vidyano;
                     return result;
                 }).catch(function (e) {
                     Polymer.dom(_this).removeChild(dialogHost);
-                    throw e;
+                    if (e)
+                        throw e;
                 });
             };
             App.prototype.showMessageDialog = function (options) {

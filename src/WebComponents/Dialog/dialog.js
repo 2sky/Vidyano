@@ -53,6 +53,8 @@ var Vidyano;
                 this._instance.resolve(result);
             };
             Dialog.prototype.cancel = function (result) {
+                if (result instanceof Event)
+                    result = undefined;
                 this._instance.reject(result);
             };
             Dialog.register = function (info) {
@@ -135,7 +137,8 @@ var Vidyano;
                     _this._setShown(false);
                     Polymer.dom(_this).removeChild(_this._dialog);
                     _this._dialog = null;
-                    throw e;
+                    if (e)
+                        throw e;
                 });
                 this._dialog.fire("show", new DialogInstance(options, promise, resolve, reject), { bubbles: false });
                 return promise;

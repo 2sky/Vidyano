@@ -423,12 +423,15 @@ var Vidyano;
                 var src = e.target;
                 while (src && src.tagName !== "VI-QUERY-GRID-COLUMN-HEADER")
                     src = src.parentElement;
-                if (!(src instanceof QueryGridColumnHeader) || !src.column)
-                    return true;
-                var column = this._columnMenuColumn = src.column;
+                var column = this._columnMenuColumn = src instanceof QueryGridColumnHeader ? src.column : null;
                 var togglePin = this.$["columnMenuTogglePin"];
-                togglePin.label = column.isPinned ? this.translations.Unpin : this.translations.Pin;
-                togglePin.checked = column.isPinned;
+                if (column) {
+                    togglePin.removeAttribute("hidden");
+                    togglePin.label = column.isPinned ? this.translations.Unpin : this.translations.Pin;
+                    togglePin.checked = column.isPinned;
+                }
+                else
+                    togglePin.setAttribute("hidden", "");
                 e.preventDefault();
                 e.stopPropagation();
                 return false;
@@ -978,6 +981,8 @@ var Vidyano;
                     }
                     this._updateIsSelected();
                 }
+                if (this._columnCount >= columns.length)
+                    this.columns.slice(columns.length, this.columns.length).forEach(function (gridColumn) { return gridColumn.setItem(null, null, false); });
                 this._firstCellWithPendingUpdates = -1;
                 this.columns.slice(0, columns ? this._columnCount = columns.length : this._columnCount).forEach(function (gridColumn, index) {
                     if (!gridColumn.setItem(item, columns ? columns[index] : null, lastPinnedIndex === index) && _this._firstCellWithPendingUpdates < 0)

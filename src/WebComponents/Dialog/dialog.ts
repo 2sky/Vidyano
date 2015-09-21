@@ -36,6 +36,9 @@ module Vidyano.WebComponents {
         }
 
         protected cancel(result?: any) {
+            if (result instanceof Event)
+                result = undefined;
+
             this._instance.reject(result);
         }
 
@@ -152,7 +155,8 @@ module Vidyano.WebComponents {
                 Polymer.dom(this).removeChild(this._dialog);
                 this._dialog = null;
 
-                throw e;
+                if (e)
+                    throw e;
             });
 
             this._dialog.fire("show", new DialogInstance(options, promise, resolve, reject), { bubbles: false });

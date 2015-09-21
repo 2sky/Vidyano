@@ -626,14 +626,16 @@
             while (src && src.tagName !== "VI-QUERY-GRID-COLUMN-HEADER")
                 src = src.parentElement;
 
-            if (!(src instanceof QueryGridColumnHeader) || !src.column)
-                return true;
-
-            var column = this._columnMenuColumn = (<QueryGridColumnHeader>src).column;
-
+            var column = this._columnMenuColumn = src instanceof QueryGridColumnHeader ? src.column : null;
             var togglePin = <PopupMenuItem>this.$["columnMenuTogglePin"];
-            togglePin.label = column.isPinned ? this.translations.Unpin : this.translations.Pin;
-            togglePin.checked = column.isPinned;
+
+            if (column) {
+                togglePin.removeAttribute("hidden");
+                togglePin.label = column.isPinned ? this.translations.Unpin : this.translations.Pin;
+                togglePin.checked = column.isPinned;
+            }
+            else
+                togglePin.setAttribute("hidden", "");
 
             e.preventDefault();
             e.stopPropagation();
@@ -1014,6 +1016,7 @@
         private _firstCellWithPendingUpdates: number;
         private _isSelected: boolean;
         private _noData: boolean;
+        private _columnsInUse: number;
         columns: QueryGridTableDataColumn[];
 
         constructor(table: QueryGridTableData) {
@@ -1070,6 +1073,10 @@
 
                 this._updateIsSelected();
             }
+
+            // Cleanup extra columns first
+            if(this._columnCount >= columns.length)
+                this.columns.slice(columns.length, this.columns.length).forEach(gridColumn => gridColumn.setItem(null, null, false));
 
             this._firstCellWithPendingUpdates = -1;
             this.columns.slice(0, columns ? this._columnCount = columns.length : this._columnCount).forEach((gridColumn, index) => {
