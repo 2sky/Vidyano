@@ -1116,7 +1116,7 @@
             }
 
             // Cleanup extra columns first
-            if (this._columnCount >= columns.length)
+            if (columns && columns.length < this._columnCount)
                 this.columns.slice(columns.length, this.columns.length).forEach(gridColumn => gridColumn.setItem(null, null, false));
 
             this._firstCellWithPendingUpdates = -1;

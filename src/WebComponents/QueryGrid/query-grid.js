@@ -1020,7 +1020,7 @@ var Vidyano;
                     }
                     this._updateIsSelected();
                 }
-                if (this._columnCount >= columns.length)
+                if (columns && columns.length < this._columnCount)
                     this.columns.slice(columns.length, this.columns.length).forEach(function (gridColumn) { return gridColumn.setItem(null, null, false); });
                 this._firstCellWithPendingUpdates = -1;
                 this.columns.slice(0, columns ? this._columnCount = columns.length : this._columnCount).forEach(function (gridColumn, index) {
