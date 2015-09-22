@@ -391,7 +391,7 @@
 
             return new Promise(resolve => {
                 var start = Vidyano.WebComponents.QueryGrid.perf.now();
-                
+
                 var rowCount = this._tableData && this._tableData.rows && this._tableData.rows.length > 0 ? this._tableData.rows.length : 0;
                 var virtualTableOffset = this._virtualTableOffset;
 
@@ -512,18 +512,29 @@
             });
         }
 
-        private _columnWidthsUpdated(e?: CustomEvent, detail?: { column: QueryGridColumn; }) {
-            var columnWidthsStyle: string[] = [];
+        private _columnWidthsUpdated(e?: CustomEvent, detail?: { column: QueryGridColumn; columnWidth: number; save: boolean; }) {
+            if (!detail || detail.save) {
+                var columnWidthsStyle: string[] = [];
 
-            this._columns.forEach((col, index) => {
-                var columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
-                columnWidthsStyle.push(`table td[name="${columnName}"] > * { width: ${col.calculatedWidth}px; } `);
-            });
+                this._columns.forEach((col, index) => {
+                    var columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
+                    columnWidthsStyle.push(`table td[name="${columnName}"] > * { width: ${col.calculatedWidth}px; } `);
+                });
 
-            this._style.setStyle("ColumnWidths", ...columnWidthsStyle);
+                this._style.setStyle("ColumnWidths", ...columnWidthsStyle);
+            }
 
-            if (detail && detail.column)
-                this._settings.save(false);
+            if (detail && detail.column) {
+                var width = detail.save ? "" : `${detail.columnWidth}px`;
+                (<QueryGridTableDataRow[]>this._tableData.rows).forEach(r => {
+                    var col = Enumerable.from(r.columns).firstOrDefault(c => c.column === detail.column);
+                    if (col)
+                        col.cell.style.width = width;
+                });
+
+                if (detail.save)
+                    this._settings.save(false);
+            }
 
             if (e)
                 e.stopPropagation();
@@ -893,7 +904,7 @@
         update(rowCount: number, columnCount: number): Promise<any> {
             if (!this.section)
                 this._section = this._createSection();
-            
+
             if (this.rows.length < rowCount) {
                 var fragment = document.createDocumentFragment();
 
@@ -1060,6 +1071,10 @@
             return this._actions;
         }
 
+        get noData(): boolean {
+            return this._noData;
+        }
+
         get item(): Vidyano.QueryResultItem {
             return this._item;
         }
@@ -1092,7 +1107,7 @@
             }
 
             // Cleanup extra columns first
-            if(this._columnCount >= columns.length)
+            if (this._columnCount >= columns.length)
                 this.columns.slice(columns.length, this.columns.length).forEach(gridColumn => gridColumn.setItem(null, null, false));
 
             this._firstCellWithPendingUpdates = -1;
@@ -1607,14 +1622,17 @@
         private _resizeTrack(e: TrackEvent, detail: PolymerTrackDetail) {
             if (detail.state == "track") {
                 requestAnimationFrame(() => {
-                    this.style.width = `${this.column.calculatedWidth + detail.dx}px`;
+                    var width = this.column.calculatedWidth + detail.dx;
+
+                    this.style.width = `${width}px`;
+                    this.fire("column-widths-updated", { column: this.column, columnWidth: width });
                 });
             }
             else if (detail.state == "end") {
                 this.style.width = "";
                 this.column.width = `${this.column.calculatedWidth += detail.dx}px`;
 
-                this.fire("column-widths-updated", { column: this.column });
+                this.fire("column-widths-updated", { column: this.column, save: true });
             }
         }
     }

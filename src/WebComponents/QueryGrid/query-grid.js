@@ -335,14 +335,24 @@ var Vidyano;
                 });
             };
             QueryGrid.prototype._columnWidthsUpdated = function (e, detail) {
-                var columnWidthsStyle = [];
-                this._columns.forEach(function (col, index) {
-                    var columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
-                    columnWidthsStyle.push("table td[name=\"" + columnName + "\"] > * { width: " + col.calculatedWidth + "px; } ");
-                });
-                (_a = this._style).setStyle.apply(_a, ["ColumnWidths"].concat(columnWidthsStyle));
-                if (detail && detail.column)
-                    this._settings.save(false);
+                if (!detail || detail.save) {
+                    var columnWidthsStyle = [];
+                    this._columns.forEach(function (col, index) {
+                        var columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
+                        columnWidthsStyle.push("table td[name=\"" + columnName + "\"] > * { width: " + col.calculatedWidth + "px; } ");
+                    });
+                    (_a = this._style).setStyle.apply(_a, ["ColumnWidths"].concat(columnWidthsStyle));
+                }
+                if (detail && detail.column) {
+                    var width = detail.save ? "" : detail.columnWidth + "px";
+                    this._tableData.rows.forEach(function (r) {
+                        var col = Enumerable.from(r.columns).firstOrDefault(function (c) { return c.column === detail.column; });
+                        if (col)
+                            col.cell.style.width = width;
+                    });
+                    if (detail.save)
+                        this._settings.save(false);
+                }
                 if (e)
                     e.stopPropagation();
                 var _a;
@@ -967,6 +977,13 @@ var Vidyano;
                 enumerable: true,
                 configurable: true
             });
+            Object.defineProperty(QueryGridTableDataRow.prototype, "noData", {
+                get: function () {
+                    return this._noData;
+                },
+                enumerable: true,
+                configurable: true
+            });
             Object.defineProperty(QueryGridTableDataRow.prototype, "item", {
                 get: function () {
                     return this._item;
@@ -1456,13 +1473,15 @@ var Vidyano;
                 var _this = this;
                 if (detail.state == "track") {
                     requestAnimationFrame(function () {
-                        _this.style.width = (_this.column.calculatedWidth + detail.dx) + "px";
+                        var width = _this.column.calculatedWidth + detail.dx;
+                        _this.style.width = width + "px";
+                        _this.fire("column-widths-updated", { column: _this.column, columnWidth: width });
                     });
                 }
                 else if (detail.state == "end") {
                     this.style.width = "";
                     this.column.width = (this.column.calculatedWidth += detail.dx) + "px";
-                    this.fire("column-widths-updated", { column: this.column });
+                    this.fire("column-widths-updated", { column: this.column, save: true });
                 }
             };
             QueryGridColumnHeader = __decorate([
