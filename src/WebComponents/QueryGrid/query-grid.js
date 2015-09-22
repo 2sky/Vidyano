@@ -1487,7 +1487,8 @@ var Vidyano;
                 }
                 else if (detail.state == "end") {
                     this.style.width = "";
-                    this.column.width = (this.column.calculatedWidth += detail.dx) + "px";
+                    this.column.calculatedWidth = Math.max(this.column.calculatedWidth + detail.dx, minimumColumnWidth);
+                    this.column.width = this.column.calculatedWidth + "px";
                     this.fire("column-widths-updated", { column: this.column, save: true });
                 }
             };
