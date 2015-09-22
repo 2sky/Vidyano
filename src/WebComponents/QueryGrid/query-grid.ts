@@ -1,4 +1,6 @@
 ﻿module Vidyano.WebComponents {
+    var minimumColumnWidth = 30;
+
     export interface QueryGridItemTapEventArgs {
         item: Vidyano.QueryResultItem;
     }
@@ -464,16 +466,23 @@
                     var invalidateColumnWidths: boolean;
                     var columnWidths: { [key: string]: number; } = {};
                     var columnOffsets: { [key: string]: number; } = {};
+                    var hasWidthsStyle = !!this._style.getStyle("ColumnWidths");
 
                     [this._tableHeader, this._tableData].some(table => {
                         if (table.rows && table.rows.length > 0) {
                             var offset = 0;
 
                             return table.rows[0].columns.filter(cell => !!cell.column && !cell.column.calculatedWidth).some(cell => {
+                                if (hasWidthsStyle) {
+                                    this._style.setStyle("ColumnWidths", "");
+                                    hasWidthsStyle = false;
+                                }
+
                                 var width = parseInt(cell.column.width);
                                 if (isNaN(width))
                                     width = cell.cell.offsetWidth;
 
+                                width = Math.max(width, minimumColumnWidth)
                                 if (width !== columnWidths[cell.column.name]) {
                                     columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
                                     invalidateColumnWidths = true;
@@ -1622,7 +1631,7 @@
         private _resizeTrack(e: TrackEvent, detail: PolymerTrackDetail) {
             if (detail.state == "track") {
                 requestAnimationFrame(() => {
-                    var width = this.column.calculatedWidth + detail.dx;
+                    var width = Math.max(this.column.calculatedWidth + detail.dx, minimumColumnWidth);
 
                     this.style.width = `${width}px`;
                     this.fire("column-widths-updated", { column: this.column, columnWidth: width });

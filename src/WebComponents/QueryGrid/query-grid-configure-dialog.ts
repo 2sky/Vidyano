@@ -55,6 +55,11 @@
                 c.column.isPinned = c.isPinned;
                 c.column.isHidden = c.isHidden;
                 c.column.offset = c.offset;
+
+                if (c.calculatedWidth !== c.column.calculatedWidth) {
+                    c.column.calculatedWidth = c.calculatedWidth;
+                    c.column.width = c.column.column.width;
+                }
             });
 
             this._settings.save().then(() => {
@@ -64,9 +69,10 @@
 
         private _reset() {
             this._columnElements.forEach(c => {
-                c.isPinned = c.column.isPinned = c.column.column.isPinned;
-                c.isHidden = c.column.isHidden = c.column.column.isHidden;
-                c.offset = c.column.offset = c.column.column.offset;
+                c.isPinned = c.column.column.isPinned;
+                c.isHidden = c.column.column.isHidden;
+                c.offset = c.column.column.offset;
+                c.calculatedWidth = undefined;
             });
 
             this._distributeColumns();
@@ -100,6 +106,7 @@
         offset: number;
         isPinned: boolean;
         isHidden: boolean;
+        calculatedWidth: number;
 
         constructor(public column: QueryGridColumn) {
             super();
@@ -107,6 +114,7 @@
             this.offset = this.column.offset;
             this.isPinned = this.column.isPinned;
             this.isHidden = this.column.isHidden;
+            this.calculatedWidth = this.column.calculatedWidth;
         }
 
         private _togglePin() {

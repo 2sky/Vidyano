@@ -34,6 +34,9 @@ var Vidyano;
                 this.parentElement.removeAttribute("style-scope-id");
                 _super.prototype.detached.call(this);
             };
+            Style.prototype.getStyle = function (name) {
+                return this._styles[name] ? this._styles[name].text : null;
+            };
             Style.prototype.setStyle = function (name) {
                 var _this = this;
                 var css = [];

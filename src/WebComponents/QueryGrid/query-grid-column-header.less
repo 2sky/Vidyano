@@ -16,10 +16,9 @@ vi-query-grid-column-header {
         .colorize-button-inverse();
 
         > label {
-            display: inline-block;
+            display: block;
             line-height: @cell-line-height;
             white-space: nowrap;
-            padding-right: 16px;
             cursor: pointer;
             overflow: hidden;
             white-space: nowrap;
@@ -27,13 +26,10 @@ vi-query-grid-column-header {
         }
 
         > vi-icon {
-            display: inline-block;
+            float: right;
             fill: #555;
-            position: absolute;
-            right: @cell-padding;
-            top: 0;
-            bottom: 0;
-            margin-left: (@cell-padding * 2);
+            line-height: @cell-line-height;
+            height: @cell-line-height;
         }
     }
 

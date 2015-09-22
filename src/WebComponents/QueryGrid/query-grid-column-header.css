@@ -71,22 +71,18 @@ vi-query-grid-column-header > div:first-child {
   color: rgba(0, 0, 0, 0.5);
 }
 vi-query-grid-column-header > div:first-child > label {
-  display: inline-block;
+  display: block;
   line-height: 30px;
-  padding-right: 16px;
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 vi-query-grid-column-header > div:first-child > vi-icon {
-  display: inline-block;
+  float: right;
   fill: #555;
-  position: absolute;
-  right: 9px;
-  top: 0;
-  bottom: 0;
-  margin-left: 18px;
+  line-height: 30px;
+  height: 30px;
 }
 vi-query-grid-column-header .resizer {
   width: 0.5em;

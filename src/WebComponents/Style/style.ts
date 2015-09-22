@@ -27,6 +27,10 @@
             super.detached();
         }
 
+        getStyle(name: string): string {
+            return this._styles[name] ? this._styles[name].text : null;
+        }
+
         setStyle(name: string, ...css: string[]) {
             var cssBody = "";
             css.filter(c => !StringEx.isNullOrEmpty(c)).forEach(c => {
@@ -37,12 +41,12 @@
 
             if (!this._styleElement)
                 this._styleElement = <HTMLStyleElement>document.head.appendChild(document.createElement("style"));
-            
+
             if (this._styles[name])
                 this._styles[name].node.nodeValue = this._styles[name].text = cssBody;
             else
                 this._styles[name] = {
-                    node: <Text > this._styleElement.appendChild(document.createTextNode(cssBody)),
+                    node: <Text>this._styleElement.appendChild(document.createTextNode(cssBody)),
                     text: cssBody
                 };
         }

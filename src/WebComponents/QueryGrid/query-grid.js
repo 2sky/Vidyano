@@ -15,6 +15,7 @@ var Vidyano;
 (function (Vidyano) {
     var WebComponents;
     (function (WebComponents) {
+        var minimumColumnWidth = 30;
         var QueryGrid = (function (_super) {
             __extends(QueryGrid, _super);
             function QueryGrid() {
@@ -297,13 +298,19 @@ var Vidyano;
                         var invalidateColumnWidths;
                         var columnWidths = {};
                         var columnOffsets = {};
+                        var hasWidthsStyle = !!_this._style.getStyle("ColumnWidths");
                         [_this._tableHeader, _this._tableData].some(function (table) {
                             if (table.rows && table.rows.length > 0) {
                                 var offset = 0;
                                 return table.rows[0].columns.filter(function (cell) { return !!cell.column && !cell.column.calculatedWidth; }).some(function (cell) {
+                                    if (hasWidthsStyle) {
+                                        _this._style.setStyle("ColumnWidths", "");
+                                        hasWidthsStyle = false;
+                                    }
                                     var width = parseInt(cell.column.width);
                                     if (isNaN(width))
                                         width = cell.cell.offsetWidth;
+                                    width = Math.max(width, minimumColumnWidth);
                                     if (width !== columnWidths[cell.column.name]) {
                                         columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
                                         invalidateColumnWidths = true;
@@ -1473,7 +1480,7 @@ var Vidyano;
                 var _this = this;
                 if (detail.state == "track") {
                     requestAnimationFrame(function () {
-                        var width = _this.column.calculatedWidth + detail.dx;
+                        var width = Math.max(_this.column.calculatedWidth + detail.dx, minimumColumnWidth);
                         _this.style.width = width + "px";
                         _this.fire("column-widths-updated", { column: _this.column, columnWidth: width });
                     });

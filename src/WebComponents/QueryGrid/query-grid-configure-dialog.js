@@ -51,6 +51,10 @@ var Vidyano;
                     c.column.isPinned = c.isPinned;
                     c.column.isHidden = c.isHidden;
                     c.column.offset = c.offset;
+                    if (c.calculatedWidth !== c.column.calculatedWidth) {
+                        c.column.calculatedWidth = c.calculatedWidth;
+                        c.column.width = c.column.column.width;
+                    }
                 });
                 this._settings.save().then(function () {
                     _this.instance.resolve();
@@ -58,9 +62,10 @@ var Vidyano;
             };
             QueryGridConfigureDialog.prototype._reset = function () {
                 this._columnElements.forEach(function (c) {
-                    c.isPinned = c.column.isPinned = c.column.column.isPinned;
-                    c.isHidden = c.column.isHidden = c.column.column.isHidden;
-                    c.offset = c.column.offset = c.column.column.offset;
+                    c.isPinned = c.column.column.isPinned;
+                    c.isHidden = c.column.column.isHidden;
+                    c.offset = c.column.column.offset;
+                    c.calculatedWidth = undefined;
                 });
                 this._distributeColumns();
             };
@@ -106,6 +111,7 @@ var Vidyano;
                 this.offset = this.column.offset;
                 this.isPinned = this.column.isPinned;
                 this.isHidden = this.column.isHidden;
+                this.calculatedWidth = this.column.calculatedWidth;
             }
             QueryGridConfigureDialogColumn.prototype._togglePin = function () {
                 this.isPinned = !this.isPinned;
