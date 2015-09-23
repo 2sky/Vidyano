@@ -14,6 +14,7 @@ vi-query-grid-configure-dialog {
 
         > vi-scroller {
             margin-top: @h4;
+            min-width: 30em;
         }
 
         ul {
@@ -23,6 +24,7 @@ vi-query-grid-configure-dialog {
 
             li {
                 .layout-horizontal();
+                min-width: 30em;
                 margin-bottom: 4px;
                 height: @h2;
                 line-height: @h2;
@@ -44,6 +46,8 @@ vi-query-grid-configure-dialog {
                     padding-left: @h4;
                     padding-right: @h1;
                     pointer-events: none;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
 
                 .buttons {

@@ -7,10 +7,12 @@ vi-query-grid-column-header {
 }
 vi-query-grid-column-header > div:first-child {
   height: 30px;
-  padding: 0 9px;
+  padding: 0 22px 0 9px;
   cursor: pointer;
   position: relative;
   color: #808080;
+  white-space: nowrap;
+  overflow: hidden;
 }
 [theme-color-1] vi-query-grid-column-header > div:first-child {
   background-color: transparent;
@@ -77,9 +79,12 @@ vi-query-grid-column-header > div:first-child > label {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  padding-right: 6px;
 }
-vi-query-grid-column-header > div:first-child > vi-icon {
-  float: right;
+vi-query-grid-column-header > vi-icon {
+  position: absolute;
+  right: 6px;
+  top: 0;
   fill: #555;
   line-height: 30px;
   height: 30px;

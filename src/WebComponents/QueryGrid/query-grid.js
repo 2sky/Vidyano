@@ -286,59 +286,69 @@ var Vidyano;
             };
             QueryGrid.prototype._updateColumnWidths = function () {
                 var _this = this;
+                if (!this._columns.some(function (c) { return !c.calculatedWidth; }) || !this._tableData || !this._tableData.rows || this._tableData.rows.length == 0 || this._tableData.rows[0].noData) {
+                    if (this.query && !this.query.isBusy && this.query.items.length == 0)
+                        this._setInitializing(false);
+                    return Promise.resolve();
+                }
                 return new Promise(function (resolve) {
-                    _this._requestAnimationFrame(function () {
-                        if (!_this._tableData || !_this._tableData.rows || _this._tableData.rows.length == 0 || _this._tableData.rows[0].host.hasAttribute("no-data")) {
-                            if (_this.query && !_this.query.isBusy)
-                                _this._setInitializing(false);
-                            resolve(null);
-                            return;
-                        }
-                        var start = Vidyano.WebComponents.QueryGrid.perf.now();
-                        var invalidateColumnWidths;
-                        var columnWidths = {};
-                        var columnOffsets = {};
-                        var hasWidthsStyle = !!_this._style.getStyle("ColumnWidths");
-                        [_this._tableHeader, _this._tableData].some(function (table) {
-                            if (table.rows && table.rows.length > 0) {
-                                var offset = 0;
-                                return table.rows[0].columns.filter(function (cell) { return !!cell.column && !cell.column.calculatedWidth; }).some(function (cell) {
-                                    if (hasWidthsStyle) {
-                                        _this._style.setStyle("ColumnWidths", "");
-                                        hasWidthsStyle = false;
-                                    }
-                                    var width = parseInt(cell.column.width);
-                                    if (isNaN(width))
-                                        width = cell.cell.offsetWidth;
-                                    width = Math.max(width, minimumColumnWidth);
-                                    if (width !== columnWidths[cell.column.name]) {
-                                        columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
-                                        invalidateColumnWidths = true;
-                                    }
-                                    columnOffsets[cell.column.name] = offset;
-                                    offset += columnWidths[cell.column.name];
-                                    if (!columnWidths[cell.column.name]) {
-                                        invalidateColumnWidths = false;
-                                        return true;
-                                    }
-                                });
-                            }
-                        });
-                        if (invalidateColumnWidths) {
-                            _this._columns.forEach(function (c) {
-                                var width = columnWidths[c.name];
-                                if (width >= 0) {
-                                    c.calculatedWidth = width;
-                                    c.calculatedOffset = columnOffsets[c.name];
+                    var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                    var tryCompute = function () {
+                        _this._requestAnimationFrame(function () {
+                            var layoutUpdating;
+                            var invalidateColumnWidths;
+                            var columnWidths = {};
+                            var columnOffsets = {};
+                            var hasWidthsStyle = !!_this._style.getStyle("ColumnWidths");
+                            [_this._tableHeader, _this._tableData].some(function (table) {
+                                if (table.rows && table.rows.length > 0) {
+                                    var offset = 0;
+                                    return table.rows[0].columns.filter(function (cell) { return !!cell.column && !cell.column.calculatedWidth; }).some(function (cell) {
+                                        if (hasWidthsStyle) {
+                                            _this._style.setStyle("ColumnWidths", "");
+                                            hasWidthsStyle = false;
+                                        }
+                                        var width = parseInt(cell.column.width);
+                                        if (isNaN(width)) {
+                                            width = cell.cell.offsetWidth;
+                                            if (width === 0 && getComputedStyle(cell.cell).display === "none")
+                                                return layoutUpdating = true;
+                                        }
+                                        width = Math.max(width + 10, minimumColumnWidth);
+                                        if (width !== columnWidths[cell.column.name]) {
+                                            columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
+                                            invalidateColumnWidths = true;
+                                        }
+                                        columnOffsets[cell.column.name] = offset;
+                                        offset += columnWidths[cell.column.name];
+                                        if (!columnWidths[cell.column.name]) {
+                                            invalidateColumnWidths = false;
+                                            return true;
+                                        }
+                                    });
                                 }
                             });
-                            _this._columnWidthsUpdated();
-                        }
-                        var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
-                        console.info("Column Widths Updated: " + timeTaken + "ms");
-                        _this._setInitializing(false);
-                        resolve(null);
-                    });
+                            if (!layoutUpdating && invalidateColumnWidths) {
+                                _this._columns.forEach(function (c) {
+                                    var width = columnWidths[c.name];
+                                    if (width >= 0) {
+                                        c.calculatedWidth = width;
+                                        c.calculatedOffset = columnOffsets[c.name];
+                                    }
+                                });
+                                _this._columnWidthsUpdated();
+                            }
+                            if (layoutUpdating)
+                                tryCompute();
+                            else {
+                                var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                                console.info("Column Widths Updated: " + timeTaken + "ms");
+                                _this._setInitializing(false);
+                                resolve(null);
+                            }
+                        });
+                    };
+                    tryCompute();
                 });
             };
             QueryGrid.prototype._columnWidthsUpdated = function (e, detail) {

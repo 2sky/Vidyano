@@ -451,73 +451,84 @@
         }
 
         private _updateColumnWidths(): Promise<any> {
+            if (!this._columns.some(c => !c.calculatedWidth) || !this._tableData || !this._tableData.rows || this._tableData.rows.length == 0 || (<QueryGridTableDataRow>this._tableData.rows[0]).noData) {
+                if (this.query && !this.query.isBusy && this.query.items.length == 0)
+                    this._setInitializing(false);
+
+                return Promise.resolve();
+            }
+
             return new Promise(resolve => {
-                this._requestAnimationFrame(() => {
-                    if (!this._tableData || !this._tableData.rows || this._tableData.rows.length == 0 || this._tableData.rows[0].host.hasAttribute("no-data")) {
-                        if (this.query && !this.query.isBusy)
-                            this._setInitializing(false);
+                var start = Vidyano.WebComponents.QueryGrid.perf.now();
 
-                        resolve(null);
-                        return;
-                    }
+                var tryCompute = () => {
+                    this._requestAnimationFrame(() => {
+                        var layoutUpdating: boolean;
+                        var invalidateColumnWidths: boolean;
+                        var columnWidths: { [key: string]: number; } = {};
+                        var columnOffsets: { [key: string]: number; } = {};
+                        var hasWidthsStyle = !!this._style.getStyle("ColumnWidths");
 
-                    var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                        [this._tableHeader, this._tableData].some(table => {
+                            if (table.rows && table.rows.length > 0) {
+                                var offset = 0;
 
-                    var invalidateColumnWidths: boolean;
-                    var columnWidths: { [key: string]: number; } = {};
-                    var columnOffsets: { [key: string]: number; } = {};
-                    var hasWidthsStyle = !!this._style.getStyle("ColumnWidths");
+                                return table.rows[0].columns.filter(cell => !!cell.column && !cell.column.calculatedWidth).some(cell => {
+                                    if (hasWidthsStyle) {
+                                        this._style.setStyle("ColumnWidths", "");
+                                        hasWidthsStyle = false;
+                                    }
 
-                    [this._tableHeader, this._tableData].some(table => {
-                        if (table.rows && table.rows.length > 0) {
-                            var offset = 0;
+                                    var width = parseInt(cell.column.width);
+                                    if (isNaN(width)) {
+                                        width = cell.cell.offsetWidth;
+                                        if (width === 0 && getComputedStyle(cell.cell).display === "none")
+                                            return layoutUpdating = true; // Layout is still updating
+                                    }
 
-                            return table.rows[0].columns.filter(cell => !!cell.column && !cell.column.calculatedWidth).some(cell => {
-                                if (hasWidthsStyle) {
-                                    this._style.setStyle("ColumnWidths", "");
-                                    hasWidthsStyle = false;
-                                }
+                                    width = Math.max(width + 10, minimumColumnWidth)
+                                    if (width !== columnWidths[cell.column.name]) {
+                                        columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
+                                        invalidateColumnWidths = true;
+                                    }
 
-                                var width = parseInt(cell.column.width);
-                                if (isNaN(width))
-                                    width = cell.cell.offsetWidth;
+                                    columnOffsets[cell.column.name] = offset;
+                                    offset += columnWidths[cell.column.name];
 
-                                width = Math.max(width, minimumColumnWidth)
-                                if (width !== columnWidths[cell.column.name]) {
-                                    columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
-                                    invalidateColumnWidths = true;
-                                }
-
-                                columnOffsets[cell.column.name] = offset;
-                                offset += columnWidths[cell.column.name];
-
-                                if (!columnWidths[cell.column.name]) {
-                                    invalidateColumnWidths = false;
-                                    return true;
-                                }
-                            });
-                        }
-                    });
-
-                    if (invalidateColumnWidths) {
-                        this._columns.forEach(c => {
-                            var width = columnWidths[c.name];
-                            if (width >= 0) {
-                                c.calculatedWidth = width;
-                                c.calculatedOffset = columnOffsets[c.name];
+                                    if (!columnWidths[cell.column.name]) {
+                                        invalidateColumnWidths = false;
+                                        return true;
+                                    }
+                                });
                             }
                         });
 
-                        this._columnWidthsUpdated();
-                    }
+                        if (!layoutUpdating && invalidateColumnWidths) {
+                            this._columns.forEach(c => {
+                                var width = columnWidths[c.name];
+                                if (width >= 0) {
+                                    c.calculatedWidth = width;
+                                    c.calculatedOffset = columnOffsets[c.name];
+                                }
+                            });
 
-                    var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
-                    console.info(`Column Widths Updated: ${timeTaken}ms`);
+                            this._columnWidthsUpdated();
+                        }
 
-                    this._setInitializing(false);
+                        if (layoutUpdating)
+                            tryCompute();
+                        else {
+                            var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                            console.info(`Column Widths Updated: ${timeTaken}ms`);
 
-                    resolve(null);
-                });
+                            this._setInitializing(false);
+
+                            resolve(null);
+                        }
+                    });
+                };
+
+                tryCompute();
             });
         }
 

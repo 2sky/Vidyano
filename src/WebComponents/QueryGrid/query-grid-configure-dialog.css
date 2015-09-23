@@ -17,6 +17,7 @@ vi-query-grid-configure-dialog main > ul:empty {
 }
 vi-query-grid-configure-dialog main > vi-scroller {
   margin-top: 12px;
+  min-width: 30em;
 }
 vi-query-grid-configure-dialog main ul {
   list-style-type: none;
@@ -30,6 +31,7 @@ vi-query-grid-configure-dialog main ul li {
   -ms-flex-direction: row;
   -webkit-flex-direction: row;
   flex-direction: row;
+  min-width: 30em;
   margin-bottom: 4px;
   height: 30px;
   line-height: 30px;
@@ -52,6 +54,8 @@ vi-query-grid-configure-dialog main ul li label {
   padding-left: 12px;
   padding-right: 40px;
   pointer-events: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 vi-query-grid-configure-dialog main ul li .buttons {
   background-color: #f9f9f9;
