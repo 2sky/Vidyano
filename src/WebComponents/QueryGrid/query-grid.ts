@@ -537,8 +537,14 @@
                 var width = detail.save ? "" : `${detail.columnWidth}px`;
                 (<QueryGridTableDataRow[]>this._tableData.rows).forEach(r => {
                     var col = Enumerable.from(r.columns).firstOrDefault(c => c.column === detail.column);
-                    if (col)
+                    if (col) {
                         col.cell.style.width = width;
+
+                        if (!detail.save)
+                            col.host.classList.add("resizing");
+                        else
+                            col.host.classList.remove("resizing");
+                    }
                 });
 
                 if (detail.save)
@@ -1526,6 +1532,7 @@
         }
     })
     export class QueryGridColumnHeader extends WebComponent {
+        private _resizingRAF: number;
         private _column: QueryGridColumn;
         private _columnObserver: Vidyano.Common.SubjectDisposer;
         private _sortingIcon: Resource;
@@ -1629,8 +1636,13 @@
         }
 
         private _resizeTrack(e: TrackEvent, detail: PolymerTrackDetail) {
-            if (detail.state == "track") {
-                requestAnimationFrame(() => {
+            if (detail.state == "start")
+                this.classList.add("resizing");
+            else if (detail.state == "track") {
+                if (this._resizingRAF)
+                    cancelAnimationFrame(this._resizingRAF);
+
+                this._resizingRAF = requestAnimationFrame(() => {
                     var width = Math.max(this.column.calculatedWidth + detail.dx, minimumColumnWidth);
 
                     this.style.width = `${width}px`;
@@ -1638,6 +1650,8 @@
                 });
             }
             else if (detail.state == "end") {
+                this.classList.remove("resizing");
+
                 this.style.width = "";
 
                 this.column.calculatedWidth = Math.max(this.column.calculatedWidth + detail.dx, minimumColumnWidth);

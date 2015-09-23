@@ -354,8 +354,13 @@ var Vidyano;
                     var width = detail.save ? "" : detail.columnWidth + "px";
                     this._tableData.rows.forEach(function (r) {
                         var col = Enumerable.from(r.columns).firstOrDefault(function (c) { return c.column === detail.column; });
-                        if (col)
+                        if (col) {
                             col.cell.style.width = width;
+                            if (!detail.save)
+                                col.host.classList.add("resizing");
+                            else
+                                col.host.classList.remove("resizing");
+                        }
                     });
                     if (detail.save)
                         this._settings.save(false);
@@ -1478,14 +1483,19 @@ var Vidyano;
             };
             QueryGridColumnHeader.prototype._resizeTrack = function (e, detail) {
                 var _this = this;
-                if (detail.state == "track") {
-                    requestAnimationFrame(function () {
+                if (detail.state == "start")
+                    this.classList.add("resizing");
+                else if (detail.state == "track") {
+                    if (this._resizingRAF)
+                        cancelAnimationFrame(this._resizingRAF);
+                    this._resizingRAF = requestAnimationFrame(function () {
                         var width = Math.max(_this.column.calculatedWidth + detail.dx, minimumColumnWidth);
                         _this.style.width = width + "px";
                         _this.fire("column-widths-updated", { column: _this.column, columnWidth: width });
                     });
                 }
                 else if (detail.state == "end") {
+                    this.classList.remove("resizing");
                     this.style.width = "";
                     this.column.calculatedWidth = Math.max(this.column.calculatedWidth + detail.dx, minimumColumnWidth);
                     this.column.width = this.column.calculatedWidth + "px";

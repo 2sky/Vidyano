@@ -77,6 +77,21 @@ vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td > * vi-ic
 vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td > * vi-template-presenter {
   height: 30px;
 }
+vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td.resizing {
+  position: relative;
+}
+vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td.resizing::after {
+  content: " ";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #eaeaea;
+  width: 2px;
+  -webkit-transform: translateX(1px);
+  transform: translateX(1px);
+  z-index: 10;
+}
 vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td > vi-icon {
   display: -ms-flexbox;
   display: -webkit-flex;

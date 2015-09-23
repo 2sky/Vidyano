@@ -90,6 +90,23 @@ vi-query-grid {
                         }
                     }
 
+                    &.resizing {
+                        position: relative;
+
+                        &::after {
+                            content: " ";
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            bottom: 0;
+                            background-color: @separatorColor;
+                            width: 2px;
+                            -webkit-transform: translateX(1px);
+                            transform: translateX(1px);
+                            z-index: 10;
+                        }
+                    }
+
                     > vi-icon {
                         .layout-horizontal();
                         .layout-center-center();
@@ -114,9 +131,12 @@ vi-query-grid {
 
                         > paper-ripple {
                             pointer-events: none;
-                            .colorize({
+
+                            .colorize( {
                                 color: @@color;
-                            });
+                            }
+
+                            );
                         }
 
                         &:hover {
@@ -124,7 +144,9 @@ vi-query-grid {
                                 > vi-icon {
                                     background-color: fadeout(black, 95%) !important;
                                 }
-                            });
+                            }
+
+                            );
                         }
                     }
 
@@ -135,17 +157,22 @@ vi-query-grid {
 
                         > paper-ripple {
                             pointer-events: none;
-                            .colorize({
+
+                            .colorize( {
                                 color: @@color;
-                            });
+                            }
+
+                            );
                         }
 
                         &:hover, &[hover] {
-                            .colorize({
+                            .colorize( {
                                 > vi-icon {
                                     background-color: fadeout(black, 95%) !important;
                                 }
-                            });
+                            }
+
+                            );
                         }
                     }
 
@@ -178,13 +205,15 @@ vi-query-grid {
 
                 &[is-selected] {
                     td[is="vi-query-grid-table-data-column-selector"] {
-                        .colorize({
+                        .colorize( {
                             fill: #888;
 
                             #check {
                                 fill: @@color;
                             }
-                        });
+                        }
+
+                        );
 
                         #check {
                             display: block;
@@ -197,7 +226,9 @@ vi-query-grid {
                         td.pinned {
                             background-color: @@color-semi-faint;
                         }
-                    });
+                    }
+
+                    );
                 }
 
                 &:not(:hover):not([hover]):not([is-selected]) {
@@ -227,9 +258,11 @@ vi-query-grid {
                 }
 
                 &:hover, &[hover], &:hover td.pinned, &[hover] td.pinned {
-                    .colorize({
+                    .colorize( {
                         background-color: @@color-faint;
-                    });
+                    }
+
+                    );
                 }
             }
 
@@ -245,7 +278,6 @@ vi-query-grid {
         width: @cell-line-height / 2;
         height: @cell-line-height / 2;
     }
-
     // FLAG COMBINATIONS //////////////////////////////////////////////////////////
     &:not([can-select]):not([inline-actions]):not([can-filter]) {
         td[is="vi-query-grid-table-data-column-selector"] {
@@ -303,7 +335,6 @@ vi-query-grid {
         }
     }
     ///////////////////////////////////////////////////////////////////////////////
-
     #initializingOverlay {
         position: absolute;
         left: 0;

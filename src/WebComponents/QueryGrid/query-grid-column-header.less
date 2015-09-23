@@ -44,17 +44,17 @@ vi-query-grid-column-header {
         cursor: ew-resize;
         -webkit-transform: translate3d(0.25em, 0, 0);
         transform: translate3d(0.25em, 0, 0);
+    }
 
-        &:hover {
-            &::after {
-                position: absolute;
-                left: @h5 / 2;
-                top: 0;
-                bottom: 0;
-                width: 2px;
-                background-color: #888;
-                content: " ";
-            }
+    &.resizing .resizer, .resizer:hover{
+        &::after {
+            position: absolute;
+            left: @h5 / 2;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #888;
+            content: " ";
         }
     }
 }

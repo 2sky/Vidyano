@@ -96,6 +96,7 @@ vi-query-grid-column-header .resizer {
   -webkit-transform: translate3d(0.25em, 0, 0);
   transform: translate3d(0.25em, 0, 0);
 }
+vi-query-grid-column-header.resizing .resizer::after,
 vi-query-grid-column-header .resizer:hover::after {
   position: absolute;
   left: 3px;
