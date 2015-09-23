@@ -1604,7 +1604,6 @@
             }
 
             this._column.column.sort(newSortingDirection, multiSort);
-            this._column.query.search().catch(() => { });
         }
 
         private _columnPropertyChanged(sender: Vidyano.QueryColumn, args: Vidyano.Common.PropertyChangedArgs) {

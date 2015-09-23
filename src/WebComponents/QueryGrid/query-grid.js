@@ -1455,7 +1455,6 @@ var Vidyano;
                     }
                 }
                 this._column.column.sort(newSortingDirection, multiSort);
-                this._column.query.search().catch(function () { });
             };
             QueryGridColumnHeader.prototype._columnPropertyChanged = function (sender, args) {
                 if (args.propertyName === "sortDirection")

@@ -86,8 +86,8 @@ vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td.resizing:
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: #eaeaea;
-  width: 2px;
+  background-color: #d1d1d1;
+  width: 1px;
   -webkit-transform: translateX(1px);
   transform: translateX(1px);
   z-index: 10;

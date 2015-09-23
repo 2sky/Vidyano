@@ -56,7 +56,7 @@ module Vidyano {
         return target;
     }
 
-    export function cookie(key: string, value?: any, options?: { force?: boolean; raw?: boolean; path?: string; domain?: string; secure?: boolean; expires?: number|Date; }) {
+    export function cookie(key: string, value?: any, options?: { force?: boolean; raw?: boolean; path?: string; domain?: string; secure?: boolean; expires?: number | Date; }) {
         var now = new Date();
 
         // key and at least value given, set cookie...
@@ -1920,7 +1920,7 @@ module Vidyano {
         id: string;
         name: string;
         label: string;
-        options: string[]| Common.KeyValuePair[];
+        options: string[] | Common.KeyValuePair[];
         offset: number;
         type: string;
         toolTip: string;
@@ -2324,7 +2324,7 @@ module Vidyano {
                 });
         }
 
-        changeReference(selectedItems: QueryResultItem[]| string[]): Promise<boolean> {
+        changeReference(selectedItems: QueryResultItem[] | string[]): Promise<boolean> {
             return this.parent.queueWork(() => new Promise<boolean>((resolve, reject) => {
                 if (this.isReadOnly)
                     reject("Attribute is read-only.");
@@ -2721,7 +2721,7 @@ module Vidyano {
             this._canRead = query.canRead;
             this._canReorder = query.canReorder;
             this.isHidden = query.isHidden;
-            this.label = query.label; 
+            this.label = query.label;
             this.notification = query.notification;
             this.notificationType = typeof (query.notificationType) == "number" ? query.notificationType : NotificationType[<string>query.notificationType];
             this.offset = query.offset;
@@ -2795,7 +2795,7 @@ module Vidyano {
 
         private _selectAllPropertyChanged(selectAll: QuerySelectAllImpl, args: Vidyano.Common.PropertyChangedArgs) {
             if (args.propertyName == "allSelected")
-                    this.selectedItems = this.selectAll.allSelected ? this.items : [];
+                this.selectedItems = this.selectAll.allSelected ? this.items : [];
         }
 
         selectRange(from: number, to: number): boolean {
@@ -2927,7 +2927,7 @@ module Vidyano {
             }
             else
                 this._setTotalItems(result.items.length);
-            
+
             this.hasSearched = true;
             this._updateColumns(result.columns);
             this._updateItems(Enumerable.from(result.items).select(item => this.service.hooks.onConstructQueryResultItem(this.service, item, this)).toArray());
@@ -3267,7 +3267,7 @@ module Vidyano {
             });
         }
 
-        sort(direction: SortDirection, multiSort?: boolean) {
+        sort(direction: SortDirection, multiSort?: boolean): Promise<QueryResultItem[]> {
             if (!!multiSort) {
                 var sortOption = this.query.sortOptions.filter(option => option.column === this)[0];
                 if (sortOption && sortOption.direction === direction)
@@ -3287,6 +3287,16 @@ module Vidyano {
                 }
             } else
                 this.query.sortOptions = direction !== SortDirection.None ? [{ column: this, direction: direction }] : [];
+
+            return this.query.search().then(result => {
+                var querySettings = (this.service.application.userSettings["QuerySettings"] || (this.service.application.userSettings["QuerySettings"] = {}))[this.query.id] || {};
+                querySettings["sortOptions"] = this.query.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction == SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
+
+                this.service.application.userSettings["QuerySettings"][this.query.id] = querySettings;
+                return this.service.application.saveUserSettings().then(() => {
+                    return result;
+                });
+            });
         }
 
         private _queryPropertyChanged(sender: Vidyano.Query, args: Vidyano.Common.PropertyChangedArgs) {

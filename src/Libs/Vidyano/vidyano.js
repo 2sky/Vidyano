@@ -2864,6 +2864,14 @@ var Vidyano;
             }
             else
                 this.query.sortOptions = direction !== SortDirection.None ? [{ column: this, direction: direction }] : [];
+            return this.query.search().then(function (result) {
+                var querySettings = (_this.service.application.userSettings["QuerySettings"] || (_this.service.application.userSettings["QuerySettings"] = {}))[_this.query.id] || {};
+                querySettings["sortOptions"] = _this.query.sortOptions.filter(function (option) { return option.direction !== SortDirection.None; }).map(function (option) { return option.column.name + (option.direction == SortDirection.Ascending ? " ASC" : " DESC"); }).join("; ");
+                _this.service.application.userSettings["QuerySettings"][_this.query.id] = querySettings;
+                return _this.service.application.saveUserSettings().then(function () {
+                    return result;
+                });
+            });
         };
         QueryColumn.prototype._queryPropertyChanged = function (sender, args) {
             var _this = this;
