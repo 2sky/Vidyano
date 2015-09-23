@@ -338,14 +338,14 @@ var Vidyano;
                                 });
                                 _this._columnWidthsUpdated();
                             }
-                            if (layoutUpdating)
-                                tryCompute();
-                            else {
+                            if (!layoutUpdating) {
                                 var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                                 console.info("Column Widths Updated: " + timeTaken + "ms");
                                 _this._setInitializing(false);
                                 resolve(null);
                             }
+                            else
+                                tryCompute();
                         });
                     };
                     tryCompute();

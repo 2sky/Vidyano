@@ -64,7 +64,7 @@ var Vidyano;
                 if (verticalScrollTop !== this._verticalScrollTop)
                     this.$["vertical"].style.transform = "translate3d(0, " + (this._verticalScrollTop = verticalScrollTop) + "px, 0)";
                 this._setScrollTopShadow(verticalScrollTop > 0);
-                this._setScrollBottomShadow(innerHeight - outerHeight - verticalScrollTop > 0);
+                this._setScrollBottomShadow(innerHeight - verticalScrollOffset - outerHeight > 0);
             };
             Scroller.prototype._updateHorizontalScrollbar = function (outerWidth, innerWidth, horizontalScrollOffset, noHorizontal) {
                 var width = outerWidth < innerWidth ? outerWidth / innerWidth * outerWidth : 0;

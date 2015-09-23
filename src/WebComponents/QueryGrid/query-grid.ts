@@ -515,9 +515,7 @@
                             this._columnWidthsUpdated();
                         }
 
-                        if (layoutUpdating)
-                            tryCompute();
-                        else {
+                        if (!layoutUpdating) {
                             var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                             console.info(`Column Widths Updated: ${timeTaken}ms`);
 
@@ -525,6 +523,8 @@
 
                             resolve(null);
                         }
+                        else
+                            tryCompute();
                     });
                 };
 

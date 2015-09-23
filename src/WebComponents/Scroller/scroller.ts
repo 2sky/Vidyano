@@ -188,7 +188,7 @@
                 this.$["vertical"].style.transform = `translate3d(0, ${this._verticalScrollTop = verticalScrollTop}px, 0)`;
 
             this._setScrollTopShadow(verticalScrollTop > 0);
-            this._setScrollBottomShadow(innerHeight - outerHeight - verticalScrollTop > 0);
+            this._setScrollBottomShadow(innerHeight - verticalScrollOffset - outerHeight > 0);
         }
 
         private _updateHorizontalScrollbar(outerWidth: number, innerWidth: number, horizontalScrollOffset: number, noHorizontal: boolean) {
