@@ -4,11 +4,11 @@
 <dom-module id="vi-date-picker">
 	<template>
 		<header class="horizontal layout">
-			<button is="vi-button" id="fback" on-tap="_fastBackward"><vi-resource source="Icon_FastBackward"></vi-resource></button>
-			<button is="vi-button" id="back" on-tap="_backward"><vi-resource source="Icon_Backward"></vi-resource></button>
+			<button is="vi-button" id="fback" on-tap="_fastBackward"><vi-icon source="FastBackward"></vi-icon></button>
+			<button is="vi-button" id="back" on-tap="_backward"><vi-icon source="Backward"></vi-icon></button>
 			<button is="vi-button" class="flex" on-tap="_zoomOut" label="{{header}}"></button>
-			<button is="vi-button" id="forward" on-tap="_forward"><vi-resource source="Icon_Forward"></vi-resource></button>
-			<button is="vi-button" id="fforward" on-tap="_fastForward"><vi-resource source="Icon_FastForward"></vi-resource></button>
+			<button is="vi-button" id="forward" on-tap="_forward"><vi-icon source="Forward"></vi-icon></button>
+			<button is="vi-button" id="fforward" on-tap="_fastForward"><vi-icon source="FastForward"></vi-icon></button>
 		</header>
 		<div on-tap="_select">
 			<table id="days" cellpadding="0" cellspacing="0">

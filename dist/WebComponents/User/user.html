@@ -6,21 +6,21 @@
             </div>
             <vi-popup-menu right-align>
                 <button id="settings" header is="vi-button">
-                    <vi-resource source="Icon_Up"></vi-resource>
+                    <vi-icon source="Up"></vi-icon>
                 </button>
                 <template is="dom-if" if="{{canUserSettings}}">
-                    <vi-popup-menu-item icon="Icon_UserSettings" label="{{translations.UserSettings}}" on-tap="userSettings"></vi-popup-menu-item>
+                    <vi-popup-menu-item icon="Configure" label="{{translations.UserSettings}}" on-tap="userSettings"></vi-popup-menu-item>
                 </template>
                 <template is="dom-if" if="{{canFeedback}}">
-                    <vi-popup-menu-item icon="Icon_UserFeedback" label="{{translations.Feedback}}" on-tap="feedback"></vi-popup-menu-item>
+                    <vi-popup-menu-item icon="UserFeedback" label="{{translations.Feedback}}" on-tap="feedback"></vi-popup-menu-item>
                 </template>
-                <vi-popup-menu-item icon="Icon_SignOut" label="{{translations.SignOut}}" on-tap="signOut"></vi-popup-menu-item>
+                <vi-popup-menu-item icon="SignOut" label="{{translations.SignOut}}" on-tap="signOut"></vi-popup-menu-item>
             </vi-popup-menu>
         </template>
         <template is="dom-if" if="{{!isSignedIn}}">
             <button is="vi-button" id="signIn" class="flex" on-tap="signIn">
                 <span>{{translations.SignIn}}</span>
-                <vi-resource source="Icon_SignIn"></vi-resource>
+                <vi-icon source="SignIn"></vi-icon>
             </button>
         </template>
     </template>

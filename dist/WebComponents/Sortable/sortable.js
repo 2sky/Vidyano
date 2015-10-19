@@ -1,8 +1,7 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var Vidyano;
 (function (Vidyano) {
@@ -36,8 +35,9 @@ var Vidyano;
             Sortable.prototype.filterChanged = function () {
                 this._sortable.option("filter", this.filter);
             };
-            Sortable.prototype.disabledChanged = function () {
-                this._sortable.option("filter", this.filter);
+            Sortable.prototype._dragStart = function () {
+            };
+            Sortable.prototype._dragEnd = function (element, newIndex, oldIndex) {
             };
             Sortable.prototype._create = function () {
                 var _this = this;
@@ -45,16 +45,18 @@ var Vidyano;
                 this._sortable = window["Sortable"].create(this, {
                     group: this.group,
                     filter: this.filter,
-                    disabled: this.disabled,
+                    disabled: !this.enabled,
                     onStart: function () {
-                        _this._isDragging = true;
+                        _this._setIsDragging(true);
                         if (_this.group)
-                            _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._isGroupDragging = true; });
+                            _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._setIsGroupDragging(true); });
+                        _this._dragStart();
                     },
-                    onEnd: function () {
-                        _this._isDragging = false;
+                    onEnd: function (e) {
+                        _this._setIsDragging(false);
                         if (_this.group)
-                            _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._isGroupDragging = false; });
+                            _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._setIsGroupDragging(false); });
+                        _this._dragEnd(e.item, e.newIndex, e.oldIndex);
                     }
                 });
             };
@@ -63,6 +65,45 @@ var Vidyano;
                     this._sortable.destroy();
                     this._sortable = null;
                 }
+            };
+            Sortable.prototype._enabledChanged = function (enabled) {
+                if (this._sortable)
+                    this._sortable.option("disabled", !enabled);
+            };
+            Sortable.register = function (info) {
+                if (info === void 0) { info = {}; }
+                if (typeof info == "function")
+                    return Sortable.register({})(info);
+                return function (obj) {
+                    info.properties = info.properties || {};
+                    info.properties["group"] = {
+                        type: String,
+                        reflectToAttribute: true,
+                    };
+                    info.properties["filter"] =
+                        {
+                            type: String,
+                            reflectToAttribute: true
+                        };
+                    info.properties["isDragging"] =
+                        {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            readOnly: true
+                        };
+                    info.properties["isGroupDragging"] =
+                        {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            readOnly: true
+                        };
+                    info.properties["enabled"] =
+                        {
+                            type: Boolean,
+                            observer: "_enabledChanged"
+                        };
+                    return WebComponents.WebComponent.register(obj, info);
+                };
             };
             return Sortable;
         })(WebComponents.WebComponent);

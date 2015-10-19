@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -125,10 +132,12 @@ var Vidyano;
                 };
                 PersistentObjectAttributeNumeric._decimalTypes = ["NullableDecimal", "Decimal", "NullableSingle", "Single", "NullableDouble", "Double"];
                 PersistentObjectAttributeNumeric._unsignedTypes = ["Byte", "NullableByte", "UInt16", "NullableUInt16", "UInt32", "NullableUInt32", "UInt64", "NullableUInt64"];
+                PersistentObjectAttributeNumeric = __decorate([
+                    Attributes.PersistentObjectAttribute.register
+                ], PersistentObjectAttributeNumeric);
                 return PersistentObjectAttributeNumeric;
             })(WebComponents.Attributes.PersistentObjectAttribute);
             Attributes.PersistentObjectAttributeNumeric = PersistentObjectAttributeNumeric;
-            Attributes.PersistentObjectAttribute.registerAttribute(PersistentObjectAttributeNumeric);
         })(Attributes = WebComponents.Attributes || (WebComponents.Attributes = {}));
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

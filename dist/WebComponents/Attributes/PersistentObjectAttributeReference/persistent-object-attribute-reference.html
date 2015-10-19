@@ -7,7 +7,7 @@
             <a href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" on-tap="_open">
                 <span>{{attribute.displayValue}}</span>
                 <template is="dom-if" if="{{href}}">
-                    <vi-resource source="Icon_ArrowUpRight" small></vi-resource>
+                    <vi-icon source="ArrowUpRight" small></vi-icon>
                 </template>
                 <div class="spacer"></div>
             </a>
@@ -17,16 +17,16 @@
                 <vi-persistent-object-attribute-edit attribute="{{attribute}}">
                     <vi-select content class="flex" options="{{attribute.options}}" selected-option="{{objectId}}" readonly$="{{attribute.isReadOnly}}"></vi-select>
                     <a class="button" href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open">
-                        <vi-resource source="Icon_ArrowUpRight" icon></vi-resource>
+                        <vi-icon source="ArrowUpRight"></vi-icon>
                     </a>
                     <template is="dom-if" if="{{canAddNewReference}}" restamp>
                         <button on-tap="_addNewReference" tabindex="-1">
-                            <vi-resource source="Icon_Add" icon></vi-resource>
+                            <vi-icon source="Add"></vi-icon>
                         </button>
                     </template>
                     <template is="dom-if" if="{{canClear}}" restamp>
                         <button on-tap="_clearReference" tabindex="-1">
-                            <vi-resource source="Icon_Remove" icon></vi-resource>
+                            <vi-icon source="Remove"></vi-icon>
                         </button>
                     </template>
                 </vi-persistent-object-attribute-edit>
@@ -35,26 +35,25 @@
                 <vi-persistent-object-attribute-edit attribute="{{attribute}}">
                     <input content value="{{filter::input}}" on-blur="_filterBlur" readonly$="{{attribute.isReadOnly}}" />
                     <a class="button" href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open">
-                        <vi-resource source="Icon_ArrowUpRight" icon></vi-resource>
+                        <vi-icon source="ArrowUpRight"></vi-icon>
                     </a>
                     <template is="dom-if" if="{{canBrowseReference}}" restamp>
                         <button on-tap="_browseReference" tabindex="-1">
-                            <vi-resource source="Icon_Ellipsis" icon></vi-resource>
+                            <vi-icon source="Ellipsis"></vi-icon>
                         </button>
                     </template>
                     <template is="dom-if" if="{{canAddNewReference}}" restamp>
                         <button on-tap="_addNewReference" tabindex="-1">
-                            <vi-resource source="Icon_Add" icon></vi-resource>
+                            <vi-icon source="Add"></vi-icon>
                         </button>
                     </template>
                     <template is="dom-if" if="{{canClear}}" restamp>
                         <button on-tap="_clearReference" tabindex="-1">
-                            <vi-resource source="Icon_Remove" icon></vi-resource>
+                            <vi-icon source="Remove"></vi-icon>
                         </button>
                     </template>
                 </vi-persistent-object-attribute-edit>
             </template>
-            <vi-select-reference-dialog id="browseReferenceDialog" query="{{attribute.lookup}}"></vi-select-reference-dialog>
         </template>
     </template>
 </dom-module>

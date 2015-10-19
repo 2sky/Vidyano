@@ -21,15 +21,15 @@ vi-persistent-object-attribute-reference:not([editing]) a span {
   text-overflow: ellipsis;
   overflow: hidden;
 }
-vi-persistent-object-attribute-reference:not([editing]) a vi-resource[icon] {
+vi-persistent-object-attribute-reference:not([editing]) a vi-icon {
   height: 16px;
   margin: 0 6px;
   min-width: 12px;
 }
-[theme-color-1] vi-persistent-object-attribute-reference:not([editing]) a vi-resource[icon] {
+[theme-color-1] vi-persistent-object-attribute-reference:not([editing]) a vi-icon {
   fill: #4682b4;
 }
-[theme-color-2] vi-persistent-object-attribute-reference:not([editing]) a vi-resource[icon] {
+[theme-color-2] vi-persistent-object-attribute-reference:not([editing]) a vi-icon {
   fill: #009688;
 }
 vi-persistent-object-attribute-reference[editing] vi-select {

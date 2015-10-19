@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -31,30 +38,32 @@ var Vidyano;
             Query.prototype._computeSearchOnHeader = function (noActions, query) {
                 return noActions && query && query.actions["Filter"] != null;
             };
+            Query = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        query: {
+                            type: Object,
+                            observer: "_queryChanged"
+                        },
+                        loading: {
+                            type: Boolean,
+                            value: true,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        },
+                        noActions: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "_computeNoActions(query.actions)"
+                        }
+                    },
+                    forwardObservers: [
+                        "query.labelWithTotalItems"
+                    ]
+                })
+            ], Query);
             return Query;
         })(WebComponents.WebComponent);
         WebComponents.Query = Query;
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.Query, Vidyano.WebComponents, "vi", {
-            properties: {
-                query: {
-                    type: Object,
-                    observer: "_queryChanged"
-                },
-                loading: {
-                    type: Boolean,
-                    value: true,
-                    readOnly: true,
-                    reflectToAttribute: true
-                },
-                noActions: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "_computeNoActions(query.actions)"
-                }
-            },
-            forwardObservers: [
-                "query.labelWithTotalItems"
-            ]
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -73,8 +80,7 @@ var Vidyano;
                 var action = filterAttr.details.actions["New"];
                 action.skipOpen = true;
                 action.execute().then(function (po) {
-                    var dialog = _this.$["dialog"];
-                    dialog.show(po, function () {
+                    _this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, true)).then(function (po) {
                         po.attributesByName["Columns"].setValue(_this._getColumnsFilterData(_this.query));
                         filterAttr.objects.push(po);
                         return _this.query.filters.save().then(function (result) {
@@ -117,9 +123,8 @@ var Vidyano;
                     return;
                 this.query.filters.beginEdit();
                 var isCurrentFilter = po.getAttributeValue("Name") === this.currentFilter && this.currentFilter != null;
-                var dialog = this.$["dialog"];
                 po.breadcrumb = po.actions["Edit"].displayName + " '" + name + "'";
-                dialog.show(po, function () {
+                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po)).then(function (po) {
                     if (isCurrentFilter)
                         po.attributesByName["Columns"].setValue(_this._getColumnsFilterData(_this.query));
                     return _this.query.filters.save().then(function (result) {
@@ -165,7 +170,7 @@ var Vidyano;
                     return;
                 this.app.showMessageDialog({
                     title: name,
-                    titleIcon: "Icon_Action_Delete",
+                    titleIcon: "Action_Delete",
                     message: this.translateMessage("AskForDeleteFilter", name),
                     actions: [this.translateMessage("Delete"), this.translateMessage("Cancel")],
                     actionTypes: ["Danger"]
@@ -192,43 +197,45 @@ var Vidyano;
                     return "";
                 return this.translateMessage("Save") + " '" + currentFilter + "'";
             };
+            QueryGridFilters = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        query: {
+                            type: Object,
+                            observer: "_queryChanged"
+                        },
+                        filters: {
+                            type: Array,
+                            readOnly: true
+                        },
+                        filtering: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            readOnly: true,
+                            value: false
+                        },
+                        canOpen: {
+                            type: Boolean,
+                            computed: "_computeCanOpen(filters, filtering)"
+                        },
+                        currentFilter: {
+                            type: Object,
+                            readOnly: true,
+                            observer: "_currentFilterChanged",
+                            value: null
+                        },
+                        editLabel: {
+                            type: String,
+                            computed: "query.filters.actions.Edit.displayName"
+                        }
+                    },
+                    listeners: {
+                        "column-filter-changed": "_columnFilterChangedListener"
+                    }
+                })
+            ], QueryGridFilters);
             return QueryGridFilters;
         })(WebComponents.WebComponent);
         WebComponents.QueryGridFilters = QueryGridFilters;
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.QueryGridFilters, Vidyano.WebComponents, "vi", {
-            properties: {
-                query: {
-                    type: Object,
-                    observer: "_queryChanged"
-                },
-                filters: {
-                    type: Array,
-                    readOnly: true
-                },
-                filtering: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true,
-                    value: false
-                },
-                canOpen: {
-                    type: Boolean,
-                    computed: "_computeCanOpen(filters, filtering)"
-                },
-                currentFilter: {
-                    type: Object,
-                    readOnly: true,
-                    observer: "_currentFilterChanged",
-                    value: null
-                },
-                editLabel: {
-                    type: String,
-                    computed: "query.filters.actions.Edit.displayName"
-                }
-            },
-            listeners: {
-                "column-filter-changed": "_columnFilterChangedListener"
-            }
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

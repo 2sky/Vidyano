@@ -1,8 +1,8 @@
-vi-resource {
+vi-icon {
   position: relative;
   display: block;
 }
-vi-resource > div {
+vi-icon > div {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
@@ -18,11 +18,11 @@ vi-resource > div {
   height: 100%;
   text-align: center;
 }
-vi-resource[icon] svg {
+vi-icon svg {
   width: 16px;
   height: 16px;
 }
-vi-resource[icon][small] svg {
+vi-icon[small] svg {
   -ms-transform: translateY(1px);
   -webkit-transform: translateY(1px);
   -moz-transform: translateY(1px);
@@ -31,7 +31,7 @@ vi-resource[icon][small] svg {
   width: 12px;
   height: 12px;
 }
-vi-resource[icon][extrasmall] svg {
+vi-icon[extrasmall] svg {
   -ms-transform: translateY(0);
   -webkit-transform: translateY(0);
   -moz-transform: translateY(0);

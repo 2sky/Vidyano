@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var Vidyano;
 (function (Vidyano) {
     var WebComponents;
@@ -5,14 +10,6 @@ var Vidyano;
         var verboseLogElements = [];
         var verboseLogFunctions = [];
         var verboseSkipLogFunctions = [];
-        (function (PathObserverState) {
-            PathObserverState[PathObserverState["Unopened"] = 0] = "Unopened";
-            PathObserverState[PathObserverState["Opened"] = 1] = "Opened";
-            PathObserverState[PathObserverState["Closed"] = 2] = "Closed";
-            PathObserverState[PathObserverState["Resetting"] = 3] = "Resetting";
-        })(WebComponents.PathObserverState || (WebComponents.PathObserverState = {}));
-        var PathObserverState = WebComponents.PathObserverState;
-        ;
         var Keyboard;
         (function (Keyboard) {
             (function (KeyCodes) {
@@ -120,19 +117,23 @@ var Vidyano;
             document.body.removeChild(outer);
             return width;
         };
-        var WebComponent = (function () {
-            function WebComponent() {
+        var PolymerBase = (function (_super) {
+            __extends(PolymerBase, _super);
+            function PolymerBase() {
+                _super.apply(this, arguments);
             }
-            Object.defineProperty(WebComponent.prototype, "asElement", {
-                get: function () {
-                    return this;
-                },
-                enumerable: true,
-                configurable: true
-            });
+            return PolymerBase;
+        })(HTMLElement);
+        WebComponents.PolymerBase = PolymerBase;
+        eval("PolymerBase = (function (_super) { function PolymerBase() { } return PolymerBase; })(HTMLElement); WebComponents.PolymerBase = PolymerBase;");
+        var WebComponent = (function (_super) {
+            __extends(WebComponent, _super);
+            function WebComponent() {
+                _super.apply(this, arguments);
+            }
             WebComponent.prototype.attached = function () {
                 if (!this.app)
-                    this._setApp((this instanceof Vidyano.WebComponents.App ? this : this.findParent(Vidyano.WebComponents.App)));
+                    this._setApp((this instanceof Vidyano.WebComponents.App ? this : this.findParent(function (e) { return e instanceof Vidyano.WebComponents.App; })));
                 if (!this.translations && this.app && this.app.service && this.app.service.language)
                     this.translations = this.app.service.language.messages;
                 this._setIsAttached(true);
@@ -140,7 +141,8 @@ var Vidyano;
             WebComponent.prototype.detached = function () {
                 this._setIsAttached(false);
             };
-            WebComponent.prototype.attributeChanged = function (attribute, oldValue, newValue) {
+            WebComponent.prototype._setIsAttached = function (attached) {
+                this.isAttached = attached;
             };
             WebComponent.prototype.empty = function () {
                 var _this = this;
@@ -148,10 +150,10 @@ var Vidyano;
                     Polymer.dom(_this).removeChild(c);
                 });
             };
-            WebComponent.prototype.findParent = function (type) {
-                var element = this.asElement;
-                while (element != null && !(element instanceof type)) {
-                    element = element.host || element.parentNode;
+            WebComponent.prototype.findParent = function (condition) {
+                var element = this;
+                while (element != null && !condition(element)) {
+                    element = element.host || element.parentElement;
                 }
                 return element;
             };
@@ -221,9 +223,9 @@ var Vidyano;
                 var results = /function (.+)\(/.exec(fnc.toString());
                 return results && results[1] || "";
             };
-            WebComponent.register = function (obj, ns, prefix, info, finalized) {
-                if (prefix === void 0) { prefix = "vi"; }
+            WebComponent._register = function (obj, info, prefix, ns) {
                 if (info === void 0) { info = {}; }
+                if (prefix === void 0) { prefix = "vi"; }
                 var name = WebComponent.getName(obj);
                 var elementName = prefix + name.replace(/([A-Z])/g, function (m) { return "-" + m[0].toLowerCase(); });
                 var wcPrototype = info;
@@ -237,13 +239,6 @@ var Vidyano;
                     type: Object,
                     readOnly: true
                 };
-                if (!info.properties["isAttached"]) {
-                    info.properties["isAttached"] = {
-                        type: Boolean,
-                        notify: true
-                    };
-                }
-                info.properties["isAttached"]["readOnly"] = true;
                 info.properties["translations"] = Object;
                 for (var prop in info.properties) {
                     if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed)) {
@@ -253,6 +248,28 @@ var Vidyano;
                             info.properties[prop]["computed"] = "_forwardNegate(" + wcPrototype.properties[prop].computed.substring(1) + ")";
                     }
                 }
+                if (!info.properties["isAttached"]) {
+                    var isAttached = (info.forwardObservers || info.keybindings) && !info.properties["isAttached"];
+                    if (!isAttached) {
+                        for (var p in info.properties) {
+                            var propInfo = info.properties[p];
+                            if (propInfo.computed && propInfo.computed.indexOf("isAttached") >= 0) {
+                                isAttached = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!isAttached)
+                        isAttached = !!info.observers && info.observers.some(function (o) { return o.indexOf("isAttached") >= 0; });
+                    if (isAttached) {
+                        info.properties["isAttached"] = {
+                            type: Boolean,
+                            readOnly: true
+                        };
+                    }
+                }
+                else if (!info.properties["isAttached"]["readOnly"])
+                    info.properties["isAttached"]["readOnly"] = true;
                 if (info.forwardObservers) {
                     info.observers = info.observers || [];
                     Enumerable.from(info.forwardObservers).groupBy(function (path) {
@@ -266,10 +283,12 @@ var Vidyano;
                             var _this = this;
                             if (sourceObj == null)
                                 return;
-                            if (!this._forwardObservers)
-                                this._forwardObservers = [];
-                            while (this._forwardObservers.length > 0)
-                                this._forwardObservers.pop()();
+                            var forwardObserversCollectionName = "_forwardObservers_" + source.key();
+                            var forwardObservers = this[forwardObserversCollectionName] || (this[forwardObserversCollectionName] = []);
+                            if (!forwardObservers)
+                                forwardObservers = [];
+                            while (forwardObservers.length > 0)
+                                forwardObservers.pop()();
                             if (!attached)
                                 return;
                             properties.forEach(function (p) {
@@ -278,7 +297,7 @@ var Vidyano;
                                 var observer = functionIndex > 0 ? _this[p.substr(0, functionIndex)] : null;
                                 if (observer)
                                     observer = observer.bind(_this);
-                                _this._forwardObservers.push(_this._forwardObservable(sourceObj, path, source.key(), observer));
+                                forwardObservers.push(_this._forwardObservable(sourceObj, path, source.key(), observer));
                                 if (observer && sourceObj && attached) {
                                     var valuePath = path.slice().split(".").reverse();
                                     var value = sourceObj;
@@ -377,16 +396,26 @@ var Vidyano;
                         wcPrototype[p] = extendFunction(obj.prototype, p, elementName);
                     }
                 }
-                ns[name] = Polymer(wcPrototype);
+                var wc = Polymer(wcPrototype);
                 for (var method in obj) {
-                    if (obj.hasOwnProperty(method) && method != "register" && method != "getName" && method != "registerOverride" && method != "_finalizeRegistration" && method != "publish")
-                        ns[name][method] = obj[method];
+                    if (obj.hasOwnProperty(method) && method != "getName" && method != "registerOverride" && method != "_finalizeRegistration" && method != "publish")
+                        wc[method] = obj[method];
                 }
-                if (typeof finalized == 'function')
-                    finalized(ns[name]);
+                if (ns)
+                    ns[name] = wc;
+                return wc;
+            };
+            WebComponent.register = function (info, prefix) {
+                if (!info || typeof info === "object") {
+                    return function (obj) {
+                        return WebComponent._register(obj, info, prefix);
+                    };
+                }
+                else if (typeof info === "function")
+                    return WebComponent._register.apply(this, arguments);
             };
             return WebComponent;
-        })();
+        })(PolymerBase);
         WebComponents.WebComponent = WebComponent;
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

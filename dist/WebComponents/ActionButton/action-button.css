@@ -13,34 +13,34 @@ vi-action-button button.vi-action-button {
   white-space: nowrap;
   overflow: hidden;
 }
-vi-action-button button.vi-action-button > vi-resource[icon] {
+vi-action-button button.vi-action-button > vi-icon {
   height: 40px;
 }
-vi-action-button button.vi-action-button > vi-resource[icon].options {
+vi-action-button button.vi-action-button > vi-icon.options {
   margin-left: 6px;
 }
-vi-action-button button.vi-action-button > vi-resource[icon].options svg {
+vi-action-button button.vi-action-button > vi-icon.options svg {
   width: 12px;
   height: 12px;
 }
-vi-action-button button.vi-action-button[header] vi-resource {
+vi-action-button button.vi-action-button[header] vi-icon {
   display: inline-block;
 }
 vi-action-button button.vi-action-button > span {
   vertical-align: top;
 }
-vi-action-button[overflow] vi-resource.options {
+vi-action-button[overflow] vi-icon.options {
   -moz-transform: rotate(-90deg);
   -ms-transform: rotate(-90deg);
   -o-transform: rotate(-90deg);
   -webkit-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
-vi-action-button[no-label] button.vi-action-button > span,
-vi-action-button[pinned] button.vi-action-button > span {
+vi-action-button[no-label]:not([force-label]) button.vi-action-button > span,
+vi-action-button[pinned]:not([force-label]) button.vi-action-button > span {
   display: none;
 }
-vi-action-button[no-icon] button.vi-action-button > vi-resource[icon] {
+vi-action-button[no-icon] button.vi-action-button > vi-icon {
   display: none;
 }
 vi-action-button(:focus) {

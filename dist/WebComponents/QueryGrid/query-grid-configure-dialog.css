@@ -1,0 +1,82 @@
+vi-query-grid-configure-dialog main {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding: 12px;
+}
+vi-query-grid-configure-dialog main > ul:empty {
+  display: none;
+}
+vi-query-grid-configure-dialog main > vi-scroller {
+  margin-top: 12px;
+  min-width: 30em;
+}
+vi-query-grid-configure-dialog main ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+vi-query-grid-configure-dialog main ul li {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: row;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  min-width: 30em;
+  margin-bottom: 4px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 15px;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+vi-query-grid-configure-dialog main ul li > vi-icon {
+  width: 30px;
+  height: 30px;
+  fill: #888;
+  pointer-events: none;
+}
+vi-query-grid-configure-dialog main ul li label {
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  background-color: #f9f9f9;
+  margin-left: 12px;
+  padding-left: 12px;
+  padding-right: 40px;
+  pointer-events: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+vi-query-grid-configure-dialog main ul li .buttons {
+  background-color: #f9f9f9;
+}
+[theme-color-1] vi-query-grid-configure-dialog main ul li .buttons button {
+  background-color: white;
+  fill: #4682b4;
+}
+[theme-color-2] vi-query-grid-configure-dialog main ul li .buttons button {
+  background-color: white;
+  fill: #009688;
+}
+vi-query-grid-configure-dialog main ul li:not([is-pinned]) .buttons button:nth-child(1) vi-icon {
+  opacity: 0.5;
+}
+vi-query-grid-configure-dialog main ul li[is-hidden] .buttons button:nth-child(2) vi-icon {
+  opacity: 0.5;
+}
+vi-query-grid-configure-dialog footer > button {
+  margin: 0;
+}
+vi-query-grid-configure-dialog footer > div button:first-child {
+  margin-right: 6px;
+}

@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -96,14 +103,14 @@ var Vidyano;
                     }
                 }
                 Enumerable.from(oldCells).except(newCells).forEach(function (oldCell) {
-                    cellsElement.removeChild(oldCell.asElement);
+                    cellsElement.removeChild(oldCell);
                 });
                 var width = Math.floor(this.width / this.columns);
                 this._cellsForEach(function (cell, x, y) {
                     cell.style.width = width + "px";
                     if (x == 0 && y == 0) {
                         _this._setCellWidth(width);
-                        _this._setCellHeight(parseInt(window.getComputedStyle(cell.asElement).height));
+                        _this._setCellHeight(parseInt(window.getComputedStyle(cell).height));
                     }
                 }, cells);
                 cellsElement.style.width = (width * this.columns) + "px";
@@ -266,6 +273,73 @@ var Vidyano;
             PersistentObjectTab.prototype._toggleDesignMode = function (e) {
                 this.designMode = !this.designMode;
             };
+            PersistentObjectTab = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        tab: Object,
+                        columns: {
+                            type: Number,
+                            computed: "_computeColumns(width, tab.columnCount)"
+                        },
+                        rows: {
+                            type: Number,
+                            readOnly: true
+                        },
+                        cells: {
+                            type: Array,
+                            computed: "_computeDesignModeCells(items, columns, rows, width, isDesignModeAvailable, designMode)"
+                        },
+                        items: {
+                            type: Array,
+                            readOnly: true
+                        },
+                        width: {
+                            type: Number,
+                            readOnly: true
+                        },
+                        height: {
+                            type: Number,
+                            readOnly: true
+                        },
+                        cellWidth: {
+                            type: Number,
+                            readOnly: true
+                        },
+                        cellHeight: {
+                            type: Number,
+                            readOnly: true
+                        },
+                        designMode: {
+                            type: Boolean,
+                            value: false,
+                            reflectToAttribute: true
+                        },
+                        isDesignModeAvailable: {
+                            type: Boolean,
+                            computed: "_computeIsDesignModeAvailable(tab)"
+                        },
+                        itemDragging: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        }
+                    },
+                    observers: [
+                        "_arrangeAutoLayout(tab, tab.groups, columns)"
+                    ],
+                    hostAttributes: {
+                        "class": "relative"
+                    },
+                    listeners: {
+                        "item-drag": "_itemDrag",
+                        "item-drag-start": "_itemDragStart",
+                        "item-drag-end": "_itemDragEnd"
+                    },
+                    forwardObservers: [
+                        "tab.groups"
+                    ]
+                })
+            ], PersistentObjectTab);
             return PersistentObjectTab;
         })(WebComponents.WebComponent);
         WebComponents.PersistentObjectTab = PersistentObjectTab;
@@ -276,6 +350,17 @@ var Vidyano;
                 this.x = x;
                 this.y = y;
             }
+            PersistentObjectTabCell = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        x: Number,
+                        y: Number
+                    },
+                    hostAttributes: {
+                        "class": "relative"
+                    }
+                })
+            ], PersistentObjectTabCell);
             return PersistentObjectTabCell;
         })(WebComponents.WebComponent);
         WebComponents.PersistentObjectTabCell = PersistentObjectTabCell;
@@ -298,17 +383,17 @@ var Vidyano;
                         if (this.item.target instanceof Vidyano.PersistentObjectAttribute) {
                             var attributePresenter = new WebComponents.PersistentObjectAttributePresenter();
                             attributePresenter.attribute = this.item.target;
-                            content = attributePresenter.asElement;
+                            content = attributePresenter;
                         }
                         else if (this.item.target instanceof Vidyano.PersistentObjectAttributeGroup) {
                             var groupPresenter = new WebComponents.PersistentObjectGroup();
                             groupPresenter.group = this.item.target;
-                            content = groupPresenter.asElement;
+                            content = groupPresenter;
                         }
                         else if (this.item.target instanceof Vidyano.Query) {
                             var queryItemsPresenter = new WebComponents.QueryItemsPresenter();
                             queryItemsPresenter.query = this.item.target;
-                            content = queryItemsPresenter.asElement;
+                            content = queryItemsPresenter;
                             if (!queryItemsPresenter.query.hasSearched)
                                 queryItemsPresenter.query.search();
                         }
@@ -337,15 +422,15 @@ var Vidyano;
                     x: x,
                     y: y
                 };
-                this.asElement.style.left = this._position.x + "px";
-                this.asElement.style.top = this._position.y + "px";
+                this.style.left = this._position.x + "px";
+                this.style.top = this._position.y + "px";
                 return this._position;
             };
             PersistentObjectTabItemPresenter.prototype._setSize = function (width, height) {
                 if (width)
-                    this.asElement.style.width = Math.max(width, this.cellWidth) + "px";
+                    this.style.width = Math.max(width, this.cellWidth) + "px";
                 if (height)
-                    this.asElement.style.height = Math.max(height, this.cellHeight) + "px";
+                    this.style.height = Math.max(height, this.cellHeight) + "px";
                 this._size = {
                     width: width || (this._size ? this._size.width : undefined),
                     height: height || (this._size ? this._size.height : undefined),
@@ -386,103 +471,30 @@ var Vidyano;
                 e.preventDefault();
                 e.stopPropagation();
             };
+            PersistentObjectTabItemPresenter = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        cellWidth: Number,
+                        cellHeight: Number,
+                        item: Object,
+                        designMode: {
+                            type: Boolean,
+                            value: false,
+                            reflectToAttribute: true
+                        },
+                        dragging: {
+                            type: Boolean,
+                            readOnly: true,
+                            reflectToAttribute: true
+                        }
+                    },
+                    observers: [
+                        "_computeLayout(isAttached, item, cellWidth, cellHeight, designMode)"
+                    ]
+                })
+            ], PersistentObjectTabItemPresenter);
             return PersistentObjectTabItemPresenter;
         })(WebComponents.WebComponent);
         WebComponents.PersistentObjectTabItemPresenter = PersistentObjectTabItemPresenter;
-        WebComponents.WebComponent.register(PersistentObjectTab, WebComponents, "vi", {
-            properties: {
-                tab: Object,
-                columns: {
-                    type: Number,
-                    computed: "_computeColumns(width, tab.columnCount)"
-                },
-                rows: {
-                    type: Number,
-                    readOnly: true
-                },
-                cells: {
-                    type: Array,
-                    computed: "_computeDesignModeCells(items, columns, rows, width, isDesignModeAvailable, designMode)"
-                },
-                items: {
-                    type: Array,
-                    readOnly: true
-                },
-                width: {
-                    type: Number,
-                    readOnly: true
-                },
-                height: {
-                    type: Number,
-                    readOnly: true
-                },
-                cellWidth: {
-                    type: Number,
-                    readOnly: true
-                },
-                cellHeight: {
-                    type: Number,
-                    readOnly: true
-                },
-                designMode: {
-                    type: Boolean,
-                    value: false,
-                    reflectToAttribute: true
-                },
-                isDesignModeAvailable: {
-                    type: Boolean,
-                    computed: "_computeIsDesignModeAvailable(tab)"
-                },
-                itemDragging: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                }
-            },
-            observers: [
-                "_arrangeAutoLayout(tab, tab.groups, columns)"
-            ],
-            hostAttributes: {
-                "class": "relative"
-            },
-            listeners: {
-                "sizechanged": "_sizeChanged",
-                "item-drag": "_itemDrag",
-                "item-drag-start": "_itemDragStart",
-                "item-drag-end": "_itemDragEnd"
-            },
-            forwardObservers: [
-                "tab.groups"
-            ]
-        });
-        WebComponents.WebComponent.register(PersistentObjectTabCell, WebComponents, "vi", {
-            properties: {
-                x: Number,
-                y: Number
-            },
-            hostAttributes: {
-                "class": "relative"
-            }
-        });
-        WebComponents.WebComponent.register(PersistentObjectTabItemPresenter, WebComponents, "vi", {
-            properties: {
-                cellWidth: Number,
-                cellHeight: Number,
-                item: Object,
-                designMode: {
-                    type: Boolean,
-                    value: false,
-                    reflectToAttribute: true
-                },
-                dragging: {
-                    type: Boolean,
-                    readOnly: true,
-                    reflectToAttribute: true
-                }
-            },
-            observers: [
-                "_computeLayout(isAttached, item, cellWidth, cellHeight, designMode)"
-            ]
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -17,7 +24,7 @@ var Vidyano;
             }
             PersistentObject.prototype.attached = function () {
                 _super.prototype.attached.call(this);
-                this.asElement.setAttribute("style-scope-id", this._uniqueId);
+                this.setAttribute("style-scope-id", this._uniqueId);
                 if (!this.masterWidth)
                     this.masterWidth = "40%";
             };
@@ -120,75 +127,77 @@ var Vidyano;
                 else if (detail.state == "start") {
                     this.app.classList.add("dragging");
                     if (this.masterWidth.endsWith("%"))
-                        this.masterWidth = (this.asElement.offsetWidth * (parseInt(this.masterWidth) / 100)).toString() + "px";
+                        this.masterWidth = (this.offsetWidth * (parseInt(this.masterWidth) / 100)).toString() + "px";
                 }
                 else if (detail.state == "end") {
                     this.app.classList.remove("dragging");
                     window.getSelection().removeAllRanges();
                     if (this.masterWidth.endsWith("px")) {
                         var px = parseInt(this.masterWidth);
-                        this.masterWidth = (100 / this.asElement.offsetWidth * px).toString() + "%";
+                        this.masterWidth = (100 / this.offsetWidth * px).toString() + "%";
                     }
                 }
                 e.stopPropagation();
             };
+            PersistentObject = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        persistentObject: {
+                            type: Object,
+                        },
+                        tabs: {
+                            type: Array,
+                            computed: "persistentObject.tabs"
+                        },
+                        masterWidth: {
+                            type: Number,
+                            observer: "_masterWidthChanged"
+                        },
+                        masterTabs: {
+                            type: Array,
+                            computed: "_computeMasterTabs(persistentObject, tabs)",
+                            observer: "_masterTabsChanged"
+                        },
+                        hasMasterTabs: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "_hasMasterTabs(masterTabs)"
+                        },
+                        selectedMasterTab: {
+                            type: Object,
+                            observer: "_selectedMasterTabChanged"
+                        },
+                        detailTabs: {
+                            type: Array,
+                            computed: "_computeDetailTabs(persistentObject, tabs)",
+                            observer: "_detailTabsChanged"
+                        },
+                        hasDetailTabs: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "_hasDetailTabs(detailTabs)"
+                        },
+                        selectedDetailTab: {
+                            type: Object,
+                            observer: "_selectedDetailTabChanged"
+                        },
+                        layout: {
+                            type: String,
+                            reflectToAttribute: true,
+                            computed: "_computeLayout(persistentObject, masterTabs, detailTabs)"
+                        },
+                    },
+                    observers: [
+                        "_persistentObjectChanged(persistentObject, isAttached)"
+                    ],
+                    forwardObservers: [
+                        "persistentObject.tabs.isVisible",
+                        "persistentObject.breadcrumb"
+                    ]
+                })
+            ], PersistentObject);
             return PersistentObject;
         })(WebComponents.WebComponent);
         WebComponents.PersistentObject = PersistentObject;
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.PersistentObject, Vidyano.WebComponents, "vi", {
-            properties: {
-                persistentObject: {
-                    type: Object,
-                },
-                tabs: {
-                    type: Array,
-                    computed: "persistentObject.tabs"
-                },
-                masterWidth: {
-                    type: Number,
-                    observer: "_masterWidthChanged"
-                },
-                masterTabs: {
-                    type: Array,
-                    computed: "_computeMasterTabs(persistentObject, tabs)",
-                    observer: "_masterTabsChanged"
-                },
-                hasMasterTabs: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "_hasMasterTabs(masterTabs)"
-                },
-                selectedMasterTab: {
-                    type: Object,
-                    observer: "_selectedMasterTabChanged"
-                },
-                detailTabs: {
-                    type: Array,
-                    computed: "_computeDetailTabs(persistentObject, tabs)",
-                    observer: "_detailTabsChanged"
-                },
-                hasDetailTabs: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    computed: "_hasDetailTabs(detailTabs)"
-                },
-                selectedDetailTab: {
-                    type: Object,
-                    observer: "_selectedDetailTabChanged"
-                },
-                layout: {
-                    type: String,
-                    reflectToAttribute: true,
-                    computed: "_computeLayout(persistentObject, masterTabs, detailTabs)"
-                },
-            },
-            observers: [
-                "_persistentObjectChanged(persistentObject, isAttached)"
-            ],
-            forwardObservers: [
-                "persistentObject.tabs.isVisible",
-                "persistentObject.breadcrumb"
-            ]
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));

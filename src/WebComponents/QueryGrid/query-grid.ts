@@ -817,7 +817,7 @@
         }
     }
 
-    interface QueryGridUserSettingsColumnData {
+    export interface QueryGridUserSettingsColumnData {
         offset?: number;
         isPinned?: boolean;
         isHidden?: boolean;

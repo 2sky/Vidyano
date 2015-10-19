@@ -131,11 +131,11 @@ vi-persistent-object-attribute-as-detail[editing] #table #body .row div.delete-b
 vi-persistent-object-attribute-as-detail[editing] #table #body .row div.delete-button button:not(:hover):not(:active) {
   background-color: transparent;
 }
-vi-persistent-object-attribute-as-detail[editing] #table #body .row div.delete-button button vi-resource {
+vi-persistent-object-attribute-as-detail[editing] #table #body .row div.delete-button button vi-icon {
   line-height: 30px;
   height: 30px;
 }
-vi-persistent-object-attribute-as-detail[editing] #table #body .row div.delete-button button vi-resource svg {
+vi-persistent-object-attribute-as-detail[editing] #table #body .row div.delete-button button vi-icon svg {
   width: 12px;
   height: 12px;
 }

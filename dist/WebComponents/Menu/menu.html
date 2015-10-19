@@ -1,3 +1,4 @@
+<link rel="import" href="../../Libs/paper-ripple/paper-ripple.html" />
 <link rel="import" href="../InputSearch/input-search.html" />
 <link rel="import" href="../User/user.html" />
 
@@ -5,7 +6,7 @@
     <template>
         <header>
             <button is="vi-button" id="toggleCollapse" on-tap="_toggleCollapse">
-                <vi-resource source="Icon_Menu_Collapse"></vi-resource>
+                <vi-icon source="Menu_Collapse"></vi-icon>
             </button>
             <span>{{label}}</span>
             <content select="[menu-element~='start']"></content>
@@ -57,7 +58,7 @@
 <dom-module id="vi-menu-item">
     <template>
         <paper-ripple></paper-ripple>
-        <vi-resource class="group" source="Icon_Forward"></vi-resource>
+        <vi-icon class="group" source="Forward"></vi-icon>
         <a href="{{href}}" title="" id="title"></a>
     </template>
 </dom-module>

@@ -1,11 +1,13 @@
-﻿<dom-module id="vi-button">
+﻿<link rel="import" href="../../Libs/paper-ripple/paper-ripple.html" />
+
+<dom-module id="vi-button">
     <template>
         <paper-ripple></paper-ripple>
         <template is="dom-if" if="{{customLayout}}">
             <content></content>
         </template>
         <template is="dom-if" if="{{!customLayout}}">
-            <vi-resource source="{{icon}}"></vi-resource>
+            <vi-icon source="{{icon}}"></vi-icon>
             <span>{{label}}</span>
         </template>
     </template>

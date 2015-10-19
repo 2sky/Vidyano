@@ -1,21 +1,23 @@
+<link rel="import" href="../../Libs/paper-ripple/paper-ripple.html" />
+
 <dom-module id="vi-input-search">
     <template>
         <template is="dom-if" if="{{!collapsed}}">
             <input class="flex" id="input" placeholder="{{translations.FilterSearchHint}}" value="{{value::input}}" on-keypress="_searchKeypressed" on-focus="_input_focused" on-blur="_input_blurred" autofocus$="{{autofocus}}" />
             <button on-tap="_searchClick">
-                <vi-resource source="Icon_Search"></vi-resource>
+                <vi-icon source="Search"></vi-icon>
             </button>
         </template>
         <template is="dom-if" if="{{collapsed}}">
             <vi-popup orientation="horizontal" content-align="right" open-on-hover>
                 <button header class="flex" on-tap="_stop_tap">
                     <paper-ripple></paper-ripple>
-                    <vi-resource source="Icon_Search"></vi-resource>
+                    <vi-icon source="Search"></vi-icon>
                 </button>
                 <div content class="horizontal layout">
                     <input id="input" placeholder="{{translations.FilterSearchHint}}" value="{{value::input}}" on-tap="_stop_tap" on-keypress="_searchKeypressed" on-focus="_input_focused" on-blur="_input_blurred" autofocus$="{{autofocus}}" />
                     <button on-tap="_searchClick">
-                        <vi-resource source="Icon_Search"></vi-resource>
+                        <vi-icon source="Search"></vi-icon>
                     </button>
                 </div>
             </vi-popup>

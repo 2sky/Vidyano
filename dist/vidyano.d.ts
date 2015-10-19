@@ -26,9 +26,9 @@ declare module linqjs {
         make<T>(element: T): Enumerable<T>;
         matches<T>(input: string, pattern: RegExp): Enumerable<T>;
         matches<T>(input: string, pattern: string, flags?: string): Enumerable<T>;
-        range<T>(start: number, count: number, step?: number): Enumerable<T>;
-        rangeDown<T>(start: number, count: number, step?: number): Enumerable<T>;
-        rangeTo<T>(start: number, to: number, step?: number): Enumerable<T>;
+        range(start: number, count: number, step?: number): Enumerable<number>;
+        rangeDown(start: number, count: number, step?: number): Enumerable<number>;
+        rangeTo(start: number, to: number, step?: number): Enumerable<number>;
         repeat<T>(element: T, count?: number): Enumerable<T>;
         repeatWithFinalize<T>(initializer: () => T, finalizer: (element) => void): Enumerable<T>;
         generate<T>(func: () => T, count?: number): Enumerable<T>;
@@ -711,14 +711,18 @@ declare module 'moment' {
     }
 
     export var Path: PathStatic;
-}interface PolymerProperties {
-    [name: string]: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor | {
-        type: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor;
-        computed?: string;
-        reflectToAttribute?: boolean;
-        readOnly?: boolean;
-        observer?: string;
-    };
+}interface PolymerProperty {
+    type: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor;
+    computed?: string;
+    reflectToAttribute?: boolean;
+    readOnly?: boolean;
+    observer?: string;
+    value?: number | boolean | string | Function;
+    notify?: boolean;
+}
+
+interface PolymerProperties {
+    [name: string]: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor | PolymerProperty;
 }
 
 interface PolymerDomApiClassList {
@@ -749,7 +753,7 @@ interface PolymerDomApi {
     insertBefore(newChild: Node | Vidyano.WebComponents.WebComponent, refChild?: Node | Vidyano.WebComponents.WebComponent): Node;
     removeAttribute(name?: string): void;
     setAttribute(name?: string, value?: string): void;
-    querySelector(selectors: string): Element | Vidyano.WebComponents.WebComponent;
+    querySelector(selectors: string): HTMLElement | Vidyano.WebComponents.WebComponent;
     querySelectorAll(selectors: string): NodeList;
     appendChild(newChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;
     removeChild(oldChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;
@@ -801,6 +805,11 @@ interface TapEvent extends CustomEvent {
     model?: TemplateInstance | any;
 }
 
+interface PolymerGestures {
+    add: (node: HTMLElement, eventName: string, handler: Function) => void;
+    remove: (node: HTMLElement, eventName: string, handler: Function) => void;
+}
+
 declare var Polymer: {
     (polymer: any): void;
     dom(element: Node | Vidyano.WebComponents.WebComponent): PolymerDomApi;
@@ -814,6 +823,8 @@ declare var Polymer: {
     nop(): void;
 
     api: any;
+
+    Gestures: PolymerGestures;
 };
 declare var CustomElements: {
     registry: {
@@ -1306,7 +1317,7 @@ declare module Vidyano {
         onConstructPersistentObjectAttributeAsDetail(service: Service, attr: any, parent: PersistentObject): PersistentObjectAttributeAsDetail;
         onConstructQuery(service: Service, query: any, parent?: PersistentObject, asLookup?: boolean, maxSelectedItems?: number): Query;
         onConstructQueryResultItem(service: Service, item: any, query: Query): QueryResultItem;
-        onConstructQueryResultItemValue(service: Service, value: any): QueryResultItemValue;
+        onConstructQueryResultItemValue(service: Service, item: QueryResultItem, value: any): QueryResultItemValue;
         onConstructQueryColumn(service: Service, col: any, query: Query): QueryColumn;
         onConstructAction(service: Service, action: Action): Action;
         onMessageDialog(title: string, message: string, html: boolean, ...actions: string[]): Promise<number>;
@@ -1474,7 +1485,7 @@ declare module Vidyano {
         isValueChanged: boolean;
         backup(): void;
         restore(): void;
-        getTypeHint(name: string, defaultValue?: string, typeHints?: any): string;
+        getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string;
         getRegisteredInput(): HTMLInputElement;
         registerInput(input: HTMLInputElement): void;
         clearRegisteredInput(): void;
@@ -1557,9 +1568,15 @@ declare module Vidyano {
         column: QueryColumn;
         direction: SortDirection;
     }
+    interface QuerySelectAll {
+        isAvailable: boolean;
+        allSelected: boolean;
+        inverse: boolean;
+    }
     class Query extends ServiceObjectWithActions {
         parent: PersistentObject;
         maxSelectedItems: number;
+        private _lastResult;
         private _asLookup;
         private _isSelectionModifying;
         private _totalItems;
@@ -1568,13 +1585,15 @@ declare module Vidyano {
         private _queriedPages;
         private _filters;
         private _canFilter;
-        private _lastSearched;
+        private _canRead;
+        private _canReorder;
+        private _lastUpdated;
+        private _isReorderable;
         persistentObject: PersistentObject;
         columns: QueryColumn[];
         id: string;
         name: string;
         autoQuery: boolean;
-        canRead: boolean;
         isHidden: boolean;
         hasSearched: boolean;
         label: string;
@@ -1586,7 +1605,6 @@ declare module Vidyano {
         top: number;
         totalItem: QueryResultItem;
         items: QueryResultItem[];
-        allSelected: boolean;
         groupingInfo: {
             groupedBy: string;
             type: string;
@@ -1597,53 +1615,67 @@ declare module Vidyano {
                 end: number;
             }[];
         };
+        selectAll: QuerySelectAll;
         constructor(service: Service, query: any, parent?: PersistentObject, asLookup?: boolean, maxSelectedItems?: number);
         filters: PersistentObject;
         canFilter: boolean;
+        canRead: boolean;
+        canReorder: boolean;
+        lastUpdated: Date;
+        private _setLastUpdated(date?);
         selectedItems: QueryResultItem[];
+        private _selectAllPropertyChanged(selectAll, args);
         selectRange(from: number, to: number): boolean;
         asLookup: boolean;
         totalItems: number;
         labelWithTotalItems: string;
         sortOptions: SortOption[];
+        reorder(before: QueryResultItem, item: QueryResultItem, after: QueryResultItem): Promise<QueryResultItem[]>;
         private _setSortOptionsFromService(options);
         private _setTotalItems(items);
         _toServiceObject(): any;
         _setResult(result: any): void;
         getColumn(name: string): QueryColumn;
         getItemsInMemory(start: number, length: number): QueryResultItem[];
-        getItems(start: number, length: number): Promise<QueryResultItem[]>;
+        getItems(start: number, length?: number): Promise<QueryResultItem[]>;
         search(delay?: number): Promise<QueryResultItem[]>;
         clone(asLookup?: boolean): Query;
         private _updateColumns(_columns?);
         private _updateItems(items, reset?);
         private _notifyItemSelectionChanged(item);
+        private _updateSelectAll(item?, selectedItems?);
     }
     class QueryColumn extends ServiceObject {
         query: Query;
         private displayAttribute;
         private _sortDirection;
-        disableSort: boolean;
-        canFilter: boolean;
+        private _distincts;
+        private _canSort;
+        private _canFilter;
+        private _name;
+        private _type;
+        private _label;
         includes: string[];
         excludes: string[];
-        distincts: QueryColumnDistincts;
-        label: string;
-        name: string;
         offset: number;
-        type: string;
         isPinned: boolean;
         isHidden: boolean;
         width: string;
         typeHints: any;
         constructor(service: Service, col: any, query: Query);
+        name: string;
+        type: string;
+        label: string;
+        canFilter: boolean;
+        canSort: boolean;
         isSorting: boolean;
         sortDirection: SortDirection;
+        distincts: QueryColumnDistincts;
         private _setSortDirection(direction);
         _toServiceObject(): any;
-        getTypeHint(name: string, defaultValue?: string, typeHints?: any): string;
+        getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string;
         refreshDistincts(): Promise<QueryColumnDistincts>;
-        sort(direction: SortDirection, multiSort?: boolean): void;
+        sort(direction: SortDirection, multiSort?: boolean): Promise<QueryResultItem[]>;
         private _queryPropertyChanged(sender, args);
     }
     interface QueryColumnDistincts {
@@ -1670,13 +1702,17 @@ declare module Vidyano {
         _toServiceObject(): any;
     }
     class QueryResultItemValue extends ServiceObject {
+        private _item;
+        private _value;
+        private _valueParsed;
         key: string;
         value: string;
         typeHints: any;
         persistentObjectId: string;
         objectId: string;
-        constructor(service: Service, value: any);
+        constructor(service: Service, _item: QueryResultItem, value: any);
         getTypeHint(name: string, defaultValue?: string, typeHints?: any): string;
+        getValue(): any;
         _toServiceObject(): any;
     }
     class Action extends ServiceObject {
@@ -1804,6 +1840,7 @@ declare module Vidyano {
         userSettings: any;
         hasManagement: boolean;
         session: Vidyano.PersistentObject;
+        saveUserSettings(): Promise<any>;
         _updateSession(session: any): void;
     }
     class ProgramUnitItem extends ServiceObject {
@@ -1868,6 +1905,8 @@ declare module Vidyano.WebComponents {
         item: Vidyano.QueryResultItem;
         canExecute: boolean;
         hasOptions: boolean;
+        noLabel: boolean;
+        forceLabel: boolean;
         private _setCanExecute;
         private _setHidden;
         private _executeWithoutOptions(e);
@@ -2008,7 +2047,8 @@ declare module Vidyano.WebComponents {
         cacheClear(): void;
         createServiceHooks(): ServiceHooks;
         redirectToSignIn(keepUrl?: boolean): void;
-        showMessageDialog(options: MessageDialogOptions): Promise<number>;
+        showDialog(dialog: Dialog, options?: DialogOptions): Promise<any>;
+        showMessageDialog(options: MessageDialogOptions): Promise<any>;
         private _computeService(uri, user);
         private _onInitialized();
         private _updateRoute(path);
@@ -2026,7 +2066,7 @@ declare module Vidyano.WebComponents {
         constructor(app: App);
         onActionConfirmation(action: Action): Promise<boolean>;
         onAction(args: ExecuteActionArgs): Promise<any>;
-        onOpen(obj: ServiceObject, replaceCurrent?: boolean, fromAction?: boolean): Promise<any>;
+        onOpen(obj: ServiceObject, replaceCurrent?: boolean, fromAction?: boolean): void;
         onClose(parent: Vidyano.ServiceObject): void;
         onMessageDialog(title: string, message: string, html: boolean, ...actions: string[]): Promise<number>;
         onSessionExpired(): void;
@@ -2260,21 +2300,21 @@ declare module Vidyano.WebComponents.Attributes {
     class PersistentObjectAttributeTranslatedString extends PersistentObjectAttribute {
         private _defaultLanguage;
         strings: TranslatedString[];
+        multiline: boolean;
         private _setStrings;
         protected _optionsChanged(): void;
         protected _valueChanged(newValue: string): void;
         private _editInputBlur();
-        private _computeMultiLine(attribute);
+        private _computeMultiline(attribute);
         private _computeCanShowDialog(readOnly, strings);
         private _showLanguagesDialog();
     }
-    class PersistentObjectAttributeTranslatedStringDialog extends WebComponent {
-        private _dialog;
+    class PersistentObjectAttributeTranslatedStringDialog extends Dialog {
         label: string;
         strings: TranslatedString[];
-        show(): Promise<any>;
+        multiline: boolean;
+        constructor(label: string, strings: TranslatedString[], multiline: boolean);
         private _ok();
-        private _cancel();
     }
 }
 declare module Vidyano.WebComponents.Attributes {
@@ -2302,7 +2342,7 @@ declare module Vidyano.WebComponents.Attributes {
         protected _editingChanged(): void;
         protected _valueChanged(newValue: any): void;
         private _computeHasError(validationError);
-        static registerAttribute(obj: any, info?: WebComponentRegistrationInfo, finalized?: (ctor: any) => void): void;
+        static register(info?: WebComponentRegistrationInfo): any;
     }
     class PersistentObjectAttributeEdit extends WebComponent {
         private _setFocus;
@@ -2356,7 +2396,6 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents {
     interface DialogOptions {
-        autoSize?: boolean;
     }
     class DialogInstance {
         options: DialogOptions;
@@ -2367,17 +2406,32 @@ declare module Vidyano.WebComponents {
         resolve(result?: any): void;
         reject(error?: any): void;
     }
-    class Dialog extends WebComponent {
-        private _translate;
+    abstract class Dialog extends WebComponent {
         private _instance;
+        private _show(e, details);
+        instance: DialogInstance;
+        protected show(options: DialogOptions): void;
+        protected close(result?: any): void;
+        protected cancel(result?: any): void;
+        static register(info?: WebComponentRegistrationInfo): any;
+    }
+    class DialogHost extends WebComponent {
+        private _dialog;
+        private _translate;
+        shown: boolean;
         private _setShown;
-        private _setAutoSize;
-        private _setDragging;
         private _set_translate;
-        show(options?: DialogOptions): DialogInstance;
-        private _close();
-        private _track(e, detail);
+        constructor(_dialog: Dialog);
         private _translateChanged();
+        private _track(e);
+        show(options?: DialogOptions): Promise<any>;
+    }
+}
+declare module Vidyano.WebComponents {
+    class Icon extends Resource {
+        constructor(source?: string);
+        static Load(source: string): DocumentFragment;
+        static Exists(name: string): boolean;
     }
 }
 declare module Vidyano.WebComponents {
@@ -2442,12 +2496,10 @@ declare module Vidyano.WebComponents {
         extraClasses?: string[];
         html?: boolean;
     }
-    class MessageDialog extends WebComponent {
-        private _dialog;
+    class MessageDialog extends Dialog {
         options: MessageDialogOptions;
         private _setOptions;
-        show(options: MessageDialogOptions): Promise<any>;
-        private _close();
+        protected show(options: MessageDialogOptions): void;
         private _hasHeaderIcon(options);
         private _getActionType(options, index);
         private _onSelectAction(e);
@@ -2530,13 +2582,12 @@ declare module Vidyano.WebComponents {
     }
 }
 declare module Vidyano.WebComponents {
-    class PersistentObjectDialog extends WebComponent {
-        private _dialog;
-        private _saveHook;
+    class PersistentObjectDialog extends Dialog {
         persistentObject: Vidyano.PersistentObject;
+        private _forwardSave;
+        private _saveHook;
         tab: Vidyano.PersistentObjectAttributeTab;
-        private _setPersistentObject;
-        show(persistentObject: Vidyano.PersistentObject, save?: (po: Vidyano.PersistentObject) => Promise<any>): Promise<any>;
+        constructor(persistentObject: Vidyano.PersistentObject, _forwardSave?: boolean);
         private _save();
         private _cancel();
         private _computeTab(persistentObject);
@@ -2569,14 +2620,6 @@ declare module Vidyano.WebComponents {
     }
 }
 declare module Vidyano.WebComponents {
-    interface Position {
-        x: number;
-        y: number;
-    }
-    interface Size {
-        width: number;
-        height: number;
-    }
     class PersistentObjectTabItem extends Vidyano.Common.Observable<PersistentObjectTabItem> implements Position {
         target: any;
         private _x;
@@ -2675,37 +2718,49 @@ declare module Vidyano.WebComponents {
     }
 }
 declare module Vidyano.WebComponents {
-    class Popup extends WebComponent {
+    class PopupCore extends WebComponent {
+        private static _isBuggyGetBoundingClientRect;
         private static _openPopups;
+        private __Vidyano_WebComponents_PopupCore__Instance__;
+        private _resolver;
+        private _closeOnMoveoutTimer;
+        private _currentTarget;
+        private _currentContent;
+        protected _currentOrientation: string;
+        open: boolean;
+        orientation: string;
+        contentAlign: string;
+        disabled: boolean;
+        sticky: boolean;
+        hover: boolean;
+        protected _setOpen: (val: boolean) => void;
+        private _setHover;
+        popup(target: HTMLElement | WebComponent): Promise<any>;
+        protected _open(target: HTMLElement | WebComponent, content?: HTMLElement): void;
+        private _getTargetRect(target);
+        close(): void;
+        protected _findParentPopup(): Popup;
+        private _catchContentClick(e?);
+        protected _contentMouseEnter(e: MouseEvent): void;
+        protected _contentMouseLeave(e: MouseEvent): void;
+        private _hoverChanged(hover);
+        static closeAll(parent?: HTMLElement | WebComponent): void;
+        private static _isDescendant(parent, child);
+    }
+    class Popup extends PopupCore {
         private _tapHandler;
         private _enterHandler;
         private _leaveHandler;
-        private _resolver;
-        private _closeOnMoveoutTimer;
-        private _currentOrientation;
         private _header;
-        disabled: boolean;
-        contentAlign: string;
-        orientation: string;
-        sticky: boolean;
-        open: boolean;
         autoSizeContent: boolean;
         openOnHover: boolean;
-        private _setOpen(val);
         popup(): Promise<any>;
+        protected _open(target: HTMLElement | WebComponent): void;
         private _hookTapAndHoverEvents();
         private _tap(e);
         private _onOpen(e);
-        private _open(orientation?);
-        close(): void;
-        protected _findParentPopup(): Popup;
+        protected _contentMouseLeave(e: MouseEvent): void;
         private _toggleSizeChanged(e, detail);
-        private _catchContentClick(e?);
-        private _contentMouseEnter(e);
-        private _contentMouseLeave(e);
-        private _hasHeader(header);
-        static closeAll(parent?: HTMLElement | WebComponent): void;
-        private static _isDescendant(parent, child);
     }
 }
 declare module Vidyano.WebComponents {
@@ -2717,6 +2772,7 @@ declare module Vidyano.WebComponents {
         rightAlign: boolean;
         openOnHover: boolean;
         popup(): Promise<any>;
+        private _popupOpening();
         private _hookContextMenu(isAttached, contextMenu);
         private _openContext(e);
         private _alignmentChanged();
@@ -2725,6 +2781,8 @@ declare module Vidyano.WebComponents {
     }
     class PopupMenuItem extends WebComponent {
         label: string;
+        icon: string;
+        checked: boolean;
         split: boolean;
         attached(): void;
         private _splitTap(e);
@@ -2752,16 +2810,46 @@ declare module Vidyano.WebComponents {
     }
 }
 declare module Vidyano.WebComponents {
-    class QueryGridCellBoolean extends QueryGridCell {
-        private _resource;
-        protected _render(dom: HTMLElement): void;
+    class QueryGridCellTemplate extends Resource {
+        static Load(source: string): TemplatePresenter;
+        static Exists(name: string): boolean;
     }
-    var QueryGridCellNullableBoolean: typeof QueryGridCellBoolean;
-    var QueryGridCellYesNo: typeof QueryGridCellBoolean;
-    class QueryGridCellImage extends QueryGridCell {
-        private _img;
-        private _hasImage;
-        protected _render(dom: HTMLElement): void;
+    class QueryGridCellImage extends WebComponent {
+        private _isHidden;
+        private _image;
+        private _valueChanged(value);
+    }
+    class QueryGridCellBoolean extends WebComponent {
+        private _icon;
+        private _textNode;
+        private _valueChanged(value);
+    }
+}
+declare module Vidyano.WebComponents {
+    class QueryGridConfigureDialog extends Dialog {
+        grid: QueryGrid;
+        private _settings;
+        private _columnElements;
+        private _set_columnElements;
+        constructor(grid: QueryGrid, _settings: QueryGridUserSettings);
+        private _distributeColumns(e?);
+        private _updateColumns(target, columns);
+        private _reorderColumns(e);
+        private _save();
+        private _reset();
+    }
+    class QueryGridConfigureDialogColumnList extends Sortable {
+        protected _dragEnd(): void;
+    }
+    class QueryGridConfigureDialogColumn extends WebComponent {
+        column: QueryGridColumn;
+        offset: number;
+        isPinned: boolean;
+        isHidden: boolean;
+        calculatedWidth: number;
+        constructor(column: QueryGridColumn);
+        private _togglePin();
+        private _toggleVisible();
     }
 }
 declare module Vidyano.WebComponents {
@@ -2794,234 +2882,294 @@ declare module Vidyano.WebComponents {
     }
 }
 declare module Vidyano.WebComponents {
-    interface QueryGridItemClickEventArgs {
-        item: QueryResultItem;
-        column?: QueryColumn;
-    }
-    interface QueryGridColumnHosts {
-        header: HTMLElement;
-        pinned: HTMLElement;
-        unpinned: HTMLElement;
-    }
-    interface Viewport {
-        width: number;
-        height: number;
+    interface QueryGridItemTapEventArgs {
+        item: Vidyano.QueryResultItem;
     }
     class QueryGrid extends WebComponent {
-        static _isChrome: boolean;
-        static _isSafari: boolean;
-        private _queuedUnattachedWork;
-        private _uniqueId;
-        private _rows;
-        private _horizontalScrollPanels;
-        private _pinnedColumns;
-        private _unpinnedColumns;
-        private _styles;
+        private static tableCache;
+        private static perf;
+        private _tableData;
+        private _tableHeader;
+        private _tablesUpdating;
+        private _tablesUpdatingTimestamp;
+        private _virtualTableOffset;
+        private _virtualTableOffsetCurrent;
+        private _virtualTableStartIndex;
+        private _verticalScrollOffset;
+        private _horizontalScrollOffset;
+        private _horizontalScrollOffsetCurrent;
+        private _items;
+        private _columns;
+        private _hasPendingUpdates;
         private _itemOpening;
         private _lastSelectedItemIndex;
-        private remainderWidth;
-        private verticalScrollOffset;
-        private horizontalScrollOffset;
-        viewport: Viewport;
+        private _remainderWidth;
+        private _settings;
+        private _columnMenuColumn;
+        private _lastUpdated;
+        canReorder: boolean;
+        rowHeight: number;
+        viewportSize: Size;
         query: Vidyano.Query;
-        initializing: boolean;
-        disableSelect: boolean;
-        disableInlineActions: boolean;
         asLookup: boolean;
-        _setInitializing: (val: boolean) => void;
-        _setViewport: (viewport: Viewport) => void;
-        private _setDisableSelect;
+        private _setInitializing;
+        private _setViewportSize;
+        private _setRowHeight;
         attached(): void;
         detached(): void;
-        pinnedColumns: QueryGridColumn[];
-        unpinnedColumns: QueryGridColumn[];
-        headers: QueryGridColumnHeaders;
-        filters: QueryGridColumnFilters;
-        items: QueryGridItems;
+        isColumnInView(column: QueryGridColumn): boolean;
         private _style;
-        private _columnsChanged(columns);
-        private _itemsChanged(items, isAttached, viewport);
-        private _updateHorizontalSpacer();
-        private _measureColumnsListener(e);
-        private _columnWidthUpdatedListener(e, detail);
-        private _updateColumnWidthsStyle(columns);
-        private _itemSelectListener(e, detail);
-        private _filterChangedListener(e);
-        private _columnFilterChangedListener(e);
+        private _actionMenu;
+        private _columnMenu;
         private _sizeChanged(e, detail);
-        private _verticalScrollOffsetChanged(verticalScrollOffset);
         private _horizontalScrollOffsetChanged(horizontalScrollOffset);
-        private _onScrollHorizontal(e);
-        private _updateHoverRow(e);
-        private _itemsTap(e, detail);
-        private _sortingStart(e);
-        private _sortingEnd(e);
-        private _updateColumnPinning(e, detail, sender);
-        private _updateColumnOffset();
-        private _computeDisableInlineActions(actions);
-        private _computeDisableSelect(actions);
-        private _computeRemainderWidth();
-        private _itemsMouseenter();
-        private _itemsMouseleave();
+        private _computeSettings(query);
+        private _computeColumns(columns);
+        private _computeItems(items, viewportSize, verticalScrollOffset, rowHeight, lastUpdated);
+        private _computeCanSelect(query);
+        private _computeCanSelectAll(query, canSelect);
+        private _computeInlineActions(query);
+        private _computeCanFilter(query);
+        private _updateTables(items, columns, canReorder, isAttached);
+        private _updateVerticalSpacer(totalItems, rowHeight);
+        private _updateTableHeaders(columns);
+        private _updateTableData(items, columns);
+        private _updateTableDataPendingUpdatesRAF;
+        private _updateTableDataPendingUpdates();
+        private _updateColumnWidths();
+        private _columnWidthsUpdated(e?, detail?);
+        private _requestAnimationFrame(action);
+        private _itemSelect(e, detail);
+        private _itemActions(e, detail);
+        private _contextmenuData(e);
+        private _closeActions();
+        private _contextmenuColumn(e);
+        private _togglePin();
+        private _configureColumns();
+        private _preventScroll(e);
     }
-    class QueryGridColumn {
+    class QueryGridColumn implements QueryGridUserSettingsColumnData {
         private _column;
-        private _safeName;
-        currentWidth: number;
-        isAttached: boolean;
-        constructor(_column: QueryColumn);
-        column: QueryColumn;
-        safeName: string;
+        private _userSettingsColumnData;
+        calculatedWidth: number;
+        calculatedOffset: number;
+        constructor(_column: Vidyano.QueryColumn, _userSettingsColumnData: QueryGridUserSettingsColumnData);
+        column: Vidyano.QueryColumn;
+        query: Vidyano.Query;
         name: string;
-    }
-    class QueryGridRow {
-        private _grid;
-        private _hosts;
-        private _remainder;
-        private _columnsOrder;
-        constructor(_grid: QueryGrid, _hosts: QueryGridColumnHosts);
-        hosts: QueryGridColumnHosts;
-        grid: QueryGrid;
-        updateColumns(pinned: QueryGridColumn[], unpinned: QueryGridColumn[]): void;
-        getColumnWidth(gridColumn: QueryGridColumn): number;
-        protected _createRemainder(): HTMLElement;
-        protected _createColumnElement(column: QueryGridColumn): Element;
-        protected _removedColumnElement(element: Element): void;
-        protected _getColumnNameForElement(element: Element): string;
-        protected _updateColumns(gridColumns: QueryGridColumn[], host: HTMLElement): void;
-    }
-    class QueryGridColumnHeaders extends QueryGridRow {
-        protected _createRemainder(): HTMLElement;
-        protected _createColumnElement(column: QueryGridColumn): Element;
-        protected _getColumnNameForElement(element: Element): string;
-    }
-    class QueryGridColumnFilters extends QueryGridRow {
-        private _filterMenu;
-        updateColumns(pinned: QueryGridColumn[], unpinned: QueryGridColumn[]): void;
-        refreshColumns(): void;
-        refreshHeader(): void;
-        protected _createRemainder(): HTMLElement;
-        protected _createColumnElement(column: QueryGridColumn): Element;
-        protected _getColumnNameForElement(element: Element): string;
-    }
-    class QueryGridItems extends QueryGridRow {
-        private _items;
-        private _measuredRowWidths;
-        private _rowHeight;
-        private _fireColumnMeasurement;
-        private _viewportEndRowIndex;
-        private _viewportStartRowIndex;
-        private _pendingNewRowsStartIndex;
-        private _rowsStartIndex;
-        private _virtualHeight;
-        private _dataTop;
-        private _currentHoverRowIndex;
-        private _lastKnownMouseYPosition;
-        private _debouncedGetItems;
-        private _data;
-        private _verticalSpacer;
-        constructor(grid: QueryGrid, hosts: QueryGridColumnHosts);
-        detached(): void;
-        data: Scroller;
-        verticalSpacer: HTMLElement;
-        virtualHeight: number;
-        protected _createRemainder(): HTMLElement;
-        getColumnWidth(column: QueryGridColumn): number;
-        getItem(row: HTMLElement): QueryResultItem;
-        updateRows(): void;
-        updateColumns(pinned: QueryGridColumn[], unpinned: QueryGridColumn[]): void;
-        updateTablePosition(forceRender?: boolean, skipSearch?: boolean): void;
-        updateHoverRow(yPosition?: number): void;
-        onScroll(verticalScrollOffset: number): void;
-    }
-    class QueryGridItemActions extends WebComponent {
-        private _updateActionItems;
-        item: QueryResultItem;
-        private _popupOpening();
-        private _itemChanged();
-        private _mousemove(e);
-        popup(): Promise<any>;
-    }
-    class QueryGridItemSelector extends WebComponent {
-        private _selectedItemsObserver;
-        private _query;
-        item: QueryResultItem;
-        isSelected: boolean;
-        private _setIsSelected;
-        detached(): void;
-        private _updateIsSelected(isAttached, item);
-        private _selectedItemsChanged(source, detail);
-        private _select(e);
-    }
-    class QueryGridColumnHeader extends WebComponent {
-        private _grid;
-        private _resizeX;
-        private _resizeStartWidth;
-        private _resizeMinWidth;
-        gridColumn: QueryGridColumn;
-        column: QueryColumn;
-        private _setGridColumn;
-        constructor(column: QueryGridColumn);
-        attached(): void;
-        private _labelAttached(e);
-        private _sort(e);
-        private _resizeStart(e);
-        private _resizeMove(e);
-        private _resizeEnd(e);
-        private _getIsSorting(direction);
-        private _getSortingIcon(direction);
-    }
-    class QueryGridColumnFilter extends WebComponent {
-        private static _selector;
-        private _popupOpening;
-        private _grid;
-        gridColumn: QueryGridColumn;
-        searchText: string;
-        filtered: boolean;
         label: string;
-        inversed: boolean;
-        isUpgraded: boolean;
-        private _setGridColumn;
-        private _setLoading;
-        private _setInversed;
-        private _setIsUpgraded;
-        constructor(column: QueryGridColumn);
-        attached(): void;
-        refresh(): void;
-        private _upgrade();
-        private _openUpgradedElement();
-        private _getTargetCollection();
-        private _distinctClick(e);
-        private __popupOpening(e);
-        private _addDistinctValue(target, value, className?);
-        private _getDistinctDisplayValue(value);
-        private _updateDistincts();
-        private _renderDistincts(target?);
-        private _search();
-        private _closePopup();
-        private _updateFiltered();
-        private _inverse(e);
-        private _clear(e);
-        private _catchClick(e);
+        type: string;
+        canSort: boolean;
+        canFilter: boolean;
+        includes: string[];
+        excludes: string[];
+        sortDirection: SortDirection;
+        distincts: QueryColumnDistincts;
+        offset: number;
+        isPinned: boolean;
+        isHidden: boolean;
+        width: string;
     }
-    class QueryGridCell {
-        private _dom;
+    interface QueryGridUserSettingsColumnData {
+        offset?: number;
+        isPinned?: boolean;
+        isHidden?: boolean;
+        width?: string;
+    }
+    class QueryGridUserSettings extends Vidyano.Common.Observable<QueryGridUserSettings> {
+        private _query;
+        private _columnsByName;
+        private _columns;
+        constructor(_query: Vidyano.Query, data?: {
+            [key: string]: QueryGridUserSettingsColumnData;
+        });
+        getColumn(name: string): QueryGridColumn;
+        columns: QueryGridColumn[];
+        save(refreshOnComplete?: boolean): Promise<any>;
+        static Load(query: Vidyano.Query): QueryGridUserSettings;
+    }
+    class QueryGridHeader extends WebComponent {
+        query: Vidyano.Query;
+        private _toggleSelectAll();
+    }
+    abstract class QueryGridTable {
+        grid: QueryGrid;
         private _host;
+        private _section;
+        rows: QueryGridTableRow[];
+        constructor(is: string, grid: QueryGrid);
+        update(rowCount: number, columnCount: number): Promise<any>;
+        protected abstract _createSection(): HTMLTableSectionElement;
+        protected abstract _addRow(): QueryGridTableRow;
+        host: HTMLTableElement;
+        section: HTMLTableSectionElement;
+    }
+    class QueryGridTableHeader extends QueryGridTable {
+        constructor(grid: QueryGrid);
+        update(rowCount: number, columnCount: number): Promise<any>;
+        protected _addRow(): QueryGridTableRow;
+        protected _createSection(): HTMLTableSectionElement;
+    }
+    class QueryGridTableData extends QueryGridTable {
+        constructor(grid: QueryGrid);
+        protected _addRow(): QueryGridTableRow;
+        protected _createSection(): HTMLTableSectionElement;
+    }
+    class QueryGridTableDataBody extends Sortable {
+        private _table;
+        constructor(_table: QueryGridTableData);
+        protected _dragEnd(element: HTMLElement, newIndex: number, oldIndex: number): void;
+    }
+    abstract class QueryGridTableRow {
+        private _table;
+        private _host;
+        private _remainder;
+        columns: QueryGridTableColumn[];
+        constructor(is: string, _table: QueryGridTable);
+        updateColumnCount(columnCount: number): Promise<any>;
+        protected abstract _createColumn(): QueryGridTableColumn;
+        table: QueryGridTable;
+        host: HTMLTableRowElement;
+    }
+    class QueryGridTableHeaderRow extends QueryGridTableRow {
+        constructor(table: QueryGridTableHeader);
+        setColumns(columns: QueryGridColumn[]): void;
+        protected _createColumn(): QueryGridTableColumn;
+    }
+    class QueryGridTableDataRow extends QueryGridTableRow {
+        private _itemPropertyChangedListener;
+        private _itemQueryPropertyChangedListener;
+        private _selector;
+        private _actions;
         private _item;
-        private _gridColumn;
+        private _columnCount;
+        private _firstCellWithPendingUpdates;
+        private _isSelected;
+        private _noData;
+        private _columnsInUse;
+        columns: QueryGridTableDataColumn[];
+        constructor(table: QueryGridTableData);
+        selector: QueryGridTableDataColumnSelector;
+        actions: QueryGridTableDataColumnActions;
+        noData: boolean;
+        item: Vidyano.QueryResultItem;
+        setItem(item: Vidyano.QueryResultItem, columns: QueryGridColumn[], lastPinnedIndex?: number): boolean;
+        updatePendingCellUpdates(): boolean;
+        private _tap(e);
+        private _itemPropertyChanged(sender, args);
+        private _itemQueryPropertyChanged(sender, args);
+        private _updateIsSelected();
+        protected _createColumn(): QueryGridTableColumn;
+    }
+    abstract class QueryGridTableColumn {
+        private _cell;
+        private _isPinned;
+        private _host;
+        private _column;
+        private _hasContent;
+        private _isLastPinned;
+        constructor(is: string, _cell?: HTMLElement | DocumentFragment, _isPinned?: boolean);
+        host: HTMLTableColElement;
+        cell: HTMLElement;
+        column: QueryGridColumn;
+        isPinned: boolean;
+        setColumn(column: QueryGridColumn, lastPinned?: boolean): void;
+        hasContent: boolean;
+        protected _setHasContent(hasContent: boolean): void;
+        static columnSafeName(name: string): string;
+    }
+    class QueryGridTableHeaderColumn extends QueryGridTableColumn {
+        constructor();
+        setColumn(column: QueryGridColumn, isLastPinned: boolean): void;
+    }
+    class QueryGridTableDataColumn extends QueryGridTableColumn {
+        private _row;
+        private _item;
+        private _hasPendingUpdate;
         private _foreground;
         private _fontWeight;
         private _textAlign;
         private _extraClass;
         private _typeHints;
-        initialize(column: QueryGridColumn): QueryGridCell;
-        host: HTMLTableDataCellElement;
-        gridColumn: QueryGridColumn;
-        width: number;
-        private _type;
-        item: QueryResultItem;
-        protected _render(dom: HTMLElement): void;
+        private _textNode;
+        private _textNodeValue;
+        private _customCellTemplate;
+        private _lastColumnType;
+        constructor(_row: QueryGridTableDataRow);
+        item: Vidyano.QueryResultItem;
+        hasPendingUpdate: boolean;
+        setItem(item: Vidyano.QueryResultItem, column: QueryGridColumn, isLastPinned: boolean): boolean;
+        update(): boolean;
+        private _render();
         protected _getTypeHint(name: string, defaultValue?: string): string;
+    }
+    class QueryGridTableColumnRemainder extends QueryGridTableColumn {
+        constructor();
+    }
+    class QueryGridTableDataColumnSelector extends QueryGridTableColumn {
+        private _row;
+        private _item;
+        constructor(_row: QueryGridTableDataRow);
+        item: Vidyano.QueryResultItem;
+        private _tap(e);
+    }
+    class QueryGridTableDataColumnActions extends QueryGridTableColumn {
+        private _row;
+        private _item;
+        constructor(_row: QueryGridTableDataRow);
+        item: Vidyano.QueryResultItem;
+        private _tap(e);
+    }
+    class QueryGridColumnHeader extends WebComponent {
+        private _resizingRAF;
+        private _column;
+        private _columnObserver;
+        private _sortingIcon;
+        private _labelTextNode;
+        private _filter;
+        constructor();
+        column: QueryGridColumn;
+        private _onUpgradeFilter();
+        private _sort(e);
+        private _columnPropertyChanged(sender, args);
+        private _updateLabel(label);
+        private _updateSortingIcon(direction);
+        private _resizeTrack(e, detail);
+    }
+    class QueryGridColumnFilterProxyBase extends WebComponent {
+        private _label;
+        private _labelTextNode;
+        column: QueryGridColumn;
+        inversed: boolean;
+        filtered: boolean;
+        protected _updateFiltered(column?: QueryGridColumn): void;
+        protected _getDistinctDisplayValue(value: string): string;
+        protected label: string;
+    }
+    class QueryGridColumnFilterProxy extends QueryGridColumnFilterProxyBase {
+        private _upgrade();
+    }
+    class QueryGridColumnFilter extends QueryGridColumnFilterProxyBase {
+        private static _selector;
+        private _openOnAttach;
+        searchText: string;
+        label: string;
+        private _setLoading;
+        private _setInversed;
+        private _setIsUpgraded;
+        attached(): void;
+        refresh(): void;
+        private _getTargetCollection();
+        private _distinctClick(e);
+        private _popupOpening(e);
+        private _addDistinctValue(target, value, className?);
+        private _updateDistincts();
+        private _renderDistincts(target?);
+        private _search();
+        private _closePopup();
+        private _inverse(e);
+        private _clear(e);
+        private _catchClick(e);
     }
 }
 declare module Vidyano.WebComponents {
@@ -3056,21 +3204,20 @@ declare module Vidyano.WebComponents {
     }
 }
 declare module Vidyano.WebComponents {
-    class Resource extends WebComponent {
+    abstract class Resource extends WebComponent {
         private _loadedSource;
         name: string;
         source: string;
-        icon: boolean;
         model: any;
         hasResource: boolean;
         attached(): void;
-        private _nameChanged();
-        private _setIcon(value);
+        private _nameChanged(name, oldName);
         private _setHasResource(value);
         private _load();
-        static Load(source: string | Resource): DocumentFragment;
-        static LoadResource(source: string): Resource;
-        static Exists(name: string): boolean;
+        static register(info?: WebComponentRegistrationInfo): any;
+        protected static Load(source: string | Resource, tagName: string): DocumentFragment;
+        protected static LoadResource(source: string, tagName: string): Resource;
+        protected static Exists(name: string, tagName: string): boolean;
     }
 }
 declare module Vidyano.WebComponents {
@@ -3161,19 +3308,14 @@ declare module Vidyano.WebComponents {
     }
 }
 declare module Vidyano.WebComponents {
-    class SelectReferenceDialog extends WebComponent {
-        private _grid;
-        private _itemClickCallback;
-        private _dialog;
-        canSelect: boolean;
+    class SelectReferenceDialog extends Dialog {
         query: Vidyano.Query;
-        detached(): void;
-        show(): Promise<any>;
+        canSelect: boolean;
+        constructor(query: Vidyano.Query);
         private _selectedItemsChanged();
         private _invalidateCanSelect(selectedItems?);
         private _queryPropertyChanged(sender, detail);
         private _select();
-        private _cancel();
         private _search(e, detail);
         private _selectReference(e);
     }
@@ -3237,20 +3379,23 @@ declare module Vidyano.WebComponents {
     }
 }
 declare module Vidyano.WebComponents {
-    class Sortable extends WebComponent {
+    abstract class Sortable extends WebComponent {
         private _sortable;
-        private _isDragging;
-        private _isGroupDragging;
         group: string;
         filter: string;
-        disabled: boolean;
+        enabled: boolean;
+        private _setIsDragging;
+        private _setIsGroupDragging;
         attached(): void;
         detached(): void;
         groupChanged(): void;
         filterChanged(): void;
-        disabledChanged(): void;
+        protected _dragStart(): void;
+        protected _dragEnd(element: HTMLElement, newIndex: number, oldIndex: number): void;
         private _create();
         private _destroy();
+        private _enabledChanged(enabled);
+        static register(info?: WebComponentRegistrationInfo): any;
     }
 }
 declare module Vidyano.WebComponents {
@@ -3265,6 +3410,7 @@ declare module Vidyano.WebComponents {
         key: string;
         attached(): void;
         detached(): void;
+        getStyle(name: string): string;
         setStyle(name: string, ...css: string[]): void;
     }
 }
@@ -3314,12 +3460,6 @@ declare module Vidyano.WebComponents {
     }
 }
 declare module Vidyano.WebComponents {
-    enum PathObserverState {
-        Unopened = 0,
-        Opened = 1,
-        Closed = 2,
-        Resetting = 3,
-    }
     module Keyboard {
         enum KeyCodes {
             backspace = 8,
@@ -3421,6 +3561,14 @@ declare module Vidyano.WebComponents {
             appRoute?: Vidyano.WebComponents.AppRoute;
         }
     }
+    interface Position {
+        x: number;
+        y: number;
+    }
+    interface Size {
+        width: number;
+        height: number;
+    }
     var scrollbarWidth: () => number;
     interface WebComponentKeybindingInfo {
         [keys: string]: {
@@ -3453,7 +3601,7 @@ declare module Vidyano.WebComponents {
     interface ObserveChainDisposer {
         (): void;
     }
-    class WebComponent {
+    class PolymerBase extends HTMLElement {
         /**
          * $ contains all names of elements in the shady DOM with an id attribute.
          */
@@ -3461,21 +3609,21 @@ declare module Vidyano.WebComponents {
             [id: string]: HTMLElement;
         };
         /**
-        * Convenience method to run `querySelector` on this local DOM scope.
-        */
+         * Convenience method to run `querySelector` on this local DOM scope.
+         */
         $$: (selector: string) => HTMLElement | WebComponents.WebComponent;
         /**
          * Shady DOM entry point.
          */
         root: HTMLElement | WebComponent;
         /**
-          * Invokes a function asynchronously. The context of the callback
-          * function is bound to 'this' automatically.
-          * @method async
-          * @param {Function|String} method
-          * @param {any|Array} args
-          * @param {number} timeout
-          */
+         * Invokes a function asynchronously. The context of the callback
+         * function is bound to 'this' automatically.
+         * @method async
+         * @param {Function|String} method
+         * @param {any|Array} args
+         * @param {number} timeout
+         */
         async: {
             (method: string, args?: any, timeout?: number): number;
             (method: Function, args?: any, timeout?: number): number;
@@ -3497,6 +3645,10 @@ declare module Vidyano.WebComponents {
             bubbles?: boolean;
             cancelable?: boolean;
         }) => CustomEvent;
+        /**
+         * Call debounce to collapse multiple requests for a named task into one invocation, which is made after the wait time has elapsed with no new request. If no wait time is given, the callback is called at microtask timing (guaranteed to be before paint).
+         */
+        debounce: (jobName: string, callback: Function, wait?: number) => void;
         /**
           * Adds new elements to the end of an array, returns the new length and notifies Polymer that the array has changed.
         **/
@@ -3526,41 +3678,56 @@ declare module Vidyano.WebComponents {
          * This method can be used, for example, to refer to an asset delivered alongside an HTML import.
          */
         resolveUrl: (href: string) => string;
+        /**
+         * Sets a path's value and notifies Polymer for a change for that path.
+         */
         set: (path: string, value: any, root?: WebComponent) => void;
+        /**
+         * Notifies Polymer for a change in the given path.
+         */
         notifyPath: (path: string, value: any, fromAbove?: boolean) => void;
         /**
-         * Appends the node or webComponent to this component.
+         *  Applies a CSS transform to the specified node, or host element if no node is specified.
          */
-        appendChild: {
-            <TNode extends Node>(node: TNode): TNode;
-            <TWebComponent>(component: TWebComponent): TWebComponent;
-        };
+        transform: (transform: string, node?: Node | WebComponent) => void;
         /**
-         * Gets the attribute value with the specified name.
+         * Transforms the specified node, or host element if no node is specified.
          */
-        getAttribute: (name?: string) => string;
+        translate3d: (x: string, y: string, z: string, node?: Node | WebComponent) => void;
+        /**
+         * Toggles the named boolean class on the host element, adding the class if bool is truthy and removing it if bool is falsey.
+         * If node is specified, sets the class on node instead of the host element.
+         */
+        toggleClass: (name: string, bool: boolean, node?: Node | WebComponent) => void;
+        /**
+         * Toggles the named boolean attribute on the host element, adding the attribute if bool is truthy and removing it if bool is falsey.
+         * If node is specified, sets the attribute on node instead of the host element.
+        */
+        toggleAttribute: (name: string, bool: boolean, node?: Node | WebComponent) => void;
+    }
+    abstract class WebComponent extends PolymerBase {
+        private _appRequested;
+        protected translations: any;
         className: string;
         classList: DOMTokenList;
         tagName: string;
         style: CSSStyleDeclaration;
         isAttached: boolean;
         app: Vidyano.WebComponents.App;
-        private _setIsAttached;
-        private _appRequested;
-        protected translations: any;
         protected _setApp: (app: Vidyano.WebComponents.App) => void;
-        asElement: HTMLElement;
         attached(): void;
         detached(): void;
-        attributeChanged(attribute?: string, oldValue?: any, newValue?: any): void;
+        private _setIsAttached(attached);
         empty(): void;
-        findParent<T>(type: any): T;
+        findParent<T>(condition: (element: Node) => boolean): T;
         translateMessage(key: string, ...params: string[]): string;
         protected escapeHTML(val: string): string;
         protected _forwardObservable(source: Vidyano.Common.Observable<any> | Array<any>, path: string, pathPrefix: string, callback?: (path: string) => void): ObserveChainDisposer;
         private _forwardComputed(value);
         private _forwardNegate(value);
         static getName(fnc: Function): string;
-        static register(obj: any, ns?: any, prefix?: string, info?: WebComponentRegistrationInfo, finalized?: (ctor: any) => void): void;
+        private static _register(obj, info?, prefix?, ns?);
+        static register(obj: Function, info: WebComponentRegistrationInfo, prefix?: string, ns?: any): Function;
+        static register(info?: WebComponentRegistrationInfo, prefix?: string): any;
     }
 }

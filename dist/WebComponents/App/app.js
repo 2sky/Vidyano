@@ -1,8 +1,15 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+    switch (arguments.length) {
+        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+    }
 };
 var Vidyano;
 (function (Vidyano) {
@@ -53,6 +60,26 @@ var Vidyano;
                 this._constructor = this.component.split(".").reduce(function (obj, path) { return obj[path]; }, window);
                 this._constructorChanged = true;
             };
+            AppRoute = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        route: {
+                            type: String,
+                            reflectToAttribute: true
+                        },
+                        component: {
+                            type: String,
+                            reflectToAttribute: true,
+                            observer: "_componentChanged"
+                        },
+                        active: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            readOnly: true
+                        }
+                    }
+                })
+            ], AppRoute);
             return AppRoute;
         })(WebComponents.WebComponent);
         WebComponents.AppRoute = AppRoute;
@@ -142,7 +169,7 @@ var Vidyano;
             App.prototype.attached = function () {
                 _super.prototype.attached.call(this);
                 if (!this.label)
-                    this.label = this.asElement.title;
+                    this.label = this.title;
                 var keys = this.$$("iron-a11y-keys");
                 keys.target = document.body;
             };
@@ -222,17 +249,21 @@ var Vidyano;
                         this._routeMap[route].empty();
                 }
             };
-            App.prototype.showMessageDialog = function (options) {
+            App.prototype.showDialog = function (dialog, options) {
                 var _this = this;
-                var messageDialog = new Vidyano.WebComponents.MessageDialog();
-                Polymer.dom(this).appendChild(messageDialog);
-                return messageDialog.show(options).then(function (result) {
-                    Polymer.dom(_this).removeChild(messageDialog);
+                var dialogHost = new Vidyano.WebComponents.DialogHost(dialog);
+                Polymer.dom(this).appendChild(dialogHost);
+                return dialogHost.show(options).then(function (result) {
+                    Polymer.dom(_this).removeChild(dialogHost);
                     return result;
-                }, function (e) {
-                    Polymer.dom(_this).removeChild(messageDialog);
-                    throw e;
+                }).catch(function (e) {
+                    Polymer.dom(_this).removeChild(dialogHost);
+                    if (e)
+                        throw e;
                 });
+            };
+            App.prototype.showMessageDialog = function (options) {
+                return this.showDialog(new Vidyano.WebComponents.MessageDialog(), options);
             };
             App.prototype._computeService = function (uri, user) {
                 var _this = this;
@@ -365,6 +396,96 @@ var Vidyano;
             App.stripHashBang = function (path) {
                 return path && path.replace(hashBang, "") || "";
             };
+            App = __decorate([
+                WebComponents.WebComponent.register({
+                    properties: {
+                        uri: {
+                            type: String,
+                            reflectToAttribute: true
+                        },
+                        hooks: {
+                            type: String,
+                            reflectToAttribute: true,
+                            value: null
+                        },
+                        noHistory: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: false
+                        },
+                        path: {
+                            type: String,
+                            reflectToAttribute: true
+                        },
+                        service: {
+                            type: Object,
+                            computed: "_computeService(uri, user, hooks)"
+                        },
+                        user: {
+                            type: String,
+                            reflectToAttribute: true,
+                            value: null
+                        },
+                        keys: {
+                            type: String,
+                            readOnly: true
+                        },
+                        currentRoute: {
+                            type: Object,
+                            readOnly: true
+                        },
+                        application: Object,
+                        programUnit: {
+                            type: Object,
+                            computed: "_computeProgramUnit(service.application, path, routeMapVersion)"
+                        },
+                        noMenu: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            value: false
+                        },
+                        initializing: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            readOnly: true
+                        },
+                        label: {
+                            type: String,
+                            reflectToAttribute: true
+                        },
+                        cacheSize: {
+                            type: Number,
+                            value: 25,
+                            reflectToAttribute: true
+                        },
+                        routeMapVersion: {
+                            type: Number,
+                            readOnly: true,
+                            value: 0
+                        },
+                        signInImage: String,
+                        showMenu: {
+                            type: Boolean,
+                            computed: "_computeShowMenu(service.isSignedIn, noMenu, isAttached)"
+                        }
+                    },
+                    observers: [
+                        "_start(initializing, path)",
+                        "_updateRoute(path, routeMapVersion)"
+                    ],
+                    hostAttributes: {
+                        "theme-color-1": true,
+                        "tabindex": 0
+                    },
+                    listeners: {
+                        "app-route-add": "_appRouteAdded"
+                    },
+                    forwardObservers: [
+                        "service.isSignedIn",
+                        "service.application"
+                    ]
+                })
+            ], App);
             return App;
         })(WebComponents.WebComponent);
         WebComponents.App = App;
@@ -379,7 +500,7 @@ var Vidyano;
                 return new Promise(function (resolve, reject) {
                     _this.app.showMessageDialog({
                         title: action.displayName,
-                        titleIcon: "Icon_Action" + action.name,
+                        titleIcon: "Action" + action.name,
                         message: _this.service.getTranslatedMessage(action.definition.confirmation),
                         actions: [action.displayName, _this.service.getTranslatedMessage("Cancel")],
                         actionTypes: action.name == "Delete" ? ["Danger"] : []
@@ -393,40 +514,29 @@ var Vidyano;
             AppServiceHooks.prototype.onAction = function (args) {
                 var _this = this;
                 if (args.action == "AddReference") {
-                    var dialog = new Vidyano.WebComponents.SelectReferenceDialog();
-                    dialog.query = args.query.clone(true);
-                    dialog.query.search();
-                    Polymer.dom(this.app).appendChild(dialog);
-                    return dialog.show().then(function (result) {
-                        Polymer.dom(_this.app).removeChild(dialog);
-                        if (result && result.length > 0) {
-                            args.selectedItems = result;
-                            return args.executeServiceRequest();
-                        }
-                    }).catch(function (e) {
-                        Polymer.dom(_this.app).removeChild(dialog);
-                        return null;
+                    this.app.importHref(this.app.resolveUrl("../SelectReferenceDialog/select-reference-dialog.html"), function () {
+                        var query = args.query.clone(true);
+                        query.search();
+                        _this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then(function (result) {
+                            if (result && result.length > 0) {
+                                args.selectedItems = result;
+                                return args.executeServiceRequest().then(function (result) {
+                                    args.query.search();
+                                    return result;
+                                });
+                            }
+                        });
                     });
                 }
                 return _super.prototype.onAction.call(this, args);
             };
             AppServiceHooks.prototype.onOpen = function (obj, replaceCurrent, fromAction) {
-                var _this = this;
                 if (replaceCurrent === void 0) { replaceCurrent = false; }
                 if (fromAction === void 0) { fromAction = false; }
                 if (obj instanceof Vidyano.PersistentObject) {
                     var po = obj;
                     if (po.stateBehavior.indexOf("OpenAsDialog") >= 0) {
-                        var dialog = new Vidyano.WebComponents.PersistentObjectDialog();
-                        Polymer.dom(this.app).appendChild(dialog);
-                        Polymer.dom(this.app).flush();
-                        return dialog.show(po).then(function (result) {
-                            Polymer.dom(_this.app).removeChild(dialog);
-                            return result;
-                        }, function (e) {
-                            Polymer.dom(_this.app).removeChild(dialog);
-                            throw e;
-                        });
+                        this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po));
                         return;
                     }
                     var path;
@@ -505,111 +615,5 @@ var Vidyano;
             return AppServiceHooks;
         })(Vidyano.ServiceHooks);
         WebComponents.AppServiceHooks = AppServiceHooks;
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.AppRoute, Vidyano.WebComponents, "vi", {
-            properties: {
-                route: {
-                    type: String,
-                    reflectToAttribute: true
-                },
-                component: {
-                    type: String,
-                    reflectToAttribute: true,
-                    observer: "_componentChanged"
-                },
-                active: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                }
-            }
-        });
-        Vidyano.WebComponents.WebComponent.register(Vidyano.WebComponents.App, Vidyano.WebComponents, "vi", {
-            properties: {
-                uri: {
-                    type: String,
-                    reflectToAttribute: true
-                },
-                hooks: {
-                    type: String,
-                    reflectToAttribute: true,
-                    value: null
-                },
-                noHistory: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    value: false
-                },
-                path: {
-                    type: String,
-                    reflectToAttribute: true
-                },
-                service: {
-                    type: Object,
-                    computed: "_computeService(uri, user, hooks)"
-                },
-                user: {
-                    type: String,
-                    reflectToAttribute: true,
-                    value: null
-                },
-                keys: {
-                    type: String,
-                    readOnly: true
-                },
-                currentRoute: {
-                    type: Object,
-                    readOnly: true
-                },
-                application: Object,
-                programUnit: {
-                    type: Object,
-                    computed: "_computeProgramUnit(service.application, path, routeMapVersion)"
-                },
-                noMenu: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    value: false
-                },
-                initializing: {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                },
-                label: {
-                    type: String,
-                    reflectToAttribute: true
-                },
-                cacheSize: {
-                    type: Number,
-                    value: 25,
-                    reflectToAttribute: true
-                },
-                routeMapVersion: {
-                    type: Number,
-                    readOnly: true,
-                    value: 0
-                },
-                signInImage: String,
-                showMenu: {
-                    type: Boolean,
-                    computed: "_computeShowMenu(service.isSignedIn, noMenu, isAttached)"
-                }
-            },
-            observers: [
-                "_start(initializing, path)",
-                "_updateRoute(path, routeMapVersion)"
-            ],
-            hostAttributes: {
-                "theme-color-1": true,
-                "tabindex": 0
-            },
-            listeners: {
-                "app-route-add": "_appRouteAdded"
-            },
-            forwardObservers: [
-                "service.isSignedIn",
-                "service.application"
-            ]
-        });
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));
