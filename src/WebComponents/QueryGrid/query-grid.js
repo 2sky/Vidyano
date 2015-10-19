@@ -1450,7 +1450,7 @@ var Vidyano;
                 this._filter = newFilter;
             };
             QueryGridColumnHeader.prototype._sort = function (e) {
-                if (!this._column.canSort)
+                if (!this._column.canSort || this._column.query.canReorder)
                     return;
                 var multiSort = e.detail.sourceEvent.ctrlKey;
                 var newSortingDirection;

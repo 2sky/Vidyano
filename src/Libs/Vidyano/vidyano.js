@@ -2573,6 +2573,7 @@ var Vidyano;
             this.hasSearched = true;
             this._updateColumns(result.columns);
             this._updateItems(Enumerable.from(result.items).select(function (item) { return _this.service.hooks.onConstructQueryResultItem(_this.service, item, _this); }).toArray());
+            this._setSortOptionsFromService(result.sortOptions);
             this.totalItem = result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null;
             this.setNotification(result.notification, result.notificationType);
             this._setLastUpdated();
@@ -2937,7 +2938,10 @@ var Vidyano;
                 if (!this._values) {
                     this._values = {};
                     this.rawValues.forEach(function (v) {
-                        _this._values[v.key] = Service.fromServiceString(v.value, _this.query.columns[v.key].type);
+                        var col = _this.query.columns[v.key];
+                        if (!col)
+                            return;
+                        _this._values[v.key] = Service.fromServiceString(v.value, col.type);
                     });
                 }
                 return this._values;

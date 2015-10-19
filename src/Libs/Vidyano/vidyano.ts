@@ -2961,6 +2961,7 @@ module Vidyano {
             this.hasSearched = true;
             this._updateColumns(result.columns);
             this._updateItems(Enumerable.from(result.items).select(item => this.service.hooks.onConstructQueryResultItem(this.service, item, this)).toArray());
+            this._setSortOptionsFromService(result.sortOptions);
 
             this.totalItem = result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null;
 
@@ -3374,7 +3375,11 @@ module Vidyano {
             if (!this._values) {
                 this._values = {};
                 this.rawValues.forEach(v => {
-                    this._values[v.key] = Service.fromServiceString(v.value, this.query.columns[v.key].type);
+                    var col = this.query.columns[v.key];
+                    if (!col)
+                        return;
+
+                    this._values[v.key] = Service.fromServiceString(v.value, col.type);
                 });
             }
 

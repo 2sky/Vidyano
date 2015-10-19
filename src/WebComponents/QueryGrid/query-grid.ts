@@ -1606,7 +1606,7 @@
         }
 
         private _sort(e: Event) {
-            if (!this._column.canSort)
+            if (!this._column.canSort || this._column.query.canReorder)
                 return;
 
             var multiSort = (<any>e).detail.sourceEvent.ctrlKey;
