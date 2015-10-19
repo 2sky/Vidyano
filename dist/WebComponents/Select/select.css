@@ -69,34 +69,37 @@ vi-select vi-popup [header] input[disabled] {
 vi-select vi-popup [content] {
   max-height: 150px;
   overflow-y: auto;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
-vi-select vi-popup [content] .option {
+vi-select vi-popup [content] li {
   padding-left: 6px;
   line-height: 28px;
   height: 28px;
   cursor: pointer;
 }
-[theme-color-1] vi-select vi-popup [content] .option:hover {
+[theme-color-1] vi-select vi-popup [content] li:hover {
   background-color: #ecf2f7;
 }
-[theme-color-2] vi-select vi-popup [content] .option:hover {
+[theme-color-2] vi-select vi-popup [content] li:hover {
   background-color: #e0f2f1;
 }
-[theme-color-1] vi-select vi-popup [content] .option[suggested],
-[theme-color-1] vi-select vi-popup [content]:not([filtering]) .option[selected] {
+[theme-color-1] vi-select vi-popup [content] li[suggested],
+[theme-color-1] vi-select vi-popup [content]:not([filtering]) li[selected] {
   background-color: #4682b4;
   color: white;
 }
-[theme-color-2] vi-select vi-popup [content] .option[suggested],
-[theme-color-2] vi-select vi-popup [content]:not([filtering]) .option[selected] {
+[theme-color-2] vi-select vi-popup [content] li[suggested],
+[theme-color-2] vi-select vi-popup [content]:not([filtering]) li[selected] {
   background-color: #009688;
   color: white;
 }
-[theme-color-1] vi-select vi-popup [content] .option[suggested]:hover,
-[theme-color-1] vi-select vi-popup [content]:not([filtering]) .option[selected]:hover {
+[theme-color-1] vi-select vi-popup [content] li[suggested]:hover,
+[theme-color-1] vi-select vi-popup [content]:not([filtering]) li[selected]:hover {
   background-color: #6a9bc3;
 }
-[theme-color-2] vi-select vi-popup [content] .option[suggested]:hover,
-[theme-color-2] vi-select vi-popup [content]:not([filtering]) .option[selected]:hover {
+[theme-color-2] vi-select vi-popup [content] li[suggested]:hover,
+[theme-color-2] vi-select vi-popup [content]:not([filtering]) li[selected]:hover {
   background-color: #4db6ac;
 }

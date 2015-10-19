@@ -1,9 +1,4 @@
 module Vidyano.WebComponents {
-    interface SelectOption {
-        displayValue: string;
-        option: string | Common.KeyValuePair;
-    }
-
     @WebComponent.register({
         properties: {
             options: Array,
@@ -63,10 +58,10 @@ module Vidyano.WebComponents {
         ]
     })
     export class Select extends WebComponent {
-        private items: SelectOption[];
-        private filteredItems: SelectOption[];
-        private selectedItem: SelectOption;
-        private suggestion: SelectOption;
+        private items: SelectItem[];
+        private filteredItems: SelectItem[];
+        private selectedItem: SelectItem;
+        private suggestion: SelectItem;
         private filtering: boolean;
         private _lastMatchedInputValue: string;
         private _inputValue: string;
@@ -74,8 +69,8 @@ module Vidyano.WebComponents {
         options: string[] | Common.KeyValuePair[];
         selectedOption: string;
 
-        private _setSuggestion: (suggestion: SelectOption) => void;
-        private _setSelectedItem: (item: SelectOption) => void;
+        private _setSuggestion: (suggestion: SelectItem) => void;
+        private _setSelectedItem: (item: SelectItem) => void;
         private _setFiltering: (filtering: boolean) => void;
 
         private get popup(): WebComponents.Popup {
@@ -169,16 +164,17 @@ module Vidyano.WebComponents {
         }
 
         private _scrollItemIntoView() {
-            var focusOption = <HTMLElement>this.$$("[content] .option[selected]") || <HTMLElement>this.$$("[content] .option[suggested]");
-            if(focusOption)
-                focusOption.scrollIntoView();
+            var focusOption = <HTMLElement>this.$$("[content] > li[selected]") || <HTMLElement>this.$$("[content] > li[suggested]");
+            if (focusOption) {
+                (focusOption["scrollIntoViewIfNeeded"] || focusOption["scrollIntoView"]).apply(focusOption);
+            }
         }
 
-        private _computeItems(options: string[]| Common.KeyValuePair[]): SelectOption[]{
+        private _computeItems(options: string[] | Common.KeyValuePair[]): SelectItem[] {
             if (!options || options.length == 0)
                 return [];
 
-            var result: SelectOption[];
+            var result: SelectItem[];
             if ((<any[]>options).some(o => typeof o == "string"))
                 result = (<string[]>options).map(o => {
                     return {
@@ -198,11 +194,11 @@ module Vidyano.WebComponents {
             return result;
         }
 
-        private _computeFilteredItems(items: SelectOption[], inputValue: string, filtering: boolean, selectedOption: string): SelectOption[]{
+        private _computeFilteredItems(items: SelectItem[], inputValue: string, filtering: boolean, selectedOption: string): SelectItem[] {
             var result = items;
             if (result.length == 0)
                 return result;
-            
+
             if (filtering) {
                 if (!StringEx.isNullOrEmpty(inputValue)) {
                     var lowerInputValue = inputValue.toLowerCase();
@@ -213,7 +209,7 @@ module Vidyano.WebComponents {
                 }
                 else {
                     var resultEnum = Enumerable.from(result);
-                    var suggestion: SelectOption;
+                    var suggestion: SelectItem;
                     if (result[0].option == null)
                         suggestion = result[0];
                     else if (typeof result[0].option === "string") {
@@ -235,11 +231,11 @@ module Vidyano.WebComponents {
             }
             else if (!this.selectedItem)
                 this._setSelectedItem(this._getItem(this.selectedOption));
-            
+
             return result;
         }
 
-        private _computeSuggestionFeedback(inputValue: string, suggestion: SelectOption, filtering: boolean) {
+        private _computeSuggestionFeedback(inputValue: string, suggestion: SelectItem, filtering: boolean) {
             var suggestionMatch = "";
             var suggestionRemainder = "";
 
@@ -268,7 +264,7 @@ module Vidyano.WebComponents {
 
         private _selectedItemChanged() {
             this._setFiltering(false);
-            
+
             if (this.selectedItem) {
                 this._setSelectedOption(Enumerable.from(<any[]>this.options).firstOrDefault(o => o == this.selectedItem.option));
 
@@ -288,7 +284,7 @@ module Vidyano.WebComponents {
 
         private _selectedOptionChanged() {
             this._setFiltering(false);
-            
+
             this._setSelectedItem(this._getItem(this.selectedOption));
             this._scrollItemIntoView();
         }
@@ -298,7 +294,7 @@ module Vidyano.WebComponents {
                 this._setSelectedOption(this.suggestion.option);
         }
 
-        private _getItem(key: string, items: SelectOption[] = this.items): SelectOption {
+        private _getItem(key: string, items: SelectItem[] = this.items): SelectItem {
             var result = Enumerable.from(items || []).firstOrDefault(i => {
                 if (!i.option || typeof i.option === "string")
                     return i.option == key;
@@ -309,25 +305,51 @@ module Vidyano.WebComponents {
             return result;
         }
 
-        private _optionTap(e: CustomEvent, detail: any) {
-            var option = <HTMLElement>e.target;
-            if (option.classList && option.classList.contains("option")) {
-                this._setSelectedOption(this.items[parseInt(option.getAttribute("data-option-index"), 10)].option, true);
-                this.popup.close();
+        private _select(e: CustomEvent, detail: any) {
+            this._setSelectedOption(detail.option, true);
+            this.popup.close();
 
-                if (detail.sourceEvent)
-                    detail.sourceEvent.stopPropagation();
-
-                e.stopPropagation();
-            }
+            e.stopPropagation();
         }
 
-        private _equals(item1: SelectOption, item2: SelectOption): boolean {
-            return item1 == item2;
+        private _equals(item1: SelectItem, item2: SelectItem): boolean {
+            return item1.option == item2.option;
         }
 
         private _isReadonlyInput(readonly: boolean, disableFiltering: boolean): boolean {
             return readonly || disableFiltering;
+        }
+    }
+
+    export interface SelectItem {
+        displayValue: string;
+        option: string | Common.KeyValuePair;
+    }
+
+    @WebComponent.register({
+        extends: "li",
+        properties: {
+            suggested: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            selected: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            item: Object
+        },
+        listeners: {
+            "tap": "_onTap"
+        }
+    })
+    export class SelectOptionItem extends WebComponent {
+        item: SelectItem;
+
+        private _onTap(e: TapEvent) {
+            this.fire("select-option", { option: this.item.option }, { bubbles: true });
+
+            e.stopPropagation();
         }
     }
 }

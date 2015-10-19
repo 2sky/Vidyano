@@ -3302,9 +3302,17 @@ declare module Vidyano.WebComponents {
         private _selectedOptionChanged();
         private _suggestionChanged();
         private _getItem(key, items?);
-        private _optionTap(e, detail);
+        private _select(e, detail);
         private _equals(item1, item2);
         private _isReadonlyInput(readonly, disableFiltering);
+    }
+    interface SelectItem {
+        displayValue: string;
+        option: string | Common.KeyValuePair;
+    }
+    class SelectOptionItem extends WebComponent {
+        item: SelectItem;
+        private _onTap(e);
     }
 }
 declare module Vidyano.WebComponents {

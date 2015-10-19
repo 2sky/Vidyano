@@ -1,6 +1,6 @@
 <dom-module id="vi-select">
     <template>
-        <vi-popup id="popup" on-tap="_openPopup" on-click="_openPopup" on-opened="_popupOpened" on-closed="_popupClosed" sticky auto-width disabled$="{{readonly}}">
+        <vi-popup id="popup" on-tap="_openPopup" on-click="_openPopup" on-popup-opened="_popupOpened" on-popup-closed="_popupClosed" sticky auto-width disabled$="{{readonly}}">
             <div header>
                 <content select="[left]"></content>
                 <div class="suggestions">
@@ -9,11 +9,11 @@
                 <input id="input" value="{{_inputValue::input}}" on-keydown="_keydown" on-keyup="_keyup" readonly$="{{_isReadonlyInput(readonly, disableFiltering)}}" />
                 <content select="[right]"></content>
             </div>
-            <div content on-tap="_optionTap" filtering$="{{filtering}}">
-                <template is="dom-repeat" items="{{filteredItems}}">
-                    <div class="option" suggested$="{{_equals(item, suggestion)}}" selected$="{{_equals(item, selectedItem)}}" data-option-index$="{{index}}">{{item.displayValue}}</div>
+            <ul content filtering$="{{filtering}}" on-select-option="_select">
+                <template is="dom-repeat" items="{{filteredItems}}" as="item">
+                    <li is="vi-select-option-item" suggested="{{_equals(item, suggestion)}}" selected="{{_equals(item, selectedItem)}}" item="{{item}}">{{item.displayValue}}</li>
                 </template>
-            </div>
+            </ul>
         </vi-popup>
     </template>
 </dom-module>

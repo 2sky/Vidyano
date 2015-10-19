@@ -65,8 +65,11 @@ vi-select {
         [content] {
             max-height: @h2 * 5;
             overflow-y: auto;
+            padding: 0;
+            margin: 0;
+            list-style: none;
 
-            .option {
+            li {
                 padding-left: @h5;
                 line-height: @h2 - 2px;
                 height: @h2 - 2px;
@@ -79,7 +82,7 @@ vi-select {
                 }
             }
 
-            .option[suggested], &:not([filtering]) .option[selected] {
+            li[suggested], &:not([filtering]) li[selected] {
                 .colorize( {
                     background-color: @@color;
                     color: white;

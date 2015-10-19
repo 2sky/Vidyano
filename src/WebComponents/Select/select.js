@@ -97,9 +97,10 @@ var Vidyano;
                 }
             };
             Select.prototype._scrollItemIntoView = function () {
-                var focusOption = this.$$("[content] .option[selected]") || this.$$("[content] .option[suggested]");
-                if (focusOption)
-                    focusOption.scrollIntoView();
+                var focusOption = this.$$("[content] > li[selected]") || this.$$("[content] > li[suggested]");
+                if (focusOption) {
+                    (focusOption["scrollIntoViewIfNeeded"] || focusOption["scrollIntoView"]).apply(focusOption);
+                }
             };
             Select.prototype._computeItems = function (options) {
                 if (!options || options.length == 0)
@@ -213,18 +214,13 @@ var Vidyano;
                 });
                 return result;
             };
-            Select.prototype._optionTap = function (e, detail) {
-                var option = e.target;
-                if (option.classList && option.classList.contains("option")) {
-                    this._setSelectedOption(this.items[parseInt(option.getAttribute("data-option-index"), 10)].option, true);
-                    this.popup.close();
-                    if (detail.sourceEvent)
-                        detail.sourceEvent.stopPropagation();
-                    e.stopPropagation();
-                }
+            Select.prototype._select = function (e, detail) {
+                this._setSelectedOption(detail.option, true);
+                this.popup.close();
+                e.stopPropagation();
             };
             Select.prototype._equals = function (item1, item2) {
-                return item1 == item2;
+                return item1.option == item2.option;
             };
             Select.prototype._isReadonlyInput = function (readonly, disableFiltering) {
                 return readonly || disableFiltering;
@@ -292,5 +288,36 @@ var Vidyano;
             return Select;
         })(WebComponents.WebComponent);
         WebComponents.Select = Select;
+        var SelectOptionItem = (function (_super) {
+            __extends(SelectOptionItem, _super);
+            function SelectOptionItem() {
+                _super.apply(this, arguments);
+            }
+            SelectOptionItem.prototype._onTap = function (e) {
+                this.fire("select-option", { option: this.item.option }, { bubbles: true });
+                e.stopPropagation();
+            };
+            SelectOptionItem = __decorate([
+                WebComponents.WebComponent.register({
+                    extends: "li",
+                    properties: {
+                        suggested: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        },
+                        selected: {
+                            type: Boolean,
+                            reflectToAttribute: true
+                        },
+                        item: Object
+                    },
+                    listeners: {
+                        "tap": "_onTap"
+                    }
+                })
+            ], SelectOptionItem);
+            return SelectOptionItem;
+        })(WebComponents.WebComponent);
+        WebComponents.SelectOptionItem = SelectOptionItem;
     })(WebComponents = Vidyano.WebComponents || (Vidyano.WebComponents = {}));
 })(Vidyano || (Vidyano = {}));
