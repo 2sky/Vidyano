@@ -2923,7 +2923,7 @@ declare module Vidyano.WebComponents {
         private _columnMenu;
         private _sizeChanged(e, detail);
         private _horizontalScrollOffsetChanged(horizontalScrollOffset);
-        private _computeSettings(query);
+        private _computeSettings(columns);
         private _computeColumns(columns);
         private _computeItems(items, viewportSize, verticalScrollOffset, rowHeight, lastUpdated);
         private _computeCanSelect(query);

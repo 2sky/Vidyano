@@ -21,7 +21,7 @@
             query: Object,
             _settings: {
                 type: Object,
-                computed: "_computeSettings(query)"
+                computed: "_computeSettings(query.columns)"
             },
             _columns: {
                 type: Object,
@@ -257,8 +257,8 @@
             this._updateTableDataPendingUpdates();
         }
 
-        private _computeSettings(query: Vidyano.Query): QueryGridUserSettings {
-            return query ? QueryGridUserSettings.Load(query) : null;
+        private _computeSettings(columns: Vidyano.QueryColumn[]): QueryGridUserSettings {
+            return columns && columns.length > 0 ? QueryGridUserSettings.Load(columns[0].query) : null;
         }
 
         private _computeColumns(columns: QueryColumn[]): QueryGridColumn[] {

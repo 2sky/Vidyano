@@ -129,8 +129,8 @@ var Vidyano;
                 });
                 this._updateTableDataPendingUpdates();
             };
-            QueryGrid.prototype._computeSettings = function (query) {
-                return query ? QueryGridUserSettings.Load(query) : null;
+            QueryGrid.prototype._computeSettings = function (columns) {
+                return columns && columns.length > 0 ? QueryGridUserSettings.Load(columns[0].query) : null;
             };
             QueryGrid.prototype._computeColumns = function (columns) {
                 if (!columns || columns.length === 0)
@@ -517,7 +517,7 @@ var Vidyano;
                         query: Object,
                         _settings: {
                             type: Object,
-                            computed: "_computeSettings(query)"
+                            computed: "_computeSettings(query.columns)"
                         },
                         _columns: {
                             type: Object,
