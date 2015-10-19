@@ -199,3 +199,4 @@ ModelManifest.xml
 project.lock.json
 src/demo-dev.html
 dist/demo-dev.html
+src/web.config

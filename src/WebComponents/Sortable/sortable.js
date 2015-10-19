@@ -37,7 +37,7 @@ var Vidyano;
             };
             Sortable.prototype._dragStart = function () {
             };
-            Sortable.prototype._dragEnd = function () {
+            Sortable.prototype._dragEnd = function (element, newIndex, oldIndex) {
             };
             Sortable.prototype._create = function () {
                 var _this = this;
@@ -52,11 +52,11 @@ var Vidyano;
                             _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._setIsGroupDragging(true); });
                         _this._dragStart();
                     },
-                    onEnd: function () {
+                    onEnd: function (e) {
                         _this._setIsDragging(false);
                         if (_this.group)
                             _groups.filter(function (s) { return s.group == _this.group; }).forEach(function (s) { return s._setIsGroupDragging(false); });
-                        _this._dragEnd();
+                        _this._dragEnd(e.item, e.newIndex, e.oldIndex);
                     }
                 });
             };

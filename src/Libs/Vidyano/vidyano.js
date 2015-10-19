@@ -705,7 +705,7 @@ var Vidyano;
                 if (query != null)
                     data.query = query._toServiceObject();
                 if (selectedItems != null)
-                    data.selectedItems = selectedItems.map(function (item) { return item._toServiceObject(); });
+                    data.selectedItems = selectedItems.map(function (item) { return item && item._toServiceObject(); });
                 if (parameters != null)
                     data.parameters = parameters;
                 if (parent != null) {
@@ -2339,7 +2339,7 @@ var Vidyano;
             if (!this.autoQuery)
                 this.items = [];
             this._canRead = query.canRead;
-            this._canReorder = query.canReorder;
+            this._canReorder = !!query.canReorder;
             this.isHidden = query.isHidden;
             this.label = query.label;
             this.notification = query.notification;
@@ -2369,8 +2369,10 @@ var Vidyano;
             this._canFilter = this._filters && this.actions.some(function (a) { return a.name === "Filter"; }) && this.columns.some(function (c) { return c.canFilter; });
             if (query.result)
                 this._setResult(query.result);
-            else
+            else {
                 this._labelWithTotalItems = this.label;
+                this._lastUpdated = new Date();
+            }
         }
         Object.defineProperty(Query.prototype, "filters", {
             get: function () {
@@ -2393,6 +2395,27 @@ var Vidyano;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Query.prototype, "canReorder", {
+            get: function () {
+                return this._canReorder;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Query.prototype, "lastUpdated", {
+            get: function () {
+                return this._lastUpdated;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Query.prototype._setLastUpdated = function (date) {
+            if (date === void 0) { date = new Date(); }
+            if (this._lastUpdated === date)
+                return;
+            var oldLastUpdated = this._lastUpdated;
+            this.notifyPropertyChanged("lastUpdated", this._lastUpdated = date, oldLastUpdated);
+        };
         Object.defineProperty(Query.prototype, "selectedItems", {
             get: function () {
                 return this.items ? this.items.filter(function (i) { return i.isSelected; }) : [];
@@ -2475,6 +2498,15 @@ var Vidyano;
             enumerable: true,
             configurable: true
         });
+        Query.prototype.reorder = function (before, item, after) {
+            var _this = this;
+            if (!this.canReorder)
+                return Promise.reject("Unable to reorder, canReorder is set to false.");
+            this.queueWork(function () { return _this.service.executeAction("QueryOrder.Reorder", _this.parent, _this, [before, item, after]).then(function (po) {
+                _this._setResult(po.queries[0]._lastResult);
+                return _this.items;
+            }); });
+        };
         Query.prototype._setSortOptionsFromService = function (options) {
             var _this = this;
             var oldSortOptions = this._sortOptions;
@@ -2522,7 +2554,7 @@ var Vidyano;
         };
         Query.prototype._setResult = function (result) {
             var _this = this;
-            this._lastSearched = new Date();
+            this._lastResult = result;
             this.pageSize = result.pageSize || 0;
             this.groupingInfo = result.groupingInfo;
             if (this.groupingInfo) {
@@ -2543,6 +2575,7 @@ var Vidyano;
             this._updateItems(Enumerable.from(result.items).select(function (item) { return _this.service.hooks.onConstructQueryResultItem(_this.service, item, _this); }).toArray());
             this.totalItem = result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null;
             this.setNotification(result.notification, result.notificationType);
+            this._setLastUpdated();
         };
         Query.prototype.getColumn = function (name) {
             return Enumerable.from(this.columns).firstOrDefault(function (c) { return c.name == name; });
@@ -2616,6 +2649,7 @@ var Vidyano;
                         }
                         if (isChanged)
                             return _this.getItems(start, length);
+                        _this._setLastUpdated();
                         return Promise.resolve(_this.items.slice(start, start + length));
                     }, function (e) {
                         _this.setNotification(e, NotificationType.Error);
@@ -2631,10 +2665,10 @@ var Vidyano;
                 _this._updateItems([], true);
                 var now = new Date();
                 return _this.queueWork(function () {
-                    if (_this._lastSearched && _this._lastSearched > now)
+                    if (_this._lastUpdated && _this._lastUpdated > now)
                         return Promise.resolve(_this.items);
                     return _this.service.executeQuery(_this.parent, _this, _this._asLookup).then(function (result) {
-                        if (!_this._lastSearched || _this._lastSearched < now) {
+                        if (!_this._lastUpdated || _this._lastUpdated < now) {
                             _this.hasSearched = true;
                             _this._setResult(result);
                         }
@@ -2649,7 +2683,7 @@ var Vidyano;
                     var now = new Date();
                     return new Promise(function (resolve, reject) {
                         setTimeout(function () {
-                            if (!_this._lastSearched || _this._lastSearched < now)
+                            if (!_this._lastUpdated || _this._lastUpdated < now)
                                 search().then(function (result) { return resolve(result); }, function (e) { return reject(e); });
                             else
                                 resolve(_this.items);

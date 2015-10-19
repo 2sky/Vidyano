@@ -879,7 +879,7 @@ module Vidyano {
                 if (query != null)
                     data.query = query._toServiceObject();
                 if (selectedItems != null)
-                    data.selectedItems = selectedItems.map(item => item._toServiceObject());
+                    data.selectedItems = selectedItems.map(item => item && item._toServiceObject());
                 if (parameters != null)
                     data.parameters = parameters;
 
@@ -2667,6 +2667,7 @@ module Vidyano {
     }
 
     export class Query extends ServiceObjectWithActions {
+        private _lastResult: any;
         private _asLookup: boolean;
         private _isSelectionModifying: boolean;
         private _totalItems: number;
@@ -2677,7 +2678,7 @@ module Vidyano {
         private _canFilter: boolean;
         private _canRead: boolean;
         private _canReorder: boolean;
-        private _lastSearched: Date;
+        private _lastUpdated: Date;
         private _isReorderable: boolean;
 
         persistentObject: PersistentObject;
@@ -2719,7 +2720,7 @@ module Vidyano {
                 this.items = [];
 
             this._canRead = query.canRead;
-            this._canReorder = query.canReorder;
+            this._canReorder = !!query.canReorder;
             this.isHidden = query.isHidden;
             this.label = query.label;
             this.notification = query.notification;
@@ -2756,8 +2757,10 @@ module Vidyano {
 
             if (query.result)
                 this._setResult(query.result);
-            else
+            else {
                 this._labelWithTotalItems = this.label;
+                this._lastUpdated = new Date();
+            }
         }
 
         get filters(): PersistentObject {
@@ -2770,6 +2773,22 @@ module Vidyano {
 
         get canRead(): boolean {
             return this._canRead;
+        }
+
+        get canReorder(): boolean {
+            return this._canReorder;
+        }
+
+        get lastUpdated(): Date {
+            return this._lastUpdated;
+        }
+
+        private _setLastUpdated(date: Date = new Date()) {
+            if (this._lastUpdated === date)
+                return;
+
+            var oldLastUpdated = this._lastUpdated;
+            this.notifyPropertyChanged("lastUpdated", this._lastUpdated = date, oldLastUpdated);
         }
 
         get selectedItems(): QueryResultItem[] {
@@ -2853,6 +2872,16 @@ module Vidyano {
             this.notifyPropertyChanged("sortOptions", this._sortOptions = options, oldSortOptions);
         }
 
+        reorder(before: QueryResultItem, item: QueryResultItem, after: QueryResultItem): Promise<QueryResultItem[]> {
+            if (!this.canReorder)
+                return Promise.reject("Unable to reorder, canReorder is set to false.");
+
+            this.queueWork(() => this.service.executeAction("QueryOrder.Reorder", this.parent, this, [before, item, after]).then(po => {
+                this._setResult(po.queries[0]._lastResult);
+                return this.items;
+            }));
+        }
+
         private _setSortOptionsFromService(options: string | SortOption[]) {
             var oldSortOptions = this._sortOptions;
 
@@ -2909,7 +2938,8 @@ module Vidyano {
         }
 
         _setResult(result: any) {
-            this._lastSearched = new Date();
+            this._lastResult = result;
+
             this.pageSize = result.pageSize || 0;
 
             this.groupingInfo = result.groupingInfo;
@@ -2935,6 +2965,8 @@ module Vidyano {
             this.totalItem = result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null;
 
             this.setNotification(result.notification, result.notificationType);
+
+            this._setLastUpdated();
         }
 
         getColumn(name: string): QueryColumn {
@@ -3030,6 +3062,8 @@ module Vidyano {
                         if (isChanged)
                             return this.getItems(start, length);
 
+                        this._setLastUpdated();
+
                         return Promise.resolve(this.items.slice(start, start + length));
                     }, e => {
                         this.setNotification(e, NotificationType.Error);
@@ -3046,11 +3080,11 @@ module Vidyano {
 
                 var now = new Date();
                 return this.queueWork(() => {
-                    if (this._lastSearched && this._lastSearched > now)
+                    if (this._lastUpdated && this._lastUpdated > now)
                         return Promise.resolve(this.items);
 
                     return this.service.executeQuery(this.parent, this, this._asLookup).then(result => {
-                        if (!this._lastSearched || this._lastSearched < now) {
+                        if (!this._lastUpdated || this._lastUpdated < now) {
                             this.hasSearched = true;
                             this._setResult(result);
                         }
@@ -3067,7 +3101,7 @@ module Vidyano {
                     var now = new Date();
                     return new Promise((resolve, reject) => {
                         setTimeout(() => {
-                            if (!this._lastSearched || this._lastSearched < now)
+                            if (!this._lastUpdated || this._lastUpdated < now)
                                 search().then(result => resolve(result), e => reject(e));
                             else
                                 resolve(this.items);

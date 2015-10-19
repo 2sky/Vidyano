@@ -140,8 +140,7 @@ var Vidyano;
                 var unpinnedColumns = visibleColumns.where(function (c) { return !c.isPinned; }).orderBy(function (c) { return c.offset; }).toArray();
                 return pinnedColumns.concat(unpinnedColumns);
             };
-            QueryGrid.prototype._computeItems = function (items, viewportSize, verticalScrollOffset, rowHeight) {
-                var _this = this;
+            QueryGrid.prototype._computeItems = function (items, viewportSize, verticalScrollOffset, rowHeight, lastUpdated) {
                 if (!rowHeight || !viewportSize.height)
                     return [];
                 if (this._actionMenu.open)
@@ -165,13 +164,11 @@ var Vidyano;
                     this._virtualTableOffset = this._virtualTableStartIndex * rowHeight;
                 }
                 var newItems = items.slice(this._virtualTableStartIndex, this._virtualTableStartIndex + maxTableRowCount).filter(function (item) { return !!item; });
-                if (newItems.length !== maxTableRowCount && this.query.totalItems && items.length !== this.query.totalItems) {
-                    this.query.getItems(this._virtualTableStartIndex).then(function () {
-                        _this.set("_forceUpdate", new Date());
-                    });
-                }
-                else if (newVirtualTableStartIndex === undefined && this._items && this._items.length === newItems.length)
+                if (newItems.length !== maxTableRowCount && this.query.totalItems && items.length !== this.query.totalItems)
+                    this.query.getItems(this._virtualTableStartIndex);
+                else if (newVirtualTableStartIndex === undefined && this._items && this._items.length === newItems.length && lastUpdated === this._lastUpdated)
                     return this._items;
+                this._lastUpdated = lastUpdated;
                 return newItems;
             };
             QueryGrid.prototype._computeCanSelect = function (query) {
@@ -186,7 +183,7 @@ var Vidyano;
             QueryGrid.prototype._computeCanFilter = function (query) {
                 return !!query && query.canFilter;
             };
-            QueryGrid.prototype._updateTables = function (items, columns, isAttached) {
+            QueryGrid.prototype._updateTables = function (items, columns, canReorder, isAttached) {
                 var _this = this;
                 if (!isAttached)
                     return;
@@ -201,6 +198,7 @@ var Vidyano;
                         if (!_this._tableData)
                             _this.$["dataHost"].appendChild((_this._tableData = new Vidyano.WebComponents.QueryGridTableData(_this)).host);
                         Promise.all([_this._tableHeader.update(1, columns.length), _this._tableData.update(items.length, columns.length)]).then(function () {
+                            _this._tableData.section.enabled = canReorder;
                             var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                             console.info("Tables Updated: " + Math.round(timeTaken) + "ms");
                             _this._updateTableHeaders(columns).then(function (cont) {
@@ -525,13 +523,14 @@ var Vidyano;
                             type: Object,
                             computed: "_computeColumns(query.columns, _settings.columns)"
                         },
-                        _forceUpdate: {
-                            type: Object,
-                            value: null
-                        },
                         _items: {
                             type: Object,
-                            computed: "_computeItems(query.items, viewportSize, _verticalScrollOffset, rowHeight, _forceUpdate)"
+                            computed: "_computeItems(query.items, viewportSize, _verticalScrollOffset, rowHeight, query.lastUpdated)"
+                        },
+                        canReorder: {
+                            type: Boolean,
+                            reflectToAttribute: true,
+                            computed: "query.canReorder"
                         },
                         asLookup: {
                             type: Boolean,
@@ -577,13 +576,14 @@ var Vidyano;
                         }
                     },
                     observers: [
-                        "_updateTables(_items, _columns, isAttached)",
+                        "_updateTables(_items, _columns, canReorder, isAttached)",
                         "_updateVerticalSpacer(query.totalItems, rowHeight)",
                     ],
                     forwardObservers: [
                         "query.columns",
                         "query.items",
                         "query.isBusy",
+                        "query.lastUpdated",
                         "query.totalItems",
                         "query.selectAll.isAvailable",
                         "query.selectAll.allSelected",
@@ -854,16 +854,16 @@ var Vidyano;
                 }
                 return Promise.all(this.rows.map(function (row) { return row.updateColumnCount(columnCount); }));
             };
-            Object.defineProperty(QueryGridTable.prototype, "section", {
+            Object.defineProperty(QueryGridTable.prototype, "host", {
                 get: function () {
-                    return this._section;
+                    return this._host;
                 },
                 enumerable: true,
                 configurable: true
             });
-            Object.defineProperty(QueryGridTable.prototype, "host", {
+            Object.defineProperty(QueryGridTable.prototype, "section", {
                 get: function () {
-                    return this._host;
+                    return this._section;
                 },
                 enumerable: true,
                 configurable: true
@@ -897,19 +897,23 @@ var Vidyano;
                 return new Vidyano.WebComponents.QueryGridTableDataRow(this);
             };
             QueryGridTableData.prototype._createSection = function () {
-                return this.host.appendChild(new Vidyano.WebComponents.QueryGridTableDataBody());
+                return this.host.appendChild(new Vidyano.WebComponents.QueryGridTableDataBody(this));
             };
             return QueryGridTableData;
         })(QueryGridTable);
         WebComponents.QueryGridTableData = QueryGridTableData;
         var QueryGridTableDataBody = (function (_super) {
             __extends(QueryGridTableDataBody, _super);
-            function QueryGridTableDataBody() {
-                _super.apply(this, arguments);
+            function QueryGridTableDataBody(_table) {
+                _super.call(this);
+                this._table = _table;
             }
-            QueryGridTableDataBody.prototype.attached = function () {
-                _super.prototype.attached.call(this);
-                this.enabled = false;
+            QueryGridTableDataBody.prototype._dragEnd = function (element, newIndex, oldIndex) {
+                this._table.rows.splice(newIndex, 0, this._table.rows.splice(oldIndex, 1)[0]);
+                var item = this._table.rows[newIndex].item;
+                var before = newIndex > 0 ? this._table.rows[newIndex - 1].item : null;
+                var after = this._table.rows.length > newIndex + 1 ? this._table.rows[newIndex + 1].item : null;
+                this._table.grid.query.reorder(before, item, after);
             };
             QueryGridTableDataBody = __decorate([
                 WebComponents.Sortable.register({

@@ -27,13 +27,14 @@
                 type: Object,
                 computed: "_computeColumns(query.columns, _settings.columns)"
             },
-            _forceUpdate: {
-                type: Object,
-                value: null
-            },
             _items: {
                 type: Object,
-                computed: "_computeItems(query.items, viewportSize, _verticalScrollOffset, rowHeight, _forceUpdate)"
+                computed: "_computeItems(query.items, viewportSize, _verticalScrollOffset, rowHeight, query.lastUpdated)"
+            },
+            canReorder: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "query.canReorder"
             },
             asLookup: {
                 type: Boolean,
@@ -79,13 +80,14 @@
             }
         },
         observers: [
-            "_updateTables(_items, _columns, isAttached)",
+            "_updateTables(_items, _columns, canReorder, isAttached)",
             "_updateVerticalSpacer(query.totalItems, rowHeight)",
         ],
         forwardObservers: [
             "query.columns",
             "query.items",
             "query.isBusy",
+            "query.lastUpdated",
             "query.totalItems",
             "query.selectAll.isAvailable",
             "query.selectAll.allSelected",
@@ -122,6 +124,8 @@
         private _remainderWidth: number;
         private _settings: QueryGridUserSettings;
         private _columnMenuColumn: QueryGridColumn;
+        private _lastUpdated: Date;
+        canReorder: boolean;
         rowHeight: number;
         viewportSize: Size;
         query: Vidyano.Query;
@@ -268,7 +272,7 @@
             return pinnedColumns.concat(unpinnedColumns);
         }
 
-        private _computeItems(items: Vidyano.QueryResultItem[], viewportSize: Size, verticalScrollOffset: number, rowHeight: number): Vidyano.QueryResultItem[] {
+        private _computeItems(items: Vidyano.QueryResultItem[], viewportSize: Size, verticalScrollOffset: number, rowHeight: number, lastUpdated: Date): Vidyano.QueryResultItem[] {
             if (!rowHeight || !viewportSize.height)
                 return [];
 
@@ -299,14 +303,12 @@
             }
 
             var newItems = items.slice(this._virtualTableStartIndex, this._virtualTableStartIndex + maxTableRowCount).filter(item => !!item);
-            if (newItems.length !== maxTableRowCount && this.query.totalItems && items.length !== this.query.totalItems) {
-                this.query.getItems(this._virtualTableStartIndex).then(() => {
-                    this.set("_forceUpdate", new Date());
-                });
-            }
-            else if (newVirtualTableStartIndex === undefined && this._items && this._items.length === newItems.length)
+            if (newItems.length !== maxTableRowCount && this.query.totalItems && items.length !== this.query.totalItems)
+                this.query.getItems(this._virtualTableStartIndex);
+            else if (newVirtualTableStartIndex === undefined && this._items && this._items.length === newItems.length && lastUpdated === this._lastUpdated)
                 return this._items;
-
+            
+            this._lastUpdated = lastUpdated;
             return newItems;
         }
 
@@ -326,7 +328,7 @@
             return !!query && query.canFilter;
         }
 
-        private _updateTables(items: Vidyano.QueryResultItem[], columns: QueryGridColumn[], isAttached: boolean) {
+        private _updateTables(items: Vidyano.QueryResultItem[], columns: QueryGridColumn[], canReorder: boolean, isAttached: boolean) {
             if (!isAttached)
                 return;
 
@@ -346,6 +348,8 @@
                         this.$["dataHost"].appendChild((this._tableData = new Vidyano.WebComponents.QueryGridTableData(this)).host);
 
                     Promise.all([this._tableHeader.update(1, columns.length), this._tableData.update(items.length, columns.length)]).then(() => {
+                        (<QueryGridTableDataBody><any>this._tableData.section).enabled = canReorder;
+
                         var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                         console.info(`Tables Updated: ${Math.round(timeTaken) }ms`);
 
@@ -951,12 +955,12 @@
 
         protected abstract _addRow(): QueryGridTableRow;
 
-        protected get section(): HTMLTableSectionElement {
-            return this._section;
-        }
-
         get host(): HTMLTableElement {
             return this._host;
+        }
+
+        get section(): HTMLTableSectionElement {
+            return this._section;
         }
     }
 
@@ -988,7 +992,7 @@
         }
 
         protected _createSection(): HTMLTableSectionElement {
-            return <HTMLTableSectionElement><any>this.host.appendChild(new Vidyano.WebComponents.QueryGridTableDataBody());
+            return <HTMLTableSectionElement><any>this.host.appendChild(new Vidyano.WebComponents.QueryGridTableDataBody(this));
         }
     }
 
@@ -996,10 +1000,18 @@
         extends: "tbody"
     })
     export class QueryGridTableDataBody extends Sortable {
-        attached() {
-            super.attached();
+        constructor(private _table: QueryGridTableData) {
+            super();
+        }
 
-            this.enabled = false;
+        protected _dragEnd(element: HTMLElement, newIndex: number, oldIndex: number) {
+            this._table.rows.splice(newIndex, 0, this._table.rows.splice(oldIndex, 1)[0]);
+
+            var item = (<QueryGridTableDataRow>this._table.rows[newIndex]).item;
+            var before = newIndex > 0 ? (<QueryGridTableDataRow>this._table.rows[newIndex - 1]).item : null;
+            var after = this._table.rows.length > newIndex + 1 ? (<QueryGridTableDataRow>this._table.rows[newIndex + 1]).item : null;
+
+            this._table.grid.query.reorder(before, item, after);
         }
     }
 

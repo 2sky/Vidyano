@@ -19,6 +19,12 @@
     <TypeScriptModuleKind>none</TypeScriptModuleKind>
     <GruntGulpQueried>True</GruntGulpQueried>
   </PropertyGroup>
+  <ItemGroup>
+    <DnxInvisibleFolder Include=".git\" />
+    <DnxInvisibleFolder Include=".vs\" />
+    <DnxInvisibleFolder Include="bower_components\" />
+    <DnxInvisibleFolder Include="dist\" />
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" />
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.targets" />
 </Project>

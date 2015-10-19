@@ -42,7 +42,7 @@
         protected _dragStart() {
         }
 
-        protected _dragEnd() {
+        protected _dragEnd(element: HTMLElement, newIndex: number, oldIndex: number) {
         }
 
         private _create() {
@@ -59,12 +59,12 @@
 
                     this._dragStart();
                 },
-                onEnd: () => {
+                onEnd: (e: any) => {
                     this._setIsDragging(false);
                     if (this.group)
                         _groups.filter(s => s.group == this.group).forEach(s => s._setIsGroupDragging(false));
 
-                    this._dragEnd();
+                    this._dragEnd(e.item, e.newIndex, e.oldIndex);
                 }
             });
         }
