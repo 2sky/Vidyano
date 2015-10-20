@@ -9,29 +9,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        less: {
-            development: {
-                options: {
-                    paths: ["importfolder"]
-                },
-                files: [
-					{
-					    expand: true,
-					    src: ["src/**/*.less"],
-					    ext: ".css"
-					}
-                ]
-            },
-        },
-        watch: {
-            less: {
-                files: ["src/**/*.less"],
-                tasks: ["less"],
-                options: {
-                    livereload: true
-                }
-            }
-        },
         clean: ["dist"],
         copy: {
             dist: {
@@ -63,27 +40,10 @@ module.exports = function (grunt) {
             default: {
                 src: ['src/**/*.ts']
             }
-        },
-        tsconfig: {
-            make: {
-                options: {
-                    filesGlob: [
-                        'src/**/*.ts'
-                    ],
-                    additionalOptions: {
-                        compilerOptions: {
-                            "version": "1.6.2",
-                            "target": "es5",
-                            "removeComments": true,
-                            "experimentalDecorators": true
-                        },
-                    }
-                }
-            }
         }
     });
 
-    grunt.registerTask("default", ["bower:install"]);
+    grunt.registerTask("default", ["dist"]);
     grunt.registerTask("dist", [
         "clean",
         "copy:dist",
@@ -94,8 +54,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-bower-task");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
-    grunt.loadNpmTasks("grunt-contrib-less");
-    grunt.loadNpmTasks("grunt-contrib-watch");
-    grunt.loadNpmTasks("grunt-tsconfig");
     grunt.loadNpmTasks('dts-generator');
 };

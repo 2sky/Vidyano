@@ -3522,13 +3522,19 @@ module Vidyano {
 
                 this.query.propertyChanged.attach((source, detail) => {
                     if (detail.propertyName == "selectedItems") {
+                        var options: string[];
+
+                        if (definition.name == "New" && this.query.persistentObject != null && !StringEx.isNullOrEmpty(this.query.persistentObject.newOptions))
+                            options = this.query.persistentObject.newOptions.split(";");
+                        else
+                            options = definition.options.slice();
+
                         var args: SelectedItemsActionArgs = {
                             name: this.name,
                             isVisible: this.isVisible,
                             canExecute: this.selectionRule(detail.newValue ? detail.newValue.length : 0),
-                            options: definition.options.slice()
+                            options: options
                         };
-
                         this.service.hooks.onSelectedItemsActions(this._query, detail.newValue, args);
 
                         this.canExecute = args.canExecute;

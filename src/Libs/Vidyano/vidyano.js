@@ -3051,11 +3051,16 @@ var Vidyano;
                     this._setOptions(this.query.persistentObject.newOptions.split(";"));
                 this.query.propertyChanged.attach(function (source, detail) {
                     if (detail.propertyName == "selectedItems") {
+                        var options;
+                        if (definition.name == "New" && _this.query.persistentObject != null && !StringEx.isNullOrEmpty(_this.query.persistentObject.newOptions))
+                            options = _this.query.persistentObject.newOptions.split(";");
+                        else
+                            options = definition.options.slice();
                         var args = {
                             name: _this.name,
                             isVisible: _this.isVisible,
                             canExecute: _this.selectionRule(detail.newValue ? detail.newValue.length : 0),
-                            options: definition.options.slice()
+                            options: options
                         };
                         _this.service.hooks.onSelectedItemsActions(_this._query, detail.newValue, args);
                         _this.canExecute = args.canExecute;

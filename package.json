@@ -1,5 +1,5 @@
 {
-  "version": "0.6.0-alpha",
+  "version": "0.7.1-alpha",
   "name": "Vidyano",
   "private": true,
   "devDependencies": {
@@ -7,10 +7,6 @@
     "grunt-bower-task": "0.4.0",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-copy": "^0.8.0",
-    "grunt-contrib-less": "^1.0.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-tsconfig": "^0.2.0",
-    "less": "^2.1.2",
     "dts-generator": "^1.6.0-pre.1",
     "typescript": "^1.6.2"
   }

@@ -195,8 +195,8 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 # Project files
-.vs/config/applicationhost.config
-project.lock.json
-src/demo-dev.html
-dist/demo-dev.html
-src/web.config
+/src/demo-dev.html
+/dist/demo-dev.html
+/src/web.config
+/src/WebComponents/**/*.js
+/src/WebComponents/**/*.css
