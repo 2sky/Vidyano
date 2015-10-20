@@ -9,6 +9,20 @@ module.exports = function (grunt) {
                 }
             }
         },
+        less: {
+            development: {
+                options: {
+                    paths: ["importfolder"]
+                },
+                files: [
+					{
+					    expand: true,
+					    src: ["src/**/*.less"],
+					    ext: ".css"
+					}
+                ]
+            },
+        },
         clean: ["dist"],
         copy: {
             dist: {
@@ -46,6 +60,7 @@ module.exports = function (grunt) {
     grunt.registerTask("default", ["dist"]);
     grunt.registerTask("dist", [
         "clean",
+        "less",
         "copy:dist",
         "copy:less",
         "dtsGenerator"
@@ -54,5 +69,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-bower-task");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
+    grunt.loadNpmTasks("grunt-contrib-less");
     grunt.loadNpmTasks('dts-generator');
 };
