@@ -1,10 +1,10 @@
 <dom-module id="vi-action-button">
     <template>
-        <template is="dom-if" if="{{!hasOptions}}">
+        <template is="dom-if" if="{{!options}}">
             <button is="vi-button" disabled="{{!canExecute}}" header on-tap="_executeWithoutOptions" inverse icon="{{icon}}" label="{{action.definition.displayName}}"></button>
         </template>
-        <template is="dom-if" if="{{hasOptions}}">
-            <vi-popup-menu open-on-hover="{{overflow}}">
+        <template is="dom-if" if="{{options}}">
+            <vi-popup-menu open-on-hover="{{overflow}}" disabled="{{!canExecute}}">
                 <button is="vi-button" disabled="{{!canExecute}}" header inverse>
                     <vi-icon source="{{icon}}"></vi-icon>
                     <span class="label">{{action.definition.displayName}}</span>

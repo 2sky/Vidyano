@@ -418,9 +418,7 @@ var Vidyano;
                     host.style.top = detail.position.y + "px";
                 }
                 actions.forEach(function (action) {
-                    var button = new Vidyano.WebComponents.ActionButton();
-                    button.action = action;
-                    button.item = detail.row.item;
+                    var button = new Vidyano.WebComponents.ActionButton(detail.row.item, action);
                     button.forceLabel = true;
                     Polymer.dom(_this._actionMenu).appendChild(button);
                 });

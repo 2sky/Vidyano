@@ -160,9 +160,7 @@ vi-query-grid {
 
                             .colorize( {
                                 color: @@color;
-                            }
-
-                            );
+                            });
                         }
 
                         &:hover, &[hover] {
@@ -170,9 +168,7 @@ vi-query-grid {
                                 > vi-icon {
                                     background-color: fadeout(black, 95%) !important;
                                 }
-                            }
-
-                            );
+                            });
                         }
                     }
 
@@ -278,6 +274,15 @@ vi-query-grid {
         width: @cell-line-height / 2;
         height: @cell-line-height / 2;
     }
+
+    > vi-popup-core#actions {
+        vi-action-button > vi-popup-menu {
+            button[is="vi-button"] > vi-icon[source="Down"] {
+                transform: rotate(-90deg);
+            }
+        }
+    }
+
     // FLAG COMBINATIONS //////////////////////////////////////////////////////////
     &:not([can-select]):not([inline-actions]):not([can-filter]) {
         td[is="vi-query-grid-table-data-column-selector"] {

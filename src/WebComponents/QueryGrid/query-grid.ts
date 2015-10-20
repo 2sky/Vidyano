@@ -307,7 +307,7 @@
                 this.query.getItems(this._virtualTableStartIndex);
             else if (newVirtualTableStartIndex === undefined && this._items && this._items.length === newItems.length && lastUpdated === this._lastUpdated)
                 return this._items;
-            
+
             this._lastUpdated = lastUpdated;
             return newItems;
         }
@@ -618,9 +618,7 @@
             }
 
             actions.forEach(action => {
-                var button = new Vidyano.WebComponents.ActionButton();
-                button.action = action;
-                button.item = detail.row.item;
+                var button = new Vidyano.WebComponents.ActionButton(detail.row.item, action);
                 button.forceLabel = true;
 
                 Polymer.dom(this._actionMenu).appendChild(button);

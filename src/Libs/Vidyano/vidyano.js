@@ -1130,6 +1130,8 @@ var Vidyano;
                     break;
             }
         };
+        ServiceHooks.prototype.onSelectedItemsActions = function (query, selectedItems, action) {
+        };
         return ServiceHooks;
     })();
     Vidyano.ServiceHooks = ServiceHooks;
@@ -3036,7 +3038,7 @@ var Vidyano;
             this.owner = owner;
             this._isVisible = true;
             this._parameters = {};
-            this.options = [];
+            this._options = [];
             this.dependentActions = [];
             this.displayName = definition.displayName;
             this.selectionRule = definition.selectionRule;
@@ -3046,10 +3048,19 @@ var Vidyano;
                 this._query = owner;
                 this._parent = this.query.parent;
                 if (definition.name == "New" && this.query.persistentObject != null && !StringEx.isNullOrEmpty(this.query.persistentObject.newOptions))
-                    this.options = this.query.persistentObject.newOptions.split(";");
+                    this._setOptions(this.query.persistentObject.newOptions.split(";"));
                 this.query.propertyChanged.attach(function (source, detail) {
-                    if (detail.propertyName == "selectedItems")
-                        _this.canExecute = _this.selectionRule(detail.newValue ? detail.newValue.length : 0);
+                    if (detail.propertyName == "selectedItems") {
+                        var args = {
+                            name: _this.name,
+                            isVisible: _this.isVisible,
+                            canExecute: _this.selectionRule(detail.newValue ? detail.newValue.length : 0),
+                            options: definition.options.slice()
+                        };
+                        _this.service.hooks.onSelectedItemsActions(_this._query, detail.newValue, args);
+                        _this.canExecute = args.canExecute;
+                        _this._setOptions(args.options);
+                    }
                 });
                 this.canExecute = this.selectionRule(0);
             }
@@ -3061,7 +3072,7 @@ var Vidyano;
             else
                 throw "Invalid owner-type.";
             if (definition.options.length > 0)
-                this.options = definition.options.slice();
+                this._options = definition.options.slice();
         }
         Object.defineProperty(Action.prototype, "parent", {
             get: function () {
@@ -3135,6 +3146,19 @@ var Vidyano;
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(Action.prototype, "options", {
+            get: function () {
+                return this._options;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Action.prototype._setOptions = function (options) {
+            if (this._options == options)
+                return;
+            var oldOptions = this._options;
+            this.notifyPropertyChanged("options", this._options = options, oldOptions);
+        };
         Action.prototype.execute = function (option, parameters, selectedItems, throwExceptions) {
             var _this = this;
             if (option === void 0) { option = -1; }

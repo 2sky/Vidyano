@@ -1336,6 +1336,16 @@ module Vidyano {
                     break;
             }
         }
+
+        onSelectedItemsActions(query: Query, selectedItems: QueryResultItem[], action: SelectedItemsActionArgs) {
+        }
+    }
+
+    export interface SelectedItemsActionArgs {
+       name: string;
+       isVisible: boolean;
+       canExecute: boolean;
+       options: string[];
     }
 
     export class ExecuteActionArgs {
@@ -3490,10 +3500,10 @@ module Vidyano {
         private _parameters: any = {};
         private _offset: number;
         protected _isPinned: boolean;
+        private _options: string[] = [];
         skipOpen: boolean;
         selectionRule: (count: number) => boolean;
         displayName: string;
-        options: Array<string> = [];
         dependentActions = [];
 
         constructor(public service: Service, public definition: ActionDefinition, public owner: ServiceObjectWithActions) {
@@ -3508,11 +3518,22 @@ module Vidyano {
                 this._query = <Query>owner;
                 this._parent = this.query.parent;
                 if (definition.name == "New" && this.query.persistentObject != null && !StringEx.isNullOrEmpty(this.query.persistentObject.newOptions))
-                    this.options = this.query.persistentObject.newOptions.split(";");
+                    this._setOptions(this.query.persistentObject.newOptions.split(";"));
 
                 this.query.propertyChanged.attach((source, detail) => {
-                    if (detail.propertyName == "selectedItems")
-                        this.canExecute = this.selectionRule(detail.newValue ? detail.newValue.length : 0);
+                    if (detail.propertyName == "selectedItems") {
+                        var args: SelectedItemsActionArgs = {
+                            name: this.name,
+                            isVisible: this.isVisible,
+                            canExecute: this.selectionRule(detail.newValue ? detail.newValue.length : 0),
+                            options: definition.options.slice()
+                        };
+
+                        this.service.hooks.onSelectedItemsActions(this._query, detail.newValue, args);
+
+                        this.canExecute = args.canExecute;
+                        this._setOptions(args.options);
+                    }
                 });
 
                 this.canExecute = this.selectionRule(0);
@@ -3526,7 +3547,7 @@ module Vidyano {
                 throw "Invalid owner-type.";
 
             if (definition.options.length > 0)
-                this.options = definition.options.slice();
+                this._options = definition.options.slice();
         }
 
         get parent(): PersistentObject {
@@ -3580,6 +3601,18 @@ module Vidyano {
 
         get isPinned(): boolean {
             return this._isPinned;
+        }
+
+        get options(): string[] {
+            return this._options;
+        }
+
+        private _setOptions(options: string[]) {
+            if (this._options == options)
+                return;
+
+            var oldOptions = this._options;
+            this.notifyPropertyChanged("options", this._options = options, oldOptions);
         }
 
         execute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], throwExceptions?: boolean): Promise<PersistentObject> {

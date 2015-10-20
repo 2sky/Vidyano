@@ -1,14 +1,7 @@
 module Vidyano.WebComponents {
     @WebComponent.register({
         properties: {
-            action: {
-                type: Object,
-                observer: "_updateCanExecuteHook"
-            },
-            isAttached: {
-                type: Boolean,
-                observer: "_updateCanExecuteHook"
-            },
+            action: Object,
             item: Object,
             icon: {
                 type: String,
@@ -40,34 +33,56 @@ module Vidyano.WebComponents {
                 reflectToAttribute: true,
                 readOnly: true
             },
-            hasOptions: {
-                type: Boolean,
-                computed: "_computeHasOptions(action)"
-            },
             options: {
                 type: Array,
-                computed: "action.options"
+                readOnly: true
             },
             overflow: {
                 type: Boolean,
                 reflectToAttribute: true
             }
         },
+        observers: [
+            "_observeAction(action.canExecute, action.isVisible, action.options, isAttached)"
+        ],
         forwardObservers: [
-            "action.isPinned"
+            "action.isPinned",
+            "action.canExecute",
+            "action.isVisible",
+            "action.options"
         ]
     })
     export class ActionButton extends WebComponent {
-        private _propertyChangedObserver: Vidyano.Common.SubjectDisposer;
-        action: Vidyano.Action;
-        item: Vidyano.QueryResultItem;
+        private _skipObserver: boolean;
+        options: string[];
         canExecute: boolean;
-        hasOptions: boolean;
         noLabel: boolean;
         forceLabel: boolean;
 
         private _setCanExecute: (val: boolean) => void;
         private _setHidden: (val: boolean) => void;
+        private _setOptions: (val: string[]) => void;
+
+        constructor(public item: Vidyano.QueryResultItem, public action: Vidyano.Action) {
+            super();
+
+            if(item && action) {
+                var args: SelectedItemsActionArgs = {
+                    name: action.name,
+                    isVisible: action.isVisible,
+                    canExecute: action.definition.selectionRule(1),
+                    options: action.options
+                };
+
+                action.service.hooks.onSelectedItemsActions(item.query, [item], args);
+
+                this._setCanExecute(args.canExecute);
+                this._setHidden(!args.isVisible);
+                this._setOptions(args.options && args.options.length > 0 ? args.options : null);
+
+                this._skipObserver = true;
+            }
+        }
 
         private _executeWithoutOptions(e: TapEvent) {
             if (!this.canExecute) {
@@ -75,7 +90,7 @@ module Vidyano.WebComponents {
                 return;
             }
 
-            if (!this.hasOptions)
+            if (!this.options)
                 this._execute();
 
             e.preventDefault();
@@ -99,35 +114,21 @@ module Vidyano.WebComponents {
             }
         }
 
-        private _updateCanExecuteHook() {
-            if (this._propertyChangedObserver) {
-                this._propertyChangedObserver();
-                this._propertyChangedObserver = undefined;
-            }
+        private _observeAction(canExecute: boolean, isVisible: boolean, options: boolean) {
+            if(!this.isAttached || this._skipObserver)
+                return;
 
-            if (this.action && this.isAttached) {
-                this._propertyChangedObserver = this.action.propertyChanged.attach((action, detail) => {
-                    if (detail.propertyName == "canExecute")
-                        this._setCanExecute(this.item ? this.action.definition.selectionRule(1) : this.action.canExecute);
-                    else if (detail.propertyName == "isVisible")
-                        this._setHidden(!detail.newValue);
-                });
-
-                this._setCanExecute(this.item ? this.action.definition.selectionRule(1) : this.action.canExecute);
-                this._setHidden(!this.action.isVisible);
-            }
+            this._setCanExecute(this.item ? this.action.definition.selectionRule(1) : this.action.canExecute);
+            this._setHidden(!this.action.isVisible);
+            this._setOptions(this.action.options && this.action.options.length > 0 ? this.action.options : null);
         }
 
         private _computeIcon(action: Vidyano.Action): string {
             if (!action)
                 return "";
 
-            var actionIcon = "Action_" + action.definition.name;
+            var actionIcon = `Action_${action.definition.name}`;
             return action.isPinned && !Icon.Exists(actionIcon) ? "Action_Default$" : actionIcon;
-        }
-
-        private _computeHasOptions(action: Vidyano.Action): boolean {
-            return action && action.options && action.options.length > 0;
         }
     }
 }

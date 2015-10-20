@@ -9,7 +9,7 @@ vi-query-grid header {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid #EAEAEA;
 }
 vi-query-grid header #dataHeaderHost {
   position: relative;
@@ -123,7 +123,7 @@ vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-qu
   pointer-events: none;
 }
 [theme-color-1] vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-query-grid-table-data-column-selector"] > paper-ripple {
-  color: #4682b4;
+  color: #4682B4;
 }
 [theme-color-2] vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-query-grid-table-data-column-selector"] > paper-ripple {
   color: #009688;
@@ -141,7 +141,7 @@ vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-qu
   pointer-events: none;
 }
 [theme-color-1] vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-query-grid-table-data-column-actions"] > paper-ripple {
-  color: #4682b4;
+  color: #4682B4;
 }
 [theme-color-2] vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-query-grid-table-data-column-actions"] > paper-ripple {
   color: #009688;
@@ -162,7 +162,7 @@ vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-qu
   display: none;
 }
 vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-query-grid-table-data-column"].pinned.last-pinned > * {
-  border-right: 1px solid #eaeaea;
+  border-right: 1px solid #EAEAEA;
 }
 vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td[is="vi-query-grid-table-column-remainder"] > div {
   padding: 0;
@@ -176,7 +176,7 @@ vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"] td.pinned {
   fill: #888;
 }
 [theme-color-1] vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"][is-selected] td[is="vi-query-grid-table-data-column-selector"] #check {
-  fill: #4682b4;
+  fill: #4682B4;
 }
 [theme-color-2] vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"][is-selected] td[is="vi-query-grid-table-data-column-selector"] {
   fill: #888;
@@ -200,10 +200,10 @@ vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"][is-selected]
   background-color: #d9efee;
 }
 vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"]:not(:hover):not([hover]):not([is-selected]):nth-child(odd) {
-  background-color: #fafafa;
+  background-color: #FAFAFA;
 }
 vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"]:not(:hover):not([hover]):not([is-selected]):nth-child(odd) td.pinned {
-  background-color: #fafafa;
+  background-color: #FAFAFA;
 }
 vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"]:not(:hover):not([hover]):not([is-selected]):nth-child(even) {
   background-color: white;
@@ -230,11 +230,14 @@ vi-query-grid #dataHost table tr[is="vi-query-grid-table-data-row"][no-data]:fir
   background-color: #e0f2f1;
 }
 vi-query-grid #dataHost table.pinned tr:not(.no-data) > td:last-of-type > div {
-  border-right: 1px solid #eaeaea;
+  border-right: 1px solid #EAEAEA;
 }
 vi-query-grid vi-icon > svg {
   width: 15px;
   height: 15px;
+}
+vi-query-grid > vi-popup-core#actions vi-action-button > vi-popup-menu button[is="vi-button"] > vi-icon[source="Down"] {
+  transform: rotate(-90deg);
 }
 vi-query-grid:not([can-select]):not([inline-actions]):not([can-filter]) td[is="vi-query-grid-table-data-column-selector"] {
   display: none;

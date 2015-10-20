@@ -27,7 +27,7 @@ var Vidyano;
                         this.attribute.setValue(newValue, true);
                 };
                 PersistentObjectAttributeBoolean = __decorate([
-                    Attributes.PersistentObjectAttribute.register()
+                    Attributes.PersistentObjectAttribute.register
                 ], PersistentObjectAttributeBoolean);
                 return PersistentObjectAttributeBoolean;
             })(WebComponents.Attributes.PersistentObjectAttribute);

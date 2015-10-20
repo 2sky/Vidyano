@@ -17,15 +17,30 @@ var Vidyano;
     (function (WebComponents) {
         var ActionButton = (function (_super) {
             __extends(ActionButton, _super);
-            function ActionButton() {
-                _super.apply(this, arguments);
+            function ActionButton(item, action) {
+                _super.call(this);
+                this.item = item;
+                this.action = action;
+                if (item && action) {
+                    var args = {
+                        name: action.name,
+                        isVisible: action.isVisible,
+                        canExecute: action.definition.selectionRule(1),
+                        options: action.options
+                    };
+                    action.service.hooks.onSelectedItemsActions(item.query, [item], args);
+                    this._setCanExecute(args.canExecute);
+                    this._setHidden(!args.isVisible);
+                    this._setOptions(args.options && args.options.length > 0 ? args.options : null);
+                    this._skipObserver = true;
+                }
             }
             ActionButton.prototype._executeWithoutOptions = function (e) {
                 if (!this.canExecute) {
                     e.stopPropagation();
                     return;
                 }
-                if (!this.hasOptions)
+                if (!this.options)
                     this._execute();
                 e.preventDefault();
             };
@@ -45,22 +60,12 @@ var Vidyano;
                         this.action.execute(option, null, [this.item]);
                 }
             };
-            ActionButton.prototype._updateCanExecuteHook = function () {
-                var _this = this;
-                if (this._propertyChangedObserver) {
-                    this._propertyChangedObserver();
-                    this._propertyChangedObserver = undefined;
-                }
-                if (this.action && this.isAttached) {
-                    this._propertyChangedObserver = this.action.propertyChanged.attach(function (action, detail) {
-                        if (detail.propertyName == "canExecute")
-                            _this._setCanExecute(_this.item ? _this.action.definition.selectionRule(1) : _this.action.canExecute);
-                        else if (detail.propertyName == "isVisible")
-                            _this._setHidden(!detail.newValue);
-                    });
-                    this._setCanExecute(this.item ? this.action.definition.selectionRule(1) : this.action.canExecute);
-                    this._setHidden(!this.action.isVisible);
-                }
+            ActionButton.prototype._observeAction = function (canExecute, isVisible, options) {
+                if (!this.isAttached || this._skipObserver)
+                    return;
+                this._setCanExecute(this.item ? this.action.definition.selectionRule(1) : this.action.canExecute);
+                this._setHidden(!this.action.isVisible);
+                this._setOptions(this.action.options && this.action.options.length > 0 ? this.action.options : null);
             };
             ActionButton.prototype._computeIcon = function (action) {
                 if (!action)
@@ -68,20 +73,10 @@ var Vidyano;
                 var actionIcon = "Action_" + action.definition.name;
                 return action.isPinned && !WebComponents.Icon.Exists(actionIcon) ? "Action_Default$" : actionIcon;
             };
-            ActionButton.prototype._computeHasOptions = function (action) {
-                return action && action.options && action.options.length > 0;
-            };
             ActionButton = __decorate([
                 WebComponents.WebComponent.register({
                     properties: {
-                        action: {
-                            type: Object,
-                            observer: "_updateCanExecuteHook"
-                        },
-                        isAttached: {
-                            type: Boolean,
-                            observer: "_updateCanExecuteHook"
-                        },
+                        action: Object,
                         item: Object,
                         icon: {
                             type: String,
@@ -113,21 +108,23 @@ var Vidyano;
                             reflectToAttribute: true,
                             readOnly: true
                         },
-                        hasOptions: {
-                            type: Boolean,
-                            computed: "_computeHasOptions(action)"
-                        },
                         options: {
                             type: Array,
-                            computed: "action.options"
+                            readOnly: true
                         },
                         overflow: {
                             type: Boolean,
                             reflectToAttribute: true
                         }
                     },
+                    observers: [
+                        "_observeAction(action.canExecute, action.isVisible, action.options, isAttached)"
+                    ],
                     forwardObservers: [
-                        "action.isPinned"
+                        "action.isPinned",
+                        "action.canExecute",
+                        "action.isVisible",
+                        "action.options"
                     ]
                 })
             ], ActionButton);

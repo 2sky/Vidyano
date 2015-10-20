@@ -1323,6 +1323,13 @@ declare module Vidyano {
         onMessageDialog(title: string, message: string, html: boolean, ...actions: string[]): Promise<number>;
         onNavigate(path: string, replaceCurrent?: boolean): void;
         onClientOperation(operation: ClientOperations.ClientOperation): void;
+        onSelectedItemsActions(query: Query, selectedItems: QueryResultItem[], action: SelectedItemsActionArgs): void;
+    }
+    interface SelectedItemsActionArgs {
+        name: string;
+        isVisible: boolean;
+        canExecute: boolean;
+        options: string[];
     }
     class ExecuteActionArgs {
         private service;
@@ -1729,10 +1736,10 @@ declare module Vidyano {
         private _parameters;
         private _offset;
         protected _isPinned: boolean;
+        private _options;
         skipOpen: boolean;
         selectionRule: (count: number) => boolean;
         displayName: string;
-        options: Array<string>;
         dependentActions: any[];
         constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions);
         parent: PersistentObject;
@@ -1743,6 +1750,8 @@ declare module Vidyano {
         block: boolean;
         isVisible: boolean;
         isPinned: boolean;
+        options: string[];
+        private _setOptions(options);
         execute(option?: number, parameters?: any, selectedItems?: QueryResultItem[], throwExceptions?: boolean): Promise<PersistentObject>;
         _onExecute(option?: number, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject>;
         _getParameters(parameters: any, option: any): any;
@@ -1900,21 +1909,22 @@ declare module Vidyano.WebComponents {
 }
 declare module Vidyano.WebComponents {
     class ActionButton extends WebComponent {
-        private _propertyChangedObserver;
-        action: Vidyano.Action;
         item: Vidyano.QueryResultItem;
+        action: Vidyano.Action;
+        private _skipObserver;
+        options: string[];
         canExecute: boolean;
-        hasOptions: boolean;
         noLabel: boolean;
         forceLabel: boolean;
         private _setCanExecute;
         private _setHidden;
+        private _setOptions;
+        constructor(item: Vidyano.QueryResultItem, action: Vidyano.Action);
         private _executeWithoutOptions(e);
         private _executeWithOption(e);
         private _execute(option?);
-        private _updateCanExecuteHook();
+        private _observeAction(canExecute, isVisible, options);
         private _computeIcon(action);
-        private _computeHasOptions(action);
     }
 }
 declare module Vidyano.WebComponents {
