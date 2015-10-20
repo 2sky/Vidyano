@@ -1,1 +1,0 @@
-﻿:host{display:block}:host(:not([open]))#content{display:none;}:host #content{position:fixed;background-color:#fff;border:1px solid rgba(0,0,0,.15);z-index:10000;box-shadow:1px 1px 4px rgba(0,0,0,.3);-moz-box-shadow:1px 1px 4px rgba(0,0,0,.3);-webkit-box-shadow:1px 1px 4px rgba(0,0,0,.3)}
