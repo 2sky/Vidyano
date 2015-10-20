@@ -220,7 +220,7 @@ var Vidyano;
                 e.stopPropagation();
             };
             Select.prototype._equals = function (item1, item2) {
-                return item1.option == item2.option;
+                return item1 != null && item2 != null && item1.option == item2.option;
             };
             Select.prototype._isReadonlyInput = function (readonly, disableFiltering) {
                 return readonly || disableFiltering;

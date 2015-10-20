@@ -313,7 +313,7 @@ module Vidyano.WebComponents {
         }
 
         private _equals(item1: SelectItem, item2: SelectItem): boolean {
-            return item1.option == item2.option;
+            return item1 != null && item2 != null && item1.option == item2.option;
         }
 
         private _isReadonlyInput(readonly: boolean, disableFiltering: boolean): boolean {
