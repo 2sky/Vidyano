@@ -39,7 +39,13 @@ module Vidyano.WebComponents {
             },
             overflow: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: null
+            },
+            openOnHover: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: null
             }
         },
         observers: [
@@ -57,6 +63,7 @@ module Vidyano.WebComponents {
         options: string[];
         canExecute: boolean;
         noLabel: boolean;
+        openOnHover: boolean;
         forceLabel: boolean;
 
         private _setCanExecute: (val: boolean) => void;
@@ -109,8 +116,11 @@ module Vidyano.WebComponents {
             if (this.canExecute) {
                 if (!this.item)
                     this.action.execute(option);
-                else
-                    this.action.execute(option, null, [this.item]);
+                else {
+                    this.action.execute(option, this.options && option < this.options.length ? {
+                        MenuLabel: this.options[option]
+                    } : null, [this.item]);
+                }
             }
         }
 
@@ -129,6 +139,10 @@ module Vidyano.WebComponents {
 
             var actionIcon = `Action_${action.definition.name}`;
             return action.isPinned && !Icon.Exists(actionIcon) ? "Action_Default$" : actionIcon;
+        }
+
+        private _computeOpenOnHover(overflow: boolean, openOnHover: boolean): boolean {
+            return overflow || openOnHover;
         }
     }
 }

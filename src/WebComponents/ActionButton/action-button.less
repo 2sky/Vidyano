@@ -30,6 +30,7 @@ vi-action-button {
         &[header] {
             vi-icon {
                 display: inline-block;
+                vertical-align: top;
             }
         }
 
@@ -39,7 +40,7 @@ vi-action-button {
     }
 
     &[overflow] {
-        vi-icon.options {
+        vi-icon[source="Down"] {
             -moz-transform: rotate(-90deg);
             -ms-transform: rotate(-90deg);
             -o-transform: rotate(-90deg);

@@ -1,6 +1,6 @@
 <dom-module id="vi-popup-menu">
     <template>
-        <vi-popup id="popup" disabled="{{disabled}}" on-popup-opening="_popupOpening">
+        <vi-popup open-on-hover="{{openOnHover}}" id="popup" disabled="{{disabled}}" on-popup-opening="_popupOpening">
             <template is="dom-if" if="{{!contextMenuOnly}}">
                 <content select="[header]"></content>
             </template>

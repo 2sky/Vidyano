@@ -58,7 +58,7 @@ vi-action-button ul li {
   font-size: 13px;
 }
 [theme-color-1] vi-action-button ul li {
-  color: #4682B4;
+  color: #4682b4;
 }
 [theme-color-1] vi-action-button ul li:hover {
   background-color: #ecf2f7;

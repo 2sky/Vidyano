@@ -4,7 +4,7 @@
             <button is="vi-button" disabled="{{!canExecute}}" header on-tap="_executeWithoutOptions" inverse icon="{{icon}}" label="{{action.definition.displayName}}"></button>
         </template>
         <template is="dom-if" if="{{options}}">
-            <vi-popup-menu open-on-hover="{{overflow}}" disabled="{{!canExecute}}">
+            <vi-popup-menu open-on-hover="{{_computeOpenOnHover(overflow, openOnHover)}}" disabled="{{!canExecute}}">
                 <button is="vi-button" disabled="{{!canExecute}}" header inverse>
                     <vi-icon source="{{icon}}"></vi-icon>
                     <span class="label">{{action.definition.displayName}}</span>
