@@ -5,10 +5,8 @@
   "devDependencies": {
     "grunt": "0.4.5",
     "grunt-bower-task": "0.4.0",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-less": "^1.0.0",
-    "dts-generator": "^1.6.0-pre.1",
-    "typescript": "^1.6.2"
+    "typescript": "^1.6.2",
+    "grunt-ts": "^5.1.0"
   }
 }
