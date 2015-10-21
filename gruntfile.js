@@ -32,6 +32,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask("default", [
+        "bower:install",
         "less",
         "ts"
     ]);
