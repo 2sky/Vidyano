@@ -1,6 +1,6 @@
 ﻿@import (reference) "../vidyano.less";
 
-.colorizer(@bgColor, @fgColor, @bgHoverColor: lighten(@bgColor, 10%)) {
+.colorizer(@bgColor, @fgColor, @bgHoverColor) {
     background-color: @bgColor;
     color: @fgColor;
     fill: @fgColor;
@@ -65,7 +65,7 @@ button[is="vi-button"] {
             }
 
             &[disabled] {
-                .theme-color(background-color, @fadeout: 50%) !important;
+                .theme-color(background-color, "color", 50%) !important;
                 fill: fadeout(white, 50%) !important;
                 color: fadeout(white, 50%) !important;
             }
@@ -82,15 +82,15 @@ button[is="vi-button"] {
 
             &[disabled] {
                 background-color: transparent !important;
-                .theme-color(color, @fadeout: 50%) !important;
-                .theme-color(fill, @fadeout: 50%) !important;
+                .theme-color(color, "color", 50%) !important;
+                .theme-color(fill, "color", 50%) !important;
             }
         }
     }
 
     &[type="light-monochrome"] {
         &:not([inverse]) {
-            .colorizer(#f0f0f0, white);
+            .colorizer(#f0f0f0, white, lighten(#f0f0f0, 10%));
         }
 
         &[inverse] {
@@ -100,7 +100,7 @@ button[is="vi-button"] {
 
     &[type="danger"] {
         &:not([inverse]) {
-            .colorizer(#FF4136, white);
+            .colorizer(#FF4136, white, lighten(#FF4136, 10%));
         }
 
         &[inverse] {
@@ -110,7 +110,7 @@ button[is="vi-button"] {
 
     &[type="safe"] {
         &:not([inverse]) {
-            .colorizer(#3D9970, white);
+            .colorizer(#3D9970, white, lighten(#3D9970, 10%));
         }
 
         &[inverse] {
