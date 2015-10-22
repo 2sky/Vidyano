@@ -94,5 +94,7 @@
     "src/WebComponents/User/user.ts",
     "src/WebComponents/WebComponent/webcomponent.ts"
   ],
-  "exclude": []
+  "exclude": [
+    "dist/Vidyano.Web2/vidyano.d.ts"
+  ]
 }

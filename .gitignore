@@ -213,3 +213,5 @@ ModelManifest.xml
 /src/Libs/polymer/
 /src/Libs/sortable/
 /src/Libs/webcomponentsjs/
+/dist/Vidyano.Web2/src
+/dist/Vidyano.Web2/vidyano.d.ts
