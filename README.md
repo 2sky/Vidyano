@@ -1,6 +1,6 @@
-# Vidyano Web Client
+# Vidyano Web2 Client
 
-The Vidyano Web Client provides a modern out of the box scaffolded UI that connects to a Vidyano backend.
+The Vidyano Web2 Client provides a modern out of the box scaffolded UI that connects to a Vidyano backend.
 
 ## Dependencies
 
