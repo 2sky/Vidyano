@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Vidyano.Web2")]
-[assembly: AssemblyDescription("Provides access for the Web2 frontend for Vidyano.")]
+[assembly: AssemblyDescription("The Vidyano Web Client provides a modern out of the box scaffolded UI that connects to a Vidyano backend.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("2sky NV")]
 [assembly: AssemblyProduct("Vidyano.Web2")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyVersion("0.7.1.0")]
+[assembly: AssemblyFileVersion("0.7.1.0")]
