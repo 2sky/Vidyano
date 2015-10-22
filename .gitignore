@@ -196,9 +196,20 @@ ModelManifest.xml
 
 # Project files
 /src/demo-dev.html
-/dist/demo-dev.html
 /src/web.config
 /src/WebComponents/**/*.js
 /src/WebComponents/**/*.css
 /src/Libs/Vidyano/vidyano.js
 /src/Libs/Vidyano/vidyano.cultures.js
+/src/Libs/bignumber.js/
+/src/Libs/es6-promise/
+/src/Libs/iron-*
+/src/Libs/layout/layout.html
+/src/Libs/linqjs/
+/src/Libs/marked*
+/src/Libs/moment/
+/src/Libs/paper-ripple/
+/src/Libs/pathjs/
+/src/Libs/polymer/
+/src/Libs/sortable/
+/src/Libs/webcomponentsjs/
