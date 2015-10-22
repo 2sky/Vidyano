@@ -130,10 +130,7 @@ vi-persistent-object-attribute-as-detail {
                             box-sizing: border-box;
                             border: 1px solid @border-color;
                             padding: 0 @h4;
-
-                            .colorize( {
-                                fill: @@color-light;
-                            });
+                            .theme-color(fill, "light");
 
                             &:not(:hover):not(:active) {
                                 background-color: transparent;

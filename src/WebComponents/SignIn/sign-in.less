@@ -33,10 +33,7 @@ vi-sign-in {
             display: block;
             font-weight: normal;
             margin: @h3 0 @h1 0;
-
-            .colorize({
-                color: @@color;
-            });
+            .theme-color(color);
         }
 
         h2 {
@@ -69,10 +66,7 @@ li[is="vi-sign-in-provider"] {
         font-weight: lighter;
         font-size: 32px;
         margin: 0;
-
-        .colorize( {
-            color: @@color;
-        });
+        .theme-color(color);
     }
 
     h4 {
@@ -127,11 +121,9 @@ li[is="vi-sign-in-provider"] {
                     border: 1px solid #ddd;
                     outline: none;
 
-                    .colorize( {
-                        &:focus {
-                            border-color: @@color-light;
-                        }
-                    });
+                    &:focus {
+                        .theme-color(border-color, "light");
+                    }
                 }
 
                 &:last-of-type {
@@ -157,10 +149,7 @@ li[is="vi-sign-in-provider"] {
                             cursor: pointer;
                             padding: 0 @h4;
                             box-sizing: content-box;
-
-                            .colorize({
-                                .colorize-button(@@color);
-                            });
+                            .theme-color-button();
                         }
                     }
                 }

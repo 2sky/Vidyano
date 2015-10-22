@@ -53,12 +53,10 @@ vi-query-grid-configure-dialog {
                 .buttons {
                     background-color: #f9f9f9;
 
-                    .colorize( {
-                        button {
-                            background-color: white;
-                            fill: @@color;
-                        }
-                    });
+                    button {
+                        background-color: white;
+                        .theme-color(fill);
+                    }
                 }
 
                 &:not([is-pinned]) {

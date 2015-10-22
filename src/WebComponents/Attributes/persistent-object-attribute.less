@@ -127,7 +127,7 @@ vi-persistent-object-attribute-edit {
             padding: 0;
             box-sizing: content-box;
             text-align: center;
-            .colorize-button-inverse();
+            .theme-color-button-inverse();
             -moz-transition: background-color 0.1s ease-out;
             -o-transition: background-color 0.1s ease-out;
             -webkit-transition: background-color 0.1s ease-out;
@@ -189,28 +189,20 @@ vi-persistent-object-attribute-edit {
 
     &[focus] {
         .box {
-            .colorize( {
-                border-color: @@color-lighter;
-            });
+            .theme-color(border-color, "lighter");
 
             > .buttons {
                 > button, > .button, > [button], > vi-popup:not([content]) button[header] {
                     &::after, &::before {
-                        .colorize( {
-                            border-color: @@color-lighter;
-                        });
+                        .theme-color(border-color, "lighter");
                     }
 
                     svg {
-                        .colorize( {
-                            fill: @@color-light;
-                        });
+                        .theme-color(fill, "light");
                     }
 
                     &:active {
-                        .colorize({
-                            background-color: @@color !important;
-                        });
+                        .theme-color(background-color) !important;
 
                          svg {
                              fill: white !important;
@@ -218,9 +210,7 @@ vi-persistent-object-attribute-edit {
                     }
 
                     &:hover {
-                        .colorize({
-                            background-color: @@color-faint;
-                        });
+                        .theme-color(background-color, "faint");
                     }
                 }
             }

@@ -29,22 +29,17 @@ vi-overflow {
             width: @h1;
             cursor: pointer;
             font-weight: bold;
+            background-color: transparent;
+            .theme-color(color);
 
             > * {
                 font-weight: normal;
             }
-
-            .colorize({
-                color: @@color;
-                background-color: transparent;
-            });
         }
 
         &:hover {
             button.vi-overflow {
-                .colorize({
-                    background-color: @@color-faint;
-                });
+                .theme-color(background-color, "faint");
             }
         }
     }

@@ -5,11 +5,8 @@
 vi-user {
     border-top: 1px solid transparent;
     .layout-horizontal();
-
-    .colorize( {
-        background-color: fadeout(white, 92%);
-        border-top-color: fadeout(white, 92%);
-    });
+    background-color: fadeout(white, 92%);
+    border-top-color: fadeout(white, 92%);
 
     > span {
         line-height: @footerHeight;
@@ -22,9 +19,7 @@ vi-user {
         cursor: pointer;
 
         &#signIn {
-            .colorize( {
-                .colorize-button(@@color);
-            });
+            .theme-color-button();
 
             > vi-icon {
                 height: @footerHeight !important;
@@ -35,11 +30,8 @@ vi-user {
         &#settings {
             width: @footerHeight;
             box-sizing: border-box;
-
-            .colorize( {
-                .colorize-button(fadeout(white, 95%));
-                border-left: 1px solid fadeout(white, 88%);
-            });
+            border-left: 1px solid fadeout(white, 88%);
+            .color-button(fadeout(white, 95%));
         }
 
         > vi-icon {
@@ -57,7 +49,7 @@ vi-user {
         #signedIn{
             display: none;
         }
-        
+
         #signIn {
             & > span {
                 display: none;

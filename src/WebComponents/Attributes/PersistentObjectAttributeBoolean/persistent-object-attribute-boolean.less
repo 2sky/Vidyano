@@ -11,9 +11,7 @@ vi-persistent-object-attribute-boolean, vi-persistent-object-attribute-nullable-
         }
 
         &[checked] #check {
-            .colorize({
-                fill: @@color !important;
-            });
+            .theme-color(fill) !important;
         }
 
         > vi-icon:not([hidden]) + span {

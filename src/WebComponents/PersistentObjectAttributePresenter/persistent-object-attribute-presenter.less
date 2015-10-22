@@ -49,12 +49,7 @@ vi-persistent-object-attribute-presenter {
             -o-transform: translateY(-1px);
             -webkit-transform: translateY(-1px);
             transform: translateY(-1px);
-
-            .colorize( {
-                background-color: @@color;
-            }
-
-            );
+            .theme-color(background-color);
 
             &::before {
                 content: "";
@@ -64,12 +59,9 @@ vi-persistent-object-attribute-presenter {
                 height: 0;
                 border-top: 7px solid transparent;
                 border-bottom: 7px solid transparent;
-
-                .colorize( {
-                    border-right: 7px solid @@color;
-                }
-
-                );
+                .theme-color(border-right-color);
+                border-right-width: 7px;
+                border-right-style: solid;
             }
         }
 
@@ -129,23 +121,18 @@ vi-persistent-object-attribute-presenter {
 
     a {
         text-decoration: none;
+        .theme-color(color);
+        .theme-color(fill);
 
-        .colorize( {
-            color: @@color;
-            fill: @@color;
-
-            &:visited {
-                color: @@color;
-                fill: @@color;
-            }
-
-            &:hover {
-                color: @@color-light;
-                fill: @@color-light;
-            }
+        &:visited {
+            .theme-color(color);
+            .theme-color(fill);
         }
 
-        );
+        &:hover {
+            .theme-color(color, "light");
+            .theme-color(fill, "light");
+        }
 
         &[disabled] {
             color: #333 !important;

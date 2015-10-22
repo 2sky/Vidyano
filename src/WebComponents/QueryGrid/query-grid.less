@@ -131,22 +131,13 @@ vi-query-grid {
 
                         > paper-ripple {
                             pointer-events: none;
-
-                            .colorize( {
-                                color: @@color;
-                            }
-
-                            );
+                            .theme-color(color);
                         }
 
                         &:hover {
-                            .colorize( {
-                                > vi-icon {
-                                    background-color: fadeout(black, 95%) !important;
-                                }
+                            > vi-icon {
+                                background-color: fadeout(black, 95%) !important;
                             }
-
-                            );
                         }
                     }
 
@@ -157,18 +148,13 @@ vi-query-grid {
 
                         > paper-ripple {
                             pointer-events: none;
-
-                            .colorize( {
-                                color: @@color;
-                            });
+                            .theme-color(color);
                         }
 
                         &:hover, &[hover] {
-                            .colorize( {
-                                > vi-icon {
-                                    background-color: fadeout(black, 95%) !important;
-                                }
-                            });
+                            > vi-icon {
+                                background-color: fadeout(black, 95%) !important;
+                            }
                         }
                     }
 
@@ -200,31 +186,20 @@ vi-query-grid {
                 }
 
                 &[is-selected] {
+                    .theme-color(background-color, "semi-faint");
+
+                    td.pinned {
+                        .theme-color(background-color, "semi-faint");
+                    }
+
                     td[is="vi-query-grid-table-data-column-selector"] {
-                        .colorize( {
-                            fill: #888;
-
-                            #check {
-                                fill: @@color;
-                            }
-                        }
-
-                        );
+                        fill: #888;
 
                         #check {
                             display: block;
+                            .theme-color(fill);
                         }
                     }
-
-                    .colorize( {
-                        background-color: @@color-semi-faint;
-
-                        td.pinned {
-                            background-color: @@color-semi-faint;
-                        }
-                    }
-
-                    );
                 }
 
                 &:not(:hover):not([hover]):not([is-selected]) {
@@ -254,11 +229,7 @@ vi-query-grid {
                 }
 
                 &:hover, &[hover], &:hover td.pinned, &[hover] td.pinned {
-                    .colorize( {
-                        background-color: @@color-faint;
-                    }
-
-                    );
+                    .theme-color(background-color, "faint");
                 }
             }
 

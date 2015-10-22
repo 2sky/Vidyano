@@ -56,15 +56,35 @@ button[is="vi-button"] {
 
     &[type=""], &:not([type]) {
         &:not([inverse]) {
-            .colorize( {
-                .colorizer(@@color, white, @@color-light);
-            });
+            .theme-color(background-color);
+            color: white;
+            fill: white;
+
+            &:hover {
+                .theme-color(background-color, "light");
+            }
+
+            &[disabled] {
+                .theme-color(background-color, @fadeout: 50%) !important;
+                fill: fadeout(white, 50%) !important;
+                color: fadeout(white, 50%) !important;
+            }
         }
 
         &[inverse] {
-            .colorize( {
-                .colorizer(transparent, @@color, @@color-faint);
-            });
+            background-color: transparent;
+            .theme-color(color);
+            .theme-color(fill);
+
+            &:hover {
+                .theme-color(background-color, "faint");
+            }
+
+            &[disabled] {
+                background-color: transparent !important;
+                .theme-color(color, @fadeout: 50%) !important;
+                .theme-color(fill, @fadeout: 50%) !important;
+            }
         }
     }
 
@@ -102,15 +122,11 @@ button[is="vi-button"] {
 vi-popup[open] > [toggle] button[is="vi-button"][header] {
     &[type=""], &:not([type]) {
         &:not([inverse]) {
-            .colorize( {
-                background-color: @@color-light;
-            });
+            .theme-color(background-color, "light");
         }
 
         &[inverse] {
-            .colorize( {
-                background-color: @@color-faint;
-            });
+            .theme-color(background-color, "faint");
         }
     }
 

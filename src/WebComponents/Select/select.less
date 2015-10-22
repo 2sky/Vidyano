@@ -76,22 +76,16 @@ vi-select {
                 cursor: pointer;
 
                 &:hover {
-                    .colorize( {
-                        background-color: @@color-faint;
-                    });
+                    .theme-color(background-color, "faint");
                 }
             }
 
             li[suggested], &:not([filtering]) li[selected] {
-                .colorize( {
-                    background-color: @@color;
-                    color: white;
-                });
+                color: white;
+                .theme-color(background-color);
 
                 &:hover {
-                    .colorize( {
-                        background-color: @@color-light;
-                    });
+                    .theme-color(background-color, "light");
                 }
             }
         }

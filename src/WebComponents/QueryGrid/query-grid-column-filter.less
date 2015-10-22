@@ -14,7 +14,7 @@ vi-query-grid-column-filter-proxy {
     .labelContainerStyle();
 
     &:not([disabled]) {
-        .colorize-button-inverse();
+        .theme-color-button-inverse();
     }
 
     &[disabled] {
@@ -160,7 +160,7 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
                     width: @cell-line-height;
                     height: @h3;
                     cursor: pointer;
-                    .colorize-button-inverse();
+                    .theme-color-button-inverse();
 
                     &[inversed]:not(:active) {
                         fill: darkred !important;
@@ -204,11 +204,7 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
                 .layout-center();
 
                 &:hover {
-                    .colorize( {
-                        background-color: @@color-faint;
-                    }
-
-                    );
+                    .theme-color(background-color, "faint");
                 }
 
                 span {

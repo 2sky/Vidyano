@@ -105,9 +105,7 @@ vi-persistent-object-tab-cell {
         top: 2px;
         bottom: 2px;
         right: 2px;
-        .colorize({
-            background-color: @@color-faint;
-        });
+        .theme-color(background-color, "faint");
     }
 }
 
@@ -154,7 +152,7 @@ vi-persistent-object-tab-item-presenter {
             }
         }
     }
-    
+
     &:hover {
         #rect {
             opacity: 1;

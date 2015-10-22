@@ -9,10 +9,7 @@ vi-date-picker {
 	header {
 		color: white;
 		fill: white;
-
-		.colorize({
-			background-color: @@color;
-		});
+		.theme-color(background-color);
 
 		button {
 			text-align: center;
@@ -26,9 +23,7 @@ vi-date-picker {
             }
 
 			&:hover {
-				.colorize({
-					background-color: @@color-light;
-				});
+				.theme-color(background-color, "light");
 			}
 		}
 	}
@@ -56,40 +51,31 @@ vi-date-picker {
 						padding: 10px;
 						border-style: solid;
 						border-width: 0 0 1px 1px;
-
-						.colorize({
-							border-color: @@color-faint;
-						});
+						.theme-color(border-color, "faint");
 
 						&:not(.previous):not(.next) {
-							.colorize({
-								color: @@color;
+							.theme-color(color);
 
-								&:hover {
-									background-color: @@color-faint;
-								}
-							});
+							&:hover {
+								.theme-color(background-color, "faint");
+							}
 
 							 &.today {
-								.colorize({
-									background-color: @@color-dark;
-									color: white;
+								 color: white;
+								 .theme-color(background-color, "dark");
 
-									&:hover {
-										background-color: @@color-darker;
-									}
-								});
+								 &:hover {
+									 .theme-color(background-color, "darker");
+								 }
 							}
 						}
 
 						&.previous, &.next {
-							.colorize({
-								color: #AAA;
+							color: #AAA;
 
-								&:hover {
-									background-color: #eee;
-								}
-							});
+							&:hover {
+								background-color: #eee;
+							}
 						}
 
 						&.selected {
@@ -104,18 +90,17 @@ vi-date-picker {
 								z-index: 2;
 								bottom: 0;
 								left: 0;
-
-								.colorize({
-									border: 1px solid @@color;
-								});
+								border-width: 1px;
+								border-style: solid;
+								.theme-color(border-color);
 							}
 
 							&::after {
 								z-index: 1;
-								.colorize({
-									border-top: @h4 solid @@color;
-									border-left: @h4 solid transparent;
-								});
+								border-left: @h4 solid transparent;
+								.theme-color(border-top-color);
+								border-top-width: @h4;
+								border-top-style: solid;
 							}
 
 							&.today::after {
@@ -154,24 +139,21 @@ vi-date-picker {
 					cursor: pointer;
 					text-align: center;
 					line-height: @h4 * 6;
+					.theme-color(border-color, "faint");
+					.theme-color(color);
 
-					.colorize({
-						border-color: @@color-faint;
-						color: @@color;
+					&:hover {
+						.theme-color(background-color, "faint");
+					}
+
+					&.current {
+						.theme-color(background-color, "dark");
+						color: white;
 
 						&:hover {
-							background-color: @@color-faint;
+							.theme-color(background-color, "darker");
 						}
-
-						&.current {
-							background-color: @@color-dark;
-							color: white;
-
-							&:hover {
-								background-color: @@color-darker;
-							}
-						}
-					});
+					}
 				}
 			}
 		}

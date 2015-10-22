@@ -75,14 +75,11 @@ vi-action-button {
             cursor: pointer;
             padding: 0 @h4;
             font-size: 13px;
+            .theme-color(color);
 
-            .colorize( {
-                color: @@color;
-
-                &:hover {
-                    background-color: @@color-faint;
-                }
-            });
+            &:hover {
+                .theme-color(background-color, "faint");
+            }
         }
     }
 }

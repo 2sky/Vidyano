@@ -108,9 +108,7 @@ vi-time-picker {
 						color: white;
 
 						&::before {
-							.colorize({
-								background-color: @@color-light;
-							});
+							.theme-color(background-color, "light");
 						}
 					}
 
@@ -128,15 +126,11 @@ vi-time-picker {
 						color: white;
 
 						&::before {
-							.colorize({
-								background-color: @@color;
-							});
+							.theme-color(background-color);
 						}
 
 						&:hover::before {
-							.colorize({
-								background-color: @@color-dark;
-							});
+							.theme-color(background-color, "dark");
 						}
 					}
 				}
@@ -182,9 +176,7 @@ vi-time-picker {
 
 		#current {
 			.minutes {
-				.colorize({
-					color: @@color;
-				});
+				.theme-color(color);
 			}
 		}
 	}
@@ -204,9 +196,7 @@ vi-time-picker {
 
 		#current {
 			.hours {
-				.colorize({
-					color: @@color;
-				});
+				.theme-color(color);
 			}
 		}
 	}
