@@ -37,6 +37,9 @@ module.exports = function(grunt) {
                 dest: "dist/Vidyano.Web2/src/",
                 expand: true,
                 filter: function (src) {
+					if (src.indexOf("demo") >= 0)
+						return false;
+					
                     if (src.indexOf(".less") > 0 || src.indexOf(".js") > 0 || src.indexOf(".html") > 0)
                         return true;
 
