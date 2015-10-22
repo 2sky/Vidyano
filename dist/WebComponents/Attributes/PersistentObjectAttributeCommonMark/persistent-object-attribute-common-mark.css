@@ -1,9 +1,0 @@
-vi-persistent-object-attribute-common-mark {
-  overflow: hidden;
-}
-vi-persistent-object-attribute-common-mark > textarea {
-  -ms-flex: 1;
-  -webkit-flex: 1;
-  flex: 1;
-  resize: none;
-}

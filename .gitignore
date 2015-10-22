@@ -200,3 +200,5 @@ ModelManifest.xml
 /src/web.config
 /src/WebComponents/**/*.js
 /src/WebComponents/**/*.css
+/src/Libs/Vidyano/vidyano.js
+/src/Libs/Vidyano/vidyano.cultures.js

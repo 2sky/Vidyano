@@ -39,10 +39,10 @@
       "": "sortable.min.js"
     }
   },
-  "devDependencies": {
+  "dependencies": {
     "es6-promise": "^3.0.2",
     "polymer": "polymer/polymer#^1.1.0",
-    "paper-ripple": "polymerelements/paper-ripple#^1.0.1",
+    "paper-ripple": "sleeckx/paper-ripple#c010f42b7e3aad5ae7710304ccd92787b1bd36a9",
     "marked-element": "polymerelements/marked-element#^1.0.2",
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.2",
     "bignumber.js": "^2.0.7",
