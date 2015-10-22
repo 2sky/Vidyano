@@ -8,14 +8,11 @@ vi-menu {
     .noSelection();
     height: 100%;
     color: @dark-foreground;
-
-    .colorize({
-        background-color: @blue-grey-900;
-    });
+    background-color: @blue-grey-900;
 
     &:not([collapsed]) {
         width: @expandWidth;
-        
+
         header.vi-menu.style-scope {
             #toggleCollapse {
                 background-color: transparent;
@@ -40,10 +37,7 @@ vi-menu {
         header.vi-menu.style-scope {
             #toggleCollapse {
                 position: relative;
-
-                .colorize({
-                    background-color: @@color-dark;
-                });
+                .theme-color(background-color, "dark");
 
                  vi-icon {
                     -moz-transform: rotate(180deg);
@@ -98,9 +92,7 @@ vi-menu {
 
         vi-popup {
             #content {
-                .colorize({
-                    background-color: @blue-grey-900;
-                });
+                background-color: @blue-grey-900;
             }
         }
     }
@@ -121,10 +113,7 @@ vi-menu {
             display: block;
             font-size: (@h3);
             line-height: @h1 * 2;
-
-            .colorize( {
-                background-color: @@color-dark;
-            });
+            .theme-color(background-color, "dark");
         }
 
         #toggleCollapse {

@@ -38,28 +38,70 @@
     box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);
 }
 
-.colorize(@style) {
-    .colorize-loop (@style, @counter) when (@counter > 0) {
-        .colorize-loop (@style, (@counter - 1));
-        
+.theme-color(@prop, @val: "color", @fadeout: 0%) {
+    .colorize-loop (@prop, @val, @counter) when (@counter > 0) {
+        .colorize-loop (@prop, @val, (@counter - 1));
         @theme: ~'[theme-color-@{counter}]';
         @{theme} & {
-			@color: ~'theme-color-@{counter}';
-			@color-light: ~'theme-color-@{counter}-light';
-			@color-lighter: ~'theme-color-@{counter}-lighter';
-			@color-dark: ~'theme-color-@{counter}-dark';
-			@color-darker: ~'theme-color-@{counter}-darker';
-			@color-faint: ~'theme-color-@{counter}-faint';
-            @color-semi-faint: ~'theme-color-@{counter}-semi-faint';
+            @color: ~'theme-color-@{counter}';
+            @light: ~'theme-color-@{counter}-light';
+            @lighter: ~'theme-color-@{counter}-lighter';
+            @dark: ~'theme-color-@{counter}-dark';
+            @darker: ~'theme-color-@{counter}-darker';
+            @faint: ~'theme-color-@{counter}-faint';
+            @semi-faint: ~'theme-color-@{counter}-semi-faint';
 
-    		@style();
+            @result: "@{@{val}}";
+            @{prop}: fadeout(@@result, @fadeout);
         }
     }
-    
-    .colorize-loop(@style, 2);
+    .colorize-loop(@prop, @val, 2);
 }
 
-.colorize-button(@color) {
+.theme-color-button() {
+    .theme-color(background-color);
+    color: white;
+
+    &:hover {
+        .theme-color(background-color);
+    }
+
+    &:active {
+        .theme-color(background-color, "dark");
+    }
+
+    &[disabled] {
+        fill: fadeout(white, 50%);
+        color: fadeout(white, 50%);
+    }
+
+    .color-button-animations();
+}
+
+.theme-color-button-inverse() {
+    background-color: transparent;
+    .theme-color(color, "darker");
+    fill: #595959;
+
+    &:hover {
+        .theme-color(background-color, "faint");
+    }
+
+    &:active {
+        .theme-color(background-color, "dark");
+        fill: white !important;
+        color: white !important;
+    }
+
+    &[disabled] {
+        .theme-color(fill, "faint");
+        color: fadeout(black, 50%);
+    }
+
+    .color-button-animations();
+}
+
+.color-button(@color) {
     background-color: @color;
     color: white;
 
@@ -76,6 +118,10 @@
         color: fadeout(white, 50%);
     }
 
+    .color-button-animations();
+}
+
+.color-button-animations() {
     -moz-transition-property: fill, color, background-color;
     -o-transition-property: fill, color, background-color;
     -webkit-transition-property: fill, color, background-color;
@@ -88,42 +134,6 @@
     -o-transition-timing-function: ease-out;
     -webkit-transition-timing-function: ease-out;
     transition-timing-function: ease-out;
-}
-
-.colorize-button-inverse(@bgColor: transparent) {
-    .colorize({
-        background-color: @bgColor;
-        color: @@color-darker;
-        fill: #595959;
-
-        &:hover {
-            background-color: @@color-faint;
-        }
-
-        &:active {
-            background-color: @@color-dark;
-            fill: white !important;
-            color: white !important;
-        }
-
-        &[disabled] {
-            fill: @@color-faint;
-            color: fadeout(black, 50%);
-        }
-
-        -moz-transition-property: fill, color, background-color;
-        -o-transition-property: fill, color, background-color;
-        -webkit-transition-property: fill, color, background-color;
-        transition-property: fill, color, background-color;
-        -moz-transition-duration: 0.2s;
-        -o-transition-duration: 0.2s;
-        -webkit-transition-duration: 0.2s;
-        transition-duration: 0.2s;
-        -moz-transition-timing-function: ease-in-out;
-        -o-transition-timing-function: ease-in-out;
-        -webkit-transition-timing-function: ease-in-out;
-        transition-timing-function: ease-in-out;
-    });
 }
 
 .flexbox() {
@@ -254,8 +264,5 @@
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     padding: 0 @h4;
-
-    .colorize({
-        background-color: @@color;
-    });
+    .theme-color(background-color);
 }

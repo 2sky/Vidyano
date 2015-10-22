@@ -9,11 +9,9 @@ vi-persistent-object-tab-bar {
 
     vi-overflow {
         [toggle] {
-            .colorize({
-               &:hover{
-                   background-color: @@color-faint;
-               } 
-            });
+           &:hover{
+               .theme-color(background-color, "faint");
+           }
         }
     }
 }
@@ -29,15 +27,18 @@ vi-persistent-object-tab-bar-item {
     box-sizing: border-box;
     white-space: nowrap;
     overflow: hidden;
+    .theme-color(color);
+    .theme-color(fill);
+
+    &:hover {
+        .theme-color(background-color, "faint");
+    }
 
     span {
         line-height: @h1 - 3px;
 
         &.badge {
-            .colorize({
-                background-color: fadeout(@@color, 50%);
-            });
-            
+            .theme-color(background-color, @fadeout: 50%);
             color: white;
             padding: (@h5 / 2) (@h5 + 1px) (@h5 / 2) @h5;
             margin-left: 2px;
@@ -46,26 +47,17 @@ vi-persistent-object-tab-bar-item {
         }
     }
 
-    .colorize( {
-        color: @@color;
-        fill: @@color;
-
-        &:hover {
-            background-color: @@color-faint;
-        }
-    });
-
     &[is-selected] {
-        .colorize( {
-            border-bottom-color: @@color;
+        .theme-color(border-bottom-color);
 
-            span.badge {
-                background-color: @@color;
+        span {
+            &.badge {
+                .theme-color(background-color);
             }
-        });
 
-         span:not(.badge) {
-             font-weight: 600;
-         }
+            &:not(.badge) {
+                font-weight: 600;
+            }
+        }
     }
 }

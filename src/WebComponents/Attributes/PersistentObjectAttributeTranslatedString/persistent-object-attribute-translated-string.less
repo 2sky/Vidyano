@@ -43,11 +43,9 @@ vi-persistent-object-attribute-translated-string-dialog {
                 border: 1px solid @border-color;
                 outline: none;
 
-                .colorize( {
-                    &:focus {
-                        border-color: @@color-light;
-                    }
-                });
+				&:focus {
+					.theme-color(border-color, "light");
+				}
             }
         }
     }

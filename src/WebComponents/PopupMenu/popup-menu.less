@@ -2,7 +2,7 @@
 
 vi-popup-menu {
     display: block;
-    
+
     #popup {
         line-height: @h2;
 
@@ -32,10 +32,8 @@ vi-popup-menu-item {
     height: @menuItemHeight;
     line-height: @menuItemHeight;
     cursor: pointer;
-    .colorize({
-        color: @@color;
-        fill: @@color;
-    });
+    .theme-color(color);
+    .theme-color(fill);
 
     > button {
         flex: 1 1 auto;
