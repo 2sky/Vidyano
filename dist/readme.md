@@ -1,6 +1,10 @@
 # Adding the Vidyano Web2 Client to your project
 
-#### 1. In the ```global.asax.cs``` file, add a route that exposes the web2 endpoint:
+#### 1. In the ```global.asax.cs``` file
+
+<sub>*Note: You may have to add a global.asax file to your project if it doesn't exist yet.*</sub>
+
+Add a route for the web2 controller:
 
 ```cs
 using Vidyano.Service;
@@ -21,12 +25,26 @@ public class Global : HttpApplication
 }
 ```
 
-*Note: You may have to add a global.asax file to your project if it doesn't exist yet.*
+#### 2. In the ```web.config``` file
 
-#### 2. Open your ```web.config```and remove or comment the default Vidyano route:
+Remove the default Vidyano route:
 
 ```xml
 <!--<add name="Vidyano" type="Vidyano.Service.WebControllerModule, Vidyano.Service" />-->
+```
+
+Next, make sure ```runAllManagedModulesForAllRequests``` is set to ```true```
+
+```xml
+<configuration>
+  ...
+  <system.webServer>
+    ...
+    <modules runAllManagedModulesForAllRequests="true"></modules>
+    ...
+  </system.webServer>
+  ...
+</configuration>
 ```
 
 #### 3. Add a new html file to your project with the following code:
