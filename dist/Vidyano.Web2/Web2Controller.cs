@@ -129,8 +129,8 @@ namespace Vidyano.Web2
                 {
                     var reader = new CustomFileReader(color1, color2);
                     var importer = new Importer(reader);
-                    var parser = new Parser(new PlainStylizer(), importer, true);
-                    var lessEngine = new LessEngine(parser, NullLogger.Instance, true, true);
+                    var parser = new Parser(new PlainStylizer(), importer, false);
+                    var lessEngine = new LessEngine(parser, NullLogger.Instance, true, false);
                     less = Regex.Replace(less, "\\.theme-color\\(([a-z-]+),? ?", Evaluate);
 
                     lessEngine.CurrentDirectory = Path.GetDirectoryName(fileName);
