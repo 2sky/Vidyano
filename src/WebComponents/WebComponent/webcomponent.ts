@@ -430,7 +430,7 @@
         }
 
         static getName(fnc: Function): string {
-            var results = /function (.+)\(/.exec(fnc.toString());
+            var results = /function (.+?)\(/.exec(fnc.toString());
             return results && results[1] || "";
         }
 

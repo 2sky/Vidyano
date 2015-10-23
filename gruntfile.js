@@ -59,6 +59,9 @@ module.exports = function(grunt) {
         },
         uglify: {
             nuget: {
+                options: {
+                    mangle: false
+                },
                 files: [{
                     expand: true,
                     src: 'dist/Vidyano.Web2/src/**/*.js',
