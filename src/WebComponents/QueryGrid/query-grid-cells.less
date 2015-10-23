@@ -17,6 +17,10 @@ vi-query-grid-cell-boolean {
         height: @cell-line-height;
     }
 
+    &:not(.unchecked) {
+        .selected-icon-checked-color(lighten(@mainColor, 15%));
+    }
+
     &.unchecked {
         #check {
             display: none;

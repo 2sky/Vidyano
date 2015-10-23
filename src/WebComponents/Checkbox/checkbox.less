@@ -4,6 +4,7 @@ vi-checkbox {
     .layout-horizontal();
     .layout-center();
     fill: #bbb;
+    padding-right: @h5;
 
     &:not([disabled]) {
         cursor: pointer;
@@ -13,10 +14,12 @@ vi-checkbox {
         }
     }
 
-    &[disabled] {
-        vi-icon {
-            fill: #aaa;
-        }
+    &[checked]:not([disabled]){
+        .selected-icon-checked();
+    }
+
+    &[disabled][checked] {
+        .selected-icon-checked-color(#666);
     }
 
     > span {

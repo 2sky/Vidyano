@@ -1,5 +1,6 @@
 @import (reference) "../vidyano.less";
 
+@mainColor: #333;
 @separatorColor: #EAEAEA;
 @oddRowColor: #FAFAFA;
 @evenRowColor: white;
@@ -12,6 +13,8 @@ vi-query-grid {
     font-size: 13px;
     line-height: @h2;
     overflow: hidden;
+    color: @mainColor;
+    fill: @mainColor;
 
     header {
         .noSelection();
@@ -193,12 +196,7 @@ vi-query-grid {
                     }
 
                     td[is="vi-query-grid-table-data-column-selector"] {
-                        fill: #888;
-
-                        #check {
-                            display: block;
-                            .theme-color(fill);
-                        }
+                        .selected-icon-checked();
                     }
                 }
 

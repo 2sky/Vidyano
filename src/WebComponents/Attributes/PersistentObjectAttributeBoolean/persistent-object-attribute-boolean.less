@@ -3,24 +3,11 @@
 vi-persistent-object-attribute-boolean, vi-persistent-object-attribute-nullable-boolean {
     .noSelection();
     display: block;
-    cursor: default;
 
     vi-checkbox {
-        #box {
-            fill: #aaa !important;
-        }
-
-        &[checked] #check {
-            .theme-color(fill) !important;
-        }
-
         > vi-icon:not([hidden]) + span {
             padding-left: @h5;
         }
-    }
-
-    &[editing]:not([read-only]) {
-        cursor: pointer !important;
     }
 
 	&:not([editing]) {

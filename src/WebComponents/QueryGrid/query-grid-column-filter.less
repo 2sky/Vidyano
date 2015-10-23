@@ -235,15 +235,11 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
                 }
 
                 &.include {
-                    #check {
-                        fill: green !important;
-                    }
+                    .selected-icon-checked-color(green);
                 }
 
                 &.exclude {
-                    #check {
-                        fill: darkred !important;
-                    }
+                    .selected-icon-checked-color(darkred);
                 }
 
                 &.remaining {
