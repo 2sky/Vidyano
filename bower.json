@@ -1,6 +1,6 @@
 {
   "name": "Vidyano",
-  "version": "0.7.1-alpha",
+  "version": "0.7.2-alpha",
   "license": "MIT",
   "ignore": [
     "/*.*",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "es6-promise": "^3.0.2",
-    "polymer": "polymer/polymer#^1.1.0",
+    "polymer": "polymer/polymer#1.2.0",
     "paper-ripple": "sleeckx/paper-ripple#c010f42b7e3aad5ae7710304ccd92787b1bd36a9",
     "marked-element": "polymerelements/marked-element#^1.0.2",
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.2",

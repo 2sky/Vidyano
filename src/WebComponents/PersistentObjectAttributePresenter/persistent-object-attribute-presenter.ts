@@ -179,7 +179,7 @@ module Vidyano.WebComponents {
 
         private _renderAttribute(attribute: Vidyano.PersistentObjectAttribute, attributeType: string) {
             Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type].then(() => {
-                if (attribute !== this.attribute)
+                if (attribute !== this.attribute || !this.isAttached)
                     return;
 
                 try {
