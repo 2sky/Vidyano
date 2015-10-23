@@ -197,6 +197,11 @@ vi-query-grid {
 
                     td[is="vi-query-grid-table-data-column-selector"] {
                         .selected-icon-checked();
+
+                        // Repeat theme-color to fix dotless compilation error
+                        #box, #backdrop {
+                            .theme-color(fill) !important;
+                        }
                     }
                 }
 

@@ -249,7 +249,7 @@ namespace Vidyano.Web2
                         var endIndex = result.IndexOf("\n}", beginIndex, StringComparison.Ordinal);
                         result = result.Remove(beginIndex, endIndex - beginIndex + 2);
 
-                        result += "\n" + string.Join("\n", themeColors.Values);
+                        result = result.Insert(beginIndex, "\n" + string.Join("\n", themeColors.Values));
 
                         result = ChangeColor(defaultColor1, color1, result);
                         result = ChangeColor(defaultColor2, color2, result);
