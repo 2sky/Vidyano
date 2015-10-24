@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Http;
@@ -21,10 +23,15 @@ namespace Vidyano.Web2
 {
     public class Web2Controller : ApiController
     {
+        private const string defaultColor1 = "steel-blue";
+        private const string defaultColor2 = "teal";
+
         private static readonly Encoding utf8NoBom = new UTF8Encoding(false);
         private static readonly Assembly assembly = typeof(Web2Controller).Assembly;
         private static readonly Dictionary<string, string> names = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private static readonly Dictionary<string, string> cachedResources = new Dictionary<string, string>();
+        private static readonly object syncRoot = new object();
+        private static readonly ConcurrentDictionary<Tuple<string, string, string>, string> cachedCssFiles = new ConcurrentDictionary<Tuple<string, string, string>, string>();
 
         static Web2Controller()
         {
@@ -45,23 +52,22 @@ namespace Vidyano.Web2
             {
                 case ".css":
                     var lessFilename = Path.ChangeExtension(id, "less");
-                    var less = GetEmbeddedResource(lessFilename);
-                    color1 = Request.Headers.GetCookies("ThemeColor1").Select(c => c["ThemeColor1"].Value).FirstOrDefault();
-                    color2 = Request.Headers.GetCookies("ThemeColor2").Select(c => c["ThemeColor2"].Value).FirstOrDefault();
-                    // TODO: Cache less compilation per color
-                    return new HttpResponseMessage { Content = new StringContent(Less.Parse(less, lessFilename, color1, color2), utf8NoBom, "text/css") };
+                    color1 = Request.Headers.GetCookies("ThemeColor1").Select(c => c["ThemeColor1"].Value).FirstOrDefault() ?? defaultColor1;
+                    color2 = Request.Headers.GetCookies("ThemeColor2").Select(c => c["ThemeColor2"].Value).FirstOrDefault() ?? defaultColor2;
+                    var css = cachedCssFiles.GetOrAdd(Tuple.Create(lessFilename, color1, color2), args => Less.Parse(GetEmbeddedResource(args.Item1), args.Item1, args.Item2, args.Item3));
+                    return GetContentIfChanged(css, "text/css");
 
                 case ".js":
-                    return new HttpResponseMessage { Content = new StringContent(GetEmbeddedResource(id), utf8NoBom, "application/javascript") };
+                    return GetContentIfChanged(GetEmbeddedResource(id), "application/javascript");
 
                 case ".html":
-                    var response = new HttpResponseMessage { Content = new StringContent(GetEmbeddedResource(id), utf8NoBom, "text/html") };
+                    var response = GetContentIfChanged(GetEmbeddedResource(id), "text/html");
                     if (id.EndsWith("vidyano.html", StringComparison.OrdinalIgnoreCase) && (color1 != null || color2 != null || !Request.Headers.GetCookies("ThemeColor1").Any()))
                     {
                         response.Headers.AddCookies(new[]
                         {
-                            new CookieHeaderValue("ThemeColor1", color1 ?? "steel-blue") { Expires = DateTimeOffset.Now.AddYears(1) },
-                            new CookieHeaderValue("ThemeColor2", color2 ?? "teal") { Expires = DateTimeOffset.Now.AddYears(1) }
+                            new CookieHeaderValue("ThemeColor1", color1 ?? defaultColor1) { Expires = DateTimeOffset.Now.AddYears(1) },
+                            new CookieHeaderValue("ThemeColor2", color2 ?? defaultColor2) { Expires = DateTimeOffset.Now.AddYears(1) }
                         });
                     }
                     return response;
@@ -70,9 +76,32 @@ namespace Vidyano.Web2
                 case ".log":
                     return new HttpResponseMessage { Content = new StringContent("Colors:\n" + string.Join("\n", Less.Colors) + "\n\nProperties:\n" + string.Join("\n", Less.Properties) + "\n\nExceptions:\n" + string.Join("\n", Less.Exceptions)) };
 #endif
-            }
 
-            return new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent(id) };
+                default:
+                    return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            }
+        }
+
+        private HttpContent Compress(HttpContent content, bool canCompress = true)
+        {
+            if (canCompress)
+            {
+                var encoding = Request.Headers.AcceptEncoding.OrderByDescending(ae => ae.Quality).Select(ae => ae.Value).FirstOrDefault();
+                if (encoding != null && (encoding == "gzip" || encoding == "deflate"))
+                    return new CompressedContent(content, encoding);
+            }
+            return content;
+        }
+
+        private HttpResponseMessage GetContentIfChanged(string content, string mediaType)
+        {
+            var hash = "\"" + GetSHA256(content) + "\"";
+            if (Request.Headers.IfNoneMatch.Any(ifm => ifm.Tag == hash))
+                return new HttpResponseMessage(HttpStatusCode.NotModified);
+
+            var message = new HttpResponseMessage { Content = Compress(new StringContent(content, utf8NoBom, mediaType)) };
+            message.Headers.ETag = new EntityTagHeaderValue(hash);
+            return message;
         }
 
         private static string GetPath(string fileName)
@@ -87,18 +116,38 @@ namespace Vidyano.Web2
                 return string.Empty;
 
             string result;
-            if (cachedResources.TryGetValue(name, out result))
-                return result;
+            if (!cachedResources.TryGetValue(name, out result))
+            {
+                lock (syncRoot)
+                {
+                    if (!cachedResources.TryGetValue(name, out result))
+                    {
+                        var ms = new MemoryStream();
+                        using (var stream = assembly.GetManifestResourceStream(typeof(Web2Controller), name))
+                            stream?.CopyTo(ms);
 
-            var ms = new MemoryStream();
-            using (var stream = assembly.GetManifestResourceStream(typeof(Web2Controller), name))
-                stream?.CopyTo(ms);
+                        var cachedResource = utf8NoBom.GetString(ms.ToArray());
+                        if (cachedResource[0] == 0xfeff)
+                            cachedResource = cachedResource.Substring(1);
 
-            var cachedResource = utf8NoBom.GetString(ms.ToArray());
-            if (cachedResource[0] == 0xfeff)
-                cachedResource = cachedResource.Substring(1);
+                        cachedResources[name] = result = cachedResource;
+                    }
+                }
+            }
 
-            return cachedResources[name] = cachedResource;
+            return result;
+        }
+
+        private static string GetSHA256(string content)
+        {
+            var bytes = utf8NoBom.GetBytes(content);
+            using (var hasher = SHA256.Create())
+                bytes = hasher.ComputeHash(bytes);
+
+            var sb = new StringBuilder();
+            foreach (var b in bytes)
+                sb.Append(b.ToString("X2"));
+            return sb.ToString();
         }
 
         private static class Less
@@ -202,8 +251,8 @@ namespace Vidyano.Web2
 
                         result += "\n" + string.Join("\n", themeColors.Values);
 
-                        result = ChangeColor("steel-blue", color1, result);
-                        result = ChangeColor("teal", color2, result);
+                        result = ChangeColor(defaultColor1, color1, result);
+                        result = ChangeColor(defaultColor2, color2, result);
                     }
 
                     return result;

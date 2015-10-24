@@ -15,11 +15,7 @@ public class Global : HttpApplication
     protected void Application_Start()
     {
         var routes = RouteTable.Routes;
-        routes.MapHttpRoute(
-            name: "Web2",
-            routeTemplate: "web2/{*id}",
-            defaults: new { controller = typeof(Web2Controller).Name.Replace("Controller", null), id = RouteParameter.Optional }
-        );
+        routes.MapVidyanoWeb2Route();
         routes.MapVidyanoRoute();
     }
 }

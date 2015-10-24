@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
     <metadata minClientVersion="2.8">
         <id>Vidyano.Web2</id>
-        <version>0.7.3.0-alpha</version>
+        <version>0.7.3.1-alpha</version>
         <title>Vidyano Web2</title>
         <authors>2sky</authors>
         <owners>2sky</owners>
