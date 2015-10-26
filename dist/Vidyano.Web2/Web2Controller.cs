@@ -81,7 +81,7 @@ namespace Vidyano.Web2
                                 break;
 
                             case ".html":
-                                content = Vulcanizer.Generate(id, content);
+                                content = Vulcanizer.Generate(id, content, args.Item2, args.Item3);
                                 break;
 
                             default:
