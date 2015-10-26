@@ -1082,6 +1082,7 @@
         private _isSelected: boolean;
         private _noData: boolean;
         private _columnsInUse: number;
+        private _extraClass: string;
         columns: QueryGridTableDataColumn[];
 
         constructor(table: QueryGridTableData) {
@@ -1135,9 +1136,20 @@
                         this.host.removeAttribute("no-data");
                 }
 
+                let extraClass = this.item ? this.item.getTypeHint("extraclass") : null;
+                if (this._extraClass && extraClass !== this._extraClass) {
+                    this.host.classList.remove.apply(this.host.classList, this._extraClass.split(" "));
+                    this._extraClass = null;
+                }
+
                 if (!!this._item) {
                     this._itemPropertyChangedListener = this._item.propertyChanged.attach(this._itemPropertyChanged.bind(this));
                     this._itemQueryPropertyChangedListener = this._item.query.propertyChanged.attach(this._itemQueryPropertyChanged.bind(this));
+
+                    if (extraClass) {
+                        this.host.classList.add.call(this.host.classList, extraClass.split(" "));
+                        this._extraClass = extraClass;
+                    }
                 }
 
                 this._updateIsSelected();

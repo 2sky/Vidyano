@@ -26,13 +26,13 @@
     @color-class: ~'.@{color}';
 
     & tr@{color-class} {
-        > td > .cell {
+        > td > * {
             color: @@color;
             fill: @@color;
         }
     }
 
-    & tr > td > .cell@{color-class} {
+    & tr > td > *@{color-class} {
         color: @@color;
         fill: @@color;
     }
@@ -43,7 +43,7 @@
 }
 
 vi-query-grid {
-    #dataContainer #data #verticalSpacer .columnHost {
+    #dataHost {
         .colorize-list-color(length(@list-colors));
     }
 }
