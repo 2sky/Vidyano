@@ -11,7 +11,7 @@
             },
             width: {
                 type: String,
-                value: "1"
+                value: "attr.columnSpan"
             },
             template: {
                 type: Object,
@@ -63,7 +63,7 @@
                     this._calculateWidth = <any>new Function("attr", "return " + this.width);
             }
 
-            return this._calculateWidth(attr);
+            return Math.max(this._calculateWidth(attr), 1);
         }
     }
 }

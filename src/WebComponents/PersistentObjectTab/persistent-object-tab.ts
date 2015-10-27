@@ -234,7 +234,8 @@ module Vidyano.WebComponents {
                         attrItem = new PersistentObjectTabItem(attr);
 
                     var config = this.app.configuration.getAttributeConfig(attr);
-                    
+
+                    attrItem.x = attr.column;
                     attrItem.height = config.calculateHeight(attr);
                     attrItem.width = Math.min(this.columns, config.calculateWidth(attr));
 
@@ -250,11 +251,20 @@ module Vidyano.WebComponents {
                     var found = false;
                     for (var i = 0; i < itemsToArrange.length; i++) {
                         var item = itemsToArrange[i];
+                        if (item.x != null && groupX !== item.x) {
+                            if (groupX > item.x) {
+                                while (groupY < groupGrid.length && groupGrid[groupY].reduce((v, c) => v || c, false))
+                                    groupY++;
+                            }
+
+                            groupX = Math.min(item.x, this.columns - 1);
+                        }
+
                         while (groupGrid.length < groupY + item.height)
                             addRow();
 
                         var canAdd = groupX + item.width <= this.columns;
-                        for (var xx = 0; canAdd && xx < item.width; xx++) {
+                        for (var xx = 0; item.x == null && canAdd && xx < item.width; xx++) {
                             for (var yy = 0; yy < item.height; yy++) {
                                 if (groupGrid[groupY + yy][groupX + xx] || (xx == 0 && groupX + xx > 0 && !groupGrid[groupY + yy][groupX + xx - 1])) {
                                     canAdd = false;

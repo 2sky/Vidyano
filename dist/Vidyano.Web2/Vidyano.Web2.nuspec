@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
     <metadata minClientVersion="2.8">
         <id>Vidyano.Web2</id>
-        <version>0.7.3.3-alpha</version>
+        <version>$version$</version>
         <title>Vidyano Web2</title>
         <authors>2sky</authors>
         <owners>2sky</owners>
@@ -11,12 +11,6 @@
         <description>The Vidyano Web Client provides a modern out of the box scaffolded UI that connects to a Vidyano backend.</description>
         <copyright>Copyright © 2015 2sky NV</copyright>
         <tags>vidyano web2</tags>
-        <dependencies>
-            <dependency id="Microsoft.AspNet.WebApi.Client" version="[5.2.3]" />
-            <dependency id="Microsoft.AspNet.WebApi.Core" version="[5.2.3]" />
-            <dependency id="Microsoft.AspNet.WebApi.WebHost" version="[5.2.3]" />
-            <dependency id="Newtonsoft.Json" version="[7.0.1]" />
-        </dependencies>
     </metadata>
     <files>
         <file src="vidyano.d.ts" target="content\Scripts\typings\vidyano\vidyano.d.ts" />

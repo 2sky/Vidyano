@@ -307,10 +307,22 @@
         }
 
         getUrlForPersistentObject(id: string, objectId: string, pu: ProgramUnit = this.programUnit) {
-            return (pu ? pu.name + "/" : "") + `PersistentObject.${id}/${objectId}`;
+            var persistentObjects = this.service.application.routes.persistentObjects;
+            for (var type in persistentObjects) {
+                if (persistentObjects[type] === id)
+                    return (pu ? pu.name + "/" : "") + type + (objectId ? "/" + objectId : "");
+            }
+
+            return (pu ? pu.name + "/" : "") + `PersistentObject.${id}${objectId ? "/" + objectId : ""}`;
         }
 
         getUrlForQuery(id: string, pu: ProgramUnit = this.programUnit) {
+            var queries = this.service.application.routes.persistentObjects;
+            for (var name in queries) {
+                if (queries[name] === id)
+                    return (pu ? pu.name + "/" : "") + `${name}`;
+            }
+
             return (pu ? pu.name + "/" : "") + `Query.${id}`;
         }
 
@@ -422,7 +434,24 @@
             this._setInitializing(false);
         }
 
+        private _convertPath(application: Vidyano.Application, path: string) : string {
+            if (application) {
+                var match = application.poRe.exec(path);
+                if (match)
+                    path = (match[1] || "") + "PersistentObject." + application.routes.persistentObjects[match[3]] + (match[4] || "");
+                else {
+                    match = application.queryRe.exec(path);
+                    if (match)
+                        path = (match[1] || "") + "Query." + application.routes.queries[match[3]];
+                }
+            }
+
+            return path;
+        }
+
         private _updateRoute(path: string) {
+            path = this._convertPath(this.service.application, path);
+
             var mappedPathRoute = Vidyano.Path.match(hashBang + App.stripHashBang(path), true);
             var currentRoute = this.currentRoute;
 
@@ -441,6 +470,8 @@
         }
 
         private _computeProgramUnit(application: Vidyano.Application, path: string): ProgramUnit {
+            path = this._convertPath(application, path);
+
             var mappedPathRoute = Vidyano.Path.match(hashBang + App.stripHashBang(path), true);
 
             if (mappedPathRoute && application) {

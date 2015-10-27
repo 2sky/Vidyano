@@ -28,6 +28,12 @@ module Vidyano {
         redirectUri: string;
     }
 
+    export interface Routes {
+        programUnits: { [name: string]: string};
+        persistentObjects: { [type: string]: string};
+        queries: { [type: string]: string};
+    }
+
     var hasStorage = (function () {
         var vi = 'Vidyano';
         try {
@@ -4038,6 +4044,9 @@ module Vidyano {
         private _userSettings: any;
         private _hasManagement: boolean;
         private _session: Vidyano.PersistentObject;
+        private _routes: Routes;
+        private _poRe: RegExp;
+        private _queryRe: RegExp;
         programUnits: ProgramUnit[];
 
         constructor(service: Service, po: any) {
@@ -4049,12 +4058,16 @@ module Vidyano {
             this._userSettingsId = this.getAttributeValue("UserSettingsId");
             this._globalSearchId = this.getAttributeValue("GlobalSearchId");
             this._analyticsKey = this.getAttributeValue("AnalyticsKey");
+            this._routes = JSON.parse(this.getAttributeValue("Routes"));
+            var puRoutes = "^((" + Object.keys(this._routes.programUnits).join("|") + ")/)?";
+            this._poRe = new RegExp(puRoutes + "(" + Object.keys(this._routes.persistentObjects).join("|") + ")(/.+)?$");
+            this._queryRe = new RegExp(puRoutes + "(" + Object.keys(this._routes.queries).join("|") + ")$");
 
             var userSettings = this.getAttributeValue("UserSettings");
             this._userSettings = JSON.parse(StringEx.isNullOrEmpty(userSettings) ? (localStorage["UserSettings"] || "{}") : userSettings);
 
             var pus = <{ hasManagement: boolean; units: any[] }>JSON.parse(this.getAttributeValue("ProgramUnits"));
-            this.programUnits = Enumerable.from(pus.units).select(unit => new ProgramUnit(this.service, unit)).toArray();
+            this.programUnits = Enumerable.from(pus.units).select(unit => new ProgramUnit(this.service, this.routes, unit)).toArray();
         }
 
         get userId(): string {
@@ -4091,6 +4104,18 @@ module Vidyano {
 
         get session(): Vidyano.PersistentObject {
             return this._session;
+        }
+
+        get routes(): Routes {
+            return this._routes;
+        }
+
+        get poRe(): RegExp {
+            return this._poRe;
+        }
+
+        get queryRe(): RegExp {
+            return this._queryRe;
         }
 
         saveUserSettings(): Promise<any> {
@@ -4144,7 +4169,7 @@ module Vidyano {
         openFirst: boolean;
         items: ProgramUnitItem[];
 
-        constructor(service: Service, unit: any) {
+        constructor(service: Service, routes: Routes, unit: any) {
             super(service, unit, unit.name);
 
             this._id = unit.id;
@@ -4160,14 +4185,14 @@ module Vidyano {
                     if (itemData.group) {
                         var group = usedGroups[itemData.group.id];
                         if (!group) {
-                            var groupItems = unitItems.where(groupItemData => groupItemData.group && groupItemData.group.id == itemData.group.id).select(groupItemData => this._createItem(groupItemData)).toArray();
+                            var groupItems = unitItems.where(groupItemData => groupItemData.group && groupItemData.group.id == itemData.group.id).select(groupItemData => this._createItem(routes, groupItemData)).toArray();
                             group = new ProgramUnitItemGroup(this.service, itemData.group, groupItems);
                             this.items.push(group);
                             usedGroups[itemData.group.id] = group;
                         }
                     }
                     else
-                        this.items.push(this._createItem(itemData));
+                        this.items.push(this._createItem(routes, itemData));
                 });
             }
 
@@ -4175,8 +4200,8 @@ module Vidyano {
                 this.path = this.items[0].path;
         }
 
-        private _createItem(itemData: any): ProgramUnitItem {
-            return itemData.query ? new ProgramUnitItemQuery(this.service, itemData, this) : new ProgramUnitItemPersistentObject(this.service, itemData, this);
+        private _createItem(routes: Routes, itemData: any): ProgramUnitItem {
+            return itemData.query ? new ProgramUnitItemQuery(this.service, routes, itemData, this) : new ProgramUnitItemPersistentObject(this.service, routes, itemData, this);
         }
     }
 
@@ -4189,10 +4214,20 @@ module Vidyano {
     export class ProgramUnitItemQuery extends ProgramUnitItem {
         queryId: string;
 
-        constructor(service: Service, unitItem: any, parent: ProgramUnit) {
-            super(service, unitItem, parent.name + "/Query." + unitItem.query);
+        constructor(service: Service, routes: Routes, unitItem: any, parent: ProgramUnit) {
+            super(service, unitItem, parent.name + ProgramUnitItemQuery._getPath(routes, unitItem.query));
 
             this.queryId = unitItem.query;
+        }
+
+        private static _getPath(routes: Routes, id: string): string {
+            var queries = routes.queries;
+            for (var name in queries) {
+                if (queries[name] === id)
+                    return "/" + name;
+            }
+
+            return "/Query." + id;
         }
     }
 
@@ -4200,11 +4235,21 @@ module Vidyano {
         persistentObjectId: string;
         persistentObjectObjectId: string;
 
-        constructor(service: Service, unitItem: any, parent: ProgramUnit) {
-            super(service, unitItem, parent.name + "/PersistentObject." + unitItem.persistentObject + (unitItem.objectId ? "/" + unitItem.objectId : ""));
+        constructor(service: Service, routes: Routes, unitItem: any, parent: ProgramUnit) {
+            super(service, unitItem, parent.name + ProgramUnitItemPersistentObject._getPath(routes, unitItem.persistentObject, unitItem.objectId));
 
             this.persistentObjectId = unitItem.persistentObject;
             this.persistentObjectObjectId = unitItem.objectId;
+        }
+
+        private static _getPath(routes: Routes, id: string, objectId: string): string {
+            var persistentObjects = routes.persistentObjects;
+            for (var name in persistentObjects) {
+                if (persistentObjects[name] === id)
+                    return "/" + name + (objectId ? "/" + objectId : "");
+            }
+
+            return "/PersistentObject." + id + (objectId ? "/" + objectId : "");
         }
     }
 

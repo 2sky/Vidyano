@@ -75,7 +75,7 @@ module Vidyano.WebComponents {
         private _signedInChanged() {
             var isSignedIn = this.service.isSignedIn && !this.service.isUsingDefaultCredentials;
             this._setIsSignedIn(isSignedIn);
-            this._setUserName(isSignedIn ? this.service.userName : null);
+            this._setUserName(isSignedIn ? this.service.application.friendlyUserName : null);
             this._setCanFeedback(isSignedIn && !!this.service.application.feedbackId);
             this._setCanUserSettings(isSignedIn && !!this.service.application.userSettingsId);
         }
