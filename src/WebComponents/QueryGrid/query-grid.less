@@ -16,37 +16,34 @@ vi-query-grid {
     color: @mainColor;
     fill: @mainColor;
 
-    header {
+    header#dataHeaderHost {
         .noSelection();
+        .relative();
         border-bottom: 1px solid @separatorColor;
+        white-space: nowrap;
+        z-index: 1;
 
-        #dataHeaderHost {
-            position: relative;
-            white-space: nowrap;
-            z-index: 1;
+        table {
+            display: inline-table;
+            border-spacing: 0 !important;
+            vertical-align: top;
+            background-color: white;
 
-            table {
-                display: inline-table;
-                border-spacing: 0 !important;
-                vertical-align: top;
-                background-color: white;
+            tr {
+                padding: 0 !important;
 
-                tr {
+                td {
                     padding: 0 !important;
 
-                    td {
-                        padding: 0 !important;
+                    &.pinned {
+                        background-color: white;
+                        position: relative;
+                        z-index: 1;
+                    }
 
-                        &.pinned {
-                            background-color: white;
-                            position: relative;
-                            z-index: 1;
-                        }
-
-                        &[is="vi-query-grid-table-header-column"] {
-                            &[name=""], &:not([name]) {
-                                display: none;
-                            }
+                    &[is="vi-query-grid-table-header-column"] {
+                        &[name=""], &:not([name]) {
+                            display: none;
                         }
                     }
                 }

@@ -317,6 +317,7 @@
         }
 
         private _computeCanSelectAll(query: Vidyano.Query, canSelect: boolean): boolean {
+            return false;
             return canSelect && query.selectAll.isAvailable;
         }
 
@@ -347,7 +348,7 @@
                     if (!this._tableData)
                         this.$["dataHost"].appendChild((this._tableData = new Vidyano.WebComponents.QueryGridTableData(this)).host);
 
-                    Promise.all([this._tableHeader.update(1, columns.length), this._tableData.update(items.length, columns.length)]).then(() => {
+                    Promise.all([this._tableHeader.update(columns.length), this._tableData.update(items.length, columns.length)]).then(() => {
                         (<QueryGridTableDataBody><any>this._tableData.section).enabled = canReorder;
 
                         var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
@@ -384,7 +385,7 @@
                         return;
                     }
 
-                    (<QueryGridTableHeaderRow>this._tableHeader.rows[0]).setColumns(columns);
+                    this._tableHeader.rows.forEach((row: QueryGridTableHeaderRow) => row.setColumns(columns))
 
                     resolve(true);
                 });
@@ -759,22 +760,6 @@
             return this._column.canFilter;
         }
 
-        get includes(): string[] {
-            return this._column.includes;
-        }
-
-        set includes(includes: string[]) {
-            this._column.includes = includes;
-        }
-
-        get excludes(): string[] {
-            return this._column.excludes;
-        }
-
-        set excludes(excludes: string[]) {
-            this._column.excludes = excludes;
-        }
-
         get sortDirection(): SortDirection {
             return this._column.sortDirection;
         }
@@ -884,36 +869,29 @@
     @WebComponent.register({
         properties: {
             query: Object,
-            canSelectAll: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "query.selectAll.isAvailable"
-            },
-            selectAllSelected: {
+            selected: {
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "query.selectAll.allSelected"
             },
-            selectAllInversed: {
+            inversed: {
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "query.selectAll.inverse"
-            },
-            canFilter: {
-                type: Boolean,
-                reflectToAttribute: true
             }
         },
         forwardObservers: [
-            "query.selectAll.isAvailable",
             "query.selectAll.allSelected",
             "query.selectAll.inverse"
-        ]
+        ],
+        listeners: {
+            "tap": "_toggle"
+        }
     })
-    export class QueryGridHeader extends WebComponent {
+    export class QueryGridSelectAll extends WebComponent {
         query: Vidyano.Query;
 
-        private _toggleSelectAll() {
+        private _toggle() {
             if (!this.query || !this.query.selectAll.isAvailable)
                 return;
 
@@ -938,7 +916,7 @@
                 var fragment = document.createDocumentFragment();
 
                 while (this.rows.length < rowCount) {
-                    var row = this._addRow();
+                    var row = this._addRow(this.rows.length + 1);
                     this.rows.push(row);
 
                     fragment.appendChild(row.host);
@@ -952,7 +930,7 @@
 
         protected abstract _createSection(): HTMLTableSectionElement;
 
-        protected abstract _addRow(): QueryGridTableRow;
+        protected abstract _addRow(index: number): QueryGridTableRow;
 
         get host(): HTMLTableElement {
             return this._host;
@@ -968,12 +946,12 @@
             super("vi-query-grid-table-header", grid);
         }
 
-        update(rowCount: number, columnCount: number): Promise<any> {
-            return super.update(1, columnCount);
+        update(columnCount: number): Promise<any> {
+            return super.update(2, columnCount);
         }
 
-        protected _addRow(): QueryGridTableRow {
-            return new Vidyano.WebComponents.QueryGridTableHeaderRow(this);
+        protected _addRow(index: number): QueryGridTableRow {
+            return new Vidyano.WebComponents.QueryGridTableHeaderRow(this, index);
         }
 
         protected _createSection(): HTMLTableSectionElement {
@@ -1057,7 +1035,7 @@
     }
 
     export class QueryGridTableHeaderRow extends QueryGridTableRow {
-        constructor(table: QueryGridTableHeader) {
+        constructor(table: QueryGridTableHeader, private _index: number) {
             super("vi-query-grid-table-header-row", table);
         }
 
@@ -1067,7 +1045,7 @@
         }
 
         protected _createColumn(): QueryGridTableColumn {
-            return new Vidyano.WebComponents.QueryGridTableHeaderColumn();
+            return this._index === 1 ? new Vidyano.WebComponents.QueryGridTableHeaderColumn() : new Vidyano.WebComponents.QueryGridColumnFilterColumn();
         }
     }
 
@@ -1246,11 +1224,11 @@
         private _hasContent: boolean;
         private _isLastPinned: boolean;
 
-        constructor(is: string, private _cell?: HTMLElement | DocumentFragment, private _isPinned?: boolean) {
+        constructor(is: string, public cell?: HTMLElement, private _isPinned?: boolean) {
             this._host = (<any>document).createElement("td", is);
 
-            if (_cell)
-                this._cell = this.host.appendChild(_cell);
+            if (cell)
+                this.host.appendChild(cell);
 
             if (_isPinned)
                 this.host.classList.add("pinned");
@@ -1258,10 +1236,6 @@
 
         get host(): HTMLTableColElement {
             return this._host;
-        }
-
-        get cell(): HTMLElement {
-            return <HTMLElement>this._cell;
         }
 
         get column(): QueryGridColumn {
@@ -1504,7 +1478,7 @@
         private _item: QueryResultItem;
 
         constructor(private _row: QueryGridTableDataRow) {
-            super("vi-query-grid-table-data-column-selector", Icon.Load("Selected"), true);
+            super("vi-query-grid-table-data-column-selector", <HTMLElement>Icon.Load("Selected"), true);
 
             Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
             this._row.table.grid.async(() => this.host.appendChild(document.createElement("paper-ripple")));
@@ -1535,7 +1509,7 @@
         private _item: QueryResultItem;
 
         constructor(private _row: QueryGridTableDataRow) {
-            super("vi-query-grid-table-data-column-actions", Icon.Load("EllipsisVertical"), true);
+            super("vi-query-grid-table-data-column-actions", <HTMLElement>Icon.Load("EllipsisVertical"), true);
 
             Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
             this._row.table.grid.async(() => this.host.appendChild(document.createElement("paper-ripple")));
@@ -1571,21 +1545,12 @@
         private _columnObserver: Vidyano.Common.SubjectDisposer;
         private _sortingIcon: Resource;
         private _labelTextNode: Text;
-        private _filter: QueryGridColumnFilterProxyBase;
-
-        constructor() {
-            super();
-
-            Polymer.dom(this).appendChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilterProxy());
-        }
 
         get column(): QueryGridColumn {
             return this._column;
         }
 
         set column(column: QueryGridColumn) {
-            this._filter.column = column;
-
             if (this._column === column)
                 return;
 
@@ -1604,16 +1569,6 @@
                 this._updateLabel("");
                 this._updateSortingIcon(null);
             }
-        }
-
-        private _onUpgradeFilter() {
-            var newFilter = new Vidyano.WebComponents.QueryGridColumnFilter();
-            newFilter.column = this.column;
-
-            Polymer.dom(this).appendChild(newFilter);
-            Polymer.dom(this).removeChild(this._filter);
-
-            this._filter = newFilter;
         }
 
         private _sort(e: Event) {
@@ -1692,340 +1647,6 @@
 
                 this.fire("column-widths-updated", { column: this.column, save: true });
             }
-        }
-    }
-
-    export class QueryGridColumnFilterProxyBase extends WebComponent {
-        private _label: string;
-        private _labelTextNode: Text;
-        column: QueryGridColumn;
-        inversed: boolean;
-        filtered: boolean;
-
-        protected _updateFiltered(column?: QueryGridColumn) {
-            var filtered = this.filtered;
-            if (this.filtered = !!this.column && ((!!this.column.includes && this.column.includes.length > 0) || (!!this.column.excludes && this.column.excludes.length > 0))) {
-                var objects = [];
-                var textSearch = [];
-                ((!this.inversed ? this.column.includes : this.column.excludes) || []).forEach(value => {
-                    if (value && value.startsWith("1|@"))
-                        textSearch.push(value);
-                    else
-                        objects.push(value);
-                });
-
-                var label = "";
-                if (objects.length > 0)
-                    label += objects.map(o => this._getDistinctDisplayValue(o)).join(", ");
-
-                if (textSearch.length > 0) {
-                    if (label.length > 0)
-                        label += ", ";
-
-                    label += textSearch.map(t => this._getDistinctDisplayValue(t)).join(", ");
-                }
-
-                this.label = (!this.inversed ? "= " : "≠ ") + label;
-            }
-            else
-                this.label = "=";
-        }
-
-        protected _getDistinctDisplayValue(value: string) {
-            if (!StringEx.isNullOrWhiteSpace(value) && value != "|") {
-                var indexOfPipe = value.indexOf("|");
-
-                if (indexOfPipe == 0)
-                    return value.substr(1);
-
-                if (indexOfPipe > 0)
-                    return value.substr(indexOfPipe + parseInt(value.substr(0, indexOfPipe), 10) + 1);
-            }
-
-            return value == null ? this.app.service.getTranslatedMessage("DistinctNullValue") : this.app.service.getTranslatedMessage("DistinctEmptyValue");
-        }
-
-        protected get label(): string {
-            return this._label;
-        }
-
-        protected set label(label: string) {
-            if (this._label === label)
-                return;
-
-            this._label = label;
-            if (!this._labelTextNode)
-                this.$["label"].appendChild(this._labelTextNode = document.createTextNode(label));
-            else
-                this._labelTextNode.nodeValue = label;
-        }
-    }
-
-    @WebComponent.register({
-        properties: {
-            column: Object,
-            filtered: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
-            inversed: {
-                type: Boolean,
-                readOnly: true
-            },
-            disabled: {
-                type: Boolean,
-                computed: "!column.canFilter",
-                reflectToAttribute: true
-            }
-        },
-        observers: [
-            "_updateFiltered(column)"
-        ],
-        listeners: {
-            "tap": "_upgrade"
-        }
-    })
-    export class QueryGridColumnFilterProxy extends QueryGridColumnFilterProxyBase {
-        private _upgrade() {
-            this.fire("upgrade-filter", {});
-        }
-    }
-
-    @WebComponent.register({
-        properties: {
-            column: Object,
-            filtered: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
-            inversed: {
-                type: Boolean,
-                readOnly: true
-            },
-            loading: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            searchText: String,
-            disabled: {
-                type: Boolean,
-                computed: "!column.canFilter",
-                reflectToAttribute: true
-            }
-        },
-        observers: [
-            "_updateFiltered(column, isAttached)"
-        ]
-    })
-    export class QueryGridColumnFilter extends QueryGridColumnFilterProxyBase {
-        private static _selector: DocumentFragment;
-        private _openOnAttach: boolean = true;
-        searchText: string;
-        label: string;
-
-        private _setLoading: (loading: boolean) => void;
-        private _setInversed: (inverse: boolean) => void;
-        private _setIsUpgraded: (upgraded: boolean) => void;
-
-        attached() {
-            super.attached();
-
-            if (this._openOnAttach) {
-                this._openOnAttach = false;
-
-                this.async(() => {
-                    this.$["distincts"] = <HTMLElement>this.querySelector("#distincts");
-                    this.$["search"] = <HTMLElement>this.querySelector("#search");
-
-                    var popup = <Popup><any>this.querySelector("vi-popup#filter");
-                    popup.popup();
-                });
-            }
-        }
-
-        refresh() {
-            this._updateFiltered();
-        }
-
-        private _getTargetCollection(): string[] {
-            return !this.inversed ? this.column.includes : this.column.excludes;
-        }
-
-        private _distinctClick(e: Event) {
-            var element = <HTMLElement>e.srcElement || (<any>e).originalTarget;
-            var distinctValue: string;
-            do {
-                distinctValue = element.getAttribute("distinct-value");
-                if (distinctValue) {
-                    distinctValue = <string>JSON.parse(distinctValue).value;
-
-                    var targetCollection = this._getTargetCollection();
-                    if (targetCollection.indexOf(distinctValue) == -1)
-                        targetCollection.push(distinctValue);
-                    else
-                        targetCollection.remove(distinctValue);
-
-                    this._updateDistincts();
-                    break;
-                }
-            }
-            while (((element = element.parentElement) != this) && element);
-
-            e.stopPropagation();
-        }
-
-        private _popupOpening(e: CustomEvent) {
-            if (!this.column.canFilter)
-                return;
-
-            if (!this.column.column.distincts || this.column.distincts.isDirty) {
-                this._setLoading(true);
-                this.column.column.refreshDistincts().then(distincts => {
-                    if (!this.column.includes)
-                        this.column.includes = [];
-                    if (!this.column.excludes)
-                        this.column.excludes = [];
-
-                    var distinctsDiv = <HTMLElement>this.$["distincts"];
-                    distinctsDiv.style.minWidth = this.offsetWidth + "px";
-
-                    this._setLoading(false);
-                    this._renderDistincts(distinctsDiv);
-
-                    var input = <InputSearch><any>this.$["search"];
-                    input.focus();
-                }).catch(() => {
-                    this._setLoading(false);
-                });
-            }
-            else {
-                var distinctsDiv = <HTMLElement>this.$["distincts"];
-                distinctsDiv.style.minWidth = this.offsetWidth + "px";
-                distinctsDiv.scrollTop = 0;
-
-                this._renderDistincts(distinctsDiv);
-            }
-        }
-
-        private _addDistinctValue(target: HTMLElement, value: string, className?: string) {
-            var div = document.createElement("div");
-            div.setAttribute("distinct-value", JSON.stringify({ value: value }));
-            if (className)
-                div.className = className;
-
-            var selectorDiv = document.createElement("div");
-            selectorDiv.appendChild(WebComponents.Icon.Load("Selected"));
-            selectorDiv.className = "selector";
-            div.appendChild(selectorDiv);
-
-            var span = document.createElement("span");
-            span.textContent = this._getDistinctDisplayValue(value);
-
-            div.appendChild(span);
-            target.appendChild(div);
-        }
-
-        private _updateDistincts() {
-            var distinctsDiv = <HTMLElement>this.$["distincts"];
-            this._renderDistincts(distinctsDiv);
-            this.fire("column-filter-changed", null);
-
-            this._setLoading(true);
-            this.column.query.search().then(() => {
-                return this.column.column.refreshDistincts().then(distincts => {
-                    this._setLoading(false);
-                    this._renderDistincts(distinctsDiv);
-                });
-            }).catch(() => {
-                this._setLoading(false);
-            });
-        }
-
-        private _renderDistincts(target?: HTMLElement) {
-            if (!target)
-                target = <HTMLElement>this.$["distincts"];
-
-            this._updateFiltered();
-            target.innerHTML = "";
-
-            if (this.column.includes.length > 0) {
-                this.column.includes.forEach(v => this._addDistinctValue(target, v, "include"));
-                this._setInversed(false);
-            }
-            else if (this.column.excludes.length > 0) {
-                this.column.excludes.forEach(v => this._addDistinctValue(target, v, "exclude"));
-                this._setInversed(true);
-            }
-
-            var includesExcludes = this.column.includes.concat(this.column.excludes);
-
-            this.column.distincts.matching.filter(v => includesExcludes.indexOf(v) == -1).forEach(v => this._addDistinctValue(target, v, "matching"));
-            this.column.distincts.remaining.filter(v => includesExcludes.indexOf(v) == -1).forEach(v => this._addDistinctValue(target, v, "remaining"));
-        }
-
-        private _search() {
-            if (StringEx.isNullOrEmpty(this.searchText))
-                return;
-
-            this._getTargetCollection().push("1|@" + this.searchText);
-            this.searchText = "";
-
-            this._renderDistincts();
-            this.column.query.search().then(() => {
-                this._renderDistincts();
-                this.fire("column-filter-changed", null);
-            });
-        }
-
-        private _closePopup() {
-            WebComponents.Popup.closeAll();
-        }
-
-        private _inverse(e: Event) {
-            e.stopPropagation();
-
-            this._setInversed(!this.inversed);
-
-            var filters: number;
-            if (this.inversed) {
-                filters = this.column.includes.length;
-
-                var temp = this.column.excludes;
-                this.column.excludes = this.column.includes.slice();
-                this.column.includes = temp.slice();
-            }
-            else {
-                filters = this.column.excludes.length;
-
-                var temp = this.column.includes;
-                this.column.includes = this.column.excludes.slice();
-                this.column.excludes = temp.slice();
-            }
-
-            if (filters > 0)
-                this._updateDistincts();
-        }
-
-        private _clear(e: CustomEvent) {
-            if (!this.filtered) {
-                e.stopPropagation();
-                return;
-            }
-
-            this.column.includes = [];
-            this.column.excludes = [];
-            this._setInversed(false);
-
-            this._updateDistincts();
-
-            this._closePopup();
-        }
-
-        private _catchClick(e: Event) {
-            e.stopPropagation();
         }
     }
 }

@@ -163,6 +163,8 @@
             * if nonExclusive is set to true then the observer will also be called when there are other observers bound to any of the same keys.
             */
             nonExclusive?: boolean;
+
+            priority?: number;
         } | string;
     }
 

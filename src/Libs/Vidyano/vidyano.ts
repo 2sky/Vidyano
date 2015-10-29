@@ -2690,7 +2690,7 @@ module Vidyano {
         private _labelWithTotalItems: string;
         private _sortOptions: SortOption[];
         private _queriedPages: Array<number> = [];
-        private _filters: PersistentObject;
+        private _filters: QueryFilters;
         private _canFilter: boolean;
         private _canRead: boolean;
         private _canReorder: boolean;
@@ -2765,7 +2765,7 @@ module Vidyano {
             }
 
             if (query.filters && !(query.filters instanceof PersistentObject))
-                this._filters = service.hooks.onConstructPersistentObject(service, query.filters);
+                this._filters = new QueryFilters(this, service.hooks.onConstructPersistentObject(service, query.filters));
             else
                 this._filters = null;
 
@@ -2779,7 +2779,7 @@ module Vidyano {
             }
         }
 
-        get filters(): PersistentObject {
+        get filters(): QueryFilters {
             return this._filters;
         }
 
@@ -3144,7 +3144,8 @@ module Vidyano {
 
             while (i--) {
                 if (_columnsEnum.firstOrDefault(c => columns[i].name == c.name) == null) {
-                    columns[columns.splice(i, 1)[0].name] = undefined;
+                    let column = columns.splice(i, 1)[0];
+                    columns[column.name] = undefined;
                     columnsChanged = true;
                 }
             }
@@ -3219,15 +3220,15 @@ module Vidyano {
     export class QueryColumn extends ServiceObject {
         private displayAttribute: string;
         private _sortDirection: SortDirection;
-        private _distincts: QueryColumnDistincts;
         private _canSort: boolean;
         private _canFilter: boolean;
         private _name: string;
         private _type: string;
         private _label: string;
+        private _distincts: QueryColumnDistincts;
+        private _selectedDistincts: linqjs.Enumerable<string>;
+        private _selectedDistinctsInversed: boolean;
 
-        includes: string[];
-        excludes: string[];
         offset: number;
         isPinned: boolean;
         isHidden: boolean;
@@ -3240,8 +3241,8 @@ module Vidyano {
             this.displayAttribute = col.displayAttribute;
             this._canSort = !col.disableSort;
             this._canFilter = !!col.canFilter;
-            this.includes = col.includes;
-            this.excludes = col.excludes;
+            this._selectedDistincts = Enumerable.from(col.includes || col.excludes || []);
+            this._selectedDistinctsInversed = !!col.excludes && col.excludes.length > 0;
             this._label = col.label;
             this._name = col.name;
             this.offset = col.offset;
@@ -3283,8 +3284,41 @@ module Vidyano {
             return this._sortDirection;
         }
 
+        get selectedDistincts(): linqjs.Enumerable<string> {
+            return this._selectedDistincts;
+        }
+
+        set selectedDistincts(selectedDistincts: linqjs.Enumerable<string>) {
+            var oldSelectedIncludes = this._selectedDistincts;
+
+            this.notifyPropertyChanged("selectedDistincts", this._selectedDistincts = (selectedDistincts || Enumerable.empty<string>()).memoize(), oldSelectedIncludes);
+            this.query.columns.forEach(c => {
+                if (c === this)
+                    return;
+
+                if (c.distincts)
+                    c.distincts.isDirty = true;
+            });
+        }
+
+        get selectedDistinctsInversed(): boolean {
+            return this._selectedDistinctsInversed;
+        }
+
+        set selectedDistinctsInversed(selectedDistinctsInversed: boolean) {
+            var oldSelectedDistinctsInversed = this._selectedDistinctsInversed;
+
+            this.notifyPropertyChanged("selectedDistinctsInversed", this._selectedDistinctsInversed = selectedDistinctsInversed, oldSelectedDistinctsInversed);
+        }
+
         get distincts(): QueryColumnDistincts {
             return this._distincts;
+        }
+
+        set distincts(distincts: QueryColumnDistincts) {
+            var oldDistincts = this._distincts;
+
+            this.notifyPropertyChanged("distincts", this._distincts = distincts, oldDistincts);
         }
 
         private _setSortDirection(direction: SortDirection) {
@@ -3296,7 +3330,11 @@ module Vidyano {
         }
 
         _toServiceObject() {
-            return this.copyProperties(["id", "name", "label", "includes", "excludes", "type", "displayAttribute"]);
+            var serviceObject = this.copyProperties(["id", "name", "label", "type", "displayAttribute"]);
+            serviceObject.includes = !this.selectedDistinctsInversed ? this.selectedDistincts.toArray() : [];
+            serviceObject.excludes = this.selectedDistinctsInversed ? this.selectedDistincts.toArray() : [];
+
+            return serviceObject;
         }
 
         getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string {
@@ -3310,11 +3348,13 @@ module Vidyano {
                         col.distincts.isDirty = true;
                 });
 
-                return this._distincts = {
+                this.distincts = {
                     matching: <string[]>result.attributesByName["MatchingDistincts"].options,
                     remaining: <string[]>result.attributesByName["RemainingDistincts"].options,
                     isDirty: false
                 };
+
+                return this.distincts;
             });
         }
 
@@ -3492,6 +3532,137 @@ module Vidyano {
 
         _toServiceObject() {
             return this.copyProperties(["key", "value", "persistentObjectId", "objectId"]);
+        }
+    }
+
+    export class QueryFilters extends Vidyano.Common.Observable<QueryFilters> {
+        private _filters: QueryFilter[];
+        private _currentFilter: QueryFilter;
+        private _filtersAsDetail: PersistentObjectAttributeAsDetail;
+
+        constructor(private _query: Query, private _filtersPO: Vidyano.PersistentObject) {
+            super();
+
+            this._filtersAsDetail = <Vidyano.PersistentObjectAttributeAsDetail>this._filtersPO.attributesByName["Filters"];
+            this._computeFilters(true);
+        }
+
+        get filters(): QueryFilter[] {
+            return this._filters;
+        }
+
+        private _setFilters(filters: QueryFilter[]) {
+            var oldFilters = this._filters;
+            this.notifyPropertyChanged("filters", this._filters = filters, oldFilters);
+        }
+
+        get currentFilter(): QueryFilter {
+            return this._currentFilter;
+        }
+
+        set currentFilter(filter: QueryFilter) {
+            let doSearch;
+
+            if (!!filter) {
+                if (!filter.persistentObject.isNew) {
+                    let columnsFilterData = Enumerable.from(JSON.parse(filter.persistentObject.getAttributeValue("Columns")));
+                    this._query.columns.forEach(col => {
+                        let columnFilterData = columnsFilterData.firstOrDefault(c => c.name === col.name);
+                        if (columnFilterData) {
+                            col.selectedDistincts = Enumerable.from(columnFilterData.includes || columnFilterData.excludes || []);
+                            col.selectedDistinctsInversed = columnFilterData.excludes && columnFilterData.excludes.length > 0;
+                            col.distincts = null;
+
+                            doSearch = doSearch || (col.selectedDistincts.isEmpty() === false);
+                        }
+                        else
+                            col.selectedDistincts = Enumerable.empty<string>();
+                    });
+                }
+            } else {
+                this._query.columns.forEach(col => {
+                    col.selectedDistincts = Enumerable.empty<string>();
+                    col.selectedDistinctsInversed = false;
+                    col.distincts = null;
+                });
+
+                doSearch = !!this._currentFilter;
+            }
+
+            const oldCurrentFilter = this._currentFilter;
+            this.notifyPropertyChanged("currentFilter", this._currentFilter = filter, oldCurrentFilter);
+
+            if (doSearch)
+                this._query.search();
+        }
+
+        private _getFilterPersistentObject(name: string): Vidyano.PersistentObject {
+            return Enumerable.from(this._filtersAsDetail.objects).firstOrDefault(filter => filter.getAttributeValue("Name") === name);
+        }
+
+        private _computeFilters(setDefaultFilter?: boolean) {
+            this._filters = this._filtersAsDetail.objects.map(filter => new QueryFilter(filter));
+
+            if (setDefaultFilter)
+                this._currentFilter = Enumerable.from(this._filters).firstOrDefault(f => f.persistentObject.getAttributeValue("IsDefault"));
+        }
+
+        private _computeFilterData(): string {
+            return JSON.stringify(this._query.columns.filter(c => !c.selectedDistincts.isEmpty()).map(c => {
+                return {
+                    name: c.name,
+                    includes: !c.selectedDistinctsInversed ? c.selectedDistincts.toArray() : [],
+                    excludes: c.selectedDistinctsInversed ? c.selectedDistincts.toArray() : []
+                };
+            }));
+        }
+
+        getFilter (name: string): QueryFilter {
+            return Enumerable.from(this.filters).first(f => f.name === name);
+        }
+
+        createNew(): Promise<QueryFilter> {
+            var newAction = (<Action>this._filtersAsDetail.details.actions["New"]);
+            newAction.skipOpen = true;
+
+            return this._query.queueWork(() => {
+                return newAction.execute().then(po => new QueryFilter(po));
+            });
+        }
+
+        save(): Promise<QueryFilter> {
+            if (!this.currentFilter)
+                return;
+
+            this._filtersPO.beginEdit();
+
+            this.currentFilter.persistentObject.attributesByName["Columns"].setValue(this._computeFilterData());
+            this._filtersAsDetail.objects.push(this.currentFilter.persistentObject);
+
+            return this._query.queueWork(() => {
+                return this._filtersPO.save().then(result => {
+                    this._computeFilters();
+                    return this.currentFilter = this.getFilter(this.currentFilter.name);
+                });
+            });
+        }
+    }
+
+    export class QueryFilter extends Vidyano.Common.Observable<QueryFilter> {
+        private _name: string
+
+        constructor(private _po: PersistentObject) {
+            super();
+
+            this._name = this._po.getAttributeValue("Name");
+        }
+
+        get name(): string {
+            return this._name;
+        }
+
+        get persistentObject(): PersistentObject {
+            return this._po;
         }
     }
 
