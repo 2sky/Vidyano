@@ -3630,19 +3630,24 @@ module Vidyano {
             });
         }
 
-        save(): Promise<QueryFilter> {
-            if (!this.currentFilter)
+        save(filter: QueryFilter = this.currentFilter): Promise<QueryFilter> {
+            if (!filter)
                 return;
 
             this._filtersPO.beginEdit();
 
-            this.currentFilter.persistentObject.attributesByName["Columns"].setValue(this._computeFilterData());
-            this._filtersAsDetail.objects.push(this.currentFilter.persistentObject);
+            if (filter === this.currentFilter) {
+                filter.persistentObject.beginEdit();
+                filter.persistentObject.attributesByName["Columns"].setValue(this._computeFilterData());
+            }
+
+            if (filter.persistentObject.isNew)
+                this._filtersAsDetail.objects.push(filter.persistentObject);
 
             return this._query.queueWork(() => {
                 return this._filtersPO.save().then(result => {
                     this._computeFilters();
-                    return this.currentFilter = this.getFilter(this.currentFilter.name);
+                    return this.getFilter(this.currentFilter.name);
                 });
             });
         }

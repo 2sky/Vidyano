@@ -23,6 +23,12 @@ vi-query-grid {
         white-space: nowrap;
         z-index: 1;
 
+        > header {
+            .relative();
+            z-index: 1;
+            background-color: white;
+        }
+
         table {
             display: inline-table;
             border-spacing: 0 !important;
@@ -254,62 +260,39 @@ vi-query-grid {
         }
     }
 
-    // FLAG COMBINATIONS //////////////////////////////////////////////////////////
-    &:not([can-select]):not([inline-actions]):not([can-filter]) {
+    // // FLAG COMBINATIONS //////////////////////////////////////////////////////////
+
+    &:not([inline-actions]) {
+        td[is="vi-query-grid-table-data-column-actions"] {
+            display: none;
+        }
+    }
+
+    &:not([can-select]) {
         td[is="vi-query-grid-table-data-column-selector"] {
             display: none;
         }
+    }
 
-        td[is="vi-query-grid-table-data-column-actions"] {
-            display: none;
-        }
-
-        vi-query-grid-header, vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
+    &:not([can-filter]) {
+        vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
             display: none;
         }
     }
 
-    &[can-select]:not([inline-actions]):not([can-filter]) {
-        td[is="vi-query-grid-table-data-column-actions"] {
-            display: none;
-        }
-
-        vi-query-grid-filters, vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
-            display: none;
+    &:not([can-select-all])[can-filter][can-select][inline-actions] {
+        vi-query-grid-filters {
+            padding-left: @cell-width;
+            width: @cell-width * 2;
         }
     }
 
-    &[can-select][inline-actions]:not([can-filter]) {
-        vi-query-grid-filters, vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
-            display: none;
+    &:not([can-select]):not([inline-actions])[can-filter], &:not([inline-actions])[can-select-all][can-filter] {
+        td[is="vi-query-grid-table-data-column-actions"] + td[is="vi-query-grid-table-data-column"] {
+            padding-left: @cell-width !important;
         }
     }
 
-    &[can-filter]:not([can-select]):not([inline-actions]) {
-        td[is="vi-query-grid-table-data-column-selector"] {
-            vi-icon {
-                visibility: hidden;
-            }
-        }
-
-        td[is="vi-query-grid-table-data-column-actions"] {
-            display: none;
-        }
-
-        vi-query-grid-header {
-            .selectAll {
-                display: none;
-            }
-        }
-    }
-
-    &[can-filter][can-select]:not([inline-actions]) {
-        td[is="vi-query-grid-table-data-column-actions"] {
-            vi-icon {
-                visibility: hidden;
-            }
-        }
-    }
     ///////////////////////////////////////////////////////////////////////////////
     #initializingOverlay {
         position: absolute;

@@ -87,6 +87,17 @@
 
             this.filters.currentFilter = this.filters.getFilter(name);
         }
+
+        private _saveAs() {
+            this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(this.currentFilter.persistentObject, true)).then(po => {
+                if (!!po)
+                    this.query.filters.save();
+            });
+        }
+
+        private _save() {
+            this.query.filters.save();
+        }
     }
 
     export class QueryGridColumnFilterProxyBase extends Vidyano.WebComponents.WebComponent {
@@ -157,16 +168,6 @@
         }
     }
 
-    export class QueryGridColumnFilterColumn extends Vidyano.WebComponents.QueryGridTableColumn {
-        constructor() {
-            super("vi-query-grid-table-header-column", new Vidyano.WebComponents.QueryGridColumnFilterProxy(this))
-        }
-
-        setColumn(column: QueryGridColumn, isLastPinned: boolean) {
-            super.setColumn((<QueryGridColumnHeader><any>this.cell).column = column, isLastPinned);
-        }
-    }
-
     @WebComponent.register({
         properties: {
             column: Object,
@@ -207,18 +208,10 @@
         }
     })
     export class QueryGridColumnFilterProxy extends Vidyano.WebComponents.QueryGridColumnFilterProxyBase {
-        constructor(private _filterColumn: QueryGridColumnFilterColumn) {
-            super();
-        }
-
         private _upgrade() {
-            var newFilter = new Vidyano.WebComponents.QueryGridColumnFilter();
-            newFilter.column = this.column;
-
-            this._filterColumn.host.appendChild(newFilter);
-            this._filterColumn.cell = newFilter;
-
-            this._filterColumn.host.removeChild(this);
+            this.fire("upgrade-filter-proxy", null, {
+                bubbles: true
+            });
         }
     }
 
@@ -267,6 +260,10 @@
         label: string;
 
         private _setLoading: (loading: boolean) => void;
+
+        constructor(public column: QueryGridColumn) {
+            super();
+        }
 
         attached() {
             super.attached();
@@ -361,15 +358,15 @@
             const target = <HTMLElement>this.$["distincts"];
             target.innerHTML = "";
 
-            const distinctType = !this.inversed ? "include" : "exclude";
+            if (this.queryColumn && this.queryColumn.distincts) {
+                const distinctType = !this.inversed ? "include" : "exclude";
 
-            this.queryColumn.selectedDistincts.forEach(v => {
-                this._renderDistinct(target, v, distinctType);
-            });
+                this.queryColumn.selectedDistincts.forEach(v => {
+                    this._renderDistinct(target, v, distinctType);
+                });
 
-            if (this.column.distincts) {
-                this.column.distincts.matching.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).forEach(v => this._renderDistinct(target, v, "matching"));
-                this.column.distincts.remaining.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).forEach(v => this._renderDistinct(target, v, "remaining"));
+                this.queryColumn.distincts.matching.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).forEach(v => this._renderDistinct(target, v, "matching"));
+                this.queryColumn.distincts.remaining.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).forEach(v => this._renderDistinct(target, v, "remaining"));
             }
         }
 

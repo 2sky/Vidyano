@@ -316,11 +316,6 @@
             return !!query && query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue);
         }
 
-        private _computeCanSelectAll(query: Vidyano.Query, canSelect: boolean): boolean {
-            return false;
-            return canSelect && query.selectAll.isAvailable;
-        }
-
         private _computeInlineActions(query: Vidyano.Query): boolean {
             return !!query && !query.asLookup && !this.asLookup && (query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1)));
         }
@@ -947,7 +942,7 @@
         }
 
         update(columnCount: number): Promise<any> {
-            return super.update(2, columnCount);
+            return super.update(1, columnCount);
         }
 
         protected _addRow(index: number): QueryGridTableRow {
@@ -1045,7 +1040,7 @@
         }
 
         protected _createColumn(): QueryGridTableColumn {
-            return this._index === 1 ? new Vidyano.WebComponents.QueryGridTableHeaderColumn() : new Vidyano.WebComponents.QueryGridColumnFilterColumn();
+            return new Vidyano.WebComponents.QueryGridTableHeaderColumn();
         }
     }
 
@@ -1536,7 +1531,7 @@
 
     @WebComponent.register({
         listeners: {
-            "upgrade-filter": "_onUpgradeFilter"
+            "upgrade-filter-proxy": "_onUpgradeFilterProxy"
         }
     })
     export class QueryGridColumnHeader extends WebComponent {
@@ -1545,12 +1540,30 @@
         private _columnObserver: Vidyano.Common.SubjectDisposer;
         private _sortingIcon: Resource;
         private _labelTextNode: Text;
+        private _filter: QueryGridColumnFilterProxyBase;
+
+        constructor() {
+            super();
+
+            Polymer.dom(this).appendChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilterProxy());
+        }
+
+        private _onUpgradeFilterProxy(e: Event) {
+            var proxy = this._filter;
+
+            Polymer.dom(this).appendChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilter(this._column));
+            Polymer.dom(this).removeChild(proxy);
+
+            e.stopPropagation();
+        }
 
         get column(): QueryGridColumn {
             return this._column;
         }
 
         set column(column: QueryGridColumn) {
+            this._filter.column = column;
+
             if (this._column === column)
                 return;
 

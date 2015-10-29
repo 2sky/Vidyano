@@ -12,8 +12,14 @@
         <vi-style id="style" key="vi-query-grid"></vi-style>
         <div class="vertical layout fit">
             <header id="dataHeaderHost" class="horizontal layout">
-                <vi-query-grid-select-all query="{{query}}" disabled$="{{!canSelectAll}}"></vi-query-grid-select-all>
-                <vi-query-grid-filters id="filters" query="{{query}}" hidden$="{{!canFilter}}"></vi-query-grid-filters>
+                <header class="horizontal layout">
+                    <template is="dom-if" if="{{canSelectAll}}">
+                        <vi-query-grid-select-all query="{{query}}" disabled$="{{!canSelectAll}}"></vi-query-grid-select-all>
+                    </template>
+                    <template is="dom-if" if="{{canFilter}}">
+                        <vi-query-grid-filters id="filters" query="{{query}}" hidden$="{{!canFilter}}"></vi-query-grid-filters>
+                    </template>
+                </header>
                 <vi-popup-menu id="columnMenu" context-menu-only>
                     <vi-popup-menu-item id="columnMenuTogglePin" icon="Pin" on-tap="_togglePin"></vi-popup-menu-item>
                     <vi-popup-menu-item id="columnMenuConfigure" label="{{translations.Manage}}" icon="Configure" on-tap="_configureColumns"></vi-popup-menu-item>
@@ -44,6 +50,7 @@
             <label id="label"></label>
         </div>
         <content select="vi-icon"></content>
+        <content select="vi-query-grid-column-filter-proxy, vi-query-grid-column-filter"></content>
         <div class="resizer" on-track="_resizeTrack"></div>
     </template>
 </dom-module>
@@ -58,17 +65,16 @@
                 <vi-popup-menu-item icon="Filter_Reset" label="{{translations.Reset}}" on-tap="_reset"></vi-popup-menu-item>
             </template>
             <template is="dom-if" if="{{canSave}}">
-                <vi-popup-menu-item icon="Filter_Save" label="{{_computeCurrentFilterSaveLabel(currentFilter)}}" on-tap="_saveCurrent"></vi-popup-menu-item>
-                <vi-popup-menu-item icon-space label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
+                <vi-popup-menu-item icon="Filter_Save" label="{{_computeCurrentFilterSaveLabel(currentFilter)}}" on-tap="_save"></vi-popup-menu-item>
+                <vi-popup-menu-item icon-space label="{{translations.SaveAs}}" on-tap="_saveAs"></vi-popup-menu-item>
                 <vi-popup-menu-item-separator hidden$="{{!hasFilters}}"></vi-popup-menu-item-separator>
             </template>
             <template is="dom-if" if="{{canSaveAs}}">
-                <vi-popup-menu-item icon="Filter_Save" label="{{translations.SaveAs}}" on-tap="_save"></vi-popup-menu-item>
+                <vi-popup-menu-item icon="Filter_Save" label="{{translations.SaveAs}}" on-tap="_saveAs"></vi-popup-menu-item>
                 <vi-popup-menu-item-separator hidden$="{{!hasFilters}}"></vi-popup-menu-item-separator>
             </template>
             <template is="dom-repeat" items="{{filters.filters}}" as="filter">
                 <vi-popup-menu-item icon-space split label="{{filter.name}}" data-filter$="{{filter.name}}" on-tap="_load">
-                    <vi-popup-menu-item icon="Action_Edit" label="{{_computeFilterEditLabel(filter)}}" data-filter$="{{filter.name}}" on-tap="_edit"></vi-popup-menu-item>
                     <vi-popup-menu-item icon="Action_Delete" label="{{translations.Delete}}" data-filter$="{{filter.name}}" on-tap="_delete"></vi-popup-menu-item>
                 </vi-popup-menu-item>
             </template>
