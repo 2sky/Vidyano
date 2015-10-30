@@ -40,7 +40,7 @@ module.exports = function(grunt) {
                     if (src.indexOf("demo") >= 0)
                         return false;
 
-                    if (src.indexOf(".less") > 0 || src.indexOf(".js") > 0 || src.indexOf(".html") > 0)
+                    if (src.indexOf(".less") > 0 || src.endsWith(".js") || src.indexOf(".html") > 0)
                         return true;
 
                     return false;

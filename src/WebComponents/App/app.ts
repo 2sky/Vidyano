@@ -603,19 +603,28 @@
 
         onAction(args: ExecuteActionArgs): Promise<any> {
             if (args.action == "AddReference") {
-                this.app.importHref(this.app.resolveUrl("../SelectReferenceDialog/select-reference-dialog.html"), () => {
-                    var query = args.query.clone(true);
-                    query.search();
+                return new Promise((resolve, reject) => {
+                    args.isHandled = true;
 
-                    this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then((result: QueryResultItem[]) => {
-                        if (result && result.length > 0) {
-                            args.selectedItems = result;
-                            return args.executeServiceRequest().then(result => {
-                                args.query.search();
+                    this.app.importHref(this.app.resolveUrl("../SelectReferenceDialog/select-reference-dialog.html"), () => {
+                        var query = args.query.clone(true);
+                        query.search();
 
-                                return result;
-                            });
-                        }
+                        this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then((result: QueryResultItem[]) => {
+                            if (result && result.length > 0) {
+                                args.selectedItems = result;
+
+                                args.executeServiceRequest().then(result => {
+                                    resolve(result);
+                                }, e => {
+                                    reject(e);
+                                });
+                            }
+                            else
+                                reject(null);
+                        }, e => {
+                            reject(e);
+                        });
                     });
                 });
             }

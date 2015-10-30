@@ -2764,7 +2764,7 @@ module Vidyano {
                     bulkEdit.selectionRule = count => count == 1;
             }
 
-            if (query.filters && !(query.filters instanceof PersistentObject))
+            if (!asLookup && query.filters && !(query.filters instanceof PersistentObject))
                 this._filters = new QueryFilters(this, service.hooks.onConstructPersistentObject(service, query.filters));
             else
                 this._filters = null;
@@ -3101,7 +3101,7 @@ module Vidyano {
                         return Promise.resolve(this.items);
 
                     return this.service.executeQuery(this.parent, this, this._asLookup).then(result => {
-                        if (!this._lastUpdated || this._lastUpdated < now) {
+                        if (!this._lastUpdated || this._lastUpdated <= now) {
                             this.hasSearched = true;
                             this._setResult(result);
                         }
