@@ -2,6 +2,23 @@
 
 More than often, developers will want to extend Vidyano applications with custom user interface components. The Vidyano Web Client takes advantage of Polymer's ```dom-bind``` template functionality to accomplish this.
 
+## Query templates
+
+The ```vi-query-items-presenter``` component checks for a ```vi-query-config``` element on the the ```vi-app``` that corresponds to the current query. Add a ```<template>``` child element to this configuration element in order to override the complete DOM template for displaying the items of a query.
+
+```html
+<vi-query-config type="Customer" name="General">
+	<template>
+		<vi-scroller>
+			<template is="dom-repeat" items="{{query.items}}">
+				<div>{{item.values.FirstName}}</div>
+			</template>
+		</vi-scroller>
+	</template>
+</vi-query-config>
+```
+
+
 ## Persistent Object Tab templates
 
 The ```vi-persistent-object-tab-presenter``` component checks for a ```vi-persistent-object-tab-config``` element on the the ```vi-app``` that corresponds to the current persistent object's tab. If you want to override the complete DOM template for a tab, you will simply have to add a ```<template>``` child element to it:
