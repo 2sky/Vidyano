@@ -1,9 +1,17 @@
 module Vidyano.WebComponents {
     @WebComponent.register({
         properties: {
-            query: {
-                type: Object,
-                observer: "_queryChanged"
+            query: Object,
+            loading: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true,
+                value: true
+            },
+            templated: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
             }
         },
         hostAttributes: {
@@ -14,30 +22,49 @@ module Vidyano.WebComponents {
             "ctrl+n": "_new",
             "del": "_delete",
             "f2": "_bulkEdit"
-        }
+        },
+        observers: [
+            "_renderQuery(query, isAttached)"
+        ]
     })
     export class QueryItemsPresenter extends WebComponent {
         private static _queryGridComponentLoader: Promise<any>;
-        private _content: HTMLElement | WebComponent;
+        private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
+        private _renderedQuery: Vidyano.Query;
         query: Vidyano.Query;
+        templated: boolean;
 
-        private _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
-            if (this._content) {
-                Polymer.dom(this).removeChild(this._content);
-                this._content = null;
+        private _setLoading: (loading: boolean) => void;
+        private _setTemplated: (templated: boolean) => void;
+
+        private _renderQuery(query: Vidyano.Query, isAttached: boolean) {
+            if (!isAttached || this._renderedQuery === query)
+                return;
+
+            this.empty();
+
+            if (!query)
+                return;
+
+            this._setLoading(true);
+
+            var child: HTMLElement;
+
+            var config = this.app.configuration.getQueryConfig(query);
+            this._setTemplated(!!config && !!config.template);
+
+            if (this.templated) {
+                if (!this._templatePresenter)
+                    this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(config.template, "query");
+
+                this._templatePresenter.dataContext = query;
+
+                if (!this._templatePresenter.isAttached)
+                    Polymer.dom(this).appendChild(this._templatePresenter);
+
+                this._setLoading(false);
             }
-
-            if (query) {
-                var child: HTMLElement;
-
-                //! TODO Custom templates for queries
-                //var queryTemplateName = "QUERY." + this.query.name;
-                //if (Vidyano.WebComponents.Resource.Exists(queryTemplateName)) {
-                //    var resource = new Vidyano.WebComponents.Resource();
-                //    resource.source = queryTemplateName;
-                //    this.appendChild(resource);
-                //}
-                //else {
+            else {
                 if (!Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader) {
                     Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader = new Promise(resolve => {
                         this.importHref(this.resolveUrl("../QueryGrid/query-grid.html"), e => {
@@ -49,20 +76,17 @@ module Vidyano.WebComponents {
                     });
                 }
 
-                this._renderGrid(query);
-                //}
+                Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader.then(() => {
+                    if (query !== this.query)
+                        return;
+
+                    var grid = new Vidyano.WebComponents.QueryGrid();
+                    grid.query = this.query;
+                    Polymer.dom(this).appendChild(grid);
+
+                    this._setLoading(false);
+                });
             }
-        }
-
-        private _renderGrid(query: Vidyano.Query) {
-            Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader.then(() => {
-                if (query !== this.query)
-                    return;
-
-                var grid = new Vidyano.WebComponents.QueryGrid();
-                grid.query = this.query;
-                Polymer.dom(this).appendChild(this._content = grid);
-            });
         }
 
         private _refresh() {

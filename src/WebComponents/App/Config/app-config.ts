@@ -5,6 +5,7 @@
         private _attributeConfigs: linqjs.Enumerable<PersistentObjectAttributeConfig>;
         private _tabConfigs: linqjs.Enumerable<PersistentObjectTabConfig>;
         private _programUnitConfigs: linqjs.Enumerable<ProgramUnitConfig>;
+        private _queryConfigs: linqjs.Enumerable<QueryConfig>;
 
         attached() {
             super.attached();
@@ -41,6 +42,13 @@
                 this._programUnitConfigs = this._getConfigs<ProgramUnitConfig>(Vidyano.WebComponents.ProgramUnitConfig);
 
             return this._programUnitConfigs.firstOrDefault(c => c.name == name);
+        }
+
+        getQueryConfig(query: Vidyano.Query): QueryConfig {
+            if (!this._queryConfigs)
+                this._queryConfigs = this._getConfigs<QueryConfig>(Vidyano.WebComponents.QueryConfig);
+
+            return this._queryConfigs.firstOrDefault(c => c.id == query.id || c.name == query.name);
         }
 
         private _getConfigs<T>(type: any): linqjs.Enumerable<T> {

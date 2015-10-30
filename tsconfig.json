@@ -30,6 +30,7 @@
     "src/WebComponents/App/Config/persistent-object-attribute-config.ts",
     "src/WebComponents/App/Config/persistent-object-tab-config.ts",
     "src/WebComponents/App/Config/program-unit-config.ts",
+    "src/WebComponents/App/Config/query-config.ts",
     "src/WebComponents/AttachedNotifier/attached-notifier.ts",
     "src/WebComponents/Attributes/persistent-object-attribute.ts",
     "src/WebComponents/Attributes/PersistentObjectAttributeAsDetail/persistent-object-attribute-as-detail.ts",
