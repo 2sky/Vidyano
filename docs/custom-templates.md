@@ -7,7 +7,7 @@ More than often, developers will want to extend Vidyano applications with custom
 The ```vi-query-items-presenter``` component checks for a ```vi-query-config``` element on the the ```vi-app``` that corresponds to the current query. Add a ```<template>``` child element to this configuration element in order to override the complete DOM template for displaying the items of a query.
 
 ```html
-<vi-query-config type="Customer" name="General">
+<vi-query-config id="ba6e297b-5ea8-42a3-8ee9-484ec8768305">
 	<template>
 		<vi-scroller>
 			<template is="dom-repeat" items="{{query.items}}">
