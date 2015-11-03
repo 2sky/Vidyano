@@ -588,7 +588,7 @@
         onConstructQuery(service: Service, query: any, parent?: Vidyano.PersistentObject, asLookup: boolean = false, maxSelectedItems?: number): Vidyano.Query {
             var newQuery = super.onConstructQuery(service, query, parent, asLookup, maxSelectedItems);
 
-            var queryConfig = this.app.configuration.getQueryConfig(query);
+            var queryConfig = this.app.configuration.getQueryConfig(newQuery);
             if (queryConfig && queryConfig.defaultChart)
                 newQuery.defaultChartName = queryConfig.defaultChart;
 
