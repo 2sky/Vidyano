@@ -16,6 +16,15 @@
             deferred: {
                 type: Boolean,
                 reflectToAttribute: true
+            },
+            size: {
+                type: Object,
+                readOnly: true,
+                notify: true
+            },
+            triggerZero: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         }
     })
@@ -26,6 +35,9 @@
         private _resizeRAF: Function;
         private _scrollListener: EventListener;
         deferred: boolean;
+        triggerZero: boolean;
+
+        private _setSize: (size: Vidyano.WebComponents.Size) => void;
 
         attached() {
             if (this.deferred)
@@ -65,11 +77,17 @@
 
         private _triggerSizeChanged() {
             var root = this.$["root"];
-            if (!this._resizeLast || root.offsetWidth != this._resizeLast.width || root.offsetHeight != this._resizeLast.height) {
-                this.fire("sizechanged", this._resizeLast = {
+            if (!this._resizeLast || root.offsetWidth !== this._resizeLast.width || root.offsetHeight !== this._resizeLast.height) {
+                this._resizeLast = {
                     width: root.offsetWidth,
                     height: root.offsetHeight
-                }, { onNode: this, bubbles: false });
+                };
+
+                if ((this._resizeLast.width === 0 || this._resizeLast.height === 0 ) && !this.triggerZero)
+                    return;
+
+                this._setSize(this._resizeLast);
+                this.fire("sizechanged", this._resizeLast, { onNode: this, bubbles: false });
             }
         }
 

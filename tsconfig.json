@@ -11,6 +11,7 @@
         "src/WebComponents/**/*.ts"
     ],
     "files": [
+        "src/Libs/Typings/d3/d3.d.ts",
         "src/Libs/Typings/es6-promises/es6-promises.d.ts",
         "src/Libs/Typings/Linq/linq.d.ts",
         "src/Libs/Typings/MaskedInput/masked_input.d.ts",
@@ -53,6 +54,7 @@
         "src/WebComponents/Attributes/PersistentObjectAttributeTranslatedString/persistent-object-attribute-translated-string.ts",
         "src/WebComponents/Attributes/PersistentObjectAttributeUser/persistent-object-attribute-user.ts",
         "src/WebComponents/Button/button.ts",
+        "src/WebComponents/Chart/chart.ts",
         "src/WebComponents/ChartSelector/chart-selector.ts",
         "src/WebComponents/Checkbox/checkbox.ts",
         "src/WebComponents/DatePicker/date-picker.ts",

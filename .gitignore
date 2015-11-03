@@ -203,6 +203,7 @@ ModelManifest.xml
 /src/Libs/Vidyano/vidyano.js
 /src/Libs/Vidyano/vidyano.cultures.js
 /src/Libs/bignumber.js/
+/src/Libs/d3/
 /src/Libs/es6-promise/
 /src/Libs/iron-*
 /src/Libs/layout/layout.html

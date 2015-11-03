@@ -32,6 +32,7 @@ module Vidyano.WebComponents {
     })
     export class QueryItemsPresenter extends WebComponent {
         private static _queryGridComponentLoader: Promise<any>;
+        private static _chartComponentLoader: Promise<any>;
         private _queryTemplatePresenter: Vidyano.WebComponents.TemplatePresenter;
         private _renderedQuery: Vidyano.Query;
         query: Vidyano.Query;
@@ -91,8 +92,24 @@ module Vidyano.WebComponents {
                         return;
                     }
 
-                    Polymer.dom(this).appendChild(new Vidyano.WebComponents.TemplatePresenter(chartConfig.template, "chart", currentChart));
-                    this._setLoading(false);
+                    if (!Vidyano.WebComponents.QueryItemsPresenter._chartComponentLoader) {
+                        Vidyano.WebComponents.QueryItemsPresenter._chartComponentLoader = new Promise(resolve => {
+                            this.importHref(this.resolveUrl("../Chart/chart-dependencies.html"), e => {
+                                resolve(true);
+                            }, err => {
+                                    console.error(err);
+                                    resolve(false);
+                                });
+                        });
+                    }
+
+                    Vidyano.WebComponents.QueryItemsPresenter._chartComponentLoader.then(() => {
+                        if (query !== this.query)
+                            return;
+
+                        Polymer.dom(this).appendChild(new Vidyano.WebComponents.TemplatePresenter(chartConfig.template, "chart", currentChart));
+                        this._setLoading(false);
+                    });
                 }
             }
         }

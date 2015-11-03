@@ -83,7 +83,7 @@
                     this._textNode.nodeValue = "";
 
                 if (!this._icon)
-                    this._icon = <HTMLElement>Polymer.dom(this).appendChild(Icon.Load("Selected"));
+                    this._icon = <HTMLElement>Polymer.dom(this).appendChild(new Vidyano.WebComponents.Icon("Selected"));
 
                 if (!value.getValue())
                     this.classList.add("unchecked");

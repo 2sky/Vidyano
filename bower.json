@@ -37,6 +37,9 @@
     },
     "sortable": {
       "": "sortable.min.js"
+    },
+    "d3": {
+      "": "d3.min.js"
     }
   },
   "dependencies": {
@@ -48,6 +51,7 @@
     "bignumber.js": "^2.0.7",
     "moment": "^2.10.6",
     "sortable": "RubaXa/sortable#^1.2.1",
+    "d3": "^3.5.6",
     "linqjs": "2sky/linqjs#3.0.3-Beta4",
     "pathjs": "2sky/pathjs#master",
     "layout": "2sky/layout#master"
