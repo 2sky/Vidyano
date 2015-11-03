@@ -91,7 +91,7 @@ module Vidyano.WebComponents {
                         return;
                     }
 
-                    Polymer.dom(this).appendChild(new Vidyano.WebComponents.TemplatePresenter(chartConfig.template, "query", query));
+                    Polymer.dom(this).appendChild(new Vidyano.WebComponents.TemplatePresenter(chartConfig.template, "chart", currentChart));
                     this._setLoading(false);
                 }
             }

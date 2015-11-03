@@ -25,7 +25,7 @@ The ```vi-query-items-presenter``` component checks for a ```vi-query-chart-conf
 ```html
 <vi-query-chart-config id="ba6e297b-5ea8-42a3-8ee9-484ec8768305">
 	<template>
-		<my-d3js-chart query="{{query}}"></my-d3js-chart>
+		<my-d3js-chart chart="{{chart}}"></my-d3js-chart>
 	</template>
 </vi-query-config>
 ```

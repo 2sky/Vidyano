@@ -3026,7 +3026,7 @@ module Vidyano {
             this.setNotification(result.notification, result.notificationType);
 
             if ((this._charts && this._charts.count() > 0) || (result.charts && result.charts.length > 0))
-                this._setCharts(Enumerable.from(result.charts).select(c => new QueryChart(c.label, c.name, c.options, c.type)).memoize());
+                this._setCharts(Enumerable.from(result.charts).select(c => new QueryChart(this, c.label, c.name, c.options, c.type)).memoize());
 
             this._setLastUpdated();
         }
@@ -3717,9 +3717,13 @@ module Vidyano {
     }
 
     export class QueryChart {
-        constructor(private _label: string, private _name: string, private _options: any, private _type: string) {
+        constructor(private _query: Vidyano.Query, private _label: string, private _name: string, private _options: any, private _type: string) {
         }
 
+        get query(): Vidyano.Query {
+            return this._query;
+        }
+        
         get label(): string {
             return this._label;
         }
@@ -3734,6 +3738,10 @@ module Vidyano {
 
         get type(): string {
             return this._type;
+        }
+
+        execute(parameters: any = {}): Promise<any> {
+            return this._query.service.executeAction("QueryFilter.Chart", this._query.parent, this._query, null, Vidyano.extend(parameters, { name: this.name })).then(result => JSON.parse(result.getAttributeValue("Data")));
         }
     }
 
