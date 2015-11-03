@@ -24,13 +24,10 @@ vi-popup-menu {
     }
 }
 
-@menuItemHeight: @h2;
-
 vi-popup-menu-item {
     .layout-horizontal();
     .relative();
-    height: @menuItemHeight;
-    line-height: @menuItemHeight;
+    height: @h2;
     cursor: pointer;
     .theme-color(color);
     .theme-color(fill);
@@ -103,11 +100,11 @@ vi-popup-menu-item {
                 border-left: 1px solid #eee;
                 padding: 0;
                 width: @h2;
-                height: @menuItemHeight;
+                height: @h2;
 
                 > vi-icon {
                     width: @h2;
-                    height: @menuItemHeight;
+                    height: @h2;
                 }
             }
         }

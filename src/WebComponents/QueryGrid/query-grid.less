@@ -253,9 +253,15 @@ vi-query-grid {
     }
 
     > vi-popup-core#actions {
-        vi-action-button > vi-popup-menu {
-            button[is="vi-button"] > vi-icon[source="Down"] {
-                transform: rotate(-90deg);
+        vi-action-button {
+            button[is="vi-button"] {
+                height: @h2;
+            }
+
+            & > vi-popup-menu {
+                button[is="vi-button"] > vi-icon[source="Down"] {
+                    transform: rotate(-90deg);
+                }
             }
         }
     }

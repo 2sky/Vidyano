@@ -2,10 +2,7 @@
     @WebComponent.register({
         properties:
         {
-            serviceObject: {
-                type: Object,
-                observer: "_serviceObjectChanged"
-            },
+            serviceObject: Object,
             pinnedActions: {
                 type: Array,
                 computed: "_computePinnedActions(serviceObject)"
@@ -13,6 +10,10 @@
             unpinnedActions: {
                 type: Array,
                 computed: "_computeUnpinnedActions(serviceObject)"
+            },
+            hasCharts: {
+                type: Boolean,
+                computed: "_computeHasCharts(serviceObject.charts, isAttached)"
             },
             canSearch: {
                 type: Boolean,
@@ -23,7 +24,10 @@
                 reflectToAttribute: true,
                 computed: "_computeNoActions(pinnedActions, unpinnedActions)"
             }
-        }
+        },
+        forwardObservers: [
+            "serviceObject.charts"
+        ]
     })
     export class ActionBar extends WebComponent {
         accent: boolean = false;
@@ -31,10 +35,6 @@
         pinnedActions: Vidyano.Action[];
         unpinnedActions: Vidyano.Action[];
         canSearch: boolean;
-
-        private _serviceObjectChanged() {
-            this.canSearch = this.serviceObject instanceof Vidyano.Query && (<Vidyano.Query>this.serviceObject).actions["Filter"] != null;
-        }
 
         executeAction(e: Event, details: any, sender: HTMLElement) {
             var action = this.serviceObject.actions[sender.getAttribute("data-action-name")];
@@ -62,7 +62,11 @@
             return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(action => !action.isPinned) : [];
         }
 
-        private _computeCanSearch(serviceObject: Vidyano.ServiceObjectWithActions) {
+        private _computeHasCharts(charts: linqjs.Enumerable<Vidyano.QueryChart>): boolean {
+            return !!charts && !!charts.firstOrDefault(c => !!this.app.configuration.getQueryChartConfig(c.type));
+        }
+
+        private _computeCanSearch(serviceObject: Vidyano.ServiceObjectWithActions): boolean {
             return serviceObject instanceof Vidyano.Query && (<Vidyano.Query>serviceObject).actions["Filter"] != null;
         }
 

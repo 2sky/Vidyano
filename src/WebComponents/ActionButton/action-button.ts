@@ -60,7 +60,7 @@ module Vidyano.WebComponents {
     })
     export class ActionButton extends WebComponent {
         private _skipObserver: boolean;
-        options: string[];
+        options: linqjs.KeyValuePair<number, string>[];
         canExecute: boolean;
         noLabel: boolean;
         openOnHover: boolean;
@@ -68,9 +68,9 @@ module Vidyano.WebComponents {
 
         private _setCanExecute: (val: boolean) => void;
         private _setHidden: (val: boolean) => void;
-        private _setOptions: (val: string[]) => void;
+        private _setOptions: (val: linqjs.KeyValuePair<number, string>[]) => void;
 
-        constructor(public item: Vidyano.QueryResultItem, public action: Vidyano.Action) {
+        constructor(public item: Vidyano.QueryResultItem, public action: Action) {
             super();
 
             if(item && action) {
@@ -85,7 +85,12 @@ module Vidyano.WebComponents {
 
                 this._setCanExecute(args.canExecute);
                 this._setHidden(!args.isVisible);
-                this._setOptions(args.options && args.options.length > 0 ? args.options : null);
+                this._setOptions(args.options && args.options.length > 0 ? args.options.map((value: string, index: number) => {
+                    return {
+                        key: index,
+                        value: value
+                    };
+                }) : null);
 
                 this._skipObserver = true;
             }
@@ -109,7 +114,7 @@ module Vidyano.WebComponents {
                 return;
             }
 
-            this._execute(e.model.index);
+            this._execute(e.model.item.key);
         }
 
         private _execute(option: number = -1) {
@@ -130,10 +135,15 @@ module Vidyano.WebComponents {
 
             this._setCanExecute(this.item ? this.action.definition.selectionRule(1) : this.action.canExecute);
             this._setHidden(!this.action.isVisible);
-            this._setOptions(this.action.options && this.action.options.length > 0 ? this.action.options : null);
+            this._setOptions(this.action.options && this.action.options.length > 0 ? this.action.options.map((value: string, index: number) => {
+                return {
+                    key: index,
+                    value: value
+                };
+            }) : null);
         }
 
-        private _computeIcon(action: Vidyano.Action): string {
+        private _computeIcon(action: Action): string {
             if (!action)
                 return "";
 

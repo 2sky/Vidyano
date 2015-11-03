@@ -1,19 +1,15 @@
 module Vidyano.WebComponents {
     @WebComponent.register({
         properties: {
-            name: String,
-            id: String,
-            defaultChart: String,
+            type: String,
             template: {
                 type: Object,
                 readOnly: true
             }
         }
     })
-    export class QueryConfig extends WebComponent {
-        name: string;
-        id: string;
-        defaultChart: string;
+    export class QueryChartConfig extends WebComponent {
+        type: string;
         template: any;
 
         private _setTemplate: (template: HTMLElement) => void;

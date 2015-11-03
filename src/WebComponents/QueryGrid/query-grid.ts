@@ -1473,7 +1473,7 @@
         private _item: QueryResultItem;
 
         constructor(private _row: QueryGridTableDataRow) {
-            super("vi-query-grid-table-data-column-selector", <HTMLElement>Icon.Load("Selected"), true);
+            super("vi-query-grid-table-data-column-selector", new Vidyano.WebComponents.Icon("Selected"), true);
 
             Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
             this._row.table.grid.async(() => this.host.appendChild(document.createElement("paper-ripple")));
@@ -1504,7 +1504,7 @@
         private _item: QueryResultItem;
 
         constructor(private _row: QueryGridTableDataRow) {
-            super("vi-query-grid-table-data-column-actions", <HTMLElement>Icon.Load("EllipsisVertical"), true);
+            super("vi-query-grid-table-data-column-actions", new Vidyano.WebComponents.Icon("EllipsisVertical"), true);
 
             Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
             this._row.table.grid.async(() => this.host.appendChild(document.createElement("paper-ripple")));

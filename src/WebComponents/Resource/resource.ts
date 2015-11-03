@@ -73,11 +73,9 @@ module Vidyano.WebComponents {
             var resource = (typeof source === "string") ? resources[`${tagName}+${source.toUpperCase() }`] : source;
 
             var fragment = document.createDocumentFragment();
-            var copy = document.createElement(tagName);
-            fragment.appendChild(copy);
 
             Enumerable.from(Polymer.dom(resource).children).forEach((child: HTMLElement) => {
-                Polymer.dom(copy).appendChild(child.cloneNode(true));
+                fragment.appendChild(child.cloneNode(true));
             });
 
             return fragment;

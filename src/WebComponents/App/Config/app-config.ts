@@ -6,6 +6,7 @@
         private _tabConfigs: linqjs.Enumerable<PersistentObjectTabConfig>;
         private _programUnitConfigs: linqjs.Enumerable<ProgramUnitConfig>;
         private _queryConfigs: linqjs.Enumerable<QueryConfig>;
+        private _queryChartConfigs: linqjs.Enumerable<QueryChartConfig>;
 
         attached() {
             super.attached();
@@ -32,7 +33,7 @@
         getTabConfig(tab: Vidyano.PersistentObjectTab): PersistentObjectTabConfig {
             if (!this._tabConfigs)
                 this._tabConfigs = this._getConfigs<PersistentObjectTabConfig>(Vidyano.WebComponents.PersistentObjectTabConfig);
-            
+
             return this._tabConfigs.firstOrDefault(c => c.name == tab.name && c.type == tab.parent.type && c.objectId == tab.parent.objectId) ||
                 this._tabConfigs.firstOrDefault(c => c.name == tab.name && c.type == tab.parent.type);
         }
@@ -49,6 +50,13 @@
                 this._queryConfigs = this._getConfigs<QueryConfig>(Vidyano.WebComponents.QueryConfig);
 
             return this._queryConfigs.firstOrDefault(c => c.id == query.id || c.name == query.name);
+        }
+
+        getQueryChartConfig(type: string): QueryChartConfig {
+            if (!this._queryChartConfigs)
+                this._queryChartConfigs = this._getConfigs<QueryChartConfig>(Vidyano.WebComponents.QueryChartConfig);
+
+            return this._queryChartConfigs.firstOrDefault(c => c.type == type);
         }
 
         private _getConfigs<T>(type: any): linqjs.Enumerable<T> {

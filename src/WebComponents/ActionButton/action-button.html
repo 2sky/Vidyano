@@ -1,7 +1,7 @@
 <dom-module id="vi-action-button">
     <template>
         <template is="dom-if" if="{{!options}}">
-            <button is="vi-button" disabled="{{!canExecute}}" header on-tap="_executeWithoutOptions" inverse icon="{{icon}}" label="{{action.definition.displayName}}"></button>
+            <button is="vi-button" disabled="{{!canExecute}}" header on-tap="_executeWithoutOptions" inverse icon="{{icon}}" label="{{action.displayName}}"></button>
         </template>
         <template is="dom-if" if="{{options}}">
             <vi-popup-menu open-on-hover="{{_computeOpenOnHover(overflow, openOnHover)}}" disabled="{{!canExecute}}">
@@ -11,7 +11,7 @@
                     <vi-icon source="Down"></vi-icon>
                 </button>
                 <template is="dom-repeat" items="{{options}}">
-                    <vi-popup-menu-item label="{{item}}" on-tap="_executeWithOption" data-option-index$="{{index}}"></vi-popup-menu-item>
+                    <vi-popup-menu-item label="{{item.value}}" on-tap="_executeWithOption"></vi-popup-menu-item>
                 </template>
             </vi-popup-menu>
         </template>

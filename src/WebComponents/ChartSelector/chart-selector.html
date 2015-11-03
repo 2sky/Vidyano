@@ -1,0 +1,16 @@
+<dom-module id="vi-chart-selector">
+    <template>
+        <button is="vi-button" on-tap="_showGrid" inverse icon="Grid"></button>
+        <template is="dom-repeat" items="{{types}}" as="type">
+            <vi-popup-menu>
+                <button is="vi-button" header inverse icon="{{type.icon}}"></button>
+                <template is="dom-repeat" items="{{type.charts}}" as="chart">
+                    <vi-popup-menu-item label="{{chart.label}}" on-tap="_showChart"></vi-popup-menu-item>
+                </template>
+            </vi-popup-menu>
+        </template>
+    </template>
+</dom-module>
+
+<link rel="stylesheet" href="chart-selector.css" />
+<script src="chart-selector.js"></script>

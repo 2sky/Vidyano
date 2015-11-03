@@ -24,12 +24,15 @@ module Vidyano.WebComponents {
             "f2": "_bulkEdit"
         },
         observers: [
-            "_renderQuery(query, isAttached)"
+            "_renderQuery(query, query.currentChart, isAttached)"
+        ],
+        forwardObservers: [
+            "query.currentChart"
         ]
     })
     export class QueryItemsPresenter extends WebComponent {
         private static _queryGridComponentLoader: Promise<any>;
-        private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
+        private _queryTemplatePresenter: Vidyano.WebComponents.TemplatePresenter;
         private _renderedQuery: Vidyano.Query;
         query: Vidyano.Query;
         templated: boolean;
@@ -37,7 +40,7 @@ module Vidyano.WebComponents {
         private _setLoading: (loading: boolean) => void;
         private _setTemplated: (templated: boolean) => void;
 
-        private _renderQuery(query: Vidyano.Query, isAttached: boolean) {
+        private _renderQuery(query: Vidyano.Query, currentChart: Vidyano.QueryChart, isAttached: boolean) {
             if (!isAttached || this._renderedQuery === query)
                 return;
 
@@ -50,42 +53,47 @@ module Vidyano.WebComponents {
 
             var child: HTMLElement;
 
-            var config = this.app.configuration.getQueryConfig(query);
-            this._setTemplated(!!config && !!config.template);
+            var queryConfig = this.app.configuration.getQueryConfig(query);
+            this._setTemplated(!!queryConfig && !!queryConfig.template);
 
             if (this.templated) {
-                if (!this._templatePresenter)
-                    this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(config.template, "query");
-
-                this._templatePresenter.dataContext = query;
-
-                if (!this._templatePresenter.isAttached)
-                    Polymer.dom(this).appendChild(this._templatePresenter);
-
+                Polymer.dom(this).appendChild(new Vidyano.WebComponents.TemplatePresenter(queryConfig.template, "query", query));
                 this._setLoading(false);
             }
             else {
-                if (!Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader) {
-                    Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader = new Promise(resolve => {
-                        this.importHref(this.resolveUrl("../QueryGrid/query-grid.html"), e => {
-                            resolve(true);
-                        }, err => {
-                                console.error(err);
-                                resolve(false);
-                            });
+                if (!currentChart) {
+                    if (!Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader) {
+                        Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader = new Promise(resolve => {
+                            this.importHref(this.resolveUrl("../QueryGrid/query-grid.html"), e => {
+                                resolve(true);
+                            }, err => {
+                                    console.error(err);
+                                    resolve(false);
+                                });
+                        });
+                    }
+
+                    Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader.then(() => {
+                        if (query !== this.query)
+                            return;
+
+                        var grid = new Vidyano.WebComponents.QueryGrid();
+                        grid.query = this.query;
+                        Polymer.dom(this).appendChild(grid);
+
+                        this._setLoading(false);
                     });
                 }
-
-                Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader.then(() => {
-                    if (query !== this.query)
+                else {
+                    var chartConfig = this.app.configuration.getQueryChartConfig(currentChart.type);
+                    if (!chartConfig) {
+                        console.error(`No chart configuration found for type '${currentChart.type}'`);
                         return;
+                    }
 
-                    var grid = new Vidyano.WebComponents.QueryGrid();
-                    grid.query = this.query;
-                    Polymer.dom(this).appendChild(grid);
-
+                    Polymer.dom(this).appendChild(new Vidyano.WebComponents.TemplatePresenter(chartConfig.template, "query", query));
                     this._setLoading(false);
-                });
+                }
             }
         }
 

@@ -585,6 +585,16 @@
             super();
         }
 
+        onConstructQuery(service: Service, query: any, parent?: Vidyano.PersistentObject, asLookup: boolean = false, maxSelectedItems?: number): Vidyano.Query {
+            var newQuery = super.onConstructQuery(service, query, parent, asLookup, maxSelectedItems);
+
+            var queryConfig = this.app.configuration.getQueryConfig(query);
+            if (queryConfig && queryConfig.defaultChart)
+                newQuery.defaultChartName = queryConfig.defaultChart;
+
+            return newQuery;
+        }
+
         onActionConfirmation(action: Action): Promise<boolean> {
             return new Promise((resolve, reject) => {
                 this.app.showMessageDialog({

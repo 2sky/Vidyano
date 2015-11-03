@@ -8,7 +8,9 @@
         </template>
         <template is="dom-if" if="{{!customLayout}}">
             <vi-icon source="{{icon}}"></vi-icon>
-            <span>{{label}}</span>
+            <template is="dom-if" if="{{label}}">
+                <span>{{label}}</span>
+            </template>
         </template>
     </template>
 </dom-module>

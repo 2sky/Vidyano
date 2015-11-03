@@ -2694,6 +2694,9 @@ module Vidyano {
         private _canFilter: boolean;
         private _canRead: boolean;
         private _canReorder: boolean;
+        private _charts: linqjs.Enumerable<QueryChart>;
+        private _defaultChartName: string = null;
+        private _currentChart: QueryChart = null;
         private _lastUpdated: Date;
         private _isReorderable: boolean;
 
@@ -2793,6 +2796,45 @@ module Vidyano {
 
         get canReorder(): boolean {
             return this._canReorder;
+        }
+
+        get charts(): linqjs.Enumerable<QueryChart> {
+            return this._charts;
+        }
+
+        private _setCharts(charts: linqjs.Enumerable<QueryChart>) {
+            if (this._charts && charts && !this._charts.isEmpty() && this._charts.count() === charts.count() && this._charts.orderBy(c => c.name).toArray().join("\n") === charts.orderBy(c => c.name).toArray().join("\n"))
+                return;
+
+            var oldCharts = this._charts;
+            this.notifyPropertyChanged("charts", this._charts = Enumerable.from(charts).memoize(), oldCharts);
+        }
+
+        get currentChart(): QueryChart {
+            return this._currentChart;
+        }
+
+        set currentChart(currentChart: QueryChart) {
+            if (this._currentChart === currentChart)
+                return;
+
+            var oldCurrentChart = this._currentChart;
+            this.notifyPropertyChanged("currentChart", this._currentChart = currentChart !== undefined ? currentChart : null, oldCurrentChart);
+        }
+
+        get defaultChartName(): string {
+            return this._defaultChartName;
+        }
+
+        set defaultChartName(defaultChart: string) {
+            if (this._defaultChartName === defaultChart)
+                return;
+
+            var oldDefaultChart = this._defaultChartName;
+            this.notifyPropertyChanged("defaultChartName", this._defaultChartName = defaultChart !== undefined ? defaultChart : null, oldDefaultChart);
+
+            if (defaultChart && !this.currentChart)
+                this.currentChart = this.charts.firstOrDefault(c => c.name === this._defaultChartName);
         }
 
         get lastUpdated(): Date {
@@ -2982,6 +3024,9 @@ module Vidyano {
             this.totalItem = result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null;
 
             this.setNotification(result.notification, result.notificationType);
+
+            if ((this._charts && this._charts.count() > 0) || (result.charts && result.charts.length > 0))
+                this._setCharts(Enumerable.from(result.charts).select(c => new QueryChart(c.label, c.name, c.options, c.type)).memoize());
 
             this._setLastUpdated();
         }
@@ -3668,6 +3713,27 @@ module Vidyano {
 
         get persistentObject(): PersistentObject {
             return this._po;
+        }
+    }
+
+    export class QueryChart {
+        constructor(private _label: string, private _name: string, private _options: any, private _type: string) {
+        }
+
+        get label(): string {
+            return this._label;
+        }
+
+        get name(): string {
+            return this._name;
+        }
+
+        get options(): string {
+            return this._options;
+        }
+
+        get type(): string {
+            return this._type;
         }
     }
 
