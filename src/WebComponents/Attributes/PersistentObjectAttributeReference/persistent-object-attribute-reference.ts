@@ -74,6 +74,8 @@ module Vidyano.WebComponents.Attributes {
             if (!StringEx.isNullOrEmpty(this.filter) && this.filter != this.attribute.value) {
                 this.attribute.lookup.textSearch = 'vi-breadcrumb:"' + this.filter + '"';
                 this.attribute.lookup.search().then(result => {
+                    this.attribute.lookup.textSearch = null;
+
                     if (result.length == 0)
                         this.filter = this.attribute.value;
                     else if (result.length == 1)
