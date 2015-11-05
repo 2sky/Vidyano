@@ -22,21 +22,21 @@
             this.canSelect = this.query && this.query.selectedItems && this.query.selectedItems.length > 0;
         }
 
-		private _invalidateCanSelect(selectedItems: QueryResultItem[] = (this.query ? this.query.selectedItems : undefined)) {
-			this.canSelect = selectedItems && selectedItems.length > 0;
-		}
+        private _invalidateCanSelect(selectedItems: QueryResultItem[] = (this.query ? this.query.selectedItems : undefined)) {
+            this.canSelect = selectedItems && selectedItems.length > 0;
+        }
 
-		private _queryPropertyChanged(sender: Query, detail: Vidyano.Common.PropertyChangedArgs) {
-			if (detail.propertyName == "selectedItems")
-				this._invalidateCanSelect(detail.newValue);
-		}
+        private _queryPropertyChanged(sender: Query, detail: Vidyano.Common.PropertyChangedArgs) {
+            if (detail.propertyName == "selectedItems")
+                this._invalidateCanSelect(detail.newValue);
+        }
 
         private _select() {
             if (!this.canSelect)
                 return;
 
             this.instance.resolve(this.query.selectedItems);
-		}
+        }
 
         private _search(e: CustomEvent, detail: string) {
             if (!this.query)
@@ -50,10 +50,10 @@
             e.preventDefault();
 
             var detail = <QueryGridItemTapEventArgs>e.detail;
-			if (this.query.maxSelectedItems == 1)
+            if (this.query.maxSelectedItems == 1)
                 this.instance.resolve([detail.item]);
-			else
-				detail.item.isSelected = !detail.item.isSelected;
-		}
+            else
+                detail.item.isSelected = !detail.item.isSelected;
+        }
     }
 }
