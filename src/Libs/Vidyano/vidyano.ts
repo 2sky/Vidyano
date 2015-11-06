@@ -3646,6 +3646,11 @@ module Vidyano {
         }
 
         private _computeFilters(setDefaultFilter?: boolean) {
+            if (!this._filtersAsDetail) {
+                this._filters = [];
+                return;
+            }
+
             this._filters = this._filtersAsDetail.objects.map(filter => new QueryFilter(filter));
 
             if (setDefaultFilter)
