@@ -1,12 +1,12 @@
-# Vidyano Web2 Client
+# Vidyano Web²
 
-The Vidyano Web2 Client provides a modern out of the box scaffolded UI that connects to a Vidyano backend.
+The Vidyano Web² client provides a modern out of the box scaffolded UI that connects to a Vidyano backend.
 
 ## Dependencies
 
 This project is heavily based on the [Polymer project](https://www.polymer-project.org/). if you want to add your own web components to your application, check out the site for all library documentation, including getting started guides and tutorials, developer reference, and more.
 
-Apart from Polymer, the Vidyano Client also uses a number of support libraries such as:
+Apart from Polymer, the Vidyano Web² client also uses a number of support libraries such as:
 
 * [bignumber.js](https://github.com/MikeMcl/bignumber.js/)
 * [moment.js](http://momentjs.com/)
@@ -19,7 +19,7 @@ Apart from Polymer, the Vidyano Client also uses a number of support libraries s
 
 ## Project structure
 
-The project structure of the Vidyano Web Client looks something like this:
+The project structure of the Vidyano Web² client looks something like this:
 
 ```
 /
@@ -68,11 +68,11 @@ The [src/WebComponents](https://github.com/2sky/Vidyano/tree/master/src/WebCompo
 
 The [src/Libs](https://github.com/2sky/Vidyano/tree/master/src/Libs) folder contains dependencies on external support libraries as well as the vidyano base library for interaction with a Vidyano backend.
 
-The [dist/Vidyano.Web2](https://github.com/2sky/Vidyano/tree/master/dist/Vidyano.Web2) folder contains the C# project for exposing the Vidyano Web2 client files via an ASP.NET Web API controller. You do not need to compile this project as the result is offered to you via a NuGet package on the 2sky MyGet channel.
+The [dist/Vidyano.Web2](https://github.com/2sky/Vidyano/tree/master/dist/Vidyano.Web2) folder contains the C# project for exposing the Vidyano Web² client files via an ASP.NET Web API controller. You do not need to compile this project as the result is offered to you via a NuGet package on the 2sky MyGet channel.
 
 ## Getting Started
 
-As mentioned above, the latest version of the Vidyano Web2 Client is available via the 2sky MyGet channel. You can however also add the client via Bower. To install Bower, see the [Bower web site](http://bower.io/). After installing Bower, go into the project folder and run **```bower install --save Vidyano```** to install.
+As mentioned above, the latest version of the Vidyano Web² client is available via the 2sky MyGet channel. You can however also add the client via Bower. To install Bower, see the [Bower web site](http://bower.io/). After installing Bower, go into the project folder and run **```bower install --save Vidyano```** to install.
 
 ### Setting up your index.html
 
@@ -95,7 +95,7 @@ You will then add a ```vi-app``` component and points its ```uri``` attribute to
 
 ## Documentation
 
-Vidyano Web Client's documentation is included in this repo in the [docs](./docs) folder.
+Vidyano Web² client's documentation is included in this repo in the [docs](./docs) folder.
 
 ## Versioning
 
