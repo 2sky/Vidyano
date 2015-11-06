@@ -27,7 +27,7 @@ module Vidyano.WebComponents {
         }
 
         private _showChart(e: TapEvent) {
-            this.query.currentChart = e.model.chart;
+            this.query.currentChart = e.model.chart || (e.model.type && e.model.type.single ? e.model.type.charts[0] : null);
         }
     }
 
@@ -45,6 +45,10 @@ module Vidyano.WebComponents {
 
         get type(): string {
             return this._type;
+        }
+
+        get single(): boolean {
+            return this.charts.length === 1;
         }
     }
 }
