@@ -1376,7 +1376,7 @@
 
             // Render Text
             if (!this._customCellTemplate) {
-                this._typeHints = Vidyano.extend({}, this._item.typeHints, value ? value.typeHints : undefined);
+                this._typeHints = Vidyano.extend({}, this._item.typeHints, itemValue ? itemValue.typeHints : undefined);
                 var value = this._item.getValue(this.column.name);
                 if (value != null && (this.column.type == "Boolean" || this.column.type == "NullableBoolean"))
                     value = this._item.query.service.getTranslatedMessage(value ? this._getTypeHint("truekey", "True") : this._getTypeHint("falsekey", "False"));
