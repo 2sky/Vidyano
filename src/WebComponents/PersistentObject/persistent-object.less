@@ -39,26 +39,14 @@ vi-persistent-object {
     }
 
     &[layout~="master-detail"] {
-        .tabs {
-            .detail {
-                padding-left: 1px;
-            }
-        }
-
-        .content {
-            .master {
-                padding-right: 1px;
-            }
-
-            .detail {
-                padding-left: 1px;
-            }
+        .tabs > .detail {
+            margin-left: 4px;
         }
 
         #splitter {
             .noSelection();
             position: relative;
-            width: 1px;
+            width: 4px;
             background-color: @tabsBG;
 
             &::after {
@@ -79,10 +67,6 @@ vi-persistent-object {
             }
 
             cursor: col-resize;
-        }
-
-        #splitter + div {
-            padding-left: 1px;
         }
     }
 
