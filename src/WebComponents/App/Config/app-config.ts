@@ -14,8 +14,6 @@
             if (!this._defaultAttributeConfig) {
                 this._defaultAttributeConfig = <PersistentObjectAttributeConfig><any>this.appendChild(new WebComponents.PersistentObjectAttributeConfig());
             }
-
-            (<any>this.app)._setConfiguration(this);
         }
 
         getAttributeConfig(attr: Vidyano.PersistentObjectAttribute): PersistentObjectAttributeConfig {

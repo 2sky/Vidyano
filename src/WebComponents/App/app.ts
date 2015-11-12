@@ -284,11 +284,10 @@
         }
 
         get configuration(): AppConfig {
-            return this._configuration;
-        }
+            if (!this._configuration)
+                this._configuration = <AppConfig>Polymer.dom(this.root).querySelector("vi-app-config");
 
-        private _setConfiguration(config: AppConfig) {
-            this._configuration = config;
+            return this._configuration;
         }
 
         changePath(path: string, replaceCurrent: boolean = false) {
