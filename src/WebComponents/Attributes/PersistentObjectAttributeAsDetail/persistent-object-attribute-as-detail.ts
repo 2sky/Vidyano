@@ -12,19 +12,15 @@ module Vidyano.WebComponents.Attributes {
             newActionPinned: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeNewActionPinned(height, newAction)"
+                computed: "_computeNewActionPinned(size.height, newAction)"
             },
             deleteAction: {
                 type: Object,
                 readOnly: true
             },
-            width: {
-                type: Number,
-                readOnly: true
-            },
-            height: {
-                type: Number,
-                readOnly: true
+            size: {
+                type: Object,
+                notify: true
             },
             canDelete: {
                 type: Boolean,
@@ -39,7 +35,7 @@ module Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_updateWidths(columns, width, deleteAction, editing, isAttached)",
+            "_updateWidths(columns, size.width, deleteAction, editing, isAttached)",
             "_updateActions(attribute.details.actions, editing, readOnly)"
         ],
         forwardObservers: [
@@ -54,20 +50,11 @@ module Vidyano.WebComponents.Attributes {
         newActionPinned: boolean;
 
         private _setInitializing: (init: boolean) => void;
-        private _setWidth: (width: number) => void;
-        private _setHeight: (height: number) => void;
         private _setNewAction: (action: Vidyano.Action) => void;
         private _setDeleteAction: (action: Vidyano.Action) => void;
 
         private _isColumnVisible(column: QueryColumn) {
             return !column.isHidden && column.width !== "0";
-        }
-
-        private _rowSizechanged(e: Event, detail: { width: number; height: number; }) {
-            this._setWidth(detail.width);
-            this._setHeight(detail.height);
-
-            e.stopPropagation();
         }
 
         private _computeColumns(columns: QueryColumn[]): QueryColumn[] {
