@@ -36,8 +36,13 @@
             if (newValue != null && this._decimalSeparator !== ".")
                 newValue = newValue.replace(this._decimalSeparator, ".");
 
-            if (this.attribute)
-                this.attribute.setValue(!StringEx.isNullOrEmpty(newValue) ? new BigNumber(newValue).toNumber() : null, false);
+            if (this.attribute) {
+                const bigNumberValue = !StringEx.isNullOrEmpty(newValue) ? new BigNumber(newValue) : null;
+                if (this.attribute.value instanceof BigNumber && bigNumberValue != null && bigNumberValue.equals(this.attribute.value))
+                    return;
+
+                this.attribute.setValue(bigNumberValue, false);
+            }
         }
 
         private _editInputBlur(e: Event) {
