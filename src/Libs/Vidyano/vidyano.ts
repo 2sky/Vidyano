@@ -3598,7 +3598,6 @@ module Vidyano {
 
         private _setFilters(filters: QueryFilter[]) {
             var oldFilters = this._filters;
-            console.log(filters);
             this.notifyPropertyChanged("filters", this._filters = filters, oldFilters);
         }
 
