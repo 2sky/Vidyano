@@ -73,7 +73,7 @@
                 <vi-popup-menu-item icon="Filter_Save" label="{{translations.SaveAs}}" on-tap="_saveAs"></vi-popup-menu-item>
                 <vi-popup-menu-item-separator hidden$="{{!hasFilters}}"></vi-popup-menu-item-separator>
             </template>
-            <template is="dom-repeat" items="{{filters.filters}}" as="filter">
+            <template is="dom-repeat" items="{{filters}}" as="filter">
                 <vi-popup-menu-item icon-space split label="{{filter.name}}" data-filter$="{{filter.name}}" on-tap="_load">
                     <vi-popup-menu-item icon="Action_Delete" label="{{translations.Delete}}" data-filter$="{{filter.name}}" on-tap="_delete"></vi-popup-menu-item>
                 </vi-popup-menu-item>

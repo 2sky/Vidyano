@@ -3598,6 +3598,7 @@ module Vidyano {
 
         private _setFilters(filters: QueryFilter[]) {
             var oldFilters = this._filters;
+            console.log(filters);
             this.notifyPropertyChanged("filters", this._filters = filters, oldFilters);
         }
 
@@ -3647,11 +3648,11 @@ module Vidyano {
 
         private _computeFilters(setDefaultFilter?: boolean) {
             if (!this._filtersAsDetail) {
-                this._filters = [];
+                this._setFilters([]);
                 return;
             }
 
-            this._filters = this._filtersAsDetail.objects.map(filter => new QueryFilter(filter));
+            this._setFilters(this._filtersAsDetail.objects.map(filter => new QueryFilter(filter)));
 
             if (setDefaultFilter)
                 this._currentFilter = Enumerable.from(this._filters).firstOrDefault(f => f.persistentObject.getAttributeValue("IsDefault"));
@@ -3701,6 +3702,23 @@ module Vidyano {
                 });
             });
         }
+
+        delete(name: string): Promise<any> {
+            var filter = this.getFilter(name);
+            if (!filter)
+                return Promise.reject(`No filter found with name '${name}'.`);
+
+            filter.persistentObject.isDeleted = true;
+
+            return this._query.queueWork(() => {
+                this._filtersPO.beginEdit();
+
+                return this._filtersPO.save().then(result => {
+                    this._computeFilters();
+                    return null;
+                });
+            });
+        }
     }
 
     export class QueryFilter extends Vidyano.Common.Observable<QueryFilter> {
@@ -3708,12 +3726,10 @@ module Vidyano {
 
         constructor(private _po: PersistentObject) {
             super();
-
-            this._name = this._po.getAttributeValue("Name");
         }
 
         get name(): string {
-            return this._name;
+            return this._po.getAttributeValue("Name");
         }
 
         get persistentObject(): PersistentObject {
@@ -3728,7 +3744,7 @@ module Vidyano {
         get query(): Vidyano.Query {
             return this._query;
         }
-        
+
         get label(): string {
             return this._label;
         }

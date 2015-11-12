@@ -2,9 +2,13 @@
     @WebComponent.register({
         properties: {
             query: Object,
-            filters: {
+            queryFilters: {
                 type: Object,
                 computed: "query.filters"
+            },
+            filters: {
+                type: Array,
+                computed: "_computeFilters(query.filters.filters)"
             },
             hasFilters: {
                 type: Boolean,
@@ -37,6 +41,8 @@
             }
         },
         forwardObservers: [
+            "query.filters",
+            "query.filters.filters",
             "query.filters.currentFilter"
         ]
     })
@@ -44,15 +50,19 @@
         private _dialog: WebComponents.DialogInstance;
         private _preventColumnFilterChangedListener: boolean;
         query: Vidyano.Query;
-        filters: Vidyano.QueryFilters;
+        queryFilters: Vidyano.QueryFilters;
         currentFilter: Vidyano.QueryFilter;
 
-        private _computeDisabled(filters: QueryFilters, currentFilter: QueryFilter): boolean {
-            return (!filters.filters || filters.filters.length === 0) && !currentFilter;
+        private _computeFilters(filters: QueryFilter[]): QueryFilter[] {
+            return filters;
         }
 
-        private _computeHasFilters(filters: QueryFilters): boolean {
-            return !!filters && !!filters.filters && filters.filters.length > 0;
+        private _computeDisabled(filters: QueryFilter[], currentFilter: QueryFilter): boolean {
+            return (!filters || filters.length === 0) && !currentFilter;
+        }
+
+        private _computeHasFilters(filters: QueryFilters[]): boolean {
+            return !!filters && filters.length > 0;
         }
 
         private _computeCanReset(currentFilter: QueryFilter): boolean {
@@ -85,7 +95,7 @@
             if (!name)
                 return;
 
-            this.filters.currentFilter = this.filters.getFilter(name);
+            this.queryFilters.currentFilter = this.queryFilters.getFilter(name);
         }
 
         private _saveAs() {
@@ -97,6 +107,26 @@
 
         private _save() {
             this.query.filters.save();
+        }
+
+        private _delete(e: TapEvent) {
+            e.stopPropagation();
+
+            var name = (<HTMLElement>e.currentTarget).getAttribute("data-filter");
+            if (!name)
+                return;
+
+            this.app.showMessageDialog({
+                title: name,
+                titleIcon: "Action_Delete",
+                message: this.translateMessage("AskForDeleteFilter", name),
+                actions: [this.translateMessage("Delete"), this.translateMessage("Cancel")],
+                actionTypes: ["Danger"]
+            }).then(result => {
+                if (result === 0) {
+                    this.query.filters.delete(name);
+                }
+            });
         }
     }
 
