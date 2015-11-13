@@ -74,8 +74,10 @@
                 <vi-popup-menu-item-separator hidden$="{{!hasFilters}}"></vi-popup-menu-item-separator>
             </template>
             <template is="dom-repeat" items="{{filters}}" as="filter">
-                <vi-popup-menu-item icon-space split label="{{filter.name}}" data-filter$="{{filter.name}}" on-tap="_load">
-                    <vi-popup-menu-item icon="Action_Delete" label="{{translations.Delete}}" data-filter$="{{filter.name}}" on-tap="_delete"></vi-popup-menu-item>
+                <vi-popup-menu-item icon-space split="{{!filter.isLocked}}" label="{{filter.name}}" data-filter$="{{filter.name}}" on-tap="_load">
+                    <template is="dom-if" if="{{!filter.isLocked}}">
+                        <vi-popup-menu-item icon="Action_Delete" label="{{translations.Delete}}" data-filter$="{{filter.name}}" on-tap="_delete"></vi-popup-menu-item>
+                    </template>
                 </vi-popup-menu-item>
             </template>
         </vi-popup-menu>

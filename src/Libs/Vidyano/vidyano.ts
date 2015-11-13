@@ -3680,6 +3680,8 @@ module Vidyano {
         save(filter: QueryFilter = this.currentFilter): Promise<QueryFilter> {
             if (!filter)
                 return;
+            else if (filter.isLocked)
+                return Promise.reject("Filter is locked.");
 
             this._filtersPO.beginEdit();
 
@@ -3704,6 +3706,9 @@ module Vidyano {
             if (!filter)
                 return Promise.reject(`No filter found with name '${name}'.`);
 
+            if (filter.isLocked)
+                return Promise.reject("Filter is locked.");
+
             filter.persistentObject.isDeleted = true;
 
             return this._query.queueWork(() => {
@@ -3726,6 +3731,10 @@ module Vidyano {
 
         get name(): string {
             return this._po.getAttributeValue("Name");
+        }
+
+        get isLocked(): boolean {
+            return this._po.getAttributeValue("IsLocked");
         }
 
         get persistentObject(): PersistentObject {

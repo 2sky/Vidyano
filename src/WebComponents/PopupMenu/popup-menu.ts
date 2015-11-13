@@ -110,7 +110,8 @@ module Vidyano.WebComponents {
             },
             split: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: false
             }
         }
     })
@@ -119,12 +120,6 @@ module Vidyano.WebComponents {
         icon: string;
         checked: boolean;
         split: boolean;
-
-        attached() {
-            super.attached();
-
-            this.split = Polymer.dom(this).children.length > 0;
-        }
 
         private _splitTap(e: Event) {
             e.stopPropagation();
