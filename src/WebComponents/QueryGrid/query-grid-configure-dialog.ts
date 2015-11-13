@@ -36,7 +36,7 @@
         }
 
         private _updateColumns(target: HTMLElement, columns: QueryGridConfigureDialogColumn[]) {
-            columns.forEach(col => target.appendChild(col));
+            Enumerable.from(columns).orderBy(c => c.offset).forEach(col => target.appendChild(col));
         }
 
         private _reorderColumns(e: CustomEvent) {
