@@ -705,7 +705,12 @@
         }
 
         private _configureColumns() {
-            this.app.showDialog(new Vidyano.WebComponents.QueryGridConfigureDialog(this, this._settings));
+            this.app.showDialog(new Vidyano.WebComponents.QueryGridConfigureDialog(this, this._settings)).then(result => {
+                if (!result)
+                    return;
+
+                return this._updateColumnWidths().then(() => this._settings.save(true));
+            });
         }
 
         private _preventScroll(e: Event) {

@@ -62,9 +62,7 @@
                 }
             });
 
-            this._settings.save().then(() => {
-                this.instance.resolve();
-            });
+            this.instance.resolve(true);
         }
 
         private _reset() {
