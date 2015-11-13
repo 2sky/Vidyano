@@ -25,8 +25,17 @@
             if (this._forwardSave)
                 this.instance.resolve(this.persistentObject);
             else {
+                var wasNew = this.persistentObject.isNew;
                 this.persistentObject.save().then(() => {
-                    this.instance.resolve(this.persistentObject);
+                    if (StringEx.isNullOrWhiteSpace(this.persistentObject.notification) || this.persistentObject.notificationType != NotificationType.Error) {
+                        if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") != -1)
+                            this.app.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId).then(po2 => {
+                                this.app.service.hooks.onOpen(po2, true);
+                                this.instance.resolve(this.persistentObject);
+                            });
+                        else
+                            this.instance.resolve(this.persistentObject);
+                    }
                 });
             }
         }
