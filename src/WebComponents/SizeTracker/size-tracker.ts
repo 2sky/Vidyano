@@ -1,6 +1,6 @@
 ﻿module Vidyano.WebComponents {
     var requestFrame = (function () {
-        var raf = requestAnimationFrame || (<any>window).mozRequestAnimationFrame || (<any>window).webkitRequestAnimationFrame ||
+        var raf = window.requestAnimationFrame || (<any>window).mozRequestAnimationFrame || (<any>window).webkitRequestAnimationFrame ||
             function (fn) { return window.setTimeout(fn, 20); };
         return function (fn) { return raf(fn); };
     })();

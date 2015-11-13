@@ -385,7 +385,7 @@
                     disposers.push(this._forwardObservable(item, path, pathPrefix + "." + idx, callback));
                 });
             }
-            else {
+            else if ((<Vidyano.Common.Observable<any>>source).propertyChanged) {
                 var dispose = (<Vidyano.Common.Observable<any>>source).propertyChanged.attach((sender, detail) => {
                     if (detail.propertyName == paths[0]) {
                         if (subDispose) {

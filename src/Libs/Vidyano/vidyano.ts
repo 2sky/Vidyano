@@ -663,9 +663,6 @@ module Vidyano {
                         return Promise.resolve(this.application);
                     }
                 }
-
-                this._setIsSignedIn(!!this.application);
-                return Promise.resolve(this.application);
             });
         }
 
@@ -1873,7 +1870,7 @@ module Vidyano {
 
             result.queriesToRefresh.forEach(id => {
                 var query = Enumerable.from(this.queries).firstOrDefault(q => q.id == id || q.name == id);
-                if (query && query.hasSearched) {
+                if (query && (query.hasSearched || query.totalItems != null)) {
                     query.search();
                 }
             });
