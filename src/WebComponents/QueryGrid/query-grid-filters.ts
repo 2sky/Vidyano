@@ -354,19 +354,23 @@
                     else
                         this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.except([distinctValue]);
 
-                    if (!this.queryColumn.selectedDistincts.isEmpty() && !this.queryColumn.query.filters.currentFilter) {
-                        this.queryColumn.query.filters.createNew().then(filter => {
-                            this.queryColumn.query.filters.currentFilter = filter;
-                        });
-                    }
-
+                    this._updateFilters();
                     this._updateDistincts();
+
                     break;
                 }
             }
             while (((element = element.parentElement) != this) && element);
 
             e.stopPropagation();
+        }
+
+        private _updateFilters() {
+            if (!this.queryColumn.selectedDistincts.isEmpty() && !this.queryColumn.query.filters.currentFilter) {
+                this.queryColumn.query.filters.createNew().then(filter => {
+                    this.queryColumn.query.filters.currentFilter = filter;
+                });
+            }
         }
 
         private _updateDistincts() {
@@ -428,6 +432,7 @@
             this._renderDistincts();
             this.column.query.search().then(() => {
                 this._renderDistincts();
+                this._updateFilters();
                 this._updateDistincts();
             });
         }
