@@ -1,4 +1,5 @@
 ﻿<link rel="import" href="../../Libs/paper-ripple/paper-ripple.html" />
+<link rel="import" href="../../Libs/iron-list/iron-list.html" />
 <link rel="import" href="../ActionButton/action-button.html" />
 <link rel="import" href="../InputSearch/input-search.html" />
 <link rel="import" href="../Style/style.html" />
@@ -116,7 +117,16 @@
                                 <vi-spinner></vi-spinner>
                             </template>
                             <vi-scroller id="distinctsContainer" no-horizontal>
-                                <div id="distincts" on-tap="_distinctClick" inversed$="{{inversed}}"></div>
+                                <iron-list id="distincts" items="[[distincts]]" as="item">
+                                    <template>
+                                        <div class="distinct" distinct-type$="{{item.type}}" on-tap="_distinctClick">
+                                            <div class="selector">
+                                                <vi-icon source="Selected" class="selector"></vi-icon>
+                                            </div>
+                                            <span>{{item.displayValue}}</span>
+                                        </div>
+                                    </template>
+                                </iron-list>
                             </vi-scroller>
                         </div>
                     </div>

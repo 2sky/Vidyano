@@ -74,7 +74,7 @@
         }
 
         private _computeCurrentFilterSaveLabel(currentFilter: QueryFilter): string {
-            return !!currentFilter ? `${this.translateMessage('Save')} '${currentFilter.name}': ` : "";
+            return !!currentFilter ? `${this.translateMessage('Save')} '${currentFilter.name}'` : "";
         }
 
         private _computeCanSaveAs(currentFilter: QueryFilter): boolean {
@@ -245,6 +245,12 @@
         }
     }
 
+    interface QueryGridColumnFilterDistinct {
+        type: string;
+        value: string;
+        displayValue: string;
+    }
+
     @WebComponent.register({
         properties: {
             column: Object,
@@ -252,6 +258,7 @@
                 type: Object,
                 computed: "column.column"
             },
+            distincts: Array,
             filtered: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -275,7 +282,7 @@
         },
         observers: [
             "_update(queryColumn.selectedDistincts, queryColumn.selectedDistinctsInversed, isAttached)",
-            "_renderDistincts(queryColumn.distincts)"
+            "_renderDistincts(queryColumn.selectedDistincts, queryColumn.distincts)"
         ],
         forwardObservers: [
             "queryColumn.selectedDistincts",
@@ -286,14 +293,13 @@
     export class QueryGridColumnFilter extends Vidyano.WebComponents.QueryGridColumnFilterProxyBase {
         private static _selector: DocumentFragment;
         private _openOnAttach: boolean = true;
+        private _distinctHeight: number;
+        column: QueryGridColumn;
         searchText: string;
         label: string;
+        distincts: QueryGridColumnFilterDistinct[];
 
         private _setLoading: (loading: boolean) => void;
-
-        constructor(public column: QueryGridColumn) {
-            super();
-        }
 
         attached() {
             super.attached();
@@ -319,8 +325,8 @@
                 this._setLoading(true);
 
                 this.column.column.refreshDistincts().then(() => {
-                    var distinctsDiv = <HTMLElement>this.$["distincts"];
-                    distinctsDiv.style.minWidth = this.offsetWidth + "px";
+                    var distinctsList = <HTMLElement>this.$["distincts"];
+                    distinctsList.style.minWidth = this.offsetWidth + "px";
 
                     this._setLoading(false);
 
@@ -331,9 +337,9 @@
                 });
             }
             else {
-                var distinctsDiv = <HTMLElement>this.$["distincts"];
-                distinctsDiv.style.minWidth = this.offsetWidth + "px";
-                distinctsDiv.scrollTop = 0;
+                var distinctsList = <HTMLElement>this.$["distincts"];
+                distinctsList.style.minWidth = this.offsetWidth + "px";
+                distinctsList.scrollTop = 0;
             }
         }
 
@@ -341,26 +347,16 @@
             WebComponents.Popup.closeAll();
         }
 
-        private _distinctClick(e: Event) {
-            var element = <HTMLElement>e.srcElement || (<any>e).originalTarget;
-            var distinctValue: string;
-            do {
-                distinctValue = element.getAttribute("distinct-value");
-                if (distinctValue) {
-                    distinctValue = <string>JSON.parse(distinctValue).value;
+        private _distinctClick(e: TapEvent) {
+            const distinctValue = e.model.item.value;
 
-                    if (this.queryColumn.selectedDistincts.indexOf(distinctValue) == -1)
-                        this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.concat([distinctValue]);
-                    else
-                        this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.except([distinctValue]);
+            if (this.queryColumn.selectedDistincts.indexOf(distinctValue) == -1)
+                this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.concat([distinctValue]);
+            else
+                this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.except([distinctValue]);
 
-                    this._updateFilters();
-                    this._updateDistincts();
-
-                    break;
-                }
-            }
-            while (((element = element.parentElement) != this) && element);
+            this._updateFilters();
+            this._updateDistincts();
 
             e.stopPropagation();
         }
@@ -384,42 +380,33 @@
             });
         }
 
-        private _clearDistincts() {
-            this.$["distincts"].innerHTML = "";
-        }
-
         private _renderDistincts() {
-            const target = <HTMLElement>this.$["distincts"];
-            target.innerHTML = "";
+            const distinctType = !this.inversed ? "include" : "exclude";
+            const distincts = this.queryColumn.selectedDistincts.select(v => {
+                return {
+                    type: distinctType,
+                    value: v,
+                    displayValue: this._getDistinctDisplayValue(v)
+                };
+            });
 
-            if (this.queryColumn && this.queryColumn.distincts) {
-                const distinctType = !this.inversed ? "include" : "exclude";
-
-                this.queryColumn.selectedDistincts.forEach(v => {
-                    this._renderDistinct(target, v, distinctType);
-                });
-
-                this.queryColumn.distincts.matching.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).forEach(v => this._renderDistinct(target, v, "matching"));
-                this.queryColumn.distincts.remaining.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).forEach(v => this._renderDistinct(target, v, "remaining"));
+            if (this.queryColumn.distincts) {
+                this.distincts = distincts.concat(this.queryColumn.distincts.matching.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).map(v => {
+                    return {
+                        type: "matching",
+                        value: v,
+                        displayValue: this._getDistinctDisplayValue(v)
+                    };
+                })).concat(this.queryColumn.distincts.remaining.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).map(v => {
+                    return {
+                        type: "remaining",
+                        value: v,
+                        displayValue: this._getDistinctDisplayValue(v)
+                    };
+                })).toArray();
             }
-        }
-
-        private _renderDistinct(target: HTMLElement, value: string, className?: string) {
-            var div = document.createElement("div");
-            div.setAttribute("distinct-value", JSON.stringify({ value: value }));
-            if (className)
-                div.className = className;
-
-            var selectorDiv = document.createElement("div");
-            selectorDiv.appendChild(WebComponents.Icon.Load("Selected"));
-            selectorDiv.className = "selector";
-            div.appendChild(selectorDiv);
-
-            var span = document.createElement("span");
-            span.textContent = this._getDistinctDisplayValue(value);
-
-            div.appendChild(span);
-            target.appendChild(div);
+            else
+                this.distincts = distincts.toArray();
         }
 
         private _search() {

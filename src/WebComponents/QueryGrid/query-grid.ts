@@ -1556,8 +1556,10 @@
         private _onUpgradeFilterProxy(e: Event) {
             var proxy = this._filter;
 
-            Polymer.dom(this).appendChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilter(this._column));
-            Polymer.dom(this).removeChild(proxy);
+            Polymer.dom(this).replaceChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilter(), proxy);
+            Polymer.dom(this).flush();
+
+            this._filter.column = this._column;
 
             e.stopPropagation();
         }

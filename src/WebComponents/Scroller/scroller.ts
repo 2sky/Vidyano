@@ -130,6 +130,11 @@
         private _setScrollBottomShadow: (val: boolean) => void;
         private _setHiddenScrollbars: (val: boolean) => void;
 
+        get scroller(): HTMLElement {
+            // NOTE: This property is used by other components to determine the scrolling parent.
+            return this.$["wrapper"];
+        }
+
         scrollToTop() {
             this.$["wrapper"].scrollTop = 0;
         }

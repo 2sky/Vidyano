@@ -191,11 +191,7 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
             text-align: left;
             font-weight: normal;
 
-            &[inversed] {
-                border-color: darkred;
-            }
-
-            > div {
+            div.distinct {
                 display: block;
                 cursor: pointer;
                 line-height: @h3;
@@ -228,21 +224,21 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
                     }
                 }
 
-                &:not(.include):not(.exclude) {
+                &:not([distinct-type="include"]):not([distinct-type="exclude"]) {
                     div.selector svg #check {
                         display: none;
                     }
                 }
 
-                &.include {
+                &[distinct-type="include"] {
                     .selected-icon-checked-color(green);
                 }
 
-                &.exclude {
+                &[distinct-type="exclude"] {
                     .selected-icon-checked-color(darkred);
                 }
 
-                &.remaining {
+                &[distinct-type="remaining"] {
                     color: #aaa;
                     fill: white;
                 }
