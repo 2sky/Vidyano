@@ -245,7 +245,7 @@
         }
     }
 
-    interface QueryGridColumnFilterDistinct {
+    export interface QueryGridColumnFilterDistinct {
         type: string;
         value: string;
         displayValue: string;
