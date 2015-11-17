@@ -382,7 +382,7 @@
 
         private _renderDistincts() {
             const distinctType = !this.inversed ? "include" : "exclude";
-            const distincts = this.queryColumn.selectedDistincts.select(v => {
+            const distinctsEnum = this.queryColumn.selectedDistincts.select(v => {
                 return {
                     type: distinctType,
                     value: v,
@@ -391,7 +391,7 @@
             });
 
             if (this.queryColumn.distincts) {
-                this.distincts = distincts.concat(this.queryColumn.distincts.matching.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).map(v => {
+                const distincts = distinctsEnum.concat(this.queryColumn.distincts.matching.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).map(v => {
                     return {
                         type: "matching",
                         value: v,
@@ -403,10 +403,12 @@
                         value: v,
                         displayValue: this._getDistinctDisplayValue(v)
                     };
-                })).toArray();
+                }));
+
+                this.distincts = (this.queryColumn.distincts.hasMore ? distincts.concat([<any>{}]) : distincts).toArray();
             }
             else
-                this.distincts = distincts.toArray();
+                this.distincts = distinctsEnum.toArray();
         }
 
         private _search() {

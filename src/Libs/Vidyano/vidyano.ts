@@ -3390,10 +3390,14 @@ module Vidyano {
                         col.distincts.isDirty = true;
                 });
 
+                const matchingDistinctsAttr = result.attributesByName["MatchingDistincts"];
+                const remainingDistinctsAttr = result.attributesByName["RemainingDistincts"];
+
                 this.distincts = {
-                    matching: <string[]>result.attributesByName["MatchingDistincts"].options,
-                    remaining: <string[]>result.attributesByName["RemainingDistincts"].options,
-                    isDirty: false
+                    matching: <string[]>matchingDistinctsAttr.options,
+                    remaining: <string[]>remainingDistinctsAttr.options,
+                    isDirty: false,
+                    hasMore: matchingDistinctsAttr.typeHints.hasmore || remainingDistinctsAttr.typeHints.hasmore
                 };
 
                 return this.distincts;
@@ -3444,6 +3448,7 @@ module Vidyano {
         matching: string[];
         remaining: string[];
         isDirty: boolean;
+        hasMore: boolean;
     }
 
     export class QueryResultItem extends ServiceObject {

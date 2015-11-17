@@ -119,11 +119,21 @@
                             <vi-scroller id="distinctsContainer" no-horizontal>
                                 <iron-list id="distincts" items="[[distincts]]" as="item">
                                     <template>
-                                        <div class="distinct" distinct-type$="{{item.type}}" on-tap="_distinctClick">
-                                            <div class="selector">
-                                                <vi-icon source="Selected" class="selector"></vi-icon>
-                                            </div>
-                                            <span>{{item.displayValue}}</span>
+                                        <div>
+                                            <template is="dom-if" if="{{item.type}}">
+                                                <div class="distinct" distinct-type$="{{item.type}}" on-tap="_distinctClick">
+                                                    <div class="selector">
+                                                        <vi-icon source="Selected" class="selector"></vi-icon>
+                                                    </div>
+                                                    <span>{{item.displayValue}}</span>
+                                                </div>
+                                            </template>
+                                            <template is="dom-if" if="{{!item.type}}">
+                                                <div class="hasMore">
+                                                    <vi-icon source="Selected"></vi-icon>
+                                                    <vi-icon source="Ellipsis"></vi-icon>
+                                                </div>
+                                            </template>
                                         </div>
                                     </template>
                                 </iron-list>

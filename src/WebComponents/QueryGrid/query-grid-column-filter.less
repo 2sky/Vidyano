@@ -243,6 +243,24 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
                     fill: white;
                 }
             }
+
+            div.hasMore {
+                text-align: left;
+                cursor: default;
+                opacity: 0.25;
+
+                vi-icon {
+                    display: inline-block;
+
+                    &:first-of-type {
+                        padding: 3px @h5;
+
+                        svg #check {
+                            display: none;
+                        }
+                    }
+                }
+            }
         }
 
         button.close {
