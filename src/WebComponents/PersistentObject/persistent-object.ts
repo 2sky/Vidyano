@@ -52,7 +52,10 @@
         forwardObservers: [
             "persistentObject.tabs.isVisible",
             "persistentObject.breadcrumb"
-        ]
+        ],
+        listeners: {
+            "tabselect": "_tabselect"
+        }
     })
     export class PersistentObject extends WebComponent {
         private _uniqueId: string = Unique.get();
@@ -186,6 +189,22 @@
 
         private _hasDetailTabs(tabs: Vidyano.PersistentObjectAttributeTab[]): boolean {
             return tabs && tabs.length > 0;
+        }
+
+        private _tabselect(e: CustomEvent, detail: { name?: string; tab?: Vidyano.PersistentObjectTab}) {
+            if (!detail.tab)
+                detail.tab = Enumerable.from(this.masterTabs).firstOrDefault(t => t.name === detail.name) || Enumerable.from(this.detailTabs).firstOrDefault(t => t.name === detail.name);
+
+            if (!detail.tab)
+                return;
+
+            if (this.masterTabs.indexOf(detail.tab) >= 0)
+                this.selectedMasterTab = detail.tab;
+
+            if (this.detailTabs.indexOf(detail.tab) >= 0)
+                this.selectedDetailTab = detail.tab;
+
+            e.stopPropagation();
         }
 
         private _trackSplitter(e: CustomEvent, detail: PolymerTrackDetail) {

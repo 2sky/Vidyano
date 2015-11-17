@@ -70,7 +70,7 @@
         }
 
         private _computeCanSave(currentFilter: QueryFilter, canSaveAs: boolean): boolean {
-            return !canSaveAs && !!currentFilter && !currentFilter.persistentObject.isNew;
+            return !canSaveAs && !!currentFilter && !currentFilter.isLocked && !currentFilter.persistentObject.isNew;
         }
 
         private _computeCurrentFilterSaveLabel(currentFilter: QueryFilter): string {
