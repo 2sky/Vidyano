@@ -184,6 +184,7 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
             border: 1px solid @separatorColor;
             margin-left: @h5;
             box-sizing: border-box;
+            cursor: default;
         }
 
         #distincts {
@@ -251,13 +252,19 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
 
                 vi-icon {
                     display: inline-block;
+                    line-height: @h3;
+                    height: @h3;
+                    padding: 3px @h5;
+                    box-sizing: border-box;
 
                     &:first-of-type {
-                        padding: 3px @h5;
-
                         svg #check {
                             display: none;
                         }
+                    }
+
+                    &:last-of-type {
+                        padding-left: 0;
                     }
                 }
             }
