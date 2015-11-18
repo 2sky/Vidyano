@@ -1,5 +1,6 @@
 <dom-module id="vi-persistent-object-presenter">
     <template>
+        <link rel="stylesheet" href="persistent-object-presenter.css" />
         <template is="dom-if" if="{{loading}}">
             <vi-spinner></vi-spinner>
         </template>
@@ -9,9 +10,10 @@
                 <span>{{error}}</span>
             </div>
         </template>
-        <content></content>
+        <div class="content-wrapper">
+            <content></content>
+        </div>
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="persistent-object-presenter.css" />
 <script src="persistent-object-presenter.js"></script>

@@ -38,36 +38,36 @@
     box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);
 }
 
-.theme-color(@prop, @val: "color", @fadeout: 0%) {
-    .colorize-loop (@prop, @val, @counter) when (@counter > 0) {
-        .colorize-loop (@prop, @val, (@counter - 1));
-        @theme: ~'[theme-color-@{counter}]';
-        @{theme} & {
-            @color: ~'theme-color-@{counter}';
-            @light: ~'theme-color-@{counter}-light';
-            @lighter: ~'theme-color-@{counter}-lighter';
-            @dark: ~'theme-color-@{counter}-dark';
-            @darker: ~'theme-color-@{counter}-darker';
-            @faint: ~'theme-color-@{counter}-faint';
-            @semi-faint: ~'theme-color-@{counter}-semi-faint';
-
-            @result: "@{@{val}}";
-            @{prop}: fadeout(@@result, @fadeout);
-        }
-    }
-    .colorize-loop(@prop, @val, 2);
-}
+// .theme-color(@prop, @val: "color", @fadeout: 0%) {
+//     .colorize-loop (@prop, @val, @counter) when (@counter > 0) {
+//         .colorize-loop (@prop, @val, (@counter - 1));
+//         @theme: ~'[theme-color-@{counter}]';
+//         @{theme} & {
+//             @color: ~'theme-color-@{counter}';
+//             @light: ~'theme-color-@{counter}-light';
+//             @lighter: ~'theme-color-@{counter}-lighter';
+//             @dark: ~'theme-color-@{counter}-dark';
+//             @darker: ~'theme-color-@{counter}-darker';
+//             @faint: ~'theme-color-@{counter}-faint';
+//             @semi-faint: ~'theme-color-@{counter}-semi-faint';
+//
+//             @result: "@{@{val}}";
+//             @{prop}: fadeout(@@result, @fadeout);
+//         }
+//     }
+//     .colorize-loop(@prop, @val, 2);
+// }
 
 .theme-color-button() {
-    .theme-color(background-color);
     color: white;
+    background-color: var(--theme-color);
 
     &:hover {
-        .theme-color(background-color);
+        background-color: var(--theme-color);
     }
 
     &:active {
-        .theme-color(background-color, "dark");
+        background-color: var(--theme-color-dark);
     }
 
     &[disabled] {
@@ -80,21 +80,21 @@
 
 .theme-color-button-inverse() {
     background-color: transparent;
-    .theme-color(color, "darker");
+    color: var(--theme-color-darker);
     fill: #595959;
 
     &:hover {
-        .theme-color(background-color, "faint");
+        background-color: var(--theme-color-faint);
     }
 
     &:active {
-        .theme-color(background-color, "dark");
+        background-color: var(--theme-color-dark);
         fill: white !important;
         color: white !important;
     }
 
     &[disabled] {
-        .theme-color(fill, "faint");
+        fill: var(--theme-color-faint);
         color: fadeout(black, 50%);
     }
 
@@ -138,7 +138,7 @@
 
 .selected-icon-checked() {
     #box, #backdrop {
-        .theme-color(fill) !important;
+        fill: var(--theme-color) !important;
     }
 
     #backdrop {
@@ -282,6 +282,7 @@
 
 .page-title() {
     display: block;
+    background-color: var(--theme-color);
     color: white;
     padding-top: 2px;
     line-height: @h1 - 2px;
@@ -294,5 +295,4 @@
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     padding: 0 @h4;
-    .theme-color(background-color);
 }

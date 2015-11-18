@@ -4,6 +4,7 @@
 
 <dom-module id="vi-menu">
     <template>
+        <link rel="stylesheet" href="menu.css" />
         <header>
             <button is="vi-button" id="toggleCollapse" on-tap="_toggleCollapse">
                 <vi-icon source="Menu_Collapse"></vi-icon>
@@ -57,12 +58,11 @@
 
 <dom-module id="vi-menu-item">
     <template>
+        <link rel="stylesheet" href="menu-item.css" />
         <paper-ripple></paper-ripple>
         <vi-icon class="group" source="Forward"></vi-icon>
         <a href="{{href}}" title="" id="title"></a>
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="menu.css" />
-<link rel="stylesheet" href="menu-item.css" />
 <script src="menu.js"></script>

@@ -1,5 +1,6 @@
 ﻿<link rel="import" href="../../Libs/iron-a11y-keys/iron-a11y-keys.html" />
 <link rel="import" href="../WebComponent/webcomponent.html" />
+<link rel="import" href="../AppRoute/app-route.html" />
 <link rel="import" href="../AttachedNotifier/attached-notifier.html" />
 <link rel="import" href="../SizeTracker/size-tracker.html" />
 <link rel="import" href="../Spinner/spinner.html" />
@@ -26,6 +27,7 @@
 
 <dom-module id="vi-app">
     <template>
+        <link rel="stylesheet" href="app.css" />
         <iron-a11y-keys keys="{{keys}}" on-keys-pressed="_keysPressed"></iron-a11y-keys>
         <template is="dom-if" if="{{initializing}}" restamp>
             <vi-spinner></vi-spinner>
@@ -63,7 +65,6 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="app.css" />
 <script src="app.js"></script>
 <script src="Config/persistent-object-attribute-config.js"></script>
 <script src="Config/persistent-object-tab-config.js"></script>

@@ -1,0 +1,16 @@
+@import (reference) "../vidyano.less";
+
+:host {
+    .relative();
+    .flex();
+    .shadow();
+    background-color: white;
+
+    &:not([active]) {
+        display: none;
+    }
+
+    .content-wrapper > ::content > * {
+        .fit();
+    }
+}

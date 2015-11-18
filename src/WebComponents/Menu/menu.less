@@ -3,7 +3,7 @@
 @indent: 16px;
 @expandWidth: 16em;
 
-vi-menu {
+:host {
     .layout-vertical();
     .noSelection();
     height: 100%;
@@ -13,13 +13,13 @@ vi-menu {
     &:not([collapsed]) {
         width: @expandWidth;
 
-        header.vi-menu.style-scope {
+        header {
             #toggleCollapse {
                 background-color: transparent;
             }
         }
 
-        .programUnits.vi-menu.style-scope {
+        .programUnits {
             .subItems {
                 display: none;
                 margin-bottom: @h5;
@@ -34,10 +34,10 @@ vi-menu {
     &[collapsed] {
         width: @h1;
 
-        header.vi-menu.style-scope {
+        header {
             #toggleCollapse {
                 position: relative;
-                .theme-color(background-color, "dark");
+                background-color: var(--theme-color-dark);
 
                  > vi-icon {
                     -moz-transform: rotate(180deg);
@@ -96,16 +96,14 @@ vi-menu {
             }
         }
     }
-}
 
-.vi-menu.style-scope {
-    header&, footer& {
+    header, footer {
         display: block;
         line-height: @h1;
         min-height: @h1;
     }
 
-    header& {
+    header {
         position: relative;
         text-align: center;
 
@@ -113,7 +111,7 @@ vi-menu {
             display: block;
             font-size: (@h3);
             line-height: @h1 * 2;
-            .theme-color(background-color, "dark");
+            background-color: var(--theme-color-dark);
         }
 
         #toggleCollapse {
@@ -138,7 +136,7 @@ vi-menu {
         }
     }
 
-    vi-input-search& {
+    vi-input-search {
         margin: (@indent / 2) (@indent - @indent / 2);
         border-bottom: 1px solid fadeout(white, 90%);
 

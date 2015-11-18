@@ -1,6 +1,6 @@
 @import (reference) "../vidyano.less";
 
-vi-app {
+:host {
     position: fixed;
     left: 0;
     right: 0;
@@ -66,19 +66,19 @@ vi-app {
     template {
         display: none;
     }
-}
 
-vi-app-route {
-    .layout-horizontal();
-    .flex();
-    .shadow();
-    background-color: white;
-
-    &:not([active]) {
-        display: none;
-    }
-
-    > * {
-        .flex();
-    }
+    // vi-app-route {
+    //     .layout-horizontal();
+    //     .flex();
+    //     .shadow();
+    //     background-color: white;
+    //
+    //     &:not([active]) {
+    //         display: none;
+    //     }
+    //
+    //     > * {
+    //         .flex();
+    //     }
+    // }
 }

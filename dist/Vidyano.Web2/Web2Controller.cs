@@ -9,6 +9,8 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Web.Hosting;
 using System.Web.Http;
 
 namespace Vidyano.Web2
@@ -45,13 +47,34 @@ namespace Vidyano.Web2
                 names[cleanName.Replace("-", "_")] = cleanName;
             }
         }
-
+#if DEBUG
+        public HttpResponseMessage Get(string id = null, string color1 = null, string color2 = null)
+        {
+            if (string.IsNullOrEmpty(id))
+                return new HttpResponseMessage { Content = new StringContent(File.ReadAllText(HostingEnvironment.MapPath("~/index.html")), Encoding.UTF8, "text/html") };
+#else
         public HttpResponseMessage Get(string id, string color1 = null, string color2 = null)
         {
+#endif
             var extension = Path.GetExtension(id);
             string mediaType;
             if (extension == null || !mediaTypes.TryGetValue(extension, out mediaType))
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
+
+#if DEBUG
+            // NOTE: In development we serve the files directly from disk
+            var filePath = Path.Combine(HostingEnvironment.MapPath("~"), "../../src/" + id);
+            switch (extension)
+            {
+                case ".html":
+                    var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), null, null);
+                    return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[extension]) };
+
+                case ".css":
+                case ".js":
+                    return new HttpResponseMessage { Content = new StringContent(File.ReadAllText(filePath), Encoding.UTF8, mediaTypes[extension]) };
+            }
+#endif
 
             if (extension == ".css")
                 id = Path.ChangeExtension(id, "less");

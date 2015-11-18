@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>Vidyano Demo</title>
+
+	<script src="libs/webcomponentsjs/webcomponents-lite.js"></script>
+	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800" rel="stylesheet" type="text/css">
+    <link rel="import" href="vidyano.html" />
+    
+    <style is="custom-style">
+        vi-app {
+            --theme-color: #4682B4;
+            --theme-color-light: #6a9bc3;
+            --theme-color-lighter: #90b4d2;
+            --theme-color-dark: #386890;
+            --theme-color-darker: #2a4e6c;
+            --theme-color-faint: #ecf2f7;
+            --theme-color-semi-faint: #e5edf4;
+        }
+    </style>
+</head>
+
+<body touch-action="auto">
+    <vi-app uri="http://localhost/vidyano" label="Vidyano DEV" sign-in-image="2sky.png">
+		<vi-query-config id="273a8302-ddc8-43db-a7f6-c3c28fc8f593" default-chart="LastLogins"></vi-query-config>
+		<vi-query-chart-config type="linechart">
+			<template>
+				<div>{{chart.label}}</div>
+			</template>
+		</vi-query-chart-config>
+	</vi-app>
+</body>
+</html>
