@@ -280,6 +280,12 @@ vi-query-grid {
         }
     }
 
+    &[can-select]:not([can-select-all]):not([inline-actions]):not([can-filter]), &[inline-actions]:not([can-select]):not([can-select-all]):not([can-filter]) {
+        table[is="vi-query-grid-table-header"] {
+            padding-left: @cell-width;
+        }
+    }
+
     &:not([can-filter]) {
         vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
             display: none;
