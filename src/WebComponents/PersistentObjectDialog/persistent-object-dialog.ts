@@ -32,6 +32,11 @@
                             this.app.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId).then(po2 => {
                                 this.app.service.hooks.onOpen(po2, true);
                                 this.instance.resolve(this.persistentObject);
+                            }, e => {
+                                this.instance.resolve(this.persistentObject);
+                                var owner: ServiceObjectWithActions = this.persistentObject.ownerQuery || this.persistentObject.parent;
+                                if (!!owner)
+                                    owner.setNotification(e);
                             });
                         else
                             this.instance.resolve(this.persistentObject);
