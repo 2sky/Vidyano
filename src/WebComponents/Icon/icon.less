@@ -1,6 +1,6 @@
 ﻿@import (reference) "../vidyano.less";
 
-vi-icon {
+:host {
     position: relative;
     display: block;
 
@@ -11,12 +11,12 @@ vi-icon {
         text-align: center;
     }
 
-    svg {
+    ::content svg {
         width: 16px;
         height: 16px;
     }
 
-    &[small] svg {
+    &[small] ::content svg {
         -ms-transform: translateY(1px);
         -webkit-transform: translateY(1px);
         -moz-transform: translateY(1px);
@@ -26,7 +26,7 @@ vi-icon {
         height: 12px;
     }
 
-    &[extrasmall] svg {
+    &[extrasmall] ::content svg {
         -ms-transform: translateY(0);
         -webkit-transform: translateY(0);
         -moz-transform: translateY(0);

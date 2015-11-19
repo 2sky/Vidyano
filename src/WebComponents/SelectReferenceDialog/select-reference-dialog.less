@@ -1,6 +1,6 @@
 ﻿@import (reference) "../vidyano.less";
 
-vi-select-reference-dialog {
+:host {
     vi-input-search {
         line-height: @h2;
         height: @h2;
@@ -15,7 +15,7 @@ vi-select-reference-dialog {
                 background-color: white;
 
                 + button {
-                    .theme-color(background-color);
+                    background-color: var(--theme-color);
                 }
             }
         }
@@ -24,7 +24,7 @@ vi-select-reference-dialog {
 
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
-    vi-select-reference-dialog main {
+    :host main {
         width: 85vw;
         height: 85vh;
     }
@@ -32,7 +32,7 @@ vi-select-reference-dialog {
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991px) {
-    vi-select-reference-dialog main {
+    :host main {
         height: 60vh;
         width: 90vw;
     }
@@ -40,7 +40,7 @@ vi-select-reference-dialog {
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1199px) {
-    vi-select-reference-dialog main {
+    :host main {
         height: 60vh;
         width: 90vw;
     }
@@ -48,7 +48,7 @@ vi-select-reference-dialog {
 
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-    vi-select-reference-dialog main {
+    :host main {
         height: 60vh;
         width: 1000px;
     }

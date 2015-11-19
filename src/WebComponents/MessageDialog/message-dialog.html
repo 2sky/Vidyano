@@ -1,5 +1,6 @@
 ﻿<dom-module id="vi-message-dialog">
     <template>
+        <link rel="stylesheet" href="message-dialog.css" />
         <header class="horizontal layout">
             <template is="dom-if" if="{{_hasHeaderIcon(options)}}">
                 <vi-icon source="{{options.titleIcon}}"></vi-icon>
@@ -20,5 +21,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="message-dialog.css" />
 <script src="message-dialog.js"></script>

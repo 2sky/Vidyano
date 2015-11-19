@@ -1,6 +1,6 @@
 @import (reference) "../vidyano.less";
 
-vi-overflow {
+:host {
     height: @h1;
     line-height: @h1;
     .noSelection();
@@ -16,31 +16,13 @@ vi-overflow {
         }
     }
 
-    #overflowPopup.vi-overflow {
+    #overflowPopup {
         position: relative;
 
-        button.vi-overflow {
+        button[header] {
             display: block;
-            background-color: transparent;
-            outline: none;
-            border: none;
-            margin: 0;
-            box-sizing: border-box;
             width: @h1;
-            cursor: pointer;
             font-weight: bold;
-            background-color: transparent;
-            .theme-color(color);
-
-            > * {
-                font-weight: normal;
-            }
-        }
-
-        &:hover {
-            button.vi-overflow {
-                .theme-color(background-color, "faint");
-            }
         }
     }
 

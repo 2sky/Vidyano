@@ -1,6 +1,6 @@
 @import (reference) "../vidyano.less";
 
-vi-dialog-host {
+:host {
     position: fixed;
     top: 0;
     left: 0;
@@ -16,85 +16,83 @@ vi-dialog-host {
         display: none;
     }
 
-    > * {
-        .layout-vertical();
-        max-height: 90vh;
-        max-width: 90vw;
-        background-color: white;
-        .z-index1();
+    .content-wrapper {
+        > ::content {
+            .layout-vertical();
+            max-height: 90vh;
+            max-width: 90vw;
+            background-color: white;
+            .z-index1();
 
-        &[dragging] {
-            .noSelection();
-            cursor: move !important;
-        }
-
-        > *:not(header):not(footer):not(main) {
-            display: none;
-        }
-
-        > header, > footer {
-            background-color: #FAFAFA;
-        }
-
-        > header {
-            -webkit-flex: 0 0 auto;
-            -moz-flex: 0 0 auto;
-            -ms-flex: 0 0 auto;
-            flex: 0 0 auto;
-            line-height: @h1;
-            padding: @h5 @h4;
-            border-bottom: 1px solid #EEE;
-
-            h4 {
-                margin: 0;
-                font-weight: 500;
-                font-size: 120%;
+            &[dragging] {
+                .noSelection();
+                cursor: move !important;
             }
 
-            button.close {
-                margin: 0;
-                padding: 0 @h5;
-                fill: #888;
-                background: none;
-                border: none;
-                cursor: pointer;
+            header, footer {
+                background-color: #FAFAFA;
+            }
 
-                &:hover {
-                    fill: #555;
+            header {
+                -webkit-flex: 0 0 auto;
+                -moz-flex: 0 0 auto;
+                -ms-flex: 0 0 auto;
+                flex: 0 0 auto;
+                line-height: @h1;
+                padding: @h5 @h4;
+                border-bottom: 1px solid #EEE;
+
+                h4 {
+                    margin: 0;
+                    font-weight: 500;
+                    font-size: 120%;
                 }
 
-                &:active {
-                    fill: #333;
-                }
+                button.close {
+                    margin: 0;
+                    padding: 0 @h5;
+                    fill: #888;
+                    background: none;
+                    border: none;
+                    cursor: pointer;
 
-                &:focus {
-                    outline: none;
+                    &:hover {
+                        fill: #555;
+                    }
+
+                    &:active {
+                        fill: #333;
+                    }
+
+                    &:focus {
+                        outline: none;
+                    }
                 }
             }
-        }
 
-        > footer {
-            padding: @h4;
-            border-top: 1px solid #EEE;
-            -webkit-flex: 0 0 auto;
-            -moz-flex: 0 0 auto;
-            -ms-flex: 0 0 auto;
-            flex: 0 0 auto;
+            footer {
+                padding: @h4;
+                border-top: 1px solid #EEE;
+                -webkit-flex: 0 0 auto;
+                -moz-flex: 0 0 auto;
+                -ms-flex: 0 0 auto;
+                flex: 0 0 auto;
 
-            > button {
-                line-height: @h2;
-                padding: 0 @h5;
-                margin-left: @h5;
+                button {
+                    line-height: @h2;
+                    padding: 0 @h5;
+                    margin-left: @h5;
+                }
             }
-        }
 
-        > main {
-            position: relative;
-            -webkit-flex: 0 1 auto;
-            -moz-flex: 0 1 auto;
-            -ms-flex: 0 1 auto;
-            flex: 0 1 auto;
-            overflow: hidden;
+            main {
+                position: relative;
+                -webkit-flex: 0 1 auto;
+                -moz-flex: 0 1 auto;
+                -ms-flex: 0 1 auto;
+                flex: 0 1 auto;
+                overflow: hidden;
+            }
         }
     }
 }
@@ -105,7 +103,7 @@ vi-dialog-host {
 
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) and (max-width: 991px) {
-    vi-dialog-host {
+    :host {
         > * > main {
             max-width: 800px;
             max-height: 75vh;
@@ -115,7 +113,7 @@ vi-dialog-host {
 
 /* Medium devices (desktops, 992px and up) */
 @media (min-width: 992px) and (max-width: 1199px) {
-    vi-dialog-host {
+    :host {
         > * > main {
             max-width: 900px;
             max-height: 75vh;
@@ -125,7 +123,7 @@ vi-dialog-host {
 
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: 1200px) {
-    vi-dialog-host {
+    :host {
         > * > main {
             max-width: 1000px;
             max-height: 75vh;

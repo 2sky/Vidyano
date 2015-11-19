@@ -1,6 +1,7 @@
 <link rel="import" href="../../Libs/paper-ripple/paper-ripple.html" />
 
 <dom-module id="vi-input-search">
+    <link rel="stylesheet" href="input-search.css" />
     <template>
         <template is="dom-if" if="{{!collapsed}}">
             <input class="flex" id="input" placeholder="{{translations.FilterSearchHint}}" value="{{value::input}}" on-keypress="_searchKeypressed" on-focus="_input_focused" on-blur="_input_blurred" autofocus$="{{autofocus}}" />
@@ -25,5 +26,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="input-search.css" />
 <script src="input-search.js"></script>
