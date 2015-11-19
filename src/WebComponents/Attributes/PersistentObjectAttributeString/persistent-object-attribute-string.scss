@@ -1,0 +1,5 @@
+@import (reference) "../persistent-object-attribute.less";
+
+vi-persistent-object-attribute-string {
+	@include layout-horizontal();
+}

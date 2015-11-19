@@ -1,0 +1,216 @@
+@import (reference) "../persistent-object-attribute.less";
+
+$background-color: #F9F9F9;
+
+@mixin addStyle() {
+    &.foot {
+        height: $h2;
+        background-color: $background-color;
+        border: 1px solid $border-color;
+    }
+
+    button {
+        height: $h2;
+    }
+}
+
+vi-persistent-object-attribute-as-detail {
+    @include relative();
+
+    &[initializing] {
+        #table {
+            opacity: 0;
+        }
+    }
+
+    #table {
+        @include layout-vertical();
+        @include fit();
+        line-height: $h2;
+
+        #head {
+            border-bottom: 1px solid $border-color;
+            height: $h2;
+
+            .column {
+                label {
+                    display: block;
+                    vertical-align: top;
+                    padding: 0 4px;
+                    overflow: hidden;
+                    -ms-text-overflow: ellipsis;
+                    -o-text-overflow: ellipsis;
+                    text-overflow: ellipsis;
+                    text-align: left;
+                    font-weight: bold;
+                    font-size: 11px;
+                    letter-spacing: 0.5px;
+                }
+            }
+        }
+
+        #body {
+            @include flex();
+
+            #data {
+                overflow: hidden;
+            }
+
+            .row {
+                white-space: nowrap;
+                font-size: 0;
+                height: $h2;
+                line-height: $h2;
+
+                .column {
+                    padding: 0 1px 1px 0;
+                    vertical-align: top;
+                    height: $h2;
+                    line-height: $h2;
+
+                    &:last-of-type {
+                        padding-right: 0;
+                    }
+
+                    > vi-persistent-object-attribute-presenter {
+                        height: $h2;
+                        line-height: $h2;
+                    }
+                }
+            }
+        }
+
+        .row {
+            font-size: 0;
+
+            .column {
+                display: inline-block;
+                font-size: 13px;
+                box-sizing: border-box;
+            }
+        }
+
+        button.action {
+            height: $h2;
+            line-height: $h2;
+        }
+    }
+
+    &[editing] {
+        #table {
+            @include noSelection();
+
+            #head {
+                background-color: $background-color;
+                border: 1px solid $border-color;
+
+                .column label {
+                    border-right: 1px solid $border-color;
+                    margin-right: 1px;
+                }
+            }
+
+            #body {
+                margin-top: 1px !important;
+
+                .row {
+                    height: $h2 + 2px;
+                    line-height: $h2 + 2px;
+                    overflow: hidden;
+
+                    div.delete-button {
+                        @include layout-horizontal();
+                        padding: 0 0 1px 1px;
+                        height: $h2;
+                        line-height: $h2;
+
+                        button {
+                            @include flex();
+                            @include layout-horizontal();
+                            box-sizing: border-box;
+                            border: 1px solid $border-color;
+                            padding: 0 $h4;
+                            @include theme-color(fill, "light");
+
+                            &:not(:hover):not(:active) {
+                                background-color: transparent;
+                            }
+
+                            vi-icon {
+                                line-height: $h2;
+                                height: $h2;
+
+                                svg {
+                                    width: 12px;
+                                    height: 12px;
+                                }
+                            }
+                        }
+                    }
+
+                    &:last-of-type {
+                        height: $h2;
+
+                        .column, div.delete-button {
+                            padding-bottom: 0;
+                        }
+                    }
+                }
+
+                &[vertical] {
+                    .row div.delete-button {
+                        margin-right: $h4;
+                    }
+                }
+            }
+        }
+
+        &:not([can-delete]) {
+            #table #head .column:last-of-type label {
+                border-right: 0;
+            }
+        }
+
+        .add.vi-persistent-object-attribute-as-detail {
+            @include addStyle();
+        }
+    }
+
+    &:not([editing]) {
+        #table {
+            border: none;
+
+            #body {
+                .row {
+                    &:nth-child(odd) {
+                        background-color: #FCFCFC;
+                    }
+
+                    &:nth-child(even) {
+                        background-color: #F7F7F7;
+                    }
+
+                    .column {
+                        padding: 1px 4px;
+                        overflow: hidden;
+                        -ms-text-overflow: ellipsis;
+                        -o-text-overflow: ellipsis;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+
+            .column:not(:last-of-type) {
+                border-right: 1px solid $border-color;
+            }
+        }
+
+        #foot {
+            display: none;
+        }
+    }
+}
+
+vi-persistent-object-attribute-as-detail-row {
+    display: block;
+}

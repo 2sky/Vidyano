@@ -1,0 +1,17 @@
+@import "../_vars.scss";
+
+:host {
+    display: block;
+    @include relative();
+    line-height: $h1;
+    height: $h1;
+    @include noSelection();
+
+    vi-overflow {
+        [toggle] {
+           &:hover{
+               background-color: var(--theme-color-faint);
+           }
+        }
+    }
+}

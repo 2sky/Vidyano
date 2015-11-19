@@ -1,0 +1,35 @@
+@import "../vars.scss";
+
+:host {
+    @include layout-horizontal();
+    @include layout-center();
+    fill: #bbb;
+    padding-right: $h5;
+
+    &:not([disabled]) {
+        cursor: pointer;
+
+        &[checked] {
+            fill: --theme-color;
+        }
+    }
+
+    &[checked]:not([disabled]){
+        @include selected-icon-checked();
+    }
+
+    &[disabled][checked] {
+        @include selected-icon-checked-color(#666);
+    }
+
+    > span {
+        @include flex();
+        padding-left: 2px;
+    }
+
+    &:not([checked]) {
+        #check {
+            display: none;
+        }
+    }
+}

@@ -1,0 +1,40 @@
+@import (reference) "../persistent-object-attribute.less";
+
+vi-persistent-object-attribute-flags-enum {
+    @include layout-horizontal();
+
+    vi-popup {
+        @include flex();
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+                @include noSelection();
+                padding-left: $h5;
+                line-height: $h2 - 2px;
+                height: $h2 - 2px;
+                cursor: pointer;
+                overflow: hidden;
+
+                &:hover {
+                    @include theme-color(background-color, "faint");
+                }
+
+                vi-checkbox:not([checked]) {
+                    fill: #aaa;
+                }
+            }
+        }
+
+        & > #content {
+            -moz-transform: translateY(2px);
+            -ms-transform: translateY(2px);
+            -o-transform: translateY(2px);
+            -webkit-transform: translateY(2px);
+            transform: translateY(2px);
+        }
+    }
+}

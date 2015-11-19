@@ -1,0 +1,105 @@
+@import "../_vars.scss";
+
+:host {
+    margin-bottom: $h2;
+    cursor: pointer;
+
+    h3 {
+        font-weight: lighter;
+        font-size: 32px;
+        margin: 0;
+        color: var(--theme-color);
+    }
+
+    h4 {
+        font-size: 13px;
+        margin: 0;
+        font-weight: 300;
+        color: #666;
+    }
+
+    &[is-vidyano] {
+        &:only-of-type {
+            h3, h4 {
+                display: none;
+            }
+
+            ul#vidyano {
+                padding-left: 0;
+            }
+        }
+
+        ul#vidyano {
+            list-style: none;
+            padding-left: $h1;
+            max-height: 0;
+            overflow: hidden;
+            -moz-transition: max-height 0.3s ease-out;
+            -o-transition: max-height 0.3s ease-out;
+            -webkit-transition: max-height 0.3s ease-out;
+            transition: max-height 0.3s ease-out;
+
+            li {
+                &:first-child {
+                    margin-bottom: $h4;
+                    margin-top: $h3;
+                }
+
+                label {
+                    display: block;
+                    font-size: $h4 - 1px;
+                    font-weight: bold;
+                    margin-bottom: $h5;
+                    font-weight: 400;
+                    color: #888;
+                    overflow: hidden;
+                    text-transform: uppercase;
+                }
+
+                input {
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: $h5;
+                    border: 1px solid #ddd;
+                    outline: none;
+
+                    &:focus {
+                        border-color: var(--theme-color-light);
+                    }
+                }
+
+                &:last-of-type {
+                    line-height: $h2;
+                    height: $h2;
+                    margin-top: $h3;
+                    @include layout-horizontal();
+
+                    vi-checkbox:not([checked]) {
+                        color: #888;
+                        fill: #bbb;
+                    }
+
+                    vi-checkbox[checked] {
+                        color: #666;
+                    }
+
+                    div {
+                        @include layout-horizontal-reverse();
+                        @include flex();
+
+                        button {
+                            cursor: pointer;
+                            padding: 0 $h4;
+                            box-sizing: content-box;
+                            @include theme-color-button();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &[signing-in] button {
+        text-align: left;
+    }
+}

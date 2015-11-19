@@ -1,0 +1,12 @@
+@import (reference) "../persistent-object-attribute.less";
+
+vi-persistent-object-attribute-user {
+    @include layout-horizontal();
+
+    span {
+        @include flex();
+        overflow: hidden;
+        white-space: nowrap;
+        line-height: $h2;
+    }
+}

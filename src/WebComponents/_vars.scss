@@ -1,0 +1,285 @@
+@import "../libs/layout/_layout.scss";
+@import "colors.scss";
+
+$dark-background: #3b3b3b;
+$dark-foreground: white;
+$light-background: white;
+$light-foreground: #333;
+$semilight-background: #FAFAFA;
+$semilight-foreground: #333;
+$actionsBG: #F9F9F9;
+$h1: 40px;
+$h2: 32px;
+$h3: 22px;
+$h4: 12px;
+$h5: 6px;
+$theme-color-1: $steel-blue;
+$theme-color-1-light: $steel-blue-300;
+$theme-color-1-lighter: $steel-blue-100;
+$theme-color-1-dark: $steel-blue-700;
+$theme-color-1-darker: $steel-blue-900;
+$theme-color-1-faint: $steel-blue-50;
+$theme-color-1-semi-faint: darken($theme-color-1-faint,2%);
+$theme-color-2: $teal;
+$theme-color-2-light: $teal-300;
+$theme-color-2-lighter: $teal-100;
+$theme-color-2-dark: $teal-700;
+$theme-color-2-darker: $teal-900;
+$theme-color-2-faint: $teal-50;
+$theme-color-2-semi-faint: darken($theme-color-2-faint,2%);
+$color-error:#a80511;
+$color-warning:#e5a300;
+$color-notice:#48545e;
+$color-ok:#339f7b;
+
+@mixin shadow() {
+    -webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow:    0 0 4px 0 rgba(0, 0, 0, 0.5);
+    box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+@mixin theme-color-button() {
+    color: white;
+    background-color: var(--theme-color);
+
+    &:hover {
+        background-color: var(--theme-color);
+    }
+
+    &:active {
+        background-color: var(--theme-color-dark);
+    }
+
+    &[disabled] {
+        fill: fadeout(white, 50%);
+        color: fadeout(white, 50%);
+    }
+
+    @include color-button-animations();
+}
+
+@mixin theme-color-button-inverse() {
+    background-color: transparent;
+    color: var(--theme-color-darker);
+    fill: #595959;
+
+    &:hover {
+        background-color: var(--theme-color-faint);
+    }
+
+    &:active {
+        background-color: var(--theme-color-dark);
+        fill: white !important;
+        color: white !important;
+    }
+
+    &[disabled] {
+        fill: var(--theme-color-faint);
+        color: fadeout(black, 50%);
+    }
+
+    @include color-button-animations();
+}
+
+@mixin color-button($color) {
+    background-color: $color;
+    color: white;
+
+    &:hover {
+        background-color: $color;
+    }
+
+    &:active {
+        background-color: darken($color, 10%);
+    }
+
+    &[disabled] {
+        fill: fadeout(white, 50%);
+        color: fadeout(white, 50%);
+    }
+
+    @include color-button-animations();
+}
+
+@mixin color-button-animations() {
+    -moz-transition-property: fill, color, background-color;
+    -o-transition-property: fill, color, background-color;
+    -webkit-transition-property: fill, color, background-color;
+    transition-property: fill, color, background-color;
+    -moz-transition-duration: 0.1s;
+    -o-transition-duration: 0.1s;
+    -webkit-transition-duration: 0.1s;
+    transition-duration: 0.1s;
+    -moz-transition-timing-function: ease-out;
+    -o-transition-timing-function: ease-out;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+
+@mixin selected-icon-checked() {
+    #box, #backdrop {
+        fill: var(--theme-color) !important;
+    }
+
+    #backdrop {
+        opacity: 1 !important;
+    }
+
+    #check {
+        display: block;
+        fill: white;
+    }
+}
+
+@mixin selected-icon-checked-color($color) {
+    #box, #backdrop {
+        fill: $color;
+    }
+
+    #backdrop {
+        opacity: 1 !important;
+    }
+
+    #check {
+        display: block;
+        fill: white;
+    }
+}
+
+@mixin flexbox() {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: -ms-flex;
+    display: flex;
+}
+
+@mixin flexbox-vertical() {
+    @include flexbox();
+    -ms-flex-direction: column;
+    -webkit-box-orient: vertical;
+    flex-direction: column;
+}
+
+@mixin flexfill() {
+    -ms-flex: 1;
+    flex: 1;
+}
+
+@mixin layout($direction: "vertical") {
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+
+    @if $direction == "horizontal" {
+        -ms-flex-direction: row;
+		-webkit-flex-direction: row;
+		flex-direction: row;
+    }
+}
+
+@mixin layout-fill() {
+	-ms-flex: 1;
+    flex: 1;
+}
+
+@mixin noSelection($important: false) {
+    @if $important {
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+    }
+    @else {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+}
+
+@mixin placeholder-color($color) {
+    &::-webkit-input-placeholder { /* WebKit browsers */
+        color: $color;
+    }
+    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+       color:    $color;
+       opacity:  1;
+    }
+    &::-moz-placeholder { /* Mozilla Firefox 19+ */
+       color:    $color;
+       opacity:  1;
+    }
+    &:-ms-input-placeholder { /* Internet Explorer 10+ */
+       color:    $color;
+    }
+}
+
+@mixin hideScrollbars() {
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
+
+    &::-webkit-scrollbar {
+        width: 0 !important;
+        height: 0 !important;
+    }
+}
+
+@mixin button() {
+    border-width: 1px;
+    border-style: solid;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    outline: none !important;
+
+    &:not(:disabled) {
+        &:active {
+            position: relative;
+            top: 1px;
+        }
+    }
+
+    &:disabled {
+        background-color: #888;
+    }
+}
+
+@mixin input() {
+    border: 1px solid #BBB;
+    padding: 6px;
+
+    &:focus {
+        outline: none;
+        border-width: 1px;
+        border-style: solid;
+    }
+}
+
+@mixin z-index1() {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+@mixin page-title() {
+    display: block;
+    background-color: var(--theme-color);
+    color: white;
+    padding-top: 2px;
+    line-height: $h1 - 2px;
+    min-height: $h1;
+    box-sizing: border-box;
+    font-size: $h5 + $h4;
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    padding: 0 $h4;
+}

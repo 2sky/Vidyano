@@ -1,0 +1,46 @@
+@import "../vars.scss";
+
+:host {
+    main {
+        @include layout-horizontal();
+        padding: 0;
+
+        > vi-scroller {
+            @include flex();
+        }
+    }
+}
+
+/* Extra small devices (phones, less than 768px) */
+@media (max-width: 767px) {
+    :host main {
+        width: 85vw;
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+    :host main {
+        min-width: 500px;
+        max-width: 800px;
+        max-height: 75vh;
+    }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    :host main {
+        min-width: 500px;
+        max-width: 900px;
+        max-height: 75vh;
+    }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    :host main {
+        min-width: 500px;
+        max-width: 1000px;
+        max-height: 75vh;
+    }
+}

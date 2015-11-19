@@ -1,0 +1,20 @@
+@import "../_vars.scss";
+
+:host {
+    display: block;
+    @include relative();
+
+    > * {
+        @include fit();
+    }
+
+    &:focus {
+        outline: none !important;
+    }
+
+    .content-wrapper {
+        ::content > * {
+            @include fit();
+        }
+    }
+}

@@ -1,0 +1,81 @@
+@import "../_vars.scss";
+
+vi-sign-in {
+    @include layout-horizontal();
+    @include noSelection();
+
+    #image {
+        @include flex();
+        @include layout-horizontal();
+        @include layout-center();
+        @include noSelection();
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+        background-color: #EEE;
+
+        > span {
+            text-align: center;
+            color: #aaa;
+        }
+
+        &.has-image > span {
+            display: none;
+        }
+    }
+
+    #side {
+        padding: $h3;
+
+        h1 {
+            font-size: 36px;
+            text-transform: lowercase;
+            display: block;
+            font-weight: normal;
+            margin: $h3 0 $h1 0;
+            color: var(--theme-color);
+        }
+
+        h2 {
+            margin: $h1 0;
+            font-size: 14px;
+            font-weight: normal;
+            color: #888;
+        }
+
+        > ul {
+            list-style: none;
+            padding: 0;
+        }
+    }
+
+    &[vidyano-only] li[is="vi-sign-in-provider"], &:not([vidyano-only]) li[is="vi-sign-in-provider"][expand] {
+        cursor: default;
+
+        ul#vidyano {
+            max-height: 200px;
+        }
+    }
+}
+
+/* Extra small devices (phones, less than 768px) */
+@media (max-width: 767px) {
+    :host {
+        #image {
+            display: none;
+        }
+
+        #side {
+            @include fit();
+        }
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    :host {
+        #side {
+            width: 400px;
+        }
+    }
+}

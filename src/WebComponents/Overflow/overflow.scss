@@ -1,0 +1,34 @@
+@import "../vars.scss";
+
+:host {
+    height: $h1;
+    line-height: $h1;
+    @include noSelection();
+    @include layout-horizontal();
+    @include relative();
+
+    #visible {
+        position: relative;
+        overflow: hidden;
+
+        vi-size-tracker {
+            z-index: -1;
+        }
+    }
+
+    #overflowPopup {
+        position: relative;
+
+        button[header] {
+            display: block;
+            width: $h1;
+            font-weight: bold;
+        }
+    }
+
+    &:not([has-overflow]) {
+        #overflowPopup {
+            display: none;
+        }
+    }
+}

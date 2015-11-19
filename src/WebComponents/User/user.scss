@@ -1,0 +1,67 @@
+@import "../_vars.scss";
+
+$footerHeight: $h1;
+
+:host {
+    border-top: 1px solid transparent;
+    @include layout-horizontal();
+    background-color: rgba(255, 255, 255, 0.08);
+    border-top-color: rgba(255, 255, 255, 0.08);
+
+    > span {
+        line-height: $footerHeight;
+        height: $footerHeight;
+    }
+
+    button {
+        height: $footerHeight !important;
+        line-height: $footerHeight !important;
+        cursor: pointer;
+
+        &#signIn {
+            @include theme-color-button();
+
+            > vi-icon {
+                height: $footerHeight !important;
+                margin-left: $h5;
+            }
+        }
+
+        &#settings {
+            width: $footerHeight;
+            box-sizing: border-box;
+            border-left: 1px solid rgba(255, 255, 255, 0.12);
+            @include color-button(rgba(255, 255, 255, 0.05));
+        }
+
+        > vi-icon {
+            fill: white;
+        }
+    }
+
+    &:not([is-signed-in]) {
+        button {
+            cursor: pointer;
+        }
+    }
+
+    &[collapsed] {
+        #signedIn{
+            display: none;
+        }
+
+        #signIn {
+            & > span {
+                display: none;
+            }
+
+            vi-icon {
+                margin-left: 0 !important;
+            }
+        }
+
+        button.vi-user#settings {
+            border-left-width: 0;
+        }
+    }
+}

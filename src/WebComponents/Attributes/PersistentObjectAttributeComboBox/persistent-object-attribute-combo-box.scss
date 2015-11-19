@@ -1,0 +1,9 @@
+@import (reference) "../persistent-object-attribute.less";
+
+vi-persistent-object-attribute-combo-box {
+    @include layout-horizontal();
+
+    vi-persistent-object-attribute-edit .box {
+        @include layout-horizontal-reverse() !important;
+    }
+}

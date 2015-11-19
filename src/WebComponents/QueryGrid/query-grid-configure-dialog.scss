@@ -1,0 +1,96 @@
+﻿@import (reference) "query-grid.less";
+
+vi-query-grid-configure-dialog {
+    main {
+        @include layout-vertical();
+        @include noSelection();
+        padding: $h4;
+
+        > ul {
+            &:empty {
+                display: none;
+            }
+        }
+
+        > vi-scroller {
+            margin-top: $h4;
+            min-width: 30em;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+                @include layout-horizontal();
+                min-width: 30em;
+                margin-bottom: 4px;
+                height: $h2;
+                line-height: $h2;
+                font-size: 15px;
+                cursor: -moz-grab;
+                cursor: -webkit-grab;
+
+                > vi-icon {
+                    width: $h2;
+                    height: $h2;
+                    fill: #888;
+                    pointer-events: none;
+                }
+
+                label {
+                    @include flex();
+                    background-color: #f9f9f9;
+                    margin-left: $h4;
+                    padding-left: $h4;
+                    padding-right: $h1;
+                    pointer-events: none;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .buttons {
+                    background-color: #f9f9f9;
+
+                    button {
+                        background-color: white;
+                        @include theme-color(fill);
+                    }
+                }
+
+                &:not([is-pinned]) {
+                    .buttons {
+                        button:nth-child(1) {
+                            vi-icon {
+                                opacity: 0.5;
+                            }
+                        }
+                    }
+                }
+
+                &[is-hidden] {
+                    .buttons {
+                        button:nth-child(2) {
+                            vi-icon {
+                                opacity: 0.5;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    footer {
+        > button {
+            margin: 0;
+        }
+
+        > div {
+            button:first-child {
+                margin-right: $h5;
+            }
+        }
+    }
+}

@@ -1,0 +1,17 @@
+@import "../_vars.scss";
+
+:host {
+    @include relative();
+
+    .content-wrapper {
+        @include layout-horizontal();
+        @include flex();
+
+         ::content {
+            > :not(template) :first-child :nth-last-child(2),
+            > :not(template) :first-child :nth-last-child(2) ~ :not(template) {
+                @include flex();
+            }
+        }
+    }
+}

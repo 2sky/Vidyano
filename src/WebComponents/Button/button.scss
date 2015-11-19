@@ -1,0 +1,162 @@
+﻿@import "../_vars.scss";
+
+@mixin colorizer($bgColor, $fgColor, $bgHoverColor) {
+    background-color: $bgColor;
+    color: $fgColor;
+    fill: $fgColor;
+
+    &:hover {
+        background-color: $bgHoverColor;
+    }
+
+    &[disabled] {
+        background-color: fadeout($bgColor, 50%) !important;
+        fill: fadeout($fgColor, 50%) !important;
+        color: fadeout($fgColor, 50%) !important;
+    }
+}
+
+:host {
+    @include relative();
+    cursor: pointer;
+    -moz-transition-property: fill, color, background-color;
+    -o-transition-property: fill, color, background-color;
+    -webkit-transition-property: fill, color, background-color;
+    transition-property: fill, color, background-color;
+    -moz-transition-duration: 0.1s;
+    -o-transition-duration: 0.1s;
+    -webkit-transition-duration: 0.1s;
+    transition-duration: 0.1s;
+    -moz-transition-timing-function: ease-out;
+    -o-transition-timing-function: ease-out;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+    border: none;
+    outline: none;
+
+    &[disabled] {
+        cursor: default;
+    }
+
+    &:not([custom-layout]) {
+        white-space: nowrap;
+
+        > vi-icon {
+            display: inline-block;
+            @apply(--button-icon-style);
+
+            &:not([has-resource]) {
+                display: none;
+            }
+        }
+
+        > span {
+            display: inline-block;
+            vertical-align: top;
+            margin-left: 2px;
+            @apply(--button-label-style);
+        }
+    }
+
+    &[type=""], &:not([type]) {
+        &:not([inverse]) {
+            background-color: var(--theme-color);
+            color: white;
+            fill: white;
+
+            &:hover {
+                background-color: var(--theme-color-light);
+            }
+
+            &[disabled] {
+                opacity: 0.5;
+            }
+        }
+
+        &[inverse] {
+            background-color: transparent;
+            color: var(--theme-color);
+            fill: var(--theme-color);
+
+            &:hover {
+                background-color: var(--theme-color-faint);
+            }
+
+            &[disabled] {
+                opacity: 0.5;
+            }
+        }
+    }
+
+    &[type="light-monochrome"] {
+        &:not([inverse]) {
+            @include colorizer(#f0f0f0, white, lighten(#f0f0f0, 10%));
+        }
+
+        &[inverse] {
+            @include colorizer(transparent, #f0f0f0, fadeout(#f0f0f0, 90%));
+        }
+    }
+
+    &[type="danger"] {
+        &:not([inverse]) {
+            @include colorizer(#FF4136, white, lighten(#FF4136, 10%));
+        }
+
+        &[inverse] {
+            @include colorizer(transparent, #FF4136, fadeout(#FF4136, 90%));
+        }
+    }
+
+    &[type="safe"] {
+        &:not([inverse]) {
+            @include colorizer(#3D9970, white, lighten(#3D9970, 10%));
+        }
+
+        &[inverse] {
+            @include colorizer(transparent, #3D9970, fadeout(#3D9970, 90%));
+        }
+    }
+}
+
+vi-popup[open] > [toggle] button[is="vi-button"][header] {
+    &[type=""], &:not([type]) {
+        &:not([inverse]) {
+            background-color: var(--theme-color-light);
+        }
+
+        &[inverse] {
+            background-color: var(--theme-color-faint);
+        }
+    }
+
+    &[type="light-monochrome"] {
+        &:not([inverse]) {
+            background-color: lighten(#f0f0f0, 10%);
+        }
+
+        &[inverse] {
+            background-color: fadeout(#f0f0f0, 90%);
+        }
+    }
+
+    &[type="danger"] {
+        &:not([inverse]) {
+            background-color: lighten(#FF4136, 10%);
+        }
+
+        &[inverse] {
+            background-color: fadeout(#FF4136, 90%);
+        }
+    }
+
+    &[type="safe"] {
+        &:not([inverse]) {
+            background-color: lighten(#3D9970, 10%);
+        }
+
+        &[inverse] {
+            background-color: fadeout(#3D9970, 90%);
+        }
+    }
+}

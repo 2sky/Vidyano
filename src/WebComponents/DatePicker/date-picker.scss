@@ -1,0 +1,175 @@
+@import "../vars.scss";
+
+$border-color: #eee;
+
+:host {
+	display: block;
+	@include noSelection();
+
+	header {
+		color: white;
+		fill: white;
+		background-color: var(--theme-color);
+
+		button {
+			text-align: center;
+			height: $h2;
+			min-width: $h2;
+			line-height: $h2;
+			cursor: pointer;
+
+            > vi-icon {
+                height: $h2;
+            }
+
+			&:hover {
+				background-color: var(--theme-color-light);
+			}
+		}
+	}
+
+	div {
+		position: relative;
+
+		#days {
+            line-height: normal;
+			border-spacing: 0;
+
+			th {
+				line-height: $h3;
+				font-weight: 600;
+				font-size: 90%;
+			}
+
+			tr {
+				td {
+					position: relative;
+
+					div {
+						cursor: pointer;
+						text-align: center;
+						padding: 10px;
+						border-style: solid;
+						border-width: 0 0 1px 1px;
+						border-color: var(--theme-color-faint);
+
+						&:not(.previous):not(.next) {
+							color: var(--theme-color);
+
+							&:hover {
+								background-color: var(--theme-color-faint);
+							}
+
+							 &.today {
+								 color: white !important;
+								 background-color: var(--theme-color-dark);
+
+								 &:hover {
+									 background-color: var(--theme-color-darker);
+								 }
+							}
+						}
+
+						&.previous, &.next {
+							color: #AAA;
+
+							&:hover {
+								background-color: #eee;
+							}
+						}
+
+						&.selected {
+							&::before, &::after {
+								position: absolute;
+								right: 0;
+								top: 0;
+								content: "";
+							}
+
+							&::before {
+								z-index: 2;
+								bottom: 0;
+								left: 0;
+								border: 1px solid var(--theme-color);
+							}
+
+							&::after {
+								z-index: 1;
+								border-left: $h4 solid transparent;
+								border-top-color: var(--theme-color);
+								border-top-width: $h4;
+								border-top-style: solid;
+							}
+
+							&.today::after {
+								border-top-color: white !important;
+							}
+						}
+					}
+				}
+
+				&:first-child > td > div {
+					border-top-width: 1px;
+				}
+			}
+		}
+
+		#test {
+			width: 266px;
+			height: 265px;
+		}
+
+		#monthsAndYears {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border-spacing: 0;
+			align-items: stretch;
+
+			.row {
+				> div {
+                    @include flex();
+					justify-content: center;
+					border-style: solid;
+					border-width: 0 0 1px 1px;
+					cursor: pointer;
+					text-align: center;
+					line-height: $h4 * 6;
+					border-color: var(--theme-color-faint);
+					color: var(--theme-color);
+
+					&:hover {
+						background-color: var(--theme-color-faint);
+					}
+
+					&.current {
+						background-color: var(--theme-color-dark);
+						color: white;
+
+						&:hover {
+							background-color: var(--theme-color-darker);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&:not([zoom="days"]) {
+		#days {
+			visibility: hidden;
+		}
+
+		#fback, #fforward {
+			display: none;
+		}
+	}
+
+	&[zoom="days"] {
+		#monthsAndYears {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,35 @@
+@import (reference) "../persistent-object-attribute.less";
+
+vi-persistent-object-attribute-multi-string {
+	&[editing] {
+		#inputs {
+			> * {
+				margin-bottom: $h5;
+
+				.sort-handle {
+					fill: #999;
+					line-height: $h2;
+					margin-right: $h5;
+					cursor: move;
+					cursor: -webkit-grabbing;
+				}
+
+				&:only-child .sort-handle {
+					display: none;
+				}
+			}
+		}
+
+		#new {
+			opacity: 0.75;
+
+			input {
+				border-style: dashed;
+			}
+
+			.sort-handle {
+				display: none;
+			}
+		}
+	}
+}

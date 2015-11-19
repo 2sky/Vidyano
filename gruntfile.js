@@ -9,14 +9,14 @@ module.exports = function(grunt) {
                 }
             }
         },
-        less: {
+        sass: {
             development: {
                 options: {
                     paths: ["importfolder"]
                 },
                 files: [{
                     expand: true,
-                    src: ["src/WebComponents/**/*.less"],
+                    src: ["src/WebComponents/**/*.scss"],
                     ext: ".css"
                 }]
             },
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
                     if (src.indexOf("demo") >= 0)
                         return false;
 
-                    if (src.indexOf(".less") > 0 || src.endsWith(".js") || src.indexOf(".html") > 0)
+                    if (src.indexOf(".scss") > 0 || src.endsWith(".js") || src.indexOf(".html") > 0)
                         return true;
 
                     return false;
@@ -78,7 +78,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask("default", [
         "bower:install",
-        "less",
+        "sass",
         "ts"
     ]);
 
@@ -92,10 +92,10 @@ module.exports = function(grunt) {
     ]);
 
     grunt.loadNpmTasks("grunt-bower-task");
-    grunt.loadNpmTasks("grunt-contrib-less");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks("grunt-sass");
     grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks('dts-generator');
 };

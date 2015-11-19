@@ -1,0 +1,33 @@
+@import "../_vars.scss";
+
+:host {
+    display: block;
+
+    .resize-triggers {
+        position: relative;
+        visibility: hidden;
+
+        &, & > div, .contract-trigger:before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        & > div {
+            background: #eee;
+            overflow: auto;
+        }
+
+        .contract-trigger:before {
+            width: 200%;
+            height: 200%;
+            min-width: 1px;
+            min-height: 1px;
+        }
+    }
+}

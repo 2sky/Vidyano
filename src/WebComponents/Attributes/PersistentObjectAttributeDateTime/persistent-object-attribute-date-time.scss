@@ -1,0 +1,31 @@
+@import (reference) "../persistent-object-attribute.less";
+
+vi-persistent-object-attribute-date-time {
+    @include layout-horizontal();
+
+    &[editing] {
+        input {
+            display: inline-block;
+            border: none;
+            height: $h2 - 2px;
+            line-height: $h2 - 2px;
+            font-size: 13px;
+
+            & + input {
+                padding-left: 0;
+            }
+        }
+
+        &[has-invalid-date] {
+            input#date {
+                color: red;
+            }
+        }
+
+        &[has-invalid-time] {
+            input#time {
+                color: red;
+            }
+        }
+    }
+}

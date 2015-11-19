@@ -1,0 +1,38 @@
+@import "../vars.scss";
+
+:host {
+    position: relative;
+    display: block;
+
+    > div {
+        @include layout-horizontal();
+        @include layout-center-center();
+        height: 100%;
+        text-align: center;
+    }
+
+    ::content svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    &[small] ::content svg {
+        -ms-transform: translateY(1px);
+        -webkit-transform: translateY(1px);
+        -moz-transform: translateY(1px);
+        -o-transform: translateY(1px);
+        transform: translateY(1px);
+        width: 12px;
+        height: 12px;
+    }
+
+    &[extrasmall] ::content svg {
+        -ms-transform: translateY(0);
+        -webkit-transform: translateY(0);
+        -moz-transform: translateY(0);
+        -o-transform: translateY(0);
+        transform: translateY(0);
+        width: 10px;
+        height: 10px;
+    }
+}

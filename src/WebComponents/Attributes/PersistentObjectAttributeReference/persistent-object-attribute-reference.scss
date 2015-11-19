@@ -1,0 +1,45 @@
+@import (reference) "../persistent-object-attribute.less";
+
+vi-persistent-object-attribute-reference {
+    @include layout-horizontal();
+    @include relative();
+
+    &:not([editing]) {
+        a {
+            @include layout-horizontal();
+
+            span {
+                -ms-text-overflow: ellipsis;
+                -o-text-overflow: ellipsis;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+
+            vi-icon {
+                height: $non-edit-line-height;
+                margin: 0 $h5;
+                min-width: $h4;
+                @include theme-color(fill);
+            }
+        }
+    }
+
+    &[editing] {
+        vi-select {
+            border: none;
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+
+        a[disabled] {
+            display: none;
+        }
+    }
+
+    &[select-in-place] {
+        vi-persistent-object-attribute-edit .box {
+            @include layout-horizontal-reverse() !important;
+        }
+    }
+}

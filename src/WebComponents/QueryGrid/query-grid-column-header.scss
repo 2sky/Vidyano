@@ -1,0 +1,65 @@
+@import (reference) "query-grid.less";
+
+vi-query-grid-column-header {
+    @include relative();
+    display: block;
+    box-sizing: border-box;
+    min-width: $cell-width;
+    border-right: 1px solid $separatorColor;
+
+    > div:first-child {
+        height: $cell-line-height;
+        padding: 0 $h3 0 $cell-padding;
+        cursor: pointer;
+        position: relative;
+        color: #808080;
+        white-space: nowrap;
+        overflow: hidden;
+        @include theme-color-button-inverse();
+
+        > label {
+            display: block;
+            line-height: $cell-line-height;
+            white-space: nowrap;
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding-right: $h5;
+        }
+    }
+
+    > vi-icon {
+        position: absolute;
+        right: $h5;
+        top: 0;
+        fill: #555;
+        line-height: $cell-line-height;
+        height: $cell-line-height;
+    }
+
+    .resizer {
+        width: 0.5em;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: transparent;
+        z-index: 2;
+        cursor: ew-resize;
+        -webkit-transform: translate3d(0.25em, 0, 0);
+        transform: translate3d(0.25em, 0, 0);
+    }
+
+    &.resizing .resizer, .resizer:hover{
+        &::after {
+            position: absolute;
+            left: $h5 / 2;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #888;
+            content: " ";
+        }
+    }
+}

@@ -1,0 +1,28 @@
+@import (reference) "../persistent-object-attribute.less";
+
+vi-persistent-object-attribute-image {
+    @include layout-horizontal();
+    @include relative();
+    outline: none;
+
+    .image {
+        @include flex();
+        z-index: 1;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+    .button.browse {
+        input {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            padding: 0;
+            margin: 0;
+            border: 0;
+            cursor: pointer;
+        }
+    }
+}

@@ -1,0 +1,34 @@
+@import "../_vars.scss";
+
+:host {
+    display: block;
+    @include fit();
+    @include layout-vertical-reverse();
+
+    header {
+        line-height: $h1;
+        z-index: 2;
+        @include page-title();
+    }
+
+    vi-action-bar {
+        background-color: $actionsBG;
+        @include shadow();
+        z-index: 1;
+    }
+
+    vi-query-items-presenter {
+        margin: 3px 1px 1px 1px;
+        z-index: 0;
+    }
+
+    &[no-actions] {
+        > header {
+            @include shadow();
+        }
+
+        vi-action-bar {
+            display: none !important;
+        }
+    }
+}
