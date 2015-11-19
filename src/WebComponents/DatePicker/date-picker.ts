@@ -24,6 +24,7 @@
         private _monthsAndYearsCells: HTMLDivElement[];
         private _currentDate: Date;
         private _minYears: number;
+        private _scopedClassName: string;
         header: string;
         zoom: string;
         selectedDate: Date;
@@ -33,7 +34,10 @@
 
             if (!this._daysBody) {
                 var table = <HTMLTableElement>this.$["days"];
-                this._daysBody = table.createTBody();
+                this._scopedClassName = table.className;
+
+                Polymer.dom(table).appendChild(this._daysBody = document.createElement("tbody"));
+
                 this._dayCells = [];
 
                 var fragment = document.createDocumentFragment();
@@ -55,7 +59,7 @@
                     fragment.appendChild(tr);
                 }
 
-                this._daysBody.appendChild(fragment);
+                Polymer.dom(this._daysBody).appendChild(fragment);
 
                 fragment = document.createDocumentFragment();
                 for (var i = 0; i < 7; i++) {
@@ -65,7 +69,7 @@
                     fragment.appendChild(th);
                 }
 
-                table.tHead.appendChild(fragment);
+                Polymer.dom(table.tHead).appendChild(fragment);
             }
 
             if (!this._monthsAndYearsBody) {
@@ -75,11 +79,11 @@
                 var fragment = document.createDocumentFragment();
                 for (var y = 0; y < 4; y++) {
                     var row = document.createElement("div");
-                    row.className = "row flex horizontal layout";
+                    row.className = `${this._scopedClassName} row flex horizontal layout`;
 
                     for (var d = 0; d < 3; d++) {
                         var year = document.createElement("div");
-                        year.className = "col flex";
+                        year.className = `${this._scopedClassName} col flex`;
 
                         this._monthsAndYearsCells.push(year);
                         row.appendChild(year);
@@ -88,7 +92,7 @@
                     fragment.appendChild(row);
                 }
 
-                this._monthsAndYearsBody.appendChild(fragment);
+                Polymer.dom(this._monthsAndYearsBody).appendChild(fragment);
             }
 
             this.zoom = "days";
@@ -129,7 +133,7 @@
                     this._dayCells[0][i].setAttribute("data-day", prevDay.toString());
                     this._dayCells[0][i].setAttribute("data-month", prevMonth.toString());
                     this._dayCells[0][i].setAttribute("data-year", prevMonthYear.toString());
-                    this._dayCells[0][i].className = this._getDayClass(prevDay, prevMonth, prevMonthYear, "previous");
+                    this._dayCells[0][i].className = `${this._scopedClassName} ${this._getDayClass(prevDay, prevMonth, prevMonthYear, "previous")}`;
                 }
 
                 var week = 0;
@@ -144,7 +148,7 @@
                     this._dayCells[week][weekDay].setAttribute("data-day", day.toString());
                     this._dayCells[week][weekDay].setAttribute("data-month", month.toString());
                     this._dayCells[week][weekDay].setAttribute("data-year", year.toString());
-                    this._dayCells[week][weekDay].className = this._getDayClass(day, this._currentDate.getMonth(), this._currentDate.getFullYear());
+                    this._dayCells[week][weekDay].className = `${this._scopedClassName} ${this._getDayClass(day, this._currentDate.getMonth(), this._currentDate.getFullYear())}`;
 
                     weekDay++;
                 }
@@ -158,7 +162,7 @@
                     this._dayCells[week][i - 1].setAttribute("data-day", nextDay.toString());
                     this._dayCells[week][i - 1].setAttribute("data-month", nextMonth.toString());
                     this._dayCells[week][i - 1].setAttribute("data-year", nextMonthYear.toString());
-                    this._dayCells[week][i - 1].className = this._getDayClass(nextDay, nextMonth, nextMonthYear, "next");
+                    this._dayCells[week][i - 1].className = `${this._scopedClassName} ${this._getDayClass(nextDay, nextMonth, nextMonthYear, "next")}`;
                 }
 
                 if (++week < 6) {
@@ -171,7 +175,7 @@
                         this._dayCells[week][i - 1].setAttribute("data-day", nextDay.toString());
                         this._dayCells[week][i - 1].setAttribute("data-month", nextMonth.toString());
                         this._dayCells[week][i - 1].setAttribute("data-year", nextMonthYear.toString());
-                        this._dayCells[week][i - 1].className = this._getDayClass(nextDay, nextMonth, nextMonth == 0 ? this._currentDate.getFullYear() + 1 : this._currentDate.getFullYear(), "next");
+                        this._dayCells[week][i - 1].className = `${this._scopedClassName} ${this._getDayClass(nextDay, nextMonth, nextMonth == 0 ? this._currentDate.getFullYear() + 1 : this._currentDate.getFullYear(), "next")}`;
                     }
                 }
 
@@ -183,9 +187,9 @@
                     this._monthsAndYearsCells[i].textContent = Vidyano.CultureInfo.currentCulture.dateFormat.shortMonthNames[i];
                     this._monthsAndYearsCells[i].setAttribute("data-value", i.toString());
                     if (this._currentDate.getFullYear() == year && this._currentDate.getMonth() == i)
-                        this._monthsAndYearsCells[i].className = "current";
+                        this._monthsAndYearsCells[i].className = `${this._scopedClassName} current`;
                     else
-                        this._monthsAndYearsCells[i].className = "";
+                        this._monthsAndYearsCells[i].className = this._scopedClassName;
                 }
 
                 this._minYears = this._currentDate.getFullYear() - 4;
@@ -196,9 +200,9 @@
                     this._monthsAndYearsCells[i].textContent = (this._minYears + i).toString();
                     this._monthsAndYearsCells[i].setAttribute("data-value", (this._minYears + i).toString());
                     if (this._minYears + i == this._currentDate.getFullYear())
-                        this._monthsAndYearsCells[i].className = "current";
+                        this._monthsAndYearsCells[i].className = `${this._scopedClassName} current`;
                     else
-                        this._monthsAndYearsCells[i].className = "";
+                        this._monthsAndYearsCells[i].className = this._scopedClassName;
                 }
             }
         }

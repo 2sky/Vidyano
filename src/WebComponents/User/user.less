@@ -2,7 +2,7 @@
 
 @footerHeight: @h1;
 
-vi-user {
+:host {
     border-top: 1px solid transparent;
     .layout-horizontal();
     background-color: fadeout(white, 92%);
@@ -13,7 +13,7 @@ vi-user {
         height: @footerHeight;
     }
 
-    button.vi-user {
+    button {
         height: @footerHeight !important;
         line-height: @footerHeight !important;
         cursor: pointer;
@@ -40,7 +40,7 @@ vi-user {
     }
 
     &:not([is-signed-in]) {
-        button.vi-user {
+        button {
             cursor: pointer;
         }
     }

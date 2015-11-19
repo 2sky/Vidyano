@@ -2,7 +2,7 @@
 
 :host {
     .layout-horizontal();
-    position: relative;
+    .relative();
 
     &[has-error] {
         .layout-center-center();
@@ -19,5 +19,9 @@
             width: @h1;
             height: @h1;
         }
+    }
+
+    .content-wrapper {
+        .fit();
     }
 }

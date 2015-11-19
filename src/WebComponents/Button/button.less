@@ -31,6 +31,8 @@
     -o-transition-timing-function: ease-out;
     -webkit-transition-timing-function: ease-out;
     transition-timing-function: ease-out;
+    border: none;
+    outline: none;
 
     &[disabled] {
         cursor: default;
@@ -56,34 +58,30 @@
 
     &[type=""], &:not([type]) {
         &:not([inverse]) {
-            .theme-color(background-color);
+            background-color: var(--theme-color);
             color: white;
             fill: white;
 
             &:hover {
-                .theme-color(background-color, "light");
+                background-color: var(--theme-color-light);
             }
 
             &[disabled] {
-                .theme-color(background-color, "color", 50%) !important;
-                fill: fadeout(white, 50%) !important;
-                color: fadeout(white, 50%) !important;
+                opacity: 0.5;
             }
         }
 
         &[inverse] {
             background-color: transparent;
-            .theme-color(color);
-            .theme-color(fill);
+            color: var(--theme-color);
+            fill: var(--theme-color);
 
             &:hover {
-                .theme-color(background-color, "faint");
+                background-color: var(--theme-color-faint);
             }
 
             &[disabled] {
-                background-color: transparent !important;
-                .theme-color(color, "color", 50%) !important;
-                .theme-color(fill, "color", 50%) !important;
+                opacity: 0.5;
             }
         }
     }
@@ -122,11 +120,11 @@
 vi-popup[open] > [toggle] button[is="vi-button"][header] {
     &[type=""], &:not([type]) {
         &:not([inverse]) {
-            .theme-color(background-color, "light");
+            background-color: var(--theme-color-light);
         }
 
         &[inverse] {
-            .theme-color(background-color, "faint");
+            background-color: var(--theme-color-faint);
         }
     }
 

@@ -3,6 +3,8 @@
 @tabsBG: #f1f1f1;
 
 :host {
+    --master-width: 40%;
+
     .layout-vertical-reverse();
     .fit();
 
@@ -37,7 +39,7 @@
         }
     }
 
-    &[layout~="master-detail"] {
+    &[layout-master-detail] {
         .tabs > .detail {
             margin-left: 4px;
         }
@@ -67,9 +69,13 @@
 
             cursor: col-resize;
         }
+
+        .master {
+            width: var(--master-width);
+        }
     }
 
-    &[layout~="details-only"] {
+    &[layout-details-only] {
         .master {
             display: none;
         }
@@ -81,7 +87,7 @@
         }
     }
 
-    &[layout~="full-page"] {
+    &[layout-full-page] {
         .master {
             -ms-flex: 1;
             -webkit-flex: 1;
@@ -93,7 +99,7 @@
         }
     }
 
-    &:not([layout~="mt"]):not([layout~="dt"]) {
+    &:not([layout-master-tabs]):not([layout-detail-tabs]) {
         .tabs {
             display: none;
         }
@@ -107,7 +113,7 @@
         }
     }
 
-    &:not([layout~="ma"]):not([layout~="da"]) {
+    &:not([layout-master-actions]):not([layout-detail-actions]) {
         .master, .detail {
             vi-action-bar {
                 display: none;
@@ -115,7 +121,7 @@
         }
     }
 
-    &:not([layout~="master-detail"]):not([layout~="details-only"]):not([layout~="full-page"]) {
+    &:not([layout-master-detail]):not([layout-details-only]):not([layout-full-page]) {
         header, .tabs, .content {
             display: none;
         }

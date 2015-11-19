@@ -4,7 +4,7 @@
 @innerDiscSize: 0.7;
 @discSpacing: 20px;
 
-vi-time-picker {
+:host {
 	display: block;
 	position: relative;
 	padding: @h4 * 2;
@@ -108,7 +108,7 @@ vi-time-picker {
 						color: white;
 
 						&::before {
-							.theme-color(background-color, "light");
+							background-color: var(--theme-color-light);
 						}
 					}
 
@@ -126,11 +126,11 @@ vi-time-picker {
 						color: white;
 
 						&::before {
-							.theme-color(background-color);
+							background-color: var(--theme-color);
 						}
 
 						&:hover::before {
-							.theme-color(background-color, "dark");
+							background-color: var(--theme-color-dark);
 						}
 					}
 				}
@@ -176,7 +176,7 @@ vi-time-picker {
 
 		#current {
 			.minutes {
-				.theme-color(color);
+				color: var(--theme-color);
 			}
 		}
 	}
@@ -196,7 +196,7 @@ vi-time-picker {
 
 		#current {
 			.hours {
-				.theme-color(color);
+				color: var(--theme-color);
 			}
 		}
 	}

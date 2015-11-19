@@ -308,6 +308,16 @@
          * If node is specified, sets the attribute on node instead of the host element.
         */
         toggleAttribute: (name: string, bool: boolean, node?: Node | WebComponent) => void;
+
+        /**
+         * Key-value pairs for the custom styles on the element.
+         */
+        customStyle: { [key: string]: string };
+
+        /**
+         * Revaluates custom property values.
+         */
+        updateStyles: () => void;
     }
 
     // HACK: This fixes the default __extends for extending from HTMLElement

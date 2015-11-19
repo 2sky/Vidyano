@@ -1,5 +1,6 @@
 <dom-module id="vi-chart-selector">
     <template>
+        <link rel="stylesheet" href="chart-selector.css" />
         <button is="vi-button" on-tap="_showGrid" inverse icon="Grid"></button>
         <template is="dom-repeat" items="{{types}}" as="type">
             <template is="dom-if" if="{{!type.single}}">
@@ -17,5 +18,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="chart-selector.css" />
 <script src="chart-selector.js"></script>

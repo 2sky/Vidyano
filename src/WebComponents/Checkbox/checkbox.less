@@ -1,6 +1,6 @@
 ﻿@import (reference) "../vidyano.less";
 
-vi-checkbox {
+:host {
     .layout-horizontal();
     .layout-center();
     fill: #bbb;
@@ -10,7 +10,7 @@ vi-checkbox {
         cursor: pointer;
 
         &[checked] {
-            .theme-color(fill);
+            fill: --theme-color;
         }
     }
 

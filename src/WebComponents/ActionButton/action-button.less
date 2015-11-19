@@ -1,10 +1,10 @@
 @import (reference) "../vidyano.less";
 
-vi-action-button {
+:host {
     display: block;
     box-sizing: border-box;
 
-    button.vi-action-button {
+    button {
         vertical-align: top;
         text-align: left;
         cursor: pointer;
@@ -71,10 +71,10 @@ vi-action-button {
             cursor: pointer;
             padding: 0 @h4;
             font-size: 13px;
-            .theme-color(color);
+            color: var(--theme-color);
 
             &:hover {
-                .theme-color(background-color, "faint");
+                background-color: var(--theme-color-faint);
             }
         }
     }
