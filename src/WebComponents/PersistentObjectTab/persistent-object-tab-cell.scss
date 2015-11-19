@@ -1,0 +1,19 @@
+@import "../_vars.scss";
+
+$cellHeight: $h2;
+
+:host {
+    float: left;
+    position: relative;
+    height: $cellHeight;
+    line-height: $cellHeight;
+
+    #background {
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        bottom: 2px;
+        right: 2px;
+        background-color: var(--theme-color-faint);
+    }
+}
