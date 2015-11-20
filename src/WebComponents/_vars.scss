@@ -38,6 +38,12 @@ $color-ok:#339f7b;
     box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);
 }
 
+@function shadow() {
+    @return "-webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow:    0 0 4px 0 rgba(0, 0, 0, 0.5);
+    box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);";
+}
+
 @mixin theme-color-button() {
     color: white;
     background-color: var(--theme-color);

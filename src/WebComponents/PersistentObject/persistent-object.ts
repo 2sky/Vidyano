@@ -275,4 +275,24 @@
             e.stopPropagation();
         }
     }
+
+    @WebComponent.register({
+        properties: {
+            tab: Object
+        }
+    })
+    export class PersistentObjectDetailsContent extends WebComponent {
+    }
+
+    @WebComponent.register({
+        properties: {
+            tabs: Object,
+            tab: {
+                type: Object,
+                notify: true
+            }
+        }
+    })
+    export class PersistentObjectDetailsHeader extends WebComponent {
+    }
 }

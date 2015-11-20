@@ -1,19 +1,3 @@
-﻿<dom-module id="vi-persistent-object-attribute-edit">
-    <template>
-        <div class="box flex horizontal layout">
-            <content select="[content]"></content>
-            <div class="buttons">
-                <content select=".button, button, vi-popup:not([content])"></content>
-            </div>
-        </div>
-        <button id="errorIndicator" on-tap="_showError">
-            <vi-popup open-on-hover content-align="center">
-                <vi-icon header source="Notification_Error"></vi-icon>
-                <pre content>{{attribute.validationError}}</pre>
-            </vi-popup>
-        </button>
-    </template>
-</dom-module>
+<link rel="import" href="persistent-object-attribute-edit.html" />
 
-<link rel="stylesheet" href="persistent-object-attribute.css" />
 <script src="persistent-object-attribute.js"></script>

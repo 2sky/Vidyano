@@ -46,13 +46,13 @@
     }
 
     &[no-label]:not([force-label]), &[pinned]:not([force-label]) {
-        button.vi-action-button > span {
+        button > span {
             display: none;
         }
     }
 
     &[no-icon] {
-        button.vi-action-button > vi-icon {
+        button > vi-icon {
             display: none;
         }
     }

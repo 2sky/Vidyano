@@ -72,14 +72,15 @@ module Vidyano.WebComponents {
 
         private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
         private _renderedAttribute: Vidyano.PersistentObjectAttribute;
+        private _renderedElement: Node;
         attribute: Vidyano.PersistentObjectAttribute;
 
         private _setLoading: (loading: boolean) => void;
 
         private _attributeChanged(attribute: Vidyano.PersistentObjectAttribute, isAttached: boolean) {
-            if (Polymer.dom(this).children.length > 0) {
-                this.empty();
-                this._renderedAttribute = null;
+            if (this._renderedElement) {
+                Polymer.dom(this.$["content"]).removeChild(this._renderedElement);
+                this._renderedElement = this._renderedAttribute = null;
             }
 
             if (attribute && isAttached) {
@@ -194,12 +195,12 @@ module Vidyano.WebComponents {
                         this._templatePresenter.dataContext = attribute;
 
                         if (!this._templatePresenter.isAttached)
-                            Polymer.dom(this).appendChild(this._templatePresenter);
+                            this._renderedElement = Polymer.dom(this.$["content"]).appendChild(this._templatePresenter);
                     } else {
                         var child = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
                         child.classList.add("attribute");
 
-                        Polymer.dom(this).appendChild(child);
+                        this._renderedElement = Polymer.dom(this.$["content"]).appendChild(child);
 
                         child.attribute = attribute;
                     }

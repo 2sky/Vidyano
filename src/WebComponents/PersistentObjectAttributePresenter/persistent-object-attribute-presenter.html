@@ -13,15 +13,11 @@
                 </div>
             </div>
         </template>
-        <template is="dom-if" if="{{!attribute.parent.isBulkEdit}}">
-            <content></content>
-        </template>
-        <template is="dom-if" if="{{attribute.parent.isBulkEdit}}">
-            <div class="bulk-edit-container">
+        <div id="content">
+            <template is="dom-if" if="{{attribute.parent.isBulkEdit}}">
                 <vi-checkbox checked="{{attribute.isValueChanged}}" disabled="{{readOnly}}"></vi-checkbox>
-                <content></content>
-            </div>
-        </template>
+            </template>
+        </div>
     </template>
 </dom-module>
 

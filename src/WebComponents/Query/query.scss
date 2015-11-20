@@ -4,17 +4,16 @@
     display: block;
     @include fit();
     @include layout-vertical-reverse();
+    --action-bar-style: #{'{
+        background-color: '$actionsBG';
+        'shadow()'
+        z-index: 1;
+    }'};
 
     header {
         line-height: $h1;
         z-index: 2;
         @include page-title();
-    }
-
-    vi-action-bar {
-        background-color: $actionsBG;
-        @include shadow();
-        z-index: 1;
     }
 
     vi-query-items-presenter {

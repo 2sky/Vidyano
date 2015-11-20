@@ -4,6 +4,7 @@
     min-height: $h1;
     @include layout-horizontal();
     @include noSelection();
+    @apply(--action-bar-style);
 
     &[isEmpty] {
         display: none !important;

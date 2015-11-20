@@ -1,6 +1,5 @@
 @import "../vars.scss";
 
-$border-color: #ddd;
 $non-edit-line-height: 16px;
 
 :host {
@@ -20,7 +19,7 @@ $non-edit-line-height: 16px;
         opacity: 1;
     }
 
-    .label.vi-persistent-object-attribute-presenter {
+    .label {
         padding-top: $h5;
         height: $h2 - $h5;
         min-height: $h2 - $h5;
@@ -33,6 +32,7 @@ $non-edit-line-height: 16px;
             font-weight: 400;
             color: #888;
             letter-spacing: 0.5px;
+            @apply(--attribute-label);
         }
 
         .required {
@@ -50,6 +50,7 @@ $non-edit-line-height: 16px;
             -webkit-transform: translateY(-1px);
             transform: translateY(-1px);
             background-color: var(--theme-color);
+            @apply(--attribute-required);
 
             &::before {
                 content: "";
@@ -78,14 +79,16 @@ $non-edit-line-height: 16px;
                 width: 10px;
                 height: 10px;
             }
+
+            @apply(--attribute-locked);
         }
     }
 
-    &[editing][required]:not([bulk-edit]) .required.vi-persistent-object-attribute-presenter {
+    &[editing][required]:not([bulk-edit]) .required {
         display: inline-block;
     }
 
-    &[editing][read-only] .locked.vi-persistent-object-attribute-presenter {
+    &[editing][read-only] .locked {
         display: inline-block;
     }
 
@@ -99,22 +102,21 @@ $non-edit-line-height: 16px;
         }
     }
 
-    & > .attribute, &[bulk-edit] > .bulk-edit-container {
-        @include flex();
+    #content {
         @include layout-horizontal();
+        @include flex();
+
+        .attribute {
+            @include layout-horizontal();
+            @include flex();
+        }
     }
 
     &[bulk-edit] {
-        > .bulk-edit-container {
-            @include layout-horizontal();
-
+        #content {
             > vi-checkbox {
                 @include self-start();
                 width: $h3;
-            }
-
-            > .attribute {
-                @include flex();
             }
         }
     }

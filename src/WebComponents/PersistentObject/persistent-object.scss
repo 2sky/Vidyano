@@ -4,6 +4,11 @@ $tabsBG: #f1f1f1;
 
 :host {
     --master-width: 40%;
+    --action-bar-style: #{'{
+        padding-top: 3px;
+        border-bottom: 1px solid '$tabsBG';
+        background-color: '$actionsBG';
+    }'};
 
     @include layout-vertical-reverse();
 
@@ -25,12 +30,6 @@ $tabsBG: #f1f1f1;
     }
 
     .content {
-        vi-action-bar {
-            padding-top: 3px;
-            border-bottom: 1px solid $tabsBG;
-            background-color: $actionsBG;
-        }
-
         .detail {
             vi-persistent-object-tab-presenter {
                 margin: 1px 1px 1px 0;

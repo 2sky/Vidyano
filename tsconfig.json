@@ -35,6 +35,7 @@
         "src/WebComponents/App/Config/query-config.ts",
         "src/WebComponents/AppRoute/app-route.ts",
         "src/WebComponents/AttachedNotifier/attached-notifier.ts",
+        "src/WebComponents/Attributes/persistent-object-attribute-edit.ts",
         "src/WebComponents/Attributes/persistent-object-attribute.ts",
         "src/WebComponents/Attributes/PersistentObjectAttributeAsDetail/persistent-object-attribute-as-detail.ts",
         "src/WebComponents/Attributes/PersistentObjectAttributeBinaryFile/persistent-object-attribute-binary-file.ts",
