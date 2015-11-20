@@ -4482,7 +4482,13 @@ module Vidyano {
         }
 
         private _createItem(routes: Routes, itemData: any): ProgramUnitItem {
-            return itemData.query ? new ProgramUnitItemQuery(this.service, routes, itemData, this) : new ProgramUnitItemPersistentObject(this.service, routes, itemData, this);
+            if (itemData.query)
+                return new ProgramUnitItemQuery(this.service, routes, itemData, this);
+
+            if (itemData.persistentObject)
+                return new ProgramUnitItemPersistentObject(this.service, routes, itemData, this);
+
+            return new ProgramUnitItemUrl(this.service, itemData);
         }
     }
 
@@ -4531,6 +4537,12 @@ module Vidyano {
             }
 
             return "/PersistentObject." + id + (objectId ? "/" + objectId : "");
+        }
+    }
+
+    export class ProgramUnitItemUrl extends ProgramUnitItem {
+        constructor(service: Service, unitItem: any) {
+            super(service, unitItem, unitItem.objectId);
         }
     }
 
