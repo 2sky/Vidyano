@@ -1116,7 +1116,7 @@
 
                 let extraClass = this.item ? this.item.getTypeHint("extraclass") : null;
                 if (this._extraClass && extraClass !== this._extraClass) {
-                    this.host.classList.remove.apply(this.host.classList, this._extraClass.split(" "));
+                    this.host.classList.remove(...this._extraClass.split(" "));
                     this._extraClass = null;
                 }
 
@@ -1125,7 +1125,7 @@
                     this._itemQueryPropertyChangedListener = this._item.query.propertyChanged.attach(this._itemQueryPropertyChanged.bind(this));
 
                     if (extraClass) {
-                        this.host.classList.add.call(this.host.classList, extraClass.split(" "));
+                        this.host.classList.add(...extraClass.split(" "));
                         this._extraClass = extraClass;
                     }
                 }
@@ -1440,12 +1440,11 @@
                 var extraClass = this.column.column.getTypeHint("extraclass", undefined, value && value.typeHints, true);
                 if (extraClass != this._extraClass) {
                     if (!StringEx.isNullOrEmpty(this._extraClass))
-                        this._extraClass.split(' ').forEach(cls => this.cell.classList.remove(cls));
+                        this.cell.classList.remove(...this._extraClass.split(' '));
 
-                    if (!StringEx.isNullOrEmpty(extraClass)) {
-                        this._extraClass = extraClass;
-                        this._extraClass.split(' ').forEach(cls => this.cell.classList.add(cls));
-                    }
+                    this._extraClass = extraClass;
+                    if (!StringEx.isNullOrEmpty(extraClass))
+                        this.cell.classList.add(...this._extraClass.split(' '));
                 }
 
                 if (this._textNode) {
