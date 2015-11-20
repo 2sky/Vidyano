@@ -22,6 +22,8 @@
     }
 
     .content-wrapper {
-        @include fit();
+        ::content > * {
+            @include fit();
+        }
     }
 }

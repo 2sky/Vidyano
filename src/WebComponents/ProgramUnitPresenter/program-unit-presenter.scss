@@ -3,4 +3,10 @@
 :host {
     display: block;
     @include relative();
+
+    .content-wrapper {
+        ::content > * {
+            @include fit();
+        }
+    }
 }

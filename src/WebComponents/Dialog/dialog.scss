@@ -29,69 +29,71 @@
                 cursor: move !important;
             }
 
-            header, footer {
-                background-color: #FAFAFA;
-            }
-
-            header {
-                -webkit-flex: 0 0 auto;
-                -moz-flex: 0 0 auto;
-                -ms-flex: 0 0 auto;
-                flex: 0 0 auto;
-                line-height: $h1;
-                padding: $h5 $h4;
-                border-bottom: 1px solid #EEE;
-
-                h4 {
-                    margin: 0;
-                    font-weight: 500;
-                    font-size: 120%;
+            > * {
+                > header, > footer {
+                    background-color: #FAFAFA;
                 }
 
-                button.close {
-                    margin: 0;
-                    padding: 0 $h5;
-                    fill: #888;
-                    background: none;
-                    border: none;
-                    cursor: pointer;
+                > header {
+                    -webkit-flex: 0 0 auto;
+                    -moz-flex: 0 0 auto;
+                    -ms-flex: 0 0 auto;
+                    flex: 0 0 auto;
+                    line-height: $h1;
+                    padding: $h5 $h4;
+                    border-bottom: 1px solid #EEE;
 
-                    &:hover {
-                        fill: #555;
+                    h4 {
+                        margin: 0;
+                        font-weight: 500;
+                        font-size: 120%;
                     }
 
-                    &:active {
-                        fill: #333;
-                    }
+                    button.close {
+                        margin: 0;
+                        padding: 0 $h5;
+                        fill: #888;
+                        background: none;
+                        border: none;
+                        cursor: pointer;
 
-                    &:focus {
-                        outline: none;
+                        &:hover {
+                            fill: #555;
+                        }
+
+                        &:active {
+                            fill: #333;
+                        }
+
+                        &:focus {
+                            outline: none;
+                        }
                     }
                 }
-            }
 
-            footer {
-                padding: $h4;
-                border-top: 1px solid #EEE;
-                -webkit-flex: 0 0 auto;
-                -moz-flex: 0 0 auto;
-                -ms-flex: 0 0 auto;
-                flex: 0 0 auto;
+                > footer {
+                    padding: $h4;
+                    border-top: 1px solid #EEE;
+                    -webkit-flex: 0 0 auto;
+                    -moz-flex: 0 0 auto;
+                    -ms-flex: 0 0 auto;
+                    flex: 0 0 auto;
 
-                button {
-                    line-height: $h2;
-                    padding: 0 $h5;
-                    margin-left: $h5;
+                    button {
+                        line-height: $h2;
+                        padding: 0 $h5;
+                        margin-left: $h5;
+                    }
                 }
-            }
 
-            main {
-                position: relative;
-                -webkit-flex: 0 1 auto;
-                -moz-flex: 0 1 auto;
-                -ms-flex: 0 1 auto;
-                flex: 0 1 auto;
-                overflow: hidden;
+                > main {
+                    position: relative;
+                    -webkit-flex: 0 1 auto;
+                    -moz-flex: 0 1 auto;
+                    -ms-flex: 0 1 auto;
+                    flex: 0 1 auto;
+                    overflow: hidden;
+                }
             }
         }
     }
