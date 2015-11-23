@@ -9,11 +9,6 @@
             image: {
                 type: String,
                 observer: "_imageChanged"
-            },
-            vidyanoOnly: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
             }
         },
         listeners: {
@@ -22,10 +17,7 @@
     })
     export class SignIn extends WebComponent {
         error: string;
-        vidyanoOnly: boolean;
         image: string;
-
-        private _setVidyanoOnly: (val: boolean) => void;
 
         private _activating(e: CustomEvent, detail: { route: AppRoute }) {
             var app = detail.route.app;
@@ -44,17 +36,12 @@
 
             this.empty();
 
-            var providerNames: string[] = [];
             for (var name in app.service.providers) {
-                providerNames.push(name);
-
-                var provider = new WebComponents.SignInProvider();
+                const provider = new WebComponents.SignInProvider();
                 provider.name = name;
 
                 Polymer.dom(this).appendChild(provider);
             }
-
-            this._setVidyanoOnly(providerNames.length == 1 && providerNames[0] == "Vidyano");
         }
 
         private _imageChanged() {

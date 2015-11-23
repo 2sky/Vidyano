@@ -1,6 +1,6 @@
-@import (reference) "../persistent-object-attribute.less";
+@import "../../vars.scss";
 
-vi-persistent-object-attribute-image {
+:host {
     @include layout-horizontal();
     @include relative();
     outline: none;
@@ -13,7 +13,7 @@ vi-persistent-object-attribute-image {
     }
 
     .button.browse {
-        input {
+        ::content input {
             position: absolute;
             top: 0;
             right: 0;

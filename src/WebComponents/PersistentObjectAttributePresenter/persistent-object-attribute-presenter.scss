@@ -1,7 +1,5 @@
 @import "../vars.scss";
 
-$non-edit-line-height: 16px;
-
 :host {
     @include layout-vertical();
     flex-basis: 0.000000001px;
@@ -14,6 +12,8 @@ $non-edit-line-height: 16px;
     -o-transition: opacity ease-out 0.3s;
     -webkit-transition: opacity ease-out 0.3s;
     transition: opacity ease-out 0.3s;
+
+    --attribute-border-color: #ddd;
 
     &:not([loading]) {
         opacity: 1;
@@ -118,26 +118,6 @@ $non-edit-line-height: 16px;
                 @include self-start();
                 width: $h3;
             }
-        }
-    }
-
-    a {
-        text-decoration: none;
-        color: var(--theme-color);
-        fill: var(--theme-color);
-
-        &:visited {
-            color: var(--theme-color);
-            fill: var(--theme-color);
-        }
-
-        &:hover {
-            color: var(--theme-color-light);
-            fill: var(--theme-color-light);
-        }
-
-        &[disabled] {
-            color: #333 !important;
         }
     }
 

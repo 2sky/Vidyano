@@ -1,6 +1,6 @@
-@import (reference) "../persistent-object-attribute.less";
+@import "../../vars.scss";
 
-vi-persistent-object-attribute-date-time {
+:host {
     @include layout-horizontal();
 
     &[editing] {

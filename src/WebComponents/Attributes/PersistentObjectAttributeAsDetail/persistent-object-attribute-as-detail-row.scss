@@ -1,0 +1,40 @@
+@import "../../vars.scss";
+
+:host {
+    @include layout-horizontal();
+
+    white-space: nowrap;
+    height: $h2;
+    line-height: $h2;
+
+    .column {
+        padding: 0 1px 1px 0;
+        height: $h2;
+        line-height: $h2;
+        box-sizing: border-box;
+
+        &:last-of-type {
+            padding-right: 0;
+        }
+
+        > vi-persistent-object-attribute-presenter {
+            height: $h2;
+            line-height: $h2;
+        }
+
+        > span {
+            display: block;
+            margin: 0 4px;
+            overflow: hidden;
+            -ms-text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+        }
+    }
+}
+
+:host-context(vi-persistent-object-attribute-as-detail:not([editing])) {
+    .column {
+        border-right: 1px solid var(--attribute-border-color);
+    }
+}

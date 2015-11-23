@@ -27,6 +27,10 @@
         padding-left: 2px;
     }
 
+    > vi-icon:not([hidden]) + span {
+        padding-left: $h5;
+    }
+
     &:not([checked]) {
         #check {
             display: none;

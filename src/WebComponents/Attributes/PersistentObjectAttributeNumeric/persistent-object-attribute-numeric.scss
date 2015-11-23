@@ -1,5 +1,5 @@
-@import (reference) "../persistent-object-attribute.less";
+@import "../../vars.scss";
 
-vi-persistent-object-attribute-numeric {
+:host {
 	@include layout-horizontal();
 }

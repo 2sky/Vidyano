@@ -1,12 +1,10 @@
-@import (reference) "../persistent-object-attribute.less";
-
-$background-color: #F9F9F9;
+@import "../../vars.scss";
 
 @mixin addStyle() {
     &.foot {
         height: $h2;
-        background-color: $background-color;
-        border: 1px solid $border-color;
+        background-color: #F9F9F9;
+        border: 1px solid var(--attribute-border-color);
     }
 
     button {
@@ -14,7 +12,7 @@ $background-color: #F9F9F9;
     }
 }
 
-vi-persistent-object-attribute-as-detail {
+:host {
     @include relative();
 
     &[initializing] {
@@ -29,7 +27,7 @@ vi-persistent-object-attribute-as-detail {
         line-height: $h2;
 
         #head {
-            border-bottom: 1px solid $border-color;
+            border-bottom: 1px solid var(--attribute-border-color);
             height: $h2;
 
             .column {
@@ -55,39 +53,6 @@ vi-persistent-object-attribute-as-detail {
             #data {
                 overflow: hidden;
             }
-
-            .row {
-                white-space: nowrap;
-                font-size: 0;
-                height: $h2;
-                line-height: $h2;
-
-                .column {
-                    padding: 0 1px 1px 0;
-                    vertical-align: top;
-                    height: $h2;
-                    line-height: $h2;
-
-                    &:last-of-type {
-                        padding-right: 0;
-                    }
-
-                    > vi-persistent-object-attribute-presenter {
-                        height: $h2;
-                        line-height: $h2;
-                    }
-                }
-            }
-        }
-
-        .row {
-            font-size: 0;
-
-            .column {
-                display: inline-block;
-                font-size: 13px;
-                box-sizing: border-box;
-            }
         }
 
         button.action {
@@ -101,12 +66,18 @@ vi-persistent-object-attribute-as-detail {
             @include noSelection();
 
             #head {
-                background-color: $background-color;
-                border: 1px solid $border-color;
+                background-color: #F9F9F9;
+                border: 1px solid var(--attribute-border-color);
 
-                .column label {
-                    border-right: 1px solid $border-color;
-                    margin-right: 1px;
+                .column {
+                    padding: 0 1px 1px 0;
+                    height: $h2;
+                    line-height: $h2;
+                    box-sizing: border-box;
+
+                    label {
+                        border-right: 1px solid var(--attribute-border-color);
+                    }
                 }
             }
 
@@ -128,9 +99,9 @@ vi-persistent-object-attribute-as-detail {
                             @include flex();
                             @include layout-horizontal();
                             box-sizing: border-box;
-                            border: 1px solid $border-color;
+                            border: 1px solid var(--attribute-border-color);
                             padding: 0 $h4;
-                            @include theme-color(fill, "light");
+                            fill: var(--theme-color-light);
 
                             &:not(:hover):not(:active) {
                                 background-color: transparent;
@@ -199,18 +170,10 @@ vi-persistent-object-attribute-as-detail {
                     }
                 }
             }
-
-            .column:not(:last-of-type) {
-                border-right: 1px solid $border-color;
-            }
         }
 
         #foot {
             display: none;
         }
     }
-}
-
-vi-persistent-object-attribute-as-detail-row {
-    display: block;
 }

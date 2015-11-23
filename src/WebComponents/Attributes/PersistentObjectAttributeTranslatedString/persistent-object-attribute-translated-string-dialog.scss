@@ -1,25 +1,16 @@
-@import (reference) "../persistent-object-attribute.less";
+@import "../../vars.scss";
 
-vi-persistent-object-attribute-translated-string {
-	.layout-horizontal();
-
-    pre {
-        padding-top: @h5;
-        line-height: normal !important;
-    }
-}
-
-vi-persistent-object-attribute-translated-string-dialog {
+:host {
     ul {
         margin: 0;
-        padding: @h4;
+        padding: $h4;
         list-style: none;
 
         li {
             min-width: 50vw;
 
             &:not(:last-of-type) {
-                margin-bottom: @h4;
+                margin-bottom: $h4;
             }
 
             label {
@@ -39,12 +30,12 @@ vi-persistent-object-attribute-translated-string-dialog {
                 resize: none;
                 box-sizing: border-box;
                 margin: 0;
-                padding: @h5;
-                border: 1px solid @border-color;
+                padding: $h5;
+                border: 1px solid #ddd;
                 outline: none;
 
 				&:focus {
-					.theme-color(border-color, "light");
+					border-color: var(--theme-color-light);
 				}
             }
         }

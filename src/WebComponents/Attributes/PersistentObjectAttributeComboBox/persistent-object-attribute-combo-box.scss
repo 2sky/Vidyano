@@ -1,9 +1,9 @@
-@import (reference) "../persistent-object-attribute.less";
+@import "../../vars.scss";
 
-vi-persistent-object-attribute-combo-box {
+:host {
     @include layout-horizontal();
 
-    vi-persistent-object-attribute-edit .box {
-        @include layout-horizontal-reverse() !important;
+    vi-select {
+        border: none;
     }
 }

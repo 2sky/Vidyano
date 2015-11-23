@@ -1,12 +1,29 @@
-@import (reference) "../persistent-object-attribute.less";
+@import "../../vars.scss";
 
-vi-persistent-object-attribute-reference {
+:host {
     @include layout-horizontal();
     @include relative();
 
     &:not([editing]) {
         a {
             @include layout-horizontal();
+            text-decoration: none;
+            color: var(--theme-color);
+            fill: var(--theme-color);
+
+            &:visited {
+                color: var(--theme-color);
+                fill: var(--theme-color);
+            }
+
+            &:hover {
+                color: var(--theme-color-light);
+                fill: var(--theme-color-light);
+            }
+
+            &[disabled] {
+                color: #333 !important;
+            }
 
             span {
                 -ms-text-overflow: ellipsis;
@@ -16,10 +33,10 @@ vi-persistent-object-attribute-reference {
             }
 
             vi-icon {
-                height: $non-edit-line-height;
                 margin: 0 $h5;
                 min-width: $h4;
-                @include theme-color(fill);
+                fill: var(--theme-color);
+                transform: translateY(2px);
             }
         }
     }
@@ -34,12 +51,6 @@ vi-persistent-object-attribute-reference {
 
         a[disabled] {
             display: none;
-        }
-    }
-
-    &[select-in-place] {
-        vi-persistent-object-attribute-edit .box {
-            @include layout-horizontal-reverse() !important;
         }
     }
 }

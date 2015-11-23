@@ -1,10 +1,9 @@
-@import (reference) "../persistent-object-attribute.less";
+@import "../../vars.scss";
 
-vi-persistent-object-attribute-multi-line-string {
+:host {
     overflow: hidden;
 
-    > textarea {
-        @include flex();
+    textarea {
         resize: none;
     }
 }

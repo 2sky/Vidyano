@@ -9,30 +9,31 @@ module Vidyano.WebComponents.Attributes {
 
     @PersistentObjectAttribute.register({
         properties: {
-            options: Array
+            options: {
+                type: Array,
+                computed: "_computeOptions(attribute)"
+            }
         }
     })
     export class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
-        options: Common.KeyValuePair[];
+        private _computeOptions(attribute: Vidyano.PersistentObjectAttribute): Common.KeyValuePair[] {
+            if (!attribute)
+                return [];
 
-        attached() {
-            super.attached();
-
-            if (!this.options && this.attribute) {
-                this.options = [
-                    {
-                        key: null,
-                        value: ""
-                    },
-                    {
-                        key: true,
-                        value: this.translations[this.attribute.getTypeHint("TrueKey", "Yes")]
-                    },
-                    {
-                        key: false,
-                        value: this.translations[this.attribute.getTypeHint("FalseKey", "No")]
-                    }];
-            }
+            return [
+                {
+                    key: null,
+                    value: ""
+                },
+                {
+                    key: true,
+                    value: this.translations[this.attribute.getTypeHint("TrueKey", "Yes")]
+                },
+                {
+                    key: false,
+                    value: this.translations[this.attribute.getTypeHint("FalseKey", "No")]
+                }
+            ];
         }
 
         protected _valueChanged(newValue: any) {

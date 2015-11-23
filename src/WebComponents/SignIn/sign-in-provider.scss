@@ -19,16 +19,6 @@
     }
 
     &[is-vidyano] {
-        &:only-of-type {
-            h3, h4 {
-                display: none;
-            }
-
-            ul#vidyano {
-                padding-left: 0;
-            }
-        }
-
         ul#vidyano {
             list-style: none;
             padding-left: $h1;
@@ -95,6 +85,25 @@
                         }
                     }
                 }
+            }
+        }
+
+        &:only-of-type {
+            cursor: default;
+
+            h3, h4 {
+                display: none;
+            }
+
+            ul#vidyano {
+                padding-left: 0;
+                max-height: 200px;
+            }
+        }
+
+        &[expand] {
+            ul#vidyano {
+                max-height: 200px;
             }
         }
     }

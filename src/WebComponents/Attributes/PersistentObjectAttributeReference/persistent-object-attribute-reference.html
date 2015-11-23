@@ -3,6 +3,7 @@
 
 <dom-module name="vi-persistent-object-attribute-reference">
     <template>
+        <link rel="stylesheet" href="persistent-object-attribute-reference.css" />
         <template is="dom-if" if="{{!editing}}">
             <a href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" on-tap="_open">
                 <span>{{attribute.displayValue}}</span>
@@ -58,5 +59,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="persistent-object-attribute-reference.css" />
 <script src="persistent-object-attribute-reference.js"></script>

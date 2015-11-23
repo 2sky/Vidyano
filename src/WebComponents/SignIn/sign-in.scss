@@ -1,6 +1,6 @@
 @import "../_vars.scss";
 
-vi-sign-in {
+:host {
     @include layout-horizontal();
     @include noSelection();
 
@@ -46,14 +46,6 @@ vi-sign-in {
         > ul {
             list-style: none;
             padding: 0;
-        }
-    }
-
-    &[vidyano-only] li[is="vi-sign-in-provider"], &:not([vidyano-only]) li[is="vi-sign-in-provider"][expand] {
-        cursor: default;
-
-        ul#vidyano {
-            max-height: 200px;
         }
     }
 }

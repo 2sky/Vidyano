@@ -1,0 +1,5 @@
+@import "persistent-object-attribute-boolean.scss";
+
+:host {
+    @include layout-horizontal();
+}
