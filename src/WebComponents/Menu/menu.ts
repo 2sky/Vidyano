@@ -208,6 +208,9 @@ module Vidyano.WebComponents {
             if (!item || !this.isAttached)
                 return undefined;
 
+            if (item instanceof Vidyano.ProgramUnitItemUrl)
+                return item.path;
+
             return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? this.app.noHistory ? "#" : '#!/' + this.item.path : undefined;
         }
     }

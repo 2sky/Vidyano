@@ -103,5 +103,8 @@
     ],
     "exclude": [
         "dist/Vidyano.Web2/vidyano.d.ts"
-    ]
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }
