@@ -99,9 +99,11 @@
         }
 
         private _saveAs() {
-            this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(this.currentFilter.persistentObject, true)).then(po => {
-                if (!!po)
-                    this.query.filters.save();
+            this.query.filters.createNew().then(newFilter => {
+                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, true)).then(po => {
+                    if (!!po)
+                        this.query.filters.save(newFilter);
+                });
             });
         }
 
