@@ -3690,7 +3690,7 @@ module Vidyano {
 
             this._filtersPO.beginEdit();
 
-            if (filter === this.currentFilter) {
+            if (filter === this.currentFilter || filter.persistentObject.isNew) {
                 filter.persistentObject.beginEdit();
                 filter.persistentObject.attributesByName["Columns"].setValue(this._computeFilterData());
             }
