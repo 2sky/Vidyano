@@ -123,10 +123,10 @@
                     if (this.selectedDate != null && (this.attribute.type == "Time" || this.attribute.type == "NullableTime")) {
                         var newTimeValue = StringEx.format("0:{0:D2}:{1:D2}:{2:D2}.{3:D3}0000", this.selectedDate.getHours(), this.selectedDate.getMinutes(), this.selectedDate.getSeconds(), this.selectedDate.getMilliseconds());
                         if (!this.value || (<string>this.value).substr(0, newTimeValue.length - 4) != newTimeValue.substr(0, newTimeValue.length - 4))
-                            this.value = newTimeValue;
+                            this.attribute.setValue(newTimeValue, true);
                     }
 					else
-						this.value = this.selectedDate;
+                        this.attribute.setValue(this.selectedDate, true);
 				}
 			}
 
@@ -134,7 +134,7 @@
 		}
 
         private _clear() {
-            this.value = null;
+            this.attribute.setValue(null, true);
 		}
 
 		private _renderSelectedDate(forceDate?: boolean, forceTime?: boolean) {
@@ -203,7 +203,6 @@
 		private _updateSelectedDate(date: string, time?: string) {
 			var dateMoment: moment.Moment;
 			var timeMoment: moment.Moment;
-			
 			var newDate = new Date();
 			if (this.selectedDate) {
 				newDate.setFullYear(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate());
