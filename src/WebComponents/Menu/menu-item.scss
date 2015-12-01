@@ -61,7 +61,7 @@ $indent: 16px;
     }
 
 	&[has-items].program-unit-item {
-		@include flexbox();
+		@include layout-horizontal();
         padding-left: $indent / 2;
         cursor: pointer;
 
@@ -76,7 +76,7 @@ $indent: 16px;
 		}
 
 		a {
-			@include flexfill();
+			@include flex();
             padding-left: 0;
 			position: relative;
             cursor: pointer;

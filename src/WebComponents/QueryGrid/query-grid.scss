@@ -127,14 +127,6 @@ $header-height: $h2;
                     }
 
                     &[is="vi-query-grid-table-data-column-selector"] {
-                        > vi-icon {
-                            fill: #bbb;
-
-                            #check {
-                                display: none;
-                            }
-                        }
-
                         > paper-ripple {
                             pointer-events: none;
                             color: var(--theme-color);
@@ -149,7 +141,7 @@ $header-height: $h2;
 
                     &[is="vi-query-grid-table-data-column-actions"] {
                         > vi-icon {
-                            fill: #333;
+                            fill: #444;
                         }
 
                         > paper-ripple {
@@ -196,12 +188,6 @@ $header-height: $h2;
 
                     td.pinned {
                         background-color: var(--theme-color-semi-faint);
-                    }
-
-                    td[is="vi-query-grid-table-data-column-selector"] {
-                        > vi-icon {
-                            @include selected-icon-checked();
-                        }
                     }
                 }
 

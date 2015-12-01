@@ -2,34 +2,10 @@
 
 :host {
     display: block;
-    fill: #bbb;
     padding-right: $h5;
 
     &:not([disabled]) {
         cursor: pointer;
-    }
-
-    &[checked] {
-        &:not([disabled]) {
-            #box, #backdrop {
-                fill: var(--vi-checkbox-checked-color, --theme-color);
-            }
-
-            #backdrop {
-                opacity: 1 !important;
-            }
-
-            #check {
-                display: block;
-                fill: white;
-            }
-        }
-
-        &[disabled] {
-            #box, #backdrop {
-                fill: var(--vi-checkbox-disabled-checked-color, #666);
-            }
-        }
     }
 
     div {
@@ -40,12 +16,6 @@
 
         > vi-icon:not([hidden]) + span {
             padding-left: $h5;
-        }
-    }
-
-    &:not([checked]) {
-        #check {
-            display: none;
         }
     }
 }

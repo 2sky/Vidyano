@@ -35,4 +35,37 @@
         width: 10px;
         height: 10px;
     }
+
+    &[source="Selected"] {
+        fill: var(--vi-icon-selected-unchecked-color, #bbb);
+
+        &[is-selected ] {
+            #backdrop {
+                opacity: 1 !important;
+            }
+
+            #check {
+                display: block;
+                fill: white;
+            }
+
+            &:not([disabled]) {
+                #box, #backdrop {
+                    fill: var(--vi-icon-selected-checked-color, --theme-color);
+                }
+            }
+
+            &[disabled] {
+                #box, #backdrop {
+                    fill: var(--vi-icon-selected-disabled-color, #666);
+                }
+            }
+        }
+
+        &:not([is-selected]) {
+            #check {
+                display: none;
+            }
+        }
+    }
 }

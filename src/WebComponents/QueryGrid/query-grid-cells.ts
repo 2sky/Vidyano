@@ -75,7 +75,7 @@
                     this._icon.setAttribute("hidden");
 
                 if (!this._textNode)
-                    this._textNode = this.appendChild(document.createTextNode("—"));
+                    this._textNode = <Text>Polymer.dom(this.root).appendChild(document.createTextNode("—"));
                 else
                     this._textNode.nodeValue = "—";
             } else {
@@ -83,12 +83,12 @@
                     this._textNode.nodeValue = "";
 
                 if (!this._icon)
-                    this._icon = <HTMLElement>Polymer.dom(this).appendChild(new Vidyano.WebComponents.Icon("Selected"));
+                    this._icon = <HTMLElement>Polymer.dom(this.root).appendChild(new Vidyano.WebComponents.Icon("Selected"));
 
                 if (!value.getValue())
-                    this.classList.add("unchecked");
+                    this._icon.removeAttribute("is-selected");
                 else
-                    this.classList.remove("unchecked");
+                    this._icon.setAttribute("is-selected", "");
             }
         }
     }

@@ -7,7 +7,7 @@ $expandWidth: 16em;
     @include layout-vertical();
     @include noSelection();
     height: 100%;
-    color: $dark-foreground;
+    color: white;
     background-color: $blue-grey-900;
 
     &:not([collapsed]) {

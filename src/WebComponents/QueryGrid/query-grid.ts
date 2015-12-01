@@ -1178,10 +1178,14 @@
 
         private _updateIsSelected() {
             if (this._isSelected != (!!this.item && this.item.isSelected)) {
-                if (this._isSelected = !!this.item && this.item.isSelected)
+                if (this._isSelected = !!this.item && this.item.isSelected) {
                     this.host.setAttribute("is-selected", "");
-                else
+                    this._selector.cell.setAttribute("is-selected", "");
+                }
+                else {
                     this.host.removeAttribute("is-selected");
+                    this._selector.cell.removeAttribute("is-selected");
+                }
             }
         }
 

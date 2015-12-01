@@ -3,10 +3,13 @@ module Vidyano.WebComponents {
 
     export abstract class Resource extends WebComponent {
         private _loadedSource: string;
+        private _loadedContent: Node;
         name: string;
         source: string;
         model: any;
         hasResource: boolean;
+
+        private _setHasResource: (value: boolean) => void;
 
         attached() {
             super.attached();
@@ -21,18 +24,23 @@ module Vidyano.WebComponents {
                 delete resources[`${this.tagName}+${oldName.toUpperCase() }`];
         }
 
-        private _setHasResource(value: boolean) { }
+        protected get _contentTarget(): Node {
+            return this.$["svgHost"];
+        }
 
         private _load() {
             if (this.source) {
                 if (this.source == this._loadedSource)
                     return;
 
-                this.empty();
+                if (this._loadedContent) {
+                    Polymer.dom(this._contentTarget).removeChild(this._loadedContent);
+                    this._loadedContent = null;
+                }
 
                 var resource = Resource.LoadResource(this.source, this.tagName);
                 if (resource)
-                    Polymer.dom(this).appendChild(Resource.Load(resource, this.tagName));
+                    this._loadedContent = Polymer.dom(this._contentTarget).appendChild(Resource.Load(resource, this.tagName));
 
                 this._setHasResource(resource != null);
                 this._loadedSource = this.source;

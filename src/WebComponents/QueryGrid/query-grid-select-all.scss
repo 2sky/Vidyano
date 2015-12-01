@@ -18,27 +18,8 @@
     }
 
     > vi-icon {
-        fill: #bbb;
         height: $cell-line-height;
         width: $cell-line-height;
         line-height: $cell-line-height;
-    }
-
-    &:not([selected]) {
-        > vi-icon {
-            #check {
-                display: none;
-            }
-        }
-    }
-
-    &[selected] {
-        @include selected-icon-checked();
-
-        &[inversed] {
-            > vi-icon {
-                opacity: 0.7;
-            }
-        }
     }
 }
