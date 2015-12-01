@@ -1198,9 +1198,12 @@
 
         constructor(is: string, public cell?: HTMLElement, private _isPinned?: boolean) {
             this._host = (<any>document).createElement("td", is);
+            this._host.classList.add("style-scope", "vi-query-grid");
 
-            if (cell)
+            if (cell) {
                 Polymer.dom(this.host).appendChild(cell);
+                cell.classList.add("style-scope", "vi-query-grid");
+            }
 
             if (_isPinned)
                 this.host.classList.add("pinned");

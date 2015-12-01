@@ -142,7 +142,7 @@ $header-height: $h2;
 
                         &:hover {
                             > vi-icon {
-                                background-color: fadeout(black, 95%) !important;
+                                background-color: fade-out(black, 0.95) !important;
                             }
                         }
                     }
@@ -159,7 +159,7 @@ $header-height: $h2;
 
                         &:hover, &[hover] {
                             > vi-icon {
-                                background-color: fadeout(black, 95%) !important;
+                                background-color: fade-out(black, 0.95) !important;
                             }
                         }
                     }
@@ -199,7 +199,9 @@ $header-height: $h2;
                     }
 
                     td[is="vi-query-grid-table-data-column-selector"] {
-                        @include selected-icon-checked();
+                        > vi-icon {
+                            @include selected-icon-checked();
+                        }
                     }
                 }
 
@@ -237,6 +239,34 @@ $header-height: $h2;
             &.pinned {
                 tr:not(.no-data) > td:last-of-type > div {
                     border-right: 1px solid $separatorColor;
+                }
+            }
+
+            @for $c from 1 through length($list-colors) {
+                $color: nth($list-colors, $c);
+
+                tr[is="vi-query-grid-table-data-row"]#{"."+$color} {
+                    &:hover {
+                        background-color: map-get($colors, #{$color+"-50"}) !important;
+
+                        td[is^="vi-query-grid-table-data-column"].pinned {
+                            background-color: map-get($colors, #{$color+"-50"}) !important;
+                        }
+                    }
+                }
+
+                @for $t from 1 through length($list-color-tints) {
+                    $colorTint: #{$color+nth($list-color-tints, $t)};
+
+                    tr[is="vi-query-grid-table-data-row"]#{"."+$colorTint} > td[is="vi-query-grid-table-data-column"] > * {
+                        color: map-get($colors, $colorTint);
+                        fill: map-get($colors, $colorTint);
+                    }
+
+                    tr[is="vi-query-grid-table-data-row"] > td[is="vi-query-grid-table-data-column"] > #{"*."+$colorTint} {
+                        color: map-get($colors, $colorTint);
+                        fill: map-get($colors, $colorTint);
+                    }
                 }
             }
         }
