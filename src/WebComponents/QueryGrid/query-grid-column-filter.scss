@@ -1,30 +1,6 @@
-﻿@import (reference) "query-grid.less";
+﻿@import "_vars.scss";
 
-@mixin labelContainerStyle() {
-    box-sizing: border-box;
-    overflow: hidden;
-    text-align: left;
-    font-weight: 500;
-    width: 100%;
-    height: $h2;
-    padding: 0;
-}
-
-vi-query-grid-column-filter-proxy {
-    @include labelContainerStyle();
-
-    &:not([disabled]) {
-        @include theme-color-button-inverse();
-    }
-
-    &[disabled] {
-        vi-icon, #label {
-            display: none !important;
-        }
-    }
-}
-
-vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
+:host {
     position: relative;
     display: block;
     border-top: 1px solid $separatorColor;
@@ -49,7 +25,13 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
     }
 
     button[header] {
-        @include labelContainerStyle();
+        box-sizing: border-box;
+        overflow: hidden;
+        text-align: left;
+        font-weight: 500;
+        width: 100%;
+        height: $h2;
+        padding: 0;
     }
 
     #label {
@@ -188,60 +170,29 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
         }
 
         #distincts {
-            line-height: 2em;
-            text-align: left;
             font-weight: normal;
 
-            div.distinct {
-                display: block;
-                cursor: pointer;
+            vi-checkbox {
                 line-height: $h3;
                 height: $h3;
-                background-color: white;
-                @include layout-center();
+                padding: 3px $h5;
 
                 &:hover {
-                    @include theme-color(background-color, "faint");
+                    background-color: var(--query-grid-column-filter-distinct-hover-color, --theme-color-faint);
                 }
+            }
 
-                span {
-                    line-height: $h3;
-                    height: $h3;
-                    display: inline-block;
-                    vertical-align: top;
-                }
+            vi-checkbox[checked] {
+                --vi-checkbox-checked-color: green;
+            }
 
-                div.selector {
-                    display: inline-block;
-                    line-height: $h3;
-                    height: $h3;
-                    padding: 3px $h5;
-                    text-align: center;
+            &[inversed] vi-checkbox[checked] {
+                --vi-checkbox-checked-color: darkred;
+            }
 
-                    svg {
-                        width: $h2 / 2;
-                        height: $h2 / 2;
-                        fill: #BBB;
-                    }
-                }
-
-                &:not([distinct-type="include"]):not([distinct-type="exclude"]) {
-                    div.selector svg #check {
-                        display: none;
-                    }
-                }
-
-                &[distinct-type="include"] {
-                    @include selected-icon-checked-color(green);
-                }
-
-                &[distinct-type="exclude"] {
-                    @include selected-icon-checked-color(darkred);
-                }
-
+            vi-checkbox {
                 &[distinct-type="remaining"] {
-                    color: #aaa;
-                    fill: white;
+                    color: var(--query-grid-column-filter-distinct-remaining-color, #aaa);
                 }
             }
 
@@ -257,7 +208,7 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
                     padding: 3px $h5;
                     box-sizing: border-box;
 
-                    &:first-of-type {
+                    &:first-of-type ::content {
                         svg #check {
                             display: none;
                         }
@@ -276,9 +227,7 @@ vi-query-grid-column-filter, vi-query-grid-column-filter-proxy {
             width: 100%;
         }
     }
-}
 
-vi-query-grid-column-filter {
     &[loading] {
         #distincts {
             opacity: 0.5;

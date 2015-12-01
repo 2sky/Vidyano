@@ -1,6 +1,6 @@
-﻿@import (reference) "query-grid.less";
+@import "_vars.scss";
 
-vi-query-grid-configure-dialog {
+:host {
     main {
         @include layout-vertical();
         @include noSelection();
@@ -55,7 +55,7 @@ vi-query-grid-configure-dialog {
 
                     button {
                         background-color: white;
-                        @include theme-color(fill);
+                        fill: var(--theme-color);
                     }
                 }
 

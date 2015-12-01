@@ -1,0 +1,17 @@
+@import "_vars.scss";
+
+:host {
+    > div {
+        height: $cell-line-height;
+    }
+
+    &:not(.unchecked) {
+        @include selected-icon-checked-color(lighten($mainColor, 15%));
+    }
+
+    &.unchecked {
+        #check {
+            display: none;
+        }
+    }
+}

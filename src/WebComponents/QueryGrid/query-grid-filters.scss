@@ -1,8 +1,6 @@
-﻿@import (reference) "query-grid.less";
+@import "_vars.scss";
 
-$border-color: #ddd;
-
-vi-query-grid-filters {
+:host {
     display: block;
     width: $cell-line-height;
     height: $cell-line-height;

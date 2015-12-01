@@ -1,0 +1,13 @@
+﻿@import "query-grid-column-filter.scss";
+
+:host {
+    &:not([disabled]) {
+        @include theme-color-button-inverse();
+    }
+
+    &[disabled] {
+        vi-icon, #label {
+            display: none !important;
+        }
+    }
+}

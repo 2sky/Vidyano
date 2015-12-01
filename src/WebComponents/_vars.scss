@@ -124,7 +124,7 @@ $color-ok:#339f7b;
 
 @mixin selected-icon-checked() {
     #box, #backdrop {
-        fill: var(--theme-color) !important;
+        fill: var(--theme-color);
     }
 
     #backdrop {

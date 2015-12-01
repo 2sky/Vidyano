@@ -1,4 +1,4 @@
-@import (reference) "../vidyano.less";
+﻿@import "_vars.scss";
 
 $mainColor: #333;
 $separatorColor: #EAEAEA;
@@ -9,7 +9,7 @@ $cell-line-height: $h2;
 $cell-width: $h2;
 $header-height: $h2;
 
-vi-query-grid {
+:host {
     font-size: 13px;
     line-height: $h2;
     overflow: hidden;
@@ -137,7 +137,7 @@ vi-query-grid {
 
                         > paper-ripple {
                             pointer-events: none;
-                            @include theme-color(color);
+                            color: var(--theme-color);
                         }
 
                         &:hover {
@@ -154,7 +154,7 @@ vi-query-grid {
 
                         > paper-ripple {
                             pointer-events: none;
-                            @include theme-color(color);
+                            color: var(--theme-color);
                         }
 
                         &:hover, &[hover] {
@@ -192,19 +192,14 @@ vi-query-grid {
                 }
 
                 &[is-selected] {
-                    @include theme-color(background-color, "semi-faint");
+                    background-color: var(--theme-color-semi-faint);
 
                     td.pinned {
-                        @include theme-color(background-color, "semi-faint");
+                        background-color: var(--theme-color-semi-faint);
                     }
 
                     td[is="vi-query-grid-table-data-column-selector"] {
                         @include selected-icon-checked();
-
-                        // Repeat theme-color to fix dotless compilation error
-                        #box, #backdrop {
-                            @include theme-color(fill) !important;
-                        }
                     }
                 }
 
@@ -235,7 +230,7 @@ vi-query-grid {
                 }
 
                 &:hover, &[hover], &:hover td.pinned, &[hover] td.pinned {
-                    @include theme-color(background-color, "faint");
+                    background-color: var(--theme-color-faint);
                 }
             }
 

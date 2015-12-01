@@ -1,8 +1,10 @@
 ﻿<dom-module id="vi-checkbox">
     <template>
         <link rel="stylesheet" href="checkbox.css" />
-        <vi-icon hidden$="{{isNull}}" source="Selected"></vi-icon>
-        <span>{{label}}</span>
+        <div class="layout horizontal center">
+            <vi-icon hidden$="{{isNull}}" source="Selected"></vi-icon>
+            <span>{{label}}</span>
+        </div>
     </template>
 </dom-module>
 

@@ -3,6 +3,7 @@
 
 <dom-module id="vi-query-grid-configure-dialog">
     <template>
+        <link rel="stylesheet" href="query-grid-configure-dialog.css" />
         <header>{{grid.query.label}}</header>
         <main>
             <ul is="vi-query-grid-configure-dialog-column-list" id="pinned" enabled group="pinned"></ul>
@@ -22,6 +23,7 @@
 
 <dom-module id="vi-query-grid-configure-dialog-column">
     <template>
+        <link rel="stylesheet" href="query-grid-configure-dialog-column.css" />
         <vi-icon source="Hamburger"></vi-icon>
         <label>{{column.column.label}}</label>
         <div class="buttons layout horizontal">
@@ -31,5 +33,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="query-grid-configure-dialog.css" />
 <script src="query-grid-configure-dialog.js"></script>

@@ -669,7 +669,7 @@
 
         static register(obj: Function, info: WebComponentRegistrationInfo, prefix?: string, ns?: any): Function;
         static register(info?: WebComponentRegistrationInfo, prefix?: string);
-        static register(info?: WebComponentRegistrationInfo, prefix?: string): Function {
+        static register(info?: WebComponentRegistrationInfo, prefix?: string): (obj: any) => void {
             if (!info || typeof info === "object") {
                 return (obj: Function) => {
                     return WebComponent._register(obj, info, prefix);

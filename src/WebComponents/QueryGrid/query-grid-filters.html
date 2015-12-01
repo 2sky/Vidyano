@@ -1,0 +1,33 @@
+<link rel="import" href="query-grid-column-filter.html" />
+
+<dom-module id="vi-query-grid-filters">
+    <template>
+        <link rel="stylesheet" href="query-grid-filters.css" />
+        <vi-popup-menu disabled="{{disabled}}">
+            <button header is="vi-button" inverse disabled="{{disabled}}">
+                <vi-icon source="Filter_Menu"></vi-icon>
+            </button>
+            <template is="dom-if" if="{{canReset}}">
+                <vi-popup-menu-item icon="Filter_Reset" label="{{translations.Reset}}" on-tap="_reset"></vi-popup-menu-item>
+            </template>
+            <template is="dom-if" if="{{canSave}}">
+                <vi-popup-menu-item icon="Filter_Save" label="{{_computeCurrentFilterSaveLabel(currentFilter)}}" on-tap="_save"></vi-popup-menu-item>
+                <vi-popup-menu-item icon-space label="{{translations.SaveAs}}" on-tap="_saveAs"></vi-popup-menu-item>
+                <vi-popup-menu-item-separator hidden$="{{!hasFilters}}"></vi-popup-menu-item-separator>
+            </template>
+            <template is="dom-if" if="{{canSaveAs}}">
+                <vi-popup-menu-item icon="Filter_Save" label="{{translations.SaveAs}}" on-tap="_saveAs"></vi-popup-menu-item>
+                <vi-popup-menu-item-separator hidden$="{{!hasFilters}}"></vi-popup-menu-item-separator>
+            </template>
+            <template is="dom-repeat" items="{{filters}}" as="filter">
+                <vi-popup-menu-item icon-space split="{{!filter.isLocked}}" label="{{filter.name}}" data-filter$="{{filter.name}}" on-tap="_load">
+                    <template is="dom-if" if="{{!filter.isLocked}}">
+                        <vi-popup-menu-item icon="Action_Delete" label="{{translations.Delete}}" data-filter$="{{filter.name}}" on-tap="_delete"></vi-popup-menu-item>
+                    </template>
+                </vi-popup-menu-item>
+            </template>
+        </vi-popup-menu>
+    </template>
+</dom-module>
+
+<script src="query-grid-filters.js"></script>

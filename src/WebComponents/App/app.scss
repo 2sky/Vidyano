@@ -24,4 +24,14 @@
     --theme-accent-color-darker: #004d40;
     --theme-accent-color-faint: #e0f2f1;
     --theme-accent-color-semi-faint: darken(#e0f2f1, 2%);
+
+    @for $c from 1 through length($list-colors) {
+        $color: nth($list-colors, $c);
+
+        @for $t from 1 through length($list-color-tints) {
+            $colorTint: #{$color+nth($list-color-tints, $t)};
+
+            #{"--colors-"+$colorTint}: map-get($colors, #{$colorTint});
+        }
+    }
 }

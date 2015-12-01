@@ -1,34 +1,46 @@
 @import "../vars.scss";
 
 :host {
-    @include layout-horizontal();
-    @include layout-center();
+    display: block;
     fill: #bbb;
     padding-right: $h5;
 
     &:not([disabled]) {
         cursor: pointer;
+    }
 
-        &[checked] {
-            fill: --theme-color;
+    &[checked] {
+        &:not([disabled]) {
+            #box, #backdrop {
+                fill: var(--vi-checkbox-checked-color, --theme-color);
+            }
+
+            #backdrop {
+                opacity: 1 !important;
+            }
+
+            #check {
+                display: block;
+                fill: white;
+            }
+        }
+
+        &[disabled] {
+            #box, #backdrop {
+                fill: var(--vi-checkbox-disabled-checked-color, #666);
+            }
         }
     }
 
-    &[checked]:not([disabled]){
-        @include selected-icon-checked();
-    }
+    div {
+        > span {
+            @include flex();
+            padding-left: 2px;
+        }
 
-    &[disabled][checked] {
-        @include selected-icon-checked-color(#666);
-    }
-
-    > span {
-        @include flex();
-        padding-left: 2px;
-    }
-
-    > vi-icon:not([hidden]) + span {
-        padding-left: $h5;
+        > vi-icon:not([hidden]) + span {
+            padding-left: $h5;
+        }
     }
 
     &:not([checked]) {

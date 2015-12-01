@@ -1,6 +1,6 @@
-@import (reference) "query-grid.less";
+﻿@import "_vars.scss";
 
-vi-query-grid-column-header {
+:host {
     @include relative();
     display: block;
     box-sizing: border-box;

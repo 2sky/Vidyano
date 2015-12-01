@@ -1,6 +1,6 @@
-﻿@import (reference) "query-grid.less";
+﻿@import "_vars.scss";
 
-vi-query-grid-select-all {
+:host {
     position: relative;
     height: $cell-line-height;
     width: $cell-line-height;
