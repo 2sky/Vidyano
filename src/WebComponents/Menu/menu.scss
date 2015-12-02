@@ -1,8 +1,5 @@
 @import "../vars.scss";
 
-$indent: 16px;
-$expandWidth: 16em;
-
 :host {
     @include layout-vertical();
     @include noSelection();
@@ -10,8 +7,12 @@ $expandWidth: 16em;
     color: white;
     background-color: $blue-grey-900;
 
+    --vi-menu-indent: 16px;
+    --vi-menu--expand-width: 16em;
+    --vi-menu-color: #FAFAFA;
+
     &:not([collapsed]) {
-        width: $expandWidth;
+        width: var(--vi-menu--expand-width);
 
         header {
             #toggleCollapse {
@@ -136,12 +137,12 @@ $expandWidth: 16em;
         }
     }
 
-    vi-input-search {
-        margin: ($indent / 2) ($indent - $indent / 2);
-        border-bottom: 1px solid fadeout(white, 90%);
+    --vi-input-search: #{'{
+        margin: calc(var(--vi-menu-indent) / 2) calc(var(--vi-menu-indent) - var(--vi-menu-indent) / 2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }'};
 
-        input {
-            padding-left: var(--theme-h5);
-        }
-    }
+    --vi-input-search-input: #{'{
+        padding-left: var(--theme-h5);
+    }'};
 }

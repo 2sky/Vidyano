@@ -196,7 +196,7 @@ module Vidyano.WebComponents {
                 this.$["title"].textContent = item.title;
             else if (this._hasMatch(item, this.filter.toUpperCase())) {
                 var exp = new RegExp('(' + filter + ')', 'gi');
-                this.$["title"].innerHTML = item.title.replace(exp, "<span class='match'>$1</span>");
+                this.$["title"].innerHTML = item.title.replace(exp, "<span class='style-scope vi-menu-item match'>$1</span>");
             }
         }
 

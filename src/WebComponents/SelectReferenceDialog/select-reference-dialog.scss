@@ -1,25 +1,25 @@
 @import "../_vars.scss";
 
 :host {
-    vi-input-search {
+    --vi-input-search: #{'{
         line-height: var(--theme-h2);
         height: var(--theme-h2);
         border: 1px solid #EAEAEA;
         box-sizing: border-box;
+    }'};
 
-        input {
-            padding: calc(var(--theme-h1) - var(--theme-h2));
-            color: #333;
+    --vi-input-search-input: #{'{
+        padding: calc(var(--theme-h1) - var(--theme-h2));
+        color: #333;
+    }'};
 
-            &:focus {
-                background-color: white;
+    --vi-input-search-input-focused: #{'{
+        background-color: white;
+    }'};
 
-                + button {
-                    background-color: var(--theme-color);
-                }
-            }
-        }
-    }
+    --vi-input-search-input-focused-button: #{'{
+        background-color: var(--theme-color);
+    }'};
 }
 
 /* Extra small devices (phones, less than 768px) */

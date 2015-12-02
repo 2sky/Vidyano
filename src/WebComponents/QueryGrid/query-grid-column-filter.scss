@@ -112,23 +112,24 @@
             padding: 0 var(--vi-query-grid-cell-padding, --theme-h5) var(--vi-query-grid-cell-padding, --theme-h5) 0;
             position: relative;
 
-            vi-input-search {
+            --vi-input-search: #{'{
                 height: var(--theme-h2);
                 border: 1px solid var(--theme-light-border);
                 box-sizing: border-box;
                 margin: 0 0 var(--theme-h5) calc(var(--theme-h2) + var(--theme-h5));
+            }'};
 
+            --vi-input-search-input: #{'{
                 input {
                     padding-left: 8px;
                     color: #333;
-                }
+            }'};
 
-                button {
-                    width: var(--theme-h2);
-                    padding: 0;
-                    fill: var(--theme-light-border);
-                }
-            }
+            --vi-input-search-button: #{'{
+                width: var(--theme-h2);
+                padding: 0;
+                fill: var(--theme-light-border);
+            }'};
 
             > div {
                 padding-left: var(--theme-h2);

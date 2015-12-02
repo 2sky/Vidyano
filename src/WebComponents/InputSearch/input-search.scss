@@ -3,6 +3,7 @@
 :host {
     @include layout-horizontal();
     line-height: var(--theme-h2);
+    @apply(--vi-input-search);
 
     input {
         border: none;
@@ -17,6 +18,21 @@
         -o-transition: all 0.3s ease-in-out;
         -webkit-transition: all 0.3s ease-in-out;
         transition: all 0.3s ease-in-out;
+
+        &::-webkit-input-placeholder {
+            color: var(--vi-input-search-placeholder-color, #aaa);
+        }
+
+        &::-moz-placeholder {
+            color: var(--vi-input-search-placeholder-color, #aaa);
+            opacity: 1;
+        }
+
+        &:-ms-input-placeholder {
+            color: var(--vi-input-search-placeholder-color, #aaa);
+        }
+
+        @apply(--vi-input-search-input);
     }
 
     button {
@@ -31,30 +47,24 @@
         -o-transition: all 0.3s ease-in-out;
         -webkit-transition: all 0.3s ease-in-out;
         transition: all 0.3s ease-in-out;
+
+        @apply(--vi-input-search-button);
     }
 
-    input:not(:focus) {
-        &::-webkit-input-placeholder {
-            color: #aaa;
-        }
+    input:focus {
+        @apply(--vi-input-search-input-focused);
 
-        &::-moz-placeholder {
-            color: #aaa;
-            opacity: 1;
+        + button {
+            fill: white;
+            @apply(--vi-input-search-input-focused-button);
         }
-
-        &:-ms-input-placeholder {
-            color: #aaa;
-        }
-    }
-
-    input:focus + button {
-        fill: white;
     }
 
     &[collapsed] {
         vi-popup {
             @include flex();
         }
+
+        @apply(--vi-input-search-collapsed);
     }
 }

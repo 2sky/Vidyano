@@ -1,15 +1,12 @@
 @import "../vars.scss";
 
-$fg-color: #FAFAFA;
-$indent: 16px;
-
 :host {
     @include relative();
     box-sizing: border-box;
 	display: block;
 	line-height: var(--theme-h2);
-    color: $fg-color;
-    fill: $fg-color;
+    color: var(--vi-menu-color);
+    fill: var(--vi-menu-color);
     font-size: 13px;
     cursor: pointer;
 
@@ -24,7 +21,7 @@ $indent: 16px;
 
         > a {
             font-weight: 600;
-            color: $fg-color;
+            color: var(--vi-menu-color);
         }
 	}
 
@@ -35,9 +32,9 @@ $indent: 16px;
 	a {
         @include relative();
 		display: block;
-		padding: 0 var(--theme-h5) 0 $indent;
+		padding: 0 var(--theme-h5) 0 var(--vi-menu-indent);
 		text-decoration: none;
-		color: $fg-color;
+		color: var(--vi-menu-color);
 		white-space: nowrap;
 		-ms-text-overflow: ellipsis;
 		-o-text-overflow: ellipsis;
@@ -46,12 +43,12 @@ $indent: 16px;
 
         > vi-icon {
             height: 100%;
-            fill: $fg-color;
+            fill: var(--vi-menu-color);
         }
 	}
 
 	&.program-unit-item:not([has-items]) {
-        padding-left: $indent * 1.5;
+        padding-left: calc(var(--vi-menu-indent) * 1.5);
 	}
 
     &:not([has-items]) {
@@ -62,11 +59,11 @@ $indent: 16px;
 
 	&[has-items].program-unit-item {
 		@include layout-horizontal();
-        padding-left: $indent / 2;
+        padding-left: calc(var(--vi-menu-indent) / 2);
         cursor: pointer;
 
 		.group {
-			width: $indent * 2;
+			width: calc(var(--vi-menu-indent) * 2);
 			height: var(--theme-h2);
 			text-align: center;
 			-moz-transition: transform 0.2s ease-out;
@@ -83,8 +80,8 @@ $indent: 16px;
 
 			&::before {
 				position: absolute;
-				left: $indent / 2;
-				padding: 1px 0 0 ($indent / 2);
+				left: calc(var(--vi-menu-indent) / 2);
+				padding: 1px 0 0 calc(var(--vi-menu-indent) / 2);
 			}
 		}
 
@@ -101,7 +98,7 @@ $indent: 16px;
 
 	&.program-unit-group-item {
         padding-left: 0;
-        padding-left: $indent * 2.5;
+        padding-left: calc(var(--vi-menu-indent) * 2.5);
 	}
 
 	&[hide] {
