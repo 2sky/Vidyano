@@ -177,8 +177,8 @@
             }
         }
 
-        &:hover {
-            & > button, & > .button, & > [button], & > vi-popup:not([content]) button[header] {
+        &:hover > ::content {
+            > button, > .button, > [button], > vi-popup:not([content]) button[header] {
                 &::after {
                     left: 0;
                     right: 0;
@@ -188,6 +188,14 @@
                     top: 0;
                     bottom: 0;
                 }
+
+                &:hover {
+                    vi-icon {
+                        svg {
+                            fill: var(--theme-color);
+                        }
+                    }
+                }
             }
         }
     }
@@ -196,14 +204,14 @@
         .box {
             border-color: var(--theme-color-lighter);
 
-            > .buttons {
+            > .buttons ::content {
                 > button, > .button, > [button], > vi-popup:not([content]) button[header] {
                     &::after, &::before {
                         border-color: var(--theme-color-lighter);
                     }
 
-                    svg {
-                        fill: var(--theme-color-light);
+                    vi-icon {
+                        fill: var(--theme-color);
                     }
 
                     &:active {

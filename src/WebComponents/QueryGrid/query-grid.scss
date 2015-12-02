@@ -1,25 +1,14 @@
-﻿@import "_vars.scss";
-
-$mainColor: #333;
-$separatorColor: #EAEAEA;
-$oddRowColor: #FAFAFA;
-$evenRowColor: white;
-$cell-padding: $h5 * 1.5;
-$cell-line-height: $h2;
-$cell-width: $h2;
-$header-height: $h2;
+﻿@import "_query-grid-vars.scss";
 
 :host {
     font-size: 13px;
     line-height: $h2;
     overflow: hidden;
-    color: $mainColor;
-    fill: $mainColor;
 
     header#dataHeaderHost {
         @include noSelection();
         @include relative();
-        border-bottom: 1px solid $separatorColor;
+        border-bottom: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
         white-space: nowrap;
         z-index: 1;
 
@@ -70,15 +59,15 @@ $header-height: $h2;
 
             tr[is="vi-query-grid-table-data-row"] {
                 padding: 0 !important;
-                line-height: $cell-line-height;
-                height: $cell-line-height;
+                line-height: $h2;
+                height: $h2;
 
                 td {
                     padding: 0;
                     cursor: pointer;
 
                     > * {
-                        padding: 0 $cell-padding;
+                        padding: 0 var(--vi-query-grid-cell-padding, $h5);
                         min-height: $h2;
                         height: $h2;
                         line-height: $h2;
@@ -88,11 +77,11 @@ $header-height: $h2;
                         text-overflow: ellipsis;
 
                         vi-icon {
-                            height: $cell-line-height;
+                            height: $h2;
                         }
 
                         vi-template-presenter {
-                            height: $cell-line-height;
+                            height: $h2;
                         }
                     }
 
@@ -105,7 +94,7 @@ $header-height: $h2;
                             top: 0;
                             right: 0;
                             bottom: 0;
-                            background-color: darken($separatorColor, 10%);
+                            background-color: var(--vi-query-grid-separator-drag-color, darken($separatorColor, 15%));
                             width: 1px;
                             -webkit-transform: translateX(1px);
                             transform: translateX(1px);
@@ -116,7 +105,7 @@ $header-height: $h2;
                     > vi-icon {
                         @include layout-horizontal();
                         @include layout-center-center();
-                        height: $cell-line-height;
+                        height: $h2;
                         width: $h2;
                         padding: 0;
 
@@ -157,7 +146,7 @@ $header-height: $h2;
                     }
 
                     &[is="vi-query-grid-table-data-column"] {
-                        min-width: $cell-width;
+                        min-width: $h2;
 
                         &[name=""], &:not([name]) {
                             display: none;
@@ -165,7 +154,7 @@ $header-height: $h2;
 
                         &.pinned.last-pinned {
                             > * {
-                                border-right: 1px solid $separatorColor;
+                                border-right: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
                             }
                         }
                     }
@@ -193,18 +182,18 @@ $header-height: $h2;
 
                 &:not(:hover):not([hover]):not([is-selected]) {
                     &:nth-child(odd) {
-                        background-color: $oddRowColor;
+                        background-color: var(--vi-query-grid-row-odd-color, $oddRowColor);
 
                         td.pinned {
-                            background-color: $oddRowColor;
+                            background-color: var(--vi-query-grid-row-odd-color, $oddRowColor);
                         }
                     }
 
                     &:nth-child(even) {
-                        background-color: $evenRowColor;
+                        background-color: var(--vi-query-grid-row-even-color, $evenRowColor);
 
                         td.pinned {
-                            background-color: $evenRowColor;
+                            background-color: var(--vi-query-grid-row-even-color, $evenRowColor);
                         }
                     }
                 }
@@ -224,7 +213,7 @@ $header-height: $h2;
 
             &.pinned {
                 tr:not(.no-data) > td:last-of-type > div {
-                    border-right: 1px solid $separatorColor;
+                    border-right: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
                 }
             }
 
@@ -259,8 +248,8 @@ $header-height: $h2;
     }
 
     vi-icon > svg {
-        width: $cell-line-height / 2;
-        height: $cell-line-height / 2;
+        width: $h2 / 2;
+        height: $h2 / 2;
     }
 
     > vi-popup-core#actions {
@@ -293,7 +282,7 @@ $header-height: $h2;
 
     &[can-select]:not([can-select-all]):not([inline-actions]):not([can-filter]), &[inline-actions]:not([can-select]):not([can-select-all]):not([can-filter]) {
         table[is="vi-query-grid-table-header"] {
-            padding-left: $cell-width;
+            padding-left: $h2;
         }
     }
 
@@ -305,14 +294,14 @@ $header-height: $h2;
 
     &:not([can-select-all])[can-filter][can-select][inline-actions] {
         vi-query-grid-filters {
-            padding-left: $cell-width;
-            width: $cell-width * 2;
+            padding-left: $h2;
+            width: $h2 * 2;
         }
     }
 
     &:not([can-select]):not([inline-actions])[can-filter], &:not([inline-actions])[can-select-all][can-filter] {
         td[is="vi-query-grid-table-data-column-actions"] + td[is="vi-query-grid-table-data-column"] {
-            padding-left: $cell-width !important;
+            padding-left: $h2 !important;
         }
     }
 

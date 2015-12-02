@@ -1,12 +1,12 @@
-﻿@import "_vars.scss";
+﻿@import "_query-grid-vars.scss";
 
 :host {
     position: relative;
     display: block;
-    border-top: 1px solid $separatorColor;
+    border-top: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
     box-sizing: border-box;
-    height: $cell-line-height;
-    line-height: $cell-line-height;
+    height: $h2;
+    line-height: $h2;
     cursor: pointer;
 
     &[disabled] {
@@ -36,8 +36,8 @@
 
     #label {
         display: none;
-        padding: 0 $cell-padding;
-        line-height: $cell-line-height;
+        padding: 0 var(--vi-query-grid-cell-padding, $h5);
+        line-height: $h2;
         white-space: nowrap;
         -ms-text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
@@ -51,7 +51,7 @@
         fill: #eee;
         line-height: $h2;
         height: $h2;
-        padding: 0 0 0 $cell-padding;
+        padding: 0 0 0 var(--vi-query-grid-cell-padding, $h5);
     }
 
     &[filtered] {
@@ -75,7 +75,7 @@
                 left: 0;
                 top: 0;
                 bottom: 0;
-                width: $cell-line-height;
+                width: $h2;
                 background-color: #F7F7F7;
             }
         }
@@ -83,13 +83,13 @@
         .menuItem {
             cursor: pointer;
             text-align: left;
-            line-height: $cell-line-height;
+            line-height: $h2;
             font-weight: normal;
 
             vi-icon {
                 text-align: center;
-                width: $cell-line-height;
-                height: $cell-line-height;
+                width: $h2;
+                height: $h2;
             }
 
             &[disabled] {
@@ -104,19 +104,19 @@
 
 
         .split {
-            border-top: 1px solid $separatorColor;
-            margin: 0 0 $h5 ($cell-line-height + $h5);
+            border-top: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
+            margin: 0 0 $h5 ($h2 + $h5);
         }
 
         .advanced {
-            padding: 0 $cell-padding $cell-padding 0;
+            padding: 0 var(--vi-query-grid-cell-padding, $h5) var(--vi-query-grid-cell-padding, $h5) 0;
             position: relative;
 
             vi-input-search {
                 height: $h2;
-                border: 1px solid $separatorColor;
+                border: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
                 box-sizing: border-box;
-                margin: 0 0 $h5 ($cell-line-height + $h5);
+                margin: 0 0 $h5 ($h2 + $h5);
 
                 input {
                     padding-left: 8px;
@@ -124,14 +124,14 @@
                 }
 
                 button {
-                    width: $cell-line-height;
+                    width: $h2;
                     padding: 0;
-                    fill: $separatorColor;
+                    fill: var(--vi-query-grid-separator-color, $separatorColor);
                 }
             }
 
             > div {
-                padding-left: $cell-line-height;
+                padding-left: $h2;
 
                 button#inverse {
                     @include layout-horizontal();
@@ -139,7 +139,7 @@
                     position: absolute;
                     top: 0;
                     left: 0;
-                    width: $cell-line-height;
+                    width: $h2;
                     height: $h3;
                     cursor: pointer;
                     @include theme-color-button-inverse();
@@ -163,7 +163,7 @@
         #distinctsContainer {
             height: 15em;
             min-width: 15em;
-            border: 1px solid $separatorColor;
+            border: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
             margin-left: $h5;
             box-sizing: border-box;
             cursor: default;
@@ -222,8 +222,8 @@
         }
 
         button.close {
-            border-top: 1px solid $separatorColor;
-            line-height: $cell-line-height;
+            border-top: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
+            line-height: $h2;
             width: 100%;
         }
     }

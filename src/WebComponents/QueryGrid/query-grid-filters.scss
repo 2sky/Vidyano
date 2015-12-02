@@ -1,11 +1,11 @@
-@import "_vars.scss";
+@import "_query-grid-vars.scss";
 
 :host {
     display: block;
-    width: $cell-line-height;
-    height: $cell-line-height;
-    line-height: $cell-line-height;
-    border-top: 1px solid $separatorColor;
+    width: $h2;
+    height: $h2;
+    line-height: $h2;
+    border-top: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
     box-sizing: border-box;
     align-self: flex-end;
 
@@ -15,13 +15,13 @@
             @include flex();
             z-index: 1;
             text-align: center;
-            line-height: $cell-line-height;
-            height: $cell-line-height;
-            width: $cell-width;
+            line-height: $h2;
+            height: $h2;
+            width: $h2;
             padding: 0;
 
             > vi-icon {
-                height: $cell-line-height;
+                height: $h2;
             }
         }
     }

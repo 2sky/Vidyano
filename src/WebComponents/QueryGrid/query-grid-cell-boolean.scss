@@ -1,12 +1,12 @@
-@import "_vars.scss";
+@import "_query-grid-vars.scss";
 
 :host {
-    --vi-icon-selected-checked-color: lighten($mainColor, 15%);
+    --vi-icon-selected-checked-color: var(--vi-query-grid-cell-boolean-checked-color, #555);
 
     display: block;
 
     > * {
-        height: $cell-line-height;
-        line-height: $cell-line-height;
+        height: $h2;
+        line-height: $h2;
     }
 }

@@ -1,10 +1,10 @@
-﻿@import "_vars.scss";
+﻿@import "_query-grid-vars.scss";
 
 :host {
     position: relative;
-    height: $cell-line-height;
-    width: $cell-line-height;
-    border-top: 1px solid $separatorColor;
+    height: $h2;
+    width: $h2;
+    border-top: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
     box-sizing: border-box;
     align-self: flex-end;
     cursor: pointer;
@@ -18,8 +18,8 @@
     }
 
     > vi-icon {
-        height: $cell-line-height;
-        width: $cell-line-height;
-        line-height: $cell-line-height;
+        height: $h2;
+        width: $h2;
+        line-height: $h2;
     }
 }

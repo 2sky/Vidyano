@@ -1,14 +1,6 @@
 @import "../vars.scss";
 
 :host {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    font-family: 'Open Sans', Arial, Helvetica, sans-serif;
-    font-size: 15px;
-
     --theme-color: #4682B4;
     --theme-color-light: #6a9bc3;
     --theme-color-lighter: #90b4d2;
@@ -24,6 +16,26 @@
     --theme-accent-color-darker: #004d40;
     --theme-accent-color-faint: #e0f2f1;
     --theme-accent-color-semi-faint: darken(#e0f2f1, 2%);
+
+    --theme-h1: $h1;
+    --theme-h2: $h2;
+    --theme-h3: $h3;
+    --theme-h4: $h4;
+    --theme-h5: $h5;
+
+    --theme-foreground: #333;
+}
+
+:host {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: var(--theme-foreground);
+    fill: var(--theme-foreground);
 
     @for $c from 1 through length($list-colors) {
         $color: nth($list-colors, $c);
