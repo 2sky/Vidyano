@@ -13,5 +13,5 @@
 :host-context(vi-persistent-object-attribute-as-detail) {
     border: 1px solid #dddddd;
     margin: 0 1px;
-    padding: 0 $h5;
+    padding: 0 var(--theme-h5);
 }

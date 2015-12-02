@@ -2,9 +2,9 @@
 
 :host {
     position: relative;
-    height: $h2;
-    width: $h2;
-    border-top: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
+    height: var(--theme-h2);
+    width: var(--theme-h2);
+    border-top: 1px solid var(--theme-light-border);
     box-sizing: border-box;
     align-self: flex-end;
     cursor: pointer;
@@ -18,8 +18,8 @@
     }
 
     > vi-icon {
-        height: $h2;
-        width: $h2;
-        line-height: $h2;
+        height: var(--theme-h2);
+        width: var(--theme-h2);
+        line-height: var(--theme-h2);
     }
 }

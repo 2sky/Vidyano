@@ -6,7 +6,7 @@
     display: block;
 
     > * {
-        height: $h2;
-        line-height: $h2;
+        height: var(--theme-h2);
+        line-height: var(--theme-h2);
     }
 }

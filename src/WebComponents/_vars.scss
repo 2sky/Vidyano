@@ -1,29 +1,6 @@
 @import "../libs/layout/_layout.scss";
 @import "colors.scss";
 
-$actionsBG: #F9F9F9;
-$h1: 40px;
-$h2: 32px;
-$h3: 22px;
-$h4: 12px;
-$h5: 6px;
-$color-error:#a80511;
-$color-warning:#e5a300;
-$color-notice:#48545e;
-$color-ok:#339f7b;
-
-@mixin shadow() {
-    -webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
-    -moz-box-shadow:    0 0 4px 0 rgba(0, 0, 0, 0.5);
-    box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);
-}
-
-@function shadow() {
-    @return "-webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
-    -moz-box-shadow:    0 0 4px 0 rgba(0, 0, 0, 0.5);
-    box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);";
-}
-
 @mixin theme-color-button() {
     color: white;
     background-color: var(--theme-color);
@@ -191,14 +168,14 @@ $color-ok:#339f7b;
     background-color: var(--theme-color);
     color: white;
     padding-top: 2px;
-    line-height: $h1 - 2px;
-    min-height: $h1;
+    line-height: calc(var(--theme-h1) - 2px);
+    min-height: var(--theme-h1);
     box-sizing: border-box;
-    font-size: $h5 + $h4;
+    font-size: calc(var(--theme-h5) + var(--theme-h4));
     white-space: nowrap;
     overflow: hidden;
     -ms-text-overflow: ellipsis;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
-    padding: 0 $h4;
+    padding: 0 var(--theme-h4);
 }

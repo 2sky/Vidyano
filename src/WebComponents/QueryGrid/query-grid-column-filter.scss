@@ -3,10 +3,10 @@
 :host {
     position: relative;
     display: block;
-    border-top: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
+    border-top: 1px solid var(--theme-light-border);
     box-sizing: border-box;
-    height: $h2;
-    line-height: $h2;
+    height: var(--theme-h2);
+    line-height: var(--theme-h2);
     cursor: pointer;
 
     &[disabled] {
@@ -30,14 +30,14 @@
         text-align: left;
         font-weight: 500;
         width: 100%;
-        height: $h2;
+        height: var(--theme-h2);
         padding: 0;
     }
 
     #label {
         display: none;
-        padding: 0 var(--vi-query-grid-cell-padding, $h5);
-        line-height: $h2;
+        padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
+        line-height: var(--theme-h2);
         white-space: nowrap;
         -ms-text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
@@ -49,9 +49,9 @@
     vi-icon[source="Filter"] {
         display: inline-block;
         fill: #eee;
-        line-height: $h2;
-        height: $h2;
-        padding: 0 0 0 var(--vi-query-grid-cell-padding, $h5);
+        line-height: var(--theme-h2);
+        height: var(--theme-h2);
+        padding: 0 0 0 var(--vi-query-grid-cell-padding, --theme-h5);
     }
 
     &[filtered] {
@@ -75,7 +75,7 @@
                 left: 0;
                 top: 0;
                 bottom: 0;
-                width: $h2;
+                width: var(--theme-h2);
                 background-color: #F7F7F7;
             }
         }
@@ -83,13 +83,13 @@
         .menuItem {
             cursor: pointer;
             text-align: left;
-            line-height: $h2;
+            line-height: var(--theme-h2);
             font-weight: normal;
 
             vi-icon {
                 text-align: center;
-                width: $h2;
-                height: $h2;
+                width: var(--theme-h2);
+                height: var(--theme-h2);
             }
 
             &[disabled] {
@@ -98,25 +98,25 @@
             }
 
             span {
-                margin-left: $h5;
+                margin-left: var(--theme-h5);
             }
         }
 
 
         .split {
-            border-top: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
-            margin: 0 0 $h5 ($h2 + $h5);
+            border-top: 1px solid var(--theme-light-border);
+            margin: 0 0 var(--theme-h5) calc(var(--theme-h2) + var(--theme-h5));
         }
 
         .advanced {
-            padding: 0 var(--vi-query-grid-cell-padding, $h5) var(--vi-query-grid-cell-padding, $h5) 0;
+            padding: 0 var(--vi-query-grid-cell-padding, --theme-h5) var(--vi-query-grid-cell-padding, --theme-h5) 0;
             position: relative;
 
             vi-input-search {
-                height: $h2;
-                border: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
+                height: var(--theme-h2);
+                border: 1px solid var(--theme-light-border);
                 box-sizing: border-box;
-                margin: 0 0 $h5 ($h2 + $h5);
+                margin: 0 0 var(--theme-h5) calc(var(--theme-h2) + var(--theme-h5));
 
                 input {
                     padding-left: 8px;
@@ -124,14 +124,14 @@
                 }
 
                 button {
-                    width: $h2;
+                    width: var(--theme-h2);
                     padding: 0;
-                    fill: var(--vi-query-grid-separator-color, $separatorColor);
+                    fill: var(--theme-light-border);
                 }
             }
 
             > div {
-                padding-left: $h2;
+                padding-left: var(--theme-h2);
 
                 button#inverse {
                     @include layout-horizontal();
@@ -139,8 +139,8 @@
                     position: absolute;
                     top: 0;
                     left: 0;
-                    width: $h2;
-                    height: $h3;
+                    width: var(--theme-h2);
+                    height: var(--theme-h3);
                     cursor: pointer;
                     @include theme-color-button-inverse();
 
@@ -153,8 +153,8 @@
                     }
 
                     vi-icon svg {
-                        width: $h4;
-                        height: $h4;
+                        width: var(--theme-h4);
+                        height: var(--theme-h4);
                     }
                 }
             }
@@ -163,8 +163,8 @@
         #distinctsContainer {
             height: 15em;
             min-width: 15em;
-            border: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
-            margin-left: $h5;
+            border: 1px solid var(--theme-light-border);
+            margin-left: var(--theme-h5);
             box-sizing: border-box;
             cursor: default;
         }
@@ -173,9 +173,9 @@
             font-weight: normal;
 
             vi-checkbox {
-                line-height: $h3;
-                height: $h3;
-                padding: 3px $h5;
+                line-height: var(--theme-h3);
+                height: var(--theme-h3);
+                padding: 3px var(--theme-h5);
 
                 &:hover {
                     background-color: var(--query-grid-column-filter-distinct-hover-color, --theme-color-faint);
@@ -203,9 +203,9 @@
 
                 vi-icon {
                     display: inline-block;
-                    line-height: $h3;
-                    height: $h3;
-                    padding: 3px $h5;
+                    line-height: var(--theme-h3);
+                    height: var(--theme-h3);
+                    padding: 3px var(--theme-h5);
                     box-sizing: border-box;
 
                     &:first-of-type ::content {
@@ -222,8 +222,8 @@
         }
 
         button.close {
-            border-top: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
-            line-height: $h2;
+            border-top: 1px solid var(--theme-light-border);
+            line-height: var(--theme-h2);
             width: 100%;
         }
     }

@@ -7,6 +7,6 @@
         @include flex();
         overflow: hidden;
         white-space: nowrap;
-        line-height: $h2;
+        line-height: var(--theme-h2);
     }
 }

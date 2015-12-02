@@ -1,8 +1,8 @@
 @import "../vars.scss";
 
 :host {
-    height: $h1;
-    line-height: $h1;
+    height: var(--theme-h1);
+    line-height: var(--theme-h1);
     @include noSelection();
     @include layout-horizontal();
     @include relative();
@@ -21,7 +21,7 @@
 
         button[header] {
             display: block;
-            width: $h1;
+            width: var(--theme-h1);
             font-weight: bold;
         }
     }

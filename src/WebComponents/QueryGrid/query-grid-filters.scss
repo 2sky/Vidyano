@@ -2,10 +2,10 @@
 
 :host {
     display: block;
-    width: $h2;
-    height: $h2;
-    line-height: $h2;
-    border-top: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
+    width: var(--theme-h2);
+    height: var(--theme-h2);
+    line-height: var(--theme-h2);
+    border-top: 1px solid var(--theme-light-border);
     box-sizing: border-box;
     align-self: flex-end;
 
@@ -15,13 +15,13 @@
             @include flex();
             z-index: 1;
             text-align: center;
-            line-height: $h2;
-            height: $h2;
-            width: $h2;
+            line-height: var(--theme-h2);
+            height: var(--theme-h2);
+            width: var(--theme-h2);
             padding: 0;
 
             > vi-icon {
-                height: $h2;
+                height: var(--theme-h2);
             }
         }
     }

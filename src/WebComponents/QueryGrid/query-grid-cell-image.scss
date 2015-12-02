@@ -5,7 +5,7 @@
     overflow: hidden;
 
     .image {
-        height: $h2 - 2px;
+        height: calc(var(--theme-h2) - 2px);
         background-position: center center;
         background-size: contain;
         background-repeat: no-repeat;

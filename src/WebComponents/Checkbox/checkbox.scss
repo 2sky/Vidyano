@@ -2,7 +2,7 @@
 
 :host {
     display: block;
-    padding-right: $h5;
+    padding-right: var(--theme-h5);
 
     &:not([disabled]) {
         cursor: pointer;
@@ -15,7 +15,7 @@
         }
 
         > vi-icon:not([hidden]) + span {
-            padding-left: $h5;
+            padding-left: var(--theme-h5);
         }
     }
 }

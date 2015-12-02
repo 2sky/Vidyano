@@ -7,7 +7,7 @@ $discSpacing: 20px;
 :host {
 	display: block;
 	position: relative;
-	padding: $h4 * 2;
+	padding: calc(var(--theme-h4) * 2);
 	@include noSelection();
 
 	@mixin numbers($n, $offset, $size) {
@@ -148,7 +148,7 @@ $discSpacing: 20px;
 		display: block;
 		text-align: center;
 		margin-bottom: $discSpacing;
-		font-size: $h3;
+		font-size: var(--theme-h3);
 
 		span.minutes, span.hours {
 			cursor: pointer;

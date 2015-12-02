@@ -2,7 +2,7 @@
 
 :host {
     @include layout-horizontal();
-    line-height: $h2;
+    line-height: var(--theme-h2);
 
     input {
         border: none;
@@ -24,7 +24,7 @@
         outline: none;
         fill: #aaa;
         cursor: pointer;
-        width: $h2;
+        width: var(--theme-h2);
         background-color: transparent;
         margin: 1px 1px 1px 0;
         -moz-transition: all 0.3s ease-in-out;

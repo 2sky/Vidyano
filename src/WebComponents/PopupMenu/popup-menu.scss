@@ -4,7 +4,7 @@
     display: block;
 
     #popup {
-        line-height: $h2;
+        line-height: var(--theme-h2);
 
         [content] {
             background-color: white;

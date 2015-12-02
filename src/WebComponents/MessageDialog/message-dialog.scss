@@ -2,7 +2,7 @@
 
 :host {
     main {
-        padding: $h4;
+        padding: var(--theme-h4);
         @include layout-horizontal();
 
         pre {
@@ -16,28 +16,28 @@
     }
 
     header > vi-icon {
-        padding-right: $h4;
-        height: $h1;
+        padding-right: var(--theme-h4);
+        height: var(--theme-h1);
 
         svg {
-            width: $h3;
-            height: $h3;
+            width: var(--theme-h3);
+            height: var(--theme-h3);
         }
 
         &[source$="Error"] {
-            fill: $color-error;
+            fill: var(--theme-color-error);
         }
 
         &[source$="Warning"] {
-            fill: $color-warning;
+            fill: var(--theme-color-warning);
         }
 
         &[source$="Notice"] {
-            fill: $color-notice;
+            fill: var(--theme-color-notice);
         }
 
         &[source$="OK"] {
-            fill: $color-ok;
+            fill: var(--theme-color-ok);
         }
     }
 }

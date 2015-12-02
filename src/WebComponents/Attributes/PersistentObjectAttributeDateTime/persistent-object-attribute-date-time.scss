@@ -7,8 +7,8 @@
         input {
             display: inline-block;
             border: none;
-            height: $h2 - 2px;
-            line-height: $h2 - 2px;
+            height: calc(var(--theme-h2) - 2px);
+            line-height: calc(var(--theme-h2) - 2px);
             font-size: 13px;
 
             & + input {

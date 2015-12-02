@@ -10,9 +10,9 @@
 
         li {
             @include noSelection();
-            padding-left: $h5;
-            line-height: $h2 - 2px;
-            height: $h2 - 2px;
+            padding-left: var(--theme-h5);
+            line-height: calc(var(--theme-h2) - 2px);
+            height: calc(var(--theme-h2) - 2px);
             cursor: pointer;
             overflow: hidden;
 

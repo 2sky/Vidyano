@@ -4,13 +4,13 @@
     @include layout-horizontal();
 
     white-space: nowrap;
-    height: $h2;
-    line-height: $h2;
+    height: var(--theme-h2);
+    line-height: var(--theme-h2);
 
     .column {
         padding: 0 1px 1px 0;
-        height: $h2;
-        line-height: $h2;
+        height: var(--theme-h2);
+        line-height: var(--theme-h2);
         box-sizing: border-box;
 
         &:last-of-type {
@@ -18,8 +18,8 @@
         }
 
         > vi-persistent-object-attribute-presenter {
-            height: $h2;
-            line-height: $h2;
+            height: var(--theme-h2);
+            line-height: var(--theme-h2);
         }
 
         > span {

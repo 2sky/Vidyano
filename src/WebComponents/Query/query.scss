@@ -5,13 +5,12 @@
     @include fit();
     @include layout-vertical-reverse();
     --action-bar-style: #{'{
-        background-color: '$actionsBG';
-        'shadow()'
+        @apply(--theme-shadow);
         z-index: 1;
     }'};
 
     header {
-        line-height: $h1;
+        line-height: var(--theme-h1);
         z-index: 2;
         @include page-title();
     }
@@ -23,7 +22,7 @@
 
     &[no-actions] {
         > header {
-            @include shadow();
+            @apply(--theme-shadow);
         }
 
         vi-action-bar {

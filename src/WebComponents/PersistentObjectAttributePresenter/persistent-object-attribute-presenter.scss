@@ -20,10 +20,10 @@
     }
 
     .label {
-        padding-top: $h5;
-        height: $h2 - $h5;
-        min-height: $h2 - $h5;
-        line-height: $h2 - $h5;
+        padding-top: var(--theme-h5);
+        height: calc(var(--theme-h2) - var(--theme-h5));
+        min-height: calc(var(--theme-h2) - var(--theme-h5));
+        line-height: calc(var(--theme-h2) - var(--theme-h5));
         vertical-align: top;
 
         label {
@@ -42,7 +42,7 @@
             color: white;
             line-height: 13px;
             height: 14px;
-            margin: 0 0 0 $h5;
+            margin: 0 0 0 var(--theme-h5);
             padding: 0 4px 0 3px;
             -moz-transform: translateY(-1px);
             -ms-transform: translateY(-1px);
@@ -116,7 +116,7 @@
         #content {
             > vi-checkbox {
                 @include self-start();
-                width: $h3;
+                width: var(--theme-h3);
             }
         }
     }

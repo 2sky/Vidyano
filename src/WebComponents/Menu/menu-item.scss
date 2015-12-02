@@ -7,7 +7,7 @@ $indent: 16px;
     @include relative();
     box-sizing: border-box;
 	display: block;
-	line-height: $h2;
+	line-height: var(--theme-h2);
     color: $fg-color;
     fill: $fg-color;
     font-size: 13px;
@@ -35,7 +35,7 @@ $indent: 16px;
 	a {
         @include relative();
 		display: block;
-		padding: 0 $h5 0 $indent;
+		padding: 0 var(--theme-h5) 0 $indent;
 		text-decoration: none;
 		color: $fg-color;
 		white-space: nowrap;
@@ -67,7 +67,7 @@ $indent: 16px;
 
 		.group {
 			width: $indent * 2;
-			height: $h2;
+			height: var(--theme-h2);
 			text-align: center;
 			-moz-transition: transform 0.2s ease-out;
 			-o-transition: transform 0.2s ease-out;
@@ -115,9 +115,9 @@ $indent: 16px;
     &[collapsed] {
         a {
             padding: 0;
-            line-height: $h1;
-            height: $h1;
-            width: $h1;
+            line-height: var(--theme-h1);
+            height: var(--theme-h1);
+            width: var(--theme-h1);
             text-align: center;
         }
     }

@@ -2,13 +2,13 @@
 
 :host {
     vi-input-search {
-        line-height: $h2;
-        height: $h2;
+        line-height: var(--theme-h2);
+        height: var(--theme-h2);
         border: 1px solid #EAEAEA;
         box-sizing: border-box;
 
         input {
-            padding: $h1 - $h2;
+            padding: calc(var(--theme-h1) - var(--theme-h2));
             color: #333;
 
             &:focus {

@@ -3,8 +3,8 @@
 :host {
     display: block;
     @include relative();
-    line-height: $h1;
-    height: $h1;
+    line-height: var(--theme-h1);
+    height: var(--theme-h1);
     @include noSelection();
 
     vi-overflow {

@@ -39,8 +39,8 @@
                     -moz-flex: 0 0 auto;
                     -ms-flex: 0 0 auto;
                     flex: 0 0 auto;
-                    line-height: $h1;
-                    padding: $h5 $h4;
+                    line-height: var(--theme-h1);
+                    padding: var(--theme-h5) var(--theme-h4);
                     border-bottom: 1px solid #EEE;
 
                     h4 {
@@ -51,7 +51,7 @@
 
                     button.close {
                         margin: 0;
-                        padding: 0 $h5;
+                        padding: 0 var(--theme-h5);
                         fill: #888;
                         background: none;
                         border: none;
@@ -72,7 +72,7 @@
                 }
 
                 > footer {
-                    padding: $h4;
+                    padding: var(--theme-h4);
                     border-top: 1px solid #EEE;
                     -webkit-flex: 0 0 auto;
                     -moz-flex: 0 0 auto;
@@ -80,9 +80,9 @@
                     flex: 0 0 auto;
 
                     button {
-                        line-height: $h2;
-                        padding: 0 $h5;
-                        margin-left: $h5;
+                        line-height: var(--theme-h2);
+                        padding: 0 var(--theme-h5);
+                        margin-left: var(--theme-h5);
                     }
                 }
 

@@ -25,19 +25,19 @@
     }
 
     #side {
-        padding: $h3;
+        padding: var(--theme-h3);
 
         h1 {
             font-size: 36px;
             text-transform: lowercase;
             display: block;
             font-weight: normal;
-            margin: $h3 0 $h1 0;
+            margin: var(--theme-h3) 0 var(--theme-h1) 0;
             color: var(--theme-color);
         }
 
         h2 {
-            margin: $h1 0;
+            margin: var(--theme-h1) 0;
             font-size: 14px;
             font-weight: normal;
             color: #888;

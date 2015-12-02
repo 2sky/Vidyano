@@ -4,7 +4,7 @@
 	@include layout-horizontal();
 
     pre {
-        padding-top: $h5;
+        padding-top: var(--theme-h5);
         line-height: normal !important;
     }
 }

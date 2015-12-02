@@ -2,13 +2,13 @@
 
 :host {
     font-size: 13px;
-    line-height: $h2;
+    line-height: var(--theme-h2);
     overflow: hidden;
 
     header#dataHeaderHost {
         @include noSelection();
         @include relative();
-        border-bottom: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
+        border-bottom: 1px solid var(--theme-light-border);
         white-space: nowrap;
         z-index: 1;
 
@@ -59,29 +59,29 @@
 
             tr[is="vi-query-grid-table-data-row"] {
                 padding: 0 !important;
-                line-height: $h2;
-                height: $h2;
+                line-height: var(--theme-h2);
+                height: var(--theme-h2);
 
                 td {
                     padding: 0;
                     cursor: pointer;
 
                     > * {
-                        padding: 0 var(--vi-query-grid-cell-padding, $h5);
-                        min-height: $h2;
-                        height: $h2;
-                        line-height: $h2;
+                        padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
+                        min-height: var(--theme-h2);
+                        height: var(--theme-h2);
+                        line-height: var(--theme-h2);
                         box-sizing: border-box;
                         overflow: hidden;
                         white-space: nowrap;
                         text-overflow: ellipsis;
 
                         vi-icon {
-                            height: $h2;
+                            height: var(--theme-h2);
                         }
 
                         vi-template-presenter {
-                            height: $h2;
+                            height: var(--theme-h2);
                         }
                     }
 
@@ -94,7 +94,7 @@
                             top: 0;
                             right: 0;
                             bottom: 0;
-                            background-color: var(--vi-query-grid-separator-drag-color, darken($separatorColor, 15%));
+                            background-color: var(--theme-dark-border);
                             width: 1px;
                             -webkit-transform: translateX(1px);
                             transform: translateX(1px);
@@ -105,8 +105,8 @@
                     > vi-icon {
                         @include layout-horizontal();
                         @include layout-center-center();
-                        height: $h2;
-                        width: $h2;
+                        height: var(--theme-h2);
+                        width: var(--theme-h2);
                         padding: 0;
 
                         > svg {
@@ -146,7 +146,7 @@
                     }
 
                     &[is="vi-query-grid-table-data-column"] {
-                        min-width: $h2;
+                        min-width: var(--theme-h2);
 
                         &[name=""], &:not([name]) {
                             display: none;
@@ -154,7 +154,7 @@
 
                         &.pinned.last-pinned {
                             > * {
-                                border-right: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
+                                border-right: 1px solid var(--theme-light-border);
                             }
                         }
                     }
@@ -162,7 +162,7 @@
                     &[is="vi-query-grid-table-column-remainder"] {
                         > div {
                             padding: 0;
-                            width: $h4;
+                            width: var(--theme-h4);
                         }
                     }
 
@@ -213,7 +213,7 @@
 
             &.pinned {
                 tr:not(.no-data) > td:last-of-type > div {
-                    border-right: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
+                    border-right: 1px solid var(--theme-light-border);
                 }
             }
 
@@ -248,14 +248,14 @@
     }
 
     vi-icon > svg {
-        width: $h2 / 2;
-        height: $h2 / 2;
+        width: calc(var(--theme-h2) / 2);
+        height: calc(var(--theme-h2) / 2);
     }
 
     > vi-popup-core#actions {
         vi-action-button {
             button[is="vi-button"] {
-                height: $h2;
+                height: var(--theme-h2);
             }
 
             & > vi-popup-menu {
@@ -282,7 +282,7 @@
 
     &[can-select]:not([can-select-all]):not([inline-actions]):not([can-filter]), &[inline-actions]:not([can-select]):not([can-select-all]):not([can-filter]) {
         table[is="vi-query-grid-table-header"] {
-            padding-left: $h2;
+            padding-left: var(--theme-h2);
         }
     }
 
@@ -294,14 +294,14 @@
 
     &:not([can-select-all])[can-filter][can-select][inline-actions] {
         vi-query-grid-filters {
-            padding-left: $h2;
-            width: $h2 * 2;
+            padding-left: var(--theme-h2);
+            width: calc(var(--theme-h2) * 2);
         }
     }
 
     &:not([can-select]):not([inline-actions])[can-filter], &:not([inline-actions])[can-select-all][can-filter] {
         td[is="vi-query-grid-table-data-column-actions"] + td[is="vi-query-grid-table-data-column"] {
-            padding-left: $h2 !important;
+            padding-left: var(--theme-h2) !important;
         }
     }
 

@@ -1,6 +1,6 @@
 @import "../_vars.scss";
 
-$cellHeight: $h2;
+$cellHeight: var(--theme-h2);
 
 :host {
     @include layout-horizontal();
@@ -11,7 +11,7 @@ $cellHeight: $h2;
 
     #cells {
         @include noSelection();
-        padding: 1px 0 $h5 0;
+        padding: 1px 0 var(--theme-h5) 0;
         opacity: 0;
         -moz-transition: opacity 0.2s ease-out;
         -o-transition: opacity 0.2s ease-out;
@@ -22,7 +22,7 @@ $cellHeight: $h2;
     #items {
         position: relative;
         margin: auto;
-        padding-bottom: $h4;
+        padding-bottom: var(--theme-h4);
     }
 
     &[design-mode] {
@@ -46,7 +46,7 @@ $cellHeight: $h2;
 
                 &[dragging] {
                     z-index: 10;
-                    @include shadow();
+                    @apply(--theme-shadow);
 
                     #rect {
                         opacity: 1 !important;
@@ -64,7 +64,7 @@ $cellHeight: $h2;
             overflow: hidden;
 
             &:hover {
-                @include shadow();
+                @apply(--theme-shadow);
                 z-index: 10;
             }
 
@@ -117,7 +117,7 @@ vi-persistent-object-tab-item-presenter {
     background-color: white;
 
     > .vi-persistent-object-tab:not(#rect) {
-        margin: 0 $h4;
+        margin: 0 var(--theme-h4);
     }
 
     #rect {
@@ -135,18 +135,18 @@ vi-persistent-object-tab-item-presenter {
 
         #anchor {
             position: absolute;
-            bottom: -$h5;
-            right: -$h5;
-            width: $h2;
-            height: $h2;
+            bottom: -var(--theme-h5);
+            right: -var(--theme-h5);
+            width: var(--theme-h2);
+            height: var(--theme-h2);
             cursor: nwse-resize;
 
             #icon {
                 position: absolute;
-                height: $h4;
-                width: $h4;
-                bottom: $h5 * 1.5;
-                right: $h5 * 1.5;
+                height: var(--theme-h4);
+                width: var(--theme-h4);
+                bottom: calc(var(--theme-h5) * 1.5);
+                right: calc(var(--theme-h5) * 1.5);
                 border-style: solid;
                 border-width: 0 2px 2px 0;
                 border-color: #888;

@@ -2,13 +2,13 @@
 
 @mixin addStyle() {
     &.foot {
-        height: $h2;
+        height: var(--theme-h2);
         background-color: #F9F9F9;
         border: 1px solid var(--attribute-border-color);
     }
 
     button {
-        height: $h2;
+        height: var(--theme-h2);
     }
 }
 
@@ -24,11 +24,11 @@
     #table {
         @include layout-vertical();
         @include fit();
-        line-height: $h2;
+        line-height: var(--theme-h2);
 
         #head {
             border-bottom: 1px solid var(--attribute-border-color);
-            height: $h2;
+            height: var(--theme-h2);
 
             .column {
                 label {
@@ -56,8 +56,8 @@
         }
 
         button.action {
-            height: $h2;
-            line-height: $h2;
+            height: var(--theme-h2);
+            line-height: var(--theme-h2);
         }
     }
 
@@ -71,8 +71,8 @@
 
                 .column {
                     padding: 0 1px 1px 0;
-                    height: $h2;
-                    line-height: $h2;
+                    height: var(--theme-h2);
+                    line-height: var(--theme-h2);
                     box-sizing: border-box;
 
                     label {
@@ -85,22 +85,22 @@
                 margin-top: 1px !important;
 
                 .row {
-                    height: $h2 + 2px;
-                    line-height: $h2 + 2px;
+                    height: calc(var(--theme-h2) + 2px);
+                    line-height: calc(var(--theme-h2) + 2px);
                     overflow: hidden;
 
                     div.delete-button {
                         @include layout-horizontal();
                         padding: 0 0 1px 1px;
-                        height: $h2;
-                        line-height: $h2;
+                        height: var(--theme-h2);
+                        line-height: var(--theme-h2);
 
                         button {
                             @include flex();
                             @include layout-horizontal();
                             box-sizing: border-box;
                             border: 1px solid var(--attribute-border-color);
-                            padding: 0 $h4;
+                            padding: 0 var(--theme-h4);
                             fill: var(--theme-color-light);
 
                             &:not(:hover):not(:active) {
@@ -108,8 +108,8 @@
                             }
 
                             vi-icon {
-                                line-height: $h2;
-                                height: $h2;
+                                line-height: var(--theme-h2);
+                                height: var(--theme-h2);
 
                                 svg {
                                     width: 12px;
@@ -120,7 +120,7 @@
                     }
 
                     &:last-of-type {
-                        height: $h2;
+                        height: var(--theme-h2);
 
                         .column, div.delete-button {
                             padding-bottom: 0;
@@ -130,7 +130,7 @@
 
                 &[vertical] {
                     .row div.delete-button {
-                        margin-right: $h4;
+                        margin-right: var(--theme-h4);
                     }
                 }
             }

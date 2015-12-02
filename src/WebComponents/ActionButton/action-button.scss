@@ -8,15 +8,15 @@
         vertical-align: top;
         text-align: left;
         cursor: pointer;
-        height: $h1;
+        height: var(--theme-h1);
         width: 100%;
-        padding: 0 $h4;
+        padding: 0 var(--theme-h4);
         white-space: nowrap;
         overflow: hidden;
 
         > vi-icon {
             &.options {
-                margin-left: $h5;
+                margin-left: var(--theme-h5);
                 svg {
                     width: 12px;
                     height: 12px;
@@ -65,11 +65,11 @@
         padding: 0;
         margin: 0;
         list-style-type: none;
-        line-height: $h1;
+        line-height: var(--theme-h1);
 
         li {
             cursor: pointer;
-            padding: 0 $h4;
+            padding: 0 var(--theme-h4);
             font-size: 13px;
             color: var(--theme-color);
 

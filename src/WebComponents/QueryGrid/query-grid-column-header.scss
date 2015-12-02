@@ -4,12 +4,12 @@
     @include relative();
     display: block;
     box-sizing: border-box;
-    min-width: $h2;
-    border-right: 1px solid var(--vi-query-grid-separator-color, $separatorColor);
+    min-width: var(--theme-h2);
+    border-right: 1px solid var(--theme-light-border);
 
     > div:first-child {
         height: var(--vi-query-grid-header-height, --theme-h2);
-        padding: 0 $h3 0 var(--vi-query-grid-cell-padding, $h5);
+        padding: 0 var(--theme-h3) 0 var(--vi-query-grid-cell-padding, --theme-h5);
         cursor: pointer;
         position: relative;
         color: #808080;
@@ -19,23 +19,23 @@
 
         > label {
             display: block;
-            line-height: $h2;
+            line-height: var(--theme-h2);
             white-space: nowrap;
             cursor: pointer;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-            padding-right: $h5;
+            padding-right: var(--theme-h5);
         }
     }
 
     > vi-icon {
         position: absolute;
-        right: $h5;
+        right: var(--theme-h5);
         top: 0;
         fill: #555;
-        line-height: $h2;
-        height: $h2;
+        line-height: var(--theme-h2);
+        height: var(--theme-h2);
     }
 
     .resizer {
@@ -54,7 +54,7 @@
     &.resizing .resizer, .resizer:hover{
         &::after {
             position: absolute;
-            left: $h5 / 2;
+            left: calc(var(--theme-h5) / 2);
             top: 0;
             bottom: 0;
             width: 2px;

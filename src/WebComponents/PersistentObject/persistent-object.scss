@@ -7,7 +7,6 @@ $tabsBG: #f1f1f1;
     --action-bar-style: #{'{
         padding-top: 3px;
         border-bottom: 1px solid '$tabsBG';
-        background-color: '$actionsBG';
     }'};
 
     @include layout-vertical-reverse();
@@ -18,7 +17,7 @@ $tabsBG: #f1f1f1;
 
     .tabs {
         background-color: $tabsBG;
-        @include shadow();
+        @apply(--theme-shadow);
     }
 
     vi-persistent-object-tab-presenter {
@@ -106,7 +105,7 @@ $tabsBG: #f1f1f1;
             vi-action-bar {
                 padding-top: 0;
                 z-index: 1;
-                @include shadow();
+                @apply(--theme-shadow);
             }
         }
     }

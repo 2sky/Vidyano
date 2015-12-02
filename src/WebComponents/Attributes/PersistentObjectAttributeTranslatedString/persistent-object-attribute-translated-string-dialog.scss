@@ -3,14 +3,14 @@
 :host {
     ul {
         margin: 0;
-        padding: $h4;
+        padding: var(--theme-h4);
         list-style: none;
 
         li {
             min-width: 50vw;
 
             &:not(:last-of-type) {
-                margin-bottom: $h4;
+                margin-bottom: var(--theme-h4);
             }
 
             label {
@@ -30,7 +30,7 @@
                 resize: none;
                 box-sizing: border-box;
                 margin: 0;
-                padding: $h5;
+                padding: var(--theme-h5);
                 border: 1px solid #ddd;
                 outline: none;
 

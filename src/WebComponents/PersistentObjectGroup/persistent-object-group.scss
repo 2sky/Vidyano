@@ -4,17 +4,17 @@
     @include layout-horizontal();
     @include layout-center();
     @include relative();
-    padding-top: $h4;
+    padding-top: var(--theme-h4);
 
     label {
         @include flex();
         display: block;
         font-size: 15px;
         font-weight: 600;
-        line-height: $h2 - $h4;
-        min-height: $h2 - $h4;
+        line-height: calc(var(--theme-h2) - var(--theme-h4));
+        min-height: calc(var(--theme-h2) - var(--theme-h4));
         text-transform: uppercase;
-        padding-right: $h4;
+        padding-right: var(--theme-h4);
         color: var(--theme-color);
     }
 }

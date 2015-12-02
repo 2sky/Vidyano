@@ -6,18 +6,18 @@
 
     &[has-error] {
         @include layout-center-center();
-        color: $color-error;
-        fill: $color-error;
+        color: var(--theme-color-error);
+        fill: var(--theme-color-error);
 
         span {
             display: block;
             text-align: center;
-            padding: $h5 $h3;
+            padding: var(--theme-h5) var(--theme-h3);
         }
 
         svg {
-            width: $h1;
-            height: $h1;
+            width: var(--theme-h1);
+            height: var(--theme-h1);
         }
     }
 

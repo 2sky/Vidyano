@@ -3,10 +3,10 @@
 :host {
     @include layout-horizontal();
     border-left: 1px solid #EAEAEA;
-    margin-left: $h5;
-    padding-left: $h5;
+    margin-left: var(--theme-h5);
+    padding-left: var(--theme-h5);
 
     > button, button[header] {
-        height: $h1;
+        height: var(--theme-h1);
     }
 }

@@ -22,7 +22,7 @@ $expandWidth: 16em;
         .programUnits {
             .subItems {
                 display: none;
-                margin-bottom: $h5;
+                margin-bottom: var(--theme-h5);
             }
 
             vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
@@ -32,7 +32,7 @@ $expandWidth: 16em;
     }
 
     &[collapsed] {
-        width: $h1;
+        width: var(--theme-h1);
 
         header {
             #toggleCollapse {
@@ -56,7 +56,7 @@ $expandWidth: 16em;
                 margin: 0;
 
                 button {
-                    height: $h1;
+                    height: var(--theme-h1);
 
                     &[header] {
                         fill: #FAFAFA;
@@ -76,16 +76,16 @@ $expandWidth: 16em;
 
             .subItems[content] {
                 vi-menu-item {
-                    padding-right: $h4;
+                    padding-right: var(--theme-h4);
                 }
 
                 &[item-count="1"] > vi-menu-item {
-                    height: $h1;
-                    line-height: $h1;
+                    height: var(--theme-h1);
+                    line-height: var(--theme-h1);
                 }
 
                 &:not([has-group-items]) > vi-menu-item {
-                    padding-left: $h5;
+                    padding-left: var(--theme-h5);
                 }
             }
         }
@@ -99,8 +99,8 @@ $expandWidth: 16em;
 
     header, footer {
         display: block;
-        line-height: $h1;
-        min-height: $h1;
+        line-height: var(--theme-h1);
+        min-height: var(--theme-h1);
     }
 
     header {
@@ -109,8 +109,8 @@ $expandWidth: 16em;
 
         span {
             display: block;
-            font-size: ($h3);
-            line-height: $h1 * 2;
+            font-size: (var(--theme-h3));
+            line-height: calc(var(--theme-h1) * 2);
             background-color: var(--theme-color-dark);
         }
 
@@ -118,8 +118,8 @@ $expandWidth: 16em;
             position: absolute;
             top: 0;
             right: 0;
-            height: $h1;
-            width: $h1;
+            height: var(--theme-h1);
+            width: var(--theme-h1);
             fill: rgba(255, 255, 255, 0.5);
 
             > vi-icon {
@@ -129,8 +129,8 @@ $expandWidth: 16em;
                 transition: transform 0.3s ease-in-out;
 
                 svg {
-                    width: $h4;
-                    height: $h4;
+                    width: var(--theme-h4);
+                    height: var(--theme-h4);
                 }
             }
         }
@@ -141,7 +141,7 @@ $expandWidth: 16em;
         border-bottom: 1px solid fadeout(white, 90%);
 
         input {
-            padding-left: $h5;
+            padding-left: var(--theme-h5);
         }
     }
 }

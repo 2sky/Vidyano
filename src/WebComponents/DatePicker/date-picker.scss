@@ -13,13 +13,13 @@ $border-color: #eee;
 
 		button {
 			text-align: center;
-			height: $h2;
-			min-width: $h2;
-			line-height: $h2;
+			height: var(--theme-h2);
+			min-width: var(--theme-h2);
+			line-height: var(--theme-h2);
 			cursor: pointer;
 
             > vi-icon {
-                height: $h2;
+                height: var(--theme-h2);
             }
 
 			&:hover {
@@ -36,7 +36,7 @@ $border-color: #eee;
 			border-spacing: 0;
 
 			th {
-				line-height: $h3;
+				line-height: var(--theme-h3);
 				font-weight: 600;
 				font-size: 90%;
 			}
@@ -95,9 +95,9 @@ $border-color: #eee;
 
 							&::after {
 								z-index: 1;
-								border-left: $h4 solid transparent;
+								border-left: var(--theme-h4) solid transparent;
 								border-top-color: var(--theme-color);
-								border-top-width: $h4;
+								border-top-width: var(--theme-h4);
 								border-top-style: solid;
 							}
 
@@ -136,7 +136,7 @@ $border-color: #eee;
 					border-width: 0 0 1px 1px;
 					cursor: pointer;
 					text-align: center;
-					line-height: $h4 * 6;
+					line-height: calc(var(--theme-h4) * 6);
 					border-color: var(--theme-color-faint);
 					color: var(--theme-color);
 

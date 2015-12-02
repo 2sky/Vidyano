@@ -17,13 +17,26 @@
     --theme-accent-color-faint: #e0f2f1;
     --theme-accent-color-semi-faint: darken(#e0f2f1, 2%);
 
-    --theme-h1: $h1;
-    --theme-h2: $h2;
-    --theme-h3: $h3;
-    --theme-h4: $h4;
-    --theme-h5: $h5;
+    --theme-color-error: #a80511;
+    --theme-color-warning: #e5a300;
+    --theme-color-notice: #48545e;
+    --theme-color-ok: #339f7b;
+
+    --theme-h1: 40px;
+    --theme-h2: 32px;
+    --theme-h3: 22px;
+    --theme-h4: 12px;
+    --theme-h5: 6px;
 
     --theme-foreground: #333;
+    --theme-light-border: #EAEAEA;
+    --theme-dark-border: darken(#EAEAEA, 15%);
+
+    --theme-shadow: #{'{
+        -webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
+        -moz-box-shadow:    0 0 4px 0 rgba(0, 0, 0, 0.5);
+        box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);
+    }'};
 }
 
 :host {

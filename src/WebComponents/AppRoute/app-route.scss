@@ -3,8 +3,8 @@
 :host {
     @include relative();
     @include flex();
-    @include shadow();
     background-color: white;
+    @apply(--theme-shadow);
 
     &:not([active]) {
         display: none;

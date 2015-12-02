@@ -8,8 +8,8 @@
     .box {
         @apply(--attribute-edit-box);
         position: relative;
-        min-height: $h2 - 2px;
-        line-height: $h2 - 2px;
+        min-height: calc(var(--theme-h2) - 2px);
+        line-height: calc(var(--theme-h2) - 2px);
         overflow: hidden;
         border: 1px solid var(--attribute-border-color);
         -moz-transition: border-color 0.2s ease-in-out;
@@ -24,50 +24,57 @@
 
     &[has-error] {
         .box {
-            background-color: mix(white, $color-error, 95%) !important;
-            border-color: $color-error !important;
+            border-color: var(--theme-color-error) !important;
+            @include relative();
+
+            &::after {
+                content: " ";
+                opacity: 0.05;
+                background-color: var(--theme-color-error);
+                @include fit();
+            }
         }
 
         #errorIndicator {
             display: block;
-            width: $h2;
-            height: $h2;
-            line-height: $h2;
+            width: var(--theme-h2);
+            height: var(--theme-h2);
+            line-height: var(--theme-h2);
             padding: 0;
             background-color: transparent;
             cursor: pointer;
 
             vi-icon {
-                width: $h2;
-                height: $h2;
+                width: var(--theme-h2);
+                height: var(--theme-h2);
 
                 svg {
-                    width: $h3;
-                    height: $h3;
-                    fill: $color-error;
+                    width: var(--theme-h3);
+                    height: var(--theme-h3);
+                    fill: var(--theme-color-error);
                 }
             }
 
             pre[content] {
-                padding: $h5;
-                border: 1px solid $color-error;
+                padding: var(--theme-h5);
+                border: 1px solid var(--theme-color-error);
             }
 
             #content {
                 &.top {
-                    -moz-transform: translateY($h4);
-                    -ms-transform: translateY($h4);
-                    -o-transform: translateY($h4);
-                    -webkit-transform: translateY($h4);
-                    transform: translateY($h4);
+                    -moz-transform: translateY(var(--theme-h4));
+                    -ms-transform: translateY(var(--theme-h4));
+                    -o-transform: translateY(var(--theme-h4));
+                    -webkit-transform: translateY(var(--theme-h4));
+                    transform: translateY(var(--theme-h4));
                 }
 
                 &.bottom {
-                    -moz-transform: translateY(-$h4);
-                    -ms-transform: translateY(-$h4);
-                    -o-transform: translateY(-$h4);
-                    -webkit-transform: translateY(-$h4);
-                    transform: translateY(-$h4);
+                    -moz-transform: translateY(-var(--theme-h4));
+                    -ms-transform: translateY(-var(--theme-h4));
+                    -o-transform: translateY(-var(--theme-h4));
+                    -webkit-transform: translateY(-var(--theme-h4));
+                    transform: translateY(-var(--theme-h4));
                 }
             }
         }
@@ -88,8 +95,8 @@
             background-color: transparent;
             box-sizing: border-box;
             margin: 0;
-            padding: 0 $h5;
-            line-height: $h2 - 2px;
+            padding: 0 var(--theme-h5);
+            line-height: calc(var(--theme-h2) - 2px);
             border: none;
             outline: none;
             color: #333;
@@ -125,9 +132,9 @@
                 @include relative();
                 outline: none;
                 cursor: pointer;
-                width: $h2 - 2px;
-                height: $h2 - 2px;
-                line-height: $h2 - 2px;
+                width: calc(var(--theme-h2) - 2px);
+                height: calc(var(--theme-h2) - 2px);
+                line-height: calc(var(--theme-h2) - 2px);
                 padding: 0;
                 box-sizing: content-box;
                 text-align: center;
@@ -164,8 +171,8 @@
                 }
 
                 vi-icon {
-                    width: $h2 - 2px;
-                    height: $h2 - 2px;
+                    width: calc(var(--theme-h2) - 2px);
+                    height: calc(var(--theme-h2) - 2px);
 
                     svg {
                         -moz-transition: fill 0.1s ease-out;

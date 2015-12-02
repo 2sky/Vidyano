@@ -33,8 +33,8 @@
             }
 
             vi-icon {
-                margin: 0 $h5;
-                min-width: $h4;
+                margin: 0 var(--theme-h5);
+                min-width: var(--theme-h4);
                 fill: var(--theme-color);
                 transform: translateY(2px);
             }

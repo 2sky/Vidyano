@@ -1,12 +1,11 @@
 @import "../_vars.scss";
 
-$scrollbar-parent-color: rgba(0,0,0,0.2);
-$hoverSize: $h4 - 2px;
-
 :host {
     overflow: hidden;
     @include layout-horizontal();
     @include relative();
+
+    --vi-scroller-hover-size: calc(var(--theme-h4) - 2px);
 
     > #wrapper {
         @include flex();
@@ -80,7 +79,7 @@ $hoverSize: $h4 - 2px;
             position: absolute;
             background-color: #797979;
             opacity: 1;
-            border-radius: $h5;
+            border-radius: var(--theme-h5);
             -moz-transition-timing-function: ease-in-out;
             -o-transition-timing-function: ease-in-out;
             -webkit-transition-timing-function: ease-in-out;
@@ -91,7 +90,7 @@ $hoverSize: $h4 - 2px;
             left: 0;
             right: 0;
             bottom: 0;
-            height: $hoverSize;
+            height: var(--vi-scroller-hover-size);
 
             > .scrollbar {
                 -moz-transition: opacity 0.2s, height 0.2s;
@@ -105,7 +104,7 @@ $hoverSize: $h4 - 2px;
             top: 0;
             right: 0;
             bottom: 0;
-            width: $hoverSize;
+            width: var(--vi-scroller-hover-size);
 
             > .scrollbar {
                 -moz-transition: opacity 0.2s, width 0.2s;
@@ -118,33 +117,33 @@ $hoverSize: $h4 - 2px;
         > #vertical {
             top: 0;
             right: 0;
-            width: $h5;
+            width: var(--theme-h5);
 
             &:hover {
-                width: $hoverSize;
+                width: var(--vi-scroller-hover-size);
             }
         }
 
         > #horizontal {
             left: 0;
             bottom: 0;
-            height: $h5;
+            height: var(--theme-h5);
 
             &:hover {
-                height: $hoverSize;
+                height: var(--vi-scroller-hover-size);
             }
         }
     }
 
     &[vertical] {
         > .scrollbar-parent.vertical:hover {
-            background-color: $scrollbar-parent-color;
+            background-color: rgba(0,0,0,0.2);
         }
     }
 
     &[horizontal] {
         > .scrollbar-parent.horizontal:hover {
-            background-color: $scrollbar-parent-color;
+            background-color: rgba(0,0,0,0.2);
         }
     }
 
@@ -156,24 +155,24 @@ $hoverSize: $h4 - 2px;
 
     &[scrolling], > .scrollbar-parent:hover {
         #vertical {
-            width: $hoverSize;
+            width: var(--vi-scroller-hover-size);
         }
 
         #horizontal {
-            height: $hoverSize;
+            height: var(--vi-scroller-hover-size);
         }
     }
 
     > .scroll-shadow {
         position: absolute;
-        -webkit-box-shadow: 0 0 ($h2 / 2) rgba(0,0,0,0.3);
-        box-shadow: 0 0 ($h2 / 2) rgba(0,0,0,0.3);
+        -webkit-box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
+        box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
         bottom: 0;
-        height: $h2;
+        height: var(--theme-h2);
         -moz-border-radius: 100%;
         border-radius: 100%;
-        left: -$h2;
-        right: -$h2;
+        left: -var(--theme-h2);
+        right: -var(--theme-h2);
         pointer-events: none;
 
         &.top {
@@ -182,11 +181,11 @@ $hoverSize: $h4 - 2px;
             -webkit-transition: transform 0.2s ease-out;
             transition: transform 0.2s ease-out;
             top: 0;
-            -moz-transform: translateY(-$h2 * 1.5);
-            -ms-transform: translateY(-$h2 * 1.5);
-            -o-transform: translateY(-$h2 * 1.5);
-            -webkit-transform: translateY(-$h2 * 1.5);
-            transform: translateY(-$h2 * 1.5);
+            -moz-transform: translateY(calc(var(--theme-h2) * -1.5));
+            -ms-transform: translateY(calc(var(--theme-h2) * -1.5));
+            -o-transform: translateY(calc(var(--theme-h2) * -1.5));
+            -webkit-transform: translateY(calc(var(--theme-h2) * -1.5));
+            transform: translateY(calc(var(--theme-h2) * -1.5));
         }
 
         &.bottom {
@@ -195,27 +194,27 @@ $hoverSize: $h4 - 2px;
             -webkit-transition: transform 0.2s ease-out;
             transition: transform 0.2s ease-out;
             bottom: 0;
-            -moz-transform: translateY($h2 * 1.5);
-            -ms-transform: translateY($h2 * 1.5);
-            -o-transform: translateY($h2 * 1.5);
-            -webkit-transform: translateY($h2 * 1.5);
-            transform: translateY($h2 * 1.5);
+            -moz-transform: translateY(calc(var(--theme-h2) * 1.5));
+            -ms-transform: translateY(calc(var(--theme-h2) * 1.5));
+            -o-transform: translateY(calc(var(--theme-h2) * 1.5));
+            -webkit-transform: translateY(calc(var(--theme-h2) * 1.5));
+            transform: translateY(calc(var(--theme-h2) * 1.5));
         }
     }
 
     &[scroll-top-shadow] > .scroll-shadow.top {
-        -moz-transform: translateY(-$h2);
-        -ms-transform: translateY(-$h2);
-        -o-transform: translateY(-$h2);
-        -webkit-transform: translateY(-$h2);
-        transform: translateY(-$h2);
+        -moz-transform: translateY(-var(--theme-h2));
+        -ms-transform: translateY(-var(--theme-h2));
+        -o-transform: translateY(-var(--theme-h2));
+        -webkit-transform: translateY(-var(--theme-h2));
+        transform: translateY(-var(--theme-h2));
     }
 
     &[scroll-bottom-shadow] > .scroll-shadow.bottom {
-        -moz-transform: translateY($h2);
-        -ms-transform: translateY($h2);
-        -o-transform: translateY($h2);
-        -webkit-transform: translateY($h2);
-        transform: translateY($h2);
+        -moz-transform: translateY(var(--theme-h2));
+        -ms-transform: translateY(var(--theme-h2));
+        -o-transform: translateY(var(--theme-h2));
+        -webkit-transform: translateY(var(--theme-h2));
+        transform: translateY(var(--theme-h2));
     }
 }

@@ -4,15 +4,15 @@
     @include layout-horizontal();
     min-width: 30em;
     margin-bottom: 4px;
-    height: $h2;
-    line-height: $h2;
+    height: var(--theme-h2);
+    line-height: var(--theme-h2);
     font-size: 15px;
     cursor: -moz-grab;
     cursor: -webkit-grab;
 
     > vi-icon {
-        width: $h2;
-        height: $h2;
+        width: var(--theme-h2);
+        height: var(--theme-h2);
         fill: #888;
         pointer-events: none;
     }
@@ -20,9 +20,9 @@
     label {
         @include flex();
         background-color: #f9f9f9;
-        margin-left: $h4;
-        padding-left: $h4;
-        padding-right: $h1;
+        margin-left: var(--theme-h4);
+        padding-left: var(--theme-h4);
+        padding-right: var(--theme-h1);
         pointer-events: none;
         overflow: hidden;
         text-overflow: ellipsis;

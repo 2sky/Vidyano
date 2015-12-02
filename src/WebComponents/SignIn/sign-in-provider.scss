@@ -1,7 +1,7 @@
 @import "../_vars.scss";
 
 :host {
-    margin-bottom: $h2;
+    margin-bottom: var(--theme-h2);
     cursor: pointer;
 
     h3 {
@@ -21,7 +21,7 @@
     &[is-vidyano] {
         ul#vidyano {
             list-style: none;
-            padding-left: $h1;
+            padding-left: var(--theme-h1);
             max-height: 0;
             overflow: hidden;
             -moz-transition: max-height 0.3s ease-out;
@@ -31,15 +31,15 @@
 
             li {
                 &:first-child {
-                    margin-bottom: $h4;
-                    margin-top: $h3;
+                    margin-bottom: var(--theme-h4);
+                    margin-top: var(--theme-h3);
                 }
 
                 label {
                     display: block;
-                    font-size: $h4 - 1px;
+                    font-size: calc(var(--theme-h4) - 1px);
                     font-weight: bold;
-                    margin-bottom: $h5;
+                    margin-bottom: var(--theme-h5);
                     font-weight: 400;
                     color: #888;
                     overflow: hidden;
@@ -49,7 +49,7 @@
                 input {
                     box-sizing: border-box;
                     margin: 0;
-                    padding: $h5;
+                    padding: var(--theme-h5);
                     border: 1px solid #ddd;
                     outline: none;
 
@@ -59,9 +59,9 @@
                 }
 
                 &:last-of-type {
-                    line-height: $h2;
-                    height: $h2;
-                    margin-top: $h3;
+                    line-height: var(--theme-h2);
+                    height: var(--theme-h2);
+                    margin-top: var(--theme-h3);
                     @include layout-horizontal();
 
                     vi-checkbox:not([checked]) {
@@ -79,7 +79,7 @@
 
                         button {
                             cursor: pointer;
-                            padding: 0 $h4;
+                            padding: 0 var(--theme-h4);
                             box-sizing: content-box;
                             @include theme-color-button();
                         }

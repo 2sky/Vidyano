@@ -4,12 +4,12 @@
 	&[editing] {
 		#inputs {
 			> * {
-				margin-bottom: $h5;
+				margin-bottom: var(--theme-h5);
 
 				.sort-handle {
 					fill: #999;
-					line-height: $h2;
-					margin-right: $h5;
+					line-height: var(--theme-h2);
+					margin-right: var(--theme-h5);
 					cursor: move;
 					cursor: -webkit-grabbing;
 				}
