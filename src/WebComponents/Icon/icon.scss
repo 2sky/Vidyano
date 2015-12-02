@@ -11,9 +11,9 @@
         text-align: center;
     }
 
-    ::content svg {
-        width: 16px;
-        height: 16px;
+    svg {
+        width: var(--vi-icon-width, 16px);
+        height: var(--vi-icon-height, 16px);
     }
 
     &[small] ::content svg {

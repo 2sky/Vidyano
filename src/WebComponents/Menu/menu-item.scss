@@ -111,7 +111,7 @@
 
     &[collapsed] {
         a {
-            padding: 0;
+            padding: 0 !important;
             line-height: var(--theme-h1);
             height: var(--theme-h1);
             width: var(--theme-h1);
