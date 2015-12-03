@@ -303,16 +303,17 @@
         }
 
         showDialog(dialog: Dialog, options?: DialogOptions): Promise<any> {
-            var dialogHost = new Vidyano.WebComponents.DialogHost(dialog);
+            const dialogs = Polymer.dom(this.root).querySelector("#dialogs");
 
-            Polymer.dom(this).appendChild(dialogHost);
+            const dialogHost = new Vidyano.WebComponents.DialogHost(dialog);
+            Polymer.dom(dialogs).appendChild(dialogHost);
 
             return dialogHost.show(options).then(result => {
-                Polymer.dom(this).removeChild(dialogHost);
+                Polymer.dom(dialogs).removeChild(dialogHost);
 
                 return result;
             }).catch(e => {
-                Polymer.dom(this).removeChild(dialogHost);
+                Polymer.dom(dialogs).removeChild(dialogHost);
                 if(e)
                     throw e;
             });

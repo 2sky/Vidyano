@@ -95,8 +95,6 @@ module Vidyano.WebComponents {
 
         constructor(private _dialog: Dialog) {
             super();
-
-            Polymer.dom(this).appendChild(_dialog);
         }
 
         private _translateChanged() {
@@ -123,10 +121,16 @@ module Vidyano.WebComponents {
         }
 
         show(options: DialogOptions = {}): Promise<any> {
-            var header = <HTMLElement>this.querySelector("[dialog] > header");
-            if (header) {
-                var trackHandler: Function;
-                Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));
+            Polymer.dom(this).appendChild(this._dialog);
+
+            const dialog = <WebComponent>Polymer.dom(this).querySelector("[dialog]");
+            let header: HTMLElement;
+            if (dialog) {
+                header = Polymer.dom(dialog.root).querySelector("header");
+                if (header) {
+                    var trackHandler: Function;
+                    Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));
+                }
             }
 
             var resolve: Function;

@@ -21,8 +21,6 @@
             @include layout-vertical();
             max-height: 90vh;
             max-width: 90vw;
-            background-color: white;
-            @include z-index1();
 
             &[dragging] {
                 @include noSelection();
@@ -30,6 +28,9 @@
             }
 
             > * {
+                background-color: white;
+                @include z-index1();
+                
                 > header, > footer {
                     background-color: #FAFAFA;
                 }
