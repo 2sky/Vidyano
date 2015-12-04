@@ -59,12 +59,4 @@
             @apply(--vi-input-search-input-focused-button);
         }
     }
-
-    &[collapsed] {
-        vi-popup {
-            @include flex();
-        }
-
-        @apply(--vi-input-search-collapsed);
-    }
 }

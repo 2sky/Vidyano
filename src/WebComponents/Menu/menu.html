@@ -11,7 +11,15 @@
             </button>
             <span>{{label}}</span>
             <content select="[menu-element~='start']"></content>
-            <vi-input-search collapsed="{{collapsed}}" value="{{filter}}" on-search="_search"></vi-input-search>
+            <template is="dom-if" if="{{!collapsed}}">
+                <vi-input-search value="{{filter}}" on-search="_search"></vi-input-search>
+            </template>
+            <template is="dom-if" if="{{collapsed}}">
+                <vi-popup orientation="horizontal" content-align="right" sticky>
+                    <vi-icon header source="Search" on-tap="_focusSearch"></vi-icon>
+                    <vi-input-search id="collapsedInputSearch" content collapsed value="{{filter}}" on-tap="_catchInputSearchTap" on-search="_search"></vi-input-search>
+                </vi-popup>
+            </template>
         </header>
         <template is="dom-if" if="{{!collapsed}}">
             <vi-scroller class="flex programUnits" no-horizontal>
