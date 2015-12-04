@@ -23,10 +23,11 @@
 
         private _setSorting: (sorting: string) => void;
 
-        constructor() {
-            super();
+        attached() {
+            super.attached();
 
-            Polymer.dom(this).appendChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilterProxy());
+            if (!this._filter)
+                Polymer.dom(this).appendChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilterProxy());
         }
 
         private _onUpgradeFilterProxy(e: Event) {

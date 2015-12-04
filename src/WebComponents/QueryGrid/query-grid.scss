@@ -280,15 +280,28 @@
         }
     }
 
-    &[can-select]:not([can-select-all]):not([inline-actions]):not([can-filter]), &[inline-actions]:not([can-select]):not([can-select-all]):not([can-filter]) {
+    &:not([can-filter]) {
+        vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
+            display: none;
+        }
+    }
+
+    &:not([can-select-all]) {
+        vi-query-grid-select-all {
+            display: none;
+        }
+    }
+
+    &[can-select]:not([can-select-all]):not([inline-actions]):not([can-filter]),
+    &[inline-actions]:not([can-select]):not([can-select-all]):not([can-filter]) {
         table[is="vi-query-grid-table-header"] {
             padding-left: var(--theme-h2);
         }
     }
 
-    &:not([can-filter]) {
-        vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
-            display: none;
+    &[can-select][inline-actions]:not([can-select-all]):not([can-filter]) {
+        table[is="vi-query-grid-table-header"] {
+            padding-left: calc(var(--theme-h2) * 2);
         }
     }
 
@@ -302,6 +315,12 @@
     &:not([can-select]):not([inline-actions])[can-filter], &:not([inline-actions])[can-select-all][can-filter] {
         td[is="vi-query-grid-table-data-column-actions"] + td[is="vi-query-grid-table-data-column"] {
             padding-left: var(--theme-h2) !important;
+        }
+    }
+
+    &[can-select-all]:not([can-filter]) {
+        vi-query-grid-select-all {
+            border-top: none;
         }
     }
 

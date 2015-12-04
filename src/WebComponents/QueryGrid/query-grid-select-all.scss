@@ -9,14 +9,6 @@
     align-self: flex-end;
     cursor: pointer;
 
-    &[disabled] {
-        cursor: default;
-
-        > vi-icon, > paper-ripple {
-            visibility: hidden;
-        }
-    }
-
     > vi-icon {
         height: var(--theme-h2);
         width: var(--theme-h2);
