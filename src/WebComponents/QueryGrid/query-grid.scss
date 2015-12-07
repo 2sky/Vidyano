@@ -1,4 +1,4 @@
-﻿@import "_query-grid-vars.scss";
+﻿@import "../_vars.scss";
 
 :host {
     font-size: 13px;
@@ -182,18 +182,18 @@
 
                 &:not(:hover):not([hover]):not([is-selected]) {
                     &:nth-child(odd) {
-                        background-color: var(--vi-query-grid-row-odd-color, $oddRowColor);
+                        background-color: var(--vi-query-grid-row-odd-color, #FAFAFA);
 
                         td.pinned {
-                            background-color: var(--vi-query-grid-row-odd-color, $oddRowColor);
+                            background-color: var(--vi-query-grid-row-odd-color, #FAFAFA);
                         }
                     }
 
                     &:nth-child(even) {
-                        background-color: var(--vi-query-grid-row-even-color, $evenRowColor);
+                        background-color: var(--vi-query-grid-row-even-color, white);
 
                         td.pinned {
-                            background-color: var(--vi-query-grid-row-even-color, $evenRowColor);
+                            background-color: var(--vi-query-grid-row-even-color, white);
                         }
                     }
                 }
