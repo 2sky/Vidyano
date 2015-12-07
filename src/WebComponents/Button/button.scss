@@ -43,7 +43,7 @@
 
         > vi-icon {
             display: inline-block;
-            @apply(--button-icon-style);
+            @apply(--vi-button-icon-style);
 
             &:not([has-resource]) {
                 display: none;
@@ -54,7 +54,7 @@
             display: inline-block;
             vertical-align: top;
             margin-left: 2px;
-            @apply(--button-label-style);
+            @apply(--vi-button-label-style);
         }
     }
 

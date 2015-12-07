@@ -34,7 +34,7 @@
             font-weight: 400;
             color: var(--vi-persistent-object-attribute-presenter-label-color);
             letter-spacing: 0.5px;
-            @apply(--attribute-label);
+            @apply(--vi--attribute-label);
         }
 
         .required {
@@ -52,7 +52,7 @@
             -webkit-transform: translateY(-1px);
             transform: translateY(-1px);
             background-color: var(--theme-color);
-            @apply(--attribute-required);
+            @apply(--vi--attribute-required);
 
             &::before {
                 content: "";
@@ -83,7 +83,7 @@
                 fill: var(--vi-persistent-object-attribute-presenter-readonly-color);
             }
 
-            @apply(--attribute-locked);
+            @apply(--vi--attribute-locked);
         }
     }
 

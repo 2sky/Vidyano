@@ -178,7 +178,7 @@
                 padding: 3px var(--theme-h5);
 
                 &:hover {
-                    background-color: var(--query-grid-column-filter-distinct-hover-color, --theme-color-faint);
+                    background-color: var(--vi-query-grid-column-filter-distinct-hover-color, --theme-color-faint);
                 }
             }
 
@@ -192,7 +192,7 @@
 
             vi-checkbox {
                 &[distinct-type="remaining"] {
-                    color: var(--query-grid-column-filter-distinct-remaining-color, #aaa);
+                    color: var(--vi-query-grid-column-filter-distinct-remaining-color, #aaa);
                 }
             }
 

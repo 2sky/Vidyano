@@ -127,7 +127,7 @@
         }
 
         private _masterWidthChanged() {
-            this.customStyle["--master-width"] = this.masterWidth;
+            this.customStyle["--vi-persistent-object-master-width"] = this.masterWidth;
             this.updateStyles();
         }
 

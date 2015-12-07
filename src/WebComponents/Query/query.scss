@@ -4,7 +4,7 @@
     display: block;
     @include fit();
     @include layout-vertical-reverse();
-    --action-bar-style: #{'{
+    --vi-action-bar-style: #{'{
         @apply(--theme-shadow);
         z-index: 1;
     }'};

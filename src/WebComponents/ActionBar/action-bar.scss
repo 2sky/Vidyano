@@ -5,7 +5,7 @@
     @include layout-horizontal();
     @include noSelection();
     background-color: var(--vi-action-bar-background-color, #F9F9F9);
-    @apply(--action-bar-style);
+    @apply(--vi-action-bar-style);
 
     &[isEmpty] {
         display: none !important;

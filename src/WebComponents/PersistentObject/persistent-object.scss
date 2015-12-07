@@ -3,8 +3,7 @@
 $tabsBG: #f1f1f1;
 
 :host {
-    --master-width: 40%;
-    --action-bar-style: #{'{
+    --vi-action-bar-style: #{'{
         padding-top: 3px;
         border-bottom: 1px solid '$tabsBG';
     }'};
@@ -68,7 +67,7 @@ $tabsBG: #f1f1f1;
         }
 
         .master {
-            width: var(--master-width);
+            width: var(--vi-persistent-object-master-width, 40%);
         }
     }
 

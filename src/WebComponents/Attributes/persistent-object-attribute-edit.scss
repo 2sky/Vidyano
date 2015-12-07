@@ -6,7 +6,7 @@
     @include relative();
 
     .box {
-        @apply(--attribute-edit-box);
+        @apply(--vi--attribute-edit-box);
         position: relative;
         min-height: calc(var(--theme-h2) - 2px);
         line-height: calc(var(--theme-h2) - 2px);

@@ -40,9 +40,7 @@
     &:not([is-pinned]) {
         .buttons {
             button:nth-child(1) {
-                vi-icon {
-                    opacity: 0.5;
-                }
+                opacity: 0.5;
             }
         }
     }
@@ -50,9 +48,7 @@
     &[is-hidden] {
         .buttons {
             button:nth-child(2) {
-                vi-icon {
-                    opacity: 0.5;
-                }
+                opacity: 0.5;
             }
         }
     }
