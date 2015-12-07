@@ -11,7 +11,7 @@
         min-height: calc(var(--theme-h2) - 2px);
         line-height: calc(var(--theme-h2) - 2px);
         overflow: hidden;
-        border: 1px solid var(--attribute-border-color);
+        border: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
         -moz-transition: border-color 0.2s ease-in-out;
         -o-transition: border-color 0.2s ease-in-out;
         -webkit-transition: border-color 0.2s ease-in-out;
@@ -150,7 +150,7 @@
                     left: 3px;
                     right: 4px;
                     content: " ";
-                    border-bottom: 1px solid var(--attribute-border-color);
+                    border-bottom: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
                     -moz-transition: all 0.1s ease-in-out;
                     -o-transition: all 0.1s ease-in-out;
                     -webkit-transition: all 0.1s ease-out;
@@ -163,7 +163,7 @@
                     bottom: 4px;
                     left: 0;
                     content: " ";
-                    border-left: 1px solid var(--attribute-border-color);
+                    border-left: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
                     -moz-transition: all 0.1s ease-in-out;
                     -o-transition: all 0.1s ease-in-out;
                     -webkit-transition: all 0.1s ease-out;
@@ -197,10 +197,10 @@
                 }
 
                 &:hover {
+                    background-color: var(--theme-color-faint) !important;
+
                     vi-icon {
-                        svg {
-                            fill: var(--theme-color);
-                        }
+                        fill: var(--theme-color) !important;
                     }
                 }
             }
@@ -221,16 +221,12 @@
                         fill: var(--theme-color);
                     }
 
-                    &:active {
+                    &:hover {
                         background-color: var(--theme-color) !important;
 
-                         svg {
-                             fill: white !important;
-                         }
-                    }
-
-                    &:hover {
-                        background-color: var(--theme-color-faint);
+                        vi-icon {
+                            fill: white !important;
+                        }
                     }
                 }
             }

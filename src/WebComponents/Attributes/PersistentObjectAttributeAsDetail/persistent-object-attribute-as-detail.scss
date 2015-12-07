@@ -4,7 +4,7 @@
     &.foot {
         height: var(--theme-h2);
         background-color: #F9F9F9;
-        border: 1px solid var(--attribute-border-color);
+        border: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
     }
 
     button {
@@ -27,7 +27,7 @@
         line-height: var(--theme-h2);
 
         #head {
-            border-bottom: 1px solid var(--attribute-border-color);
+            border-bottom: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
             height: var(--theme-h2);
 
             .column {
@@ -67,7 +67,7 @@
 
             #head {
                 background-color: #F9F9F9;
-                border: 1px solid var(--attribute-border-color);
+                border: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
 
                 .column {
                     padding: 0 1px 1px 0;
@@ -76,7 +76,7 @@
                     box-sizing: border-box;
 
                     label {
-                        border-right: 1px solid var(--attribute-border-color);
+                        border-right: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
                     }
                 }
             }
@@ -99,7 +99,7 @@
                             @include flex();
                             @include layout-horizontal();
                             box-sizing: border-box;
-                            border: 1px solid var(--attribute-border-color);
+                            border: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
                             padding: 0 var(--theme-h4);
                             fill: var(--theme-color-light);
 

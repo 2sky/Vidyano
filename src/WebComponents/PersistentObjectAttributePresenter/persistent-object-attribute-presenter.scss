@@ -13,7 +13,9 @@
     -webkit-transition: opacity ease-out 0.3s;
     transition: opacity ease-out 0.3s;
 
-    --attribute-border-color: #ddd;
+    --vi-persistent-object-attribute-presenter-border-color: #ddd;
+    --vi-persistent-object-attribute-presenter-label-color: #888;
+    --vi-persistent-object-attribute-presenter-readonly-color: #888;
 
     &:not([loading]) {
         opacity: 1;
@@ -30,7 +32,7 @@
             display: inline-block;
             font-size: 11px;
             font-weight: 400;
-            color: #888;
+            color: var(--vi-persistent-object-attribute-presenter-label-color);
             letter-spacing: 0.5px;
             @apply(--attribute-label);
         }
@@ -75,9 +77,10 @@
             -webkit-transform: translateY(1px);
             transform: translateY(1px);
 
-            > vi-icon svg {
-                width: 10px;
-                height: 10px;
+            > vi-icon {
+                --vi-icon-width: 10px;
+                --vi-icon-height: 10px;
+                fill: var(--vi-persistent-object-attribute-presenter-readonly-color);
             }
 
             @apply(--attribute-locked);
