@@ -3,8 +3,8 @@
         <link rel="stylesheet" href="query-grid-column-header.css" />
         <div on-tap="_sort">
             <label id="label"></label>
+            <vi-icon id="sortingIcon" source="[[sorting]]" hidden$="[[!sorting]]"></vi-icon>
         </div>
-        <vi-icon id="sortingIcon" source="[[sorting]]" hidden$="[[!sorting]]"></vi-icon>
         <content select="vi-query-grid-column-filter-proxy, vi-query-grid-column-filter"></content>
         <div class="resizer" on-track="_resizeTrack"></div>
     </template>

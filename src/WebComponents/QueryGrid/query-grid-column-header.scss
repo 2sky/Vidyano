@@ -1,7 +1,6 @@
 ﻿@import "../_vars.scss";
 
 :host {
-    @include relative();
     display: block;
     box-sizing: border-box;
     min-width: var(--theme-h2);
@@ -16,6 +15,7 @@
         white-space: nowrap;
         overflow: hidden;
         @include theme-color-button-inverse();
+        @include relative();
 
         > label {
             display: block;
@@ -27,15 +27,27 @@
             text-overflow: ellipsis;
             padding-right: var(--theme-h5);
         }
-    }
 
-    > vi-icon {
-        position: absolute;
-        right: var(--theme-h5);
-        top: 0;
-        fill: #555;
-        line-height: var(--theme-h2);
-        height: var(--theme-h2);
+        > vi-icon {
+            position: absolute;
+            right: var(--theme-h5);
+            top: 0;
+            fill: #555;
+            line-height: var(--theme-h2);
+            height: var(--theme-h2);
+        }
+
+        &:hover {
+            > vi-icon {
+                fill: var(--theme-color-darker);
+            }
+        }
+
+        &:active {
+            > vi-icon {
+                fill: white !important;
+            }
+        }
     }
 
     .resizer {

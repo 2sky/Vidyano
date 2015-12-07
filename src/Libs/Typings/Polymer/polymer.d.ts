@@ -45,6 +45,7 @@ interface PolymerDomApi {
     appendChild(newChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;
     removeChild(oldChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;
     replaceChild(newChild: Node | Vidyano.WebComponents.WebComponent, oldChild: Node | Vidyano.WebComponents.WebComponent): Node;
+    getEffectiveChildNodes(): Node[];
 }
 
 interface PolymerTrackEvent extends CustomEvent {

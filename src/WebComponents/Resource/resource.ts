@@ -3,7 +3,6 @@ module Vidyano.WebComponents {
 
     export abstract class Resource extends WebComponent {
         private _loadedSource: string;
-        private _loadedContent: Node;
         name: string;
         source: string;
         model: any;
@@ -25,7 +24,7 @@ module Vidyano.WebComponents {
         }
 
         protected get _contentTarget(): Node {
-            return this.$["svgHost"];
+            return this;
         }
 
         private _load() {
@@ -33,14 +32,11 @@ module Vidyano.WebComponents {
                 if (this.source == this._loadedSource)
                     return;
 
-                if (this._loadedContent) {
-                    Polymer.dom(this._contentTarget).removeChild(this._loadedContent);
-                    this._loadedContent = null;
-                }
+                this.empty(this._contentTarget);
 
                 var resource = Resource.LoadResource(this.source, this.tagName);
-                if (resource)
-                    this._loadedContent = Polymer.dom(this._contentTarget).appendChild(Resource.Load(resource, this.tagName));
+                if (resource != null)
+                    Polymer.dom(this._contentTarget).appendChild(Resource.Load(resource, this.tagName));
 
                 this._setHasResource(resource != null);
                 this._loadedSource = this.source;
