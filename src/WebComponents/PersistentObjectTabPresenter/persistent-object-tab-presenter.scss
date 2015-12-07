@@ -5,8 +5,11 @@
     @include relative();
 
     .content-wrapper {
+        @include layout-horizontal();
+        @include flex();
+
         ::content > * {
-            @include fit();
+            @include flex();
         }
     }
 }

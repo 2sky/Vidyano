@@ -1,5 +1,10 @@
 @import "../../vars.scss";
 
-vi-persistent-object-attribute-string {
+:host {
 	@include layout-horizontal();
+
+	> span {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
