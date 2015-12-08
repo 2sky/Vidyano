@@ -1,0 +1,130 @@
+@import "../vars.scss";
+
+:host {
+    @include layout-vertical();
+    flex-basis: 0.000000001px;
+    font-size: 13px;
+    white-space: nowrap;
+    font-size: 13px;
+    color: #222;
+    opacity: 0;
+    -moz-transition: opacity ease-out 0.3s;
+    -o-transition: opacity ease-out 0.3s;
+    -webkit-transition: opacity ease-out 0.3s;
+    transition: opacity ease-out 0.3s;
+
+    --vi-persistent-object-attribute-presenter-border-color: #ddd;
+    --vi-persistent-object-attribute-presenter-label-color: #888;
+    --vi-persistent-object-attribute-presenter-readonly-color: #888;
+
+    &:not([loading]) {
+        opacity: 1;
+    }
+
+    .label {
+        padding-top: var(--theme-h5);
+        height: calc(var(--theme-h2) - var(--theme-h5));
+        min-height: calc(var(--theme-h2) - var(--theme-h5));
+        line-height: calc(var(--theme-h2) - var(--theme-h5));
+        vertical-align: top;
+
+        label {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--vi-persistent-object-attribute-presenter-label-color);
+            letter-spacing: 0.5px;
+            @apply(--vi--attribute-label);
+        }
+
+        .required {
+            display: none;
+            position: relative;
+            font-size: 10px;
+            color: white;
+            line-height: 13px;
+            height: 14px;
+            margin: 0 0 0 var(--theme-h5);
+            padding: 0 4px 0 3px;
+            -moz-transform: translateY(-1px);
+            -ms-transform: translateY(-1px);
+            -o-transform: translateY(-1px);
+            -webkit-transform: translateY(-1px);
+            transform: translateY(-1px);
+            background-color: var(--theme-color);
+            @apply(--vi--attribute-required);
+
+            &::before {
+                content: "";
+                position: absolute;
+                right: 100%;
+                width: 0;
+                height: 0;
+                border-top: 7px solid transparent;
+                border-bottom: 7px solid transparent;
+                border-right-color: var(--theme-color);
+                border-right-width: 7px;
+                border-right-style: solid;
+            }
+        }
+
+        .locked {
+            fill: #666;
+            display: none;
+            -moz-transform: translateY(1px);
+            -ms-transform: translateY(1px);
+            -o-transform: translateY(1px);
+            -webkit-transform: translateY(1px);
+            transform: translateY(1px);
+
+            > vi-icon {
+                --vi-icon-width: 10px;
+                --vi-icon-height: 10px;
+                fill: var(--vi-persistent-object-attribute-presenter-readonly-color);
+            }
+
+            @apply(--vi--attribute-locked);
+        }
+    }
+
+    &[editing][required]:not([bulk-edit]) .required {
+        display: inline-block;
+    }
+
+    &[editing][read-only] .locked {
+        display: inline-block;
+    }
+
+    &[no-label] {
+        > .label {
+            display: none;
+        }
+
+        > .attribute {
+            top: 0;
+        }
+    }
+
+    #content {
+        @include layout-horizontal();
+        @include flex();
+
+        .attribute {
+            @include layout-horizontal();
+            @include flex();
+        }
+    }
+
+    &[bulk-edit] {
+        #content {
+            > vi-checkbox {
+                @include self-start();
+                width: var(--theme-h3);
+            }
+        }
+    }
+
+    input, textarea {
+        background-color: white;
+    }
+}

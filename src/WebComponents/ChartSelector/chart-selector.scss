@@ -1,0 +1,12 @@
+@import "../vars.scss";
+
+:host {
+    @include layout-horizontal();
+    border-left: 1px solid #EAEAEA;
+    margin-left: var(--theme-h5);
+    padding-left: var(--theme-h5);
+
+    > button, button[header] {
+        height: var(--theme-h1);
+    }
+}

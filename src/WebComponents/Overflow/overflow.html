@@ -1,5 +1,6 @@
 <dom-module id="vi-overflow">
     <template>
+        <link rel="stylesheet" href="overflow.css" />
         <div class="flex vertical layout" id="visibleContainer">
             <div id="visible" class="horizontal layout wrap relative">
                 <content select=":not([overflow])"></content>
@@ -7,7 +8,7 @@
             </div>
         </div>
         <vi-popup id="overflowPopup" class="horizontal layout" manual on-popup-opening="_popupOpening" on-popup-closed="_popupClosed">
-            <button header flex>&hellip;</button>
+            <button header flex inverse is="vi-button" label="&hellip;"></button>
             <div id="overflowChildren" content class="vertical layout">
                 <content select="[overflow]"></content>
             </div>
@@ -15,5 +16,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="overflow.css" />
 <script src="overflow.js"></script>

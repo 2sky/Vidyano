@@ -1,0 +1,179 @@
+@import "../../vars.scss";
+
+@mixin addStyle() {
+    &.foot {
+        height: var(--theme-h2);
+        background-color: #F9F9F9;
+        border: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+    }
+
+    button {
+        height: var(--theme-h2);
+    }
+}
+
+:host {
+    @include relative();
+
+    &[initializing] {
+        #table {
+            opacity: 0;
+        }
+    }
+
+    #table {
+        @include layout-vertical();
+        @include fit();
+        line-height: var(--theme-h2);
+
+        #head {
+            border-bottom: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+            height: var(--theme-h2);
+
+            .column {
+                label {
+                    display: block;
+                    vertical-align: top;
+                    padding: 0 4px;
+                    overflow: hidden;
+                    -ms-text-overflow: ellipsis;
+                    -o-text-overflow: ellipsis;
+                    text-overflow: ellipsis;
+                    text-align: left;
+                    font-weight: bold;
+                    font-size: 11px;
+                    letter-spacing: 0.5px;
+                }
+            }
+        }
+
+        #body {
+            @include flex();
+
+            #data {
+                overflow: hidden;
+            }
+        }
+
+        button.action {
+            height: var(--theme-h2);
+            line-height: var(--theme-h2);
+        }
+    }
+
+    &[editing] {
+        #table {
+            @include noSelection();
+
+            #head {
+                background-color: #F9F9F9;
+                border: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+
+                .column {
+                    padding: 0 1px 1px 0;
+                    height: var(--theme-h2);
+                    line-height: var(--theme-h2);
+                    box-sizing: border-box;
+
+                    label {
+                        border-right: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+                    }
+                }
+            }
+
+            #body {
+                margin-top: 1px !important;
+
+                .row {
+                    height: calc(var(--theme-h2) + 2px);
+                    line-height: calc(var(--theme-h2) + 2px);
+                    overflow: hidden;
+
+                    div.delete-button {
+                        @include layout-horizontal();
+                        padding: 0 0 1px 1px;
+                        height: var(--theme-h2);
+                        line-height: var(--theme-h2);
+
+                        button {
+                            @include flex();
+                            @include layout-horizontal();
+                            box-sizing: border-box;
+                            border: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+                            padding: 0 var(--theme-h4);
+                            fill: var(--theme-color-light);
+
+                            &:not(:hover):not(:active) {
+                                background-color: transparent;
+                            }
+
+                            vi-icon {
+                                line-height: var(--theme-h2);
+                                height: var(--theme-h2);
+
+                                svg {
+                                    width: 12px;
+                                    height: 12px;
+                                }
+                            }
+                        }
+                    }
+
+                    &:last-of-type {
+                        height: var(--theme-h2);
+
+                        .column, div.delete-button {
+                            padding-bottom: 0;
+                        }
+                    }
+                }
+
+                &[vertical] {
+                    .row div.delete-button {
+                        margin-right: var(--theme-h4);
+                    }
+                }
+            }
+        }
+
+        &:not([can-delete]) {
+            #table #head .column:last-of-type label {
+                border-right: 0;
+            }
+        }
+
+        .add.vi-persistent-object-attribute-as-detail {
+            @include addStyle();
+        }
+    }
+
+    &:not([editing]) {
+        #table {
+            border: none;
+
+            #body {
+                .row {
+                    &:nth-child(odd) {
+                        background-color: #FCFCFC;
+                    }
+
+                    &:nth-child(even) {
+                        background-color: #F7F7F7;
+                    }
+
+                    .column {
+                        padding: 1px 4px;
+                        overflow: hidden;
+                        -ms-text-overflow: ellipsis;
+                        -o-text-overflow: ellipsis;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+        }
+
+        #foot {
+            display: none;
+        }
+    }
+}

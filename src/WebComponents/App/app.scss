@@ -1,0 +1,62 @@
+@import "../vars.scss";
+
+:host {
+    --theme-color: #4682B4;
+    --theme-color-light: #6a9bc3;
+    --theme-color-lighter: #90b4d2;
+    --theme-color-dark: #386890;
+    --theme-color-darker: #2a4e6c;
+    --theme-color-faint: #ecf2f7;
+    --theme-color-semi-faint: darken(#ecf2f7, 2%);
+
+    --theme-accent-color: #009688;
+    --theme-accent-color-light: #4db6ac;
+    --theme-accent-color-lighter: #b2dfdb;
+    --theme-accent-color-dark: #00796b;
+    --theme-accent-color-darker: #004d40;
+    --theme-accent-color-faint: #e0f2f1;
+    --theme-accent-color-semi-faint: darken(#e0f2f1, 2%);
+
+    --theme-color-error: #a80511;
+    --theme-color-warning: #e5a300;
+    --theme-color-notice: #48545e;
+    --theme-color-ok: #339f7b;
+
+    --theme-h1: 40px;
+    --theme-h2: 32px;
+    --theme-h3: 22px;
+    --theme-h4: 12px;
+    --theme-h5: 6px;
+
+    --theme-foreground: #333;
+    --theme-light-border: #EAEAEA;
+    --theme-dark-border: darken(#EAEAEA, 15%);
+
+    --theme-shadow: #{'{
+        -webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
+        -moz-box-shadow:    0 0 4px 0 rgba(0, 0, 0, 0.5);
+        box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);
+    }'};
+}
+
+:host {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: var(--theme-foreground);
+    fill: var(--theme-foreground);
+
+    @for $c from 1 through length($list-colors) {
+        $color: nth($list-colors, $c);
+
+        @for $t from 1 through length($list-color-tints) {
+            $colorTint: #{$color+nth($list-color-tints, $t)};
+
+            #{"--colors-"+$colorTint}: map-get($colors, #{$colorTint});
+        }
+    }
+}

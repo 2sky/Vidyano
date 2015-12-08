@@ -1,0 +1,62 @@
+@import "../vars.scss";
+
+:host {
+    @include layout-horizontal();
+    line-height: var(--theme-h2);
+    @apply(--vi-input-search);
+
+    input {
+        border: none;
+        outline: none;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        padding: 8px 12px;
+        background-color: transparent;
+        color: white;
+        -moz-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+
+        &::-webkit-input-placeholder {
+            color: var(--vi-input-search-placeholder-color, #aaa);
+        }
+
+        &::-moz-placeholder {
+            color: var(--vi-input-search-placeholder-color, #aaa);
+            opacity: 1;
+        }
+
+        &:-ms-input-placeholder {
+            color: var(--vi-input-search-placeholder-color, #aaa);
+        }
+
+        @apply(--vi-input-search-input);
+    }
+
+    button {
+        border: none;
+        outline: none;
+        fill: #aaa;
+        cursor: pointer;
+        width: var(--theme-h2);
+        background-color: transparent;
+        margin: 1px 1px 1px 0;
+        -moz-transition: all 0.3s ease-in-out;
+        -o-transition: all 0.3s ease-in-out;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+
+        @apply(--vi-input-search-button);
+    }
+
+    input:focus {
+        @apply(--vi-input-search-input-focused);
+
+        + button {
+            fill: white;
+            @apply(--vi-input-search-input-focused-button);
+        }
+    }
+}

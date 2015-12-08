@@ -1,0 +1,12 @@
+@import "../../vars.scss";
+
+:host {
+    @include layout-horizontal();
+
+    span {
+        @include flex();
+        overflow: hidden;
+        white-space: nowrap;
+        line-height: var(--theme-h2);
+    }
+}

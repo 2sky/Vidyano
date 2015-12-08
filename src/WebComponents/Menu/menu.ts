@@ -58,6 +58,15 @@ module Vidyano.WebComponents {
         private _countItems(programUnitItems: any[]): number {
             return !!programUnitItems ? programUnitItems.length : 0;
         }
+
+        private _focusSearch() {
+            var inputSearch =  <InputSearch>Polymer.dom(this.root).querySelector("#collapsedInputSearch");
+            inputSearch.focus();
+        }
+
+        private _catchInputSearchTap(e: TapEvent) {
+            e.stopPropagation();
+        }
     }
 
     @WebComponent.register({
@@ -182,7 +191,7 @@ module Vidyano.WebComponents {
                     var resourceName = item.offset < 2147483647 ? "ProgramUnit_" + item.name : "Vidyano";
                     if (Vidyano.WebComponents.Icon.Exists(resourceName)) {
                         this.$["title"].textContent = "";
-                        this.$["title"].appendChild(new Vidyano.WebComponents.Icon(resourceName));
+                        Polymer.dom(this.$["title"]).appendChild(new Vidyano.WebComponents.Icon(resourceName));
 
                         return;
                     }
@@ -196,7 +205,7 @@ module Vidyano.WebComponents {
                 this.$["title"].textContent = item.title;
             else if (this._hasMatch(item, this.filter.toUpperCase())) {
                 var exp = new RegExp('(' + filter + ')', 'gi');
-                this.$["title"].innerHTML = item.title.replace(exp, "<span class='match'>$1</span>");
+                this.$["title"].innerHTML = item.title.replace(exp, "<span class='style-scope vi-menu-item match'>$1</span>");
             }
         }
 

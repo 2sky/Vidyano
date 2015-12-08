@@ -1,5 +1,6 @@
 <dom-module id="vi-user">
     <template>
+        <link rel="stylesheet" href="user.css" />
         <template is="dom-if" if="{{isSignedIn}}">
             <div id="signedIn" class="horizontal layout center-justified flex">
                 <span>{{userName}}</span>
@@ -26,5 +27,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="user.css" />
 <script src="user.js"></script>

@@ -1,0 +1,29 @@
+@import "../_vars.scss";
+
+:host {
+    display: block;
+    @include relative();
+
+    &[has-error] {
+        @include layout-center-center();
+        color: var(--theme-color-error);
+        fill: var(--theme-color-error);
+
+        span {
+            display: block;
+            text-align: center;
+            padding: var(--theme-h5) var(--theme-h3);
+        }
+
+        svg {
+            width: var(--theme-h1);
+            height: var(--theme-h1);
+        }
+    }
+
+    .content-wrapper {
+        ::content > * {
+            @include fit();
+        }
+    }
+}

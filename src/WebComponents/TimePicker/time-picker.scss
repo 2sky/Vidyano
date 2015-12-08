@@ -1,0 +1,198 @@
+﻿@import "../_vars.scss";
+
+$discSize: 220px;
+$innerDiscSize: 0.7;
+$discSpacing: 20px;
+
+:host {
+	display: block;
+	position: relative;
+	padding: calc(var(--theme-h4) * 2);
+	@include noSelection();
+
+	@mixin numbers($n, $offset, $size) {
+		@for $counter from 1 through $n {
+			$current: ($n - $counter);
+
+			.item:nth-child(#{$current + 1}) {
+				$currentDeg: $current * 30deg;
+				transform: rotate($currentDeg) translate(0, $offset * -1 + $discSpacing);
+
+				span {
+					width: $size;
+					height: $size;
+					line-height: $size;
+					$currentDegNeg: $current * -30deg;
+					transform: rotate($currentDegNeg);
+
+					&::before {
+						width: $size * 1.25;
+						height: $size * 1.25;
+						-moz-border-radius: $size * 1.25 / 2;
+						-webkit-border-radius: $size * 1.25 / 2;
+						border-radius: $size * 1.25 / 2;
+					}
+				}
+			}
+		}
+	}
+
+	@mixin clock($offset) {
+		position: absolute;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+
+		.item {
+			position: absolute;
+			text-align: center;
+			display: block;
+			width: $discSpacing;
+			height: $discSpacing;
+		}
+
+		@include numbers(12, $offset / 2, $discSpacing);
+	}
+
+	#clockHost {
+		position: relative;
+		width: $discSize - $discSpacing;
+		height: $discSize - $discSpacing;
+
+		&::before {
+			position: absolute;
+			z-index: -1;
+			left: $discSpacing / -2;
+			top: $discSpacing / -2;
+			width: $discSize;
+			height: $discSize;
+			background: #eee;
+			-moz-border-radius: 50%;
+			-webkit-border-radius: 50%;
+			border-radius: 50%;
+			content: "";
+		}
+
+		.list {
+			-moz-transition: all 0.3s ease-in-out;
+			-o-transition: all 0.3s ease-in-out;
+			-webkit-transition: all 0.3s ease-in-out;
+			transition: all 0.3s ease-in-out;
+			left: $discSize / 2 - $discSpacing;
+			top: $discSize / 2 - $discSpacing;
+			@include clock($discSize);
+
+			&:nth-child(1) {
+				font-size: 90%;
+			}
+
+			&:nth-child(2) {
+				@include clock($discSize * $innerDiscSize);
+			}
+
+			.item {
+				span {
+					position: absolute;
+					text-align: center;
+					z-index: 1;
+					left: 0;
+					top: 0;
+					cursor: pointer;
+
+					&:hover {
+						color: white;
+
+						&::before {
+							background-color: var(--theme-color-light);
+						}
+					}
+
+					&::before {
+						position: absolute;
+						z-index: -1;
+						left: -12.5%;
+						top: -12.5%;
+						content: "";
+					}
+				}
+
+				&.active {
+					span {
+						color: white;
+
+						&::before {
+							background-color: var(--theme-color);
+						}
+
+						&:hover::before {
+							background-color: var(--theme-color-dark);
+						}
+					}
+				}
+			}
+		}
+
+		> .face {
+			position: absolute;
+			width: $discSize;
+			height: $discSize;
+			-moz-transform-origin: 50% 50%;
+			-ms-transform-origin: 50% 50%;
+			-o-transform-origin: 50% 50%;
+			-webkit-transform-origin: 50% 50%;
+			transform-origin: 50% 50%;
+		}
+	}
+
+	#current {
+		display: block;
+		text-align: center;
+		margin-bottom: $discSpacing;
+		font-size: var(--theme-h3);
+
+		span.minutes, span.hours {
+			cursor: pointer;
+			font-weight: bold;
+		}
+	}
+
+	&[state="minutes"] {
+		.list:nth-child(3) {
+			transform: scale(1);
+			opacity: 1;
+			z-index: 2;
+		}
+
+		.list:nth-child(1), .list:nth-child(2) {
+			transform: scale(2 - $innerDiscSize);
+			opacity: 0;
+			z-index: -2;
+		}
+
+		#current {
+			.minutes {
+				color: var(--theme-color);
+			}
+		}
+	}
+
+	&[state="hours"] {
+		.list:nth-child(3) {
+			transform: scale($innerDiscSize);
+			opacity: 0;
+			z-index: 1;
+		}
+
+		.list:nth-child(1), .list:nth-child(2) {
+			transform: scale(1);
+			opacity: 1;
+			z-index: 2;
+		}
+
+		#current {
+			.hours {
+				color: var(--theme-color);
+			}
+		}
+	}
+}

@@ -1,0 +1,356 @@
+﻿@import "../_vars.scss";
+
+:host {
+    font-size: 13px;
+    line-height: var(--theme-h2);
+    overflow: hidden;
+
+    header#dataHeaderHost {
+        @include noSelection();
+        @include relative();
+        border-bottom: 1px solid var(--theme-light-border);
+        white-space: nowrap;
+        z-index: 1;
+
+        > header {
+            @include relative();
+            z-index: 1;
+            background-color: white;
+        }
+
+        table {
+            display: inline-table;
+            border-spacing: 0 !important;
+            vertical-align: top;
+            background-color: white;
+
+            tr {
+                padding: 0 !important;
+
+                td {
+                    padding: 0 !important;
+
+                    &.pinned {
+                        background-color: white;
+                        position: relative;
+                        z-index: 1;
+                    }
+
+                    &[is="vi-query-grid-table-header-column"] {
+                        &[name=""], &:not([name]) {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #dataHost {
+        @include noSelection();
+        @include relative();
+        white-space: nowrap;
+
+        table {
+            display: inline-table;
+            border-spacing: 0 !important;
+            vertical-align: top;
+            background-color: white;
+
+            tr[is="vi-query-grid-table-data-row"] {
+                padding: 0 !important;
+                line-height: var(--theme-h2);
+                height: var(--theme-h2);
+
+                td {
+                    padding: 0;
+                    cursor: pointer;
+
+                    > * {
+                        padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
+                        min-height: var(--theme-h2);
+                        height: var(--theme-h2);
+                        line-height: var(--theme-h2);
+                        box-sizing: border-box;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+
+                        vi-icon {
+                            height: var(--theme-h2);
+                        }
+
+                        vi-template-presenter {
+                            height: var(--theme-h2);
+                        }
+                    }
+
+                    &.resizing {
+                        position: relative;
+
+                        &::after {
+                            content: " ";
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                            bottom: 0;
+                            background-color: var(--theme-dark-border);
+                            width: 1px;
+                            -webkit-transform: translateX(1px);
+                            transform: translateX(1px);
+                            z-index: 10;
+                        }
+                    }
+
+                    > vi-icon {
+                        @include layout-horizontal();
+                        @include layout-center-center();
+                        height: var(--theme-h2);
+                        width: var(--theme-h2);
+                        padding: 0;
+
+                        > svg {
+                            width: 16px;
+                            height: 16px;
+                        }
+                    }
+
+                    &[is="vi-query-grid-table-data-column-selector"] {
+                        > paper-ripple {
+                            pointer-events: none;
+                            color: var(--theme-color);
+                        }
+
+                        &:hover {
+                            > vi-icon {
+                                background-color: fade-out(black, 0.95) !important;
+                            }
+                        }
+                    }
+
+                    &[is="vi-query-grid-table-data-column-actions"] {
+                        > vi-icon {
+                            fill: #444;
+                        }
+
+                        > paper-ripple {
+                            pointer-events: none;
+                            color: var(--theme-color);
+                        }
+
+                        &:hover, &[hover] {
+                            > vi-icon {
+                                background-color: fade-out(black, 0.95) !important;
+                            }
+                        }
+                    }
+
+                    &[is="vi-query-grid-table-data-column"] {
+                        min-width: var(--theme-h2);
+
+                        &[name=""], &:not([name]) {
+                            display: none;
+                        }
+
+                        &.pinned.last-pinned {
+                            > * {
+                                border-right: 1px solid var(--theme-light-border);
+                            }
+                        }
+                    }
+
+                    &[is="vi-query-grid-table-column-remainder"] {
+                        > div {
+                            padding: 0;
+                            width: var(--theme-h4);
+                        }
+                    }
+
+                    &.pinned {
+                        position: relative;
+                        z-index: 1;
+                    }
+                }
+
+                &[is-selected] {
+                    background-color: var(--theme-color-semi-faint);
+
+                    td.pinned {
+                        background-color: var(--theme-color-semi-faint);
+                    }
+                }
+
+                &:not(:hover):not([hover]):not([is-selected]) {
+                    &:nth-child(odd) {
+                        background-color: var(--vi-query-grid-row-odd-color, #FAFAFA);
+
+                        td.pinned {
+                            background-color: var(--vi-query-grid-row-odd-color, #FAFAFA);
+                        }
+                    }
+
+                    &:nth-child(even) {
+                        background-color: var(--vi-query-grid-row-even-color, white);
+
+                        td.pinned {
+                            background-color: var(--vi-query-grid-row-even-color, white);
+                        }
+                    }
+                }
+
+                &[no-data]:not(:first-of-type) {
+                    display: none;
+                }
+
+                &[no-data]:first-of-type {
+                    visibility: hidden;
+                }
+
+                &:hover, &[hover], &:hover td.pinned, &[hover] td.pinned {
+                    background-color: var(--theme-color-faint);
+                }
+            }
+
+            &.pinned {
+                tr:not(.no-data) > td:last-of-type > div {
+                    border-right: 1px solid var(--theme-light-border);
+                }
+            }
+
+            @for $c from 1 through length($list-colors) {
+                $color: nth($list-colors, $c);
+
+                tr[is="vi-query-grid-table-data-row"]#{"."+$color} {
+                    &:hover {
+                        background-color: map-get($colors, #{$color+"-50"}) !important;
+
+                        td[is^="vi-query-grid-table-data-column"].pinned {
+                            background-color: map-get($colors, #{$color+"-50"}) !important;
+                        }
+                    }
+                }
+
+                @for $t from 1 through length($list-color-tints) {
+                    $colorTint: #{$color+nth($list-color-tints, $t)};
+
+                    tr[is="vi-query-grid-table-data-row"]#{"."+$colorTint} > td[is="vi-query-grid-table-data-column"] > * {
+                        color: map-get($colors, $colorTint);
+                        fill: map-get($colors, $colorTint);
+                    }
+
+                    tr[is="vi-query-grid-table-data-row"] > td[is="vi-query-grid-table-data-column"] > #{"*."+$colorTint} {
+                        color: map-get($colors, $colorTint);
+                        fill: map-get($colors, $colorTint);
+                    }
+                }
+            }
+        }
+    }
+
+    vi-icon > svg {
+        width: calc(var(--theme-h2) / 2);
+        height: calc(var(--theme-h2) / 2);
+    }
+
+    > vi-popup-core#actions {
+        vi-action-button {
+            button[is="vi-button"] {
+                height: var(--theme-h2);
+            }
+
+            & > vi-popup-menu {
+                button[is="vi-button"] > vi-icon[source="Down"] {
+                    transform: rotate(-90deg);
+                }
+            }
+        }
+    }
+
+    // // FLAG COMBINATIONS //////////////////////////////////////////////////////////
+
+    &:not([inline-actions]) {
+        td[is="vi-query-grid-table-data-column-actions"] {
+            display: none;
+        }
+    }
+
+    &:not([can-select]) {
+        td[is="vi-query-grid-table-data-column-selector"] {
+            display: none;
+        }
+    }
+
+    &:not([can-filter]) {
+        vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
+            display: none;
+        }
+    }
+
+    &:not([can-select-all]) {
+        vi-query-grid-select-all {
+            display: none;
+        }
+    }
+
+    &[can-select]:not([can-select-all]):not([inline-actions]):not([can-filter]),
+    &[inline-actions]:not([can-select]):not([can-select-all]):not([can-filter]) {
+        table[is="vi-query-grid-table-header"] {
+            padding-left: var(--theme-h2);
+        }
+    }
+
+    &[can-select][inline-actions]:not([can-select-all]):not([can-filter]) {
+        table[is="vi-query-grid-table-header"] {
+            padding-left: calc(var(--theme-h2) * 2);
+        }
+    }
+
+    &:not([can-select-all])[can-filter][can-select][inline-actions] {
+        vi-query-grid-filters {
+            padding-left: var(--theme-h2);
+            width: calc(var(--theme-h2) * 2);
+        }
+    }
+
+    &:not([can-select]):not([inline-actions])[can-filter], &:not([inline-actions])[can-select-all][can-filter] {
+        td[is="vi-query-grid-table-data-column-actions"] + td[is="vi-query-grid-table-data-column"] {
+            padding-left: var(--theme-h2) !important;
+        }
+    }
+
+    &[can-select-all]:not([can-filter]) {
+        vi-query-grid-select-all {
+            border-top: none;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    #initializingOverlay {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: white;
+        z-index: 2;
+    }
+
+    &:not([initializing]) {
+        #initializingOverlay {
+            display: none;
+        }
+    }
+
+    &:not([is-busy]):not([initializing]) {
+        > vi-spinner {
+            display: none;
+        }
+    }
+
+    #verticalSpacer {
+    }
+
+    > vi-size-tracker {
+        pointer-events: none;
+    }
+}

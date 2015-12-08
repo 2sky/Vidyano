@@ -1,5 +1,6 @@
 ﻿<dom-module id="vi-time-picker">
     <template>
+        <link rel="stylesheet" href="time-picker.css" />
         <div id="current">
             <span class="hours" on-tap="_switch">{{_zeroPrefix(hours)}}</span>
             <span>:</span>
@@ -54,5 +55,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="time-picker.css" />
 <script src="time-picker.js"></script>

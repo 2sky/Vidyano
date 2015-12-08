@@ -6,6 +6,7 @@
 
 <dom-module id="vi-persistent-object">
     <template>
+        <link rel="stylesheet" href="persistent-object.css" />
         <div class="horizontal layout flex content">
             <div class="vertical layout master">
                 <vi-action-bar service-object="{{selectedMasterTab.target}}"></vi-action-bar>
@@ -13,23 +14,52 @@
                 <vi-persistent-object-tab-presenter class="flex" tab="{{selectedMasterTab}}"></vi-persistent-object-tab-presenter>
             </div>
             <div id="splitter" on-track="_trackSplitter"></div>
-            <div class="vertical layout flex detail" theme-color-2>
-                <vi-action-bar service-object="{{selectedDetailTab.target}}"></vi-action-bar>
-                <vi-notification service-object="{{selectedDetailTab.target}}"></vi-notification>
-                <vi-persistent-object-tab-presenter class="flex" tab="{{selectedDetailTab}}"></vi-persistent-object-tab-presenter>
-            </div>
+            <vi-persistent-object-details-content class="vertical layout flex detail" tab="{{selectedDetailTab}}"></vi-persistent-object-details-content>
         </div>
         <div class="horizontal layout tabs">
             <div class="master">
                 <vi-persistent-object-tab-bar tabs="{{masterTabs}}" selected-tab="{{selectedMasterTab}}"></vi-persistent-object-tab-bar>
             </div>
-            <div class="flex detail">
-                <vi-persistent-object-tab-bar theme-color-2 tabs="{{detailTabs}}" selected-tab="{{selectedDetailTab}}"></vi-persistent-object-tab-bar>
-            </div>
+            <vi-persistent-object-details-header class="flex detail" tabs="{{detailTabs}}" tab="{{selectedDetailTab}}"></vi-persistent-object-details-header>
         </div>
         <header>{{persistentObject.breadcrumb}}</header>
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="persistent-object.css" />
+<dom-module id="vi-persistent-object-details-content">
+    <template>
+        <style>
+            :host {
+                --theme-color: var(--theme-accent-color);
+                --theme-color-light: var(--theme-accent-color-light);
+                --theme-color-lighter: var(--theme-accent-color-lighter);
+                --theme-color-dark: var(--theme-accent-color-dark);
+                --theme-color-darker: var(--theme-accent-color-darker);
+                --theme-color-faint: var(--theme-accent-color-faint);
+                --theme-color-semi-faint: var(--theme-accent-color-semi-faint);
+            }
+        </style>
+        <vi-action-bar service-object="{{tab.target}}"></vi-action-bar>
+        <vi-notification service-object="{{tab.target}}"></vi-notification>
+        <vi-persistent-object-tab-presenter class="flex" tab="{{tab}}"></vi-persistent-object-tab-presenter>
+    </template>
+</dom-module>
+
+<dom-module id="vi-persistent-object-details-header">
+    <template>
+        <style>
+            :host {
+                --theme-color: var(--theme-accent-color);
+                --theme-color-light: var(--theme-accent-color-light);
+                --theme-color-lighter: var(--theme-accent-color-lighter);
+                --theme-color-dark: var(--theme-accent-color-dark);
+                --theme-color-darker: var(--theme-accent-color-darker);
+                --theme-color-faint: var(--theme-accent-color-faint);
+                --theme-color-semi-faint: var(--theme-accent-color-semi-faint);
+            }
+        </style>
+        <vi-persistent-object-tab-bar tabs="{{tabs}}" selected-tab="{{selectedTab}}"></vi-persistent-object-tab-bar>
+    </template>
+</dom-module>
+
 <script src="persistent-object.js"></script>

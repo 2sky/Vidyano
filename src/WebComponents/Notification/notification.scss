@@ -1,0 +1,97 @@
+@import "../vars.scss";
+
+@mixin color-notification($color) {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+    background-color: $color;
+    fill: $color;
+}
+
+:host {
+    @include layout-horizontal();
+    @include layout-center();
+    height: var(--theme-h1);
+    box-sizing: border-box;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+
+    &:not([shown]) {
+        display: none !important;
+    }
+
+    #icon {
+        width: var(--theme-h1);
+        line-height: var(--theme-h1);
+
+        vi-icon {
+            height: calc(var(--theme-h1) - 2px);
+
+            svg {
+                width: var(--theme-h3);
+                height: var(--theme-h3);
+            }
+        }
+    }
+
+    #close {
+        cursor: pointer;
+        background-color: transparent;
+        width: var(--theme-h1);
+        height: var(--theme-h1);
+        line-height: var(--theme-h1);
+        fill: white;
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+    }
+
+    .flex {
+        color: white;
+
+        span {
+            display: block;
+            line-height: calc(var(--theme-h1) - 2px);
+            height: calc(var(--theme-h1) - 2px);
+            font-size: 14px;
+            overflow: hidden;
+            -ms-text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            a {
+                color: inherit;
+            }
+        }
+    }
+
+    vi-icon {
+        @include layout-horizontal();
+        @include layout-center-center();
+
+        svg {
+            fill: white;
+            -moz-transform: none;
+            -ms-transform: none;
+            -o-transform: none;
+            -webkit-transform: none;
+            transform: none;
+        }
+    }
+
+    &[type="error"], &[type="Error"], &[type="0"] {
+        @include color-notification(var(--theme-color-error));
+    }
+
+    &[type="notice"], &[type="Notice"], &[type="1"] {
+        @include color-notification(var(--theme-color-notice));
+    }
+
+    &[type="ok"], &[type="OK"], &[type="2"] {
+        @include color-notification(var(--theme-color-ok));
+    }
+
+    &[type="warning"], &[type="Warning"], &[type="3"] {
+        @include color-notification(var(--theme-color-warning));
+    }
+}

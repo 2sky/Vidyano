@@ -7,6 +7,10 @@ module Vidyano.WebComponents {
             this.source = source;
         }
 
+        protected get _contentTarget(): Node {
+            return this.$["svgHost"];
+        }
+
         static Load(source: string): DocumentFragment {
             return Resource.Load(source, "VI-ICON");
         }

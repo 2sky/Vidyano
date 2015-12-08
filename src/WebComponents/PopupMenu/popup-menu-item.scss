@@ -1,0 +1,80 @@
+@import "../_vars.scss";
+
+:host {
+    @include layout-horizontal();
+    @include relative();
+    height: var(--theme-h2);
+    cursor: pointer;
+    color: var(--theme-color);
+    fill: var(--theme-color);
+
+    --vi-button-icon-style: #{'{
+        width: 'var(--theme-h2)';
+    }'};
+
+    --vi-button-label-style: #{'{
+        @include flex();
+        padding: 0 'var(--theme-h5)';
+        margin-right: 2px;
+    }'};
+
+    button {
+        flex: 1 1 auto;
+        height: 100%;
+        padding: 0;
+        text-align: left;
+    }
+
+    .icon-spacer {
+        display: none;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: var(--theme-h2);
+        background-color: rgba(0, 0, 0, 0.04);
+        pointer-events: none;
+    }
+
+    &[icon-space], &[icon] {
+        > .icon-spacer {
+            display: block;
+        }
+
+        > button > span {
+            padding-left: 4px !important;
+        }
+    }
+
+    &[icon-space] {
+        > button {
+             > vi-icon {
+                display: inline-block !important;
+                visibility: hidden !important;
+            }
+        }
+    }
+
+    &[split-space] > button > span {
+        margin-right: var(--theme-h2);
+    }
+
+    &[split] {
+        > vi-popup {
+            min-width: var(--theme-h2);
+
+            [header] {
+                box-sizing: border-box;
+                border-left: 1px solid #eee;
+                padding: 0;
+                width: var(--theme-h2);
+                height: var(--theme-h2);
+
+                > vi-icon {
+                    width: var(--theme-h2);
+                    height: var(--theme-h2);
+                }
+            }
+        }
+    }
+}

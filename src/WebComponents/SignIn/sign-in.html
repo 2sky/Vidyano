@@ -2,6 +2,7 @@
 
 <dom-module id="vi-sign-in">
     <template>
+        <link rel="stylesheet" href="sign-in.css" />
         <div id="image">
             <span class="flex">No image found</span>
         </div>
@@ -17,6 +18,7 @@
 
 <dom-module id="vi-sign-in-provider" extends="li">
     <template>
+        <link rel="stylesheet" href="sign-in-provider.css" />
         <h3>{{label}}</h3>
         <h4>{{description}}</h4>
         <template is="dom-if" if="{{isVidyano}}">
@@ -41,5 +43,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="sign-in.css" />
 <script src="sign-in.js"></script>

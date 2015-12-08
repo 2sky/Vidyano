@@ -1,0 +1,31 @@
+@import "../../vars.scss";
+
+:host {
+    @include layout-horizontal();
+
+    &[editing] {
+        input {
+            display: inline-block;
+            border: none;
+            height: calc(var(--theme-h2) - 2px);
+            line-height: calc(var(--theme-h2) - 2px);
+            font-size: 13px;
+
+            & + input {
+                padding-left: 0;
+            }
+        }
+
+        &[has-invalid-date] {
+            input#date {
+                color: red;
+            }
+        }
+
+        &[has-invalid-time] {
+            input#time {
+                color: red;
+            }
+        }
+    }
+}

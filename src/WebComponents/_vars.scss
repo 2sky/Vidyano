@@ -1,0 +1,164 @@
+@import "../libs/layout/_layout.scss";
+@import "colors.scss";
+
+@mixin theme-color-button() {
+    color: white;
+    background-color: var(--theme-color);
+
+    &:hover {
+        background-color: var(--theme-color);
+    }
+
+    &:active {
+        background-color: var(--theme-color-dark);
+    }
+
+    &[disabled] {
+        fill: fadeout(white, 50%);
+        color: fadeout(white, 50%);
+    }
+
+    @include color-button-animations();
+}
+
+@mixin theme-color-button-inverse() {
+    background-color: transparent;
+    color: var(--theme-color-darker);
+    fill: #595959;
+
+    &:hover {
+        background-color: var(--theme-color-faint);
+    }
+
+    &:active {
+        background-color: var(--theme-color-dark);
+        fill: white !important;
+        color: white !important;
+    }
+
+    &[disabled] {
+        fill: var(--theme-color-faint);
+        color: fadeout(black, 50%);
+    }
+
+    @include color-button-animations();
+}
+
+@mixin color-button($color) {
+    background-color: $color;
+    color: white;
+
+    &:hover {
+        background-color: $color;
+    }
+
+    &:active {
+        background-color: darken($color, 10%);
+    }
+
+    &[disabled] {
+        fill: fadeout(white, 50%);
+        color: fadeout(white, 50%);
+    }
+
+    @include color-button-animations();
+}
+
+@mixin color-button-animations() {
+    -moz-transition-property: fill, color, background-color;
+    -o-transition-property: fill, color, background-color;
+    -webkit-transition-property: fill, color, background-color;
+    transition-property: fill, color, background-color;
+    -moz-transition-duration: 0.1s;
+    -o-transition-duration: 0.1s;
+    -webkit-transition-duration: 0.1s;
+    transition-duration: 0.1s;
+    -moz-transition-timing-function: ease-out;
+    -o-transition-timing-function: ease-out;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+}
+
+@mixin noSelection($important: false) {
+    @if $important {
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+    }
+    @else {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+}
+
+@mixin hideScrollbars() {
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
+
+    &::-webkit-scrollbar {
+        width: 0 !important;
+        height: 0 !important;
+    }
+}
+
+@mixin button() {
+    border-width: 1px;
+    border-style: solid;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    text-decoration: none;
+    outline: none !important;
+
+    &:not(:disabled) {
+        &:active {
+            position: relative;
+            top: 1px;
+        }
+    }
+
+    &:disabled {
+        background-color: #888;
+    }
+}
+
+@mixin input() {
+    border: 1px solid #BBB;
+    padding: 6px;
+
+    &:focus {
+        outline: none;
+        border-width: 1px;
+        border-style: solid;
+    }
+}
+
+@mixin z-index1() {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+@mixin page-title() {
+    display: block;
+    background-color: var(--theme-color);
+    color: white;
+    padding-top: 2px;
+    line-height: calc(var(--theme-h1) - 2px);
+    min-height: var(--theme-h1);
+    box-sizing: border-box;
+    font-size: calc(var(--theme-h5) + var(--theme-h4));
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    padding: 0 var(--theme-h4);
+}

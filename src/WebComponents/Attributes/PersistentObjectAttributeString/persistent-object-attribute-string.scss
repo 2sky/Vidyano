@@ -1,0 +1,10 @@
+@import "../../vars.scss";
+
+:host {
+	@include layout-horizontal();
+
+	> span {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}

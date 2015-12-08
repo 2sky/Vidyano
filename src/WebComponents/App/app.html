@@ -1,8 +1,9 @@
 ﻿<link rel="import" href="../../Libs/iron-a11y-keys/iron-a11y-keys.html" />
 <link rel="import" href="../WebComponent/webcomponent.html" />
+<link rel="import" href="../Spinner/spinner.html" />
+<link rel="import" href="../AppRoute/app-route.html" />
 <link rel="import" href="../AttachedNotifier/attached-notifier.html" />
 <link rel="import" href="../SizeTracker/size-tracker.html" />
-<link rel="import" href="../Spinner/spinner.html" />
 <link rel="import" href="../Resource/resource.html" />
 <link rel="import" href="../Icon/icon.html" />
 <link rel="import" href="../Button/button.html" />
@@ -26,6 +27,7 @@
 
 <dom-module id="vi-app">
     <template>
+        <link rel="stylesheet" href="app.css" />
         <iron-a11y-keys keys="{{keys}}" on-keys-pressed="_keysPressed"></iron-a11y-keys>
         <template is="dom-if" if="{{initializing}}" restamp>
             <vi-spinner></vi-spinner>
@@ -44,7 +46,7 @@
                 <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
                 <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
                 <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
-                <content select="vi-dialog-host"></content>
+                <div id="dialogs"></div>
             </div>
         </template>
         <vi-app-route class="fit" route="SignIn(/:returnUrl)">
@@ -63,7 +65,66 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="app.css" />
+<style>
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+        margin: 0;
+        font-family: inherit;
+    }
+
+    pre {
+        border: none;
+        font-size: 1em;
+        display: block;
+        height: auto;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: inherit;
+    }
+
+    button {
+        border: none;
+        outline: none;
+    }
+
+    a:focus, a:active,
+    button::-moz-focus-inner,
+    input[type="reset"]::-moz-focus-inner,
+    input[type="button"]::-moz-focus-inner,
+    input[type="submit"]::-moz-focus-inner,
+    select::-moz-focus-inner,
+    input[type="file"] > input[type="button"]::-moz-focus-inner {
+        border: 0;
+        outline: 0;
+    }
+
+    .vertical.layout .flex {
+        flex-basis: 0.000000001px;
+    }
+
+    iron-a11y-keys {
+        display: none;
+    }
+
+    &.dragging {
+        @include noSelection();
+
+        * {
+            @include noSelection(true);
+        }
+    }
+
+    template {
+        display: none;
+    }
+</style>
+
 <script src="app.js"></script>
 <script src="Config/persistent-object-attribute-config.js"></script>
 <script src="Config/persistent-object-tab-config.js"></script>

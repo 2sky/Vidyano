@@ -1,0 +1,131 @@
+@import "../vars.scss";
+
+$tabsBG: #f1f1f1;
+
+:host {
+    --vi-action-bar-style: #{'{
+        padding-top: 3px;
+        border-bottom: 1px solid '$tabsBG';
+    }'};
+
+    @include layout-vertical-reverse();
+
+    header {
+        @include page-title();
+    }
+
+    .tabs {
+        background-color: $tabsBG;
+        @apply(--theme-shadow);
+    }
+
+    vi-persistent-object-tab-presenter {
+        overflow: hidden;
+
+        > vi-query-items-presenter {
+            @include fit();
+        }
+    }
+
+    .content {
+        .detail {
+            vi-persistent-object-tab-presenter {
+                margin: 1px 1px 1px 0;
+            }
+        }
+    }
+
+    &[layout-master-detail] {
+        .tabs > .detail {
+            margin-left: 4px;
+        }
+
+        #splitter {
+            @include noSelection();
+            position: relative;
+            width: 4px;
+            background-color: $tabsBG;
+
+            &::after {
+                position: absolute;
+                content: " ";
+                width: 7px;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                opacity: 0.01;
+                background-color: white;
+                z-index: 3;
+                -moz-transform: translateX(-3px);
+                -ms-transform: translateX(-3px);
+                -o-transform: translateX(-3px);
+                -webkit-transform: translateX(-3px);
+                transform: translateX(-3px);
+            }
+
+            cursor: col-resize;
+        }
+
+        .master {
+            width: var(--vi-persistent-object-master-width, 40%);
+        }
+    }
+
+    &[layout-details-only] {
+        .master {
+            display: none;
+        }
+
+        .detail {
+            vi-persistent-object-tab-presenter {
+                margin-left: 1px;
+            }
+        }
+    }
+
+    &[layout-full-page] {
+        .master {
+            -ms-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+
+        .detail {
+            display: none;
+        }
+    }
+
+    &:not([layout-master-tabs]):not([layout-detail-tabs]) {
+        .tabs {
+            display: none;
+        }
+
+        .content {
+            vi-action-bar {
+                padding-top: 0;
+                z-index: 1;
+                @apply(--theme-shadow);
+            }
+        }
+    }
+
+    &:not([layout-master-actions]):not([layout-detail-actions]) {
+        .master, .detail {
+            vi-action-bar {
+                display: none;
+            }
+        }
+    }
+
+    &:not([layout-master-detail]):not([layout-details-only]):not([layout-full-page]) {
+        header, .tabs, .content {
+            display: none;
+        }
+    }
+
+    &[loading] {
+        > header, > div {
+            visibility: hidden;
+        }
+    }
+}

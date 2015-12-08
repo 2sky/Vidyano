@@ -1,5 +1,6 @@
 ﻿<dom-module id="vi-scroller">
     <template>
+        <link rel="stylesheet" href="scroller.css" />
         <vi-size-tracker class="fit" on-sizechanged="_outerSizeChanged"></vi-size-tracker>
         <div id="wrapper" on-scroll="_scroll">
             <div id="content" class="relative">
@@ -18,5 +19,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="scroller.css" />
 <script src="scroller.js"></script>

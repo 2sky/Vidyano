@@ -1,14 +1,18 @@
 ﻿<link rel="import" href="../../Libs/paper-ripple/paper-ripple.html" />
 <link rel="import" href="../../Libs/iron-list/iron-list.html" />
 <link rel="import" href="../ActionButton/action-button.html" />
-<link rel="import" href="../InputSearch/input-search.html" />
 <link rel="import" href="../Style/style.html" />
 <link rel="import" href="../Sortable/sortable.html" />
 ﻿<link rel="import" href="../Checkbox/checkbox.html" />
 <link rel="import" href="query-grid-configure-dialog.html" />
+<link rel="import" href="query-grid-select-all.html" />
+<link rel="import" href="query-grid-column-header.html" />
+<link rel="import" href="query-grid-filters.html" />
+<link rel="import" href="query-grid-cells.html" />
 
 <dom-module id="vi-query-grid">
     <template>
+        <link rel="stylesheet" href="query-grid.css" />
         <vi-size-tracker on-sizechanged="_sizeChanged"></vi-size-tracker>
         <vi-style id="style" key="vi-query-grid"></vi-style>
         <div class="vertical layout fit">
@@ -38,147 +42,4 @@
     </template>
 </dom-module>
 
-<dom-module id="vi-query-grid-select-all">
-    <template>
-        <paper-ripple></paper-ripple>
-        <vi-icon source="Selected"></vi-icon>
-    </template>
-</dom-module>
-
-<dom-module id="vi-query-grid-column-header">
-    <template>
-        <div on-tap="_sort">
-            <label id="label"></label>
-        </div>
-        <content select="vi-icon"></content>
-        <content select="vi-query-grid-column-filter-proxy, vi-query-grid-column-filter"></content>
-        <div class="resizer" on-track="_resizeTrack"></div>
-    </template>
-</dom-module>
-
-<dom-module id="vi-query-grid-filters">
-    <template>
-        <vi-popup-menu disabled="{{disabled}}">
-            <button header is="vi-button" inverse disabled="{{disabled}}">
-                <vi-icon source="Filter_Menu"></vi-icon>
-            </button>
-            <template is="dom-if" if="{{canReset}}">
-                <vi-popup-menu-item icon="Filter_Reset" label="{{translations.Reset}}" on-tap="_reset"></vi-popup-menu-item>
-            </template>
-            <template is="dom-if" if="{{canSave}}">
-                <vi-popup-menu-item icon="Filter_Save" label="{{_computeCurrentFilterSaveLabel(currentFilter)}}" on-tap="_save"></vi-popup-menu-item>
-                <vi-popup-menu-item icon-space label="{{translations.SaveAs}}" on-tap="_saveAs"></vi-popup-menu-item>
-                <vi-popup-menu-item-separator hidden$="{{!hasFilters}}"></vi-popup-menu-item-separator>
-            </template>
-            <template is="dom-if" if="{{canSaveAs}}">
-                <vi-popup-menu-item icon="Filter_Save" label="{{translations.SaveAs}}" on-tap="_saveAs"></vi-popup-menu-item>
-                <vi-popup-menu-item-separator hidden$="{{!hasFilters}}"></vi-popup-menu-item-separator>
-            </template>
-            <template is="dom-repeat" items="{{filters}}" as="filter">
-                <vi-popup-menu-item icon-space split="{{!filter.isLocked}}" label="{{filter.name}}" data-filter$="{{filter.name}}" on-tap="_load">
-                    <template is="dom-if" if="{{!filter.isLocked}}">
-                        <vi-popup-menu-item icon="Action_Delete" label="{{translations.Delete}}" data-filter$="{{filter.name}}" on-tap="_delete"></vi-popup-menu-item>
-                    </template>
-                </vi-popup-menu-item>
-            </template>
-        </vi-popup-menu>
-    </template>
-</dom-module>
-
-<dom-module id="vi-query-grid-column-filter-proxy">
-    <template>
-        <label id="label"></label>
-        <vi-icon source="Filter"></vi-icon>
-    </template>
-</dom-module>
-
-<dom-module id="vi-query-grid-column-filter">
-    <template>
-        <vi-popup id="filter" on-popup-opening="_popupOpening" class="flex" disabled="{{!column.canFilter}}">
-            <button is="vi-button" header inverse>
-                <span id="label"></span>
-                <vi-icon source="Filter"></vi-icon>
-            </button>
-            <div content>
-                <div class="filter" on-click="_catchClick">
-                    <div class="left"></div>
-                    <div class="menuItem horizontal layout" disabled$="{{!filtered}}" on-tap="_clear">
-                        <vi-icon source="Filter_Reset"></vi-icon>
-                        <span flex>{{translateMessage('ClearFilterFrom', column.label, isAttached)}}</span>
-                    </div>
-                    <div class="split"></div>
-                    <div class="advanced">
-                        <vi-input-search id="search" value="{{searchText}}" on-search="_search"></vi-input-search>
-                        <div class="relative">
-                            <button id="inverse" on-tap="_inverse" inversed$="{{inversed}}">
-                                <vi-icon source="Filter_Inverse"></vi-icon>
-                            </button>
-                            <template is="dom-if" if="{{loading}}">
-                                <vi-spinner></vi-spinner>
-                            </template>
-                            <vi-scroller id="distinctsContainer" no-horizontal>
-                                <iron-list id="distincts" items="[[distincts]]" as="item">
-                                    <template>
-                                        <div>
-                                            <template is="dom-if" if="{{item.type}}">
-                                                <div class="distinct" distinct-type$="{{item.type}}" on-tap="_distinctClick">
-                                                    <div class="selector">
-                                                        <vi-icon source="Selected" class="selector"></vi-icon>
-                                                    </div>
-                                                    <span>{{item.displayValue}}</span>
-                                                </div>
-                                            </template>
-                                            <template is="dom-if" if="{{!item.type}}">
-                                                <div class="hasMore">
-                                                    <vi-icon source="Selected"></vi-icon>
-                                                    <vi-icon source="Ellipsis"></vi-icon>
-                                                </div>
-                                            </template>
-                                        </div>
-                                    </template>
-                                </iron-list>
-                            </vi-scroller>
-                        </div>
-                    </div>
-                </div>
-                <button is="vi-button" class="close" on-tap="_closePopup" label="{{translations.Close}}"></button>
-            </div>
-        </vi-popup>
-    </template>
-</dom-module>
-
-<vi-query-grid-cell-template name="Image">
-    <template>
-        <vi-query-grid-cell-image value="{{value}}"></vi-query-grid-cell-image>
-    </template>
-</vi-query-grid-cell-template>
-
-<vi-query-grid-cell-template name="Boolean">
-    <template>
-        <vi-query-grid-cell-boolean value="{{value}}"></vi-query-grid-cell-boolean>
-    </template>
-</vi-query-grid-cell-template>
-
-<vi-query-grid-cell-template name="NullableBoolean">
-    <template>
-        <vi-query-grid-cell-boolean value="{{value}}"></vi-query-grid-cell-boolean>
-    </template>
-</vi-query-grid-cell-template>
-
-<vi-query-grid-cell-template name="YesNo">
-    <template>
-        <vi-query-grid-cell-boolean value="{{value}}"></vi-query-grid-cell-boolean>
-    </template>
-</vi-query-grid-cell-template>
-
-<link rel="stylesheet" href="query-grid.css" />
-<link rel="stylesheet" href="query-grid-cells.css" />
-<link rel="stylesheet" href="query-grid-colors.css" />
-<link rel="stylesheet" href="query-grid-select-all.css" />
-<link rel="stylesheet" href="query-grid-filters.css" />
-<link rel="stylesheet" href="query-grid-column-filter.css" />
-<link rel="stylesheet" href="query-grid-column-header.css" />
-
 <script src="query-grid.js"></script>
-<script src="query-grid-cells.js"></script>
-<script src="query-grid-filters.js"></script>

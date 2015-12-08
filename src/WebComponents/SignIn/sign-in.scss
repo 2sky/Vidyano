@@ -1,0 +1,73 @@
+@import "../_vars.scss";
+
+:host {
+    @include layout-horizontal();
+    @include noSelection();
+
+    #image {
+        @include flex();
+        @include layout-horizontal();
+        @include layout-center();
+        @include noSelection();
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+        background-color: #EEE;
+
+        > span {
+            text-align: center;
+            color: #aaa;
+        }
+
+        &.has-image > span {
+            display: none;
+        }
+    }
+
+    #side {
+        padding: var(--theme-h3);
+
+        h1 {
+            font-size: 36px;
+            text-transform: lowercase;
+            display: block;
+            font-weight: normal;
+            margin: var(--theme-h3) 0 var(--theme-h1) 0;
+            color: var(--theme-color);
+        }
+
+        h2 {
+            margin: var(--theme-h1) 0;
+            font-size: 14px;
+            font-weight: normal;
+            color: #888;
+        }
+
+        > ul {
+            list-style: none;
+            padding: 0;
+        }
+    }
+}
+
+/* Extra small devices (phones, less than 768px) */
+@media (max-width: 767px) {
+    :host {
+        #image {
+            display: none;
+        }
+
+        #side {
+            @include fit();
+        }
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    :host {
+        #side {
+            width: 400px;
+        }
+    }
+}

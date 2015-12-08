@@ -2982,7 +2982,7 @@ module Vidyano {
                     result["allSelectedInversed"] = true;
             }
 
-            result["sortOptions"] = this.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction == SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
+            result["sortOptions"] = this.sortOptions ? this.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction == SortDirection.Ascending ? " ASC" : " DESC")).join("; ") : "";
 
             if (this.persistentObject)
                 result.persistentObject = this.persistentObject.toServiceObject();
@@ -3438,7 +3438,7 @@ module Vidyano {
 
         private _queryPropertyChanged(sender: Vidyano.Query, args: Vidyano.Common.PropertyChangedArgs) {
             if (args.propertyName == "sortOptions") {
-                var sortOption = this.query.sortOptions.filter(option => option.column === this)[0];
+                var sortOption = this.query.sortOptions ? this.query.sortOptions.filter(option => option.column === this)[0] : null;
                 this._setSortDirection(sortOption ? sortOption.direction : SortDirection.None);
             }
         }

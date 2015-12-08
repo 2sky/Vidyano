@@ -1,0 +1,55 @@
+@import "../_vars.scss";
+
+:host {
+    @include layout-horizontal();
+    min-width: 30em;
+    margin-bottom: 4px;
+    height: var(--theme-h2);
+    line-height: var(--theme-h2);
+    font-size: 15px;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+
+    > vi-icon {
+        width: var(--theme-h2);
+        height: var(--theme-h2);
+        fill: #888;
+        pointer-events: none;
+    }
+
+    label {
+        @include flex();
+        background-color: #f9f9f9;
+        margin-left: var(--theme-h4);
+        padding-left: var(--theme-h4);
+        padding-right: var(--theme-h1);
+        pointer-events: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .buttons {
+        background-color: #f9f9f9;
+
+        button {
+            background-color: white;
+            fill: var(--theme-color);
+        }
+    }
+
+    &:not([is-pinned]) {
+        .buttons {
+            button:nth-child(1) {
+                opacity: 0.5;
+            }
+        }
+    }
+
+    &[is-hidden] {
+        .buttons {
+            button:nth-child(2) {
+                opacity: 0.5;
+            }
+        }
+    }
+}

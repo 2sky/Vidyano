@@ -1,0 +1,28 @@
+@import "../_vars.scss";
+
+:host {
+    display: block;
+    width: var(--theme-h2);
+    height: var(--theme-h2);
+    line-height: var(--theme-h2);
+    border-top: 1px solid var(--theme-light-border);
+    box-sizing: border-box;
+    align-self: flex-end;
+
+    > vi-popup-menu {
+        button[header] {
+            @include relative();
+            @include flex();
+            z-index: 1;
+            text-align: center;
+            line-height: var(--theme-h2);
+            height: var(--theme-h2);
+            width: var(--theme-h2);
+            padding: 0;
+
+            > vi-icon {
+                height: var(--theme-h2);
+            }
+        }
+    }
+}

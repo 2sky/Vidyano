@@ -40,11 +40,41 @@
                 type: Object,
                 observer: "_selectedDetailTabChanged"
             },
-            layout: {
-                type: String,
+            layoutMasterDetail: {
+                type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeLayout(persistentObject, masterTabs, detailTabs)"
+                computed: "_computeLayoutMasterDetail(persistentObject, masterTabs, detailTabs)"
             },
+            layoutDetailsOnly: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeLayoutDetailsOnly(persistentObject, masterTabs, detailTabs)"
+            },
+            layoutFullPage: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeLayoutFullPage(persistentObject, detailTabs)"
+            },
+            layoutMasterActions: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeLayoutMasterActions(persistentObject, masterTabs)"
+            },
+            layoutDetailActions: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeLayoutDetailActions(persistentObject, detailTabs)"
+            },
+            layoutMasterTabs: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeLayoutMasterTabs(persistentObject, masterTabs, detailTabs)"
+            },
+            layoutDetailTabs: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeLayoutDetailTabs(persistentObject, detailTabs)"
+            }
         },
         observers: [
             "_persistentObjectChanged(persistentObject, isAttached)"
@@ -61,7 +91,6 @@
         private _uniqueId: string = Unique.get();
         private _parameters: { id: string; objectId: string };
         private _styleElement: HTMLElement;
-        private _styles: { [key: string]: Text } = {};
         private _cacheEntry: PersistentObjectAppCacheEntry;
         persistentObject: Vidyano.PersistentObject;
         layout: string;
@@ -98,20 +127,8 @@
         }
 
         private _masterWidthChanged() {
-            this._setStyle("masterWidth", ".master { width: " + this.masterWidth + "; }");
-        }
-
-        private _setStyle(name: string, ...css: string[]) {
-            var cssBody = "";
-            css.forEach(c => {
-                cssBody += "vi-persistent-object[style-scope-id=\"" + this._uniqueId + "\"] " + c + (css.length > 0 ? "\n" : "");
-            });
-
-            if (!this._styleElement)
-                this._styleElement = <HTMLStyleElement>document.head.appendChild(document.createElement("style"));
-
-            var node = this._styles[name] || (this._styles[name] = <Text>this._styleElement.appendChild(document.createTextNode("")));
-            node.textContent = cssBody;
+            this.customStyle["--vi-persistent-object-master-width"] = this.masterWidth;
+            this.updateStyles();
         }
 
         private _computeMasterTabs(persistentObject: Vidyano.PersistentObject, tabs: Vidyano.PersistentObjectTab[]): Vidyano.PersistentObjectTab[]{
@@ -179,6 +196,34 @@
             return layoutFlags.join(" ");
         }
 
+        private _computeLayoutMasterDetail(persistentObject: Vidyano.PersistentObject, masterTabs: Vidyano.PersistentObjectTab[] = [], detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
+            return !!persistentObject && masterTabs.length > 0 && detailTabs.length > 0;
+        }
+
+        private _computeLayoutDetailsOnly(persistentObject: Vidyano.PersistentObject, masterTabs: Vidyano.PersistentObjectTab[] = [], detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
+            return !!persistentObject && masterTabs.length == 0 && detailTabs.length > 0;
+        }
+
+        private _computeLayoutFullPage(persistentObject: Vidyano.PersistentObject, detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
+            return !!persistentObject && detailTabs.length == 0;
+        }
+
+        private _computeLayoutMasterActions(persistentObject: Vidyano.PersistentObject, masterTabs: Vidyano.PersistentObjectTab[] = []): boolean {
+            return !!persistentObject && masterTabs.some(t => t.parent.actions.some(a => a.isVisible || a.name == "Filter"));
+        }
+
+        private _computeLayoutDetailActions(persistentObject: Vidyano.PersistentObject, detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
+            return !!persistentObject && detailTabs.some(t => t.parent.actions.some(a => a.isVisible || a.name == "Filter"));
+        }
+
+        private _computeLayoutMasterTabs(persistentObject: Vidyano.PersistentObject, masterTabs: Vidyano.PersistentObjectTab[] = [], detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
+            return !!persistentObject && masterTabs.length > 0 && (detailTabs.length > 0 || masterTabs.length > 1);
+        }
+
+        private _computeLayoutDetailTabs(persistentObject: Vidyano.PersistentObject, detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
+            return !!persistentObject && detailTabs.length > 0;
+        }
+
         private _disableTabScrolling(tab: Vidyano.PersistentObjectTab): boolean {
             return tab instanceof Vidyano.PersistentObjectQueryTab;
         }
@@ -229,5 +274,25 @@
 
             e.stopPropagation();
         }
+    }
+
+    @WebComponent.register({
+        properties: {
+            tab: Object
+        }
+    })
+    export class PersistentObjectDetailsContent extends WebComponent {
+    }
+
+    @WebComponent.register({
+        properties: {
+            tabs: Object,
+            tab: {
+                type: Object,
+                notify: true
+            }
+        }
+    })
+    export class PersistentObjectDetailsHeader extends WebComponent {
     }
 }

@@ -1,0 +1,236 @@
+﻿@import "../_vars.scss";
+
+:host {
+    position: relative;
+    display: block;
+    border-top: 1px solid var(--theme-light-border);
+    box-sizing: border-box;
+    height: var(--theme-h2);
+    line-height: var(--theme-h2);
+    cursor: pointer;
+
+    --vi-input-search: #{'{
+        height: var(--theme-h2);
+        border: 1px solid var(--theme-light-border);
+        box-sizing: border-box;
+        margin: 0 0 var(--theme-h5) calc(var(--theme-h2) + var(--theme-h5));
+    }'};
+
+    --vi-input-search-input: #{'{
+        padding-left: 8px;
+        color: #333;
+    }'};
+
+    --vi-input-search-button: #{'{
+        width: var(--theme-h2);
+        padding: 0;
+        fill: var(--theme-light-border);
+    }'};
+
+    &[disabled] {
+        cursor: default;
+        background-color: #F9F9F9;
+
+        #filter {
+            button {
+                display: none;
+            }
+
+            [toggle] {
+                cursor: default;
+            }
+        }
+    }
+
+    button[header] {
+        box-sizing: border-box;
+        overflow: hidden;
+        text-align: left;
+        font-weight: 500;
+        width: 100%;
+        height: var(--theme-h2);
+        padding: 0;
+    }
+
+    #label {
+        display: none;
+        padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
+        line-height: var(--theme-h2);
+        white-space: nowrap;
+        -ms-text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    vi-icon[source="Filter"] {
+        display: inline-block;
+        fill: #eee;
+        line-height: var(--theme-h2);
+        height: var(--theme-h2);
+        padding: 0 0 0 var(--vi-query-grid-cell-padding, --theme-h5);
+    }
+
+    &[filtered] {
+        #label {
+            display: inline-block;
+        }
+
+        vi-icon[source="Filter"] {
+            display: none;
+        }
+    }
+
+    [content] {
+        @include noSelection();
+
+        .filter {
+            position: relative;
+
+            .left {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: var(--theme-h2);
+                background-color: #F7F7F7;
+            }
+        }
+
+        .menuItem {
+            cursor: pointer;
+            text-align: left;
+            line-height: var(--theme-h2);
+            font-weight: normal;
+
+            vi-icon {
+                text-align: center;
+                width: var(--theme-h2);
+                height: var(--theme-h2);
+            }
+
+            &[disabled] {
+                opacity: 0.25;
+                cursor: default;
+            }
+
+            span {
+                margin-left: var(--theme-h5);
+            }
+        }
+
+
+        .split {
+            border-top: 1px solid var(--theme-light-border);
+            margin: 0 0 var(--theme-h5) calc(var(--theme-h2) + var(--theme-h5));
+        }
+
+        .advanced {
+            padding: 0 var(--vi-query-grid-cell-padding, --theme-h5) var(--vi-query-grid-cell-padding, --theme-h5) 0;
+            position: relative;
+
+            > div {
+                padding-left: var(--theme-h2);
+
+                button#inverse {
+                    @include layout-horizontal();
+                    @include layout-center-center();
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: var(--theme-h2);
+                    height: var(--theme-h3);
+                    cursor: pointer;
+                    @include theme-color-button-inverse();
+
+                    &[inversed]:not(:active) {
+                        fill: darkred !important;
+                    }
+
+                    &:not(:active) {
+                        fill: #aaa !important;
+                    }
+
+                    vi-icon svg {
+                        width: var(--theme-h4);
+                        height: var(--theme-h4);
+                    }
+                }
+            }
+        }
+
+        #distinctsContainer {
+            height: 15em;
+            min-width: 15em;
+            border: 1px solid var(--theme-light-border);
+            margin-left: var(--theme-h5);
+            box-sizing: border-box;
+            cursor: default;
+        }
+
+        #distincts {
+            font-weight: normal;
+
+            vi-checkbox {
+                line-height: var(--theme-h3);
+                height: var(--theme-h3);
+                padding: 3px var(--theme-h5);
+
+                &:hover {
+                    background-color: var(--vi-query-grid-column-filter-distinct-hover-color, --theme-color-faint);
+                }
+            }
+
+            vi-checkbox[checked] {
+                --vi-checkbox-checked-color: green;
+            }
+
+            &[inversed] vi-checkbox[checked] {
+                --vi-checkbox-checked-color: darkred;
+            }
+
+            vi-checkbox {
+                &[distinct-type="remaining"] {
+                    color: var(--vi-query-grid-column-filter-distinct-remaining-color, #aaa);
+                }
+            }
+
+            div.hasMore {
+                text-align: left;
+                cursor: default;
+                opacity: 0.25;
+
+                vi-icon {
+                    display: inline-block;
+                    line-height: var(--theme-h3);
+                    height: var(--theme-h3);
+                    padding: 3px var(--theme-h5);
+                    box-sizing: border-box;
+
+                    &:first-of-type ::content {
+                        svg #check {
+                            display: none;
+                        }
+                    }
+
+                    &:last-of-type {
+                        padding-left: 0;
+                    }
+                }
+            }
+        }
+
+        button.close {
+            border-top: 1px solid var(--theme-light-border);
+            line-height: var(--theme-h2);
+            width: 100%;
+        }
+    }
+
+    &[loading] {
+        #distincts {
+            opacity: 0.5;
+        }
+    }
+}

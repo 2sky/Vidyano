@@ -308,6 +308,16 @@
          * If node is specified, sets the attribute on node instead of the host element.
         */
         toggleAttribute: (name: string, bool: boolean, node?: Node | WebComponent) => void;
+
+        /**
+         * Key-value pairs for the custom styles on the element.
+         */
+        customStyle: { [key: string]: string };
+
+        /**
+         * Revaluates custom property values.
+         */
+        updateStyles: () => void;
     }
 
     // HACK: This fixes the default __extends for extending from HTMLElement
@@ -345,9 +355,9 @@
             this.isAttached = attached;
         }
 
-        empty() {
-            Polymer.dom(this).children.forEach(c => {
-                Polymer.dom(this).removeChild(c);
+        empty(parent: Node = this) {
+            Polymer.dom(parent).getEffectiveChildNodes().forEach(c => {
+                Polymer.dom(parent).removeChild(c);
             });
         }
 
@@ -659,7 +669,7 @@
 
         static register(obj: Function, info: WebComponentRegistrationInfo, prefix?: string, ns?: any): Function;
         static register(info?: WebComponentRegistrationInfo, prefix?: string);
-        static register(info?: WebComponentRegistrationInfo, prefix?: string): Function {
+        static register(info?: WebComponentRegistrationInfo, prefix?: string): (obj: any) => void {
             if (!info || typeof info === "object") {
                 return (obj: Function) => {
                     return WebComponent._register(obj, info, prefix);

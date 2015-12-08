@@ -2,6 +2,7 @@
 
 <dom-module name="vi-persistent-object-attribute-drop-down">
     <template>
+        <link rel="stylesheet" href="persistent-object-attribute-drop-down.css" />
         <template is="dom-if" if="{{!editing}}">
             <span>{{attribute.displayValue}}</span>
         </template>
@@ -13,5 +14,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="persistent-object-attribute-drop-down.css" />
 <script src="persistent-object-attribute-drop-down.js"></script>

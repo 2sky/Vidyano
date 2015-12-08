@@ -4,6 +4,7 @@
 
 <dom-module id="vi-action-bar">
     <template>
+        <link rel="import" href="action-bar.css" />
         <vi-overflow class="flex">
             <template is="dom-repeat" items="{{unpinnedActions}}">
                 <vi-action-button action="{{item}}"></vi-action-button>
@@ -21,5 +22,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="action-bar.css" />
 <script src="action-bar.js"></script>

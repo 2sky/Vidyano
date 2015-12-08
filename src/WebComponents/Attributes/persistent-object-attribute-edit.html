@@ -1,0 +1,20 @@
+﻿<dom-module id="vi-persistent-object-attribute-edit">
+    <template>
+        <link rel="stylesheet" href="persistent-object-attribute-edit.css" />
+        <div class="box flex horizontal-reverse layout">
+            <div class="buttons self-start">
+                <content select=".button, button, vi-popup:not([content])"></content>
+            </div>
+            <content select="[content]"></content>
+        </div>
+        <button id="errorIndicator" on-tap="_showError">
+            <vi-popup open-on-hover content-align="center">
+                <vi-icon header source="Notification_Error"></vi-icon>
+                <pre content>{{attribute.validationError}}</pre>
+            </vi-popup>
+        </button>
+    </template>
+</dom-module>
+
+<script src="persistent-object-attribute.js"></script>
+<script src="persistent-object-attribute-edit.js"></script>

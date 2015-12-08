@@ -1,6 +1,6 @@
 ﻿<dom-module id="vi-notification">
-    <link rel="import" type="css" href="notification.css">
     <template>
+        <link rel="import" type="css" href="notification.css">
         <div id="icon">
             <vi-icon source="{{icon}}"></vi-icon>
         </div>
@@ -10,7 +10,7 @@
             </template>
             <span id="text"></span>
         </div>
-        <button id="close" on-tap="_close">
+        <button is="vi-button" id="close" on-tap="_close">
             <vi-icon source="Notification_Close"></vi-icon>
         </button>
     </template>

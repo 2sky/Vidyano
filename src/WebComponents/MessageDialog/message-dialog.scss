@@ -1,0 +1,43 @@
+@import "../vars.scss";
+
+:host {
+    main {
+        padding: var(--theme-h4);
+        @include layout-horizontal();
+
+        pre {
+            @include flex();
+            white-space: pre-wrap;
+
+            a {
+                color: inherit;
+            }
+        }
+    }
+
+    header > vi-icon {
+        padding-right: var(--theme-h4);
+        height: var(--theme-h1);
+
+        svg {
+            width: var(--theme-h3);
+            height: var(--theme-h3);
+        }
+
+        &[source$="Error"] {
+            fill: var(--theme-color-error);
+        }
+
+        &[source$="Warning"] {
+            fill: var(--theme-color-warning);
+        }
+
+        &[source$="Notice"] {
+            fill: var(--theme-color-notice);
+        }
+
+        &[source$="OK"] {
+            fill: var(--theme-color-ok);
+        }
+    }
+}

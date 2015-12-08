@@ -1,0 +1,220 @@
+@import "../_vars.scss";
+
+:host {
+    overflow: hidden;
+    @include layout-horizontal();
+    @include relative();
+
+    --vi-scroller-hover-size: calc(var(--theme-h4) - 2px);
+
+    > #wrapper {
+        @include flex();
+        overflow: scroll;
+    }
+
+    &[no-horizontal]:not([no-vertical]) {
+        > #wrapper {
+            @include layout-vertical();
+        }
+    }
+
+    &[no-vertical]:not([no-horizontal]) {
+        > #wrapper {
+            @include layout-horizontal();
+        }
+    }
+
+    &[no-vertical][no-horizontal] {
+        > #wrapper {
+            @include layout-horizontal();
+            overflow: hidden;
+            margin: 0 !important;
+
+            > #content {
+                @include flex();
+                @include layout-horizontal();
+
+                > :not(vi-size-tracker) {
+                    @include flex();
+                }
+            }
+        }
+
+        > .scrollbar-parent {
+            display: none !important;
+        }
+    }
+
+    &:not([no-vertical]):not([no-horizontal]) {
+        > #wrapper {
+            > #content {
+                display: inline-block;
+            }
+        }
+    }
+
+    &:not([force-scrollbars]):not([hovering]):not([scrolling]) > .scrollbar-parent > .scrollbar {
+        opacity: 0;
+    }
+
+    &[hidden-scrollbars] {
+        > .scrollbar-parent {
+            opacity: 0 !important;
+        }
+    }
+
+    > .scrollbar-parent {
+        position: absolute;
+        background-color: transparent;
+        -moz-transition: opacity 0.2s, background-color 0.2s;
+        -o-transition: opacity 0.2s, background-color 0.2s;
+        -webkit-transition: opacity 0.2s, background-color 0.2s;
+        transition: opacity 0.2s, background-color 0.2s;
+        -moz-transition-timing-function: ease-in-out;
+        -o-transition-timing-function: ease-in-out;
+        -webkit-transition-timing-function: ease-in-out;
+        transition-timing-function: ease-in-out;
+
+        > .scrollbar {
+            position: absolute;
+            background-color: #797979;
+            opacity: 1;
+            border-radius: var(--theme-h5);
+            -moz-transition-timing-function: ease-in-out;
+            -o-transition-timing-function: ease-in-out;
+            -webkit-transition-timing-function: ease-in-out;
+            transition-timing-function: ease-in-out;
+        }
+
+        &.horizontal {
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: var(--vi-scroller-hover-size);
+
+            > .scrollbar {
+                -moz-transition: opacity 0.2s, height 0.2s;
+                -o-transition: opacity 0.2s, height 0.2s;
+                -webkit-transition: opacity 0.2s, height 0.2s;
+                transition: opacity 0.2s, height 0.2s;
+            }
+        }
+
+        &.vertical {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: var(--vi-scroller-hover-size);
+
+            > .scrollbar {
+                -moz-transition: opacity 0.2s, width 0.2s;
+                -o-transition: opacity 0.2s, width 0.2s;
+                -webkit-transition: opacity 0.2s, width 0.2s;
+                transition: opacity 0.2s, width 0.2s;
+            }
+        }
+
+        > #vertical {
+            top: 0;
+            right: 0;
+            width: var(--theme-h5);
+
+            &:hover {
+                width: var(--vi-scroller-hover-size);
+            }
+        }
+
+        > #horizontal {
+            left: 0;
+            bottom: 0;
+            height: var(--theme-h5);
+
+            &:hover {
+                height: var(--vi-scroller-hover-size);
+            }
+        }
+    }
+
+    &[vertical] {
+        > .scrollbar-parent.vertical:hover {
+            background-color: rgba(0,0,0,0.2);
+        }
+    }
+
+    &[horizontal] {
+        > .scrollbar-parent.horizontal:hover {
+            background-color: rgba(0,0,0,0.2);
+        }
+    }
+
+    &[scrolling] {
+        > #wrapper {
+            pointer-events: none;
+        }
+    }
+
+    &[scrolling], > .scrollbar-parent:hover {
+        #vertical {
+            width: var(--vi-scroller-hover-size);
+        }
+
+        #horizontal {
+            height: var(--vi-scroller-hover-size);
+        }
+    }
+
+    > .scroll-shadow {
+        position: absolute;
+        -webkit-box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
+        box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
+        bottom: 0;
+        height: var(--theme-h2);
+        -moz-border-radius: 100%;
+        border-radius: 100%;
+        left: -var(--theme-h2);
+        right: -var(--theme-h2);
+        pointer-events: none;
+
+        &.top {
+            -moz-transition: transform 0.2s ease-out;
+            -o-transition: transform 0.2s ease-out;
+            -webkit-transition: transform 0.2s ease-out;
+            transition: transform 0.2s ease-out;
+            top: 0;
+            -moz-transform: translateY(calc(var(--theme-h2) * -1.5));
+            -ms-transform: translateY(calc(var(--theme-h2) * -1.5));
+            -o-transform: translateY(calc(var(--theme-h2) * -1.5));
+            -webkit-transform: translateY(calc(var(--theme-h2) * -1.5));
+            transform: translateY(calc(var(--theme-h2) * -1.5));
+        }
+
+        &.bottom {
+            -moz-transition: transform 0.2s ease-out;
+            -o-transition: transform 0.2s ease-out;
+            -webkit-transition: transform 0.2s ease-out;
+            transition: transform 0.2s ease-out;
+            bottom: 0;
+            -moz-transform: translateY(calc(var(--theme-h2) * 1.5));
+            -ms-transform: translateY(calc(var(--theme-h2) * 1.5));
+            -o-transform: translateY(calc(var(--theme-h2) * 1.5));
+            -webkit-transform: translateY(calc(var(--theme-h2) * 1.5));
+            transform: translateY(calc(var(--theme-h2) * 1.5));
+        }
+    }
+
+    &[scroll-top-shadow] > .scroll-shadow.top {
+        -moz-transform: translateY(-var(--theme-h2));
+        -ms-transform: translateY(-var(--theme-h2));
+        -o-transform: translateY(-var(--theme-h2));
+        -webkit-transform: translateY(-var(--theme-h2));
+        transform: translateY(-var(--theme-h2));
+    }
+
+    &[scroll-bottom-shadow] > .scroll-shadow.bottom {
+        -moz-transform: translateY(var(--theme-h2));
+        -ms-transform: translateY(var(--theme-h2));
+        -o-transform: translateY(var(--theme-h2));
+        -webkit-transform: translateY(var(--theme-h2));
+        transform: translateY(var(--theme-h2));
+    }
+}

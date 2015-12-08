@@ -1,0 +1,10 @@
+@import "../../vars.scss";
+
+:host {
+    overflow: hidden;
+
+    marked-element {
+        @include flex();
+        resize: none;
+    }
+}

@@ -1,0 +1,56 @@
+@import "../../vars.scss";
+
+:host {
+    @include layout-horizontal();
+    @include relative();
+
+    &:not([editing]) {
+        a {
+            @include layout-horizontal();
+            text-decoration: none;
+            color: var(--theme-color);
+            fill: var(--theme-color);
+
+            &:visited {
+                color: var(--theme-color);
+                fill: var(--theme-color);
+            }
+
+            &:hover {
+                color: var(--theme-color-light);
+                fill: var(--theme-color-light);
+            }
+
+            &[disabled] {
+                color: #333 !important;
+            }
+
+            span {
+                -ms-text-overflow: ellipsis;
+                -o-text-overflow: ellipsis;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+
+            vi-icon {
+                margin: 0 var(--theme-h5);
+                min-width: var(--theme-h4);
+                fill: var(--theme-color);
+                transform: translateY(2px);
+            }
+        }
+    }
+
+    &[editing] {
+        vi-select {
+            border: none;
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+
+        a[disabled] {
+            display: none;
+        }
+    }
+}

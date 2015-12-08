@@ -1,0 +1,10 @@
+@import "../../vars.scss";
+
+:host {
+	@include layout-horizontal();
+
+    pre {
+        padding-top: var(--theme-h5);
+        line-height: normal !important;
+    }
+}

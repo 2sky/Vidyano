@@ -8,6 +8,8 @@ module Vidyano.WebComponents {
         model: any;
         hasResource: boolean;
 
+        private _setHasResource: (value: boolean) => void;
+
         attached() {
             super.attached();
 
@@ -21,18 +23,20 @@ module Vidyano.WebComponents {
                 delete resources[`${this.tagName}+${oldName.toUpperCase() }`];
         }
 
-        private _setHasResource(value: boolean) { }
+        protected get _contentTarget(): Node {
+            return this;
+        }
 
         private _load() {
             if (this.source) {
                 if (this.source == this._loadedSource)
                     return;
 
-                this.empty();
+                this.empty(this._contentTarget);
 
                 var resource = Resource.LoadResource(this.source, this.tagName);
-                if (resource)
-                    Polymer.dom(this).appendChild(Resource.Load(resource, this.tagName));
+                if (resource != null)
+                    Polymer.dom(this._contentTarget).appendChild(Resource.Load(resource, this.tagName));
 
                 this._setHasResource(resource != null);
                 this._loadedSource = this.source;

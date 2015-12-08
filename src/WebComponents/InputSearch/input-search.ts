@@ -13,18 +13,12 @@ module Vidyano.WebComponents {
             autofocus: {
                 type: Boolean,
                 reflectToAttribute: true
-            },
-            collapsed: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
             }
         }
     })
     export class InputSearch extends WebComponent {
         value: string;
         focused: boolean;
-        collapsed: boolean;
 
         private _searchKeypressed(e: KeyboardEvent) {
             if (e.keyCode == 13) {

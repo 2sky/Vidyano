@@ -1,0 +1,21 @@
+@import "../vars.scss";
+
+:host {
+    display: block;
+    padding-right: var(--theme-h5);
+
+    &:not([disabled]) {
+        cursor: pointer;
+    }
+
+    div {
+        > span {
+            @include flex();
+            padding-left: 2px;
+        }
+
+        > vi-icon:not([hidden]) + span {
+            padding-left: var(--theme-h5);
+        }
+    }
+}

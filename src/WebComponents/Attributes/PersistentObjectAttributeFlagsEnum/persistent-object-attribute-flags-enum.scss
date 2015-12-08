@@ -1,0 +1,28 @@
+@import "../../vars.scss";
+
+:host {
+    @include layout-horizontal();
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            @include noSelection();
+            padding-left: var(--theme-h5);
+            line-height: calc(var(--theme-h2) - 2px);
+            height: calc(var(--theme-h2) - 2px);
+            cursor: pointer;
+            overflow: hidden;
+
+            &:hover {
+                background-color: var(--theme-color-faint);
+            }
+
+            vi-checkbox:not([checked]) {
+                fill: #aaa;
+            }
+        }
+    }
+}

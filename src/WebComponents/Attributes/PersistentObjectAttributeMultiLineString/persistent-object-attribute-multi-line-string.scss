@@ -1,0 +1,9 @@
+@import "../../vars.scss";
+
+:host {
+    overflow: hidden;
+
+    textarea {
+        resize: none;
+    }
+}

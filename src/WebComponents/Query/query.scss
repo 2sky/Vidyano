@@ -1,0 +1,32 @@
+@import "../_vars.scss";
+
+:host {
+    display: block;
+    @include fit();
+    @include layout-vertical-reverse();
+    --vi-action-bar-style: #{'{
+        @apply(--theme-shadow);
+        z-index: 1;
+    }'};
+
+    header {
+        line-height: var(--theme-h1);
+        z-index: 2;
+        @include page-title();
+    }
+
+    vi-query-items-presenter {
+        margin: 3px 1px 1px 1px;
+        z-index: 0;
+    }
+
+    &[no-actions] {
+        > header {
+            @apply(--theme-shadow);
+        }
+
+        vi-action-bar {
+            display: none !important;
+        }
+    }
+}

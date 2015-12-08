@@ -1,0 +1,54 @@
+@import "../_vars.scss";
+
+$cellHeight: var(--theme-h2);
+
+:host {
+    @include layout-horizontal();
+    position: absolute;
+    box-sizing: border-box;
+    background-color: white;
+
+    > .vi-persistent-object-tab:not(#rect) {
+        margin: 0 var(--theme-h4);
+    }
+
+    #rect {
+        display: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        opacity: 0;
+        -moz-transition: opacity 0.3s ease-out;
+        -o-transition: opacity 0.3s ease-out;
+        -webkit-transition: opacity 0.3s ease-out;
+        transition: opacity 0.3s ease-out;
+
+        #anchor {
+            position: absolute;
+            bottom: -var(--theme-h5);
+            right: -var(--theme-h5);
+            width: var(--theme-h2);
+            height: var(--theme-h2);
+            cursor: nwse-resize;
+
+            #icon {
+                position: absolute;
+                height: var(--theme-h4);
+                width: var(--theme-h4);
+                bottom: calc(var(--theme-h5) * 1.5);
+                right: calc(var(--theme-h5) * 1.5);
+                border-style: solid;
+                border-width: 0 2px 2px 0;
+                border-color: #888;
+            }
+        }
+    }
+
+    &:hover {
+        #rect {
+            opacity: 1;
+        }
+    }
+}

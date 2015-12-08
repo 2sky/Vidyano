@@ -1,0 +1,77 @@
+﻿@import "../_vars.scss";
+
+:host {
+    display: block;
+    box-sizing: border-box;
+    min-width: var(--theme-h2);
+    border-right: 1px solid var(--theme-light-border);
+
+    > div:first-child {
+        height: var(--vi-query-grid-header-height, --theme-h2);
+        padding: 0 var(--theme-h3) 0 var(--vi-query-grid-cell-padding, --theme-h5);
+        cursor: pointer;
+        position: relative;
+        color: #808080;
+        white-space: nowrap;
+        overflow: hidden;
+        @include theme-color-button-inverse();
+        @include relative();
+
+        > label {
+            display: block;
+            line-height: var(--theme-h2);
+            white-space: nowrap;
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            padding-right: var(--theme-h5);
+        }
+
+        > vi-icon {
+            position: absolute;
+            right: var(--theme-h5);
+            top: 0;
+            fill: #555;
+            line-height: var(--theme-h2);
+            height: var(--theme-h2);
+        }
+
+        &:hover {
+            > vi-icon {
+                fill: var(--theme-color-darker);
+            }
+        }
+
+        &:active {
+            > vi-icon {
+                fill: white !important;
+            }
+        }
+    }
+
+    .resizer {
+        width: 0.5em;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: transparent;
+        z-index: 2;
+        cursor: ew-resize;
+        -webkit-transform: translate3d(0.25em, 0, 0);
+        transform: translate3d(0.25em, 0, 0);
+    }
+
+    &.resizing .resizer, .resizer:hover{
+        &::after {
+            position: absolute;
+            left: calc(var(--theme-h5) / 2);
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #888;
+            content: " ";
+        }
+    }
+}

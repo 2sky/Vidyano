@@ -18,6 +18,7 @@ namespace Vidyano.Web2
                     if (!string.IsNullOrEmpty(directory))
                         directory += "/";
 
+#if !DEBUG
                     html = scriptRe.Replace(html, match =>
                     {
                         var src = match.Groups[1].Value;
@@ -25,9 +26,15 @@ namespace Vidyano.Web2
 
                         return "<script>" + script + "</script>";
                     });
+#endif
 
                     html = linkRe.Replace(html, match =>
                     {
+#if DEBUG
+                        var id = directory + match.Groups[1].Value;
+                        var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), "../../src/" + id);
+                        return "<style>" + File.ReadAllText(filePath) + "</style>";
+#else
                         var id = directory + (match.Groups[1].Value.Replace(".css", ".less"));
                         try
                         {
@@ -37,8 +44,9 @@ namespace Vidyano.Web2
                         {
                             /* LESS file for this css request was not found. */
                         }
+#endif
 
-                        return match.Groups[0].Value;
+                        return match.Value;
                     });
                 }
 

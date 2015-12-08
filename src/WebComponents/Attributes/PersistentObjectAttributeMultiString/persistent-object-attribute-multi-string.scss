@@ -1,0 +1,35 @@
+@import "../../vars.scss";
+
+:host {
+	&[editing] {
+		#inputs {
+			> * {
+				margin-bottom: var(--theme-h5);
+
+				.sort-handle {
+					fill: #999;
+					line-height: var(--theme-h2);
+					margin-right: var(--theme-h5);
+					cursor: move;
+					cursor: -webkit-grabbing;
+				}
+
+				&:only-child .sort-handle {
+					display: none;
+				}
+			}
+		}
+
+		#new {
+			opacity: 0.75;
+
+			input {
+				border-style: dashed;
+			}
+
+			.sort-handle {
+				display: none;
+			}
+		}
+	}
+}

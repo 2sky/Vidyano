@@ -1,0 +1,43 @@
+@import "../../vars.scss";
+
+:host {
+    ul {
+        margin: 0;
+        padding: var(--theme-h4);
+        list-style: none;
+
+        li {
+            min-width: 50vw;
+
+            &:not(:last-of-type) {
+                margin-bottom: var(--theme-h4);
+            }
+
+            label {
+                display: block;
+                font-size: 11px;
+                min-height: 20px;
+                line-height: 20px;
+                font-weight: 400;
+                color: #888;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-transform: uppercase;
+            }
+
+            input, textarea {
+                width: 100%;
+                resize: none;
+                box-sizing: border-box;
+                margin: 0;
+                padding: var(--theme-h5);
+                border: 1px solid #ddd;
+                outline: none;
+
+				&:focus {
+					border-color: var(--theme-color-light);
+				}
+            }
+        }
+    }
+}

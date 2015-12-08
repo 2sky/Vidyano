@@ -2,6 +2,7 @@
 
 <dom-module id="vi-persistent-object-tab">
     <template>
+        <link rel="stylesheet" href="persistent-object-tab.css" />
         <vi-scroller no-horizontal>
             <template is="dom-if" if="{{isDesignModeAvailable}}">
                 <vi-popup-menu context-menu-only ctrl-key>
@@ -26,12 +27,14 @@
 
 <dom-module id="vi-persistent-object-tab-cell">
     <template>
+        <link rel="stylesheet" href="persistent-object-tab-cell.css" />
         <div id="background" class="flex"></div>
     </template>
 </dom-module>
 
 <dom-module id="vi-persistent-object-tab-item-presenter">
     <template>
+        <link rel="stylesheet" href="persistent-object-tab-item-presenter.css" />
         <content></content>
         <div id="rect" on-track="_track">
             <div id="anchor" on-track="_track">
@@ -41,5 +44,4 @@
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="persistent-object-tab.css" />
 <script src="persistent-object-tab.js"></script>

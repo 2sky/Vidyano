@@ -4,13 +4,22 @@
 
 <dom-module id="vi-menu">
     <template>
+        <link rel="stylesheet" href="menu.css" />
         <header>
             <button is="vi-button" id="toggleCollapse" on-tap="_toggleCollapse">
                 <vi-icon source="Menu_Collapse"></vi-icon>
             </button>
             <span>{{label}}</span>
             <content select="[menu-element~='start']"></content>
-            <vi-input-search collapsed="{{collapsed}}" value="{{filter}}" on-search="_search"></vi-input-search>
+            <template is="dom-if" if="{{!collapsed}}">
+                <vi-input-search value="{{filter}}" on-search="_search"></vi-input-search>
+            </template>
+            <template is="dom-if" if="{{collapsed}}">
+                <vi-popup orientation="horizontal" content-align="right" sticky>
+                    <vi-icon header source="Search" on-tap="_focusSearch"></vi-icon>
+                    <vi-input-search id="collapsedInputSearch" content collapsed value="{{filter}}" on-tap="_catchInputSearchTap" on-search="_search"></vi-input-search>
+                </vi-popup>
+            </template>
         </header>
         <template is="dom-if" if="{{!collapsed}}">
             <vi-scroller class="flex programUnits" no-horizontal>
@@ -57,12 +66,11 @@
 
 <dom-module id="vi-menu-item">
     <template>
+        <link rel="stylesheet" href="menu-item.css" />
         <paper-ripple></paper-ripple>
         <vi-icon class="group" source="Forward"></vi-icon>
         <a href="{{href}}" title="" id="title"></a>
     </template>
 </dom-module>
 
-<link rel="stylesheet" href="menu.css" />
-<link rel="stylesheet" href="menu-item.css" />
 <script src="menu.js"></script>

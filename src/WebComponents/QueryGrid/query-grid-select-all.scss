@@ -1,0 +1,17 @@
+﻿@import "../_vars.scss";
+
+:host {
+    position: relative;
+    height: var(--theme-h2);
+    width: var(--theme-h2);
+    border-top: 1px solid var(--theme-light-border);
+    box-sizing: border-box;
+    align-self: flex-end;
+    cursor: pointer;
+
+    > vi-icon {
+        height: var(--theme-h2);
+        width: var(--theme-h2);
+        line-height: var(--theme-h2);
+    }
+}
