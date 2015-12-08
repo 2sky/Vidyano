@@ -522,7 +522,7 @@
             return new Promise((resolve, reject) => {
                 this.app.showMessageDialog({
                     title: action.displayName,
-                    titleIcon: "Action" + action.name,
+                    titleIcon: "Action_" + action.name,
                     message: this.service.getTranslatedMessage(action.definition.confirmation),
                     actions: [action.displayName, this.service.getTranslatedMessage("Cancel")],
                     actionTypes: action.name == "Delete" ? ["Danger"] : []

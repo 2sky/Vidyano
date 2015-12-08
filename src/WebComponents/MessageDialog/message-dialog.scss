@@ -18,11 +18,8 @@
     header > vi-icon {
         padding-right: var(--theme-h4);
         height: var(--theme-h1);
-
-        svg {
-            width: var(--theme-h3);
-            height: var(--theme-h3);
-        }
+        --vi-icon-width: var(--theme-h3);
+        --vi-icon-height: var(--theme-h3);
 
         &[source$="Error"] {
             fill: var(--theme-color-error);
