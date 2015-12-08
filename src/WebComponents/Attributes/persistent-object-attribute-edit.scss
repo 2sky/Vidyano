@@ -20,6 +20,12 @@
 
     #errorIndicator {
         display: none;
+
+        vi-icon {
+            --vi-icon-width: var(--theme-h2);
+            --vi-icon-height: var(--theme-h2);
+            fill: var(--theme-color-error);
+        }
     }
 
     &[has-error] {
@@ -43,17 +49,6 @@
             padding: 0;
             background-color: transparent;
             cursor: pointer;
-
-            vi-icon {
-                width: var(--theme-h2);
-                height: var(--theme-h2);
-
-                svg {
-                    width: var(--theme-h3);
-                    height: var(--theme-h3);
-                    fill: var(--theme-color-error);
-                }
-            }
 
             pre[content] {
                 padding: var(--theme-h5);
