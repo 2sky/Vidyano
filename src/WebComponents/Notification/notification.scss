@@ -23,12 +23,10 @@
         line-height: var(--theme-h1);
 
         vi-icon {
+            fill: white;
             height: calc(var(--theme-h1) - 2px);
-
-            svg {
-                width: var(--theme-h3);
-                height: var(--theme-h3);
-            }
+            --vi-icon-width: var(--theme-h3);
+            --vi-icon-height: var(--theme-h3);
         }
     }
 
