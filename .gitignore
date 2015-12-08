@@ -62,6 +62,7 @@ dlldata.c
 *.pidb
 *.svclog
 *.scc
+.vs
 
 # Chutzpah Test files
 _Chutzpah*
@@ -217,5 +218,6 @@ ModelManifest.xml
 /src/Libs/webcomponentsjs/
 /dist/Vidyano.Web2/src
 /dist/Vidyano.Web2/vidyano.d.ts
+/dist/packages/
 *.nupkg
 *.map

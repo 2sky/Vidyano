@@ -28,12 +28,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="dotless.Core, Version=1.5.1.0, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL">
-      <HintPath>..\packages\dotless.1.5.1\lib\dotless.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -63,18 +60,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompressedContent.cs" />
-    <Compile Include="Embedded\AssemblyResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Web2Controller.cs" />
-    <Compile Include="Web2Controller.Less.cs" />
     <Compile Include="Web2Controller.Vulcanizer.cs" />
     <Compile Include="Web2ControllerFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="Embedded\dotless.Core.pkg" />
     <None Include="packages.config" />
-    <EmbeddedResource Include="theme-color.less" />
     <None Include="Vidyano.Web2.nuspec" />
   </ItemGroup>
   <ItemGroup>

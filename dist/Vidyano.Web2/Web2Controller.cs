@@ -17,12 +17,9 @@ namespace Vidyano.Web2
 {
     public partial class Web2Controller : ApiController
     {
-        private const string defaultColor1 = "steel-blue";
-        private const string defaultColor2 = "teal";
-
         private static readonly Encoding utf8NoBom = new UTF8Encoding(false);
         private static readonly Assembly assembly = typeof(Web2Controller).Assembly;
-        private static readonly Dictionary<Tuple<string, string, string>, Tuple<string, string>> cache = new Dictionary<Tuple<string, string, string>, Tuple<string, string>>();
+        private static readonly Dictionary<string, Tuple<string, string>> cache = new Dictionary<string, Tuple<string, string>>();
         private static readonly Dictionary<string, string> mediaTypes = new Dictionary<string, string>
         {
             [".css"] = "text/css",
@@ -38,8 +35,6 @@ namespace Vidyano.Web2
 
         static Web2Controller()
         {
-            Embedded.AssemblyResolver.Initialize();
-
             var skipLength = (typeof(Web2Controller).Namespace?.Length ?? 0) + 1;
             foreach (var name in assembly.GetManifestResourceNames())
             {
@@ -48,12 +43,12 @@ namespace Vidyano.Web2
             }
         }
 #if DEBUG
-        public HttpResponseMessage Get(string id = null, string color1 = null, string color2 = null)
+        public HttpResponseMessage Get(string id = null)
         {
             if (string.IsNullOrEmpty(id))
                 return new HttpResponseMessage { Content = new StringContent(File.ReadAllText(HostingEnvironment.MapPath("~/index.html")), Encoding.UTF8, "text/html") };
 #else
-        public HttpResponseMessage Get(string id, string color1 = null, string color2 = null)
+        public HttpResponseMessage Get(string id)
         {
 #endif
             var extension = Path.GetExtension(id);
@@ -67,7 +62,7 @@ namespace Vidyano.Web2
             switch (extension)
             {
                 case ".html":
-                    var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), null, null);
+                    var html = Vulcanizer.Generate(id, File.ReadAllText(filePath));
                     return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[extension]) };
 
                 case ".css":
@@ -76,19 +71,15 @@ namespace Vidyano.Web2
             }
 #endif
 
-            if (extension == ".css")
-                id = Path.ChangeExtension(id, "less");
-
-            var args = Tuple.Create(id, color1 ?? GetCookie("ThemeColor1") ?? defaultColor1, color2 ?? GetCookie("ThemeColor2") ?? defaultColor2);
             var ifNoneMatch = Request.Headers.IfNoneMatch.FirstOrDefault();
             Tuple<string, string> cacheInfo;
-            if (cache.TryGetValue(args, out cacheInfo) && ifNoneMatch?.Tag == cacheInfo.Item1)
+            if (cache.TryGetValue(id, out cacheInfo) && ifNoneMatch?.Tag == cacheInfo.Item1)
                 return new HttpResponseMessage(HttpStatusCode.NotModified);
 
             string content;
             lock (syncRoot)
             {
-                if (cacheInfo == null && !cache.TryGetValue(args, out cacheInfo))
+                if (cacheInfo == null && !cache.TryGetValue(id, out cacheInfo))
                 {
                     try
                     {
@@ -97,14 +88,11 @@ namespace Vidyano.Web2
                         switch (extension)
                         {
                             case ".css":
-                                content = Less.Generate(id, content, args.Item2, args.Item3);
-                                break;
-
                             case ".js":
                                 break;
 
                             case ".html":
-                                content = Vulcanizer.Generate(id, content, args.Item2, args.Item3);
+                                content = Vulcanizer.Generate(id, content);
                                 break;
 
                             default:
@@ -112,7 +100,7 @@ namespace Vidyano.Web2
                         }
 
                         cacheInfo = Tuple.Create("\"" + GetSHA256(content) + "\"", content);
-                        cache[args] = cacheInfo;
+                        cache[id] = cacheInfo;
                     }
                     catch (FileNotFoundException fnfe)
                     {
@@ -136,15 +124,6 @@ namespace Vidyano.Web2
 
             var response = new HttpResponseMessage { Content = httpContent };
             response.Headers.ETag = new EntityTagHeaderValue(cacheInfo.Item1);
-
-            if (id.EndsWith("vidyano.html", StringComparison.OrdinalIgnoreCase) && (color1 != null || color2 != null || !Request.Headers.GetCookies("ThemeColor1").Any()))
-            {
-                response.Headers.AddCookies(new[]
-                {
-                    new CookieHeaderValue("ThemeColor1", color1 ?? defaultColor1) { Expires = DateTimeOffset.Now.AddYears(1) },
-                    new CookieHeaderValue("ThemeColor2", color2 ?? defaultColor2) { Expires = DateTimeOffset.Now.AddYears(1) }
-                });
-            }
 
             return response;
         }

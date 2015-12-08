@@ -350,7 +350,7 @@ module Vidyano {
                         resolve(result);
 
                         if (result.operations)
-                            result.operations.forEach(o => this.hooks.onClientOperation(o));
+                            setTimeout(() => result.operations.forEach(o => this.hooks.onClientOperation(o)), 0);                        
                     } else if (result.exception == "Session expired") {
                         this.authToken = null;
                         delete data.authToken;
@@ -825,19 +825,17 @@ module Vidyano {
             if (asLookup)
                 data.asLookup = asLookup;
 
-            return new Promise((resolve, reject) => {
-                this._postJSON(this._createUri("ExecuteQuery"), data).then(result => {
-                    if (result.exception == null) {
-                        resolve(result.result);
-                    }
-                    else {
-                        query.setNotification(result.exception, NotificationType.Error);
-                        reject(result.exception);
-                    }
-                }, e => {
-                    query.setNotification(e, NotificationType.Error);
-                    reject(e);
-                });
+            return this._postJSON(this._createUri("ExecuteQuery"), data).then(result => {
+                if (result.exception == null) {
+                    return result.result;
+                }
+                else {
+                    query.setNotification(result.exception, NotificationType.Error);
+                    throw result.exception;
+                }
+            }, e => {
+                query.setNotification(e, NotificationType.Error);
+                throw e;
             });
         }
 
@@ -3160,7 +3158,7 @@ module Vidyano {
                     var now = new Date();
                     return new Promise((resolve, reject) => {
                         setTimeout(() => {
-                            if (!this._lastUpdated || this._lastUpdated < now)
+                            if (!this._lastUpdated || this._lastUpdated <= now)
                                 search().then(result => resolve(result), e => reject(e));
                             else
                                 resolve(this.items);

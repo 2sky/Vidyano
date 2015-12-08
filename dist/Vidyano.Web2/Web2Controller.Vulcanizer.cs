@@ -10,7 +10,7 @@ namespace Vidyano.Web2
             private static readonly Regex scriptRe = new Regex("<script src=\"(.+?)\".*?</script>");
             private static readonly Regex linkRe = new Regex("<link.*?href=\"(.+?.css)\".*?>");
 
-            public static string Generate(string path, string html, string color1, string color2)
+            public static string Generate(string path, string html)
             {
                 if (Vulcanize)
                 {
@@ -30,23 +30,13 @@ namespace Vidyano.Web2
 
                     html = linkRe.Replace(html, match =>
                     {
-#if DEBUG
                         var id = directory + match.Groups[1].Value;
+#if DEBUG
                         var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), "../../src/" + id);
                         return "<style>" + File.ReadAllText(filePath) + "</style>";
 #else
-                        var id = directory + (match.Groups[1].Value.Replace(".css", ".less"));
-                        try
-                        {
-                            return "<style>" + Less.Generate(id, GetEmbeddedResource(id), color1, color2) + "</style>";
-                        }
-                        catch (FileNotFoundException)
-                        {
-                            /* LESS file for this css request was not found. */
-                        }
+                        return "<style>" + GetEmbeddedResource(id) + "</style>";
 #endif
-
-                        return match.Value;
                     });
                 }
 
