@@ -55,9 +55,15 @@ $border-color: #ddd;
                 padding-left: var(--theme-h5);
                 background-color: transparent;
                 font-size: 13px;
+                @apply(--vi-select-input);
 
                 &[disabled] {
                     color: inherit !important;
+                    @apply(--vi-select-input-disabled);
+                }
+
+                &:hover {
+                    @apply(--vi-select-input-hover);
                 }
             }
         }

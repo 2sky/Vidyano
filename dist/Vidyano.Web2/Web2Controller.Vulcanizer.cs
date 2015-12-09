@@ -40,17 +40,13 @@ namespace Vidyano.Web2
                 {
                     var id = directory + match.Groups[1].Value;
 #if DEBUG
-                        var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), "../../src/" + id);
-                        return "<style>" + File.ReadAllText(filePath) + "</style>";
-#endif
-
+                    return "<style>" + File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), "../../src/" + id)) + "</style>";
+#else
                     if (useLocalFileSystem)
-                    {
-                        var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id);
-                        return "<style>" + File.ReadAllText(filePath) + "</style>";
-                    }
+                        return "<style>" + File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id)) + "</style>";
 
                     return "<style>" + GetEmbeddedResource(id) + "</style>";
+#endif
                 });
 
                 return html;
