@@ -28,13 +28,8 @@ module Vidyano.WebComponents {
         attached() {
             super.attached();
 
-            var footerElements = Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).memoize();
-            if (!footerElements.isEmpty())
-                footerElements.forEach(element => Polymer.dom(this.$["footerElements"]).appendChild(element));
-
-            var headerElements = Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).memoize();
-            if (!headerElements.isEmpty())
-                headerElements.forEach(element => Polymer.dom(this.$["headerElements"]).appendChild(element));
+            Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).forEach(element => Polymer.dom(this.$["footerElements"]).appendChild(element));
+            Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).forEach(element => Polymer.dom(this.$["headerElements"]).appendChild(element));
 
             this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
         }
