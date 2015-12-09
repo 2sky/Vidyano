@@ -350,7 +350,7 @@ module Vidyano {
                         resolve(result);
 
                         if (result.operations)
-                            setTimeout(() => result.operations.forEach(o => this.hooks.onClientOperation(o)), 0);                        
+                            setTimeout(() => result.operations.forEach(o => this.hooks.onClientOperation(o)), 0);
                     } else if (result.exception == "Session expired") {
                         this.authToken = null;
                         delete data.authToken;
@@ -2733,7 +2733,7 @@ module Vidyano {
             if (!this.autoQuery)
                 this.items = [];
 
-            this._canRead = query.canRead;
+            this._canRead = !!query.canRead;
             this._canReorder = !!query.canReorder;
             this.isHidden = query.isHidden;
             this.label = query.label;
@@ -2745,7 +2745,6 @@ module Vidyano {
             this.skip = query.skip;
             this.top = query.top;
             this.groupingInfo = query.groupingInfo;
-            this.selectAll = new QuerySelectAllImpl(this, !!query.isSystem && !query.maxSelectedItems, this._selectAllPropertyChanged.bind(this));
 
             this.persistentObject = query.persistentObject instanceof Vidyano.PersistentObject ? query.persistentObject : service.hooks.onConstructPersistentObject(service, query.persistentObject);
             this.singularLabel = this.persistentObject.label;
@@ -2768,6 +2767,7 @@ module Vidyano {
                 this._filters = null;
 
             this._canFilter = this._filters && this.actions.some(a => a.name === "Filter") && this.columns.some(c => c.canFilter);
+            this.selectAll = new QuerySelectAllImpl(this, !!query.isSystem && !query.maxSelectedItems && this.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue), this._selectAllPropertyChanged.bind(this));
 
             if (query.result)
                 this._setResult(query.result);
