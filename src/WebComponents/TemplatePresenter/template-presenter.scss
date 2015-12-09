@@ -1,17 +1,14 @@
 @import "../_vars.scss";
 
 :host {
-    display: block;
-    @include relative();
+    @include layout-horizontal();
 
     .content-wrapper {
         @include layout-horizontal();
         @include flex();
-        @include fit();
 
          ::content {
-            > :not(template) :first-child :nth-last-child(2),
-            > :not(template) :first-child :nth-last-child(2) ~ :not(template) {
+            > * {
                 @include flex();
             }
         }

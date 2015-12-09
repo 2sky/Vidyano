@@ -35,9 +35,7 @@
         <template is="dom-if" if="{{!initializing}}">
             <div class="fit layout horizontal">
                 <template is="dom-if" if="{{showMenu}}" restamp>
-                    <vi-menu menu label="{{label}}" items="{{service.application.programUnits}}" program-unit="{{programUnit}}">
-                        <content select="[menu-element]"></content>
-                    </vi-menu>
+                    <vi-menu menu label="{{label}}" items="{{service.application.programUnits}}" program-unit="{{programUnit}}"></vi-menu>
                 </template>
                 <content select="vi-app-route"></content>
                 <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>

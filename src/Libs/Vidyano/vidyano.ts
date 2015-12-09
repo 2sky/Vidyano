@@ -2803,6 +2803,9 @@ module Vidyano {
 
             var oldCharts = this._charts;
             this.notifyPropertyChanged("charts", this._charts = Enumerable.from(charts).memoize(), oldCharts);
+
+            if (charts && this.defaultChartName && !this.currentChart)
+                this.currentChart = this.charts.firstOrDefault(c => c.name === this._defaultChartName);
         }
 
         get currentChart(): QueryChart {
@@ -2828,7 +2831,7 @@ module Vidyano {
             var oldDefaultChart = this._defaultChartName;
             this.notifyPropertyChanged("defaultChartName", this._defaultChartName = defaultChart !== undefined ? defaultChart : null, oldDefaultChart);
 
-            if (defaultChart && !this.currentChart)
+            if (this.charts && defaultChart && !this.currentChart)
                 this.currentChart = this.charts.firstOrDefault(c => c.name === this._defaultChartName);
         }
 

@@ -28,6 +28,10 @@ module Vidyano.WebComponents {
         attached() {
             super.attached();
 
+            var footerElements = Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).memoize();
+            if (!footerElements.isEmpty())
+                footerElements.forEach(element => Polymer.dom(this.$["footerElements"]).appendChild(element));
+
             this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
         }
 
