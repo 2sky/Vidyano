@@ -315,6 +315,11 @@
         customStyle: { [key: string]: string };
 
         /**
+         * Returns the computed style value for the given property.
+         */
+        getComputedStyleValue: (property: string) => string;
+
+        /**
          * Revaluates custom property values.
          */
         updateStyles: () => void;

@@ -31,7 +31,6 @@ namespace Vidyano.Web2
         private static readonly object syncRoot = new object();
 
         public static bool Compress = true;
-        public static bool Vulcanize = true;
 
         static Web2Controller()
         {
@@ -42,6 +41,8 @@ namespace Vidyano.Web2
                 names[cleanName.Replace("-", "_")] = cleanName;
             }
         }
+
+        [AcceptVerbs("GET")]
 #if DEBUG
         public HttpResponseMessage Get(string id = null)
         {
@@ -126,6 +127,14 @@ namespace Vidyano.Web2
             response.Headers.ETag = new EntityTagHeaderValue(cacheInfo.Item1);
 
             return response;
+        }
+
+        [AcceptVerbs("GET")]
+        public HttpResponseMessage Vulcanize(string id)
+        {
+            var filePath = Path.Combine(HostingEnvironment.MapPath("~"), id);
+            var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), true);
+            return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[".html"]) };
         }
 
         private string GetCookie(string name)

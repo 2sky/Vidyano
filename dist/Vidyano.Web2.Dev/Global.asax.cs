@@ -14,7 +14,7 @@ namespace Vidyano.Web2.Dev
                 config.EnableCors(new EnableCorsAttribute("*", "*", "*"));
             });
 
-            RouteTable.Routes.MapVidyanoWeb2Route("{*id}");
+            RouteTable.Routes.MapVidyanoWeb2Route("");
         }
     }
 }

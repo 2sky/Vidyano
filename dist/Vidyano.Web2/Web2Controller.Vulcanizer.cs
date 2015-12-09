@@ -10,35 +10,48 @@ namespace Vidyano.Web2
             private static readonly Regex scriptRe = new Regex("<script src=\"(.+?)\".*?</script>");
             private static readonly Regex linkRe = new Regex("<link.*?href=\"(.+?.css)\".*?>");
 
-            public static string Generate(string path, string html)
+            public static string Generate(string path, string html, bool useLocalFileSystem = false)
             {
-                if (Vulcanize)
-                {
-                    var directory = Path.GetDirectoryName(path);
-                    if (!string.IsNullOrEmpty(directory))
-                        directory += "/";
+#if DEBUG
+                useLocalFileSystem = true;
+#endif
+                var directory = Path.GetDirectoryName(path);
+                if (!string.IsNullOrEmpty(directory))
+                    directory += "/";
 
 #if !DEBUG
-                    html = scriptRe.Replace(html, match =>
-                    {
-                        var src = match.Groups[1].Value;
-                        var script = GetEmbeddedResource(directory + src);
 
-                        return "<script>" + script + "</script>";
-                    });
+                html = scriptRe.Replace(html, match =>
+                {
+                    var src = match.Groups[1].Value;
+
+                    if (useLocalFileSystem)
+                    {
+                        var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), directory + src);
+                        return "<script>" + File.ReadAllText(filePath) + "</script>";
+                    }
+
+                    var script = GetEmbeddedResource(directory + src);
+                    return "<script>" + script + "</script>";
+                });
 #endif
 
-                    html = linkRe.Replace(html, match =>
-                    {
-                        var id = directory + match.Groups[1].Value;
+                html = linkRe.Replace(html, match =>
+                {
+                    var id = directory + match.Groups[1].Value;
 #if DEBUG
                         var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), "../../src/" + id);
                         return "<style>" + File.ReadAllText(filePath) + "</style>";
-#else
-                        return "<style>" + GetEmbeddedResource(id) + "</style>";
 #endif
-                    });
-                }
+
+                    if (useLocalFileSystem)
+                    {
+                        var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id);
+                        return "<style>" + File.ReadAllText(filePath) + "</style>";
+                    }
+
+                    return "<style>" + GetEmbeddedResource(id) + "</style>";
+                });
 
                 return html;
             }

@@ -5,9 +5,10 @@ namespace Vidyano.Web2
 {
     public static class Web2ControllerFactory
     {
-        public static Route MapVidyanoWeb2Route(this RouteCollection routes, string routeTemplate = "web2/{*id}")
+        public static void MapVidyanoWeb2Route(this RouteCollection routes, string routeTemplate = "web2/")
         {
-            return routes.MapHttpRoute("VidyanoWeb2", routeTemplate, new { controller = "Web2", id = RouteParameter.Optional });
+            routes.MapHttpRoute("VidyanoWeb2 Vulcanize", routeTemplate + "vulcanize/{*id}", new { controller = "Web2", action = "Vulcanize", id = RouteParameter.Optional });
+            routes.MapHttpRoute("VidyanoWeb2", routeTemplate + "{*id}", new { controller = "Web2", action = "Get", id = RouteParameter.Optional });
         }
     }
 }

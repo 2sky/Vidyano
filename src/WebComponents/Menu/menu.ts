@@ -32,6 +32,10 @@ module Vidyano.WebComponents {
             if (!footerElements.isEmpty())
                 footerElements.forEach(element => Polymer.dom(this.$["footerElements"]).appendChild(element));
 
+            var headerElements = Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).memoize();
+            if (!headerElements.isEmpty())
+                headerElements.forEach(element => Polymer.dom(this.$["headerElements"]).appendChild(element));
+
             this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
         }
 
