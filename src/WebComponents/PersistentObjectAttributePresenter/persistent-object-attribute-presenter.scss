@@ -105,7 +105,7 @@
         @include layout-horizontal();
         @include flex();
 
-        *:not(template) {
+        .attribute {
             @include flex();
         }
     }
