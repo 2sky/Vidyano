@@ -87,7 +87,7 @@
         }
     }
 
-    &[editing][required]:not([bulk-edit]) .required {
+    &[editing][required]:not([bulk-edit]):not([read-only]) .required {
         display: inline-block;
     }
 
