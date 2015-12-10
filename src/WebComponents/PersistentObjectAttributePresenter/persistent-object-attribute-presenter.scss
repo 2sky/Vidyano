@@ -99,18 +99,13 @@
         > .label {
             display: none;
         }
-
-        > .attribute {
-            top: 0;
-        }
     }
 
     #content {
         @include layout-horizontal();
         @include flex();
 
-        .attribute {
-            @include layout-horizontal();
+        *:not(template) {
             @include flex();
         }
     }
