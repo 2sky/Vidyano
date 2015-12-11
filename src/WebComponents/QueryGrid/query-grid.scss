@@ -293,7 +293,8 @@
     }
 
     &[can-select]:not([can-select-all]):not([inline-actions]):not([can-filter]),
-    &[inline-actions]:not([can-select]):not([can-select-all]):not([can-filter]) {
+    &[inline-actions]:not([can-select]):not([can-select-all]):not([can-filter]),
+    &[can-select][inline-actions][can-select-all]:not([can-filter]) {
         table[is="vi-query-grid-table-header"] {
             padding-left: var(--theme-h2);
         }
