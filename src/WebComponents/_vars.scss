@@ -106,40 +106,6 @@
     }
 }
 
-@mixin button() {
-    border-width: 1px;
-    border-style: solid;
-    display: inline-block;
-    cursor: pointer;
-    color: #ffffff;
-    font-weight: bold;
-    padding: 0.5em 1em;
-    text-decoration: none;
-    outline: none !important;
-
-    &:not(:disabled) {
-        &:active {
-            position: relative;
-            top: 1px;
-        }
-    }
-
-    &:disabled {
-        background-color: #888;
-    }
-}
-
-@mixin input() {
-    border: 1px solid #BBB;
-    padding: 6px;
-
-    &:focus {
-        outline: none;
-        border-width: 1px;
-        border-style: solid;
-    }
-}
-
 @mixin z-index1() {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
@@ -147,13 +113,10 @@
 }
 
 @mixin page-title() {
-    display: block;
     background-color: var(--theme-color);
     color: white;
-    padding-top: 2px;
     line-height: calc(var(--theme-h1) - 2px);
-    min-height: var(--theme-h1);
-    box-sizing: border-box;
+    height: var(--theme-h1);
     font-size: calc(var(--theme-h5) + var(--theme-h4));
     white-space: nowrap;
     overflow: hidden;
@@ -161,4 +124,5 @@
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
     padding: 0 var(--theme-h4);
+    z-index: 2;
 }

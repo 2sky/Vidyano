@@ -10,8 +10,6 @@
     }'};
 
     header {
-        line-height: var(--theme-h1);
-        z-index: 2;
         @include page-title();
     }
 
