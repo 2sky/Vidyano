@@ -2329,6 +2329,8 @@ module Vidyano {
             this.service.executeAction("Query.New", this.parent, this.lookup, null, { PersistentObjectAttributeId: this.id }).then(
                 po => {
                     po.ownerAttributeWithReference = this;
+                    po.stateBehavior = (po.stateBehavior || "") + " OpenAsDialog";
+
                     this.service.hooks.onOpen(po, false, true);
                 },
                 error => {
