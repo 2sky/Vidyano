@@ -23,4 +23,8 @@
             cursor: pointer;
         }
     }
+
+    span, input {
+        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+    }
 }

@@ -4,25 +4,33 @@
     @include layout-horizontal();
     @include relative();
 
+    --vi-select-input: #{'{
+        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+    }'};
+
+    input {
+        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+    }
+
     &:not([editing]) {
         a {
             @include layout-horizontal();
             text-decoration: none;
-            color: var(--theme-color);
-            fill: var(--theme-color);
+            color: var(--vi-persistent-object-attribute-foreground, --vi-theme-color);
+            fill: var(--vi-persistent-object-attribute-foreground, --vi-theme-color);
 
             &:visited {
-                color: var(--theme-color);
-                fill: var(--theme-color);
+                color: var(--vi-persistent-object-attribute-foreground, --vi-theme-color);
+                fill: var(--vi-persistent-object-attribute-foreground, --vi-theme-color);
             }
 
             &:hover {
-                color: var(--theme-color-light);
-                fill: var(--theme-color-light);
+                color: var(--vi-persistent-object-attribute-foreground, --vi-theme-color-light);
+                fill: var(--vi-persistent-object-attribute-foreground, --vi-theme-color-light);
             }
 
             &[disabled] {
-                color: #333 !important;
+                color: var(--vi-persistent-object-attribute-foreground, #333) !important;
             }
 
             span {

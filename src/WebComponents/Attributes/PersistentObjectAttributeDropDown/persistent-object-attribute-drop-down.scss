@@ -6,4 +6,12 @@
     vi-select {
         border: none;
     }
+
+    span, vi-select {
+        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+
+        --vi-select-input: #{'{
+            color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+        }'};
+    }
 }

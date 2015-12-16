@@ -7,4 +7,8 @@
         @include flex();
         resize: none;
     }
+
+    marked-element, textarea {
+		color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+	}
 }

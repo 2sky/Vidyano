@@ -7,4 +7,8 @@
         padding-top: var(--theme-h5);
         line-height: normal !important;
     }
+
+	span, pre, input, textarea {
+		color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+	}
 }

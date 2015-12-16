@@ -3,8 +3,12 @@
 :host {
 	@include layout-horizontal();
 
-	> span {
+	span {
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+
+	span, input {
+		color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
 	}
 }

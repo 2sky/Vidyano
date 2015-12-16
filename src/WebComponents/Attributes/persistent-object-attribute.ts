@@ -41,6 +41,7 @@ module Vidyano.WebComponents.Attributes {
             "User": ["NullableUser"]
         };
 
+        private _foreground: string;
         attribute: Vidyano.PersistentObjectAttribute;
         value: any;
         editing: boolean;
@@ -66,6 +67,19 @@ module Vidyano.WebComponents.Attributes {
 
         private _computeHasError(validationError: string): boolean {
             return !StringEx.isNullOrEmpty(validationError);
+        }
+
+        private _updateForegroundDataTypeHint(attribute: Vidyano.PersistentObjectAttribute, isEditing: boolean, isReadOnly: boolean) {
+            var foreground = this.attribute.getTypeHint("foreground", null, true);
+
+            if ((!isEditing || isReadOnly) && foreground) {
+                this._foreground = this.customStyle["--vi-persistent-object-attribute-foreground"] = foreground;
+                this.updateStyles();
+            }
+            else if (this._foreground) {
+                this._foreground = this.customStyle["--vi-persistent-object-attribute-foreground"] = null;
+                this.updateStyles();
+            }
         }
 
         static register(info: WebComponentRegistrationInfo = {}): any {
@@ -129,6 +143,9 @@ module Vidyano.WebComponents.Attributes {
                 info.forwardObservers.push("_optionsChanged(attribute.options)");
                 info.forwardObservers.push("_editingChanged(attribute.parent.isEditing)");
                 info.forwardObservers.push("_attributeValueChanged(attribute.value)");
+
+                info.observers = info.observers || [];
+                info.observers.push("_updateForegroundDataTypeHint(attribute, editing, readOnly)");
 
                 var ctor = WebComponent.register(obj, info);
 

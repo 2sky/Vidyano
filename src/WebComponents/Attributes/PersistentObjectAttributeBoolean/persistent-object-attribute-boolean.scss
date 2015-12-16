@@ -7,6 +7,14 @@
         height: 16px;
         line-height: 16px;
 	}
+
+    --vi-select-input: #{'{
+        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+    }'};
+
+    vi-checkbox {
+        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+    }
 }
 
 

@@ -9,4 +9,8 @@
         white-space: nowrap;
         line-height: var(--theme-h2);
     }
+
+    span, input {
+        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+    }
 }
