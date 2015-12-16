@@ -17,6 +17,16 @@
         -webkit-transition: border-color 0.2s ease-in-out;
         transition: border-color 0.2s ease-in-out;
         @apply(--vi--attribute-edit-box);
+
+        .buttons {
+            @apply(--vi--attribute-edit-buttons);
+        }
+    }
+
+    &.reverse-content {
+        .box {
+            @include layout-horizontal-reverse();
+        }
     }
 
     #errorIndicator {
@@ -96,27 +106,6 @@
             border: none;
             outline: none;
             color: #333;
-        }
-
-        vi-select[content] {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            border: none;
-
-            vi-popup > #content {
-                -moz-transform: translateY(1px);
-                -ms-transform: translateY(1px);
-                -o-transform: translateY(1px);
-                -webkit-transform: translateY(1px);
-                transform: translateY(1px);
-            }
-
-            & + .buttons {
-                z-index: 2;
-            }
         }
     }
 

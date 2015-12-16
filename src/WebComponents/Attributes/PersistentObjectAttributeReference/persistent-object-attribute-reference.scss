@@ -47,10 +47,24 @@
             position: absolute;
             left: 0;
             right: 0;
+
+            vi-popup > #content {
+                -moz-transform: translateY(1px);
+                -ms-transform: translateY(1px);
+                -o-transform: translateY(1px);
+                -webkit-transform: translateY(1px);
+                transform: translateY(1px);
+            }
         }
 
         a[disabled] {
             display: none;
         }
+    }
+
+    vi-persistent-object-attribute-edit.reverse-content {
+        --vi--attribute-edit-buttons: #{'{
+            z-index: 2;
+        }'};
     }
 }

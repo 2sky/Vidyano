@@ -15,7 +15,7 @@
         </template>
         <template is="dom-if" if="{{editing}}">
             <template is="dom-if" if="{{attribute.selectInPlace}}">
-                <vi-persistent-object-attribute-edit attribute="{{attribute}}">
+                <vi-persistent-object-attribute-edit attribute="{{attribute}}" class="reverse-content">
                     <vi-select content class="flex" options="{{attribute.options}}" selected-option="{{objectId}}" readonly$="{{attribute.isReadOnly}}"></vi-select>
                     <a class="button" href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open">
                         <vi-icon source="ArrowUpRight"></vi-icon>

@@ -1,11 +1,11 @@
 ﻿<dom-module id="vi-persistent-object-attribute-edit">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-edit.css" />
-        <div class="box flex horizontal-reverse layout">
-            <div class="buttons self-start">
+        <div class="box flex horizontal layout">
+            <content select="[content]"></content>
+            <div class="buttons">
                 <content select=".button, button, vi-popup:not([content])"></content>
             </div>
-            <content select="[content]"></content>
         </div>
         <button id="errorIndicator" on-tap="_showError">
             <vi-popup open-on-hover content-align="center">

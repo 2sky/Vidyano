@@ -2,4 +2,8 @@
 
 :host {
     @include layout-horizontal();
+
+    vi-select {
+        border: none;
+    }
 }
