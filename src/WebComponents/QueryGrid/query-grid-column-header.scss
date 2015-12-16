@@ -5,6 +5,7 @@
     box-sizing: border-box;
     min-width: var(--theme-h2);
     border-right: 1px solid var(--theme-light-border);
+    @include relative();
 
     > div:first-child {
         height: var(--vi-query-grid-header-height, --theme-h2);
