@@ -2072,7 +2072,8 @@ module Vidyano {
                     value = value.substr(2);
                 if (value.endsWith(':00'))
                     value = value.substr(0, value.length - 3);
-            }
+            } else if (value != null && (this.type == "User" || this.type == "NullableUser") && this.options.length > 0)
+                value = this.options[0];
 
             if (format == "{0}") {
                 if (this.type == "Date" || this.type == "NullableDate")
