@@ -16,8 +16,8 @@ module Vidyano.WebComponents {
             this._load();
         }
 
-        addAlias(alias: string) {
-            resources[alias] = this;
+        addAlias(...alias: string[]) {
+            alias.forEach(a => resources[`${this.tagName}+${a.toUpperCase()}`] = this);
         }
 
         private _nameChanged(name: string, oldName: string) {
