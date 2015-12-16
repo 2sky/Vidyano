@@ -33,7 +33,8 @@ module Vidyano.WebComponents {
             "_computePersistentObject(persistentObjectId, persistentObjectObjectId, isAttached)"
         ],
         listeners: {
-            "activating": "_activating"
+            "activate": "_activate",
+            "deactivate": "_deactivate"
         },
         keybindings: {
             "f2": {
@@ -54,16 +55,16 @@ module Vidyano.WebComponents {
         private _setLoading: (loading: boolean) => void;
         private _setError: (error: string) => void;
 
-        private _activating(e: CustomEvent, detail: { route: AppRoute; parameters: { id?: string; objectId?: string; fromActionId?: string; }; }) {
-            this._setError(null);
-
+        private _activate(e: CustomEvent, detail: { route: AppRoute; parameters: { id?: string; objectId?: string; fromActionId?: string; }; }) {
             if (detail.parameters.fromActionId) {
                 if (this._cacheEntry = <PersistentObjectFromActionAppCacheEntry>detail.route.app.cachePing(new PersistentObjectFromActionAppCacheEntry(undefined, detail.parameters.fromActionId)))
                     this.persistentObject = this._cacheEntry.persistentObject;
 
                 if (!this.persistentObject) {
                     this._setLoading(false);
-                    this._setError(this.translations.UnableToLoadObject);
+                    this.app.redirectToNotFound();
+
+                    return;
                 }
             } else {
                 var cacheEntry = new PersistentObjectAppCacheEntry(detail.parameters.id, detail.parameters.objectId);
@@ -78,6 +79,40 @@ module Vidyano.WebComponents {
                     this.persistentObjectObjectId = this._cacheEntry.objectId || "";
                     this.persistentObjectId = this._cacheEntry.id;
                 }
+            }
+        }
+
+        private _deactivate(e: CustomEvent, detail: AppRouteDeactivateArgs) {
+            if (this.persistentObject && this.persistentObject.isDirty && this.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) {
+                e.preventDefault();
+
+                this.app.changePath(detail.route.path);
+
+                this.app.showMessageDialog( {
+                    title: this.app.service.getTranslatedMessage("PagesWithUnsavedChanges"),
+                    noClose: true,
+                    message: this.app.service.getTranslatedMessage("ConfirmLeavePage"),
+                    actions: [
+                        this.app.service.getTranslatedMessage("StayOnThisPage"),
+                        this.app.service.getTranslatedMessage("LeaveThisPage")
+                    ]
+                }).then(result => {
+                    if (result === 1) {
+                        Enumerable.from(this.app.cacheEntries).toArray().forEach(entry => {
+                            if (entry instanceof Vidyano.WebComponents.PersistentObjectAppCacheEntry && !!entry.persistentObject && entry.persistentObject.isDirty && entry.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) {
+                                if (entry.persistentObject.isNew)
+                                    this.app.cacheRemove(entry);
+                                else
+                                    entry.persistentObject.cancelEdit();
+                            }
+                        });
+
+                        this.app.changePath(detail.newPath);
+                        detail.resolve(true);
+                    }
+                    else
+                        detail.resolve(false);
+                });
             }
         }
 

@@ -12,14 +12,16 @@
             }
         },
         listeners: {
-            "activating": "_activating"
+            "activate": "_activate",
+            "sign-in": "_signIn"
         }
     })
     export class SignIn extends WebComponent {
+        private _returnUrl: string;
         error: string;
         image: string;
 
-        private _activating(e: CustomEvent, detail: { route: AppRoute }) {
+        private _activate(e: CustomEvent, detail: { route: AppRoute }) {
             var app = detail.route.app;
 
             if (app.service.isSignedIn) {
@@ -27,10 +29,13 @@
                 app.cacheClear();
             }
 
+            this._returnUrl = decodeURIComponent(detail.route.parameters.returnUrl || "");
+
             if (app.service.windowsAuthentication) {
                 app.service.signInUsingCredentials("", "").then(() => {
-                    app.changePath(decodeURIComponent(detail.route.parameters.returnUrl ? detail.route.parameters.returnUrl : ""));
+                    app.changePath(this._returnUrl);
                 });
+
                 return;
             }
 
@@ -50,6 +55,12 @@
                 this.$["image"].classList.add("has-image");
             else
                 this.$["image"].classList.remove("has-image");
+        }
+
+        private _signIn(e: CustomEvent) {
+            e.stopPropagation();
+
+            this.app.changePath(this._returnUrl);
         }
     }
 
@@ -179,7 +190,7 @@
                 this._setSigningIn(false);
 
                 if (currentRoute == this.app.currentRoute)
-                    this.app.changePath(decodeURIComponent(currentRoute.parameters.returnUrl ? currentRoute.parameters.returnUrl : ""));
+                    this.fire("sign-in", null);
             }, e => {
                     this._setSigningIn(false);
 

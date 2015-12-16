@@ -37,6 +37,7 @@
                 <template is="dom-if" if="{{showMenu}}" restamp>
                     <vi-menu menu label="{{label}}" items="{{service.application.programUnits}}" program-unit="{{programUnit}}"></vi-menu>
                 </template>
+                <vi-app-route route="Error/:message" component="Vidyano.WebComponents.AppRouteError"></vi-app-route>
                 <content select="vi-app-route"></content>
                 <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
                 <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
@@ -46,10 +47,10 @@
                 <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
                 <div id="dialogs"></div>
             </div>
+            <vi-app-route class="fit" route="SignIn(/:returnUrl)">
+                <vi-sign-in label="{{label}}" image="{{signInImage}}"></vi-sign-in>
+            </vi-app-route>
         </template>
-        <vi-app-route class="fit" route="SignIn(/:returnUrl)">
-            <vi-sign-in label="{{label}}" image="{{signInImage}}"></vi-sign-in>
-        </vi-app-route>
         <vi-app-config>
             <vi-persistent-object-attribute-config type="CommonMark" height="6" wrap-around></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="MultiLineString" height="4" wrap-around></vi-persistent-object-attribute-config>

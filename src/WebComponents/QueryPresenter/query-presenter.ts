@@ -29,7 +29,7 @@ module Vidyano.WebComponents {
             "_computeQuery(queryId, isAttached)"
         ],
         listeners: {
-            "activating": "_activating"
+            "activate": "_activate"
         }
     })
     export class QueryPresenter extends WebComponent {
@@ -53,7 +53,7 @@ module Vidyano.WebComponents {
             super.attached();
         }
 
-        private _activating(e: CustomEvent, detail: { route: AppRoute; parameters: any; }) {
+        private _activate(e: CustomEvent, detail: { route: AppRoute; parameters: any; }) {
             this._setApp(detail.route.app);
 
             this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(detail.parameters.id));

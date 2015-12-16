@@ -8,7 +8,7 @@ module Vidyano.WebComponents {
             }
         },
         listeners: {
-            "activating": "_activating"
+            "activate": "_activate"
         },
     })
     export class ProgramUnitPresenter extends WebComponent {
@@ -17,11 +17,21 @@ module Vidyano.WebComponents {
 
         private _setProgramUnit: (programUnit: Vidyano.ProgramUnit) => void;
 
-        private _activating(e: CustomEvent, detail: { route: AppRoute; parameters: { programUnitName: string; }; }) {
+        protected factoryImpl(app?: App) {
+            if (app instanceof Vidyano.WebComponents.App)
+                this._setApp(app);
+        }
+
+        private _activate(e: CustomEvent, detail: { route: AppRoute; parameters: { programUnitName: string; }; }) {
             if (!detail.route.app.service || !detail.route.app.service.application)
                 return;
 
             this._setProgramUnit(Enumerable.from(detail.route.app.service.application.programUnits).firstOrDefault(pu => pu.name == detail.parameters.programUnitName));
+            if (!this.programUnit) {
+                e.preventDefault();
+
+                this.app.redirectToNotFound();
+            }
         }
 
         private _programUnitChanged(programUnit: Vidyano.ProgramUnit, oldProgramUnit: Vidyano.ProgramUnit) {

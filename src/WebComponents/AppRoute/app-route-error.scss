@@ -1,0 +1,33 @@
+@import "../vars.scss";
+
+:host {
+    @include layout-horizontal();
+    @include layout-center-center();
+    color: var(--theme-color-error);
+    fill: var(--theme-color-error);
+
+    h1, h2 {
+        font-weight: normal;
+        text-align: center;
+        padding: var(--theme-h5) var(--theme-h3);
+        margin: 0;
+    }
+
+    h1 {
+        font-size: 20px;
+
+        &:empty {
+            display: none;
+        }
+    }
+
+    h2 {
+        font-size: 14px;
+    }
+
+    vi-icon {
+        --vi-icon-width: var(--theme-h1);
+        --vi-icon-height: var(--theme-h1);
+        margin-bottom: var(--theme-h4);
+    }
+}

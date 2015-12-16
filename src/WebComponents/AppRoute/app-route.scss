@@ -1,16 +1,19 @@
 @import "../vars.scss";
 
 :host {
-    @include relative();
     @include flex();
-    background-color: white;
-    @apply(--theme-shadow);
+    @include layout-horizontal();
+
+    .content-wrapper {
+        @include flex();
+        @include relative();
+
+        ::content > * {
+            @include fit();
+        }
+    }
 
     &:not([active]) {
         display: none;
-    }
-
-    .content-wrapper > ::content > * {
-        @include fit();
     }
 }

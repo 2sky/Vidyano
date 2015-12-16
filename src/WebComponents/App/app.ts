@@ -1,5 +1,6 @@
 ﻿module Vidyano.WebComponents {
     var hashBang: string = "#!/";
+    var hashBangRe: RegExp = /^#!\/?/;
 
     export class AppCacheEntry {
         constructor(public id: string) {
@@ -156,7 +157,8 @@
         },
         observers: [
             "_start(initializing, path)",
-            "_updateRoute(path, routeMapVersion)"
+            "_updateRoute(path, initializing, routeMapVersion)",
+            "_hookWindowBeforeUnload(noHistory, isAttached)"
         ],
         hostAttributes: {
             "theme-color-1": true,
@@ -174,9 +176,11 @@
         private _cache: AppCacheEntry[] = [];
         private _initializationError: string;
         private _routeMap: { [key: string]: AppRoute } = {};
+        private _routeUpdater: Promise<any> = Promise.resolve();
         private _keybindingRegistrations: { [key: string]: Keyboard.KeybindingRegistration[]; } = {};
         private routeMapVersion: number;
         private _configuration: AppConfig;
+        private _beforeUnloadEventHandler: EventListener;
         service: Vidyano.Service;
         programUnit: ProgramUnit;
         currentRoute: AppRoute;
@@ -280,6 +284,10 @@
                 this._cache.remove(entry);
         }
 
+        get cacheEntries(): Vidyano.WebComponents.AppCacheEntry[] {
+            return this._cache;
+        }
+
         cacheClear() {
             this._cache = [];
         }
@@ -300,6 +308,16 @@
                 if (!App.stripHashBang(route).startsWith("SignIn"))
                     this._routeMap[route].empty();
             }
+        }
+
+        redirectToNotFound() {
+            this.async(() => {
+                this.redirectToError("NotFound", true);
+            });
+        }
+
+        redirectToError(message: string, replaceCurrent?: boolean) {
+            this.changePath("Error/" + encodeURIComponent(message), replaceCurrent);
         }
 
         showDialog(dialog: Dialog, options?: DialogOptions): Promise<any> {
@@ -373,23 +391,51 @@
         }
 
         private _updateRoute(path: string) {
-            path = this._convertPath(this.service.application, path);
+            Polymer.dom(this).flush(); // Make sure all known routes are added
 
-            var mappedPathRoute = Vidyano.Path.match(hashBang + App.stripHashBang(path), true);
-            var currentRoute = this.currentRoute;
+            let currentRoute = this.currentRoute;
+            this._routeUpdater = this._routeUpdater.then(() => {
+                if (this.path !== path || this.currentRoute !== currentRoute)
+                    return;
 
-            // Find route and activate
-            if (mappedPathRoute) {
-                var route = this._routeMap[hashBang + App.stripHashBang(mappedPathRoute.path)];
-                if (route && route.activate(mappedPathRoute.params)) {
-                    if (currentRoute && currentRoute != route)
-                        currentRoute.deactivate();
+                path = Vidyano.WebComponents.App.stripHashBang(this._convertPath(this.service.application, path));
+                const hashBangPath = hashBang + path;
 
-                    this._setCurrentRoute(route);
+                const mappedPathRoute = !!path ? Vidyano.Path.match(hashBangPath, true) : null;
+                const newRoute = mappedPathRoute ? this._routeMap[App.stripHashBang(mappedPathRoute.path)] : null;
+
+                if (!!path && !newRoute) {
+                    this.redirectToNotFound();
+                    return;
                 }
+
+                if (this.currentRoute) {
+                    return currentRoute.deactivate(newRoute).then(proceed => {
+                        if (!proceed || currentRoute !== this.currentRoute)
+                            return;
+
+                        if (!!newRoute) {
+                            newRoute.activate(mappedPathRoute.params);
+                            this._setCurrentRoute(newRoute);
+                        }
+                    });
+                }
+                else if (!!newRoute) {
+                    newRoute.activate(mappedPathRoute.params);
+                    this._setCurrentRoute(newRoute);
+                }
+            });
+        }
+
+        private _appRouteAdded(e: Event, detail: { route: string; }) {
+            var route = App.stripHashBang(detail.route);
+
+            if (!this._routeMap[route]) {
+                Vidyano.Path.map(hashBang + route).to(() => this.path = Vidyano.Path.routes.current);
+                this._routeMap[route] = <AppRoute>e.target;
             }
-            else
-                this._setCurrentRoute(null);
+
+            this._setRouteMapVersion(this.routeMapVersion + 1);
         }
 
         private _computeProgramUnit(application: Vidyano.Application, path: string): ProgramUnit {
@@ -427,18 +473,23 @@
             }
         }
 
-        private _appRouteAdded(e: Event, detail: { route: string; component: string; }) {
-            this.async(() => {
-                if (this._routeMap[hashBang + App.stripHashBang(detail.route)] === undefined) {
-                    Vidyano.Path.map(hashBang + App.stripHashBang(detail.route)).to(() => {
-                        this.path = Vidyano.Path.routes.current;
-                    });
+        private _hookWindowBeforeUnload(noHistory: boolean, isAttached: boolean) {
+            if (this._beforeUnloadEventHandler) {
+                window.removeEventListener("beforeunload", this._beforeUnloadEventHandler);
+                this._beforeUnloadEventHandler = null;
+            }
 
-                    this._routeMap[hashBang + App.stripHashBang(detail.route)] = <AppRoute><any>e.target;
-                }
+            if (!noHistory && isAttached)
+                window.addEventListener("beforeunload", this._beforeUnloadEventHandler = this._beforeUnload.bind(this));
+        }
 
-                this._setRouteMapVersion(this.routeMapVersion + 1);
-            });
+        private _beforeUnload(e: Event) {
+            if (this._cache.some(entry => entry instanceof Vidyano.WebComponents.PersistentObjectAppCacheEntry && !!entry.persistentObject && entry.persistentObject.isDirty && entry.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) && this.service) {
+                var confirmationMessage = this.service.getTranslatedMessage("PagesWithUnsavedChanges");
+
+                (e || window.event).returnValue = <any>confirmationMessage; //Gecko + IE
+                return confirmationMessage; //Webkit, Safari, Chrome etc.
+            }
         }
 
         private _registerKeybindings(registration: Keyboard.KeybindingRegistration) {
@@ -498,8 +549,11 @@
             });
         }
 
-        static stripHashBang(path: string): string {
-            return path && path.replace(hashBang, "") || "";
+        static stripHashBang(path: string = ""): string {
+            if (!path.startsWith("#"))
+                return path;
+
+            return path.replace(hashBangRe, "");
         }
     }
 
