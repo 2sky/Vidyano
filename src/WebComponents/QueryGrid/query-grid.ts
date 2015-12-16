@@ -147,6 +147,8 @@
 
                     Polymer.dom(this.$["dataHeaderHost"]).appendChild(this._tableHeader.host);
                     Polymer.dom(this.$["dataHost"]).appendChild(this._tableData.host);
+
+                    this.updateStyles();
                 });
             }
 

@@ -16,6 +16,10 @@ module Vidyano.WebComponents {
             this._load();
         }
 
+        addAlias(alias: string) {
+            resources[alias] = this;
+        }
+
         private _nameChanged(name: string, oldName: string) {
             if (name)
                 resources[`${this.tagName}+${name.toUpperCase()}`] = this;
