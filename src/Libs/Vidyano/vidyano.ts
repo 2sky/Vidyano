@@ -2737,7 +2737,7 @@ module Vidyano {
                 this.items = [];
 
             this._canRead = !!query.canRead;
-            this._canReorder = !!query.canReorder;
+            this._canReorder = !!query.canReorder && !asLookup;
             this.isHidden = query.isHidden;
             this.label = query.label;
             this.notification = query.notification;
