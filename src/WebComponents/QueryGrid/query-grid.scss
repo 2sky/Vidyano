@@ -336,13 +336,13 @@
         z-index: 2;
     }
 
-    &:not([initializing]) {
+    &:not(.initializing) {
         #initializingOverlay {
             display: none;
         }
     }
 
-    &:not([is-busy]):not([initializing]) {
+    &:not([is-busy]):not(.initializing) {
         > vi-spinner {
             display: none;
         }

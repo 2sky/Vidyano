@@ -10,8 +10,8 @@
             initializing: {
                 type: Boolean,
                 readOnly: true,
-                reflectToAttribute: true,
-                value: true
+                value: true,
+                observer: "_initializingChanged"
             },
             isBusy: {
                 type: Boolean,
@@ -130,6 +130,7 @@
         viewportSize: Size;
         query: Vidyano.Query;
         asLookup: boolean;
+        initializing: boolean;
 
         private _setInitializing: (initializing: boolean) => void;
         private _setViewportSize: (size: Size) => void;
@@ -219,6 +220,10 @@
 
         private get _columnMenu(): PopupMenu {
             return <PopupMenu><any>this.$["columnMenu"];
+        }
+
+        private _initializingChanged() {
+            this.toggleClass("initializing", this.initializing);
         }
 
         private _sizeChanged(e: CustomEvent, detail: Size) {

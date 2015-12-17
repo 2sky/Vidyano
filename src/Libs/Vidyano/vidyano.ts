@@ -2742,7 +2742,7 @@ module Vidyano {
             this.label = query.label;
             this.notification = query.notification;
             this.notificationType = typeof (query.notificationType) == "number" ? query.notificationType : NotificationType[<string>query.notificationType];
-            this.offset = query.offset;
+            this.offset = query.offset || 0;
             this.textSearch = query.textSearch || "";
             this.pageSize = query.pageSize;
             this.skip = query.skip;
@@ -3291,7 +3291,7 @@ module Vidyano {
             this._selectedDistinctsInversed = !!col.excludes && col.excludes.length > 0;
             this._label = col.label;
             this._name = col.name;
-            this.offset = col.offset;
+            this.offset = col.offset || 0;
             this._type = col.type;
             this.isPinned = !!col.isPinned;
             this.isHidden = !!col.isHidden;

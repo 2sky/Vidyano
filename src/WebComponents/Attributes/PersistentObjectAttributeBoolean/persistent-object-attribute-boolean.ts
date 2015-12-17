@@ -11,7 +11,7 @@ module Vidyano.WebComponents.Attributes {
         properties: {
             options: {
                 type: Array,
-                computed: "_computeOptions(attribute)"
+                computed: "_computeOptions(attribute, isAttached)"
             }
         }
     })

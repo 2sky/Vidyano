@@ -8,7 +8,7 @@ module Vidyano.WebComponents {
             }
         },
         listeners: {
-            "activate": "_activate"
+            "app-route-activate": "_activate"
         },
     })
     export class ProgramUnitPresenter extends WebComponent {
@@ -17,16 +17,12 @@ module Vidyano.WebComponents {
 
         private _setProgramUnit: (programUnit: Vidyano.ProgramUnit) => void;
 
-        protected factoryImpl(app?: App) {
-            if (app instanceof Vidyano.WebComponents.App)
-                this._setApp(app);
-        }
-
-        private _activate(e: CustomEvent, detail: { route: AppRoute; parameters: { programUnitName: string; }; }) {
-            if (!detail.route.app.service || !detail.route.app.service.application)
+        private _activate(e: CustomEvent) {
+            const route = <AppRoute>Polymer.dom(this).parentNode;
+            if (!route.app.service || !route.app.service.application)
                 return;
 
-            this._setProgramUnit(Enumerable.from(detail.route.app.service.application.programUnits).firstOrDefault(pu => pu.name == detail.parameters.programUnitName));
+            this._setProgramUnit(Enumerable.from(route.app.service.application.programUnits).firstOrDefault(pu => pu.name == route.parameters.programUnitName));
             if (!this.programUnit) {
                 e.preventDefault();
 

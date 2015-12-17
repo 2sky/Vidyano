@@ -33,8 +33,8 @@ module Vidyano.WebComponents {
             "_computePersistentObject(persistentObjectId, persistentObjectObjectId, isAttached)"
         ],
         listeners: {
-            "activate": "_activate",
-            "deactivate": "_deactivate"
+            "app-route-activate": "_activate",
+            "app-route-deactivate": "_deactivate"
         },
         keybindings: {
             "f2": {
@@ -55,9 +55,11 @@ module Vidyano.WebComponents {
         private _setLoading: (loading: boolean) => void;
         private _setError: (error: string) => void;
 
-        private _activate(e: CustomEvent, detail: { route: AppRoute; parameters: { id?: string; objectId?: string; fromActionId?: string; }; }) {
-            if (detail.parameters.fromActionId) {
-                if (this._cacheEntry = <PersistentObjectFromActionAppCacheEntry>detail.route.app.cachePing(new PersistentObjectFromActionAppCacheEntry(undefined, detail.parameters.fromActionId)))
+        private _activate(e: CustomEvent) {
+            const route = <AppRoute>Polymer.dom(this).parentNode;
+
+            if (route.parameters.fromActionId) {
+                if (this._cacheEntry = <PersistentObjectFromActionAppCacheEntry>route.app.cachePing(new PersistentObjectFromActionAppCacheEntry(undefined, route.parameters.fromActionId)))
                     this.persistentObject = this._cacheEntry.persistentObject;
 
                 if (!this.persistentObject) {
@@ -67,10 +69,10 @@ module Vidyano.WebComponents {
                     return;
                 }
             } else {
-                var cacheEntry = new PersistentObjectAppCacheEntry(detail.parameters.id, detail.parameters.objectId);
-                this._cacheEntry = <PersistentObjectAppCacheEntry>detail.route.app.cachePing(cacheEntry);
+                var cacheEntry = new PersistentObjectAppCacheEntry(route.parameters.id, route.parameters.objectId);
+                this._cacheEntry = <PersistentObjectAppCacheEntry>route.app.cachePing(cacheEntry);
                 if (!this._cacheEntry)
-                    detail.route.app.cache(this._cacheEntry = cacheEntry);
+                    route.app.cache(this._cacheEntry = cacheEntry);
 
                 if (this._cacheEntry.persistentObject)
                     this.persistentObject = this._cacheEntry.persistentObject;
@@ -82,11 +84,14 @@ module Vidyano.WebComponents {
             }
         }
 
-        private _deactivate(e: CustomEvent, detail: AppRouteDeactivateArgs) {
+        private _deactivate(e: CustomEvent) {
             if (this.persistentObject && this.persistentObject.isDirty && this.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) {
                 e.preventDefault();
 
-                this.app.changePath(detail.route.path);
+                const route = <AppRoute>Polymer.dom(this).parentNode;
+                const newPath = this.app.path;
+
+                this.app.changePath(route.path);
 
                 this.app.showMessageDialog( {
                     title: this.app.service.getTranslatedMessage("PagesWithUnsavedChanges"),
@@ -107,11 +112,11 @@ module Vidyano.WebComponents {
                             }
                         });
 
-                        this.app.changePath(detail.newPath);
-                        detail.resolve(true);
+                        this.app.changePath(newPath);
+                        route.deactivator(true);
                     }
                     else
-                        detail.resolve(false);
+                        route.deactivator(false);
                 });
             }
         }

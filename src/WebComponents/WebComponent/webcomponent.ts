@@ -342,8 +342,15 @@
         protected _setApp: (app: Vidyano.WebComponents.App) => void;
 
         attached() {
-            if (!this.app)
-                this._setApp(<Vidyano.WebComponents.App>(this instanceof Vidyano.WebComponents.App ? this : this.findParent(e => e instanceof Vidyano.WebComponents.App)));
+            if (!this.app) {
+                if (this instanceof Vidyano.WebComponents.App)
+                    this._setApp(<Vidyano.WebComponents.App><any>this);
+                else {
+                    var component = <Vidyano.WebComponents.WebComponent>this.findParent(e => !!e && e instanceof Vidyano.WebComponents.App || (<any>e).app instanceof Vidyano.WebComponents.App);
+                    if (!!component)
+                        this._setApp(component instanceof Vidyano.WebComponents.App ? component : component.app);
+                }
+            }
 
             if (!this.translations && this.app && this.app.service && this.app.service.language)
                 this.translations = this.app.service.language.messages;
@@ -368,9 +375,8 @@
 
         findParent<T>(condition: (element: Node) => boolean): T {
             var element = this;
-            while (element != null && !condition(element)) {
-                element = (<any>element).host || element.parentElement;
-            }
+            while (!!element && !condition(element))
+                element = element.parentNode || (<any>element).host;
 
             return <T><any>element;
         }

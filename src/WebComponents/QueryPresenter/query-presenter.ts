@@ -29,7 +29,7 @@ module Vidyano.WebComponents {
             "_computeQuery(queryId, isAttached)"
         ],
         listeners: {
-            "activate": "_activate"
+            "app-route-activate": "_activate"
         }
     })
     export class QueryPresenter extends WebComponent {
@@ -53,15 +53,15 @@ module Vidyano.WebComponents {
             super.attached();
         }
 
-        private _activate(e: CustomEvent, detail: { route: AppRoute; parameters: any; }) {
-            this._setApp(detail.route.app);
+        private _activate(e: CustomEvent) {
+            const route = <AppRoute>Polymer.dom(this).parentNode;
 
-            this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(detail.parameters.id));
+            this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(route.parameters.id));
             if (this._cacheEntry && this._cacheEntry.query)
                 this.query = this._cacheEntry.query;
             else {
                 this.queryId = this.query = undefined;
-                this.queryId = detail.parameters.id;
+                this.queryId = route.parameters.id;
             }
         }
 

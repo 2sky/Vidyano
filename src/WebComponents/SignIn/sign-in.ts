@@ -12,7 +12,7 @@
             }
         },
         listeners: {
-            "activate": "_activate",
+            "app-route-activate": "_activate",
             "sign-in": "_signIn"
         }
     })
@@ -21,19 +21,19 @@
         error: string;
         image: string;
 
-        private _activate(e: CustomEvent, detail: { route: AppRoute }) {
-            var app = detail.route.app;
+        private _activate(e: CustomEvent) {
+            const route = <AppRoute>Polymer.dom(this).parentNode;
 
-            if (app.service.isSignedIn) {
-                app.service.signOut();
-                app.cacheClear();
+            if (route.app.service.isSignedIn) {
+                route.app.service.signOut();
+                route.app.cacheClear();
             }
 
-            this._returnUrl = decodeURIComponent(detail.route.parameters.returnUrl || "");
+            this._returnUrl = decodeURIComponent(route.parameters.returnUrl || "");
 
-            if (app.service.windowsAuthentication) {
-                app.service.signInUsingCredentials("", "").then(() => {
-                    app.changePath(this._returnUrl);
+            if (route.app.service.windowsAuthentication) {
+                route.app.service.signInUsingCredentials("", "").then(() => {
+                    route.app.changePath(this._returnUrl);
                 });
 
                 return;
@@ -41,7 +41,7 @@
 
             this.empty();
 
-            for (var name in app.service.providers) {
+            for (var name in route.app.service.providers) {
                 const provider = new WebComponents.SignInProvider();
                 provider.name = name;
 

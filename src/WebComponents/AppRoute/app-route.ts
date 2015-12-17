@@ -5,18 +5,6 @@ module Vidyano.WebComponents {
         new (app: App): AppRouteComponentConstructor;
     }
 
-    export interface AppRouteActivateArgs {
-        route: AppRoute;
-        parameters: { [key: string]: string };
-    }
-
-    export interface AppRouteDeactivateArgs {
-        route: AppRoute;
-        newRoute: AppRoute;
-        newPath: string;
-        resolve: (deactivate: boolean) => void;
-    }
-
     @WebComponent.register({
         properties: {
             route: {
@@ -30,8 +18,8 @@ module Vidyano.WebComponents {
             },
             active: {
                 type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
+                readOnly: true,
+                observer: "_activeChanged"
             },
             path: {
                 type: String,
@@ -45,6 +33,7 @@ module Vidyano.WebComponents {
         private _parameters: { [key: string]: string } = {};
         active: boolean;
         path: string;
+        deactivator: (result: boolean) => void;
 
         private _setActive: (val: boolean) => void;
         private _setPath: (val: string) => void;
@@ -73,7 +62,8 @@ module Vidyano.WebComponents {
                 Polymer.dom(this).flush();
             }
 
-            if (!component.fire("activate", { route: this, parameters: this._parameters = parameters }, { bubbles: false, cancelable: true }).defaultPrevented) {
+            this._parameters = parameters;
+            if (!component.fire("app-route-activate", null, { bubbles: false, cancelable: true }).defaultPrevented) {
                 this._setActive(true);
                 this._setPath(this.app.path);
             }
@@ -82,7 +72,9 @@ module Vidyano.WebComponents {
         deactivate(newRoute?: AppRoute): Promise<boolean> {
             return new Promise(resolve => {
                 var component = <WebComponent>Polymer.dom(this).children[0];
-                if (!component || !component.fire("deactivate", { route: this, newRoute: newRoute, resolve: resolve, newPath: this.app.path }, { bubbles: false, cancelable: true }).defaultPrevented)
+
+                this.deactivator = resolve;
+                if (!component || !component.fire("app-route-deactivate", null, { bubbles: false, cancelable: true }).defaultPrevented)
                     resolve(true);
             }).then(result => {
                 if (result)
@@ -94,6 +86,10 @@ module Vidyano.WebComponents {
 
         get parameters(): any {
             return this._parameters;
+        }
+
+        private _activeChanged() {
+            this.toggleClass("active", this.active);
         }
 
         private _componentChanged() {
