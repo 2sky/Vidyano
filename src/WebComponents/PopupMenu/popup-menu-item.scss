@@ -47,7 +47,7 @@
     }
 
     &[icon-space] {
-        > button {
+        > button ::content {
              > vi-icon {
                 display: inline-block !important;
                 visibility: hidden !important;
