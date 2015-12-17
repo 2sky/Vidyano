@@ -390,7 +390,10 @@
             return path;
         }
 
-        private _updateRoute(path: string) {
+        private _updateRoute(path: string, initializing: boolean, routeMapVersion: number) {
+            if (initializing || !routeMapVersion)
+                return;
+
             Polymer.dom(this).flush(); // Make sure all known routes are added
 
             let currentRoute = this.currentRoute;
