@@ -103,6 +103,12 @@ module Vidyano.WebComponents {
 
         private _track(e: PolymerTrackEvent) {
             var detail = <PolymerTrackDetail>e.detail;
+            if (!e.detail.sourceEvent.srcElement.tagName.startsWith("H")) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                return;
+            }
 
             if (detail.state == "track") {
                 this._set_translate({
