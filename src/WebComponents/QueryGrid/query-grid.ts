@@ -56,7 +56,7 @@
             canSelectAll: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "query.selectAll.isAvailable"
+                computed: "_computeCanSelectAll(canSelect, query.selectAll.isAvailable)"
             },
             selectAllSelected: {
                 type: Boolean,
@@ -326,6 +326,10 @@
 
         private _computeCanSelect(query: Vidyano.Query): boolean {
             return !!query && query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue);
+        }
+
+        private _computeCanSelectAll(canSelect: boolean, isAvailable: boolean): boolean {
+            return canSelect && isAvailable;
         }
 
         private _computeInlineActions(query: Vidyano.Query): boolean {

@@ -209,11 +209,11 @@
         }
 
         private _computeLayoutMasterActions(persistentObject: Vidyano.PersistentObject, masterTabs: Vidyano.PersistentObjectTab[] = []): boolean {
-            return !!persistentObject && masterTabs.some(t => t.parent.actions.some(a => a.isVisible || a.name == "Filter"));
+            return !!persistentObject && masterTabs.some(t => t.target.actions.some(a => a.isVisible || a.name == "Filter"));
         }
 
         private _computeLayoutDetailActions(persistentObject: Vidyano.PersistentObject, detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
-            return !!persistentObject && detailTabs.some(t => t.parent.actions.some(a => a.isVisible || a.name == "Filter"));
+            return !!persistentObject && detailTabs.some(t => t.target.actions.some(a => a.isVisible || a.name == "Filter"));
         }
 
         private _computeLayoutMasterTabs(persistentObject: Vidyano.PersistentObject, masterTabs: Vidyano.PersistentObjectTab[] = [], detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
