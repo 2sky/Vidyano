@@ -32,6 +32,10 @@ module Vidyano.WebComponents {
             Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).forEach(element => Polymer.dom(this.$["headerElements"]).appendChild(element));
 
             this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
+
+            // Fix for FireFox line-height calc bug (https://bugzilla.mozilla.org/show_bug.cgi?id=594933)
+            this.customStyle["--vi-menu-expanded-header-line-height"] = (parseInt(this.getComputedStyleValue("--theme-h1")) * 2) + "px";
+            this.updateStyles();
         }
 
         private _filterChanged() {

@@ -115,7 +115,7 @@
 @mixin page-title() {
     background-color: var(--theme-color);
     color: white;
-    line-height: calc(var(--theme-h1) - 2px);
+    line-height: var(--theme-h1);
     height: var(--theme-h1);
     font-size: calc(var(--theme-h5) + var(--theme-h4));
     white-space: nowrap;

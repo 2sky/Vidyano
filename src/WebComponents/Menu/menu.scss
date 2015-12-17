@@ -100,8 +100,8 @@
 
         span {
             display: block;
-            font-size: (var(--theme-h3));
-            line-height: calc(var(--theme-h1) * 2);
+            font-size: var(--theme-h3);
+            line-height: var(--vi-menu-expanded-header-line-height);
             background-color: var(--theme-color-dark);
         }
 
