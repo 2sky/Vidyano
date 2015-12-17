@@ -174,18 +174,12 @@ module Vidyano.WebComponents {
                 cellsElement.removeChild(oldCell);
             });
 
-            var width = Math.floor(this.width / this.columns);
-            this._cellsForEach((cell, x, y) => {
-                cell.style.width = width + "px";
-                if (x == 0 && y == 0) {
-                    this._setCellWidth(width);
-                    this._setCellHeight(parseInt(window.getComputedStyle(cell).height));
-                }
-            }, cells);
+            this._setCellWidth(Math.floor(this.width / this.columns));
+            this._setCellHeight(parseInt(this.getComputedStyleValue("--vi-persistent-object-tab-cell-height")));
 
-            cellsElement.style.width = (width * this.columns) + "px";
+            cellsElement.style.width = (this.cellWidth * this.columns) + "px";
             cellsElement.style.height = ((rows - 1) * this.cellHeight) + "px";
-            itemsElement.style.width = (width * this.columns) + "px";
+            itemsElement.style.width = (this.cellWidth * this.columns) + "px";
             itemsElement.style.height = ((rows - 1) * this.cellHeight) + "px";
 
             return cells;

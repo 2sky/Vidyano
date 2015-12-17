@@ -5,6 +5,8 @@ $cellHeight: var(--theme-h2);
 :host {
     @include layout-horizontal();
 
+    --vi-persistent-object-tab-cell-height: var(--theme-h2);
+
     > vi-scroller {
         @include flex();
     }
