@@ -3268,6 +3268,7 @@ module Vidyano {
         private _sortDirection: SortDirection;
         private _canSort: boolean;
         private _canFilter: boolean;
+        private _canListDistincts: boolean;
         private _name: string;
         private _type: string;
         private _label: string;
@@ -3285,8 +3286,9 @@ module Vidyano {
             super(service);
 
             this.displayAttribute = col.displayAttribute;
-            this._canSort = !col.disableSort;
+            this._canSort = !!col.canSort;
             this._canFilter = !!col.canFilter;
+            this._canListDistincts = !!col.canListDistincts;
             this._selectedDistincts = Enumerable.from(col.includes || col.excludes || []);
             this._selectedDistinctsInversed = !!col.excludes && col.excludes.length > 0;
             this._label = col.label;
@@ -3319,7 +3321,11 @@ module Vidyano {
         }
 
         get canSort(): boolean {
-            return this._canFilter;
+            return this._canSort;
+        }
+
+        get canListDistincts(): boolean {
+            return this._canListDistincts;
         }
 
         get isSorting(): boolean {

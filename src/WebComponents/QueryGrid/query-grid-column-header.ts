@@ -3,6 +3,11 @@
 
     @WebComponent.register({
         properties: {
+            disableSort: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            },
             sorting: {
                 type: String,
                 readOnly: true,
@@ -22,6 +27,7 @@
         private _sorting: string;
 
         private _setSorting: (sorting: string) => void;
+        private _setDisableSort: (disable: boolean) => void;
 
         attached() {
             super.attached();
@@ -60,7 +66,8 @@
                 this._columnObserver = this.column.column.propertyChanged.attach(this._columnPropertyChanged.bind(this));
 
                 this._updateLabel(column.label);
-                this._updateSortingIcon(this.column.sortDirection);
+                this._updateSortingIcon(column.sortDirection);
+                this._setDisableSort(!column.canSort);
             }
             else {
                 this._updateLabel("");

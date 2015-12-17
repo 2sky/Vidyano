@@ -190,7 +190,7 @@ module Vidyano.WebComponents {
             if (!this.column.canFilter)
                 return;
 
-            if (!this.column.column.distincts || this.column.distincts.isDirty) {
+            if (this.column.canListDistincts && (!this.column.column.distincts || this.column.distincts.isDirty)) {
                 this._setLoading(true);
 
                 this.column.column.refreshDistincts().then(() => {

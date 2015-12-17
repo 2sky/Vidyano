@@ -7,6 +7,14 @@
     border-right: 1px solid var(--theme-light-border);
     @include relative();
 
+    &[disable-sort] > div:first-child {
+        cursor: default;
+
+        & > label {
+            cursor: default;
+        }
+    }
+
     > div:first-child {
         height: var(--vi-query-grid-header-height, --theme-h2);
         padding: 0 var(--theme-h3) 0 var(--vi-query-grid-cell-padding, --theme-h5);
@@ -15,7 +23,6 @@
         color: #808080;
         white-space: nowrap;
         overflow: hidden;
-        @include theme-color-button-inverse();
         @include relative();
 
         > label {
@@ -27,16 +34,21 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             padding-right: var(--theme-h5);
+            color: var(--theme-color);
         }
 
         > vi-icon {
             position: absolute;
             right: var(--theme-h5);
             top: 0;
-            fill: #555;
+            fill: var(--theme-color);
             line-height: var(--theme-h2);
             height: var(--theme-h2);
         }
+    }
+
+    &:not([disable-sort]) > div:first-child {
+        @include theme-color-button-inverse();
 
         &:hover {
             > vi-icon {
@@ -45,6 +57,10 @@
         }
 
         &:active {
+            > label {
+                color: white !important;
+            }
+
             > vi-icon {
                 fill: white !important;
             }

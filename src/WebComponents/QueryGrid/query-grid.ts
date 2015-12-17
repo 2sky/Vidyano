@@ -776,6 +776,10 @@
             return this._column.canFilter;
         }
 
+        get canListDistincts(): boolean {
+            return this._column.canListDistincts;
+        }
+
         get sortDirection(): SortDirection {
             return this._column.sortDirection;
         }
