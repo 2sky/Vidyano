@@ -887,6 +887,46 @@ module Vidyano {
                 if (parent != null) {
                     var inputs = parent.getRegisteredInputs();
                     if (inputs.count() > 0) {
+                        var origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+                        if (this.serviceUri.startsWith("http") && !this.serviceUri.startsWith(origin) + "/") {
+                            Promise.all(inputs.select(input => {
+                                return new Promise((resolve, reject) => {
+                                    var file = input.value.files[0];
+                                    if (!file){
+                                        resolve(true);
+                                        return;
+                                    }
+
+                                    var attribute = parent.getAttribute(input.key);
+                                    var reader = new FileReader();
+
+                                    reader.onload = event => {
+                                        var fileName = attribute.value;
+                                        attribute.value = (<any>event.target).result.match(/,(.*)$/)[1];
+                                        if (attribute.type == "BinaryFile")
+                                            attribute.value = fileName + "|" + attribute.value;
+
+                                        resolve(true);
+                                    };
+                                    reader.onerror = function (e) {
+                                        reject(e);
+                                    };
+
+                                    reader.readAsDataURL(file);
+                                });
+                            }).toArray()).then(() => {
+                                data.parent = parent.toServiceObject();
+                                return this._postJSON(this._createUri("ExecuteAction"), data).then(result => {
+                                    if (result.exception == null)
+                                        resolve(result.result ? this.hooks.onConstructPersistentObject(this, result.result) : null);
+                                    else
+                                        reject(result.exception);
+                                });
+                            });
+
+                            return;
+                        }
+
                         var iframeName = "iframe-" + new Date();
                         var iframe = document.createElement("iframe");
                         iframe.src = "javascript:false;";
@@ -920,7 +960,7 @@ module Vidyano {
                             clonedForm.appendChild(input);
                         });
 
-                        var service = this;
+                        const service = this;
                         // NOTE: The first load event gets fired after the iframe has been injected into the DOM, and is used to prepare the actual submission.
                         iframe.onload = function (e: Event) {
                             // NOTE: The second load event gets fired when the response to the form submission is received. The implementation detects whether the actual payload is embedded in a <textarea> element, and prepares the required conversions to be made in that case.
