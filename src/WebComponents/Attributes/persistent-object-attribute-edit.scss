@@ -43,12 +43,14 @@
         .box {
             border-color: var(--theme-color-error) !important;
             @include relative();
+            z-index: 0;
 
-            &::after {
+            &::before {
                 content: " ";
                 opacity: 0.05;
                 background-color: var(--theme-color-error);
                 @include fit();
+                z-index: -1;
             }
         }
 
