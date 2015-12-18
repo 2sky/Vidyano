@@ -73,6 +73,11 @@
                 reflectToAttribute: true,
                 computed: "_computeCanFilter(query)"
             },
+            hasTotalItem: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "query.totalItem"
+            },
             _verticalScrollOffset: Number,
             _horizontalScrollOffset: {
                 type: Number,
@@ -89,6 +94,7 @@
             "query.isBusy",
             "query.lastUpdated",
             "query.totalItems",
+            "query.totalItem",
             "query.selectAll.isAvailable",
             "query.selectAll.allSelected",
             "_settings.columns"
@@ -103,11 +109,12 @@
         }
     })
     export class QueryGrid extends WebComponent {
-        private static tableCache: { header: QueryGridTableHeader; data: QueryGridTableData }[] = [];
+        private static tableCache: { header: QueryGridTableHeader; footer: QueryGridTableFooter, data: QueryGridTableData }[] = [];
         private static perf = performance;
 
         private _tableData: QueryGridTableData;
         private _tableHeader: QueryGridTableHeader;
+        private _tableFooter: QueryGridTableFooter;
         private _tablesUpdating: Promise<any>;
         private _tablesUpdatingTimestamp: Date;
         private _virtualTableOffset: number;
@@ -143,11 +150,13 @@
                 requestAnimationFrame(() => {
                     this._tableHeader = tableCache.header;
                     this._tableData = tableCache.data;
+                    this._tableFooter = tableCache.footer;
 
-                    this._tableHeader.grid = this._tableData.grid = this;
+                    this._tableHeader.grid = this._tableData.grid = this._tableFooter.grid = this;
 
                     Polymer.dom(this.$["dataHeaderHost"]).appendChild(this._tableHeader.host);
                     Polymer.dom(this.$["dataHost"]).appendChild(this._tableData.host);
+                    Polymer.dom(this.$["dataFooterHost"]).appendChild(this._tableFooter.host);
 
                     this.updateStyles();
                 });
@@ -167,7 +176,8 @@
 
                 var cachEntry = {
                     header: this._tableHeader,
-                    data: this._tableData
+                    data: this._tableData,
+                    footer: this._tableFooter
                 };
 
                 QueryGrid.tableCache.push(cachEntry);
@@ -175,17 +185,20 @@
                 requestAnimationFrame(() => {
                     Polymer.dom(headerFragment).appendChild(this._tableHeader.host);
                     Polymer.dom(dataFragment).appendChild(this._tableData.host);
+                    Polymer.dom(dataFragment).appendChild(this._tableFooter.host);
 
-                    this._tableHeader.grid = this._tableData.grid = null;
-                    this._tableHeader = this._tableData = null;
+                    this._tableHeader.grid = this._tableData.grid = this._tableFooter.grid = null;
+                    this._tableHeader = this._tableData = this._tableFooter = null;
                 });
 
-                this.transform("", this._tableHeader.host);
-                this._tableHeader.rows[0].columns.forEach(cell => {
-                    if (cell.column && cell.column.isPinned)
-                        this.transform("", cell.cell.parentElement);
+                [this._tableHeader, this._tableFooter].forEach(table => {
+                    this.transform("", table.host);
+                    table.rows[0].columns.forEach(cell => {
+                        if (cell.column && cell.column.isPinned)
+                            this.transform("", cell.cell.parentElement);
 
-                    cell.setColumn(null);
+                        cell.setColumn(null);
+                    });
                 });
 
                 Enumerable.from(this._tableData.rows).forEach((row: QueryGridTableDataRow) => {
@@ -247,7 +260,8 @@
                 this._actionMenu.close();
 
             this.transform(`translate(${-(this._horizontalScrollOffsetCurrent = horizontalScrollOffset) }px, 0)`, this._tableHeader.host);
-            [this._tableHeader, this._tableData].forEach(table => {
+            this.transform(`translate(${-(this._horizontalScrollOffsetCurrent = horizontalScrollOffset) }px, 0)`, this._tableFooter.host);
+            [this._tableHeader, this._tableData, this._tableFooter].forEach(table => {
                 table.rows.forEach(row => {
                     row.columns.forEach(column => {
                         if (column.host.classList.contains("pinned"))
@@ -359,13 +373,16 @@
                     if (!this._tableData)
                         Polymer.dom(this.$["dataHost"]).appendChild((this._tableData = new Vidyano.WebComponents.QueryGridTableData(this)).host);
 
-                    Promise.all([this._tableHeader.update(columns.length), this._tableData.update(items.length, columns.length)]).then(() => {
+                    if (!this._tableFooter)
+                        Polymer.dom(this.$["dataFooterHost"]).appendChild((this._tableFooter = new Vidyano.WebComponents.QueryGridTableFooter(this)).host);
+
+                    Promise.all([this._tableHeader.update(columns.length), this._tableFooter.update(columns.length), this._tableData.update(items.length, columns.length)]).then(() => {
                         (<QueryGridTableDataBody><any>this._tableData.section).enabled = canReorder;
 
                         var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                         console.info(`Tables Updated: ${Math.round(timeTaken) }ms`);
 
-                        this._updateTableHeaders(columns).then(cont => {
+                        this._updateTableHeadersAndFooters(columns).then(cont => {
                             if (!cont)
                                 return Promise.resolve();
 
@@ -388,7 +405,7 @@
             });
         }
 
-        private _updateTableHeaders(columns: QueryGridColumn[]): Promise<boolean> {
+        private _updateTableHeadersAndFooters(columns: QueryGridColumn[]): Promise<boolean> {
             return new Promise(resolve => {
                 this._requestAnimationFrame(() => {
                     if (columns !== this._columns) {
@@ -397,6 +414,7 @@
                     }
 
                     this._tableHeader.rows.forEach((row: QueryGridTableHeaderRow) => row.setColumns(columns))
+                    this._tableFooter.rows.forEach((row: QueryGridTableFooterRow) => row.setColumns(columns))
 
                     resolve(true);
                 });
@@ -485,7 +503,7 @@
                         var columnOffsets: { [key: string]: number; } = {};
                         var hasWidthsStyle = !!this._style.getStyle("ColumnWidths");
 
-                        [this._tableHeader, this._tableData].some(table => {
+                        [this._tableHeader, this._tableData, this._tableFooter].some(table => {
                             if (table.rows && table.rows.length > 0) {
                                 var offset = 0;
 
@@ -562,16 +580,18 @@
 
             if (detail && detail.column) {
                 var width = detail.save ? "" : `${detail.columnWidth}px`;
-                (<QueryGridTableDataRow[]>this._tableData.rows).forEach(r => {
-                    var col = Enumerable.from(r.columns).firstOrDefault(c => c.column === detail.column);
-                    if (col) {
-                        col.cell.style.width = width;
+                [this._tableData, this._tableFooter].forEach(table => {
+                    table.rows.forEach(r => {
+                        var col = Enumerable.from(r.columns).firstOrDefault(c => c.column === detail.column);
+                        if (col) {
+                            col.cell.style.width = width;
 
-                        if (!detail.save)
-                            col.host.classList.add("resizing");
-                        else
-                            col.host.classList.remove("resizing");
-                    }
+                            if (!detail.save)
+                                col.host.classList.add("resizing");
+                            else
+                                col.host.classList.remove("resizing");
+                        }
+                    });
                 });
 
                 if (detail.save)
@@ -946,6 +966,24 @@
         }
     }
 
+    export class QueryGridTableFooter extends QueryGridTable {
+        constructor(grid: QueryGrid) {
+            super("vi-query-grid-table-footer", grid);
+        }
+
+        update(columnCount: number): Promise<any> {
+            return super.update(1, columnCount);
+        }
+
+        protected _addRow(index: number): QueryGridTableRow {
+            return new Vidyano.WebComponents.QueryGridTableFooterRow(this, index);
+        }
+
+        protected _createSection(): HTMLTableSectionElement {
+            return <HTMLTableSectionElement>Polymer.dom(this.host).appendChild(document.createElement("tbody"));
+        }
+    }
+
     export class QueryGridTableData extends QueryGridTable {
         constructor(grid: QueryGrid) {
             super("vi-query-grid-table-data", grid);
@@ -1033,6 +1071,21 @@
 
         protected _createColumn(): QueryGridTableColumn {
             return new Vidyano.WebComponents.QueryGridTableHeaderColumn();
+        }
+    }
+
+    export class QueryGridTableFooterRow extends QueryGridTableRow {
+        constructor(table: QueryGridTableFooter, private _index: number) {
+            super("vi-query-grid-table-footer-row", table);
+        }
+
+        setColumns(columns: QueryGridColumn[]) {
+            var lastPinnedColumn = Enumerable.from(columns).lastOrDefault(c => c.isPinned);
+            this.columns.forEach((col, index) => col.setColumn(columns[index], columns[index] === lastPinnedColumn));
+        }
+
+        protected _createColumn(): QueryGridTableColumn {
+            return new Vidyano.WebComponents.QueryGridTableFooterColumn();
         }
     }
 
@@ -1241,8 +1294,14 @@
         }
 
         setColumn(column: QueryGridColumn, lastPinned?: boolean) {
-            if (this._column !== column)
+            if (this._column !== column) {
                 this.host.setAttribute("name", (this._column = column) ? Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(this._column.name) : "");
+                this.host.setAttribute("type", (this._column = column) ? this._column.type : "");
+                if (this._column && Vidyano.Service.isNumericType(this._column.type))
+                    this.host.setAttribute("numeric", "");
+                else
+                    this.host.removeAttribute("numeric");
+            }
 
             if (!this.column || !this.column.isPinned) {
                 this._isPinned = this._isLastPinned = false;
@@ -1289,6 +1348,16 @@
 
         setColumn(column: QueryGridColumn, isLastPinned: boolean) {
             super.setColumn((<QueryGridColumnHeader><any>this.cell).column = column, isLastPinned);
+        }
+    }
+
+    export class QueryGridTableFooterColumn extends QueryGridTableColumn {
+        constructor() {
+            super("vi-query-grid-table-footer-column", new Vidyano.WebComponents.QueryGridColumnFooter());
+        }
+
+        setColumn(column: QueryGridColumn, isLastPinned: boolean) {
+            super.setColumn((<QueryGridColumnFooter><any>this.cell).column = column, isLastPinned);
         }
     }
 

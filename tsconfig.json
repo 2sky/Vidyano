@@ -83,6 +83,7 @@
         "src/WebComponents/Query/query.ts",
         "src/WebComponents/QueryGrid/query-grid-cells.ts",
         "src/WebComponents/QueryGrid/query-grid-column-filter.ts",
+        "src/WebComponents/QueryGrid/query-grid-column-footer.ts",
         "src/WebComponents/QueryGrid/query-grid-column-header.ts",
         "src/WebComponents/QueryGrid/query-grid-configure-dialog.ts",
         "src/WebComponents/QueryGrid/query-grid-filters.ts",

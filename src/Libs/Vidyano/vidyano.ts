@@ -2697,6 +2697,7 @@ module Vidyano {
         private _currentChart: QueryChart = null;
         private _lastUpdated: Date;
         private _isReorderable: boolean;
+        private _totalItem: QueryResultItem;
 
         persistentObject: PersistentObject;
         columns: QueryColumn[];
@@ -2712,7 +2713,6 @@ module Vidyano {
         pageSize: number;
         skip: number;
         top: number;
-        totalItem: QueryResultItem;
         items: QueryResultItem[];
         groupingInfo: {
             groupedBy: string;
@@ -2923,6 +2923,18 @@ module Vidyano {
             return this._sortOptions;
         }
 
+        get totalItem(): QueryResultItem {
+            return this._totalItem;
+        }
+
+        private _setTotalItem(item: QueryResultItem) {
+            if (this._totalItem === item)
+                return;
+
+            var oldTotalItem = this._totalItem;
+            this.notifyPropertyChanged("totalItem", this._totalItem = item, oldTotalItem);
+        }
+
         set sortOptions(options: SortOption[]) {
             if (this._sortOptions === options)
                 return;
@@ -3022,7 +3034,7 @@ module Vidyano {
             this._updateItems(Enumerable.from(result.items).select(item => this.service.hooks.onConstructQueryResultItem(this.service, item, this)).toArray());
             this._setSortOptionsFromService(result.sortOptions);
 
-            this.totalItem = result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null;
+            this._setTotalItem(result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null);
 
             this.setNotification(result.notification, result.notificationType);
 
@@ -3275,6 +3287,7 @@ module Vidyano {
         private _distincts: QueryColumnDistincts;
         private _selectedDistincts: linqjs.Enumerable<string>;
         private _selectedDistinctsInversed: boolean;
+        private _total: QueryResultItemValue;
 
         offset: number;
         isPinned: boolean;
@@ -3373,6 +3386,16 @@ module Vidyano {
             this.notifyPropertyChanged("distincts", this._distincts = distincts, oldDistincts);
         }
 
+        get total(): QueryResultItemValue {
+            return this._total;
+        }
+
+        private _setTotal(total: QueryResultItemValue) {
+            var oldTotal = this._total;
+
+            this.notifyPropertyChanged("total", this._total = total, oldTotal);
+        }
+
         private _setSortDirection(direction: SortDirection) {
             if (this._sortDirection === direction)
                 return;
@@ -3450,7 +3473,8 @@ module Vidyano {
             if (args.propertyName == "sortOptions") {
                 var sortOption = this.query.sortOptions ? this.query.sortOptions.filter(option => option.column === this)[0] : null;
                 this._setSortDirection(sortOption ? sortOption.direction : SortDirection.None);
-            }
+            } else if (args.propertyName === "totalItem")
+                this._setTotal(sender.totalItem ? sender.totalItem.getFullValue(this.name) : null);
         }
     }
 
