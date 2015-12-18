@@ -247,6 +247,26 @@
                 &:hover, &[hover], &:hover td.pinned, &[hover] td.pinned {
                     background-color: var(--theme-color-faint);
                 }
+
+                &.disabled {
+                    color: $grey;
+
+                    td {
+                        cursor: default;
+                    }
+
+                    &:hover, &[hover], &:hover td.pinned, &[hover] td.pinned {
+                        background-color: $grey-100 !important;
+                    }
+                }
+
+                &.disabled, &.readonly {
+                    td[is="vi-query-grid-table-data-column-actions"], td[is="vi-query-grid-table-data-column-selector"] {
+                        > * {
+                            visibility: hidden;
+                        }
+                    }
+                }
             }
 
             &.pinned {

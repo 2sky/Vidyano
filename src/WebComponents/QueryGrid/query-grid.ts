@@ -628,6 +628,9 @@
         }
 
         private _itemActions(e: CustomEvent, detail: { row: QueryGridTableDataRow; host: HTMLElement; position: Position; }) {
+            if (detail.row.item.getTypeHint("extraclass", "").split(" ").map(c => c.toUpperCase()).some(c => c === "DISABLED" || c === "READONLY"))
+                return;
+
             var actions = (detail.row.item.query.actions || []).filter(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1));
             if (actions.length == 0)
                 return;
@@ -1207,6 +1210,9 @@
 
         private _tap(e: TapEvent) {
             if (!this.item)
+                return;
+
+            if (this.item.getTypeHint("extraclass", "").split(" ").some(c => c.toUpperCase() === "DISABLED"))
                 return;
 
             if (this.table.grid.query.canRead && !this.table.grid.query.asLookup && !this.table.grid.asLookup) {
