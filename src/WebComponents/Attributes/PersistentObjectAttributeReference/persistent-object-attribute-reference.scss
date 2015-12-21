@@ -8,6 +8,10 @@
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
     }'};
 
+    --vi-select-icon: #{'{
+        display: none;
+    }'};
+
     input {
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
     }

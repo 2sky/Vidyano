@@ -29,4 +29,11 @@
     input, span {
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
     }
+
+    vi-icon {
+        height: calc(var(--theme-h2) - 2px);
+        width: calc(var(--theme-h2) - 2px);
+        fill: var(--vi-select-icon-color, --theme-foreground);
+        @apply(--vi-persistent-object-attribute-flags-enum-icon);
+    }
 }

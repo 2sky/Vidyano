@@ -9,7 +9,10 @@
         <template is="dom-if" if="{{editing}}">
             <vi-persistent-object-attribute-edit attribute="{{attribute}}">
                 <vi-popup sticky content disabled$="{{readOnly}}">
-                    <input class="flex" header value="{{attribute.displayValue}}" readonly />
+                    <div header class="layout horizontal flex">
+                        <input class="flex" header value="{{attribute.displayValue}}" readonly />
+                        <vi-icon source="CaretDown"></vi-icon>
+                    </div>
                     <ul content>
                         <template is="dom-repeat" items="{{attribute.options}}">
                             <li>
