@@ -5,28 +5,28 @@
     @include relative();
 
     --vi-select-input: #{'{
-        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
     }'};
 
     input {
-        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
     }
 
     &:not([editing]) {
         a {
             @include layout-horizontal();
             text-decoration: none;
-            color: var(--vi-persistent-object-attribute-foreground, --vi-theme-color);
-            fill: var(--vi-persistent-object-attribute-foreground, --vi-theme-color);
+            color: var(--vi-persistent-object-attribute-foreground, --theme-color);
+            fill: var(--vi-persistent-object-attribute-foreground, --theme-color);
 
             &:visited {
-                color: var(--vi-persistent-object-attribute-foreground, --vi-theme-color);
-                fill: var(--vi-persistent-object-attribute-foreground, --vi-theme-color);
+                color: var(--vi-persistent-object-attribute-foreground, --theme-color);
+                fill: var(--vi-persistent-object-attribute-foreground, --theme-color);
             }
 
             &:hover {
-                color: var(--vi-persistent-object-attribute-foreground, --vi-theme-color-light);
-                fill: var(--vi-persistent-object-attribute-foreground, --vi-theme-color-light);
+                color: var(--vi-persistent-object-attribute-foreground, --theme-color-light);
+                fill: var(--vi-persistent-object-attribute-foreground, --theme-color-light);
             }
 
             &[disabled] {

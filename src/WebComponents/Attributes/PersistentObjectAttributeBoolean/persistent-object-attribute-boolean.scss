@@ -9,11 +9,11 @@
 	}
 
     --vi-select-input: #{'{
-        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
     }'};
 
     vi-checkbox {
-        color: var(--vi-persistent-object-attribute-foreground, --vi-theme-foreground);
+        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
     }
 }
 

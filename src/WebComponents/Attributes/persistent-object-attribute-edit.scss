@@ -108,6 +108,8 @@
             border: none;
             outline: none;
             color: #333;
+            max-width: 100%;
+            text-overflow: ellipsis;
         }
     }
 
