@@ -154,6 +154,18 @@ module Vidyano.WebComponents.Attributes {
             this.newAction.skipOpen = true;
             this.newAction.execute().then(po => {
                 this.push("attribute.objects", po);
+                
+                if (this.attribute.lookupAttribute && po.attributesByName[this.attribute.lookupAttribute]) {
+                    const lookupAttribute = <Vidyano.PersistentObjectAttributeWithReference>po.attributesByName[this.attribute.lookupAttribute];
+                    lookupAttribute.lookup.search();
+
+                    this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(lookupAttribute.lookup)).then(result => {
+                        if (!result)
+                            return;
+
+                        return lookupAttribute.changeReference(result).then();
+                    });
+                }
 
                 this.attribute.isValueChanged = true;
                 this.attribute.parent.triggerDirty();
