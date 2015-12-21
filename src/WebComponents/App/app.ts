@@ -538,7 +538,19 @@
             if (!this._keybindingRegistrations[e.detail.combo])
                 return;
 
-            var activeRegs = this._keybindingRegistrations[e.detail.combo].filter(reg => !reg.appRoute || reg.appRoute.active);
+            let combo = e.detail.combo;
+            if (e.detail.keyboardEvent.ctrlKey && combo.indexOf("ctrl") < 0)
+                combo = "ctrl+" + combo;
+            if (e.detail.keyboardEvent.shiftKey && combo.indexOf("shift") < 0)
+                combo = "shift+" + combo;
+            if (e.detail.keyboardEvent.altKey && combo.indexOf("alt") < 0)
+                combo = "alt+" + combo;
+
+            const registrations = this._keybindingRegistrations[combo];
+            if (!registrations)
+                return;
+
+            const activeRegs = registrations.filter(reg => !reg.appRoute || reg.appRoute.active);
             var highestPriorityRegs = Enumerable.from(activeRegs).groupBy(r => r.priority, r => r).orderByDescending(kvp => kvp.key()).firstOrDefault();
             if (!highestPriorityRegs || highestPriorityRegs.isEmpty())
                 return;
