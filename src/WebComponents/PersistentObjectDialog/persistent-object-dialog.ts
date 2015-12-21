@@ -5,6 +5,10 @@
             tab: {
                 type: Object,
                 computed: "_computeTab(persistentObject)"
+            },
+            readOnly: {
+                type: Boolean,
+                computed: "_computeReadOnly(tab)"
             }
         },
         hostAttributes: {
@@ -60,6 +64,10 @@
             tab.columnCount = 1;
 
             return tab;
+        }
+
+        private _computeReadOnly(tab: Vidyano.PersistentObjectAttributeTab): boolean {
+            return !tab.attributes.some(attribute => !attribute.isReadOnly && attribute.isVisible);
         }
 
         private _onSelectAction(e: Event) {
