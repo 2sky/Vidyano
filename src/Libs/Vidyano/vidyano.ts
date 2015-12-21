@@ -3775,7 +3775,7 @@ module Vidyano {
             return this._query.queueWork(() => {
                 return this._filtersPO.save().then(result => {
                     this._computeFilters();
-                    return this.getFilter(this.currentFilter.name);
+                    return this.getFilter(filter.name);
                 });
             });
         }
