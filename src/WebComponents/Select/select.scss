@@ -66,6 +66,12 @@ $border-color: #ddd;
                     @apply(--vi-select-input-hover);
                 }
             }
+
+            vi-icon {
+                height: calc(var(--theme-h2) - 2px);
+                width: calc(var(--theme-h2) - 2px);
+                fill: var(--vi-select-icon-color, --theme-foreground);
+            }
         }
 
         [content] {
