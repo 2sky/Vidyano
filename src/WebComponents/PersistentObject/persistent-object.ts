@@ -104,8 +104,6 @@
             super.attached();
 
             this.setAttribute("style-scope-id", this._uniqueId);
-            if (!this.masterWidth)
-                this.masterWidth = "40%";
         }
 
         detached() {
@@ -123,6 +121,14 @@
 
                 this.selectedMasterTab = this._cacheEntry.selectedMasterTab || this._computeMasterTabs(this.persistentObject, this.persistentObject.tabs)[0];
                 this.selectedDetailTab = this._cacheEntry.selectedDetailTab || this._computeDetailTabs(this.persistentObject, this.persistentObject.tabs)[0];
+
+                if (this.app.service.application.userSettings["PersistentObjectSettings"] &&
+                    this.app.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id] &&
+                    this.app.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id]["master-detail"]) {
+                        this.masterWidth = this.app.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id]["master-detail"];
+                }
+                else
+                    this.masterWidth = "40%";
             }
         }
 
@@ -270,6 +276,12 @@
                     var px = parseInt(this.masterWidth);
                     this.masterWidth = (100 / this.offsetWidth * px).toString() + "%";
                 }
+
+                const persistentObjectSettings = this.app.service.application.userSettings["PersistentObjectSettings"] || (this.app.service.application.userSettings["PersistentObjectSettings"] = {});
+                var thisPersistentObjectSettings = persistentObjectSettings[this.persistentObject.id] || (persistentObjectSettings[this.persistentObject.id] = {});
+                thisPersistentObjectSettings["master-detail"] = this.masterWidth;
+
+                this.app.service.application.saveUserSettings();
             }
 
             e.stopPropagation();
