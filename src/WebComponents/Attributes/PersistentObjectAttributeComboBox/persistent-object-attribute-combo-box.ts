@@ -31,6 +31,11 @@ module Vidyano.WebComponents.Attributes {
             }
         }
 
+        protected _valueChanged(newValue: any) {
+            if (this.attribute && newValue !== this.attribute.value)
+                this.attribute.setValue(newValue, true);
+        }
+
         protected _optionsChanged() {
             var options = this.attribute.options ? (<string[]>this.attribute.options).slice() : [];
 
