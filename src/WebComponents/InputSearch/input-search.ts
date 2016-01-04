@@ -21,13 +21,8 @@ module Vidyano.WebComponents {
         focused: boolean;
 
         private _searchKeypressed(e: KeyboardEvent) {
-            if (e.keyCode == 13) {
-                var input = <HTMLInputElement>this.$$("#input");
-                if (input)
-                    input.blur();
-
+            if (e.keyCode == 13)
                 this._searchClick();
-            }
         }
 
         private _searchClick(e?: TapEvent) {
