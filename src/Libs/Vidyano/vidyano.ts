@@ -2235,7 +2235,7 @@ module Vidyano {
         getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string {
             if (typeHints != null) {
                 if (this.typeHints != null)
-                    typeHints = Vidyano.extend({}, typeHints, this.typeHints);
+                    typeHints = Vidyano.extend({}, this.typeHints, typeHints);
             }
             else
                 typeHints = this.typeHints;
@@ -3837,7 +3837,7 @@ module Vidyano {
             return this._name;
         }
 
-        get options(): string {
+        get options(): any {
             return this._options;
         }
 
