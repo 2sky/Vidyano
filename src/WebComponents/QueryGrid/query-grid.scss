@@ -375,6 +375,15 @@
         td[is="vi-query-grid-table-data-column-actions"] + td[is="vi-query-grid-table-data-column"] {
             padding-left: var(--theme-h2) !important;
         }
+
+        #dataFooterHost {
+            padding-left: var(--theme-h2);
+            overflow: hidden;
+
+            &:after {
+                width: var(--theme-h2);
+            }
+        }
     }
 
     &[can-select-all]:not([can-filter]) {
