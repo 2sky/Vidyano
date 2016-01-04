@@ -15,9 +15,9 @@
             padding: var(--theme-h5) var(--theme-h3);
         }
 
-        svg {
-            width: var(--theme-h1);
-            height: var(--theme-h1);
+        vi-icon {
+            --vi-icon-width: var(--theme-h1);
+            --vi-icon-height: var(--theme-h1);
         }
     }
 
