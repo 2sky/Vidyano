@@ -78,9 +78,10 @@ module Vidyano.WebComponents.Attributes {
                             var URLObj = window["URL"] || window["webkitURL"];
                             var source = URLObj.createObjectURL(blob);
                             this._pasteCreateImage(source);
+
+                            e.preventDefault();
                         }
                     }
-                    e.preventDefault();
                 }
             }
         }
