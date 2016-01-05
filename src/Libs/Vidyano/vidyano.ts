@@ -2732,7 +2732,7 @@ module Vidyano {
         private _canFilter: boolean;
         private _canRead: boolean;
         private _canReorder: boolean;
-        private _charts: linqjs.Enumerable<QueryChart>;
+        private _charts: linqjs.Enumerable<QueryChart> = null;
         private _defaultChartName: string = null;
         private _currentChart: QueryChart = null;
         private _lastUpdated: Date;
@@ -3821,8 +3821,9 @@ module Vidyano {
         }
     }
 
-    export class QueryChart {
+    export class QueryChart extends Vidyano.Common.Observable<QueryChart> {
         constructor(private _query: Vidyano.Query, private _label: string, private _name: string, private _options: any, private _type: string) {
+            super();
         }
 
         get query(): Vidyano.Query {
