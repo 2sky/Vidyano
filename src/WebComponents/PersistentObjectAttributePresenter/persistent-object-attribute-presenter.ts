@@ -15,7 +15,7 @@ module Vidyano.WebComponents {
             required: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeRequired(attribute.isRequired, attribute.value)"
+                computed: "_computeRequired(attribute, attribute.isRequired, attribute.value)"
             },
             readOnly: {
                 type: Boolean,
@@ -213,8 +213,8 @@ module Vidyano.WebComponents {
             });
         }
 
-        private _computeRequired(required: boolean, value: any): boolean {
-            return required && (value === "" || value == null);
+        private _computeRequired(attribute: Vidyano.PersistentObjectAttribute, required: boolean, value: any): boolean {
+            return required && (value == null || (attribute && attribute.rules && attribute.rules.contains("NotEmpty") && value === ""));
         }
     }
 }
