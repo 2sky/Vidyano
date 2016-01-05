@@ -25,12 +25,16 @@ module Vidyano.WebComponents {
                 type: String,
                 readOnly: true
             }
+        },
+        listeners: {
+            "title-changed": "_titleChanged"
         }
     })
     export class AppRoute extends WebComponent {
         private _constructor: AppRouteComponentConstructor;
         private _constructorChanged: boolean;
         private _parameters: { [key: string]: string } = {};
+        private _documentTitleBackup: string;
         active: boolean;
         path: string;
         deactivator: (result: boolean) => void;
@@ -51,6 +55,8 @@ module Vidyano.WebComponents {
         activate(parameters: { [key: string]: string } = {}) {
             if (this.active && this._parameters && JSON.stringify(this._parameters) === JSON.stringify(parameters))
                 return;
+
+            this._documentTitleBackup = document.title;
 
             var component = <WebComponent>Polymer.dom(this).children[0];
             if (!component || this._constructorChanged) {
@@ -77,8 +83,10 @@ module Vidyano.WebComponents {
                 if (!component || !component.fire("app-route-deactivate", null, { bubbles: false, cancelable: true }).defaultPrevented)
                     resolve(true);
             }).then(result => {
-                if (result)
+                if (result) {
                     this._setActive(false);
+                    document.title = this._documentTitleBackup;
+                }
 
                 return result;
             });
@@ -90,6 +98,18 @@ module Vidyano.WebComponents {
 
         private _activeChanged() {
             this.toggleClass("active", this.active);
+        }
+
+        private _titleChanged(e: CustomEvent, detail: { title: string; }) {
+            if (this.app.noHistory || e.defaultPrevented || Polymer.dom(e.srcElement).parentNode !== this)
+                return;
+
+            if (this._documentTitleBackup !== detail.title && !!detail.title)
+                document.title = `${detail.title} · ${this._documentTitleBackup}`;
+            else
+                document.title = this._documentTitleBackup;
+
+            e.stopPropagation();
         }
 
         private _componentChanged() {

@@ -26,11 +26,15 @@ module Vidyano.WebComponents {
             }
         },
         observers: [
-            "_computeQuery(queryId, isAttached)"
+            "_computeQuery(queryId, isAttached)",
+            "_updateTitle(query.label)"
         ],
         listeners: {
             "app-route-activate": "_activate"
-        }
+        },
+        forwardObservers: [
+            "query.label"
+        ]
     })
     export class QueryPresenter extends WebComponent {
         private static _queryComponentLoader: Promise<any>;
@@ -63,6 +67,8 @@ module Vidyano.WebComponents {
                 this.queryId = this.query = undefined;
                 this.queryId = route.parameters.id;
             }
+
+            this.fire("title-changed", { title: this.query ? this.query.label : null }, { bubbles: true });
         }
 
         private _computeHasError(error: string): boolean {
@@ -129,6 +135,8 @@ module Vidyano.WebComponents {
                         Polymer.dom(this).appendChild(this._customTemplatePresenter);
                 }
             }
+
+            this.fire("title-changed", { title: query ? query.labelWithTotalItems : null }, { bubbles: true });
         }
 
         private _renderQuery(query: Vidyano.Query) {
@@ -142,6 +150,10 @@ module Vidyano.WebComponents {
 
                 this._setLoading(false);
             });
+        }
+
+        private _updateTitle(title: string) {
+            this.fire("title-changed", { title: title }, { bubbles: true });
         }
     }
 }

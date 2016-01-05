@@ -34,6 +34,8 @@ module Vidyano.WebComponents {
             if (oldProgramUnit)
                 this.empty();
 
+            this.fire("title-changed", { title: programUnit ? programUnit.title : null }, { bubbles: true });
+
             if (!programUnit)
                 return;
 

@@ -81,6 +81,8 @@ module Vidyano.WebComponents {
                     this.persistentObjectObjectId = this._cacheEntry.objectId || "";
                     this.persistentObjectId = this._cacheEntry.id;
                 }
+
+                this.fire("title-changed", { title: this.persistentObject ? this.persistentObject.breadcrumb : null }, { bubbles: true });
             }
         }
 
@@ -169,6 +171,8 @@ module Vidyano.WebComponents {
 
                 this._renderPersistentObject(persistentObject);
             }
+
+            this.fire("title-changed", { title: persistentObject ? persistentObject.breadcrumb : null }, { bubbles: true });
         }
 
         private _renderPersistentObject(persistentObject: Vidyano.PersistentObject) {
