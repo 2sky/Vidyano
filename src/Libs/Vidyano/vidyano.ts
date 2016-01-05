@@ -1704,6 +1704,9 @@ module Vidyano {
                 this.securityToken = this.backupSecurityToken;
                 this.attributes.forEach(attr => attr.restore());
 
+                if (!!this.notification)
+                    this.setNotification();
+
                 if (this.stateBehavior == "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
                     this.beginEdit();
             }
