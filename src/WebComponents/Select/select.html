@@ -8,7 +8,7 @@
                     <span id="match"></span><span id="remainder"></span>
                 </div>
                 <input id="input" value="{{_inputValue::input}}" on-keydown="_keydown" on-keyup="_keyup" readonly$="{{_isReadonlyInput(readonly, disableFiltering)}}" />
-                <vi-icon source="CaretDown"></vi-icon>
+                <vi-icon source="CaretDown" hidden$="{{readonly}}"></vi-icon>
                 <content select="[right]"></content>
             </div>
             <ul content filtering$="{{filtering}}" on-select-option="_select">

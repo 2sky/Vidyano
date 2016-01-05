@@ -42,6 +42,7 @@ module Vidyano.WebComponents {
             },
             readonly: {
                 type: Boolean,
+                reflectToAttribute: true,
                 value: false
             },
             disableFiltering: {

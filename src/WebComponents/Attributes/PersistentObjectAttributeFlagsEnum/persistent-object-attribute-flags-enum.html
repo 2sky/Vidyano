@@ -11,7 +11,7 @@
                 <vi-popup sticky content disabled$="{{readOnly}}">
                     <div header class="layout horizontal flex">
                         <input class="flex" header value="{{attribute.displayValue}}" readonly />
-                        <vi-icon source="CaretDown"></vi-icon>
+                        <vi-icon source="CaretDown" hidden$="{{readOnly}}"></vi-icon>
                     </div>
                     <ul content>
                         <template is="dom-repeat" items="{{attribute.options}}">
