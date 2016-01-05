@@ -209,6 +209,10 @@ BigNumber._commaFormat = Number._commaFormat = function Number$_commaFormat(numb
     var groupIndex = 0;
     var groupSize = groups[groupIndex];
     if (number.length < groupSize) {
+		if (negative) {
+			number = '-' + number;
+		}
+
         return decimalPart ? number + decimalPart : number;
     }
 
