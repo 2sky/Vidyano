@@ -48,18 +48,18 @@ The project structure of the Vidyano Web² client looks something like this:
 │   │   │   └── es6-promise.js
 │   │   ├── ...
 │   ├── WebComponents/
-│   │   ├── vidyano.less
+│   │   ├── vidyano.scss
 │   │   ├── ActionBar/
 │   │   │   ├── action-bar.html
-│   │   │   ├── action-bar.less
+│   │   │   ├── action-bar.scss
 │   │   │   ├── action-bar.ts
 │   │   ├── ActionButton/
 │   │   │   ├── action-button.html
-│   │   │   ├── action-button.less
+│   │   │   ├── action-button.scss
 │   │   │   ├── action-button.ts
 │   │   ├── App/
 │   │   │   ├── app.html
-│   │   │   ├── app.less
+│   │   │   ├── app.scss
 │   │   │   ├── app.ts
 │   │   ├── ...
 ```
