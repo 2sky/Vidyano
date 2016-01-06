@@ -232,7 +232,7 @@ module Vidyano.WebComponents {
         }
 
         private _autoOpenFirst(programUnit: Vidyano.ProgramUnit, expand: boolean, href: string) {
-            if (expand && programUnit && programUnit.openFirst && href)
+            if (expand && programUnit && programUnit.openFirst && href && !this.app.path)
                 this.app.changePath(href);
         }
     }
