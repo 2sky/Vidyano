@@ -95,7 +95,7 @@ module Vidyano.WebComponents.Attributes {
             var remainingWidth = this._lastComputedWidths = width;
             var usedWidth = 0;
 
-            columns.filter(c => c.width != null && !c.width.endsWith('%')).forEach(c => {
+            columns.filter(c => !StringEx.isNullOrEmpty(c.width) && !c.width.endsWith('%')).forEach(c => {
                 var intWidth = parseInt(c.width, 10);
                 if (!isNaN(intWidth)) {
                     widths.push({
@@ -109,7 +109,7 @@ module Vidyano.WebComponents.Attributes {
             });
 
             var percentagesRemainingWidth = width;
-            columns.filter(c => c.width != null && c.width.endsWith('%')).forEach(c => {
+            columns.filter(c => !StringEx.isNullOrEmpty(c.width) && c.width.endsWith('%')).forEach(c => {
                 var intWidthPercentage = parseInt(c.width, 10);
                 if (!isNaN(intWidthPercentage)) {
                     var intWidth = Math.floor(percentagesRemainingWidth * intWidthPercentage / 100);
@@ -123,7 +123,7 @@ module Vidyano.WebComponents.Attributes {
                 }
             });
 
-            var udColumns = columns.filter(c => c.width == null)
+            var udColumns = columns.filter(c => StringEx.isNullOrEmpty(c.width))
             var remainingColumnWidth = Math.floor(remainingWidth / udColumns.length);
             udColumns.forEach(c => {
                 widths.push({
