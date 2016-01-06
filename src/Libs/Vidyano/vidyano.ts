@@ -4027,8 +4027,12 @@ module Vidyano {
                                             this._setNotification();
                                             this.service.hooks.setNotification(po.notification, po.notificationType);
                                         }
-                                        else
-                                            this._setNotification(po.notification, po.notificationType);
+                                        else {
+                                            if (this.query && this.definition.refreshQueryOnCompleted)
+                                                var notificationPO = po;
+                                            else
+                                                this._setNotification(po.notification, po.notificationType);
+                                        }
                                     } else if (po.fullTypeName == "Vidyano.RegisteredStream") {
                                         this.service._getStream(po);
                                     } else if (this.parent != null && (po.fullTypeName == this.parent.fullTypeName || po.isNew == this.parent.isNew) && po.id == this.parent.id && po.objectId == this.parent.objectId) {
@@ -4043,8 +4047,12 @@ module Vidyano {
                                     }
                                 }
 
-                                if (this.query != null && this.definition.refreshQueryOnCompleted)
-                                    this.query.search();
+                                if (this.query != null && this.definition.refreshQueryOnCompleted) {
+                                    this.query.search().then(_ => {
+                                        if (notificationPO && !this.query.notification)
+                                            this._setNotification(po.notification, po.notificationType);
+                                    });
+                                }
 
                                 resolve(po);
                             }, error => {
