@@ -3693,7 +3693,13 @@ module Vidyano {
                     this._query.columns.forEach(col => {
                         let columnFilterData = columnsFilterData.firstOrDefault(c => c.name === col.name);
                         if (columnFilterData) {
-                            col.selectedDistincts = Enumerable.from(columnFilterData.includes || columnFilterData.excludes || []);
+                            if (columnFilterData.includes && columnFilterData.includes.length > 0)
+                                col.selectedDistincts = Enumerable.from(columnFilterData.includes);
+                            else if (columnFilterData.excludes && columnFilterData.excludes.length > 0)
+                                col.selectedDistincts = Enumerable.from(columnFilterData.excludes);
+                            else
+                                col.selectedDistincts = Enumerable.from([]);
+
                             col.selectedDistinctsInversed = columnFilterData.excludes && columnFilterData.excludes.length > 0;
                             col.distincts = null;
 
