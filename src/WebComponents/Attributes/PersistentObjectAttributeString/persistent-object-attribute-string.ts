@@ -9,19 +9,32 @@
                 type: String,
                 readOnly: true
             },
-            suggestions: Array,
+            suggestions: {
+                type: Array,
+                readOnly: true
+            },
+            hasSuggestions: {
+                type: Boolean,
+                computed: "_computeHasSuggestions(filteredSuggestions, readOnly)"
+            },
+            filteredSuggestions: {
+                type: Array,
+                computed: "_computeFilteredSuggestions(suggestions, value)"
+            },
             inputtype: String,
             maxlength: Number,
         },
     })
     export class PersistentObjectAttributeString extends PersistentObjectAttribute {
+        private _suggestionsSeparator: string;
         characterCasing: string;
         editInputStyle: string;
         inputtype: string;
         maxlength: number;
-        suggestions: string[]; // TODO(sleeckx): Implement suggestions
+        suggestions: string[];
 
         private _setEditInputStyle: (style: string) => void;
+        private _setSuggestions: (suggestions: string[]) => void;
 
         protected _attributeChanged() {
             super._attributeChanged();
@@ -32,10 +45,10 @@
                 var maxlength = parseInt(this.attribute.getTypeHint("MaxLength", "0"), 10);
                 this.maxlength = maxlength > 0 ? maxlength : null;
 
-                var suggestionsSeparator = this.attribute.getTypeHint("SuggestionsSeparator");
-                if (suggestionsSeparator != null && this.attribute.options != null && this.attribute.options.length > 0) {
+                this._suggestionsSeparator = this.attribute.getTypeHint("SuggestionsSeparator");
+                if (this._suggestionsSeparator != null && this.attribute.options != null && this.attribute.options.length > 0) {
                     var value = <string>this.attribute.value;
-                    this.suggestions = (<string[]>this.attribute.options).filter(o => !StringEx.isNullOrEmpty(o) && (value == null || !value.contains(o)));
+                    this._setSuggestions((<string[]>this.attribute.options).filter(o => !StringEx.isNullOrEmpty(o) && (value == null || !value.contains(o))));
                 }
             }
         }
@@ -53,16 +66,24 @@
                 this.attribute.setValue(newValue, false);
         }
 
-        //private _addSuggestion(e: MouseEvent) {
-        //    var value = <string>this.target.value;
-        //    var suggestionsSeparator = this.target.getTypeHint("SuggestionsSeparator");
-        //    var option = (<Paper.PaperItem>e.target).label;
-        //    this.target.setValue(StringEx.isNullOrEmpty(value) ? option : (value.endsWith(suggestionsSeparator) ? value + option : value + suggestionsSeparator + option));
-        //    this.suggestions.remove(option);
-        //}
+        private _addSuggestion(e: TapEvent) {
+            var suggestion = e.model.suggestion;
+            this.attribute.setValue(StringEx.isNullOrEmpty(this.value) ? suggestion : (this.value.endsWith(this._suggestionsSeparator) ? this.value + suggestion : this.value + this._suggestionsSeparator + suggestion));
+        }
+
+        private _computeFilteredSuggestions(suggestions: string[], value: string): string[] {
+            if (!suggestions || suggestions.length == 0)
+                return [];
+
+            return suggestions.filter(s => value.indexOf(s) < 0);
+        }
+
+        private _computeHasSuggestions(suggestions: string[], readOnly: boolean): boolean {
+            return !readOnly && suggestions && suggestions.length > 0;
+        }
 
         private _characterCasingChanged(casing: string) {
-            if (casing == "Upper")  
+            if (casing == "Upper")
                 this._setEditInputStyle("text-transform: uppercase;");
             else if (casing == "Lower")
                 this._setEditInputStyle("text-transform: lowercase;");

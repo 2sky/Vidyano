@@ -7,6 +7,16 @@
         <template is="dom-if" if="{{editing}}">
             <vi-persistent-object-attribute-edit attribute="{{attribute}}">
                 <input content value="{{value::input}}" type$="{{inputtype}}" maxlength$="{{maxlength}}" style$="{{editInputStyle}}" on-blur="_editInputBlur" readonly$="{{readOnly}}">
+                <template is="dom-if" if="{{hasSuggestions}}">
+                    <vi-popup id="suggestions" class="button">
+                        <vi-icon source="Add" header></vi-icon>
+                        <ul content>
+                            <template is="dom-repeat" items="{{filteredSuggestions}}" as="suggestion">
+                                <li on-tap="_addSuggestion">{{suggestion}}</li>
+                            </template>
+                        </ul>
+                    </vi-popup>
+                </template>
             </vi-persistent-object-attribute-edit>
         </template>
     </template>

@@ -11,4 +11,39 @@
 	span, input {
 		color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
 	}
+
+	#suggestions {
+		&[open] {
+			vi-icon {
+				fill: white !important;
+				background-color: var(--theme-color);
+			}
+		}
+
+		vi-icon {
+			width: calc(var(--theme-h2) - 2px);
+			height: calc(var(--theme-h2) - 2px);
+
+			&:hover {
+				fill: var(--theme-color);
+			}
+		}
+
+		ul {
+			margin: 0;
+			padding: 0;
+    		list-style-type: none;
+
+			li {
+				padding: 0 var(--theme-h5);
+				height: var(--theme-h2);
+				cursor: pointer;
+				text-align: left;
+
+				&:hover {
+					background-color: var(--theme-color-faint);
+				}
+			}
+		}
+	}
 }
