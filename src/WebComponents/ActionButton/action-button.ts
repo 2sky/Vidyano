@@ -7,6 +7,11 @@ module Vidyano.WebComponents {
                 type: String,
                 computed: "_computeIcon(action)"
             },
+            hasIcon: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeHasIcon(icon)"
+            },
             siblingIcon: {
                 type: Boolean,
                 readOnly: true
@@ -62,7 +67,8 @@ module Vidyano.WebComponents {
             }
         },
         observers: [
-            "_observeAction(action.canExecute, action.isVisible, action.options, isAttached)"
+            "_observeAction(action.canExecute, action.isVisible, action.options, isAttached)",
+            "_computeSiblingIcon(overflow, isAttached)"
         ],
         forwardObservers: [
             "action.isPinned",
@@ -108,19 +114,6 @@ module Vidyano.WebComponents {
 
                 this._skipObserver = true;
             }
-        }
-
-        attached() {
-            super.attached();
-
-            var parent = Polymer.dom(this).parentNode;
-            this._setSiblingIcon(parent != null && Enumerable.from(Polymer.dom(parent).children).firstOrDefault((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null);
-        }
-
-        detached() {
-            super.detached();
-
-            this._setSiblingIcon(false);
         }
 
         private _executeWithoutOptions(e: TapEvent) {
@@ -182,8 +175,16 @@ module Vidyano.WebComponents {
             return action.isPinned && !Icon.Exists(actionIcon) ? "Action_Default$" : actionIcon;
         }
 
+        private _computeHasIcon(icon: string): boolean {
+            return !StringEx.isNullOrEmpty(icon) && Vidyano.WebComponents.Icon.Exists(icon);
+        }
+
         private _computeIconSpace(icon: string, siblingIcon: boolean, overflow: boolean): boolean {
             return overflow && !Icon.Exists(icon) && siblingIcon;
+        }
+
+        private _computeSiblingIcon(overflow: boolean, isAttached: boolean) {
+            this._setSiblingIcon(overflow && isAttached && this.parentElement != null && Enumerable.from(this.parentElement.children).firstOrDefault((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null);
         }
 
         private _computeOpenOnHover(overflow: boolean, openOnHover: boolean): boolean {
