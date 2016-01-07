@@ -144,7 +144,7 @@ module Vidyano.WebComponents.Attributes {
         private _open(e: Event) {
             this.attribute.getPersistentObject().then(po => {
                 if (po)
-                    this.attribute.service.hooks.onOpen(po, false, true);
+                    this.attribute.service.hooks.onOpen(po, false, !!po.parent);
             });
 
             e.preventDefault();

@@ -61,7 +61,11 @@ module Vidyano.WebComponents {
         feedback() {
             this.service.getPersistentObject(null, this.service.application.feedbackId).then(po => {
                 var commentAttr = po.getAttribute("Comment");
-                commentAttr.options = ["Url: " + window.location, "Browser: " + navigator.userAgent];
+                var commentOptions = ["Browser: " + navigator.userAgent];
+                var location = window.location.toString();
+                if (!location.contains("FromAction/"))
+                    commentOptions.push("Url: " + location);
+                commentAttr.options = commentOptions;
                 commentAttr.isValueChanged = true;
 
                 this.service.hooks.onOpen(po, false, true);
