@@ -256,7 +256,7 @@ module Vidyano.WebComponents {
         }
 
         close() {
-            if (this.fire("popup-closing", null, { bubbles: false, cancelable: true }).defaultPrevented)
+            if (!this.open || this.fire("popup-closing", null, { bubbles: false, cancelable: true }).defaultPrevented)
                 return;
 
             if (!this.open && this._closeOnMoveoutTimer) {
