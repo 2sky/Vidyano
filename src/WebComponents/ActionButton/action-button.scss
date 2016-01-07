@@ -9,39 +9,50 @@
         text-align: left;
         cursor: pointer;
         height: var(--theme-h1);
+        line-height: var(--theme-h1);
         width: 100%;
         padding: 0 var(--theme-h4);
         white-space: nowrap;
         overflow: hidden;
 
         > vi-icon {
-            &.options {
-                margin-left: var(--theme-h5);
-                svg {
-                    width: 12px;
-                    height: 12px;
-                }
-            }
+            display: inline-block;
+            height: var(--theme-h1);
         }
 
-        &[header] {
-            vi-icon {
-                display: inline-block;
-            }
-        }
-
-        > span {
+        > span, > vi-icon {
             vertical-align: top;
+        }
+
+        &.options {
+            padding-right: 0 !important;
+        }
+    }
+
+    &[icon-space] {
+        vi-icon[source^="Action_"] {
+            visibility: hidden;
         }
     }
 
     &[overflow] {
-        vi-icon[source="Down"] {
-            -moz-transform: rotate(-90deg);
-            -ms-transform: rotate(-90deg);
-            -o-transform: rotate(-90deg);
-            -webkit-transform: rotate(-90deg);
-            transform: rotate(-90deg);
+        &:not([icon-space]) {
+            button {
+                padding-left: 0 !important;
+            }
+        }
+
+        vi-icon {
+            vertical-align: top;
+            width: var(--theme-h2);
+
+            &[source="Down"] {
+                -moz-transform: rotate(-90deg);
+                -ms-transform: rotate(-90deg);
+                -o-transform: rotate(-90deg);
+                -webkit-transform: rotate(-90deg);
+                transform: rotate(-90deg);
+            }
         }
     }
 
@@ -76,18 +87,6 @@
             &:hover {
                 background-color: var(--theme-color-faint);
             }
-        }
-    }
-}
-
-vi-popup {
-    vi-action-button {
-        vi-icon[source="Down"] {
-            -moz-transform: rotate(-90deg);
-            -ms-transform: rotate(-90deg);
-            -o-transform: rotate(-90deg);
-            -webkit-transform: rotate(-90deg);
-            transform: rotate(-90deg);
         }
     }
 }

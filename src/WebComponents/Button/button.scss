@@ -5,7 +5,7 @@
     color: $fgColor;
     fill: $fgColor;
 
-    &:hover {
+    &:not([disabled]):hover {
         background-color: $bgHoverColor;
     }
 
@@ -64,7 +64,7 @@
             color: white;
             fill: white;
 
-            &:hover {
+            &:not([disabled]):hover {
                 background-color: var(--theme-color-light);
             }
 
@@ -78,7 +78,7 @@
             color: var(--theme-color);
             fill: var(--theme-color);
 
-            &:hover {
+            &:not([disabled]):hover {
                 background-color: var(--theme-color-faint);
             }
 

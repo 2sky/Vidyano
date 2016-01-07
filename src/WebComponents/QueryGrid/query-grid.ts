@@ -656,6 +656,7 @@
                 var button = new Vidyano.WebComponents.ActionButton(detail.row.item, action);
                 button.forceLabel = true;
                 button.openOnHover = true;
+                button.setAttribute("overflow", "");
 
                 Polymer.dom(this._actionMenu).appendChild(button);
             });

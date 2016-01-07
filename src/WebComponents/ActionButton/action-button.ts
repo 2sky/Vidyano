@@ -7,6 +7,15 @@ module Vidyano.WebComponents {
                 type: String,
                 computed: "_computeIcon(action)"
             },
+            siblingIcon: {
+                type: Boolean,
+                readOnly: true
+            },
+            iconSpace: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeIconSpace(icon, siblingIcon, overflow)"
+            },
             pinned: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -24,9 +33,18 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true
             },
+            overflow: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             canExecute: {
                 type: Boolean,
                 readOnly: true
+            },
+            disabled: {
+                type: Boolean,
+                computed: "_computeDisabled(canExecute)",
+                reflectToAttribute: true
             },
             hidden: {
                 type: Boolean,
@@ -36,11 +54,6 @@ module Vidyano.WebComponents {
             options: {
                 type: Array,
                 readOnly: true
-            },
-            overflow: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: null
             },
             openOnHover: {
                 type: Boolean,
@@ -69,6 +82,7 @@ module Vidyano.WebComponents {
         private _setCanExecute: (val: boolean) => void;
         private _setHidden: (val: boolean) => void;
         private _setOptions: (val: linqjs.KeyValuePair<number, string>[]) => void;
+        private _setSiblingIcon: (val: boolean) => void;
 
         constructor(public item: Vidyano.QueryResultItem, public action: Action) {
             super();
@@ -94,6 +108,19 @@ module Vidyano.WebComponents {
 
                 this._skipObserver = true;
             }
+        }
+
+        attached() {
+            super.attached();
+
+            var parent = Polymer.dom(this).parentNode;
+            this._setSiblingIcon(parent != null && Enumerable.from(Polymer.dom(parent).children).firstOrDefault((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null);
+        }
+
+        detached() {
+            super.detached();
+
+            this._setSiblingIcon(false);
         }
 
         private _executeWithoutOptions(e: TapEvent) {
@@ -143,12 +170,20 @@ module Vidyano.WebComponents {
             }) : null);
         }
 
+        private _computeDisabled(canExecute: boolean): boolean {
+            return !canExecute;
+        }
+
         private _computeIcon(action: Action): string {
             if (!action)
                 return "";
 
             var actionIcon = `Action_${action.definition.name}`;
             return action.isPinned && !Icon.Exists(actionIcon) ? "Action_Default$" : actionIcon;
+        }
+
+        private _computeIconSpace(icon: string, siblingIcon: boolean, overflow: boolean): boolean {
+            return overflow && !Icon.Exists(icon) && siblingIcon;
         }
 
         private _computeOpenOnHover(overflow: boolean, openOnHover: boolean): boolean {

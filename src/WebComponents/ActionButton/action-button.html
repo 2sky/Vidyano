@@ -9,7 +9,7 @@
         </template>
         <template is="dom-if" if="{{options}}">
             <vi-popup-menu open-on-hover="{{_computeOpenOnHover(overflow, openOnHover)}}" disabled="{{!canExecute}}">
-                <button is="vi-button" disabled="{{!canExecute}}" header inverse>
+                <button is="vi-button" disabled="{{!canExecute}}" header inverse class="options">
                     <vi-icon source="{{icon}}"></vi-icon>
                     <span class="label">{{action.definition.displayName}}</span>
                     <vi-icon source="Down"></vi-icon>
