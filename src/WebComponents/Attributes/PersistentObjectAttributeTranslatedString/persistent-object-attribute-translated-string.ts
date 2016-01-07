@@ -18,7 +18,7 @@
             },
             canShowDialog: {
                 type: Boolean,
-                computed: "_computeCanShowDialog(readOnly, strings)"
+                computed: "_computeCanShowDialog(strings)"
             }
         }
     })
@@ -73,13 +73,13 @@
             return attribute && attribute.getTypeHint("MultiLine") == "True";
         }
 
-        private _computeCanShowDialog(readOnly: boolean, strings: TranslatedString[]) {
-            return !readOnly && strings.length > 1;
+        private _computeCanShowDialog(strings: TranslatedString[]) {
+            return strings.length > 1;
         }
 
         private _showLanguagesDialog() {
-            this.app.showDialog(new Vidyano.WebComponents.Attributes.PersistentObjectAttributeTranslatedStringDialog(this.attribute.label, this.strings.slice(), this.multiline)).then(result => {
-                if (!result)
+            this.app.showDialog(new Vidyano.WebComponents.Attributes.PersistentObjectAttributeTranslatedStringDialog(this.attribute.label, this.strings.slice(), this.multiline, this.readOnly)).then(result => {
+                if (!result || this.readOnly)
                     return;
 
                 var newData = {};
@@ -103,6 +103,7 @@
         properties: {
             label: String,
             strings: Array,
+            readonly: Boolean,
             multiline: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -110,7 +111,7 @@
         }
     })
     export class PersistentObjectAttributeTranslatedStringDialog extends Dialog {
-        constructor(public label: string, public strings: TranslatedString[], public multiline: boolean) {
+        constructor(public label: string, public strings: TranslatedString[], public multiline: boolean, public readonly: boolean) {
             super();
         }
 
