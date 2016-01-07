@@ -47,6 +47,18 @@
 
                 Polymer.dom(this).appendChild(provider);
             }
+
+            if (this.app.initializationError) {
+                this.app.showMessageDialog({
+                    title: this.app.label || document.title,
+                    message: this.app.initializationError,
+                    actions: [ (Vidyano.NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || Vidyano.NoInternetMessage.messages.get("en")).tryAgain ],
+                    actionTypes: ["Danger"],
+                    noClose: true
+                }).then(() => {
+                    document.location.reload();
+                });
+            }
         }
 
         private _imageChanged() {
@@ -196,6 +208,13 @@
 
                     var pass = <HTMLInputElement><any>this.$$("input#pass");
                     pass.focus();
+
+                    this.app.showMessageDialog({
+                        title: this.app.label || document.title,
+                        message: e,
+                        actions: [ this.translateMessage("OK") ],
+                        actionTypes: ["Danger"]
+                    });
                 });
         }
 

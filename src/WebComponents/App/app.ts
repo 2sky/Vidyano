@@ -217,6 +217,10 @@
             return this._configuration;
         }
 
+        get initializationError(): string {
+            return this._initializationError;
+        }
+
         changePath(path: string, replaceCurrent: boolean = false) {
             path = hashBang + App.stripHashBang(path);
             if (this.path === path)
@@ -346,8 +350,10 @@
             this._setInitializing(true);
 
             Promise.all([service.initialize(document.location.hash && App.stripHashBang(document.location.hash).startsWith("SignIn"))]).then(() => {
-                if (this.service == service)
+                if (this.service == service) {
+                    this._initializationError = null;
                     this._onInitialized();
+                }
             }, e => {
                 if (this.service === service) {
                     // TODO(sleeckx): Go to SignIn

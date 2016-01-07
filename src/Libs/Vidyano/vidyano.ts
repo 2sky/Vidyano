@@ -624,6 +624,9 @@ module Vidyano {
 
                 this._clientData = clientData;
 
+                if (clientData.exception)
+                    throw clientData.exception;
+
                 var languages: Language[] = [];
                 for (var name in clientData.languages) {
                     languages.push({ culture: name, name: clientData.languages[name].name, isDefault: clientData.languages[name].isDefault, messages: clientData.languages[name].messages });
