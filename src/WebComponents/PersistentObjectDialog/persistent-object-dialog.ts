@@ -61,7 +61,7 @@
                 return null;
 
             var tab = <Vidyano.PersistentObjectAttributeTab>Enumerable.from(persistentObject.tabs).firstOrDefault(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
-            tab.columnCount = 1;
+            tab.columnCount = tab.columnCount > 1 ? tab.columnCount : 1;
 
             return tab;
         }
