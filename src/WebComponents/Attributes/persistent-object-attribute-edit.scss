@@ -33,8 +33,10 @@
         display: none;
 
         vi-icon {
-            --vi-icon-width: var(--theme-h2);
-            --vi-icon-height: var(--theme-h2);
+            width: var(--theme-h2);
+            height: var(--theme-h2);
+            --vi-icon-width: var(--theme-h3);
+            --vi-icon-height: var(--theme-h3);
             fill: var(--theme-color-error);
         }
     }
