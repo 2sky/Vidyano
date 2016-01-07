@@ -27,10 +27,6 @@
         > span, > vi-icon {
             vertical-align: top;
         }
-
-        &.options {
-            padding-right: 0 !important;
-        }
     }
 
     &[overflow] {
@@ -62,6 +58,10 @@
                 -webkit-transform: rotate(-90deg);
                 transform: rotate(-90deg);
             }
+        }
+
+        button.options {
+            padding-right: 0 !important;
         }
     }
 
