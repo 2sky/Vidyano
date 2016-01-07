@@ -260,7 +260,7 @@
                     }
                 }
 
-                &.disabled, &.readonly {
+                &.disabled, &.readOnly {
                     td[is="vi-query-grid-table-data-column-actions"], td[is="vi-query-grid-table-data-column-selector"] {
                         > * {
                             visibility: hidden;
