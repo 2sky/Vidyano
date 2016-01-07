@@ -42,10 +42,8 @@ module Vidyano.WebComponents {
         private _popupOpening() {
             this._overflownChildren = this._getChildren();
             this._overflownChildren.forEach(child => {
-                if (child.offsetTop > 0) {
-                    (<any>child)._previousParent = child.parentElement;
+                if (child.offsetTop > 0)
                     Polymer.dom(child).setAttribute("overflow", "");
-                }
             });
 
             Polymer.dom(this).flush();
@@ -57,13 +55,6 @@ module Vidyano.WebComponents {
             });
 
             Polymer.dom(this).flush();
-
-            this._overflownChildren.forEach(child => {
-                if ((<any>child)._previousParent) {
-                    (<any>child)._previousParent.appendChild(child);
-                    (<any>child)._previousParent = null;
-                }
-            });
 
             this._setHasOverflow(this._overflownChildren.toArray().some(child => child.offsetTop > 0));
         }
