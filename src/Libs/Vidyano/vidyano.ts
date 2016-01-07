@@ -2800,6 +2800,7 @@ module Vidyano {
 
             this._updateColumns(query.columns);
             this._initializeActions();
+            this.selectAll = new QuerySelectAllImpl(this, !!query.isSystem && !query.maxSelectedItems && this.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue), this._selectAllPropertyChanged.bind(this));
 
             this._setTotalItems(query.totalItems);
             this._setSortOptionsFromService(query.sortOptions);
@@ -2816,7 +2817,6 @@ module Vidyano {
                 this._filters = null;
 
             this._canFilter = this._filters && this.actions.some(a => a.name === "Filter") && this.columns.some(c => c.canFilter);
-            this.selectAll = new QuerySelectAllImpl(this, !!query.isSystem && !query.maxSelectedItems && this.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue), this._selectAllPropertyChanged.bind(this));
 
             if (query.result)
                 this._setResult(query.result);
@@ -3666,12 +3666,24 @@ module Vidyano {
         private _filters: QueryFilter[];
         private _currentFilter: QueryFilter;
         private _filtersAsDetail: PersistentObjectAttributeAsDetail;
+        private _skipSearch: boolean;
 
         constructor(private _query: Query, private _filtersPO: Vidyano.PersistentObject) {
             super();
 
             this._filtersAsDetail = <Vidyano.PersistentObjectAttributeAsDetail>this._filtersPO.attributesByName["Filters"];
             this._computeFilters(true);
+
+            var defaultFilter = Enumerable.from(this._filters).firstOrDefault(f => f.isDefault);
+            if (defaultFilter) {
+                this._skipSearch = true;
+                try {
+                    this.currentFilter = defaultFilter;
+                }
+                finally {
+                    this._skipSearch = false;
+                }
+            }
         }
 
         get filters(): QueryFilter[] {
@@ -3689,7 +3701,6 @@ module Vidyano {
 
         set currentFilter(filter: QueryFilter) {
             let doSearch;
-
             if (!!filter) {
                 if (!filter.persistentObject.isNew) {
                     let columnsFilterData = Enumerable.from(JSON.parse(filter.persistentObject.getAttributeValue("Columns")));
@@ -3725,7 +3736,7 @@ module Vidyano {
             const oldCurrentFilter = this._currentFilter;
             this.notifyPropertyChanged("currentFilter", this._currentFilter = filter, oldCurrentFilter);
 
-            if (doSearch)
+            if (doSearch && !this._skipSearch)
                 this._query.search();
         }
 
@@ -3826,6 +3837,10 @@ module Vidyano {
 
         get isLocked(): boolean {
             return this._po.getAttributeValue("IsLocked");
+        }
+
+        get isDefault(): boolean {
+            return this._po.getAttributeValue("IsDefault");
         }
 
         get persistentObject(): PersistentObject {
