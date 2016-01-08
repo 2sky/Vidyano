@@ -181,7 +181,7 @@ module Vidyano.WebComponents {
                 else {
                     // Bottom-align
                     content.style.top = "auto";
-                    content.style.bottom = Math.max(windowHeight - targetRect.top, 0) + "px";
+                    content.style.bottom = Math.max(windowHeight - targetRect.bottom, 0) + "px";
 
                     content.classList.add("bottom");
                     content.classList.remove("top");
