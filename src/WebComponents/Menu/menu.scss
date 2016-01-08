@@ -103,6 +103,7 @@
             font-size: var(--theme-h3);
             line-height: var(--vi-menu-expanded-header-line-height);
             background-color: var(--theme-color-dark);
+            white-space: nowrap;
         }
 
         #toggleCollapse {
