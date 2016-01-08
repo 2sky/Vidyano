@@ -98,4 +98,8 @@
             }
         }
     }
+
+    vi-popup-menu[open] button:not(:hover) {
+        background-color: var(--theme-color-faint);
+    }
 }
