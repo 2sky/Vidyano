@@ -20,6 +20,10 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 observer: "_alignmentChanged"
+            },
+            open: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         observers: [

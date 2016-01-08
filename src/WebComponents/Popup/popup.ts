@@ -28,7 +28,8 @@ module Vidyano.WebComponents {
             open: {
                 type: Boolean,
                 readOnly: true,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                notify: true
             },
             sticky: {
                 type: Boolean,
@@ -345,7 +346,8 @@ module Vidyano.WebComponents {
             open: {
                 type: Boolean,
                 readOnly: true,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                notify: true
             },
             sticky: {
                 type: Boolean,
