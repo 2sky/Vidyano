@@ -235,5 +235,9 @@ module Vidyano.WebComponents {
             if (expand && programUnit && programUnit.openFirst && href && !this.app.path)
                 this.app.changePath(href);
         }
+
+        private _titleMouseenter() {
+            this.$["title"].setAttribute("title", this.$["title"].offsetWidth < this.$["title"].scrollWidth ? this.item.title : "");
+        }
     }
 }
