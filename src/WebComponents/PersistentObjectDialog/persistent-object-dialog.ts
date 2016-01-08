@@ -4,7 +4,7 @@
             persistentObject: Object,
             tab: {
                 type: Object,
-                computed: "_computeTab(persistentObject)"
+                computed: "_computeTab(persistentObject, isAttached)"
             },
             readOnly: {
                 type: Boolean,
@@ -56,18 +56,22 @@
             }
         }
 
-        private _computeTab(persistentObject: Vidyano.PersistentObject): Vidyano.PersistentObjectAttributeTab {
-            if (!persistentObject)
+        private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {
+            if (!persistentObject || !isAttached)
                 return null;
 
             var tab = <Vidyano.PersistentObjectAttributeTab>Enumerable.from(persistentObject.tabs).firstOrDefault(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
             tab.columnCount = tab.columnCount > 1 ? tab.columnCount : 1;
 
+            var width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width")) * tab.columnCount;
+            this.customStyle["--vi-persistent-object-dialog-computed-width"] = `${width}px`;
+            this.updateStyles();
+
             return tab;
         }
 
         private _computeReadOnly(tab: Vidyano.PersistentObjectAttributeTab): boolean {
-            return !tab.attributes.some(attribute => !attribute.isReadOnly && attribute.isVisible);
+            return !!tab && !tab.attributes.some(attribute => !attribute.isReadOnly && attribute.isVisible);
         }
 
         private _onSelectAction(e: Event) {
