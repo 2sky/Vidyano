@@ -75,6 +75,9 @@
             if (!suggestions || suggestions.length == 0)
                 return [];
 
+            if (StringEx.isNullOrEmpty(value))
+                return suggestions;
+
             return suggestions.filter(s => value.indexOf(s) < 0);
         }
 
