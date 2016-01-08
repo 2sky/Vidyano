@@ -107,6 +107,11 @@ $tabsBG: #f1f1f1;
                 z-index: 1;
                 border-bottom-width: 0;
                 @apply(--theme-shadow);
+                margin-bottom: 3px;
+            }
+
+            vi-persistent-object-tab-presenter {
+                margin-left: 1px;
             }
         }
     }
