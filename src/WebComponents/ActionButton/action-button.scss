@@ -32,6 +32,7 @@
 
         span {
             @include flex();
+            -ms-flex: auto;
             padding: 0 var(--theme-h5);
         }
     }
