@@ -105,6 +105,7 @@ $tabsBG: #f1f1f1;
             vi-action-bar {
                 padding-top: 0;
                 z-index: 1;
+                border-bottom-width: 0;
                 @apply(--theme-shadow);
             }
         }
