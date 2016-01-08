@@ -31,4 +31,12 @@
             display: none;
         }
     }
+
+    vi-popup {
+        &[open] {
+            button[header] {
+                background-color: var(--theme-color-faint);
+            }
+        }
+    }
 }
