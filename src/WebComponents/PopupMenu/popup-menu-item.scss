@@ -3,13 +3,13 @@
 :host {
     @include layout-horizontal();
     @include relative();
-    height: var(--theme-h2);
+    height: var(--theme-h1);
     cursor: pointer;
     color: var(--theme-color);
     fill: var(--theme-color);
 
     --vi-button-icon-style: #{'{
-        width: 'var(--theme-h2)';
+        width: 'var(--theme-h1)';
     }'};
 
     --vi-button-label-style: #{'{
@@ -31,7 +31,7 @@
         left: 0;
         top: 0;
         bottom: 0;
-        width: var(--theme-h2);
+        width: var(--theme-h1);
         background-color: rgba(0, 0, 0, 0.04);
         pointer-events: none;
     }
@@ -56,23 +56,23 @@
     }
 
     &[split-space] > button > span {
-        margin-right: var(--theme-h2);
+        margin-right: var(--theme-h1);
     }
 
     &[split] {
         > vi-popup {
-            min-width: var(--theme-h2);
+            min-width: var(--theme-h1);
 
             [header] {
                 box-sizing: border-box;
                 border-left: 1px solid #eee;
                 padding: 0;
-                width: var(--theme-h2);
-                height: var(--theme-h2);
+                width: var(--theme-h1);
+                height: var(--theme-h1);
 
                 > vi-icon {
-                    width: var(--theme-h2);
-                    height: var(--theme-h2);
+                    width: var(--theme-h1);
+                    height: var(--theme-h1);
                 }
             }
         }

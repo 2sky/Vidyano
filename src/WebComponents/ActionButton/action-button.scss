@@ -37,19 +37,12 @@
     }
 
     &[overflow] {
-        height: var(--theme-h2);
-        line-height: var(--theme-h2);
-
         button {
-            height: var(--theme-h2);
-            line-height: var(--theme-h2);
             padding: 0 !important;
 
             vi-icon {
-                height: var(--theme-h2);
-
                 &[source^="Action_"] {
-                    width: var(--theme-h2);
+                    width: var(--theme-h1);
                 }
             }
         }
