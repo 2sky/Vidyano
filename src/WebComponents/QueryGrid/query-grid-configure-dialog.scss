@@ -4,7 +4,7 @@
     main {
         @include layout-vertical();
         @include noSelection();
-        padding: var(--theme-h4);
+        padding: var(--theme-h4) 0 var(--theme-h4) var(--theme-h4);
 
         > ul {
             &:empty {
@@ -13,8 +13,13 @@
         }
 
         > vi-scroller {
+            @include flex();
             margin-top: var(--theme-h4);
             min-width: 30em;
+
+            ul {
+                padding-right: var(--theme-h4);
+            }
         }
 
         ul {
@@ -92,5 +97,51 @@
                 margin-right: var(--theme-h5);
             }
         }
+    }
+}
+
+/* Extra small devices (phones, less than 768px) */
+@media (max-width: 767px) {
+    :host main {
+        width: 85vw;
+    }
+}
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991px) {
+    :host main {
+        width: var(--vi-persistent-object-dialog-computed-width);
+        max-width: 90vw;
+        max-height: 75vh;
+    }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    :host main {
+        width: var(--vi-persistent-object-dialog-computed-width);
+        max-width: 900px;
+        max-height: 75vh;
+    }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    :host main {
+        width: var(--vi-persistent-object-dialog-computed-width);
+        max-width: 1100px;
+        max-height: 75vh;
+    }
+}
+
+@media (max-height: 750px) {
+    :host main {
+        max-height: 35vh;
+    }
+}
+
+@media (min-height: 751px) and (max-height: 900px) {
+    :host main {
+        max-height: 50vh;
     }
 }
