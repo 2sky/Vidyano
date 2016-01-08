@@ -3,16 +3,20 @@
         <link rel="stylesheet" href="action-button.css" />
         <template is="dom-if" if="{{!options}}">
             <button is="vi-button" disabled="{{!canExecute}}" header on-tap="_executeWithoutOptions" inverse>
-                <vi-icon source="{{icon}}"></vi-icon>
-                <span class="label">{{action.definition.displayName}}</span>
+                <div class="layout horizontal">
+                    <vi-icon source="{{icon}}"></vi-icon>
+                    <span class="label">{{action.definition.displayName}}</span>
+                </div>
             </button>
         </template>
         <template is="dom-if" if="{{options}}">
             <vi-popup-menu open-on-hover="{{_computeOpenOnHover(overflow, openOnHover)}}" disabled="{{!canExecute}}">
                 <button is="vi-button" disabled="{{!canExecute}}" header inverse class="options">
-                    <vi-icon source="{{icon}}"></vi-icon>
-                    <span class="label">{{action.definition.displayName}}</span>
-                    <vi-icon source="Down"></vi-icon>
+                    <div class="layout horizontal">
+                        <vi-icon source="{{icon}}"></vi-icon>
+                        <span class="label">{{action.definition.displayName}}</span>
+                        <vi-icon source="Down"></vi-icon>
+                    </div>
                 </button>
                 <template is="dom-repeat" items="{{options}}">
                     <vi-popup-menu-item label="{{item.value}}" on-tap="_executeWithOption"></vi-popup-menu-item>

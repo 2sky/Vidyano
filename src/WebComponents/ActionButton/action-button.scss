@@ -11,39 +11,54 @@
         height: var(--theme-h1);
         line-height: var(--theme-h1);
         width: 100%;
-        padding: 0 var(--theme-h4);
         white-space: nowrap;
         overflow: hidden;
 
-        > vi-icon {
-            display: inline-block;
+        vi-icon {
             height: var(--theme-h1);
+
+            &[source^="Action_"] {
+                width: var(--theme-h3);
+            }
+
+            &[source^="Down"] {
+                width: var(--theme-h3);
+            }
 
             &:not([has-resource]) {
                 display: none;
             }
         }
 
-        > span, > vi-icon {
-            vertical-align: top;
+        span {
+            @include flex();
+            padding: 0 var(--theme-h5);
         }
     }
 
     &[overflow] {
-        &[icon-space] {
-            button {
-                padding-left: 0 !important;
+        height: var(--theme-h2);
+        line-height: var(--theme-h2);
 
-                > vi-icon[source^="Action_"] {
-                    display: inline-block !important;
-                    visibility: hidden;
+        button {
+            height: var(--theme-h2);
+            line-height: var(--theme-h2);
+            padding: 0 !important;
+
+            vi-icon {
+                height: var(--theme-h2);
+
+                &[source^="Action_"] {
+                    width: var(--theme-h2);
                 }
             }
         }
 
-        &:not([icon-space])[has-icon] {
+        &[icon-space] {
             button {
-                padding-left: 0 !important;
+                vi-icon[source^="Action_"] {
+                    display: block;
+                }
             }
         }
 
@@ -60,19 +75,19 @@
             }
         }
 
-        button.options {
-            padding-right: 0 !important;
+        vi-icon[source^="Action_"] {
+            background-color: rgba(0, 0, 0, 0.04);
         }
     }
 
     &[no-label]:not([force-label]), &[pinned]:not([force-label]) {
-        button > span {
+        button span {
             display: none;
         }
     }
 
     &[no-icon] {
-        button > vi-icon {
+        button vi-icon {
             display: none;
         }
     }

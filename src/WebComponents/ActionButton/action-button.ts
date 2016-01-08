@@ -184,7 +184,14 @@ module Vidyano.WebComponents {
         }
 
         private _computeSiblingIcon(overflow: boolean, isAttached: boolean) {
-            this._setSiblingIcon(overflow && isAttached && this.parentElement != null && Enumerable.from(this.parentElement.children).firstOrDefault((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null);
+            var siblingIcon = overflow && isAttached && this.parentElement != null && Enumerable.from(this.parentElement.children).firstOrDefault((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
+            this._setSiblingIcon(siblingIcon);
+            if (siblingIcon) {
+                Enumerable.from(this.parentElement.children).forEach((ab: ActionButton) => {
+                    if (ab instanceof Vidyano.WebComponents.ActionButton && ab !== this)
+                        ab._setSiblingIcon(true);
+                });
+            }
         }
 
         private _computeOpenOnHover(overflow: boolean, openOnHover: boolean): boolean {
