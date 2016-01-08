@@ -356,8 +356,7 @@
                 }
             }, e => {
                 if (this.service === service) {
-                    // TODO(sleeckx): Go to SignIn
-                    this._initializationError = e;
+                    this._initializationError = e !== "Session expired" ? e : null;
                     this._onInitialized();
                 }
             });
