@@ -36,5 +36,9 @@
         &[source$="OK"] {
             fill: var(--theme-color-ok);
         }
+
+        &:not([has-resource]) {
+            display: none;
+        }
     }
 }

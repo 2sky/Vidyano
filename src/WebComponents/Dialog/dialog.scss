@@ -30,7 +30,7 @@
             > * {
                 background-color: white;
                 @include z-index1();
-                
+
                 > header, > footer {
                     background-color: #FAFAFA;
                 }
@@ -83,7 +83,10 @@
                     button {
                         line-height: var(--theme-h2);
                         padding: 0 var(--theme-h5);
-                        margin-left: var(--theme-h5);
+
+                        &:not(:first-of-type) {
+                            margin-left: var(--theme-h5);
+                        }
                     }
                 }
 

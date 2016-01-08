@@ -592,12 +592,12 @@
             return newQuery;
         }
 
-        onActionConfirmation(action: Action): Promise<boolean> {
+        onActionConfirmation(action: Action, option: number): Promise<boolean> {
             return new Promise((resolve, reject) => {
                 this.app.showMessageDialog({
                     title: action.displayName,
                     titleIcon: "Action_" + action.name,
-                    message: this.service.getTranslatedMessage(action.definition.confirmation),
+                    message: this.service.getTranslatedMessage(action.definition.confirmation, option >= 0 ? action.options[option] : undefined),
                     actions: [action.displayName, this.service.getTranslatedMessage("Cancel")],
                     actionTypes: action.name == "Delete" ? ["Danger"] : []
                 }).then(result => {

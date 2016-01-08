@@ -1287,7 +1287,7 @@ module Vidyano {
         onSessionExpired() {
         }
 
-        onActionConfirmation(action: Action): Promise<boolean> {
+        onActionConfirmation(action: Action, option: number): Promise<boolean> {
             return Promise.resolve(true);
         }
 
@@ -4025,7 +4025,7 @@ module Vidyano {
         }
 
         _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
-            var confirmation = this.definition.confirmation ? this.service.hooks.onActionConfirmation(this) : Promise.resolve(true);
+            var confirmation = this.definition.confirmation ? this.service.hooks.onActionConfirmation(this, option) : Promise.resolve(true);
 
             return confirmation.then(result => {
                 if (result) {
