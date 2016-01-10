@@ -47,7 +47,7 @@
                 <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
                 <div id="dialogs"></div>
             </div>
-            <vi-app-route class="fit" route="SignIn(/:returnUrl)">
+            <vi-app-route class="fit" route="SignIn(/)(:returnUrl)">
                 <vi-sign-in label="{{label}}" image="{{signInImage}}"></vi-sign-in>
             </vi-app-route>
         </template>

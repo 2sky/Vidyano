@@ -101,7 +101,8 @@
             },
             path: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                observer: "_pathChanged"
             },
             service: {
                 type: Object,
@@ -378,6 +379,25 @@
                 this.changePath(this.path);
 
             this._setInitializing(false);
+        }
+
+        private _pathChanged(newPath: string) {
+            newPath = App.stripHashBang(newPath);
+
+            if (!newPath && this.service && this.service.isSignedIn) {
+                let programUnit = this.programUnit;
+                if (!programUnit && this.service.application.programUnits.length > 0)
+                    programUnit = this.service.application.programUnits[0];
+
+                if (programUnit && programUnit.openFirst) {
+                    var path = programUnit.items[0].path;
+                    if (path !== newPath) {
+                        setTimeout(() => {
+                            this.changePath(path);
+                        }, 0);
+                    }
+                }
+            }
         }
 
         private _convertPath(application: Vidyano.Application, path: string) : string {

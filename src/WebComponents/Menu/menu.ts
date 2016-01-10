@@ -120,8 +120,7 @@ module Vidyano.WebComponents {
             }
         },
         observers: [
-            "_updateItemTitle(item, filter, filtering, collapsed)",
-            "_autoOpenFirst(programUnit, expand, href)"
+            "_updateItemTitle(item, filter, filtering, collapsed)"
         ],
         listeners: {
             "tap": "_tap"
@@ -229,11 +228,6 @@ module Vidyano.WebComponents {
                 return item.path;
 
             return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? this.app.noHistory ? "#" : '#!/' + this.item.path : undefined;
-        }
-
-        private _autoOpenFirst(programUnit: Vidyano.ProgramUnit, expand: boolean, href: string) {
-            if (expand && programUnit && programUnit.openFirst && href && !this.app.path)
-                this.app.changePath(href);
         }
 
         private _titleMouseenter() {
