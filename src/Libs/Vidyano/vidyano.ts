@@ -1438,7 +1438,7 @@ module Vidyano {
 
     export class ServiceObjectWithActions extends ServiceObject {
         private _queue: Queue;
-        private _isBusy: boolean;
+        private _isBusy: boolean = false;
         notification: string;
         notificationType: NotificationType;
         actions: Action[] = [];
@@ -2821,6 +2821,7 @@ module Vidyano {
             if (query.result)
                 this._setResult(query.result);
             else {
+                this.items = [];
                 this._labelWithTotalItems = this.label;
                 this._lastUpdated = new Date();
             }
