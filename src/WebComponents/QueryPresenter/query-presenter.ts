@@ -76,6 +76,8 @@ module Vidyano.WebComponents {
         }
 
         private _computeQuery(queryId: string, isAttached: boolean) {
+            this._setError(null);
+
             if (this.query && queryId && this.query.id.toUpperCase() == queryId.toUpperCase())
                 return;
 
