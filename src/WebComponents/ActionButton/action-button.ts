@@ -64,6 +64,11 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 value: null
+            },
+            title: {
+                type: String,
+                reflectToAttribute: true,
+                computed: "_computeTitle(action, pinned)"
             }
         },
         observers: [
@@ -165,6 +170,10 @@ module Vidyano.WebComponents {
 
         private _computeDisabled(canExecute: boolean): boolean {
             return !canExecute;
+        }
+
+        private _computeTitle(action: Vidyano.Action, pinned: boolean): string {
+            return pinned ? action.displayName : null;
         }
 
         private _computeIcon(action: Action): string {
