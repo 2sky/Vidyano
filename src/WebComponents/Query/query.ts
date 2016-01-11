@@ -5,12 +5,6 @@
                 type: Object,
                 observer: "_queryChanged"
             },
-            loading: {
-                type: Boolean,
-                value: true,
-                readOnly: true,
-                reflectToAttribute: true
-            },
             noActions: {
                 type: Boolean,
                 reflectToAttribute: true,
