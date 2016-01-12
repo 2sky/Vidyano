@@ -27,6 +27,10 @@ module Vidyano.WebComponents.Attributes {
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "attribute.selectInPlace"
+            },
+            target: {
+                type: String,
+                computed: "_computeTarget(attribute, href)"
             }
         },
         observers: [
@@ -142,12 +146,19 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _open(e: Event) {
+            if (this.attribute.parent.isNew)
+                return;
+
             this.attribute.getPersistentObject().then(po => {
                 if (po)
                     this.attribute.service.hooks.onOpen(po, false, !!po.parent);
             });
 
             e.preventDefault();
+        }
+
+        private _computeTarget(attribute: Vidyano.PersistentObjectAttribute, href: string): string {
+            return attribute && href && attribute.parent.isNew ? "_blank" : "";
         }
     }
 }

@@ -5,7 +5,7 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-reference.css" />
         <template is="dom-if" if="{{!editing}}">
-            <a href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" on-tap="_open">
+            <a href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" on-tap="_open" target$="{{target}}">
                 <span>{{attribute.displayValue}}</span>
                 <template is="dom-if" if="{{href}}">
                     <vi-icon source="ArrowUpRight" small></vi-icon>
@@ -17,7 +17,7 @@
             <template is="dom-if" if="{{attribute.selectInPlace}}">
                 <vi-persistent-object-attribute-edit attribute="{{attribute}}" class="reverse-content">
                     <vi-select content class="flex" options="{{attribute.options}}" selected-option="{{objectId}}" readonly$="{{attribute.isReadOnly}}"></vi-select>
-                    <a class="button" href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open">
+                    <a class="button" href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open" target$="{{target}}">
                         <vi-icon source="ArrowUpRight"></vi-icon>
                     </a>
                     <template is="dom-if" if="{{canAddNewReference}}" restamp>
@@ -35,7 +35,7 @@
             <template is="dom-if" if="{{!attribute.selectInPlace}}">
                 <vi-persistent-object-attribute-edit attribute="{{attribute}}">
                     <input content value="{{filter::input}}" on-blur="_filterBlur" readonly$="{{attribute.isReadOnly}}" />
-                    <a class="button" href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open">
+                    <a class="button" href$="{{href}}" title$="{{attribute.displayValue}}" disabled$="{{!href}}" tabindex="-1" on-tap="_open" target$="{{target}}">
                         <vi-icon source="ArrowUpRight"></vi-icon>
                     </a>
                     <template is="dom-if" if="{{canBrowseReference}}" restamp>
