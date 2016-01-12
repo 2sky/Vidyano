@@ -87,13 +87,11 @@ module Vidyano.WebComponents {
         }
 
         private _deactivate(e: CustomEvent) {
-            if (this.persistentObject && this.persistentObject.isDirty && this.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) {
+            const route = <AppRoute>Polymer.dom(this).parentNode;
+            const newPath = this.app.path;
+
+            if (this.persistentObject && this.persistentObject.isDirty && this.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit" ) && route.path !== newPath) {
                 e.preventDefault();
-
-                const route = <AppRoute>Polymer.dom(this).parentNode;
-                const newPath = this.app.path;
-
-                this.app.changePath(route.path);
 
                 this.app.showMessageDialog( {
                     title: this.app.service.getTranslatedMessage("PagesWithUnsavedChanges"),
@@ -117,8 +115,10 @@ module Vidyano.WebComponents {
                         this.app.changePath(newPath);
                         route.deactivator(true);
                     }
-                    else
+                    else {
                         route.deactivator(false);
+                        this.app.changePath(route.path);
+                    }
                 });
             }
         }

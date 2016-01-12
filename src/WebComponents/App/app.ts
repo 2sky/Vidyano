@@ -693,8 +693,6 @@
             if (parent instanceof Vidyano.PersistentObject) {
                 var cacheEntry = <PersistentObjectFromActionAppCacheEntry>this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(parent));
                 if (cacheEntry instanceof PersistentObjectFromActionAppCacheEntry && cacheEntry.fromActionIdReturnPath) {
-                    this.app.cacheRemove(cacheEntry);
-
                     if (App.stripHashBang(this.app.getUrlForFromAction(cacheEntry.fromActionId)) == App.stripHashBang(this.app.path))
                         this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
                 }
