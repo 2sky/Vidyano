@@ -39,6 +39,7 @@ module Vidyano.WebComponents.Attributes {
                 var input = document.createElement("input");
                 this._inputAttribute.registerInput(input);
                 input.type = "file";
+                input.accept = this.attribute.getTypeHint("accept");
 
                 if (!this._inputContainer) {
                     this._inputContainer = document.createElement("div");
