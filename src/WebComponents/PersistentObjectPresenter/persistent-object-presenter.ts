@@ -124,6 +124,8 @@ module Vidyano.WebComponents {
         }
 
         private _computePersistentObject() {
+            this._setError(null);
+
             if (this.persistentObject && this.persistentObject.objectId == this.persistentObjectId && this.persistentObject.objectId == this.persistentObjectObjectId)
                 return;
 
@@ -154,6 +156,8 @@ module Vidyano.WebComponents {
         }
 
         private _persistentObjectChanged(persistentObject: Vidyano.PersistentObject, oldPersistentObject: Vidyano.PersistentObject) {
+            this._setError(null);
+
             if (oldPersistentObject)
                 this.empty();
 
