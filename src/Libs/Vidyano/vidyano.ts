@@ -4050,7 +4050,7 @@ module Vidyano {
                                     if (po.fullTypeName == "Vidyano.Notification") {
                                         if (po.objectId != null && JSON.parse(po.objectId).dialog) {
                                             this._setNotification();
-                                            this.service.hooks.setNotification(po.notification, po.notificationType);
+                                            this.service.hooks.onMessageDialog(NotificationType[po.notificationType], po.notification, false, this.service.hooks.service.getTranslatedMessage("OK"));
                                         }
                                         else {
                                             if (this.query && this.definition.refreshQueryOnCompleted)
