@@ -25,7 +25,7 @@
             },
             _columns: {
                 type: Object,
-                computed: "_computeColumns(query.columns, _settings.columns)"
+                computed: "_computeColumns(_settings.columns)"
             },
             _items: {
                 type: Object,
@@ -282,15 +282,19 @@
             return columns && columns.length > 0 ? QueryGridUserSettings.Load(columns[0].query) : null;
         }
 
-        private _computeColumns(columns: QueryColumn[]): QueryGridColumn[] {
+        private _computeColumns(columns: QueryGridColumn[]): QueryGridColumn[] {
             if (!columns || columns.length === 0)
                 return [];
 
-            var visibleColumns = Enumerable.from(this._settings.columns).where(c => !c.isHidden).memoize();
+            var visibleColumns = Enumerable.from(
+            columns).where(c => !c.isHidden).memoize();
             var pinnedColumns = visibleColumns.where(c => c.isPinned).orderBy(c => c.offset).toArray();
             var unpinnedColumns = visibleColumns.where(c => !c.isPinned).orderBy(c => c.offset).toArray();
 
-            return pinnedColumns.concat(unpinnedColumns);
+            columns = pinnedColumns.concat(unpinnedColumns);
+            columns.forEach(c => c.reset());
+
+            return columns;
         }
 
         private _computeItems(items: Vidyano.QueryResultItem[], viewportSize: Size, verticalScrollOffset: number, rowHeight: number, lastUpdated: Date): Vidyano.QueryResultItem[] {
@@ -749,7 +753,7 @@
                 if (!result)
                     return;
 
-                return this._updateColumnWidths().then(() => this._settings.save(true));
+                this._settings.save(true);
             });
         }
 
@@ -842,6 +846,10 @@
 
         set width(width: string) {
             this._userSettingsColumnData.width = width;
+        }
+
+        reset() {
+            this.calculatedWidth = this.calculatedOffset = undefined;
         }
     }
 
