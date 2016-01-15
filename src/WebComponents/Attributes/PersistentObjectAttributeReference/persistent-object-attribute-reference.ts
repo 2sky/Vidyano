@@ -140,13 +140,13 @@ module Vidyano.WebComponents.Attributes {
 
             this.filter = hasReference ? this.attribute.value : "";
 
-            this._setCanClear(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.attribute.isRequired && !StringEx.isNullOrEmpty(this.href) && !this.attribute.selectInPlace);
+            this._setCanClear(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.attribute.isRequired && !StringEx.isNullOrEmpty(this.attribute.objectId) && !this.attribute.selectInPlace);
             this._setCanAddNewReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && this.attribute.canAddNewReference);
             this._setCanBrowseReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.attribute.selectInPlace);
         }
 
         private _open(e: Event) {
-            if (this.attribute.parent.isNew)
+            if (this.attribute.parent.isNew || !this.attribute.lookup.canRead)
                 return;
 
             this.attribute.getPersistentObject().then(po => {
