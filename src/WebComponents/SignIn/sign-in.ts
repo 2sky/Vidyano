@@ -12,30 +12,28 @@
             }
         },
         listeners: {
-            "app-route-activate": "_activate",
-            "sign-in": "_signIn"
+            "app-route-activate": "_activate"
         }
     })
     export class SignIn extends WebComponent {
-        private _returnUrl: string;
         error: string;
         image: string;
 
         private _activate(e: CustomEvent) {
             const route = <AppRoute>Polymer.dom(this).parentNode;
+            const returnUrl = decodeURIComponent(route.parameters.returnUrl || "");
 
             if (route.app.service.isSignedIn) {
-                route.app.service.signOut();
-                route.app.cacheClear();
+                this.async(() => route.app.changePath("SignOut"), 0);
+
+                e.preventDefault();
+                return;
             }
 
-            this._returnUrl = decodeURIComponent(route.parameters.returnUrl || "");
-
             if (route.app.service.windowsAuthentication) {
-                route.app.service.signInUsingCredentials("", "").then(() => {
-                    route.app.changePath(this._returnUrl);
-                });
+                route.app.service.signInUsingCredentials("", "").then(() => route.app.changePath(returnUrl));
 
+                e.preventDefault();
                 return;
             }
 
@@ -67,12 +65,6 @@
                 this.$["image"].classList.add("has-image");
             else
                 this.$["image"].classList.remove("has-image");
-        }
-
-        private _signIn(e: CustomEvent) {
-            e.stopPropagation();
-
-            this.app.changePath(this._returnUrl);
         }
     }
 
@@ -201,8 +193,10 @@
             this.app.service.signInUsingCredentials(this.userName, password).then(() => {
                 this._setSigningIn(false);
 
-                if (currentRoute == this.app.currentRoute)
-                    this.fire("sign-in", null);
+                if (currentRoute == this.app.currentRoute) {
+                    var route = this.findParent<AppRoute>(e => e instanceof Vidyano.WebComponents.AppRoute);
+                    this.app.changePath(decodeURIComponent(route.parameters.returnUrl || ""));
+                }
             }, e => {
                     this._setSigningIn(false);
 

@@ -97,6 +97,7 @@
         "src/WebComponents/SelectReferenceDialog/select-reference-dialog.ts",
         "src/WebComponents/SessionPresenter/session-presenter.ts",
         "src/WebComponents/SignIn/sign-in.ts",
+        "src/WebComponents/SignOut/sign-out.ts",
         "src/WebComponents/SizeTracker/size-tracker.ts",
         "src/WebComponents/Sortable/sortable.ts",
         "src/WebComponents/Spinner/spinner.ts",

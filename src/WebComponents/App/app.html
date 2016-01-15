@@ -24,6 +24,7 @@
 <link rel="import" href="../QueryPresenter/query-presenter.html" />
 <link rel="import" href="../QueryItemsPresenter/query-items-presenter.html" />
 <link rel="import" href="../SignIn/sign-in.html" />
+<link rel="import" href="../SignOut/sign-out.html" />
 
 <dom-module id="vi-app">
     <template>
@@ -49,6 +50,9 @@
             </div>
             <vi-app-route class="fit" route="SignIn(/)(:returnUrl)">
                 <vi-sign-in label="{{label}}" image="{{signInImage}}"></vi-sign-in>
+            </vi-app-route>
+            <vi-app-route hidden route="SignOut(/)">
+                <vi-sign-out></vi-sign-out>
             </vi-app-route>
         </template>
         <vi-app-config>

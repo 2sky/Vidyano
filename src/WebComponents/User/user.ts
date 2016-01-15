@@ -55,7 +55,7 @@ module Vidyano.WebComponents {
         }
 
         signOut() {
-            this.app.redirectToSignIn(false);
+            this.app.changePath("SignOut");
         }
 
         feedback() {

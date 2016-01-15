@@ -548,6 +548,8 @@ module Vidyano {
             if (this._isSignedIn === val)
                 return;
 
+            this._setIsUsingDefaultCredentials(val && this.defaultUserName === this.userName);
+
             var oldIsSignedIn = this._isSignedIn;
             this.notifyPropertyChanged("isSignedIn", this._isSignedIn = val, oldIsSignedIn);
         }
@@ -569,11 +571,7 @@ module Vidyano {
         }
 
         private _setIsUsingDefaultCredentials(val: boolean) {
-            var oldIsUsingDefaultCredentials = this.isUsingDefaultCredentials;
-            if (oldIsUsingDefaultCredentials === val)
-                return;
-
-            this.notifyPropertyChanged("isUsingDefaultCredentials", this._isUsingDefaultCredentials = val, oldIsUsingDefaultCredentials);
+            this._isUsingDefaultCredentials = val;
         }
 
         get userName(): string {
@@ -735,8 +733,6 @@ module Vidyano {
         }
 
         private _getApplication(data: any = this._createData("")): Promise<Application> {
-            this._setIsUsingDefaultCredentials(this._clientData.defaultUser === this.userName);
-
             return new Promise<Application>((resolve, reject) => {
                 Vidyano.cookie("staySignedIn", this.staySignedIn ? "true" : null, { force: true, expires: 365 });
                 this._postJSON(this._createUri("GetApplication"), data).then(result => {
@@ -767,7 +763,6 @@ module Vidyano {
                     CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
 
                     this._setUserName(result.userName);
-                    this._setIsUsingDefaultCredentials(this._clientData.defaultUser === result.userName);
 
                     if (result.session)
                         this.application._updateSession(result.session);

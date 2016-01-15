@@ -75,10 +75,10 @@ module Vidyano.WebComponents {
             }
         }
 
-        deactivate(newRoute?: AppRoute): Promise<boolean> {
-            return new Promise(resolve => {
-                var component = <WebComponent>Polymer.dom(this).children[0];
+        deactivate(): Promise<boolean> {
+            var component = <WebComponent>Polymer.dom(this).children[0];
 
+            return new Promise(resolve => {
                 this.deactivator = resolve;
                 if (!component || !component.fire("app-route-deactivate", null, { bubbles: false, cancelable: true }).defaultPrevented)
                     resolve(true);
@@ -90,6 +90,17 @@ module Vidyano.WebComponents {
 
                 return result;
             });
+        }
+
+        reset() {
+            if (!this._constructor)
+                return;
+
+            var component = <WebComponent>Polymer.dom(this).children[0];
+            if (component) {
+                Polymer.dom(this).removeChild(component);
+                Polymer.dom(this).flush();
+            }
         }
 
         get parameters(): any {

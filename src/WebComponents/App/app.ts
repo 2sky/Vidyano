@@ -101,8 +101,7 @@
             },
             path: {
                 type: String,
-                reflectToAttribute: true,
-                observer: "_pathChanged"
+                reflectToAttribute: true
             },
             service: {
                 type: Object,
@@ -159,7 +158,8 @@
         observers: [
             "_start(initializing, path)",
             "_updateRoute(path, initializing, routeMapVersion)",
-            "_hookWindowBeforeUnload(noHistory, isAttached)"
+            "_hookWindowBeforeUnload(noHistory, isAttached)",
+            "_cleanUpOnSignOut(service.isSignedIn)"
         ],
         hostAttributes: {
             "theme-color-1": true,
@@ -381,25 +381,6 @@
             this._setInitializing(false);
         }
 
-        private _pathChanged(newPath: string) {
-            newPath = App.stripHashBang(newPath);
-
-            if (!newPath && this.service && this.service.isSignedIn) {
-                let programUnit = this.programUnit;
-                if (!programUnit && this.service.application.programUnits.length > 0)
-                    programUnit = this.service.application.programUnits[0];
-
-                if (programUnit && programUnit.openFirst) {
-                    var path = programUnit.items[0].path;
-                    if (path !== newPath) {
-                        setTimeout(() => {
-                            this.changePath(path);
-                        }, 0);
-                    }
-                }
-            }
-        }
-
         private _convertPath(application: Vidyano.Application, path: string) : string {
             if (application) {
                 var match = application.poRe.exec(path);
@@ -429,6 +410,20 @@
                 path = Vidyano.WebComponents.App.stripHashBang(this._convertPath(this.service.application, path));
                 const hashBangPath = hashBang + path;
 
+                if (this.service && this.service.isSignedIn && path === "") {
+                    let programUnit = this.programUnit;
+                    if (!programUnit && this.service.application.programUnits.length > 0)
+                        programUnit = this.service.application.programUnits[0];
+
+                    if (programUnit && programUnit.openFirst) {
+                        var openFirstPath = programUnit.items[0].path;
+                        if (path !== openFirstPath) {
+                            this.async(() => this.changePath(openFirstPath));
+                            return;
+                        }
+                    }
+                }
+
                 const mappedPathRoute = !!path ? Vidyano.Path.match(hashBangPath, true) : null;
                 const newRoute = mappedPathRoute ? this._routeMap[App.stripHashBang(mappedPathRoute.path)] : null;
 
@@ -438,7 +433,7 @@
                 }
 
                 if (this.currentRoute) {
-                    return currentRoute.deactivate(newRoute).then(proceed => {
+                    return currentRoute.deactivate().then(proceed => {
                         if (!proceed || currentRoute !== this.currentRoute)
                             return;
 
@@ -498,6 +493,14 @@
                 }
                 else
                     this.redirectToSignIn();
+            }
+        }
+
+        private _cleanUpOnSignOut(isSignedIn: boolean) {
+            if (!isSignedIn) {
+                this.cacheClear();
+                for(var route in this._routeMap)
+                    this._routeMap[route].reset();
             }
         }
 
