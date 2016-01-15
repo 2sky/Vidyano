@@ -62,7 +62,9 @@ module Vidyano.WebComponents {
                 if (this._cacheEntry = <PersistentObjectFromActionAppCacheEntry>route.app.cachePing(new PersistentObjectFromActionAppCacheEntry(undefined, route.parameters.fromActionId)))
                     this.persistentObject = this._cacheEntry.persistentObject;
 
-                if (!this.persistentObject) {
+                if (!this._cacheEntry) {
+                    this.persistentObject = null;
+                    
                     this._setLoading(false);
                     this.app.redirectToNotFound();
 
