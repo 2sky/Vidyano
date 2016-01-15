@@ -210,7 +210,7 @@ ModelManifest.xml
 /src/Libs/layout/layout.html
 /src/Libs/linqjs/
 /src/Libs/marked*
-/src/Libs/moment/
+/src/Libs/moment/*.js
 /src/Libs/paper-ripple/
 /src/Libs/pathjs/
 /src/Libs/polymer/
