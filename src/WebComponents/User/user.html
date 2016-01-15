@@ -15,7 +15,9 @@
                 <template is="dom-if" if="{{canFeedback}}">
                     <vi-popup-menu-item icon="UserFeedback" label="{{translations.Feedback}}" on-tap="feedback"></vi-popup-menu-item>
                 </template>
-                <vi-popup-menu-item icon="SignOut" label="{{translations.SignOut}}" on-tap="signOut"></vi-popup-menu-item>
+                <template is="dom-if" if="{{!service.windowsAuthentication}}">
+                    <vi-popup-menu-item icon="SignOut" label="{{translations.SignOut}}" on-tap="signOut"></vi-popup-menu-item>
+                </template>
             </vi-popup-menu>
         </template>
         <template is="dom-if" if="{{!isSignedIn}}">
