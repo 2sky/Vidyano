@@ -78,7 +78,10 @@
                 reflectToAttribute: true,
                 computed: "query.totalItem"
             },
-            _verticalScrollOffset: Number,
+            _verticalScrollOffset:{
+                type: Number,
+                observer: "_verticalScrollOffsetChanged"
+            },
             _horizontalScrollOffset: {
                 type: Number,
                 observer: "_horizontalScrollOffsetChanged"
@@ -252,6 +255,13 @@
             }
         }
 
+        private _verticalScrollOffsetChanged(verticalScrollOffset: number) {
+            if (!this.query)
+                return;
+
+            this.query["_query-grid-vertical-scroll-offset"] = verticalScrollOffset;
+        }
+
         private _horizontalScrollOffsetChanged(horizontalScrollOffset: number) {
             if (!this._tableData || (!horizontalScrollOffset && !this._horizontalScrollOffsetCurrent))
                 return;
@@ -396,6 +406,10 @@
 
                             if (tablesUpdating === this._tablesUpdating)
                                 this._tablesUpdating = null;
+
+                            const savedVerticalScrollOffset = this.query["_query-grid-vertical-scroll-offset"];
+                            if (!!savedVerticalScrollOffset && this._verticalScrollOffset !== savedVerticalScrollOffset)
+                                this._verticalScrollOffset = savedVerticalScrollOffset;
                         });
                     });
                 });
