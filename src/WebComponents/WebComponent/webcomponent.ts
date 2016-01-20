@@ -242,6 +242,21 @@
         debounce: (jobName: string, callback: Function, wait?: number) => void;
 
         /**
+         * Cancels an active debouncer without calling the callback.
+         */
+        cancelDebouncer: (jobName: string) => void;
+
+        /**
+         * Calls the debounced callback immediately and cancels the debouncer.
+         */
+        flushDebouncer: (jobName: string) => void;
+
+        /**
+         * Returns true if the named debounce task is waiting to run.
+         */
+        isDebouncerActive: (jobName: string) => void;
+
+        /**
           * Adds new elements to the end of an array, returns the new length and notifies Polymer that the array has changed.
         **/
         push: (path: string, ...items: any[]) => number;
