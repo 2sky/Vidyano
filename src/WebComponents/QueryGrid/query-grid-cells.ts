@@ -66,13 +66,13 @@
         private _valueChanged(value: QueryResultItemValue) {
             if (!value) {
                 if (this._icon)
-                    this._icon.setAttribute("hidden");
+                    this._icon.setAttribute("hidden", "");
 
                 if (this._textNode && this._textNode.nodeValue)
                     this._textNode.nodeValue = "";
             } else if (value === undefined || value === null) {
                 if (this._icon)
-                    this._icon.setAttribute("hidden");
+                    this._icon.setAttribute("hidden", "");
 
                 if (!this._textNode)
                     this._textNode = <Text>Polymer.dom(this.root).appendChild(document.createTextNode("—"));
