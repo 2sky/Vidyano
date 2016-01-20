@@ -2,7 +2,9 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-multi-line-string.css" />
         <template is="dom-if" if="{{!editing}}">
-            <pre>{{attribute.displayValue}}</pre>
+            <vi-scroller no-horizontal>
+                <pre>{{attribute.displayValue}}</pre>
+            </vi-scroller>
         </template>
         <template is="dom-if" if="{{editing}}">
             <vi-persistent-object-attribute-edit attribute="{{attribute}}">

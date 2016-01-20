@@ -104,6 +104,7 @@
     #content {
         @include layout-horizontal();
         @include flex();
+        overflow: hidden;
 
         .attribute {
             @include flex();

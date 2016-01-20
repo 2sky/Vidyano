@@ -11,4 +11,8 @@
     pre, textarea {
 		color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
 	}
+
+    pre {
+        white-space: pre-line;
+    }
 }
