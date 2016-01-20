@@ -1456,7 +1456,7 @@ module Vidyano {
             this.notifyPropertyChanged("isBusy", this._isBusy = val, oldIsBusy);
         }
 
-        setNotification(notification?: string, type: NotificationType = NotificationType.Error) {
+        setNotification(notification: string = null, type: NotificationType = NotificationType.Error) {
             var oldNotificationType = this.notificationType;
             this.notifyPropertyChanged("notificationType", this.notificationType = type, oldNotificationType);
 
