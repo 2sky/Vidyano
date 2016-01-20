@@ -548,7 +548,7 @@ module Vidyano {
             if (this._isSignedIn === val)
                 return;
 
-            this._setIsUsingDefaultCredentials(val && this.defaultUserName === this.userName);
+            this._setIsUsingDefaultCredentials(val && this.defaultUserName && this.userName && this.defaultUserName.toLowerCase() === this.userName.toLowerCase());
 
             var oldIsSignedIn = this._isSignedIn;
             this.notifyPropertyChanged("isSignedIn", this._isSignedIn = val, oldIsSignedIn);

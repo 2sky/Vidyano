@@ -64,7 +64,7 @@ module Vidyano.WebComponents {
 
                 if (!this._cacheEntry) {
                     this.persistentObject = null;
-                    
+
                     this._setLoading(false);
                     this.app.redirectToNotFound();
 
@@ -125,14 +125,11 @@ module Vidyano.WebComponents {
             }
         }
 
-        private _computePersistentObject() {
+        private _computePersistentObject(persistentObjectId: string, persistentObjectObjectId: string, isAttached: boolean) {
             this._setError(null);
 
-            if (this.persistentObject && this.persistentObject.objectId == this.persistentObjectId && this.persistentObject.objectId == this.persistentObjectObjectId)
+            if (!this.isAttached || (this.persistentObject && this.persistentObject.id == persistentObjectId && this.persistentObject.objectId == persistentObjectObjectId))
                 return;
-
-            var persistentObjectId = this.persistentObjectId;
-            var persistentObjectObjectId = this.persistentObjectObjectId;
 
             if (persistentObjectId != null) {
                 this._setLoading(true);

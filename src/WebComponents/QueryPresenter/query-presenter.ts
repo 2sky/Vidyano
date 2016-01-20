@@ -78,10 +78,10 @@ module Vidyano.WebComponents {
         private _computeQuery(queryId: string, isAttached: boolean) {
             this._setError(null);
 
-            if (this.query && queryId && this.query.id.toUpperCase() == queryId.toUpperCase())
+            if (!isAttached || (this.query && queryId && this.query.id.toUpperCase() == queryId.toUpperCase()))
                 return;
 
-            if (isAttached && !this._customTemplate)
+            if (!this._customTemplate)
                 this.empty();
 
             if (this.queryId) {

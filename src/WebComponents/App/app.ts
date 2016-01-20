@@ -309,10 +309,6 @@
 
         redirectToSignIn(keepUrl: boolean = true) {
             this.changePath("SignIn" + (keepUrl && this.path ? "/" + encodeURIComponent(App.stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
-            for (var route in this._routeMap) {
-                if (!App.stripHashBang(route).startsWith("SignIn"))
-                    this._routeMap[route].empty();
-            }
         }
 
         redirectToNotFound() {
