@@ -179,9 +179,10 @@
                 else
                     height = Math.floor(height);
 
+                this._verticalScrollSpace = outerHeight - height;
+
                 if (height !== this._verticalScrollHeight) {
                     this._verticalScrollHeight = height;
-                    this._verticalScrollSpace = outerHeight - height;
                     this.$["vertical"].style.height = `${height}px`;
                 }
             }
@@ -204,9 +205,10 @@
                 else
                     width = Math.floor(width);
 
+                this._horizontalScrollSpace = outerWidth - width;
+
                 if (width !== this._horizontalScrollWidth) {
                     this._horizontalScrollWidth = width;
-                    this._horizontalScrollSpace = outerWidth - width;
                     this.$["horizontal"].style.width = `${width}px`;
                 }
             }
