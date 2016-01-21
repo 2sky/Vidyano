@@ -8,13 +8,13 @@
     <template>
         <link rel="stylesheet" href="persistent-object.css" />
         <div class="horizontal layout flex content">
-            <div class="vertical-reverse layout master">
-                <vi-persistent-object-tab-presenter class="flex" tab="{{selectedMasterTab}}"></vi-persistent-object-tab-presenter>
-                <vi-notification service-object="{{selectedMasterTab.target}}"></vi-notification>
+            <div class="vertical layout master">
                 <vi-action-bar service-object="{{selectedMasterTab.target}}"></vi-action-bar>
+                <vi-notification service-object="{{selectedMasterTab.target}}"></vi-notification>
+                <vi-persistent-object-tab-presenter class="flex" tab="{{selectedMasterTab}}"></vi-persistent-object-tab-presenter>
             </div>
             <div id="splitter" on-track="_trackSplitter"></div>
-            <vi-persistent-object-details-content class="vertical-reverse layout flex detail" tab="{{selectedDetailTab}}"></vi-persistent-object-details-content>
+            <vi-persistent-object-details-content class="vertical layout flex detail" tab="{{selectedDetailTab}}"></vi-persistent-object-details-content>
         </div>
         <div class="horizontal layout tabs">
             <div class="master">
@@ -39,9 +39,9 @@
                 --theme-color-semi-faint: var(--theme-accent-color-semi-faint);
             }
         </style>
-        <vi-persistent-object-tab-presenter class="flex" tab="{{tab}}"></vi-persistent-object-tab-presenter>
-        <vi-notification service-object="{{tab.target}}"></vi-notification>
         <vi-action-bar service-object="{{tab.target}}"></vi-action-bar>
+        <vi-notification service-object="{{tab.target}}"></vi-notification>
+        <vi-persistent-object-tab-presenter class="flex" tab="{{tab}}"></vi-persistent-object-tab-presenter>
     </template>
 </dom-module>
 
