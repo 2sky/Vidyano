@@ -13,7 +13,9 @@
 }
 
 :host {
+    @include layout-horizontal();
     @include relative();
+    overflow: hidden;
 
     &[initializing] {
         #table {
@@ -23,14 +25,22 @@
 
     #table {
         @include layout-vertical();
-        @include fit();
+        @include flex();
         line-height: var(--theme-h2);
+        overflow: hidden;
 
         #head {
-            border-bottom: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
             height: var(--theme-h2);
+            border-style: solid;
+            border-color: var(--vi-persistent-object-attribute-presenter-border-color);
+            border-width: 0 0 1px 0;
 
             .column {
+                box-sizing: border-box;
+                border-style: solid;
+                border-color: var(--vi-persistent-object-attribute-presenter-border-color);
+                border-width: 0;
+
                 label {
                     display: block;
                     vertical-align: top;
@@ -48,9 +58,11 @@
         }
 
         #body {
+            position: relative;
             @include flex();
 
             #data {
+                display: block;
                 overflow: hidden;
             }
         }
@@ -67,16 +79,21 @@
 
             #head {
                 background-color: #F9F9F9;
-                border: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
 
                 .column {
+                    border-width: 1px 1px 0 0;
                     padding: 0 1px 1px 0;
                     height: var(--theme-h2);
                     line-height: var(--theme-h2);
                     box-sizing: border-box;
 
-                    label {
-                        border-right: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+                    &:first-of-type {
+                        border-left-width: 1px;
+                    }
+
+                    &:last-of-type {
+                        @include flex();
+                        width: auto;
                     }
                 }
             }

@@ -49,6 +49,7 @@
     font-size: 15px;
     color: var(--theme-foreground);
     fill: var(--theme-foreground);
+    outline: none;
 
     @for $c from 1 through length($list-colors) {
         $color: nth($list-colors, $c);

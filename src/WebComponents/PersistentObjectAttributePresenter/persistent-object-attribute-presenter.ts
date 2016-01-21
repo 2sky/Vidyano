@@ -31,7 +31,12 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 readOnly: true,
-                value: true
+                value: true,
+                observer: "_loadingChanged"
+            },
+            height: {
+                type: Number,
+                reflectToAttribute: true
             }
         },
         observers: [
@@ -74,6 +79,8 @@ module Vidyano.WebComponents {
         private _renderedAttribute: Vidyano.PersistentObjectAttribute;
         private _renderedElement: Node;
         attribute: Vidyano.PersistentObjectAttribute;
+        height: number;
+        loading: boolean;
 
         private _setLoading: (loading: boolean) => void;
 
@@ -85,6 +92,9 @@ module Vidyano.WebComponents {
 
             if (attribute && isAttached) {
                 this._setLoading(true);
+
+                if (!this.getAttribute("height"))
+                    this.height = this.app.configuration.getAttributeConfig(attribute).calculateHeight(attribute);
 
                 var attributeType: string;
                 if (Vidyano.Service.isNumericType(attribute.type))
@@ -199,10 +209,9 @@ module Vidyano.WebComponents {
                     } else {
                         var child = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
                         child.classList.add("attribute");
+                        child.attribute = attribute;
 
                         this._renderedElement = Polymer.dom(this.$["content"]).appendChild(child);
-
-                        child.attribute = attribute;
                     }
 
                     this._renderedAttribute = attribute;
@@ -215,6 +224,13 @@ module Vidyano.WebComponents {
 
         private _computeRequired(attribute: Vidyano.PersistentObjectAttribute, required: boolean, value: any): boolean {
             return required && (value == null || (attribute && attribute.rules && attribute.rules.contains("NotEmpty") && value === ""));
+        }
+
+        private _loadingChanged(loading: boolean) {
+            if (loading)
+                this.fire("attribute-loading", null, { bubbles: true });
+            else
+                this.fire("attribute-loaded", null, { bubbles: true });
         }
     }
 }

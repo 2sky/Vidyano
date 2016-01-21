@@ -1,20 +1,36 @@
 @import "../_vars.scss";
 
 :host {
-    @include layout-horizontal();
-    @include layout-center();
-    @include relative();
-    padding-top: var(--theme-h4);
+    display: block;
+    padding: 0 calc(var(--theme-h5) / 2);
+
+    &[loading] {
+        visibility: hidden;
+    }
 
     label {
         @include flex();
         display: block;
         font-size: 15px;
         font-weight: 600;
-        line-height: calc(var(--theme-h2) - var(--theme-h4));
-        min-height: calc(var(--theme-h2) - var(--theme-h4));
         text-transform: uppercase;
-        padding-right: var(--theme-h4);
+        padding: var(--theme-h4) var(--theme-h5) 0 calc(var(--theme-h5) - 1px);
         color: var(--theme-color);
+
+        &:empty {
+            display: none;
+        }
+    }
+
+    table {
+        width: 100%;
+        table-layout: fixed;
+
+        tr {
+            td {
+                vertical-align: top;
+                padding: 0 calc(var(--theme-h5) / 2);
+            }
+        }
     }
 }

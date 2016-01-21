@@ -36,6 +36,10 @@ $tabsBG: #f1f1f1;
         }
     }
 
+    .master, .detail {
+        overflow: hidden;
+    }
+
     &[layout-master-detail] {
         .tabs > .detail {
             margin-left: 4px;

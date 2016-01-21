@@ -7,10 +7,8 @@
             <h4 class="flex">{{persistentObject.breadcrumb}}</h4>
         </header>
         <main>
-            <vi-scroller no-horizontal>
-                <vi-notification service-object="{{persistentObject}}"></vi-notification>
-                <vi-persistent-object-tab-presenter tab="{{tab}}"></vi-persistent-object-tab-presenter>
-            </vi-scroller>
+            <vi-notification service-object="{{persistentObject}}"></vi-notification>
+            <vi-persistent-object-tab-presenter tab="{{tab}}"></vi-persistent-object-tab-presenter>
         </main>
         <footer class="horizontal layout end-justified">
             <template is="dom-if" if="{{!readOnly}}">

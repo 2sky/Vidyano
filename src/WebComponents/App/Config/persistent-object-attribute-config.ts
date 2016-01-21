@@ -7,7 +7,7 @@
             parentObjectId: String,
             height: {
                 type: String,
-                value: "2"
+                value: "1"
             },
             width: {
                 type: String,
@@ -29,7 +29,6 @@
         parentId: string;
         parentObjectId: string;
         component: string;
-        wrapAround: boolean;
         template: any;
 
         private _setTemplate: (template: HTMLElement) => void;

@@ -4,10 +4,10 @@
     --vi-persistent-object-dialog-base-width: 400px;
 
     main {
-        @include layout-horizontal();
+        @include layout-vertical();
         padding: 0;
 
-        > vi-scroller {
+        > vi-persistent-object-tab-presenter {
             @include flex();
         }
     }
@@ -17,6 +17,7 @@
 @media (max-width: 767px) {
     :host main {
         width: 85vw;
+        max-height: 50vh;
     }
 }
 

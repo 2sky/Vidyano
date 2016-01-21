@@ -1,6 +1,7 @@
 @import "../../vars.scss";
 
 :host {
+    @include layout-horizontal();
     overflow: hidden;
 
     marked-element {

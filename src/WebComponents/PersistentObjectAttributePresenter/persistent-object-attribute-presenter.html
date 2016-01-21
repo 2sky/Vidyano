@@ -5,7 +5,7 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-presenter.css" />
         <template is="dom-if" if="{{!noLabel}}">
-            <div class="label">
+            <div class="label horizontal layout end">
                 <label>{{attribute.label}}</label>
                 <span class="required">{{translateMessage('Required', isAttached)}}</span>
                 <div class="locked">

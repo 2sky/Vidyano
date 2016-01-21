@@ -45,11 +45,12 @@
 
     .flex {
         color: white;
+        overflow: hidden;
 
         span {
             display: block;
-            line-height: calc(var(--theme-h1) - 2px);
-            height: calc(var(--theme-h1) - 2px);
+            line-height: var(--theme-h1);
+            height: var(--theme-h1);
             font-size: 14px;
             overflow: hidden;
             -ms-text-overflow: ellipsis;

@@ -3,6 +3,7 @@
 :host {
     @include layout-horizontal();
     @include relative();
+    overflow: hidden;
 
     .content-wrapper {
         @include layout-horizontal();

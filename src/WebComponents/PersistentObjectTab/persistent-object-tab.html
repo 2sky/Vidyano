@@ -3,44 +3,12 @@
 <dom-module id="vi-persistent-object-tab">
     <template>
         <link rel="stylesheet" href="persistent-object-tab.css" />
+        <vi-size-tracker size="{{size}}"></vi-size-tracker>
         <vi-scroller no-horizontal>
-            <template is="dom-if" if="{{isDesignModeAvailable}}">
-                <vi-popup-menu context-menu-only ctrl-key>
-                    <vi-popup-menu-item icon="Design" label="Design-mode" on-tap="_toggleDesignMode"></vi-popup-menu-item>
-                </vi-popup-menu>
+            <template is="dom-repeat" items="{{tab.groups}}" as="group">
+                <vi-persistent-object-group group="[[group]]" group-index="[[index]]" columns="[[columns]]"></vi-persistent-object-group>
             </template>
-
-            <div class="fit">
-                <div id="cells"></div>
-                <vi-size-tracker on-sizechanged="_sizeChanged" trigger-zero></vi-size-tracker>
-            </div>
-            <div>
-                <div id="items">
-                    <template is="dom-repeat" items="{{items}}">
-                        <vi-persistent-object-tab-item-presenter design-mode="{{designMode}}" item="{{item}}" cell-width="{{cellWidth}}" cell-height="{{cellHeight}}"></vi-persistent-object-tab-item-presenter>
-                    </template>
-                </div>
-            </div>
         </vi-scroller>
-    </template>
-</dom-module>
-
-<dom-module id="vi-persistent-object-tab-cell">
-    <template>
-        <link rel="stylesheet" href="persistent-object-tab-cell.css" />
-        <div id="background" class="flex"></div>
-    </template>
-</dom-module>
-
-<dom-module id="vi-persistent-object-tab-item-presenter">
-    <template>
-        <link rel="stylesheet" href="persistent-object-tab-item-presenter.css" />
-        <content></content>
-        <div id="rect" on-track="_track">
-            <div id="anchor" on-track="_track">
-                <div id="icon"></div>
-            </div>
-        </div>
     </template>
 </dom-module>
 

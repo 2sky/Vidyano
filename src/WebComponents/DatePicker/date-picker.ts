@@ -272,11 +272,13 @@
         }
 
         private _select(e: Event) {
+            var srcElement = <HTMLElement>(e.srcElement || e.target);
+
             if (this.zoom == "days") {
-                if (e.srcElement.hasAttribute("data-day")) {
-                    this._currentDate.setDate(parseInt(e.srcElement.getAttribute("data-day"), 10));
-                    this._currentDate.setMonth(parseInt(e.srcElement.getAttribute("data-month"), 10));
-                    this._currentDate.setFullYear(parseInt(e.srcElement.getAttribute("data-year"), 10));
+                if (srcElement.hasAttribute("data-day")) {
+                    this._currentDate.setDate(parseInt(srcElement.getAttribute("data-day"), 10));
+                    this._currentDate.setMonth(parseInt(srcElement.getAttribute("data-month"), 10));
+                    this._currentDate.setFullYear(parseInt(srcElement.getAttribute("data-year"), 10));
 
                     var newDate = new Date(this._currentDate.getFullYear(), this._currentDate.getMonth(), this._currentDate.getDate());
                     if (this.selectedDate) {
@@ -288,8 +290,8 @@
                     this.selectedDate = newDate;
                     this._render();
                 }
-            } else if (e.srcElement.hasAttribute("data-value")) {
-                var value = parseInt(e.srcElement.getAttribute("data-value"), 10);
+            } else if (srcElement.hasAttribute("data-value")) {
+                var value = parseInt(srcElement.getAttribute("data-value"), 10);
                 if (this.zoom == "months") {
                     this._currentDate.setMonth(value);
                     this.zoom = "days";

@@ -1,9 +1,7 @@
 @import "../vars.scss";
 
 :host {
-    @include layout-vertical();
-    flex-basis: 0.000000001px;
-    font-size: 13px;
+    display: block;
     white-space: nowrap;
     font-size: 13px;
     color: #222;
@@ -12,29 +10,36 @@
     -o-transition: opacity ease-out 0.3s;
     -webkit-transition: opacity ease-out 0.3s;
     transition: opacity ease-out 0.3s;
+    position: relative;
 
     --vi-persistent-object-attribute-presenter-border-color: #ddd;
     --vi-persistent-object-attribute-presenter-label-color: #888;
     --vi-persistent-object-attribute-presenter-readonly-color: #888;
+
+    @for $i from 1 through 10 {
+        &[height="#{$i}"] #content {
+            height: calc(var(--theme-h2) * #{$i});
+        }
+    }
 
     &:not([loading]) {
         opacity: 1;
     }
 
     .label {
-        padding-top: var(--theme-h5);
-        height: calc(var(--theme-h2) - var(--theme-h5));
-        min-height: calc(var(--theme-h2) - var(--theme-h5));
-        line-height: calc(var(--theme-h2) - var(--theme-h5));
-        vertical-align: top;
+        height: var(--theme-h2);
+        padding-bottom: var(--theme-h5);
+        box-sizing: border-box;
+        overflow: hidden;
 
         label {
-            display: inline-block;
             font-size: 11px;
             font-weight: 400;
             color: var(--vi-persistent-object-attribute-presenter-label-color);
             letter-spacing: 0.5px;
-            @apply(--vi--attribute-label);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            @apply(--vi-persistent-object-attribute-presenter-label);
         }
 
         .required {
@@ -44,7 +49,7 @@
             color: white;
             line-height: 13px;
             height: 14px;
-            margin: 0 0 0 var(--theme-h5);
+            margin: 0 0 0 var(--theme-h4);
             padding: 0 4px 0 3px;
             -moz-transform: translateY(-1px);
             -ms-transform: translateY(-1px);
@@ -52,7 +57,7 @@
             -webkit-transform: translateY(-1px);
             transform: translateY(-1px);
             background-color: var(--theme-color);
-            @apply(--vi--attribute-required);
+            @apply(--vi-persistent-object-attribute-presenter-required);
 
             &::before {
                 content: "";
@@ -71,11 +76,8 @@
         .locked {
             fill: #666;
             display: none;
-            -moz-transform: translateY(1px);
-            -ms-transform: translateY(1px);
-            -o-transform: translateY(1px);
-            -webkit-transform: translateY(1px);
-            transform: translateY(1px);
+            padding-bottom: calc(var(--theme-h5) / 2);
+            margin: 0 0 0 calc(var(--theme-h5) / 2);
 
             > vi-icon {
                 --vi-icon-width: 10px;
@@ -104,9 +106,8 @@
     #content {
         @include layout-horizontal();
         @include flex();
-        overflow: hidden;
 
-        .attribute {
+        .attribute, vi-template-presenter {
             @include flex();
         }
     }

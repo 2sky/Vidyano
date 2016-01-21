@@ -15,6 +15,10 @@
     &[no-horizontal]:not([no-vertical]) {
         > #wrapper {
             @include layout-vertical();
+
+            > #content {
+                @include flex();
+            }
         }
     }
 
@@ -164,6 +168,7 @@
     }
 
     > .scroll-shadow {
+        display: none;
         position: absolute;
         -webkit-box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
         box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
@@ -203,6 +208,7 @@
     }
 
     &[scroll-top-shadow] > .scroll-shadow.top {
+        display: block;
         -moz-transform: translateY(-var(--theme-h2));
         -ms-transform: translateY(-var(--theme-h2));
         -o-transform: translateY(-var(--theme-h2));
@@ -211,6 +217,7 @@
     }
 
     &[scroll-bottom-shadow] > .scroll-shadow.bottom {
+        display: block;
         -moz-transform: translateY(var(--theme-h2));
         -ms-transform: translateY(var(--theme-h2));
         -o-transform: translateY(var(--theme-h2));

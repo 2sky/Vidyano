@@ -53,8 +53,11 @@
         > span {
             display: inline-block;
             vertical-align: top;
-            margin-left: 2px;
             @apply(--vi-button-label-style);
+        }
+
+        > vi-icon[has-resource] + span {
+            margin-left: 2px;
         }
     }
 
