@@ -199,13 +199,8 @@
             }
 
             rows.forEach(r => {
-                for (var i=0; i<columns; i++) {
-                    var cell = r.cells[i];
-                    if (!cell)
-                        cell = document.createElement("td");
-
-                    r.host.appendChild(cell);
-                }
+                for (var i=columns-1; i>=0 && !r.cells[i]; i--)
+                    r.host.appendChild(document.createElement("td"));
             });
 
             if (this._layout)
