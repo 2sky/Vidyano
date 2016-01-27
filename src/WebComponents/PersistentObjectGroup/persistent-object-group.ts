@@ -198,6 +198,16 @@
                 }
             }
 
+            rows.forEach(r => {
+                for (var i=0; i<columns; i++) {
+                    var cell = r.cells[i];
+                    if (!cell)
+                        cell = document.createElement("td");
+
+                    r.host.appendChild(cell);
+                }
+            });
+
             if (this._layout)
                 Polymer.dom(this.root).replaceChild(layoutFragment, this._layout);
             else
