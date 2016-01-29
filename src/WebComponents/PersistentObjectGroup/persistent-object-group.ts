@@ -36,7 +36,10 @@
         listeners: {
             "attribute-loading": "_onAttributeLoading",
             "attribute-loaded": "_onAttributeLoaded"
-        }
+        },
+        forwardObservers: [
+            "group.attributes"
+        ]
     })
     export class PersistentObjectGroup extends WebComponent {
         private _items: PersistentObjectGroupItem[];

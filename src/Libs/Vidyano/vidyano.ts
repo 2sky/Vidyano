@@ -1,6 +1,24 @@
 ﻿declare var unescape;
 declare var Windows;
 
+interface Set<T> {
+    add(value: T): Set<T>;
+    clear(): void;
+    delete(value: T): boolean;
+    entries(): Array<[T, T]>;
+    forEach(callbackfn: (value: T, index: T, set: Set<T>) => void, thisArg?: any): void;
+    has(value: T): boolean;
+    keys(): Array<T>;
+    size: number;
+}
+
+interface SetConstructor {
+    new <T>(): Set<T>;
+    prototype: Set<any>;
+}
+
+declare var Set: SetConstructor;
+
 module Vidyano {
     "use strict";
 
@@ -1831,7 +1849,8 @@ module Vidyano {
             });
 
             if (changedAttributes.length > 0) {
-                var tabContentsChanged: PersistentObjectAttributeTab[] = [];
+                var tabGroupsChanged = new Set<PersistentObjectAttributeTab>();
+                var tabGroupAttributesChanged = new Set<PersistentObjectAttributeGroup>();
                 var tabsRemoved = false;
                 var tabsAdded = false;
                 changedAttributes.forEach(attr => {
@@ -1856,10 +1875,14 @@ module Vidyano {
                         tab.groups.push(group);
                         tab.groups.sort((g1, g2) => Enumerable.from(g1.attributes).min(a => a.offset) - Enumerable.from(g2.attributes).min(a => a.offset));
                         tab.groups.forEach((g, n) => g.index = n);
+
+                        tabGroupsChanged.add(tab);
                     }
                     else if (attr.isVisible) {
                         if (group.attributes.indexOf(attr) < 0) {
                             group.attributes.push(attr);
+                            tabGroupAttributesChanged.add(group);
+
                             group.attributes[attr.name] = attr;
                             group.attributes.sort((x, y) => x.offset - y.offset);
                         }
@@ -1870,6 +1893,7 @@ module Vidyano {
 
                         if (group.attributes.length == 0) {
                             tab.groups.remove(group);
+                            tabGroupsChanged.add(tab);
 
                             if (tab.groups.length == 0) {
                                 this.tabs.remove(tab);
@@ -1879,13 +1903,10 @@ module Vidyano {
                             else
                                 tab.groups.forEach((g, n) => g.index = n);
                         }
+                        else
+                            tabGroupAttributesChanged.add(group);
                     }
-
-                    if (tabContentsChanged.indexOf(tab) < 0)
-                        tabContentsChanged.push(tab);
                 });
-
-                tabContentsChanged.forEach(tab => tab.groups = tab.groups.slice());
 
                 if (tabsAdded) {
                     var attrTabs = <PersistentObjectAttributeTab[]>this.tabs.filter(t => t instanceof PersistentObjectAttributeTab);
@@ -1894,6 +1915,15 @@ module Vidyano {
                 }
                 else if (tabsRemoved)
                     this.tabs = this.tabs.slice();
+
+                if (tabGroupsChanged.size > 0)
+                    tabGroupsChanged.forEach(tab => tab.groups = tab.groups.slice());
+
+                if (tabGroupAttributesChanged.size > 0) {
+                    tabGroupAttributesChanged.forEach(group => {
+                        group.attributes = group.attributes.slice();
+                    });
+                }
             }
 
             this._setIsDirty(isDirty);
@@ -2625,14 +2655,28 @@ module Vidyano {
         }
     }
 
-    export class PersistentObjectAttributeGroup {
+    export class PersistentObjectAttributeGroup extends Vidyano.Common.Observable<PersistentObjectAttributeGroup> {
+        private _attributes: PersistentObjectAttribute[];
         label: string;
         index: number;
 
-        constructor(public service: Service, public key: string, public attributes: PersistentObjectAttribute[], public parent: PersistentObject) {
-            this.label = key || "";
+        constructor(public service: Service, public key: string, _attributes: PersistentObjectAttribute[], public parent: PersistentObject) {
+            super();
 
-            attributes.forEach(attr => attributes[attr.name] = attr);
+            this.label = key || "";
+            this.attributes = _attributes;
+        }
+
+        get attributes(): PersistentObjectAttribute[] {
+            return this._attributes;
+        }
+
+        set attributes(attributes: PersistentObjectAttribute[]) {
+            var oldAttributes = this._attributes;
+            var newAttributes = attributes;
+            newAttributes.forEach(attr => newAttributes[attr.name] = attr);
+
+            this.notifyPropertyChanged("attributes", this._attributes = newAttributes, oldAttributes);
         }
     }
 
