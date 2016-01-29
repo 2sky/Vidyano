@@ -1525,7 +1525,8 @@ module Vidyano {
 
     export class PersistentObject extends ServiceObjectWithActions {
         private _isSystem: boolean;
-        private backupSecurityToken: string;
+        private _lastResult: any;
+        private _lastResultBackup: any;
         private securityToken: string;
         private _isEditing: boolean = false;
         private _isDirty: boolean = false;
@@ -1608,6 +1609,8 @@ module Vidyano {
             })).toArray() : [];
             this._serviceTabs = po.tabs;
             this._tabs = attributeTabs.concat(Enumerable.from(this.queries).select(q => <PersistentObjectTab>this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
+
+            this._lastResult = po;
 
             if (this.isNew || this.stateBehavior == "OpenInEdit" || this.stateBehavior.indexOf("OpenInEdit") >= 0 || this.stateBehavior == "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
                 this.beginEdit();
@@ -1705,8 +1708,7 @@ module Vidyano {
 
         beginEdit() {
             if (!this.isEditing) {
-                this.backupSecurityToken = this.securityToken;
-                this.attributes.forEach(attr => attr.backup());
+                this._lastResultBackup = this._lastResult;
 
                 this.setIsEditing(true);
             }
@@ -1717,8 +1719,8 @@ module Vidyano {
                 this.setIsEditing(false);
                 this._setIsDirty(false);
 
-                this.securityToken = this.backupSecurityToken;
-                this.attributes.forEach(attr => attr.restore());
+                this.refreshFromResult(this._lastResultBackup);
+                this._lastResultBackup = null;
 
                 if (!!this.notification)
                     this.setNotification();
@@ -1810,6 +1812,8 @@ module Vidyano {
         }
 
         refreshFromResult(result: PersistentObject) {
+            this._lastResult = result;
+            
             this._serviceTabs = result._serviceTabs;
             this.setNotification(result.notification, result.notificationType);
 
@@ -1831,8 +1835,13 @@ module Vidyano {
 
             this.attributes.forEach(attr => {
                 var serviceAttr = Enumerable.from(result.attributes).firstOrDefault(a => a.id == attr.id);
-                if (serviceAttr && attr._refreshFromResult(serviceAttr))
-                    changedAttributes.push(attr);
+                if (serviceAttr) {
+                    if (!(serviceAttr instanceof PersistentObjectAttribute))
+                        serviceAttr = this._createPersistentObjectAttribute(serviceAttr);
+
+                    if (attr._refreshFromResult(serviceAttr))
+                        changedAttributes.push(attr);
+                }
 
                 if (attr.isValueChanged)
                     isDirty = true;
@@ -1937,12 +1946,14 @@ module Vidyano {
             if (result.breadcrumb)
                 this._setBreadcrumb(result.breadcrumb);
 
-            result.queriesToRefresh.forEach(id => {
-                var query = Enumerable.from(this.queries).firstOrDefault(q => q.id == id || q.name == id);
-                if (query && (query.hasSearched || query.totalItems != null)) {
-                    query.search();
-                }
-            });
+            if (result.queriesToRefresh) {
+                result.queriesToRefresh.forEach(id => {
+                    var query = Enumerable.from(this.queries).firstOrDefault(q => q.id == id || q.name == id);
+                    if (query && (query.hasSearched || query.totalItems != null)) {
+                        query.search();
+                    }
+                });
+            }
         }
 
         triggerDirty() {
@@ -1995,7 +2006,6 @@ module Vidyano {
         private _isReadOnly: boolean;
         private _isValueChanged: boolean;
 
-        private _backupData: any;
         protected _queueRefresh: boolean = false;
         private _refreshValue: string;
 
@@ -2226,41 +2236,6 @@ module Vidyano {
 
             var oldIsValueChanged = this._isValueChanged;
             this.notifyPropertyChanged("isValueChanged", this._isValueChanged = isValueChanged, oldIsValueChanged);
-        }
-
-        backup() {
-            this._backupData = this.copyProperties(["isReadOnly", "isRequired", "isValueChanged", "objectId", "validationError", "visibility"], true);
-            this._backupData.value = this._serviceValue;
-            this._backupData._serviceOptions = this._serviceOptions ? this._serviceOptions.slice() : this._serviceOptions;
-            this._backupData.options = this.options ? this.options.slice() : this.options;
-        }
-
-        restore() {
-            for (var name in this._backupData) {
-                var oldValue = this[name];
-                if (this[name] !== this._backupData[name]) {
-                    if (name == "value") {
-                        var oldDisplayValue = name == "value" ? this.displayValue : undefined;
-
-                        this._serviceValue = this._backupData.value;
-                        this.notifyPropertyChanged("displayValue", this.displayValue, oldDisplayValue);
-                    }
-                    else if (name == "options")
-                        this.options = this._backupData.options;
-                    else if (name == "_serviceOptions")
-                        this._serviceOptions = this._backupData._serviceOptions;
-                    else if (name == "isReadOnly")
-                        this._isReadOnly = this._backupData["isReadOnly"];
-                    else if (name == "isRequired")
-                        this._isRequired = this._backupData["isRequired"];
-                    else
-                        this[name] = this._backupData[name];
-
-                    this.notifyPropertyChanged(name, this[name], oldValue);
-                }
-            }
-
-            this._backupData = {};
         }
 
         getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string {
@@ -2566,18 +2541,6 @@ module Vidyano {
 
                 resolve(this.value);
             });
-        }
-
-        restore() {
-            super.restore();
-
-            var newObjects = this.objects.filter(obj => !obj.isNew);
-            newObjects.forEach(obj => {
-                obj.isDeleted = false;
-            });
-
-            if (newObjects.length !== this.objects.length)
-                this._setObjects(newObjects);
         }
     }
 
