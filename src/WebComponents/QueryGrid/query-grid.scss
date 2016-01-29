@@ -5,12 +5,13 @@
     line-height: var(--theme-h2);
     overflow: hidden;
 
-    header#dataHeaderHost {
+    #dataHeaderHost {
         @include noSelection();
         @include relative();
         border-bottom: 1px solid var(--theme-light-border);
         white-space: nowrap;
         z-index: 1;
+        height: calc(var(--theme-h2) * 2);
 
         > header {
             @include relative();
@@ -341,6 +342,10 @@
     &:not([can-filter]) {
         vi-query-grid-column-filter-proxy, vi-query-grid-column-filter {
             display: none;
+        }
+
+        #dataHeaderHost {
+            height: var(--theme-h2);
         }
     }
 
