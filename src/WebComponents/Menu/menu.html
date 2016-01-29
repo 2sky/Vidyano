@@ -9,7 +9,7 @@
             <button is="vi-button" id="toggleCollapse" on-tap="_toggleCollapse">
                 <vi-icon source="Menu_Collapse"></vi-icon>
             </button>
-            <span>{{label}}</span>
+            <div class="label">{{label}}<content select="[label]"></content></div>
             <div id="headerElements"></div>
             <template is="dom-if" if="{{!collapsed}}">
                 <vi-input-search value="{{filter}}" on-search="_search"></vi-input-search>

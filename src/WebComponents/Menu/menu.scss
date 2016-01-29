@@ -98,12 +98,14 @@
         position: relative;
         text-align: center;
 
-        span {
+        .label {
             display: block;
             font-size: var(--theme-h3);
-            line-height: var(--vi-menu-expanded-header-line-height);
+            line-height: var(--vi-menu-expanded-header-height);
+            height: var(--vi-menu-expanded-header-height);
             background-color: var(--theme-color-dark);
             white-space: nowrap;
+            overflow: hidden;
         }
 
         #toggleCollapse {

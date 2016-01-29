@@ -7,8 +7,10 @@
             <span class="flex">No image found</span>
         </div>
         <div id="side">
-            <h1>{{label}}</h1>
-            <h2>{{translations.SignInDescription}}</h2>
+            <header>
+                {{label}}<content select="[label='sign-in']"></content>
+                <h2>{{translations.SignInDescription}}</h2>
+            </header>
             <ul>
                 <content></content>
             </ul>

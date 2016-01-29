@@ -37,7 +37,7 @@
                 return;
             }
 
-            this.empty();
+            this.empty(undefined, c => c instanceof Vidyano.WebComponents.SignInProvider);
 
             for (var name in route.app.service.providers) {
                 const provider = new WebComponents.SignInProvider();

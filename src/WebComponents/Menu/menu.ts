@@ -34,7 +34,7 @@ module Vidyano.WebComponents {
             this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
 
             // Fix for FireFox line-height calc bug (https://bugzilla.mozilla.org/show_bug.cgi?id=594933)
-            this.customStyle["--vi-menu-expanded-header-line-height"] = (parseInt(this.getComputedStyleValue("--theme-h1")) * 2) + "px";
+            this.customStyle["--vi-menu-expanded-header-height"] = (parseInt(this.getComputedStyleValue("--theme-h1")) * 2) + "px";
             this.updateStyles();
         }
 
