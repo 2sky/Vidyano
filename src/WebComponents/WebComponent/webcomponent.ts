@@ -382,9 +382,10 @@
             this.isAttached = attached;
         }
 
-        empty(parent: Node = this) {
+        empty(parent: Node = this, condition?: (e: Node) => boolean) {
             Polymer.dom(parent).getEffectiveChildNodes().forEach(c => {
-                Polymer.dom(parent).removeChild(c);
+                if (!condition || condition(c))
+                    Polymer.dom(parent).removeChild(c);
             });
         }
 
