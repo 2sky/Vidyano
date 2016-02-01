@@ -708,6 +708,21 @@
             return this.app.showMessageDialog({ title: title, message: message, html: html, actions: actions });
         }
 
+        onSelectReference(query: Vidyano.Query): Promise<QueryResultItem[]> {
+            if (!query.hasSearched)
+                query.search();
+
+            return new Promise((resolve, reject) => {
+                this.app.importHref(this.app.resolveUrl("../SelectReferenceDialog/select-reference-dialog.html"), () => {
+                    this.app.showDialog(new SelectReferenceDialog(query)).then(items => {
+                        resolve(items);
+                    }).catch(e => {
+                        reject(e);
+                    });
+                });
+            });
+        }
+
         onSessionExpired() {
             this.app.redirectToSignIn();
         }

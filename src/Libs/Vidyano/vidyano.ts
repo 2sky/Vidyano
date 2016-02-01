@@ -1366,6 +1366,10 @@ module Vidyano {
             return Promise.resolve(-1);
         }
 
+        onSelectReference(query: Vidyano.Query): Promise<QueryResultItem[]> {
+            return Promise.resolve([]);
+        }
+
         onNavigate(path: string, replaceCurrent: boolean = false) {
         }
 
@@ -4062,6 +4066,20 @@ module Vidyano {
                                         }
                                     } else if (po.fullTypeName == "Vidyano.RegisteredStream") {
                                         this.service._getStream(po);
+                                    } else if (po.fullTypeName == "Vidyano.AddReference") {
+                                        const query = po.queries[0];
+                                        query.parent = this.parent;
+
+                                        this.service.hooks.onSelectReference(query).then(selectedItems => {
+                                            if (!selectedItems || !selectedItems.length)
+                                                return;
+
+                                            this.service.executeAction("Query.AddReference", this.parent, query, selectedItems, { AddAction: this.name }, true).then(() => {
+                                                this.query.search();
+                                            }).catch(e => {
+                                                this.query.setNotification(e, NotificationType.Error);
+                                            });
+                                        });
                                     } else if (this.parent != null && (po.fullTypeName == this.parent.fullTypeName || po.isNew == this.parent.isNew) && po.id == this.parent.id && po.objectId == this.parent.objectId) {
                                         this.parent.refreshFromResult(po);
                                         this.parent.setNotification(po.notification, po.notificationType);
