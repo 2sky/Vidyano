@@ -22,6 +22,8 @@
             text-decoration: none;
             color: var(--vi-persistent-object-attribute-foreground, --theme-color);
             fill: var(--vi-persistent-object-attribute-foreground, --theme-color);
+            overflow: hidden;
+            text-overflow: ellipsis;
 
             &:visited {
                 color: var(--vi-persistent-object-attribute-foreground, --theme-color);

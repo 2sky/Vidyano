@@ -109,6 +109,7 @@
 
         .attribute, vi-template-presenter {
             @include flex();
+            min-width: 0;
         }
     }
 
