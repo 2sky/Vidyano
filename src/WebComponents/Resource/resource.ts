@@ -40,7 +40,7 @@ module Vidyano.WebComponents {
 
                 var resource = Resource.LoadResource(this.source, this.tagName);
                 if (resource != null)
-                    Polymer.dom(this._contentTarget).appendChild(Resource.Load(resource, this.tagName));
+                    Polymer.dom(this._contentTarget).appendChild(Resource.LoadFragment(resource, this.tagName));
 
                 this._setHasResource(resource != null);
                 this._loadedSource = this.source;
@@ -77,7 +77,7 @@ module Vidyano.WebComponents {
             };
         }
 
-        protected static Load(source: string | Resource, tagName: string): DocumentFragment {
+        static LoadFragment(source: string | Resource, tagName: string): DocumentFragment {
             var resource = (typeof source === "string") ? resources[`${tagName}+${source.toUpperCase() }`] : source;
 
             var fragment = document.createDocumentFragment();
@@ -89,11 +89,11 @@ module Vidyano.WebComponents {
             return fragment;
         }
 
-        protected static LoadResource(source: string, tagName: string): Resource {
+        static LoadResource(source: string, tagName: string): Resource {
             return resources[`${tagName}+${source.toUpperCase() }`];
         }
 
-        protected static Exists(name: string, tagName: string): boolean {
+        static Exists(name: string, tagName: string): boolean {
             return resources[`${tagName}+${name.toUpperCase() }`] != undefined;
         }
     }

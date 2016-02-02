@@ -11,8 +11,8 @@ module Vidyano.WebComponents {
             return this.$["svgHost"];
         }
 
-        static Load(source: string): DocumentFragment {
-            return Resource.Load(source, "VI-ICON");
+        static LoadFragment(source: string): DocumentFragment {
+            return Resource.LoadFragment(source, "VI-ICON");
         }
 
         static Exists(name: string): boolean {
