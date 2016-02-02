@@ -20,11 +20,14 @@ module Vidyano.WebComponents.Attributes {
             if (!attribute)
                 return [];
 
-            return [
+            const options = attribute.type.startsWith("Nullable") ? [
                 {
                     key: null,
                     value: ""
-                },
+                }
+            ] : [];
+
+            return options.concat([
                 {
                     key: true,
                     value: this.translations[this.attribute.getTypeHint("TrueKey", "Yes")]
@@ -33,7 +36,7 @@ module Vidyano.WebComponents.Attributes {
                     key: false,
                     value: this.translations[this.attribute.getTypeHint("FalseKey", "No")]
                 }
-            ];
+            ]);
         }
 
         protected _valueChanged(newValue: any) {

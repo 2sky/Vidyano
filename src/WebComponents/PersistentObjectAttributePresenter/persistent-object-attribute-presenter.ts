@@ -101,6 +101,8 @@ module Vidyano.WebComponents {
                     attributeType = "Numeric";
                 else if (Vidyano.Service.isDateTimeType(attribute.type))
                     attributeType = "DateTime";
+                else if (attribute.parent.isBulkEdit && (attribute.type === "YesNo" || attribute.type === "Boolean"))
+                    attributeType = "NullableBoolean";
                 else
                     attributeType = attribute.type;
 
