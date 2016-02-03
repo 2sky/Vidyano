@@ -1346,8 +1346,8 @@ module Vidyano {
             return new Query(service, query, parent, asLookup, maxSelectedItems);
         }
 
-        onConstructQueryResultItem(service: Service, item: any, query: Query): QueryResultItem {
-            return new QueryResultItem(service, item, query);
+        onConstructQueryResultItem(service: Service, item: any, query: Query, isSelected: boolean = false): QueryResultItem {
+            return new QueryResultItem(service, item, query, isSelected);
         }
 
         onConstructQueryResultItemValue(service: Service, item: QueryResultItem, value: any): QueryResultItemValue {
@@ -3130,7 +3130,7 @@ module Vidyano {
             return null;
         }
 
-        getItems(start: number, length: number = this.pageSize): Promise<QueryResultItem[]> {
+        getItems(start: number, length: number = this.pageSize, skipQueue: boolean = false): Promise<QueryResultItem[]> {
             if (!this.hasSearched)
                 return this.search(0).then(() => this.getItems(start, length));
             else {
@@ -3160,7 +3160,7 @@ module Vidyano {
                 clonedQuery.skip = startPage * this.pageSize;
                 clonedQuery.top = (endPage - startPage + 1) * this.pageSize;
 
-                return this.queueWork(() => {
+                const work = () => {
                     if (Enumerable.rangeTo(startPage, endPage).all(p => this._queriedPages.indexOf(p) >= 0))
                         return Promise.resolve(this.items.slice(start, start + length));
 
@@ -3175,20 +3175,29 @@ module Vidyano {
                             for (var i = startPage; i <= endPage; i++)
                                 this._queriedPages.push(i);
 
-                            this._updateItems([]);
+                            if (!this.selectAll.allSelected) {
+                                var selectedItems = {};
+                                this.selectedItems.forEach(i => selectedItems[i.id] = i);
+                            }
+
+                            this.items = [];
                             this._setTotalItems(result.totalItems);
                         }
 
                         for (var n = 0; n < clonedQuery.top && (clonedQuery.skip + n < clonedQuery.totalItems); n++) {
                             if (this.items[clonedQuery.skip + n] == null) {
                                 var item = this.items[clonedQuery.skip + n] = this.service.hooks.onConstructQueryResultItem(this.service, result.items[n], this);
-                                if (this.selectAll.allSelected)
+                                if (this.selectAll.allSelected || (selectedItems && selectedItems[item.id]))
                                     (<any>item)._isSelected = true;
                             }
                         }
 
                         if (isChanged)
-                            return this.getItems(start, length);
+                            return this.getItems(start, length, true).then(result => {
+                                this.notifyPropertyChanged("items", this.items);
+                                
+                                return result;
+                            });
 
                         this._setLastUpdated();
 
@@ -3197,7 +3206,12 @@ module Vidyano {
                         this.setNotification(e, NotificationType.Error);
                         return Promise.reject(e);
                     });
-                }, false);
+                };
+
+                if (!skipQueue)
+                    return this.queueWork(work, false);
+                else
+                    return work();
             }
         }
 
@@ -3551,9 +3565,8 @@ module Vidyano {
         typeHints: any;
         private _fullValuesByName: any;
         private _values: any;
-        private _isSelected: boolean;
 
-        constructor(service: Service, item: any, public query: Query) {
+        constructor(service: Service, item: any, public query: Query, private _isSelected: boolean) {
             super(service);
 
             this.id = item.id;
