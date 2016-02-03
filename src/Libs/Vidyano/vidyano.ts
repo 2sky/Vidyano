@@ -3355,8 +3355,14 @@ module Vidyano {
             this._canSort = !!col.canSort;
             this._canFilter = !!col.canFilter;
             this._canListDistincts = !!col.canListDistincts;
-            this._selectedDistincts = Enumerable.from(col.includes || col.excludes || []);
-            this._selectedDistinctsInversed = !!col.excludes && col.excludes.length > 0;
+            if (col instanceof QueryColumn) {
+                this._selectedDistincts = col._selectedDistincts;
+                this._selectedDistinctsInversed = col._selectedDistinctsInversed;
+            }
+            else {
+                this._selectedDistincts = Enumerable.from(col.includes || col.excludes || []);
+                this._selectedDistinctsInversed = !!col.excludes && col.excludes.length > 0;
+            }
             this._label = col.label;
             this._name = col.name;
             this.offset = col.offset || 0;
