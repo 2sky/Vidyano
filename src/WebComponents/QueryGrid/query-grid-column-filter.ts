@@ -180,6 +180,9 @@ module Vidyano.WebComponents {
                     this.$["distincts"] = <HTMLElement>this.querySelector("#distincts");
                     this.$["search"] = <HTMLElement>this.querySelector("#search");
 
+                    // Specifies that the inner wrapper of the vi-scoller element will handle the scroll event on the behalf of the iron-list
+                    (<any>this.$["distincts"]).scrollTarget = (<any>this.$["distinctsContainer"]).$["wrapper"];
+
                     var popup = <Popup><any>this.querySelector("vi-popup#filter");
                     popup.popup();
                 });
