@@ -145,11 +145,11 @@ $border-color: #eee;
 					}
 
 					&.current {
-						background-color: var(--theme-color-dark);
-						color: white;
+						background-color: var(--theme-color);
+						color: white !important;
 
 						&:hover {
-							background-color: var(--theme-color-darker);
+							background-color: var(--theme-color-dark);
 						}
 					}
 				}
