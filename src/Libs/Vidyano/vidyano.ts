@@ -4303,11 +4303,15 @@ module Vidyano {
             constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions) {
                 super(service, definition, owner);
                 this.isVisible = this.parent.isEditing;
-                this.canExecute = true;
+                this.canExecute = this.parent.stateBehavior.indexOf("StayInEdit") < 0 || this.parent.isDirty;
             }
 
             _onParentIsEditingChanged(isEditing: boolean) {
                 this.isVisible = isEditing;
+            }
+
+            _onParentIsDirtyChanged(isDirty: boolean) {
+                this.canExecute = this.parent.stateBehavior.indexOf("StayInEdit") < 0 || isDirty;
             }
 
             _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
