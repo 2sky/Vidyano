@@ -23,7 +23,7 @@
 
 @mixin theme-color-button-inverse() {
     background-color: transparent;
-    color: var(--theme-color-darker);
+    color: var(--theme-color);
     fill: #595959;
 
     &:hover {
