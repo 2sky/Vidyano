@@ -1817,7 +1817,7 @@ module Vidyano {
 
         refreshFromResult(result: PersistentObject) {
             this._lastResult = result;
-            
+
             this._serviceTabs = result._serviceTabs;
             this.setNotification(result.notification, result.notificationType);
 
@@ -1827,8 +1827,6 @@ module Vidyano {
             this.attributes.removeAll(attr => {
                 if (!result.attributes.some(a => a.id === attr.id)) {
                     delete this.attributesByName[attr.name];
-
-                    attr.isVisible = false;
                     changedAttributes.push(attr);
 
                     return true;
@@ -3195,7 +3193,7 @@ module Vidyano {
                         if (isChanged)
                             return this.getItems(start, length, true).then(result => {
                                 this.notifyPropertyChanged("items", this.items);
-                                
+
                                 return result;
                             });
 
@@ -3282,6 +3280,11 @@ module Vidyano {
             });
 
             columns.sort((c1, c2) => c1.offset - c2.offset);
+
+            columns.forEach(c => {
+                if (c.distincts)
+                    c.distincts.isDirty = true;
+            });
 
             if (columnsChanged) {
                 if (this.columns != columns)
