@@ -62,9 +62,14 @@
                 Polymer.dom(this._daysBody).appendChild(fragment);
 
                 fragment = document.createDocumentFragment();
+
+                var dayNames = Vidyano.CultureInfo.currentCulture.dateFormat.shortDayNames.slice();
+                if (Vidyano.CultureInfo.currentCulture.dateFormat.firstDayOfWeek > 0)
+                    dayNames = dayNames.slice(Vidyano.CultureInfo.currentCulture.dateFormat.firstDayOfWeek).concat(dayNames.slice(0, Vidyano.CultureInfo.currentCulture.dateFormat.firstDayOfWeek));
+
                 for (var i = 0; i < 7; i++) {
                     var th = document.createElement("th");
-                    th.textContent = Vidyano.CultureInfo.currentCulture.dateFormat.shortDayNames[i];
+                    th.textContent = dayNames[i];
 
                     fragment.appendChild(th);
                 }
