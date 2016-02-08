@@ -343,7 +343,7 @@
             }
 
             var newItems = items.slice(this._virtualTableStartIndex, this._virtualTableStartIndex + maxTableRowCount).filter(item => !!item);
-            if (newItems.length !== maxTableRowCount && this.query.totalItems && items.length !== this.query.totalItems)
+            if (newItems.length !== maxTableRowCount && this.query.totalItems && (!(this._virtualTableStartIndex in items) || !((this._virtualTableStartIndex + maxTableRowCount) in items)))
                 this.debounce(`QueryGrid.Query.${this.query.id}.GetItems`, () => this.query.getItems(this._virtualTableStartIndex), 250);
             else if (newVirtualTableStartIndex === undefined && this._items && this._items.length === newItems.length && lastUpdated === this._lastUpdated)
                 return this._items;
