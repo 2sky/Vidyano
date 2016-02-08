@@ -2,7 +2,9 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-common-mark.css" />
         <template is="dom-if" if="{{notEditing}}">
-            <marked-element markdown="{{attribute.displayValue}}"></marked-element>
+            <vi-scroller>
+                <marked-element markdown="{{attribute.displayValue}}"></marked-element>
+            </vi-scroller>
         </template>
         <template is="dom-if" if="{{editing}}">
             <vi-persistent-object-attribute-edit attribute="{{attribute}}">
