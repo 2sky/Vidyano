@@ -504,11 +504,16 @@
 
         private _updateColumnWidths(): Promise<any> {
             if (!this._columns.some(c => !c.calculatedWidth) || !this._tableData || !this._tableData.rows || this._tableData.rows.length == 0 || (<QueryGridTableDataRow>this._tableData.rows[0]).noData) {
-                if (this.query && !this.query.isBusy && this.query.items.length == 0)
+                if (this.query && !this.query.isBusy && this.query.items.length == 0) {
+                    this._tableData.host.style.minWidth = `${this.$["dataHeaderHost"].scrollWidth}px`;
                     this._setInitializing(false);
+                }
 
                 return Promise.resolve();
             }
+
+            if (this._tableData.host.style.minWidth)
+                this._tableData.host.style.minWidth = null;
 
             return new Promise(resolve => {
                 var start = Vidyano.WebComponents.QueryGrid.perf.now();
