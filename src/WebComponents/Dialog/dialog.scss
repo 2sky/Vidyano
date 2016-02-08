@@ -28,6 +28,7 @@
             }
 
             > * {
+                position: relative;
                 background-color: white;
                 @include z-index1();
 
@@ -36,18 +37,26 @@
                 }
 
                 > header {
+                    position: absolute;
+                    left: 0;
+                    right: 0;
                     -webkit-flex: 0 0 auto;
                     -moz-flex: 0 0 auto;
                     -ms-flex: 0 0 auto;
                     flex: 0 0 auto;
                     line-height: var(--theme-h1);
                     padding: var(--theme-h5) var(--theme-h4);
+                    height: calc(var(--theme-h1) + var(--theme-h5) * 2);
                     border-bottom: 1px solid #EEE;
+                    box-sizing: border-box;
 
                     h4 {
                         margin: 0;
                         font-weight: 500;
                         font-size: 120%;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
                     }
 
                     button.close {
@@ -97,6 +106,7 @@
                     -ms-flex: 0 1 auto;
                     flex: 0 1 auto;
                     overflow: hidden;
+                    margin-top: calc(var(--theme-h1) + var(--theme-h5) * 2);
                 }
             }
         }
