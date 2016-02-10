@@ -2,7 +2,10 @@
     @WebComponent.register({
         properties:
         {
-            serviceObject: Object,
+            serviceObject: {
+                type: Object,
+                observer: "_serviceObjectChanged"
+            },
             pinnedActions: {
                 type: Array,
                 computed: "_computePinnedActions(serviceObject)"
@@ -13,7 +16,7 @@
             },
             hasCharts: {
                 type: Boolean,
-                computed: "_computeHasCharts(serviceObject.charts, isAttached)"
+                readOnly: true
             },
             canSearch: {
                 type: Boolean,
@@ -25,6 +28,9 @@
                 computed: "_computeNoActions(pinnedActions, unpinnedActions)"
             }
         },
+        observers: [
+            "_computeHasCharts(serviceObject.charts)"
+        ],
         forwardObservers: [
             "serviceObject.charts"
         ]
@@ -36,6 +42,8 @@
         unpinnedActions: Vidyano.Action[];
         canSearch: boolean;
 
+        private _setHasCharts: (val: boolean) => void;
+
         executeAction(e: Event, details: any, sender: HTMLElement) {
             var action = this.serviceObject.actions[sender.getAttribute("data-action-name")];
             if (action)
@@ -44,6 +52,17 @@
 
         filterActions(actions: Vidyano.Action[], pinned: boolean): Vidyano.Action[] {
             return actions.filter(a => a.isPinned == pinned);
+        }
+
+        private _serviceObjectChanged(serviceObject: Vidyano.ServiceObject) {
+            if (serviceObject instanceof Vidyano.Query)
+                this._computeHasCharts(serviceObject.charts);
+            else
+                this._setHasCharts(false);
+        }
+
+        private _computeHasCharts(charts: linqjs.Enumerable<Vidyano.QueryChart>) {
+            this._setHasCharts(!!charts && !!charts.firstOrDefault(c => !!this.app.configuration.getQueryChartConfig(c.type)));
         }
 
         private _search() {
@@ -60,10 +79,6 @@
 
         private _computeUnpinnedActions(): Vidyano.Action[] {
             return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(action => !action.isPinned) : [];
-        }
-
-        private _computeHasCharts(charts: linqjs.Enumerable<Vidyano.QueryChart>): boolean {
-            return !!charts && !!charts.firstOrDefault(c => !!this.app.configuration.getQueryChartConfig(c.type));
         }
 
         private _computeCanSearch(serviceObject: Vidyano.ServiceObjectWithActions): boolean {
