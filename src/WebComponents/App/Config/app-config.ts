@@ -2,6 +2,7 @@
     @WebComponent.register
     export class AppConfig extends WebComponent {
         private _defaultAttributeConfig: PersistentObjectAttributeConfig;
+        private _persistentObjectConfigs: linqjs.Enumerable<PersistentObjectConfig>;
         private _attributeConfigs: linqjs.Enumerable<PersistentObjectAttributeConfig>;
         private _tabConfigs: linqjs.Enumerable<PersistentObjectTabConfig>;
         private _programUnitConfigs: linqjs.Enumerable<ProgramUnitConfig>;
@@ -14,6 +15,14 @@
             if (!this._defaultAttributeConfig) {
                 this._defaultAttributeConfig = <PersistentObjectAttributeConfig><any>this.appendChild(new WebComponents.PersistentObjectAttributeConfig());
             }
+        }
+
+        getPersistentObjectConfig(persistentObject: Vidyano.PersistentObject): PersistentObjectConfig {
+            if (!this._persistentObjectConfigs)
+                this._persistentObjectConfigs = this._getConfigs<PersistentObjectConfig>(Vidyano.WebComponents.PersistentObjectConfig);
+
+            return this._persistentObjectConfigs.firstOrDefault(c => c.id === persistentObject.id && c.objectId === persistentObject.objectId) ||
+                this._persistentObjectConfigs.firstOrDefault(c => c.id === persistentObject.id);
         }
 
         getAttributeConfig(attr: Vidyano.PersistentObjectAttribute): PersistentObjectAttributeConfig {

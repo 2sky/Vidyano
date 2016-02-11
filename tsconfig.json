@@ -29,6 +29,7 @@
         "src/WebComponents/App/app.ts",
         "src/WebComponents/App/Config/app-config.ts",
         "src/WebComponents/App/Config/persistent-object-attribute-config.ts",
+        "src/WebComponents/App/Config/persistent-object-config.ts",
         "src/WebComponents/App/Config/persistent-object-tab-config.ts",
         "src/WebComponents/App/Config/program-unit-config.ts",
         "src/WebComponents/App/Config/query-chart-config.ts",

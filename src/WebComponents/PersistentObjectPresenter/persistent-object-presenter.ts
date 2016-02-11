@@ -19,6 +19,11 @@ module Vidyano.WebComponents {
                 value: true,
                 reflectToAttribute: true
             },
+            templated: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            },
             error: {
                 type: String,
                 readOnly: true
@@ -51,8 +56,10 @@ module Vidyano.WebComponents {
         persistentObjectId: string;
         persistentObjectObjectId: string;
         persistentObject: Vidyano.PersistentObject;
+        templated: boolean;
 
         private _setLoading: (loading: boolean) => void;
+        private _setTemplated: (templated: boolean) => void;
         private _setError: (error: string) => void;
 
         private _activate(e: CustomEvent) {
@@ -161,18 +168,27 @@ module Vidyano.WebComponents {
                 this.empty();
 
             if (persistentObject) {
-                if (!Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader) {
-                    Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader = new Promise(resolve => {
-                        this.importHref(this.resolveUrl("../PersistentObject/persistent-object.html"), e => {
-                            resolve(true);
-                        }, err => {
-                                console.error(err);
-                                resolve(false);
-                            });
-                    });
-                }
+                var persistentObjectConfig = this.app.configuration.getPersistentObjectConfig(persistentObject);
+                this._setTemplated(!!persistentObjectConfig && !!persistentObjectConfig.template);
 
-                this._renderPersistentObject(persistentObject);
+                if (this.templated) {
+                    Polymer.dom(this).appendChild(new Vidyano.WebComponents.TemplatePresenter(persistentObjectConfig.template, "persistentObject", persistentObject));
+                    this._setLoading(false);
+                }
+                else {
+                    if (!Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader) {
+                        Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader = new Promise(resolve => {
+                            this.importHref(this.resolveUrl("../PersistentObject/persistent-object.html"), e => {
+                                resolve(true);
+                            }, err => {
+                                    console.error(err);
+                                    resolve(false);
+                                });
+                        });
+                    }
+
+                    this._renderPersistentObject(persistentObject);
+                }
             }
 
             this.fire("title-changed", { title: persistentObject ? persistentObject.breadcrumb : null }, { bubbles: true });
