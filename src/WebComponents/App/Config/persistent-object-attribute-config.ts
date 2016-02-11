@@ -1,5 +1,5 @@
 ﻿module Vidyano.WebComponents {
-    @WebComponent.register({
+    @TemplateConfig.register({
         properties: {
             type: String,
             name: String,
@@ -12,14 +12,10 @@
             width: {
                 type: String,
                 value: "attr.columnSpan"
-            },
-            template: {
-                type: Object,
-                readOnly: true
             }
         }
     })
-    export class PersistentObjectAttributeConfig extends WebComponent {
+    export class PersistentObjectAttributeConfig extends TemplateConfig {
         private _calculateHeight: (attr: Vidyano.PersistentObjectAttribute) => number;
         private _calculateWidth: (attr: Vidyano.PersistentObjectAttribute) => number;
         private height: string;
@@ -29,16 +25,7 @@
         parentId: string;
         parentObjectId: string;
         component: string;
-        template: any;
-
-        private _setTemplate: (template: HTMLElement) => void;
-
-        attached() {
-            super.attached();
-
-            this._setTemplate(<HTMLElement>Polymer.dom(this).querySelector("template"));
-        }
-
+        
         calculateHeight(attr: Vidyano.PersistentObjectAttribute): number {
             if (!this._calculateHeight) {
                 if (/d+/.test(this.height)) {

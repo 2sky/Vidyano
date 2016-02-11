@@ -1,27 +1,14 @@
 module Vidyano.WebComponents {
-    @WebComponent.register({
+    @TemplateConfig.register({
         properties: {
             name: String,
             id: String,
-            defaultChart: String,
-            template: {
-                type: Object,
-                readOnly: true
-            }
+            defaultChart: String
         }
     })
-    export class QueryConfig extends WebComponent {
+    export class QueryConfig extends TemplateConfig {
         name: string;
         id: string;
         defaultChart: string;
-        template: any;
-
-        private _setTemplate: (template: HTMLElement) => void;
-
-        attached() {
-            super.attached();
-
-            this._setTemplate(<HTMLElement>Polymer.dom(this).querySelector("template"));
-        }
     }
 }

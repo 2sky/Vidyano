@@ -172,7 +172,7 @@ module Vidyano.WebComponents {
                 this._setTemplated(!!persistentObjectConfig && !!persistentObjectConfig.template);
 
                 if (this.templated) {
-                    Polymer.dom(this).appendChild(new Vidyano.WebComponents.TemplatePresenter(persistentObjectConfig.template, "persistentObject", persistentObject));
+                    Polymer.dom(this).appendChild(persistentObjectConfig.template.stamp({ persistentObject: persistentObject }).root);
                     this._setLoading(false);
                 }
                 else {

@@ -33,7 +33,6 @@ module Vidyano.WebComponents {
     export class QueryItemsPresenter extends WebComponent {
         private static _queryGridComponentLoader: Promise<any>;
         private static _chartComponentLoader: Promise<any>;
-        private _queryTemplatePresenter: Vidyano.WebComponents.TemplatePresenter;
         private _renderedQuery: Vidyano.Query;
         query: Vidyano.Query;
         templated: boolean;
@@ -58,7 +57,7 @@ module Vidyano.WebComponents {
             this._setTemplated(!!queryConfig && !!queryConfig.template);
 
             if (this.templated) {
-                Polymer.dom(this).appendChild(new Vidyano.WebComponents.TemplatePresenter(queryConfig.template, "query", query));
+                Polymer.dom(this).appendChild(queryConfig.template.stamp({ query: query }).root);
                 this._setLoading(false);
             }
             else {
@@ -107,7 +106,7 @@ module Vidyano.WebComponents {
                         if (query !== this.query)
                             return;
 
-                        Polymer.dom(this).appendChild(new Vidyano.WebComponents.TemplatePresenter(chartConfig.template, "chart", currentChart));
+                        Polymer.dom(this).appendChild(chartConfig.template.stamp({ chart: currentChart }).root);
                         this._setLoading(false);
                     });
                 }

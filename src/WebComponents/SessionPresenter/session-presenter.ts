@@ -15,20 +15,22 @@ module Vidyano.WebComponents {
         ]
     })
     export class SessionPresenter extends WebComponent {
-        private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
+        private _customTemplate: PolymerTemplate;
 
         private _computeApplication(isAttached: boolean): Vidyano.Application {
             return isAttached ? this.app.service.application : null;
         }
 
         private _computeSession(session: Vidyano.PersistentObject): Vidyano.PersistentObject {
-            if (!this._templatePresenter)
-                this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(<any>Polymer.dom(this).querySelector("template"), "session");
+            if (!this._customTemplate)
+                this._customTemplate = <PolymerTemplate>Polymer.dom(this).querySelector("template[is='dom-template']");
 
-            this._templatePresenter.dataContext = session;
+            Polymer.dom(this).children.filter(c => c.tagName !== "TEMPLATE").forEach(c => Polymer.dom(this).removeChild(c));
 
-            if (!this._templatePresenter.isAttached)
-                Polymer.dom(this).appendChild(this._templatePresenter);
+            if (!session || !this._customTemplate)
+                return;
+
+            <HTMLElement>Polymer.dom(this).appendChild(this._customTemplate.stamp({ session: session }).root);
 
             return session;
         }

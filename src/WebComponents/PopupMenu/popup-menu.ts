@@ -47,7 +47,7 @@ module Vidyano.WebComponents {
         }
 
         private _popupOpening() {
-            var children = Enumerable.from(Polymer.dom(this.$["popup"]).querySelector("[content]").children).where((c: HTMLElement) => c.tagName === "VI-POPUP-MENU-ITEM" && c.style.display !== "none").toArray();
+            var children = Enumerable.from((<HTMLElement>Polymer.dom(this.$["popup"]).querySelector("[content]")).children).where((c: HTMLElement) => c.tagName === "VI-POPUP-MENU-ITEM" && c.style.display !== "none").toArray();
 
             var hasIcons = children.filter(c => c.hasAttribute("icon")).length > 0;
             var hasSplits = children.filter(c => c.hasAttribute("split")).length > 0;

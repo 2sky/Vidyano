@@ -40,7 +40,7 @@ interface PolymerDomApi {
     insertBefore(newChild: Node | Vidyano.WebComponents.WebComponent, refChild?: Node | Vidyano.WebComponents.WebComponent): Node;
     removeAttribute(name?: string): void;
     setAttribute(name?: string, value?: string): void;
-    querySelector(selectors: string): HTMLElement | Vidyano.WebComponents.WebComponent;
+    querySelector(selectors: string): Node | HTMLElement | Vidyano.WebComponents.WebComponent;
     querySelectorAll(selectors: string): NodeList;
     appendChild(newChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;
     removeChild(oldChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;
@@ -78,9 +78,14 @@ interface PolymerTrackDetail {
     hover(): Element | Vidyano.WebComponents.WebComponent;
 }
 
+interface PolymerTemplate extends Node {
+    stamp: (model: any) => TemplateInstance;
+}
+
 interface TemplateInstance {
     item: any;
     index: number;
+    root: DocumentFragment;
 }
 
 interface TapEvent extends CustomEvent {

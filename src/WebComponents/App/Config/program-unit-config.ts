@@ -1,23 +1,10 @@
 ﻿module Vidyano.WebComponents {
-    @WebComponent.register({
+    @TemplateConfig.register({
         properties: {
-            name: String,
-            template: {
-                type: Object,
-                readOnly: true
-            }
+            name: String
         }
     })
-    export class ProgramUnitConfig extends WebComponent {
+    export class ProgramUnitConfig extends TemplateConfig {
         name: string;
-        template: any;
-
-        private _setTemplate: (template: HTMLElement) => void;
-
-        attached() {
-            super.attached();
-
-            this._setTemplate(<HTMLElement>Polymer.dom(this).querySelector("template"));
-        }
     }
 }

@@ -38,8 +38,7 @@ module Vidyano.WebComponents {
     })
     export class QueryPresenter extends WebComponent {
         private static _queryComponentLoader: Promise<any>;
-        private _customTemplatePresenter: Vidyano.WebComponents.TemplatePresenter;
-        private _customTemplate: HTMLElement;
+        private _customTemplate: PolymerTemplate;
         private _cacheEntry: QueryAppCacheEntry;
         queryId: string;
         query: Vidyano.Query;
@@ -48,11 +47,8 @@ module Vidyano.WebComponents {
         private _setError: (error: string) => void;
 
         attached() {
-            if (!this._customTemplate) {
-                this._customTemplate = <HTMLElement>Polymer.dom(this).querySelector("template");
-                if (this._customTemplate)
-                    this._customTemplate = <HTMLElement>this._customTemplate.cloneNode(true);
-            }
+            if (!this._customTemplate)
+                this._customTemplate = <PolymerTemplate>Polymer.dom(this).querySelector("template[is='dom-template']");
 
             super.attached();
         }
@@ -127,15 +123,8 @@ module Vidyano.WebComponents {
 
                     this._renderQuery(query);
                 }
-                else {
-                    if (!this._customTemplatePresenter)
-                        this._customTemplatePresenter = new Vidyano.WebComponents.TemplatePresenter(this._customTemplate, "query");
-
-                    this._customTemplatePresenter.dataContext = query;
-
-                    if (!this._customTemplatePresenter.isAttached)
-                        Polymer.dom(this).appendChild(this._customTemplatePresenter);
-                }
+                else
+                    Polymer.dom(this).appendChild(this._customTemplate.stamp({ query: query }).root);
             }
 
             this.fire("title-changed", { title: query ? query.labelWithTotalItems : null }, { bubbles: true });

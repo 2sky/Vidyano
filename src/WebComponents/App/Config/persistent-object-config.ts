@@ -1,5 +1,5 @@
 module Vidyano.WebComponents {
-    @WebComponent.register({
+    @TemplateConfig.register({
         properties: {
             id: {
                 type: String,
@@ -8,24 +8,11 @@ module Vidyano.WebComponents {
             objectId: {
                 type: String,
                 reflectToAttribute: true
-            },
-            template: {
-                type: Object,
-                readOnly: true
             }
         }
     })
-    export class PersistentObjectConfig extends WebComponent {
+    export class PersistentObjectConfig extends TemplateConfig {
         id: string;
         objectId: string;
-        template: any;
-
-        private _setTemplate: (template: HTMLElement) => void;
-
-        attached() {
-            super.attached();
-
-            this._setTemplate(<HTMLElement>Polymer.dom(this).querySelector("template"));
-        }
     }
 }

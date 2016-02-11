@@ -1,12 +1,12 @@
 ﻿module Vidyano.WebComponents {
     @Resource.register
     export class QueryGridCellTemplate extends Resource {
-        static Load(source: string): TemplatePresenter {
+        static Load(source: string): PolymerTemplate {
             var cellTemplate = <QueryGridCellTemplate>Resource.LoadResource(source, "VI-QUERY-GRID-CELL-TEMPLATE");
             if (!cellTemplate)
                 return null;
 
-            return new Vidyano.WebComponents.TemplatePresenter(cellTemplate.querySelector("template"), "value");
+            return <PolymerTemplate><Node>cellTemplate.querySelector("template[is='dom-template']");
         }
 
         static Exists(name: string): boolean {

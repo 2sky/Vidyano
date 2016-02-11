@@ -107,7 +107,7 @@
         @include layout-horizontal();
         @include flex();
 
-        .attribute, vi-template-presenter {
+        .attribute {
             @include flex();
             min-width: 0;
         }

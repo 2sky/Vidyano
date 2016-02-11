@@ -75,9 +75,7 @@ module Vidyano.WebComponents {
             "User": undefined
         };
 
-        private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
         private _renderedAttribute: Vidyano.PersistentObjectAttribute;
-        private _renderedElement: Node;
         attribute: Vidyano.PersistentObjectAttribute;
         height: number;
         loading: boolean;
@@ -85,9 +83,9 @@ module Vidyano.WebComponents {
         private _setLoading: (loading: boolean) => void;
 
         private _attributeChanged(attribute: Vidyano.PersistentObjectAttribute, isAttached: boolean) {
-            if (this._renderedElement) {
-                Polymer.dom(this.$["content"]).removeChild(this._renderedElement);
-                this._renderedElement = this._renderedAttribute = null;
+            if (this._renderedAttribute) {
+                Polymer.dom(this.$["content"]).children.forEach(c => Polymer.dom(this.$["content"]).removeChild(c));
+                this._renderedAttribute = null;
             }
 
             if (attribute && isAttached) {
@@ -200,20 +198,14 @@ module Vidyano.WebComponents {
 
                 try {
                     var config = this.app.configuration.getAttributeConfig(attribute);
-                    if (config && config.template) {
-                        if (!this._templatePresenter)
-                            this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(config.template, "attribute");
-
-                        this._templatePresenter.dataContext = attribute;
-
-                        if (!this._templatePresenter.isAttached)
-                            this._renderedElement = Polymer.dom(this.$["content"]).appendChild(this._templatePresenter);
-                    } else {
+                    if (config && config.template)
+                        Polymer.dom(this.$["content"]).appendChild(config.template.stamp({ attribute: attribute }).root);
+                    else {
                         var child = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
                         child.classList.add("attribute");
                         child.attribute = attribute;
 
-                        this._renderedElement = Polymer.dom(this.$["content"]).appendChild(child);
+                        Polymer.dom(this.$["content"]).appendChild(child);
                     }
 
                     this._renderedAttribute = attribute;

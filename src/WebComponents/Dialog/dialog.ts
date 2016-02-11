@@ -132,7 +132,7 @@ module Vidyano.WebComponents {
             const dialog = <WebComponent>Polymer.dom(this).querySelector("[dialog]");
             let header: HTMLElement;
             if (dialog) {
-                header = Polymer.dom(dialog.root).querySelector("header");
+                header = <HTMLElement>Polymer.dom(dialog.root).querySelector("header");
                 if (header) {
                     var trackHandler: Function;
                     Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));

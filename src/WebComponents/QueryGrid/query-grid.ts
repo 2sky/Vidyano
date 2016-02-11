@@ -1405,7 +1405,8 @@
         private _typeHints: any;
         private _textNode: Text;
         private _textNodeValue: string;
-        private _customCellTemplate: TemplatePresenter;
+        private _customCellTemplate: PolymerTemplate;
+        private _customCellTemplateStampedChild: Node;
         private _lastColumnType: string;
 
         constructor(private _row: QueryGridTableDataRow) {
@@ -1437,12 +1438,11 @@
         private _render(): boolean {
             if (this.column) {
                 if (this._lastColumnType !== this.column.type) {
-                    if (this._customCellTemplate)
-                        this.cell.removeChild(this._customCellTemplate);
+                    if (this._customCellTemplateStampedChild)
+                        this.cell.removeChild(this._customCellTemplateStampedChild);
 
                     if (this._customCellTemplate = QueryGridCellTemplate.Load(this.column.type)) {
                         this._lastColumnType = this.column.type;
-                        Polymer.dom(this.cell).appendChild(this._customCellTemplate);
 
                         if (this._textNode) {
                             this.cell.removeChild(this._textNode);
@@ -1462,8 +1462,10 @@
                         if (this._textNodeValue !== "")
                             this._textNode.nodeValue = this._textNodeValue = "";
                     }
-                    else if (this._customCellTemplate)
-                        this._customCellTemplate.dataContext = null;
+                    else if (this._customCellTemplateStampedChild) {
+                        Polymer.dom(this.cell).removeChild(this._customCellTemplateStampedChild);
+                        this._customCellTemplateStampedChild = null;
+                    }
 
                     this._setHasContent(false);
                 }
@@ -1552,7 +1554,7 @@
                     Polymer.dom(this.cell).appendChild(this._textNode = document.createTextNode(this._textNodeValue = value));
             }
             else if (this._customCellTemplate)
-                this._customCellTemplate.dataContext = itemValue;
+                Polymer.dom(this.cell).appendChild(this._customCellTemplate.stamp({ value: itemValue }).root);
 
             this._setHasContent(!!value);
 

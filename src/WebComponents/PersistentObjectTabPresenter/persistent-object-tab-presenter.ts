@@ -20,7 +20,6 @@ module Vidyano.WebComponents {
     })
     export class PersistentObjectTabPresenter extends WebComponent {
         private static _persistentObjectTabComponentLoader: Promise<any>;
-        private _templatePresenter: Vidyano.WebComponents.TemplatePresenter;
         private _renderedTab: Vidyano.PersistentObjectTab;
         tab: Vidyano.PersistentObjectTab;
         templated: boolean;
@@ -46,13 +45,7 @@ module Vidyano.WebComponents {
             this._setTemplated(!!config && !!config.template);
 
             if (this.templated) {
-                if (!this._templatePresenter)
-                    this._templatePresenter = new Vidyano.WebComponents.TemplatePresenter(config.template, "tab");
-
-                this._templatePresenter.dataContext = tab;
-
-                if (!this._templatePresenter.isAttached)
-                    Polymer.dom(this).appendChild(this._templatePresenter);
+                Polymer.dom(this).appendChild(config.template.stamp({ tab: tab }).root);
 
                 this._setLoading(false);
             }
