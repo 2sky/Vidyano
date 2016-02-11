@@ -29,7 +29,7 @@
             }
         },
         observers: [
-            "_computeHasCharts(serviceObject.charts)"
+            "_computeHasCharts(serviceObject.charts, isAttached)"
         ],
         forwardObservers: [
             "serviceObject.charts"
@@ -55,14 +55,17 @@
         }
 
         private _serviceObjectChanged(serviceObject: Vidyano.ServiceObject) {
+            if (!this.isAttached)
+                return;
+
             if (serviceObject instanceof Vidyano.Query)
-                this._computeHasCharts(serviceObject.charts);
+                this._computeHasCharts(serviceObject.charts, this.isAttached);
             else
                 this._setHasCharts(false);
         }
 
-        private _computeHasCharts(charts: linqjs.Enumerable<Vidyano.QueryChart>) {
-            this._setHasCharts(!!charts && !!charts.firstOrDefault(c => !!this.app.configuration.getQueryChartConfig(c.type)));
+        private _computeHasCharts(charts: linqjs.Enumerable<Vidyano.QueryChart>, isAttached: boolean) {
+            this._setHasCharts(isAttached && !!charts && !!charts.firstOrDefault(c => !!this.app.configuration.getQueryChartConfig(c.type)));
         }
 
         private _search() {
