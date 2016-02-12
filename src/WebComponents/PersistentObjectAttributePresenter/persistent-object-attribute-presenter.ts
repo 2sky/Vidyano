@@ -10,7 +10,13 @@ module Vidyano.WebComponents {
             editing: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "attribute.parent.isEditing"
+                computed: "_computeEditing(attribute.parent.isEditing, nonEdit)"
+            },
+            nonEdit: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false,
+                observer: "_nonEditChanged"
             },
             required: {
                 type: Boolean,
@@ -76,7 +82,9 @@ module Vidyano.WebComponents {
         };
 
         private _renderedAttribute: Vidyano.PersistentObjectAttribute;
+        private _renderedAttributeElement: Vidyano.WebComponents.Attributes.PersistentObjectAttribute;
         attribute: Vidyano.PersistentObjectAttribute;
+        nonEdit: boolean;
         height: number;
         loading: boolean;
 
@@ -85,7 +93,7 @@ module Vidyano.WebComponents {
         private _attributeChanged(attribute: Vidyano.PersistentObjectAttribute, isAttached: boolean) {
             if (this._renderedAttribute) {
                 Polymer.dom(this.$["content"]).children.forEach(c => Polymer.dom(this.$["content"]).removeChild(c));
-                this._renderedAttribute = null;
+                this._renderedAttributeElement = this._renderedAttribute = null;
             }
 
             if (attribute && isAttached) {
@@ -201,11 +209,12 @@ module Vidyano.WebComponents {
                     if (config && config.template)
                         Polymer.dom(this.$["content"]).appendChild(config.template.stamp({ attribute: attribute }).root);
                     else {
-                        var child = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
-                        child.classList.add("attribute");
-                        child.attribute = attribute;
+                        this._renderedAttributeElement = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
+                        this._renderedAttributeElement.classList.add("attribute");
+                        this._renderedAttributeElement.attribute = attribute;
+                        this._renderedAttributeElement.nonEdit = this.nonEdit;
 
-                        Polymer.dom(this.$["content"]).appendChild(child);
+                        Polymer.dom(this.$["content"]).appendChild(this._renderedAttributeElement);
                     }
 
                     this._renderedAttribute = attribute;
@@ -214,6 +223,15 @@ module Vidyano.WebComponents {
                     this._setLoading(false);
                 }
             });
+        }
+
+        private _computeEditing(isEditing: boolean, nonEdit: boolean): boolean {
+            return !nonEdit && isEditing;
+        }
+
+        private _nonEditChanged(nonEdit: boolean) {
+            if (this._renderedAttributeElement)
+                this._renderedAttributeElement.nonEdit = nonEdit;
         }
 
         private _computeRequired(attribute: Vidyano.PersistentObjectAttribute, required: boolean, value: any): boolean {

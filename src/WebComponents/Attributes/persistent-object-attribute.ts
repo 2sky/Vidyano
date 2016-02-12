@@ -45,6 +45,7 @@ module Vidyano.WebComponents.Attributes {
         attribute: Vidyano.PersistentObjectAttribute;
         value: any;
         editing: boolean;
+        nonEdit: boolean;
         readOnly: boolean;
 
         protected _attributeValueChanged() {
@@ -67,6 +68,10 @@ module Vidyano.WebComponents.Attributes {
 
         private _computeHasError(validationError: string): boolean {
             return !StringEx.isNullOrEmpty(validationError);
+        }
+
+        private _computeEditing(isEditing: boolean, nonEdit: boolean): boolean {
+            return !nonEdit && isEditing;
         }
 
         private _updateForegroundDataTypeHint(attribute: Vidyano.PersistentObjectAttribute, isEditing: boolean, isReadOnly: boolean) {
@@ -102,7 +107,13 @@ module Vidyano.WebComponents.Attributes {
                 {
                     type: Boolean,
                     reflectToAttribute: true,
-                    computed: "attribute.parent.isEditing"
+                    computed: "_computeEditing(attribute.parent.isEditing, nonEdit)"
+                };
+                info.properties["nonEdit"] =
+                {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    value: false
                 };
                 info.properties["readOnly"] =
                 {
