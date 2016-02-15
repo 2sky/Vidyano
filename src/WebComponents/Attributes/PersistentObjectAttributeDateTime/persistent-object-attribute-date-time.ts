@@ -64,24 +64,20 @@
         private _setHasInvalidTime: (invalid: boolean) => void;
         private _setHasInvalidDate: (invalid: boolean) => void;
 
-        private _dateComponentAttached() {
-            this._dateInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("#date");
-            this._renderSelectedDate(true, false);
+        get dateInput(): HTMLInputElement {
+            return this._dateInput || (this._dateInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("#date"));
         }
 
-        private _timeComponentAttached() {
-            this._timeInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("#time");
-            this._renderSelectedDate(false, true);
+        get timeInput(): HTMLInputElement {
+            return this._timeInput || (this._timeInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("#time"));
         }
 
         protected _editingChanged() {
             super._editingChanged();
 
-            if (!this.editing) {
-                this._dateInput = this._timeInput = undefined;
-                return;
-            }
-            else {
+            Polymer.dom(this).flush();
+
+            if (this.editing) {
                 this._setHasInvalidDate(false);
                 this._setHasInvalidTime(false);
             }
@@ -146,29 +142,29 @@
 			if (this.selectedDate)
 				dateMoment = moment(this.selectedDate);
 
-            if (this.hasDateComponent && this._dateInput && !this.hasInvalidDate && (this._lastRenderedSelectedDate != this.selectedDate || forceDate)) {
+            if (this.hasDateComponent && this.dateInput && !this.hasInvalidDate && (this._lastRenderedSelectedDate != this.selectedDate || forceDate)) {
 				if (dateMoment) {
 					var newDate = dateMoment.format(Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toUpperCase());
-					if (newDate != this._dateInput.value) {
-                        var selectionStart = this._dateInput.selectionStart;
-                        var selectionEnd = this._dateInput.selectionEnd;
-                        this._dateInput.value = newDate;
-                        this._dateInput.selectionStart = selectionStart
-                        this._dateInput.selectionEnd = selectionEnd;
+					if (newDate != this.dateInput.value) {
+                        var selectionStart = this.dateInput.selectionStart;
+                        var selectionEnd = this.dateInput.selectionEnd;
+                        this.dateInput.value = newDate;
+                        this.dateInput.selectionStart = selectionStart
+                        this.dateInput.selectionEnd = selectionEnd;
 					}
 				}
 				else
-                    this._dateInput.value = this._computeDateFormat();
+                    this.dateInput.value = this._computeDateFormat();
 			}
 
-			if (this.hasTimeComponent && this._timeInput && !this.hasInvalidTime && (this._lastRenderedSelectedDate != this.selectedDate || forceTime)) {
+			if (this.hasTimeComponent && this.timeInput && !this.hasInvalidTime && (this._lastRenderedSelectedDate != this.selectedDate || forceTime)) {
 				var newTime = dateMoment ? dateMoment.format("HH" + Vidyano.CultureInfo.currentCulture.dateFormat.timeSeparator + "mm") : this._computeTimeFormat();
-				if (newTime != this._timeInput.value) {
-                    var selectionStart = this._timeInput.selectionStart;
-                    var selectionEnd = this._timeInput.selectionEnd;
-                    this._timeInput.value = newTime;
-                    this._timeInput.selectionStart = selectionStart
-                    this._timeInput.selectionEnd = selectionEnd;
+				if (newTime != this.timeInput.value) {
+                    var selectionStart = this.timeInput.selectionStart;
+                    var selectionEnd = this.timeInput.selectionEnd;
+                    this.timeInput.value = newTime;
+                    this.timeInput.selectionStart = selectionStart
+                    this.timeInput.selectionEnd = selectionEnd;
 				}
 			}
 
@@ -176,9 +172,9 @@
 		}
 
         private _dateFilled(e: Event, detail: any) {
-			if (this.hasTimeComponent && this._dateInput.selectionStart == this._dateInput.value.length) {
-				this._timeInput.focus();
-				this._timeInput.selectionStart = 0;
+			if (this.hasTimeComponent && this.dateInput.selectionStart == this.dateInput.value.length) {
+				this.timeInput.focus();
+				this.timeInput.selectionStart = 0;
 			}
 
 			this._isDateFilled = true;

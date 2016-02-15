@@ -8,17 +8,11 @@
         <template is="dom-if" if="{{!editing}}">
             <span>{{attribute.displayValue}}</span>
         </template>
-        <template is="dom-if" if="{{editing}}" restamp>
+        <template is="dom-if" if="{{editing}}">
             <vi-persistent-object-attribute-edit attribute="{{attribute}}">
-                <div content>
-                    <template is="dom-if" if="{{hasDateComponent}}">
-                        <input is="vi-masked-input" id="date" size="9" format$="{{dateFormat}}" separator$="{{dateSeparator}}" on-filled="_dateFilled" readonly$="{{readOnly}}" />
-                        <vi-attached-notifier on-attached="_dateComponentAttached"></vi-attached-notifier>
-                    </template>
-                    <template is="dom-if" if="{{hasTimeComponent}}">
-                        <input is="vi-masked-input" id="time" size="5" format$="{{timeFormat}}" separator$="{{timeSeparator}}" on-filled="_timeFilled" readonly$="{{readOnly}}" />
-                        <vi-attached-notifier on-attached="_timeComponentAttached"></vi-attached-notifier>
-                    </template>
+                <div content class="layout horizontal">
+                    <input is="vi-masked-input" id="date" size="9" format$="{{dateFormat}}" separator$="{{dateSeparator}}" on-filled="_dateFilled" readonly$="{{readOnly}}" hidden$="{{!hasDateComponent}}" />
+                    <input is="vi-masked-input" id="time" size="5" format$="{{timeFormat}}" separator$="{{timeSeparator}}" on-filled="_timeFilled" readonly$="{{readOnly}}" hidden$="{{!hasTimeComponent}}" />
                 </div>
                 <template is="dom-if" if="{{!readOnly}}">
                     <template is="dom-if" if="{{hasTimeComponent}}">
