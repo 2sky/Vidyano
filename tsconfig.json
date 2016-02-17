@@ -106,7 +106,8 @@
         "src/WebComponents/Style/style.ts",
         "src/WebComponents/TimePicker/time-picker.ts",
         "src/WebComponents/User/user.ts",
-        "src/WebComponents/WebComponent/webcomponent.ts"
+        "src/WebComponents/WebComponent/webcomponent.ts",
+        "src/WebComponents/Website/website.ts"
     ],
     "exclude": [
         "dist/Vidyano.Web2/vidyano.d.ts"

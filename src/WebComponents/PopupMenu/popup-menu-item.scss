@@ -8,11 +8,11 @@
     color: var(--theme-color);
     fill: var(--theme-color);
 
-    --vi-button-icon-style: #{'{
+    --vi-button-icon: #{'{
         width: 'var(--theme-h2)';
     }'};
 
-    --vi-button-label-style: #{'{
+    --vi-button-label: #{'{
         @include flex();
         padding: 0 'var(--theme-h5)';
         margin-right: 2px;
