@@ -33,9 +33,12 @@
     transition-timing-function: ease-out;
     border: none;
     outline: none;
+    
+    @apply(--vi-button);
 
     &[disabled] {
         cursor: default;
+        @apply(--vi-button-disabled);
     }
 
     &:not([custom-layout]) {
@@ -43,7 +46,7 @@
 
         > vi-icon {
             display: inline-block;
-            @apply(--vi-button-icon-style);
+            @apply(--vi-button-icon);
 
             &:not([has-resource]) {
                 display: none;
@@ -53,7 +56,7 @@
         > span {
             display: inline-block;
             vertical-align: top;
-            @apply(--vi-button-label-style);
+            @apply(--vi-button-label);
         }
 
         > vi-icon[has-resource] + span {
