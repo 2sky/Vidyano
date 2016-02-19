@@ -8,21 +8,21 @@
     color: var(--theme-color);
     fill: var(--theme-color);
 
-    --vi-button-icon: #{'{
-        width: 'var(--theme-h2)';
-    }'};
-
-    --vi-button-label: #{'{
-        @include flex();
-        padding: 0 'var(--theme-h5)';
-        margin-right: 2px;
-    }'};
-
     button {
         flex: 1 1 auto;
         height: 100%;
         padding: 0;
         text-align: left;
+
+        --vi-button-icon: #{'{
+            width: 'var(--theme-h2)';
+        }'};
+
+        --vi-button-label: #{'{
+            @include flex();
+            padding: 0 'var(--theme-h5)';
+            margin-right: 2px;
+        }'};
     }
 
     .icon-spacer {
