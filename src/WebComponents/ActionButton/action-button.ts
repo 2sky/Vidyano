@@ -148,7 +148,7 @@ module Vidyano.WebComponents {
                     this.action.execute(option);
                 else {
                     this.action.execute(option, this.options && option < this.options.length ? {
-                        MenuLabel: this.options[option]
+                        MenuLabel: this.options[option].value
                     } : null, [this.item]);
                 }
             }
