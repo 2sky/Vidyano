@@ -6,7 +6,7 @@ module Vidyano.WebComponents {
             defaultChart: String
         }
     })
-    export class QueryConfig extends TemplateConfig {
+    export class QueryConfig extends TemplateConfig<Vidyano.Query> {
         name: string;
         id: string;
         defaultChart: string;

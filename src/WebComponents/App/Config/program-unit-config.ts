@@ -4,7 +4,7 @@
             name: String
         }
     })
-    export class ProgramUnitConfig extends TemplateConfig {
+    export class ProgramUnitConfig extends TemplateConfig<Vidyano.ProgramUnit> {
         name: string;
     }
 }

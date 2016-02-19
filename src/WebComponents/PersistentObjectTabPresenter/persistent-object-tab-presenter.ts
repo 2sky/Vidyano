@@ -42,10 +42,10 @@ module Vidyano.WebComponents {
             var childClassName = "style-scope vi-persistent-object";
 
             var config = this.app.configuration.getTabConfig(tab);
-            this._setTemplated(!!config && !!config.template);
+            this._setTemplated(!!config && config.hasTemplate);
 
             if (this.templated) {
-                Polymer.dom(this).appendChild(config.template.stamp({ tab: tab }).root);
+                Polymer.dom(this).appendChild(config.stamp(tab, "tab"));
 
                 this._setLoading(false);
             }

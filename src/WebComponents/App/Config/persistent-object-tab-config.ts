@@ -6,7 +6,7 @@
             objectId: String
         }
     })
-    export class PersistentObjectTabConfig extends TemplateConfig {
+    export class PersistentObjectTabConfig extends TemplateConfig<Vidyano.PersistentObjectTab> {
         name: string;
         type: string;
         objectId: string;

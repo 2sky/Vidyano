@@ -54,10 +54,10 @@ module Vidyano.WebComponents {
             var child: HTMLElement;
 
             var queryConfig = this.app.configuration.getQueryConfig(query);
-            this._setTemplated(!!queryConfig && !!queryConfig.template);
+            this._setTemplated(!!queryConfig && queryConfig.hasTemplate);
 
             if (this.templated) {
-                Polymer.dom(this).appendChild(queryConfig.template.stamp({ query: query }).root);
+                Polymer.dom(this).appendChild(queryConfig.stamp(query, "query"));
                 this._setLoading(false);
             }
             else {
@@ -106,7 +106,7 @@ module Vidyano.WebComponents {
                         if (query !== this.query)
                             return;
 
-                        Polymer.dom(this).appendChild(chartConfig.template.stamp({ chart: currentChart }).root);
+                        Polymer.dom(this).appendChild(chartConfig.stamp(currentChart, "chart"));
                         this._setLoading(false);
                     });
                 }

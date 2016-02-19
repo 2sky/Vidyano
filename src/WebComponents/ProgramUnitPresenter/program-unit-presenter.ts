@@ -39,8 +39,8 @@ module Vidyano.WebComponents {
                 return;
 
             var config = this.app.configuration.getProgramUnitConfig(programUnit.name);
-            if (config && config.template)
-                Polymer.dom(this).appendChild(config.template.stamp({ programUnit: programUnit }).root);
+            if (!!config && config.hasTemplate)
+                Polymer.dom(this).appendChild(config.stamp(programUnit, "programUnit"));
         }
     }
 }

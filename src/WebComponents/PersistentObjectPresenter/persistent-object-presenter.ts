@@ -169,14 +169,10 @@ module Vidyano.WebComponents {
 
             if (persistentObject) {
                 var persistentObjectConfig = this.app.configuration.getPersistentObjectConfig(persistentObject);
-                this._setTemplated(!!persistentObjectConfig && !!persistentObjectConfig.template);
+                this._setTemplated(!!persistentObjectConfig && persistentObjectConfig.hasTemplate);
 
                 if (this.templated) {
-                    const model = { persistentObject:persistentObject };
-                    if (!!persistentObjectConfig.as)
-                        model[persistentObjectConfig.as] =  persistentObjectConfig.asModel ? persistentObjectConfig.asModel(persistentObject) : persistentObject;
-
-                    Polymer.dom(this).appendChild(persistentObjectConfig.template.stamp(model).root);
+                    Polymer.dom(this).appendChild(persistentObjectConfig.stamp(persistentObject, "persistentObject"));
                     this._setLoading(false);
                 }
                 else {

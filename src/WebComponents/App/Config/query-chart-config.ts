@@ -4,7 +4,7 @@ module Vidyano.WebComponents {
             type: String
         }
     })
-    export class QueryChartConfig extends TemplateConfig {
+    export class QueryChartConfig extends TemplateConfig<Vidyano.QueryChart> {
         type: string;
     }
 }

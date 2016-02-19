@@ -15,7 +15,7 @@
             }
         }
     })
-    export class PersistentObjectAttributeConfig extends TemplateConfig {
+    export class PersistentObjectAttributeConfig extends TemplateConfig<Vidyano.PersistentObjectAttribute> {
         private _calculateHeight: (attr: Vidyano.PersistentObjectAttribute) => number;
         private _calculateWidth: (attr: Vidyano.PersistentObjectAttribute) => number;
         private height: string;
@@ -25,7 +25,7 @@
         parentId: string;
         parentObjectId: string;
         component: string;
-        
+
         calculateHeight(attr: Vidyano.PersistentObjectAttribute): number {
             if (!this._calculateHeight) {
                 if (/d+/.test(this.height)) {
