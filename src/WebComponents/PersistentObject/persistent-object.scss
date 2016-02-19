@@ -29,9 +29,13 @@ $tabsBG: #f1f1f1;
     }
 
     .content {
+        .master {
+            overflow: hidden;
+        }
+        
         .detail {
             min-width: 0;
-            
+
             vi-persistent-object-tab-presenter {
                 margin: 1px 1px 1px 0;
             }
