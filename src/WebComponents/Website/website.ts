@@ -1,5 +1,12 @@
 module Vidyano.WebComponents {
     @WebComponent.register({
+        properties: {
+            scroll: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            }
+        }
     })
     export class Website extends WebComponent {
         attached() {
@@ -20,7 +27,7 @@ module Vidyano.WebComponents {
             config.asModel = po => {
                 const model = {
                     label: po.attributesByName["Label"].displayValue,
-                    pages: po.queriesByName["Website_Pages"].items.map(i => new WebsitePage(i))
+                    pages: po.queriesByName["Website_Pages"].items.map(i => new WebsitePageModel(i))
                 };
 
                 model.pages.forEach(p => model.pages[p.name] = p);
@@ -39,7 +46,7 @@ module Vidyano.WebComponents {
         }
     }
 
-    export class WebsitePage {
+    export class WebsitePageModel {
         private _name: string;
         private _label: string;
         private _content: string;

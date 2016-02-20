@@ -1,0 +1,13 @@
+@import "../_vars.scss";
+
+:host {
+    @include default-variables();
+    display: block;
+    position: relative;
+
+    &[scroll] {
+        vi-scroller {
+            @include fit();
+        }
+    }
+}
