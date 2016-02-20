@@ -17,6 +17,8 @@
     }
 
     &:not([editing]) {
+        overflow: hidden;
+        
         a {
             @include layout-horizontal();
             text-decoration: none;
