@@ -45,7 +45,7 @@ module Vidyano.WebComponents {
             this._setTemplated(!!config && config.hasTemplate);
 
             if (this.templated) {
-                Polymer.dom(this).appendChild(config.stamp(tab, "tab"));
+                Polymer.dom(this).appendChild(config.stamp(tab, config.as || "tab"));
 
                 this._setLoading(false);
             }

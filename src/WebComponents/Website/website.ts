@@ -18,10 +18,14 @@ module Vidyano.WebComponents {
             config.id = "3256a3ad-3035-44ec-b3dd-7c9bdd14a3a7";
             config.as = "website";
             config.asModel = po => {
-                return {
+                const model = {
                     label: po.attributesByName["Label"].displayValue,
                     pages: po.queriesByName["Website_Pages"].items.map(i => new WebsitePage(i))
-                }};
+                };
+
+                model.pages.forEach(p => model.pages[p.name] = p);
+                return model;
+            };
 
             this._setApp(new Vidyano.WebComponents.App());
             this.app.uri = "";

@@ -207,7 +207,7 @@ module Vidyano.WebComponents {
                 try {
                     var config = this.app.configuration.getAttributeConfig(attribute);
                     if (!!config && config.hasTemplate)
-                        Polymer.dom(this.$["content"]).appendChild(config.stamp(attribute, "attribute"));
+                        Polymer.dom(this.$["content"]).appendChild(config.stamp(attribute, config.as || "attribute"));
                     else {
                         this._renderedAttributeElement = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
                         this._renderedAttributeElement.classList.add("attribute");

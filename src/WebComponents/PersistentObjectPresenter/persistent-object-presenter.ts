@@ -168,11 +168,11 @@ module Vidyano.WebComponents {
                 this.empty();
 
             if (persistentObject) {
-                var persistentObjectConfig = this.app.configuration.getPersistentObjectConfig(persistentObject);
-                this._setTemplated(!!persistentObjectConfig && persistentObjectConfig.hasTemplate);
+                var config = this.app.configuration.getPersistentObjectConfig(persistentObject);
+                this._setTemplated(!!config && config.hasTemplate);
 
                 if (this.templated) {
-                    Polymer.dom(this).appendChild(persistentObjectConfig.stamp(persistentObject, "persistentObject"));
+                    Polymer.dom(this).appendChild(config.stamp(persistentObject, config.as || "persistentObject"));
                     this._setLoading(false);
                 }
                 else {
