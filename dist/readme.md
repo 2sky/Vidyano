@@ -58,8 +58,8 @@ Next, make sure ```runAllManagedModulesForAllRequests``` is set to ```true```
     <link rel="import" href="web2/vidyano.html" />
 </head>
 
-<body>
-    <vi-app uri="" label="Your project name"></vi-app>
+<body class="fullbleed">
+    <vi-app uri="" label="Your project name" class="fit"></vi-app>
 </body>
 </html>
 ```

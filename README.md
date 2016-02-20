@@ -87,8 +87,8 @@ You will then add a ```vi-app``` component and points its ```uri``` attribute to
     <link rel="import" href="web2/vidyano.html" />
 </head>
 
-<body>
-    <vi-app uri="<your-backend-url>" label="My application" sign-in-image="signin.png"></vi-app>
+<body class="fullbleed">
+    <vi-app uri="<your-backend-url>" label="My application" sign-in-image="signin.png" class="fit"></vi-app>
 </body>
 </html>
 ```

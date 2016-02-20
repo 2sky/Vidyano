@@ -33,7 +33,7 @@
             <vi-spinner></vi-spinner>
         </template>
         <template is="dom-if" if="{{!initializing}}">
-            <div class="fit layout horizontal">
+            <div class="flex layout horizontal">
                 <template is="dom-if" if="{{showMenu}}" restamp>
                     <vi-menu menu label="{{label}}" items="{{service.application.programUnits}}" program-unit="{{programUnit}}">
                         <content select="[label]:not([label='sign-in'])"></content>

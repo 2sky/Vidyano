@@ -1,11 +1,11 @@
 @import "../_vars.scss";
 
 :host {
-    display: block;
+    @include layout-horizontal();
     @include relative();
 
     > * {
-        @include fit();
+        @include flex();
     }
 
     &:focus {
@@ -13,7 +13,10 @@
     }
 
     .content-wrapper {
-        ::content > * {
+        @include flex();
+        position: relative;
+
+        ::content > vi-query-grid {
             @include fit();
         }
     }

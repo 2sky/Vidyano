@@ -22,7 +22,10 @@
     }
 
     .content-wrapper {
-        ::content > * {
+        @include flex();
+        position: relative;
+
+        ::content > vi-persistent-object {
             @include fit();
         }
     }

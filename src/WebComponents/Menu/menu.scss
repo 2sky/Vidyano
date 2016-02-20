@@ -3,7 +3,6 @@
 :host {
     @include layout-vertical();
     @include noSelection();
-    height: 100%;
 
     --vi-menu-indent: 16px;
     --vi-menu--expand-width: 16em;
@@ -95,7 +94,6 @@
     header, footer {
         display: block;
         line-height: var(--theme-h1);
-        min-height: var(--theme-h1);
     }
 
     header {

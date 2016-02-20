@@ -6,11 +6,13 @@
     overflow: hidden;
 
     .content-wrapper {
-        @include layout-horizontal();
         @include flex();
+        position: relative;
+    }
 
-        ::content > * {
-            @include flex();
+    &:not(.vi-persistent-object-dialog) .content-wrapper ::content {
+        > vi-persistent-object-tab, > vi-query-items-presenter {
+            @include fit();
         }
     }
 }
