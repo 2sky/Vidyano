@@ -2,7 +2,7 @@
 
 :host {
     @include layout-horizontal();
-    min-width: 30em;
+    min-width: 20em;
     margin-bottom: 4px;
     height: var(--theme-h2);
     line-height: var(--theme-h2);
@@ -32,7 +32,6 @@
         background-color: #f9f9f9;
 
         button {
-            background-color: white;
             fill: var(--theme-color);
         }
     }

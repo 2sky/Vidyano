@@ -7,6 +7,8 @@
         padding: var(--theme-h4) 0 var(--theme-h4) var(--theme-h4);
 
         > ul {
+            padding-right: var(--theme-h4);
+
             &:empty {
                 display: none;
             }
@@ -15,7 +17,6 @@
         > vi-scroller {
             @include flex();
             margin-top: var(--theme-h4);
-            min-width: 30em;
 
             ul {
                 padding-right: var(--theme-h4);
@@ -29,7 +30,6 @@
 
             li {
                 @include layout-horizontal();
-                min-width: 30em;
                 margin-bottom: 4px;
                 height: var(--theme-h2);
                 line-height: var(--theme-h2);
@@ -59,7 +59,6 @@
                     background-color: #f9f9f9;
 
                     button {
-                        background-color: white;
                         fill: var(--theme-color);
                     }
                 }
