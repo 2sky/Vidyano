@@ -10,4 +10,10 @@
             @include fit();
         }
     }
+
+    ::content {
+        marked-element {
+            display: block;
+        }
+    }
 }
