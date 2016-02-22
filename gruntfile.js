@@ -73,6 +73,36 @@ module.exports = function(grunt) {
                     }
                 }]
             }
+        },
+        revision: {
+            options: {
+                property: 'meta.revision',
+                ref: 'HEAD',
+                short: true
+            }
+        },
+        replace: {
+            vidyanoVersion: {
+                src: ['dist\\Vidyano.Web2\\src\\Libs\\Vidyano\\vidyano.js'],
+                overwrite: true,
+                replacements: [{from: '"latest"', to: '"' + grunt.option("vidyano-version") + (grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : "") + '-<%= meta.revision %>"'}]
+            },
+            nugetVersion: {
+                src: ['dist\\Vidyano.Web2\\Properties\\AssemblyInfo.cs'],
+                overwrite: true,
+                replacements: [
+                    {from: "0.0.0.0", to: grunt.option("vidyano-version") + '.0'},
+                    {from: "-prerelease", to: grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : ""}
+                ]
+            },
+            nugetVersionRevert: {
+                src: ['dist\\Vidyano.Web2\\Properties\\AssemblyInfo.cs'],
+                overwrite: true,
+                replacements: [
+                    {from: grunt.option("vidyano-version") + '.0', to: "0.0.0.0"},
+                    {from: 'AssemblyInformationalVersion("0.0.0.0' + (grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : ""), to: 'AssemblyInformationalVersion("0.0.0.0-prerelease'}
+                ]
+            }
         }
     });
 
@@ -87,8 +117,15 @@ module.exports = function(grunt) {
         "ts",
         "clean",
         "copy:dist",
+        "revision",
+        "replace:vidyanoVersion",
+        "replace:nugetVersion",
         "uglify",
         "dtsGenerator"
+    ]);
+
+    grunt.registerTask("nugetrevert", [
+        "replace:nugetVersionRevert",
     ]);
 
     grunt.loadNpmTasks("grunt-bower-task");
@@ -96,6 +133,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks("grunt-sass");
+    grunt.loadNpmTasks("grunt-text-replace");
+    grunt.loadNpmTasks("grunt-git-revision");
     grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks('dts-generator');
 };

@@ -22,6 +22,8 @@ declare var Set: SetConstructor;
 module Vidyano {
     "use strict";
 
+    export var version = "latest";
+
     export enum NotificationType {
         Error,
         Notice,
