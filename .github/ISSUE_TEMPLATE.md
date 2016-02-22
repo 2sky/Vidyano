@@ -2,9 +2,9 @@
 
 
 #### Steps to Reproduce
-1. …
-2. …
-3. …
+1. â€¦
+2. â€¦
+3. â€¦
 
 #### Expected Results
 
@@ -22,4 +22,4 @@
 
 ### Versions
 - Vidyano: vX.X.X.X
-- Vidyano Web²: vX.X.X
+- Vidyano WebÂ²: vX.X.X-prerelease-hash (use ```Vidyano.version```)
