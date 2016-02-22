@@ -72,7 +72,7 @@ module Vidyano.WebComponents {
                     }
 
                     Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader.then(() => {
-                        if (query !== this.query)
+                        if (query !== this.query || !!query.currentChart)
                             return;
 
                         var grid = new Vidyano.WebComponents.QueryGrid();
