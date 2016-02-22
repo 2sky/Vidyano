@@ -69,6 +69,7 @@
 
     > .scrollbar-parent {
         position: absolute;
+        z-index: 1;
         background-color: transparent;
         -moz-transition: opacity 0.2s, background-color 0.2s;
         -o-transition: opacity 0.2s, background-color 0.2s;
@@ -170,6 +171,7 @@
     > .scroll-shadow {
         display: none;
         position: absolute;
+        z-index: 1;
         -webkit-box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
         box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
         bottom: 0;

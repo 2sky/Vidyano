@@ -32,7 +32,7 @@ $tabsBG: #f1f1f1;
         .master {
             overflow: hidden;
         }
-        
+
         .detail {
             min-width: 0;
 
@@ -120,6 +120,7 @@ $tabsBG: #f1f1f1;
             }
 
             vi-persistent-object-tab-presenter {
+                z-index: 0;
                 margin-left: 1px;
             }
         }
