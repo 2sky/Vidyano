@@ -9,6 +9,7 @@ namespace Vidyano.Web2
         {
             private static readonly Regex scriptRe = new Regex("<script src=\"(.+?)\".*?</script>");
             private static readonly Regex linkRe = new Regex("<link.*?href=\"(.+?.css)\".*?>");
+            private static readonly Regex linkPolymerRe = new Regex("<link.*?href=\".+?polymer\\.html\".*?>");
 
             public static string Generate(string path, string html, bool useLocalFileSystem = false)
             {
@@ -18,6 +19,9 @@ namespace Vidyano.Web2
                 var directory = Path.GetDirectoryName(path);
                 if (!string.IsNullOrEmpty(directory))
                     directory += "/";
+
+                if (!path.EndsWith("vidyano.html"))
+                    html = linkPolymerRe.Replace(html, string.Empty);
 
 #if !DEBUG
 
