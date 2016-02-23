@@ -9,9 +9,19 @@ namespace Vidyano.Web2
         {
             private static readonly Regex scriptRe = new Regex("<script src=\"(.+?)\".*?</script>");
             private static readonly Regex linkRe = new Regex("<link.*?href=\"(.+?.css)\".*?>");
-            private static readonly Regex linkPolymerRe = new Regex("<link.*?href=\".+?polymer\\.html\".*?>");
 
-            public static string Generate(string path, string html, bool useLocalFileSystem = false)
+            private static readonly string[] polymerDependencies = {
+                "iron-a11y-keys",
+                "iron-a11y-keys-behavior",
+                "iron-list",
+                "iron-resizable-behavior",
+                "iron-scroll-target-behavior",
+                "polymer",
+                "paper-ripple",
+            };
+            private static readonly Regex linkPolymerRe = new Regex("<link.*?href=\".+?(" + string.Join("|", polymerDependencies) + ")\\.html\".*?>");
+
+            public static string Generate(string path, string html, bool useLocalFileSystem = false, bool stripPolymerLinks = true)
             {
 #if DEBUG
                 useLocalFileSystem = true;
@@ -20,7 +30,7 @@ namespace Vidyano.Web2
                 if (!string.IsNullOrEmpty(directory))
                     directory += "/";
 
-                if (!path.EndsWith("vidyano.html"))
+                if (stripPolymerLinks)
                     html = linkPolymerRe.Replace(html, string.Empty);
 
 #if !DEBUG

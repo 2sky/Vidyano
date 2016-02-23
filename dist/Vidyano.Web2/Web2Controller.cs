@@ -63,7 +63,7 @@ namespace Vidyano.Web2
             switch (extension)
             {
                 case ".html":
-                    var html = Vulcanizer.Generate(id, File.ReadAllText(filePath));
+                    var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), false, false);
                     return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[extension]) };
 
                 case ".css":
@@ -93,7 +93,7 @@ namespace Vidyano.Web2
                                 break;
 
                             case ".html":
-                                content = Vulcanizer.Generate(id, content);
+                                content = Vulcanizer.Generate(id, content, false, false);
                                 break;
 
                             default:
