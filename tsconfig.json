@@ -64,6 +64,7 @@
         "src/WebComponents/Checkbox/checkbox.ts",
         "src/WebComponents/DatePicker/date-picker.ts",
         "src/WebComponents/Dialog/dialog.ts",
+        "src/WebComponents/Grid/grid.ts",
         "src/WebComponents/Icon/icon.ts",
         "src/WebComponents/InputSearch/input-search.ts",
         "src/WebComponents/MaskedInput/masked-input.ts",
