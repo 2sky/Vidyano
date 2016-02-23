@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -30,6 +31,9 @@ namespace Vidyano.Web2
         private static readonly Dictionary<string, string> cachedResources = new Dictionary<string, string>();
         private static readonly object syncRoot = new object();
 
+        private static readonly bool UseWeb2Home = ConfigurationManager.AppSettings["Vidyano.UseWeb2Home"] == "True";
+        private static readonly string Web2Home = Environment.GetEnvironmentVariable("WEB2_HOME") ?? Path.Combine(HostingEnvironment.MapPath("~"), "../../src/");
+
         public static bool Compress = true;
 
         static Web2Controller()
@@ -43,34 +47,31 @@ namespace Vidyano.Web2
         }
 
         [AcceptVerbs("GET")]
-#if DEBUG
         public HttpResponseMessage Get(string id = null)
         {
-            if (string.IsNullOrEmpty(id))
+            if (UseWeb2Home && string.IsNullOrEmpty(id))
                 return new HttpResponseMessage { Content = new StringContent(File.ReadAllText(HostingEnvironment.MapPath("~/index.html")), Encoding.UTF8, "text/html") };
-#else
-        public HttpResponseMessage Get(string id)
-        {
-#endif
+
             var extension = Path.GetExtension(id);
             string mediaType;
             if (extension == null || !mediaTypes.TryGetValue(extension, out mediaType))
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
 
-#if DEBUG
-            // NOTE: In development we serve the files directly from disk
-            var filePath = Path.Combine(HostingEnvironment.MapPath("~"), "../../src/" + id);
-            switch (extension)
+            if (UseWeb2Home)
             {
-                case ".html":
-                    var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), false, false);
-                    return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[extension]) };
+                // NOTE: In development we serve the files directly from disk
+                var filePath = Path.Combine(Web2Home, id);
+                switch (extension)
+                {
+                    case ".html":
+                        var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), false, false);
+                        return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[extension]) };
 
-                case ".css":
-                case ".js":
-                    return new HttpResponseMessage { Content = new StringContent(File.ReadAllText(filePath), Encoding.UTF8, mediaTypes[extension]) };
+                    case ".css":
+                    case ".js":
+                        return new HttpResponseMessage { Content = new StringContent(File.ReadAllText(filePath), Encoding.UTF8, mediaTypes[extension]) };
+                }
             }
-#endif
 
             var ifNoneMatch = Request.Headers.IfNoneMatch.FirstOrDefault();
             Tuple<string, string> cacheInfo;

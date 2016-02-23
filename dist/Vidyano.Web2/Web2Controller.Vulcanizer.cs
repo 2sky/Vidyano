@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Vidyano.Web2
@@ -23,44 +24,47 @@ namespace Vidyano.Web2
 
             public static string Generate(string path, string html, bool useLocalFileSystem = false, bool stripPolymerLinks = true)
             {
-#if DEBUG
-                useLocalFileSystem = true;
-#endif
                 var directory = Path.GetDirectoryName(path);
                 if (!string.IsNullOrEmpty(directory))
-                    directory += "/";
+                    directory = directory.Replace('\\', '/') + "/";
 
                 if (stripPolymerLinks)
-                    html = linkPolymerRe.Replace(html, string.Empty);
-
-#if !DEBUG
-
-                html = scriptRe.Replace(html, match =>
                 {
-                    var src = match.Groups[1].Value;
-
-                    if (useLocalFileSystem)
+                    var depth = directory.Split('/').Length;
+                    html = linkPolymerRe.Replace(html, match =>
                     {
-                        var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), directory + src);
-                        return "<script>" + File.ReadAllText(filePath) + "</script>";
-                    }
+                        var dep = match.Groups[1].Value;
+                        return "<link rel=\"import\" href=\"" + string.Join(string.Empty, Enumerable.Range(0, depth).Select(_ => "../")) + "Libs/" + dep + "/" + dep + ".html\">";
+                    });
+                }
 
-                    var script = GetEmbeddedResource(directory + src);
-                    return "<script>" + script + "</script>";
-                });
-#endif
+                if (!UseWeb2Home)
+                {
+                    html = scriptRe.Replace(html, match =>
+                    {
+                        var src = match.Groups[1].Value;
+
+                        if (useLocalFileSystem)
+                        {
+                            var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), directory + src);
+                            return "<script>" + File.ReadAllText(filePath) + "</script>";
+                        }
+
+                        var script = GetEmbeddedResource(directory + src);
+                        return "<script>" + script + "</script>";
+                    });
+                }
 
                 html = linkRe.Replace(html, match =>
                 {
                     var id = directory + match.Groups[1].Value;
-#if DEBUG
-                    return "<style>" + File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), "../../src/" + id)) + "</style>";
-#else
+                    if (UseWeb2Home)
+                        return "<style>" + File.ReadAllText(Path.Combine(Web2Home, id)) + "</style>";
+
                     if (useLocalFileSystem)
                         return "<style>" + File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id)) + "</style>";
 
                     return "<style>" + GetEmbeddedResource(id) + "</style>";
-#endif
                 });
 
                 return html;
