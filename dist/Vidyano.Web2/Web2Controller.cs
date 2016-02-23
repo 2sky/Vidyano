@@ -31,8 +31,8 @@ namespace Vidyano.Web2
         private static readonly Dictionary<string, string> cachedResources = new Dictionary<string, string>();
         private static readonly object syncRoot = new object();
 
-        private static readonly bool UseWeb2Home = ConfigurationManager.AppSettings["Vidyano.UseWeb2Home"] == "True";
-        private static readonly string Web2Home = Environment.GetEnvironmentVariable("WEB2_HOME") ?? Path.Combine(HostingEnvironment.MapPath("~"), "../../src/");
+        private static readonly string Web2Home = Environment.GetEnvironmentVariable("WEB2_HOME");
+        private static readonly bool UseWeb2Home = Web2Home != null && ConfigurationManager.AppSettings["Vidyano.UseWeb2Home"] == "True";
 
         public static bool Compress = true;
 
