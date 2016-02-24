@@ -1,9 +1,10 @@
 @import "../_vars.scss";
 
 :host {
-    z-index: 1000;
     @include layout-horizontal();
     @include layout-center-center();
+    overflow: visible !important;
+    z-index: 1000;
 
     div {
         opacity: 0.8;

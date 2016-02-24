@@ -48,48 +48,43 @@ $grid-max-columns: $grid-desktop-columns !default;
 
 :host {
     display: block;
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0 auto 0 auto;
+    align-items: stretch;
 
     &[no-spacing] {
-        .content-wrapper {
-            padding: 0;
+        padding: 0;
 
-            ::content > .vi-grid-cell {
-                margin: 0;
-            }
+        ::content > .vi-grid-cell {
+            margin: 0;
         }
     }
 
-    .content-wrapper {
-        display: flex;
-        flex-flow: row wrap;
-        margin: 0 auto 0 auto;
-        align-items: stretch;
+    ::content > {
+        .vi-grid-cell {
+            box-sizing: border-box;
+        }
 
-        ::content > {
-            .vi-grid-cell {
-                box-sizing: border-box;
-            }
+        .vi-grid-cell--top {
+            align-self: flex-start;
+        }
 
-            .vi-grid-cell--top {
-                align-self: flex-start;
-            }
+        .vi-grid-cell--middle {
+            align-self: center;
+        }
 
-            .vi-grid-cell--middle {
-                align-self: center;
-            }
+        .vi-grid-cell--bottom {
+            align-self: flex-end;
+        }
 
-            .vi-grid-cell--bottom {
-                align-self: flex-end;
-            }
-
-            .vi-grid-cell--stretch {
-                align-self: stretch;
-            }
-            // Define order override classes.
-            @for $i from 1 through $grid-max-columns {
-                .vi-grid-cell--order-#{$i} {
-                    order: $i;
-                }
+        .vi-grid-cell--stretch {
+            align-self: stretch;
+        }
+        // Define order override classes.
+        @for $i from 1 through $grid-max-columns {
+            .vi-grid-cell--order-#{$i} {
+                order: $i;
             }
         }
     }
@@ -97,11 +92,11 @@ $grid-max-columns: $grid-desktop-columns !default;
 
 // Mixins for width calculation.
 @mixin partial-size($size, $columns, $gutter) {
-    :host .content-wrapper ::content > & {
+    :host ::content > & {
         width: calc(#{(($size / $columns) * 100)+"%"} - #{$gutter});
     }
 
-    :host[no-spacing] .content-wrapper ::content > & {
+    :host[no-spacing] ::content > & {
         width: #{(($size / $columns) * 100)+"%"};
     }
 }
@@ -111,22 +106,22 @@ $grid-max-columns: $grid-desktop-columns !default;
 }
 
 @mixin offset-size($size, $columns, $gutter) {
-    :host .content-wrapper ::content > & {
+    :host ::content > & {
         margin-left: calc(#{(($size / $columns) * 100)+"%"} + #{$gutter / 2});
     }
 
-    :host[no-spacing] .content-wrapper ::content > & {
+    :host[no-spacing] ::content > & {
         margin-left: #{(($size / $columns) * 100)+"%"};
     }
 }
 
 ////////// Phone //////////
 @media (max-width: $grid-tablet-breakpoint - 1) {
-    :host .content-wrapper {
+    :host {
         padding: $grid-phone-margin - ($grid-phone-gutter / 2);
     }
 
-    :host .content-wrapper ::content > {
+    :host ::content > {
         .vi-grid-cell {
             margin: $grid-phone-gutter / 2;
         }
@@ -171,11 +166,11 @@ $grid-max-columns: $grid-desktop-columns !default;
 
 ////////// Tablet //////////
 @media (min-width: $grid-tablet-breakpoint) and (max-width: $grid-desktop-breakpoint - 1) {
-    :host .content-wrapper {
+    :host {
         padding: $grid-tablet-margin - ($grid-tablet-gutter / 2);
     }
 
-    :host .content-wrapper ::content > {
+    :host ::content > {
         .vi-grid-cell {
             margin: $grid-tablet-gutter / 2;
         }
@@ -220,11 +215,11 @@ $grid-max-columns: $grid-desktop-columns !default;
 
 ////////// Desktop //////////
 @media (min-width: $grid-desktop-breakpoint) {
-    :host .content-wrapper {
+    :host {
         padding: $grid-desktop-margin - ($grid-desktop-gutter / 2);
     }
 
-    :host .content-wrapper ::content > {
+    :host ::content > {
         .vi-grid-cell {
             margin: $grid-desktop-gutter / 2;
         }

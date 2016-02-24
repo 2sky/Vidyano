@@ -12,12 +12,7 @@
         outline: none !important;
     }
 
-    .content-wrapper {
-        @include flex();
-        position: relative;
-
-        ::content > vi-query-grid {
-            @include fit();
-        }
+    ::content > vi-query-grid {
+        @include fit();
     }
 }

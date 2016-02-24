@@ -5,16 +5,7 @@
     @include relative();
     overflow: hidden;
 
-    .content-wrapper {
-        @include flex();
-        position: relative;
-    }
-
-    &.vi-persistent-object-dialog .content-wrapper {
-        @include layout-horizontal();
-    }
-
-    &:not(.vi-persistent-object-dialog) .content-wrapper ::content {
+    &:not(.vi-persistent-object-dialog) ::content {
         > vi-persistent-object-tab, > vi-query-items-presenter {
             @include fit();
         }

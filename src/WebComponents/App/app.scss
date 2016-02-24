@@ -3,6 +3,7 @@
 :host {
     @include default-variables();
     @include layout-horizontal();
+    position: relative;
     overflow-x: hidden;
     font-family: 'Open Sans', Arial, Helvetica, sans-serif;
     font-size: 15px;
@@ -20,8 +21,10 @@
         }
     }
 
-    > * {
-        overflow: hidden;
+    &[initializing] {
+        vi-app-route, #dialogs {
+            display: none !important;
+        }
     }
 
     &[is-phone] ::content [hide-phone] {

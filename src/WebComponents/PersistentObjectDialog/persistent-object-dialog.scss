@@ -1,7 +1,9 @@
 @import "../vars.scss";
 
+$min-main-width: 400px;
+
 :host {
-    --vi-persistent-object-dialog-base-width: 400px;
+    --vi-persistent-object-dialog-base-width-base: $min-main-width;
 
     main {
         @include layout-vertical();
@@ -19,6 +21,7 @@
 
 :host-context([is-tablet]), :host-context([is-desktop]) {
     main {
-        width: var(--vi-persistent-object-dialog-computed-width);
+        min-width: $min-main-width;
+        max-width: var(--vi-persistent-object-dialog-computed-width);
     }
 }

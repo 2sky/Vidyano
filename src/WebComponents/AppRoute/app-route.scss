@@ -4,16 +4,11 @@
     @include flex();
     @include layout-horizontal();
 
-    .content-wrapper {
+    ::content > * {
         @include flex();
-        @include layout-horizontal();
-
-        ::content > * {
-            @include flex();
-        }
     }
 
     &:not(.active) {
-        display: none;
+        display: none !important;
     }
 }

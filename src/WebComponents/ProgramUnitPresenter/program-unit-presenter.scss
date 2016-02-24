@@ -1,11 +1,6 @@
 @import "../_vars.scss";
 
 :host {
-    @include layout-horizontal();
+    display: block;
     @include relative();
-
-    .content-wrapper {
-        @include flex();
-        position: relative;
-    }
 }

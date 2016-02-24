@@ -21,12 +21,7 @@
         }
     }
 
-    .content-wrapper {
-        @include flex();
-        position: relative;
-
-        ::content > * {
-            @include fit();
-        }
+    ::content > * {
+        @include fit();
     }
 }

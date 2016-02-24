@@ -63,7 +63,7 @@
             var tab = <Vidyano.PersistentObjectAttributeTab>Enumerable.from(persistentObject.tabs).firstOrDefault(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
             tab.columnCount = tab.columnCount > 1 ? tab.columnCount : 1;
 
-            var width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width")) * tab.columnCount;
+            var width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * tab.columnCount;
             this.customStyle["--vi-persistent-object-dialog-computed-width"] = `${width}px`;
             this.updateStyles();
 
