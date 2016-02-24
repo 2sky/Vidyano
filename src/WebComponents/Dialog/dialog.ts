@@ -74,12 +74,12 @@ module Vidyano.WebComponents {
 
     @WebComponent.register({
         properties: {
-            "shown": {
+            shown: {
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true
             },
-            "_translate": {
+            _translate: {
                 type: Object,
                 readOnly: true,
                 observer: "_translateChanged"

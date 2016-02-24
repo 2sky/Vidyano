@@ -15,6 +15,7 @@ namespace Vidyano.Web2
                 "iron-a11y-keys",
                 "iron-a11y-keys-behavior",
                 "iron-list",
+                "iron-media-query",
                 "iron-resizable-behavior",
                 "iron-scroll-target-behavior",
                 "polymer",

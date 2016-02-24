@@ -5,18 +5,6 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 value: false
-            },
-            isDesktop: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            isTablet: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            isPhone: {
-                type: Boolean,
-                reflectToAttribute: true
             }
         }
     })

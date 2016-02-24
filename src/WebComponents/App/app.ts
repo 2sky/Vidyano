@@ -153,6 +153,18 @@
             showMenu: {
                 type: Boolean,
                 computed: "_computeShowMenu(service.isSignedIn, noMenu, isAttached)"
+            },
+            isDesktop: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            isTablet: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            isPhone: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         observers: [
@@ -714,7 +726,7 @@
 
             return new Promise((resolve, reject) => {
                 this.app.importHref(this.app.resolveUrl("../SelectReferenceDialog/select-reference-dialog.html"), () => {
-                    this.app.showDialog(new SelectReferenceDialog(query)).then(items => {
+                    this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then(items => {
                         resolve(items);
                     }).catch(e => {
                         reject(e);

@@ -23,4 +23,16 @@
     > * {
         overflow: hidden;
     }
+
+    &[is-phone] ::content [hide-phone] {
+        display: none !important;
+    }
+
+    &[is-tablet] ::content [hide-tablet] {
+        display: none !important;
+    }
+
+    &[is-desktop] ::content [hide-desktop] {
+        display: none !important;
+    }
 }

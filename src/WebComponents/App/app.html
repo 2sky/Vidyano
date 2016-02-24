@@ -1,4 +1,5 @@
 ﻿<link rel="import" href="../../Libs/iron-a11y-keys/iron-a11y-keys.html" />
+<link rel="import" href="../../Libs/iron-media-query/iron-media-query.html" />
 <link rel="import" href="../WebComponent/webcomponent.html" />
 <link rel="import" href="../Spinner/spinner.html" />
 <link rel="import" href="../AppRoute/app-route.html" />
@@ -29,6 +30,9 @@
     <template>
         <link rel="stylesheet" href="app.css" />
         <iron-a11y-keys keys="{{keys}}" on-keys-pressed="_keysPressed"></iron-a11y-keys>
+        <iron-media-query query="(max-width: 479px)" query-matches="{{isPhone}}"></iron-media-query>
+        <iron-media-query query="(min-width: 480px) and (max-width: 839px)" query-matches="{{isTablet}}"></iron-media-query>
+        <iron-media-query query="(min-width: 840px)" query-matches="{{isDesktop}}"></iron-media-query>
         <template is="dom-if" if="{{initializing}}" restamp>
             <vi-spinner></vi-spinner>
         </template>

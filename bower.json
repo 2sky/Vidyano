@@ -49,6 +49,7 @@
     "marked-element": "polymerelements/marked-element#^1.0.2",
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.2",
     "iron-list": "polymerelements/iron-list#^1.2.6",
+    "iron-media-query": "polymerelements/iron-media-query#^1.0.8",
     "bignumber.js": "^2.0.7",
     "moment": "^2.10.6",
     "sortable": "RubaXa/sortable#^1.2.1",
