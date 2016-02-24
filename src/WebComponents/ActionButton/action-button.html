@@ -18,8 +18,8 @@
                         <vi-icon source="Down"></vi-icon>
                     </div>
                 </button>
-                <template is="dom-repeat" items="[[options]]">
-                    <vi-popup-menu-item label="[[item.value]]" on-tap="_executeWithOption"></vi-popup-menu-item>
+                <template is="dom-repeat" items="[[options]]" as="option">
+                    <vi-popup-menu-item label="[[option.value]]" on-tap="_executeWithOption"></vi-popup-menu-item>
                 </template>
             </vi-popup-menu>
         </template>

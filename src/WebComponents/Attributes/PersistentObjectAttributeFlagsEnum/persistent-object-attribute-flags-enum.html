@@ -14,9 +14,9 @@
                         <vi-icon source="CaretDown" hidden$="[[readOnly]]"></vi-icon>
                     </div>
                     <ul content>
-                        <template is="dom-repeat" items="[[attribute.options]]">
+                        <template is="dom-repeat" items="[[attribute.options]]" as="option">
                             <li>
-                                <vi-persistent-object-attribute-flags-enum-flag attribute="[[attribute]]" option="{{item}}"></vi-persistent-object-attribute-flags-enum-flag>
+                                <vi-persistent-object-attribute-flags-enum-flag attribute="[[attribute]]" option="[[option]]"></vi-persistent-object-attribute-flags-enum-flag>
                             </li>
                         </template>
                     </ul>

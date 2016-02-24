@@ -2,8 +2,8 @@ module Vidyano.WebComponents {
     @WebComponent.register({
         properties: {
             menuTitle: String,
-            programUnit: Object,
-            items: Array,
+            activeProgramUnit: Object,
+            programUnits: Array,
             collapsed: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -22,7 +22,7 @@ module Vidyano.WebComponents {
     export class Menu extends WebComponent {
         filter: string;
         filtering: boolean;
-        programUnit: ProgramUnit;
+        activeProgramUnit: ProgramUnit;
         collapsed: boolean;
 
         attached() {
