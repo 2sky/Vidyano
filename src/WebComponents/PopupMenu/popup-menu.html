@@ -1,8 +1,8 @@
 <dom-module id="vi-popup-menu">
     <template>
         <link rel="stylesheet" href="popup-menu.css" />
-        <vi-popup open-on-hover="{{openOnHover}}" id="popup" disabled="{{disabled}}" on-popup-opening="_popupOpening" open="{{open}}">
-            <template is="dom-if" if="{{!contextMenuOnly}}">
+        <vi-popup open-on-hover="{{openOnHover}}" id="popup" disabled="[[disabled]]" on-popup-opening="_popupOpening" open="{{open}}">
+            <template is="dom-if" if="[[!contextMenuOnly]]">
                 <content select="[header]"></content>
             </template>
             <div content class="vertical layout">
@@ -15,9 +15,9 @@
 <dom-module id="vi-popup-menu-item">
     <template>
         <link rel="stylesheet" href="popup-menu-item.css" />
-        <button is="vi-button" inverse$="{{!checked}}" icon="{{icon}}" label="{{label}}"></button>
+        <button is="vi-button" inverse$="[[!checked]]" icon="[[icon]]" label="[[label]]"></button>
         <div class="icon-spacer"></div>
-        <vi-popup open-on-hover hidden$="{{!split}}">
+        <vi-popup open-on-hover hidden$="[[!split]]">
             <button is="vi-button" header on-tap="_splitTap" inverse icon="Forward"></button>
             <div content class="vertical layout">
                 <content select="vi-popup-menu-item, vi-popup-menu-item-separator"></content>

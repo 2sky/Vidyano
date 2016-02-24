@@ -4,18 +4,18 @@
 <dom-module id="vi-persistent-object-attribute-presenter">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-presenter.css" />
-        <template is="dom-if" if="{{!noLabel}}">
+        <template is="dom-if" if="[[!noLabel]]">
             <div class="label horizontal layout end">
-                <label>{{attribute.label}}</label>
-                <span class="required">{{translateMessage('Required', isAttached)}}</span>
+                <label>[[attribute.label]]</label>
+                <span class="required">[[translateMessage('Required', isAttached)]]</span>
                 <div class="locked">
                     <vi-icon source="Lock"></vi-icon>
                 </div>
             </div>
         </template>
         <div id="content">
-            <template is="dom-if" if="{{attribute.parent.isBulkEdit}}">
-                <vi-checkbox checked="{{attribute.isValueChanged}}" disabled="{{readOnly}}"></vi-checkbox>
+            <template is="dom-if" if="[[attribute.parent.isBulkEdit]]">
+                <vi-checkbox checked="{{attribute.isValueChanged}}" disabled="[[readOnly]]"></vi-checkbox>
             </template>
         </div>
     </template>

@@ -1,18 +1,18 @@
 ﻿<dom-module id="vi-persistent-object-attribute-string">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-string.css" />
-        <template is="dom-if" if="{{!editing}}">
-            <span>{{attribute.displayValue}}</span>
+        <template is="dom-if" if="[[!editing]]">
+            <span>[[attribute.displayValue]]</span>
         </template>
-        <template is="dom-if" if="{{editing}}">
-            <vi-persistent-object-attribute-edit attribute="{{attribute}}">
-                <input content value="{{value::input}}" type$="{{inputtype}}" maxlength$="{{maxlength}}" style$="{{editInputStyle}}" on-blur="_editInputBlur" readonly$="{{readOnly}}">
-                <template is="dom-if" if="{{hasSuggestions}}">
+        <template is="dom-if" if="[[editing]]">
+            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                <input content value="{{value::input}}" type$="[[inputtype]]" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" on-blur="_editInputBlur" readonly$="[[readOnly]]">
+                <template is="dom-if" if="[[hasSuggestions]]">
                     <vi-popup id="suggestions" class="button">
                         <vi-icon source="Add" header></vi-icon>
                         <ul content>
-                            <template is="dom-repeat" items="{{filteredSuggestions}}" as="suggestion">
-                                <li on-tap="_addSuggestion">{{suggestion}}</li>
+                            <template is="dom-repeat" items="[[filteredSuggestions]]" as="suggestion">
+                                <li on-tap="_addSuggestion">[[suggestion]]</li>
                             </template>
                         </ul>
                     </vi-popup>

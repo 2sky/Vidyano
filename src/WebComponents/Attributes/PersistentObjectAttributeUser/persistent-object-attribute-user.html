@@ -4,18 +4,18 @@
 <dom-module id="vi-persistent-object-attribute-user">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-user.css" />
-        <template is="dom-if" if="{{!editing}}">
-            <span>{{friendlyName}}</span>
+        <template is="dom-if" if="[[!editing]]">
+            <span>[[friendlyName]]</span>
         </template>
-        <template is="dom-if" if="{{editing}}">
-            <vi-persistent-object-attribute-edit attribute="{{attribute}}">
-                <input value="{{friendlyName}}" readonly content />
-                <template is="dom-if" if="{{canBrowseReference}}" restamp>
+        <template is="dom-if" if="[[editing]]">
+            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                <input value="[[friendlyName]]" readonly content />
+                <template is="dom-if" if="[[canBrowseReference]]" restamp>
                     <button on-tap="_browseReference" tabindex="-1">
                         <vi-icon source="Ellipsis"></vi-icon>
                     </button>
                 </template>
-                <template is="dom-if" if="{{canClear}}" restamp>
+                <template is="dom-if" if="[[canClear]]" restamp>
                     <button on-tap="_clearReference" tabindex="-1">
                         <vi-icon source="Remove"></vi-icon>
                     </button>

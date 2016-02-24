@@ -3,13 +3,13 @@
 <dom-module id="vi-persistent-object-attribute-as-detail-row">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-as-detail-row.css" />
-        <template is="dom-repeat" items="{{columns}}" as="column" filter="_isColumnVisible">
-            <div class="column" data-column$="{{column.name}}">
-                <template is="dom-if" if="{{editing}}">
-                    <vi-persistent-object-attribute-presenter no-label attribute="{{_getAttributeForColumn(serviceObject, column)}}"></vi-persistent-object-attribute-presenter>
+        <template is="dom-repeat" items="[[columns]]" as="column" filter="_isColumnVisible">
+            <div class="column" data-column$="[[column.name]]">
+                <template is="dom-if" if="[[editing]]">
+                    <vi-persistent-object-attribute-presenter no-label attribute="[[_getAttributeForColumn(serviceObject, column)]]"></vi-persistent-object-attribute-presenter>
                 </template>
-                <template is="dom-if" if="{{!editing}}">
-                    <span>{{_getDisplayValue(serviceObject, column)}}</span>
+                <template is="dom-if" if="[[!editing]]">
+                    <span>[[_getDisplayValue(serviceObject, column)]]</span>
                 </template>
             </div>
         </template>
@@ -22,29 +22,29 @@
         <vi-style id="style" key="vi-persistent-object-attribute-as-detail"></vi-style>
         <div id="table">
             <div id="head" class="horizontal layout">
-                <template is="dom-repeat" items="{{attribute.details.columns}}" as="column" filter="_isColumnVisible">
-                    <div class="column" data-column$="{{column.name}}"><label>{{column.label}}</label></div>
+                <template is="dom-repeat" items="[[attribute.details.columns]]" as="column" filter="_isColumnVisible">
+                    <div class="column" data-column$="[[column.name]]"><label>[[column.label]]</label></div>
                 </template>
             </div>
-            <vi-scroller id="body" no-horizontal force-scrollbars$="{{editing}}">
+            <vi-scroller id="body" no-horizontal force-scrollbars$="[[editing]]">
                 <div class="flex horizontal layout">
                     <div id="data" class="flex relative">
                         <vi-size-tracker trigger-zero size="{{size}}"></vi-size-tracker>
                         <div id="rows">
-                            <template is="dom-repeat" items="{{attribute.objects}}" as="obj">
-                                <vi-persistent-object-attribute-as-detail-row class="row" service-object="{{obj}}" columns="{{attribute.details.columns}}" editing="{{editing}}" hidden$="{{obj.isDeleted}}"></vi-persistent-object-attribute-as-detail-row>
+                            <template is="dom-repeat" items="[[attribute.objects]]" as="obj">
+                                <vi-persistent-object-attribute-as-detail-row class="row" service-object="[[obj]]" columns="[[attribute.details.columns]]" editing="[[editing]]" hidden$="[[obj.isDeleted]]"></vi-persistent-object-attribute-as-detail-row>
                             </template>
                         </div>
-                        <template is="dom-if" if="{{newAction}}">
-                            <div class="row add inline" hidden$="{{newActionPinned}}">
-                                <button is="vi-button" inverse icon="Action_New" label="{{newAction.displayName}}" on-tap="_add"></button>
+                        <template is="dom-if" if="[[newAction]]">
+                            <div class="row add inline" hidden$="[[newActionPinned]]">
+                                <button is="vi-button" inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add"></button>
                             </div>
                         </template>
                     </div>
-                    <template is="dom-if" if="{{canDelete}}">
+                    <template is="dom-if" if="[[canDelete]]">
                         <div>
-                            <template is="dom-repeat" items="{{attribute.objects}}" as="obj">
-                                <div class="row" hidden$="{{obj.isDeleted}}">
+                            <template is="dom-repeat" items="[[attribute.objects]]" as="obj">
+                                <div class="row" hidden$="[[obj.isDeleted]]">
                                     <div class="delete-button">
                                         <button is="vi-button" inverse on-tap="_delete">
                                             <vi-icon source="Action_Delete"></vi-icon>
@@ -56,9 +56,9 @@
                     </template>
                 </div>
             </vi-scroller>
-            <template is="dom-if" if="{{newAction}}">
-                <div class="row add foot" hidden$="{{!newActionPinned}}">
-                    <button is="vi-button" inverse icon="Action_New" label="{{newAction.displayName}}" on-tap="_add"></button>
+            <template is="dom-if" if="[[newAction]]">
+                <div class="row add foot" hidden$="[[!newActionPinned]]">
+                    <button is="vi-button" inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add"></button>
                 </div>
             </template>
         </div>

@@ -4,19 +4,19 @@
     <template>
         <link rel="stylesheet" href="persistent-object-dialog.css" />
         <header class="horizontal layout">
-            <h4 class="flex">{{persistentObject.breadcrumb}}</h4>
+            <h4 class="flex">[[persistentObject.breadcrumb]]</h4>
         </header>
         <main>
-            <vi-notification service-object="{{persistentObject}}"></vi-notification>
-            <vi-persistent-object-tab-presenter tab="{{tab}}"></vi-persistent-object-tab-presenter>
+            <vi-notification service-object="[[persistentObject]]"></vi-notification>
+            <vi-persistent-object-tab-presenter tab="[[tab]]"></vi-persistent-object-tab-presenter>
         </main>
         <footer class="horizontal layout end-justified">
-            <template is="dom-if" if="{{!readOnly}}">
-                <button is="vi-button" on-tap="_save" action-type="Default" label="{{translations.Save}}"></button>
-                <button is="vi-button" inverse on-tap="_cancel" label="{{translations.Cancel}}"></button>
+            <template is="dom-if" if="[[!readOnly]]">
+                <button is="vi-button" on-tap="_save" action-type="Default" label="[[translations.Save]]"></button>
+                <button is="vi-button" inverse on-tap="_cancel" label="[[translations.Cancel]]"></button>
             </template>
-            <template is="dom-if" if="{{readOnly}}">
-                <button is="vi-button" on-tap="_cancel" action-type="Default" label="{{translations.Close}}"></button>
+            <template is="dom-if" if="[[readOnly]]">
+                <button is="vi-button" on-tap="_cancel" action-type="Default" label="[[translations.Close]]"></button>
             </template>
         </footer>
     </template>

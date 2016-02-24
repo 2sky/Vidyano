@@ -5,17 +5,17 @@
 <dom-module id="vi-persistent-object-attribute-date-time">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-date-time.css" />
-        <template is="dom-if" if="{{!editing}}">
-            <span>{{attribute.displayValue}}</span>
+        <template is="dom-if" if="[[!editing]]">
+            <span>[[attribute.displayValue]]</span>
         </template>
-        <template is="dom-if" if="{{editing}}">
-            <vi-persistent-object-attribute-edit attribute="{{attribute}}">
+        <template is="dom-if" if="[[editing]]">
+            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <div content class="layout horizontal">
-                    <input is="vi-masked-input" id="date" size="9" format$="{{dateFormat}}" separator$="{{dateSeparator}}" on-filled="_dateFilled" readonly$="{{readOnly}}" hidden$="{{!hasDateComponent}}" />
-                    <input is="vi-masked-input" id="time" size="5" format$="{{timeFormat}}" separator$="{{timeSeparator}}" on-filled="_timeFilled" readonly$="{{readOnly}}" hidden$="{{!hasTimeComponent}}" />
+                    <input is="vi-masked-input" id="date" size="9" format$="[[dateFormat]]" separator$="[[dateSeparator]]" on-filled="_dateFilled" readonly$="[[readOnly]]" hidden$="[[!hasDateComponent]]" />
+                    <input is="vi-masked-input" id="time" size="5" format$="[[timeFormat]]" separator$="[[timeSeparator]]" on-filled="_timeFilled" readonly$="[[readOnly]]" hidden$="[[!hasTimeComponent]]" />
                 </div>
-                <template is="dom-if" if="{{!readOnly}}">
-                    <template is="dom-if" if="{{hasTimeComponent}}">
+                <template is="dom-if" if="[[!readOnly]]">
+                    <template is="dom-if" if="[[hasTimeComponent]]">
                         <vi-popup content-align="right">
                             <button header tabindex="-1">
                                 <vi-icon source="Clock"></vi-icon>
@@ -25,7 +25,7 @@
                             </div>
                         </vi-popup>
                     </template>
-                    <template is="dom-if" if="{{hasDateComponent}}">
+                    <template is="dom-if" if="[[hasDateComponent]]">
                         <vi-popup content-align="right">
                             <button header tabindex="-1">
                                 <vi-icon source="Calendar"></vi-icon>
@@ -35,7 +35,7 @@
                             </div>
                         </vi-popup>
                     </template>
-                    <template is="dom-if" if="{{canClear}}">
+                    <template is="dom-if" if="[[canClear]]">
                         <button on-tap="_clear" tabindex="-1">
                             <vi-icon source="Remove"></vi-icon>
                         </button>

@@ -9,28 +9,28 @@
             <button is="vi-button" id="toggleCollapse" on-tap="_toggleCollapse">
                 <vi-icon source="Menu_Collapse"></vi-icon>
             </button>
-            <div class="label">{{label}}<content select="[label]"></content></div>
+            <div class="label">[[label]]<content select="[label]"></content></div>
             <div id="headerElements"></div>
-            <template is="dom-if" if="{{!collapsed}}">
+            <template is="dom-if" if="[[!collapsed]]">
                 <vi-input-search value="{{filter}}" on-search="_search"></vi-input-search>
             </template>
-            <template is="dom-if" if="{{collapsed}}">
+            <template is="dom-if" if="[[collapsed]]">
                 <vi-popup orientation="horizontal" content-align="right" sticky>
                     <vi-icon header source="Search" on-tap="_focusSearch"></vi-icon>
                     <vi-input-search id="collapsedInputSearch" content collapsed value="{{filter}}" on-tap="_catchInputSearchTap" on-search="_search"></vi-input-search>
                 </vi-popup>
             </template>
         </header>
-        <template is="dom-if" if="{{!collapsed}}">
+        <template is="dom-if" if="[[!collapsed]]">
             <vi-scroller class="flex programUnits" no-horizontal>
-                <template is="dom-repeat" items="{{items}}">
-                    <vi-menu-item class="program-unit" item="{{item}}" filter="{{filter}}" program-unit="{{programUnit}}" collapsed="{{collapsed}}"></vi-menu-item>
+                <template is="dom-repeat" items="[[items]]">
+                    <vi-menu-item class="program-unit" item="[[item]]" filter="{{filter}}" program-unit="[[programUnit]]" collapsed="[[collapsed]]"></vi-menu-item>
                     <div class="subItems">
-                        <template is="dom-repeat" items="{{item.items}}">
-                            <vi-menu-item class="program-unit-item" item="{{item}}" filter="{{filter}}"></vi-menu-item>
+                        <template is="dom-repeat" items="[[item.items]]">
+                            <vi-menu-item class="program-unit-item" item="[[item]]" filter="{{filter}}"></vi-menu-item>
                             <div class="subItems">
-                                <template is="dom-repeat" items="{{item.items}}" as="groupItem">
-                                    <vi-menu-item class="program-unit-group-item" item="{{groupItem}}" filter="{{filter}}" filter-parent="{{item}}"></vi-menu-item>
+                                <template is="dom-repeat" items="[[item.items]]" as="groupItem">
+                                    <vi-menu-item class="program-unit-group-item" item="[[groupItem]]" filter="{{filter}}" filter-parent="[[item]]"></vi-menu-item>
                                 </template>
                             </div>
                         </template>
@@ -38,17 +38,17 @@
                 </template>
             </vi-scroller>
         </template>
-        <template is="dom-if" if="{{collapsed}}">
+        <template is="dom-if" if="[[collapsed]]">
             <div class="flex programUnits">
-                <template is="dom-repeat" items="{{items}}">
+                <template is="dom-repeat" items="[[items]]">
                     <vi-popup orientation="horizontal" content-align="right" open-on-hover>
-                        <vi-menu-item header class="program-unit" item="{{item}}" program-unit="{{programUnit}}" collapsed="{{collapsed}}"></vi-menu-item>
-                        <div content class="subItems" has-group-items$="{{_hasGroupItems(item.items)}}" item-count$="{{_countItems(item.items)}}">
-                            <template is="dom-repeat" items="{{item.items}}">
-                                <vi-menu-item class="program-unit-item" item="{{item}}"></vi-menu-item>
+                        <vi-menu-item header class="program-unit" item="[[item]]" program-unit="[[programUnit]]" collapsed="[[collapsed]]"></vi-menu-item>
+                        <div content class="subItems" has-group-items$="[[_hasGroupItems(item.items)]]" item-count$="[[_countItems(item.items)]]">
+                            <template is="dom-repeat" items="[[item.items]]">
+                                <vi-menu-item class="program-unit-item" item="[[item]]"></vi-menu-item>
                                 <div class="subItems">
-                                    <template is="dom-repeat" items="{{item.items}}" as="groupItem">
-                                        <vi-menu-item class="program-unit-group-item" item="{{groupItem}}"></vi-menu-item>
+                                    <template is="dom-repeat" items="[[item.items]]" as="groupItem">
+                                        <vi-menu-item class="program-unit-group-item" item="[[groupItem]]"></vi-menu-item>
                                     </template>
                                 </div>
                             </template>
@@ -59,7 +59,7 @@
         </template>
         <footer>
             <div id="footerElements"></div>
-            <vi-user collapsed="{{collapsed}}"></vi-user>
+            <vi-user collapsed="[[collapsed]]"></vi-user>
         </footer>
     </template>
 </dom-module>
@@ -69,7 +69,7 @@
         <link rel="stylesheet" href="menu-item.css" />
         <paper-ripple></paper-ripple>
         <vi-icon class="group" source="Forward"></vi-icon>
-        <a href="{{href}}" id="title" on-mouseenter="_titleMouseenter"></a>
+        <a href$="[[href]]" id="title" on-mouseenter="_titleMouseenter"></a>
     </template>
 </dom-module>
 

@@ -19,16 +19,16 @@
         <div class="vertical layout fit">
             <header id="dataHeaderHost" class="horizontal layout">
                 <header class="horizontal layout">
-                    <template is="dom-if" if="{{canSelectAll}}">
-                        <vi-query-grid-select-all query="{{query}}" disabled$="{{!canSelectAll}}"></vi-query-grid-select-all>
+                    <template is="dom-if" if="[[canSelectAll]]">
+                        <vi-query-grid-select-all query="[[query]]" disabled$="[[!canSelectAll]]"></vi-query-grid-select-all>
                     </template>
-                    <template is="dom-if" if="{{canFilter}}">
-                        <vi-query-grid-filters id="filters" query="{{query}}" hidden$="{{!canFilter}}"></vi-query-grid-filters>
+                    <template is="dom-if" if="[[canFilter]]">
+                        <vi-query-grid-filters id="filters" query="[[query]]" hidden$="[[!canFilter]]"></vi-query-grid-filters>
                     </template>
                 </header>
                 <vi-popup-menu id="columnMenu" context-menu-only>
                     <vi-popup-menu-item id="columnMenuTogglePin" icon="Pin" on-tap="_togglePin"></vi-popup-menu-item>
-                    <vi-popup-menu-item id="columnMenuConfigure" label="{{translations.Manage}}" icon="Configure" on-tap="_configureColumns"></vi-popup-menu-item>
+                    <vi-popup-menu-item id="columnMenuConfigure" label="[[translations.Manage]]" icon="Configure" on-tap="_configureColumns"></vi-popup-menu-item>
                 </vi-popup-menu>
             </header>
             <vi-scroller class="flex" vertical-scroll-offset="{{_verticalScrollOffset}}" horizontal-scroll-offset="{{_horizontalScrollOffset}}">

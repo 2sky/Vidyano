@@ -3,12 +3,12 @@
 <dom-module name="vi-persistent-object-attribute-drop-down">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-drop-down.css" />
-        <template is="dom-if" if="{{!editing}}">
-            <span>{{attribute.displayValue}}</span>
+        <template is="dom-if" if="[[!editing]]">
+            <span>[[attribute.displayValue]]</span>
         </template>
-        <template is="dom-if" if="{{editing}}">
-            <vi-persistent-object-attribute-edit attribute="{{attribute}}">
-                <vi-select content options="{{attribute.options}}" selected-option="{{value}}" readonly="{{readOnly}}"></vi-select>
+        <template is="dom-if" if="[[editing]]">
+            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                <vi-select content options="[[attribute.options]]" selected-option="{{value}}" readonly="[[readOnly]]"></vi-select>
             </vi-persistent-object-attribute-edit>
         </template>
     </template>

@@ -11,7 +11,7 @@
 <dom-module id="vi-query-grid-column-filter">
     <template>
         <link rel="stylesheet" href="query-grid-column-filter.css" />
-        <vi-popup id="filter" on-popup-opening="_popupOpening" class="flex" disabled="{{!column.canFilter}}">
+        <vi-popup id="filter" on-popup-opening="_popupOpening" class="flex" disabled="[[!column.canFilter]]">
             <button is="vi-button" header inverse>
                 <span id="label"></span>
                 <vi-icon source="Filter"></vi-icon>
@@ -19,25 +19,25 @@
             <div content>
                 <div class="filter" on-click="_catchClick">
                     <div class="left"></div>
-                    <div class="menuItem horizontal layout" disabled$="{{!filtered}}" on-tap="_clear">
+                    <div class="menuItem horizontal layout" disabled$="[[!filtered]]" on-tap="_clear">
                         <vi-icon source="Filter_Reset"></vi-icon>
-                        <span flex>{{translateMessage('ClearFilterFrom', column.label, isAttached)}}</span>
+                        <span flex>[[translateMessage('ClearFilterFrom', column.label, isAttached)]]</span>
                     </div>
                     <div class="split"></div>
                     <div class="advanced">
                         <vi-input-search id="search" value="{{searchText}}" on-search="_search"></vi-input-search>
                         <div class="relative">
-                            <button id="inverse" on-tap="_inverse" inversed$="{{inversed}}">
+                            <button id="inverse" on-tap="_inverse" inversed$="[[inversed]]">
                                 <vi-icon source="Filter_Inverse"></vi-icon>
                             </button>
-                            <template is="dom-if" if="{{loading}}">
+                            <template is="dom-if" if="[[loading]]">
                                 <vi-spinner></vi-spinner>
                             </template>
                             <vi-scroller id="distinctsContainer" no-horizontal>
-                                <iron-list id="distincts" items="[[distincts]]" as="item" inversed$="{{inversed}}">
+                                <iron-list id="distincts" items="[[distincts]]" as="item" inversed$="[[inversed]]">
                                     <template>
                                         <div>
-                                            <template is="dom-if" if="{{item.type}}">
+                                            <template is="dom-if" if="[[item.type]]">
                                                 <vi-checkbox checked="{{item.checked}}" label="[[item.displayValue]]" distinct-type$="[[item.type]]" on-tap="_distinctClick"></vi-checkbox>
                                             </template>
                                             <template is="dom-if" if="[[!item.type]]">
@@ -53,7 +53,7 @@
                         </div>
                     </div>
                 </div>
-                <button is="vi-button" class="close" on-tap="_closePopup" label="{{translations.Close}}"></button>
+                <button is="vi-button" class="close" on-tap="_closePopup" label="[[translations.Close]]"></button>
             </div>
         </vi-popup>
     </template>

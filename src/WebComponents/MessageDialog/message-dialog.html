@@ -2,11 +2,11 @@
     <template>
         <link rel="stylesheet" href="message-dialog.css" />
         <header class="horizontal layout">
-            <template is="dom-if" if="{{_hasHeaderIcon(options)}}">
-                <vi-icon source="{{options.titleIcon}}"></vi-icon>
+            <template is="dom-if" if="[[_hasHeaderIcon(options)]]">
+                <vi-icon source="[[options.titleIcon]]"></vi-icon>
             </template>
-            <h4 class="flex">{{options.title}}</h4>
-            <template is="dom-if" if="{{!options.noClose}}">
+            <h4 class="flex">[[options.title]]</h4>
+            <template is="dom-if" if="[[!options.noClose]]">
                 <button class="close" on-tap="cancel"><vi-icon source="Remove"></vi-icon></button>
             </template>
         </header>
@@ -14,8 +14,8 @@
             <pre id="pre"></pre>
         </main>
         <footer class="horizontal layout end-justified">
-            <template is="dom-repeat" items="{{options.actions}}" as="action">
-                <button is="vi-button" on-tap="_onSelectAction" type$="{{_getActionType(options, index)}}" inverse="{{!_isFirst(index)}}" label="{{action}}"></button>
+            <template is="dom-repeat" items="[[options.actions]]" as="action">
+                <button is="vi-button" on-tap="_onSelectAction" type$="[[_getActionType(options, index)]]" inverse="[[!_isFirst(index)]]" label="[[action]]"></button>
             </template>
         </footer>
     </template>

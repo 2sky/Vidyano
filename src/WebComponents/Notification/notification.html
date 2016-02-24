@@ -2,10 +2,10 @@
     <template>
         <link rel="import" type="css" href="notification.css">
         <div id="icon">
-            <vi-icon source="{{icon}}"></vi-icon>
+            <vi-icon source="[[icon]]"></vi-icon>
         </div>
         <div class="flex" on-tap="_moreInfo">
-            <template is="dom-if" if="{{shown}}">
+            <template is="dom-if" if="[[shown]]">
                 <vi-size-tracker on-sizechanged="_trackerSizeChanged"></vi-size-tracker>
             </template>
             <span id="text"></span>

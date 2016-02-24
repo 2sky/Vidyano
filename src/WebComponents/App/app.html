@@ -29,13 +29,13 @@
 <dom-module id="vi-app">
     <template>
         <link rel="stylesheet" href="app.css" />
-        <iron-a11y-keys keys="{{keys}}" on-keys-pressed="_keysPressed"></iron-a11y-keys>
+        <iron-a11y-keys keys="[[keys]]" on-keys-pressed="_keysPressed"></iron-a11y-keys>
         <iron-media-query query="(max-width: 479px)" query-matches="{{isPhone}}"></iron-media-query>
         <iron-media-query query="(min-width: 480px) and (max-width: 839px)" query-matches="{{isTablet}}"></iron-media-query>
         <iron-media-query query="(min-width: 840px)" query-matches="{{isDesktop}}"></iron-media-query>
         <vi-spinner hidden="[[!initializing]]"></vi-spinner>
-        <template is="dom-if" if="{{showMenu}}" restamp>
-            <vi-menu menu label="{{label}}" items="{{service.application.programUnits}}" program-unit="{{programUnit}}">
+        <template is="dom-if" if="[[showMenu]]" restamp>
+            <vi-menu menu label="[[label]]" items="[[service.application.programUnits}}" program-unit="{{programUnit]]">
                 <content select="[label]:not([label='sign-in'])"></content>
             </vi-menu>
         </template>
@@ -48,7 +48,7 @@
         <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
         <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
         <vi-app-route class="fit" route="SignIn(/)(:returnUrl)">
-            <vi-sign-in label="{{label}}" image="{{signInImage}}">
+            <vi-sign-in label="[[label]]" image="[[signInImage]]">
                 <content select="[label='sign-in']"></content>
             </vi-sign-in>
         </vi-app-route>

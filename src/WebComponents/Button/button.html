@@ -4,13 +4,13 @@
     <template>
         <link rel="stylesheet" href="button.css" />
         <paper-ripple></paper-ripple>
-        <template is="dom-if" if="{{customLayout}}">
+        <template is="dom-if" if="[[customLayout]]">
             <content></content>
         </template>
-        <template is="dom-if" if="{{!customLayout}}">
-            <vi-icon source="{{icon}}"></vi-icon>
-            <template is="dom-if" if="{{label}}">
-                <span>{{label}}</span>
+        <template is="dom-if" if="[[!customLayout]]">
+            <vi-icon source="[[icon]]"></vi-icon>
+            <template is="dom-if" if="[[label]]">
+                <span>[[label]]</span>
             </template>
         </template>
     </template>

@@ -2,9 +2,9 @@
     <template>
         <link rel="stylesheet" href="time-picker.css" />
         <div id="current">
-            <span class="hours" on-tap="_switch">{{_zeroPrefix(hours)}}</span>
+            <span class="hours" on-tap="_switch">[[_zeroPrefix(hours)]]</span>
             <span>:</span>
-            <span class="minutes" on-tap="_switch">{{_zeroPrefix(minutes)}}</span>
+            <span class="minutes" on-tap="_switch">[[_zeroPrefix(minutes)]]</span>
         </div>
         <div id="clockHost" on-tap="_tap">
             <div class="face">

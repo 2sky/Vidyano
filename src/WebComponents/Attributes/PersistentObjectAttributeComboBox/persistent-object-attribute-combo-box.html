@@ -3,16 +3,16 @@
 <dom-module id="vi-persistent-object-attribute-combo-box">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-combo-box.css" />
-        <template is="dom-if" if="{{!editing}}">
-            <span>{{attribute.displayValue}}</span>
+        <template is="dom-if" if="[[!editing]]">
+            <span>[[attribute.displayValue]]</span>
         </template>
-        <template is="dom-if" if="{{editing}}" restamp>
-            <vi-persistent-object-attribute-edit attribute="{{attribute}}">
+        <template is="dom-if" if="[[editing]]" restamp>
+            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <div class="relative" content>
-                    <vi-select options="{{comboBoxOptions}}" selected-option="{{value}}" input-value="{{newValue}}" readonly="{{readOnly}}"></vi-select>
+                    <vi-select options="[[comboBoxOptions]]" selected-option="{{value}}" input-value="{{newValue}}" readonly="[[readOnly]]"></vi-select>
                 </div>
-                <template is="dom-if" if="{{!readOnly}}">
-                    <button on-tap="_add" id="add" hidden$="{{!canAdd}}" tabindex="-1">
+                <template is="dom-if" if="[[!readOnly]]">
+                    <button on-tap="_add" id="add" hidden$="[[!canAdd]]" tabindex="-1">
                         <vi-icon source="Add"></vi-icon>
                     </button>
                 </template>

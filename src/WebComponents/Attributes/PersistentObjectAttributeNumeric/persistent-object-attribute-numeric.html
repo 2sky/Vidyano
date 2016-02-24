@@ -1,12 +1,12 @@
 ﻿<dom-module id="vi-persistent-object-attribute-numeric">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-numeric.css" />
-        <template is="dom-if" if="{{!editing}}">
-            <span>{{attribute.displayValue}}</span>
+        <template is="dom-if" if="[[!editing]]">
+            <span>[[attribute.displayValue]]</span>
         </template>
-        <template is="dom-if" if="{{editing}}">
-            <vi-persistent-object-attribute-edit attribute="{{attribute}}">
-                <input content id="input" value="{{value::input}}" type$="{{inputtype}}" on-keypress="_keypress" on-blur="_editInputBlur" readonly$="{{readOnly}}">
+        <template is="dom-if" if="[[editing]]">
+            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                <input content id="input" value="{{value::input}}" type$="[[inputtype]]" on-keypress="_keypress" on-blur="_editInputBlur" readonly$="[[readOnly]]">
             </vi-persistent-object-attribute-edit>
         </template>
     </template>

@@ -4,12 +4,12 @@
 <dom-module id="vi-website">
     <link rel="stylesheet" href="website.css" />
     <template>
-        <template is="dom-if" if="{{scroll}}">
+        <template is="dom-if" if="[[scroll]]">
             <vi-scroller no-horizontal>
                 <content></content>
             </vi-scroller>
         </template>
-        <template is="dom-if" if="{{!scroll}}">
+        <template is="dom-if" if="[[!scroll]]">
             <content></content>
         </template>
     </template>

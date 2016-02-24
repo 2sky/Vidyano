@@ -3,7 +3,7 @@
 <dom-module id="vi-input-search">
     <template>
         <link rel="stylesheet" href="input-search.css" />
-        <input class="flex" id="input" placeholder="{{translations.FilterSearchHint}}" value="{{value::input}}" on-keypress="_searchKeypressed" on-focus="_input_focused" on-blur="_input_blurred" autofocus$="{{autofocus}}" />
+        <input class="flex" id="input" placeholder="[[translations.FilterSearchHint]]" value="{{value::input}}" on-keypress="_searchKeypressed" on-focus="_input_focused" on-blur="_input_blurred" autofocus$="[[autofocus]]" />
         <button on-tap="_searchClick">
             <vi-icon source="Search"></vi-icon>
         </button>

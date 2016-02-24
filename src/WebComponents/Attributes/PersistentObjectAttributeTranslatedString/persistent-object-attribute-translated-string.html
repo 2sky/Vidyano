@@ -1,23 +1,23 @@
 ﻿<dom-module id="vi-persistent-object-attribute-translated-string">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-translated-string.css" />
-        <template is="dom-if" if="{{!editing}}">
-            <template is="dom-if" if="{{!multiline}}">
-                <span>{{attribute.displayValue}}</span>
+        <template is="dom-if" if="[[!editing]]">
+            <template is="dom-if" if="[[!multiline]]">
+                <span>[[attribute.displayValue]]</span>
             </template>
-            <template is="dom-if" if="{{multiline}}">
-                <pre>{{attribute.displayValue}}</pre>
+            <template is="dom-if" if="[[multiline]]">
+                <pre>[[attribute.displayValue]]</pre>
             </template>
         </template>
-        <template is="dom-if" if="{{editing}}">
-            <vi-persistent-object-attribute-edit attribute="{{attribute}}">
-                <template is="dom-if" if="{{!multiline}}">
-                    <input content class="flex" value="{{value::input}}" type="text" on-blur="_editInputBlur" readonly$="{{readOnly}}">
+        <template is="dom-if" if="[[editing]]">
+            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                <template is="dom-if" if="[[!multiline]]">
+                    <input content class="flex" value="{{value::input}}" type="text" on-blur="_editInputBlur" readonly$="[[readOnly]]">
                 </template>
-                <template is="dom-if" if="{{multiline}}">
-                    <textarea content class="flex" value="{{value::input}}" on-blur="_editInputBlur" readonly$="{{readOnly}}"></textarea>
+                <template is="dom-if" if="[[multiline]]">
+                    <textarea content class="flex" value="{{value::input}}" on-blur="_editInputBlur" readonly$="[[readOnly]]"></textarea>
                 </template>
-                <template is="dom-if" if="{{canShowDialog}}">
+                <template is="dom-if" if="[[canShowDialog]]">
                     <button on-tap="_showLanguagesDialog" tabindex="-1">
                         <vi-icon source="TranslatedString"></vi-icon>
                     </button>
@@ -31,17 +31,17 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-translated-string-dialog.css" />
         <header class="horizontal layout">
-            <h4 class="flex">{{label}}</h4>
+            <h4 class="flex">[[label]]</h4>
         </header>
         <main>
             <ul id="content">
-                <template is="dom-repeat" items="{{strings}}">
+                <template is="dom-repeat" items="[[strings]]">
                     <li>
-                        <label>{{item.label}}</label>
-                        <template is="dom-if" if="{{!multiline}}">
-                            <input value="{{item.value::input}}" type="text" readonly$="{{readonly}}">
+                        <label>[[item.label]]</label>
+                        <template is="dom-if" if="[[!multiline]]">
+                            <input value="{{item.value::input}}" type="text" readonly$="[[readonly]]">
                         </template>
-                        <template is="dom-if" if="{{multiline}}">
+                        <template is="dom-if" if="[[multiline]]">
                             <textarea rows="3" value="{{item.value::input}}"></textarea>
                         </template>
                     </li>
@@ -49,12 +49,12 @@
             </ul>
         </main>
         <footer class="horizontal layout end-justified">
-            <template is="dom-if" if="{{!readonly}}">
-                <button is="vi-button" on-tap="_ok" label="{{translateMessage('OK', isAttached)}}"></button>
-                <button is="vi-button" on-tap="cancel" inverse label="{{translateMessage('Cancel', isAttached)}}"></button>
+            <template is="dom-if" if="[[!readonly]]">
+                <button is="vi-button" on-tap="_ok" label="[[translateMessage('OK', isAttached)]]"></button>
+                <button is="vi-button" on-tap="cancel" inverse label="[[translateMessage('Cancel', isAttached)]]"></button>
             </template>
-            <template is="dom-if" if="{{readonly}}">
-                <button is="vi-button" on-tap="_ok" label="{{translateMessage('Close', isAttached)}}"></button>
+            <template is="dom-if" if="[[readonly]]">
+                <button is="vi-button" on-tap="_ok" label="[[translateMessage('Close', isAttached)]]"></button>
             </template>
         </footer>
     </template>

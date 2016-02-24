@@ -1,15 +1,15 @@
 <dom-module id="vi-persistent-object-attribute-common-mark">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-common-mark.css" />
-        <template is="dom-if" if="{{notEditing}}">
+        <template is="dom-if" if="[[notEditing]]">
             <vi-scroller>
-                <marked-element markdown="{{attribute.displayValue}}"></marked-element>
+                <marked-element markdown="[[attribute.displayValue]]"></marked-element>
             </vi-scroller>
         </template>
-        <template is="dom-if" if="{{editing}}">
-            <vi-persistent-object-attribute-edit attribute="{{attribute}}">
-                <textarea content value="{{value::input}}" maxlength$="{{maxlength}}" style$="{{editInputStyle}}" on-blur="_editTextAreaBlur" readonly$="{{readOnly}}"></textarea>
-                </<vi-persistent-object-attribute-edit attribute="{{attribute}}">
+        <template is="dom-if" if="[[editing]]">
+            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                <textarea content value="{{value::input}}" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" on-blur="_editTextAreaBlur" readonly$="[[readOnly]]"></textarea>
+                </<vi-persistent-object-attribute-edit attribute="[[attribute]]">
         </template>
     </template>
 </dom-module>

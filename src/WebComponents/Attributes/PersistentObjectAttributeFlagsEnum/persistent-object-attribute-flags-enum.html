@@ -3,20 +3,20 @@
 <dom-module name="vi-persistent-object-attribute-flags-enum">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-flags-enum.css" />
-        <template is="dom-if" if="{{!editing}}">
-            <span>{{attribute.displayValue}}</span>
+        <template is="dom-if" if="[[!editing]]">
+            <span>[[attribute.displayValue]]</span>
         </template>
-        <template is="dom-if" if="{{editing}}">
-            <vi-persistent-object-attribute-edit attribute="{{attribute}}">
-                <vi-popup sticky content disabled$="{{readOnly}}">
+        <template is="dom-if" if="[[editing]]">
+            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                <vi-popup sticky content disabled$="[[readOnly]]">
                     <div header class="layout horizontal flex">
-                        <input class="flex" header value="{{attribute.displayValue}}" readonly />
-                        <vi-icon source="CaretDown" hidden$="{{readOnly}}"></vi-icon>
+                        <input class="flex" header value="[[attribute.displayValue]]" readonly />
+                        <vi-icon source="CaretDown" hidden$="[[readOnly]]"></vi-icon>
                     </div>
                     <ul content>
-                        <template is="dom-repeat" items="{{attribute.options}}">
+                        <template is="dom-repeat" items="[[attribute.options]]">
                             <li>
-                                <vi-persistent-object-attribute-flags-enum-flag attribute="{{attribute}}" option="{{item}}"></vi-persistent-object-attribute-flags-enum-flag>
+                                <vi-persistent-object-attribute-flags-enum-flag attribute="[[attribute]]" option="{{item}}"></vi-persistent-object-attribute-flags-enum-flag>
                             </li>
                         </template>
                     </ul>
@@ -28,7 +28,7 @@
 
 <dom-module id="vi-persistent-object-attribute-flags-enum-flag">
     <template>
-        <vi-checkbox checked="{{checked}}" label="{{label}}"></vi-checkbox>
+        <vi-checkbox checked="{{checked}}" label="[[label]]"></vi-checkbox>
     </template>
 </dom-module>
 

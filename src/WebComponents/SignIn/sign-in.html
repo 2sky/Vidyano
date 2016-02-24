@@ -8,8 +8,8 @@
         </div>
         <div id="side">
             <header>
-                <content select="[label='sign-in']"></content><h1>{{label}}</h1>
-                <h2>{{translations.SignInDescription}}</h2>
+                <content select="[label='sign-in']"></content><h1>[[label]]</h1>
+                <h2>[[translations.SignInDescription]]</h2>
             </header>
             <ul>
                 <content></content>
@@ -21,22 +21,22 @@
 <dom-module id="vi-sign-in-provider" extends="li">
     <template>
         <link rel="stylesheet" href="sign-in-provider.css" />
-        <h3>{{label}}</h3>
-        <h4>{{description}}</h4>
-        <template is="dom-if" if="{{isVidyano}}">
+        <h3>[[label]]</h3>
+        <h4>[[description]]</h4>
+        <template is="dom-if" if="[[isVidyano]]">
             <ul id="vidyano">
                 <li class="vertical layout">
-                    <label>{{translations.UserName}}</label>
-                    <input value="{{userName::input}}" id="user" type="text" disabled$="{{signingIn}}" on-keydown="_keydown" />
+                    <label>[[translations.UserName]]</label>
+                    <input value="{{userName::input}}" id="user" type="text" disabled$="[[signingIn]]" on-keydown="_keydown" />
                 </li>
                 <li class="vertical layout">
-                    <label>{{translations.Password}}</label>
-                    <input value="{{password::input}}" id="pass" type="password" disabled$="{{signingIn}}" on-keydown="_keydown" />
+                    <label>[[translations.Password]]</label>
+                    <input value="{{password::input}}" id="pass" type="password" disabled$="[[signingIn]]" on-keydown="_keydown" />
                 </li>
                 <li>
-                    <vi-checkbox label="{{translations.StaySignedIn}}" disabled$="{{signingIn}}" checked="{{staySignedIn}}"></vi-checkbox>
+                    <vi-checkbox label="[[translations.StaySignedIn]]" disabled$="[[signingIn]]" checked="{{staySignedIn}}"></vi-checkbox>
                     <div>
-                        <button is="vi-button" id="signIn" on-tap="_signIn" disabled$="{{signingIn}}" label="{{signInLabel}}"></button>
+                        <button is="vi-button" id="signIn" on-tap="_signIn" disabled$="[[signingIn]]" label="[[signInLabel]]"></button>
                     </div>
                 </li>
             </ul>
