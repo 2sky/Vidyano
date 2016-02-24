@@ -22,34 +22,23 @@
     }'};
 }
 
-/* Extra small devices (phones, less than 768px) */
-@media (max-width: 767px) {
-    :host main {
+:host-context([is-phone]) {
+    main {
         width: 85vw;
         height: 75vh;
     }
 }
 
-/* Small devices (tablets, 768px and up) */
-@media (min-width: 768px) and (max-width: 991px) {
-    :host main {
+:host-context([is-tablet]) {
+    main {
         height: 60vh;
         width: 90vw;
     }
 }
 
-/* Medium devices (desktops, 992px and up) */
-@media (min-width: 992px) and (max-width: 1199px) {
-    :host main {
+:host-context([is-desktop]) {
+    main {
         height: 60vh;
         width: 90vw;
-    }
-}
-
-/* Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-    :host main {
-        height: 60vh;
-        width: 1000px;
     }
 }

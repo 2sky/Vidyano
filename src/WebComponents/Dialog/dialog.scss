@@ -113,36 +113,23 @@
     }
 }
 
-/* Extra small devices (phones, less than 768px) */
-@media (max-width: 767px) {
-}
-
-/* Small devices (tablets, 768px and up) */
-@media (min-width: 768px) and (max-width: 991px) {
-    :host {
-        > * > main {
-            max-width: 800px;
-            max-height: 75vh;
-        }
+:host-context([is-phone]) .content-wrapper ::content {
+    main {
+        width: 85vw;
+        height: 75vh;
     }
 }
 
-/* Medium devices (desktops, 992px and up) */
-@media (min-width: 992px) and (max-width: 1199px) {
-    :host {
-        > * > main {
-            max-width: 900px;
-            max-height: 75vh;
-        }
+:host-context([is-tablet]) .content-wrapper ::content {
+    main {
+        max-width: 90vh;
+        max-height: 75vh;
     }
 }
 
-/* Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-    :host {
-        > * > main {
-            max-width: 1000px;
-            max-height: 75vh;
-        }
+:host-context([is-desktop]) .content-wrapper ::content {
+    main {
+        max-width: 1000px;
+        max-height: 75vh;
     }
 }
