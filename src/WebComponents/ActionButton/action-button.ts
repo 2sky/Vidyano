@@ -139,7 +139,7 @@ module Vidyano.WebComponents {
                 return;
             }
 
-            this._execute(e.model.item.key);
+            this._execute(e.model.option.key);
         }
 
         private _execute(option: number = -1) {
