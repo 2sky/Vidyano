@@ -497,10 +497,12 @@ module Vidyano.WebComponents {
                     let minWidth = detail.width;
                     if (this.boundingTarget) {
                         const maxWidth = this._getTargetRect(this.boundingTarget).targetRect.width;
-                        this.$["content"].style.maxWidth = maxWidth + "px";
+                        if (maxWidth > 0) {
+                            this.$["content"].style.maxWidth = maxWidth + "px";
 
-                        if (minWidth > maxWidth)
-                            minWidth = maxWidth;
+                            if (minWidth > maxWidth)
+                                minWidth = maxWidth;
+                        }
                     }
 
                     this.$["content"].style.minWidth = minWidth + "px";
