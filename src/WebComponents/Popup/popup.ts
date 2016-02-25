@@ -218,7 +218,7 @@ module Vidyano.WebComponents {
             this.fire("popup-opened", null, { bubbles: false, cancelable: false });
         }
 
-        private _getTargetRect(target: HTMLElement): { targetRect: ClientRect, transformedRect?: ClientRect } {
+        protected _getTargetRect(target: HTMLElement): { targetRect: ClientRect, transformedRect?: ClientRect } {
             var targetRect = target.getBoundingClientRect();
             if (target === this) {
                 targetRect = {
@@ -492,15 +492,20 @@ module Vidyano.WebComponents {
         }
 
         private _toggleSizeChanged(e: Event, detail: { width: number; height: number }) {
-            if (!this.autoSizeContent) {
+            if (!this.autoSizeContent && !this.boundingTarget) {
                 if (this._currentOrientation == "vertical")
                     this.$["content"].style.minWidth = detail.width + "px";
                 else
                     this.$["content"].style.minHeight = detail.height + "px";
             }
             else {
-                if (this._currentOrientation == "vertical")
-                    this.$["content"].style.width = detail.width + "px";
+                if (this._currentOrientation == "vertical") {
+                    let width = detail.width;
+                    if (this.boundingTarget)
+                        width = Math.min(width, this._getTargetRect(this.boundingTarget).targetRect.width);
+
+                    this.$["content"].style.width = width + "px";
+                }
                 else
                     this.$["content"].style.height = detail.height + "px";
             }
