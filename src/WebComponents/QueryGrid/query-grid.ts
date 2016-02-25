@@ -48,10 +48,15 @@
                 type: Number,
                 readOnly: true
             },
+            noSelection: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
             canSelect: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeCanSelect(query)"
+                computed: "_computeCanSelect(query, noSelection)"
             },
             canSelectAll: {
                 type: Boolean,
@@ -63,10 +68,15 @@
                 reflectToAttribute: true,
                 computed: "query.selectAll.allSelected"
             },
+            noInlineActions: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
             inlineActions: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeInlineActions(query)"
+                computed: "_computeInlineActions(query, noInlineActions)"
             },
             canFilter: {
                 type: Boolean,
@@ -352,16 +362,16 @@
             return newItems;
         }
 
-        private _computeCanSelect(query: Vidyano.Query): boolean {
-            return !!query && query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue);
+        private _computeCanSelect(query: Vidyano.Query, noSelection: boolean): boolean {
+            return !noSelection && !!query && query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue);
         }
 
         private _computeCanSelectAll(canSelect: boolean, isAvailable: boolean): boolean {
             return canSelect && isAvailable;
         }
 
-        private _computeInlineActions(query: Vidyano.Query): boolean {
-            return !!query && !query.asLookup && !this.asLookup && (query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1)));
+        private _computeInlineActions(query: Vidyano.Query, noInlineActions: boolean): boolean {
+            return !noInlineActions && !!query && !query.asLookup && !this.asLookup && (query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1)));
         }
 
         private _computeCanFilter(query: Vidyano.Query): boolean {

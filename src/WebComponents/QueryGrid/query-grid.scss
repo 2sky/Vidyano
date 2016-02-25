@@ -1,9 +1,11 @@
 ﻿@import "../_vars.scss";
 
 :host {
+    display: block;
     font-size: 13px;
     line-height: var(--theme-h2);
     overflow: hidden;
+    position: relative;
 
     #dataHeaderHost {
         @include noSelection();

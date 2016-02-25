@@ -21,7 +21,9 @@
         }
     }
 
-    ::content > * {
-        @include fit();
+    ::content {
+        > vi-query-items-presenter, > vi-query {
+            @include flex();
+        }
     }
 }
