@@ -1416,7 +1416,7 @@
         private _textNode: Text;
         private _textNodeValue: string;
         private _customCellTemplate: PolymerTemplate;
-        private _customCellTemplateStampedChild: Node;
+        private _hasCustomCellTemplate: boolean;
         private _lastColumnType: string;
 
         constructor(private _row: QueryGridTableDataRow) {
@@ -1448,8 +1448,10 @@
         private _render(): boolean {
             if (this.column) {
                 if (this._lastColumnType !== this.column.type) {
-                    if (this._customCellTemplateStampedChild)
-                        this.cell.removeChild(this._customCellTemplateStampedChild);
+                    if (this._hasCustomCellTemplate) {
+                        Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
+                        this._hasCustomCellTemplate = false;
+                    }
 
                     if (this._customCellTemplate = QueryGridCellTemplate.Load(this.column.type)) {
                         this._lastColumnType = this.column.type;
@@ -1472,9 +1474,9 @@
                         if (this._textNodeValue !== "")
                             this._textNode.nodeValue = this._textNodeValue = "";
                     }
-                    else if (this._customCellTemplateStampedChild) {
-                        Polymer.dom(this.cell).removeChild(this._customCellTemplateStampedChild);
-                        this._customCellTemplateStampedChild = null;
+                    else if (this._hasCustomCellTemplate) {
+                        Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
+                        this._hasCustomCellTemplate = false;
                     }
 
                     this._setHasContent(false);
@@ -1565,7 +1567,8 @@
             }
             else if (this._customCellTemplate) {
                 Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
-                this._customCellTemplateStampedChild = Polymer.dom(this.cell).appendChild(this._customCellTemplate.stamp({ value: itemValue }).root);
+                Polymer.dom(this.cell).appendChild(this._customCellTemplate.stamp({ value: itemValue }).root);
+                this._hasCustomCellTemplate = true;
             }
 
             this._setHasContent(!!value);
