@@ -13,6 +13,6 @@
     }
 
     ::content > vi-query-grid {
-        @include fit();
+        @include flex();
     }
 }

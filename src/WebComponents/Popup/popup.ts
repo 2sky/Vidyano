@@ -249,7 +249,7 @@ module Vidyano.WebComponents {
             }
 
             if (Popup._isBuggyGetBoundingClientRect) {
-                var parent = target.parentElement;
+                var parent = this.findParent(p => p === target) != null ? target.parentElement : this.parentElement;
                 while (parent != null) {
                     var computedStyle = getComputedStyle(parent, null),
                         transform = <string>(computedStyle.transform || computedStyle.webkitTransform);
