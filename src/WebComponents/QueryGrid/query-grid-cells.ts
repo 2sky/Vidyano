@@ -6,7 +6,7 @@
             if (!cellTemplate)
                 return null;
 
-            return <PolymerTemplate><Node>cellTemplate.querySelector("template[is='dom-template']");
+            return <PolymerTemplate><Node>cellTemplate.querySelector("template");
         }
 
         static Exists(name: string): boolean {

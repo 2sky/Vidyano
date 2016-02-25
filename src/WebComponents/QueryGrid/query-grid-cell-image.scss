@@ -1,6 +1,7 @@
 @import "../_vars.scss";
 
 :host {
+    display: block;
     padding: 0 1px;
     overflow: hidden;
 

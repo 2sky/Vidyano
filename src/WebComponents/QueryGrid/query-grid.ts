@@ -1563,8 +1563,10 @@
                 else
                     Polymer.dom(this.cell).appendChild(this._textNode = document.createTextNode(this._textNodeValue = value));
             }
-            else if (this._customCellTemplate)
-                Polymer.dom(this.cell).appendChild(this._customCellTemplate.stamp({ value: itemValue }).root);
+            else if (this._customCellTemplate) {
+                Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
+                this._customCellTemplateStampedChild = Polymer.dom(this.cell).appendChild(this._customCellTemplate.stamp({ value: itemValue }).root);
+            }
 
             this._setHasContent(!!value);
 
