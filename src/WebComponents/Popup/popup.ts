@@ -503,6 +503,8 @@ module Vidyano.WebComponents {
                             if (minWidth > maxWidth)
                                 minWidth = maxWidth;
                         }
+                        else
+                            this.$["content"].style.maxWidth = "initial";
                     }
 
                     this.$["content"].style.minWidth = minWidth + "px";
