@@ -59,6 +59,10 @@
         }
     }
 
+    vi-scroller {
+        z-index: 0;
+    }
+
     footer#dataFooterHost {
         border-top: 1px solid var(--theme-light-border);
         @include relative();
