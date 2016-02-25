@@ -50,7 +50,6 @@ $grid-max-columns: $grid-desktop-columns !default;
     display: block;
     display: flex;
     flex-flow: row wrap;
-    margin: 0 auto 0 auto;
     align-items: stretch;
 
     &[no-spacing] {
