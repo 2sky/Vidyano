@@ -193,6 +193,9 @@ module Vidyano.WebComponents {
             if (!this.column.canFilter)
                 return;
 
+            var popup = <Vidyano.WebComponents.Popup>this.$["filter"];
+            popup.boundingTarget = this.findParent<QueryGrid>(p => p instanceof Vidyano.WebComponents.QueryGrid).parentElement;
+
             if (this.column.canListDistincts && (!this.column.column.distincts || this.column.distincts.isDirty)) {
                 this._setLoading(true);
 

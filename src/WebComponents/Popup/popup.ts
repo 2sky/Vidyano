@@ -73,6 +73,7 @@ module Vidyano.WebComponents {
         disabled: boolean;
         sticky: boolean;
         hover: boolean;
+        boundingTarget: HTMLElement;
 
         protected _setOpen: (val: boolean) => void;
         private _setHover: (val: boolean) => void;
@@ -109,14 +110,27 @@ module Vidyano.WebComponents {
             var contentWidth = content.offsetWidth;
             var contentHeight = content.offsetHeight;
 
+            let boundWidth = windowWidth;
+            let boundHeight = windowHeight;
+            let boundLeft = 0;
+            if (this.boundingTarget) {
+                const boundTargetRect = this._getTargetRect(this.boundingTarget);
+                boundWidth = boundTargetRect.targetRect.right;
+                boundHeight = boundTargetRect.targetRect.bottom;
+                boundLeft = boundTargetRect.targetRect.left;
+            }
+
             var alignments = (this.contentAlign || "").toUpperCase().split(" ");
             var alignCenter = alignments.indexOf("CENTER") >= 0;
             var alignRight = alignments.indexOf("RIGHT") >= 0;
 
             if (this._currentOrientation == "vertical") {
-                if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + (transformedRect ? transformedRect.left : 0) + contentWidth <= windowWidth) {
+                if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + (transformedRect ? transformedRect.left : 0) + contentWidth <= boundWidth) {
                     // Left-align
                     var left = targetRect.left;
+                    if (this.boundingTarget && transformedRect && (left + transformedRect.left < boundLeft))
+                        left += boundLeft - left - transformedRect.left;
+
                     if (alignments.indexOf("CENTER") >= 0)
                         left = Math.max(0, left - contentWidth / 2 + targetRect.width / 2);
 
@@ -129,13 +143,20 @@ module Vidyano.WebComponents {
                 else {
                     // Right-align
                     content.style.left = "auto";
-                    content.style.right = Math.max((!transformedRect ? windowWidth : transformedRect.width) - (targetRect.left + targetRect.width), 0) + "px";
 
+                    let right = (!transformedRect ? windowWidth : transformedRect.width) - (targetRect.left + targetRect.width);
+                    if (this.boundingTarget)
+                        right += (transformedRect ? transformedRect.left : 0) + targetRect.left + targetRect.width - boundWidth;
+
+                    if (right < 0)
+                        right = 0;
+
+                    content.style.right = right + "px";
                     content.classList.add("right");
                     content.classList.remove("left");
                 }
 
-                if (targetRect.top + targetRect.height + contentHeight < windowHeight) {
+                if (targetRect.top + targetRect.height + contentHeight < boundHeight) {
                     // Top-align
                     content.style.top = (targetRect.top + targetRect.height) + "px";
                     content.style.bottom = "auto";
@@ -153,7 +174,7 @@ module Vidyano.WebComponents {
                 }
             }
             else if (this._currentOrientation == "horizontal") {
-                if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + targetRect.width + contentWidth <= windowWidth) {
+                if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + targetRect.width + contentWidth <= boundWidth) {
                     // Left-align
                     content.style.left = (targetRect.left + targetRect.width) + "px";
                     content.style.right = "auto";
@@ -170,7 +191,7 @@ module Vidyano.WebComponents {
                     content.classList.remove("left");
                 }
 
-                if (targetRect.top + contentHeight < windowHeight) {
+                if (targetRect.top + contentHeight < boundHeight) {
                     // Top-align
                     content.style.top = targetRect.top + "px";
                     content.style.bottom = "auto";
@@ -228,7 +249,7 @@ module Vidyano.WebComponents {
             }
 
             if (Popup._isBuggyGetBoundingClientRect) {
-                var parent = this.parentElement;
+                var parent = target.parentElement;
                 while (parent != null) {
                     var computedStyle = getComputedStyle(parent, null),
                         transform = <string>(computedStyle.transform || computedStyle.webkitTransform);
