@@ -59,9 +59,12 @@ namespace Vidyano.Web2
                 html = linkRe.Replace(html, match =>
                 {
                     var id = directory + match.Groups[1].Value;
-                    var file = Path.Combine(Web2Home, id);
-                    if (UseWeb2Home && File.Exists(file))
-                        return "<style>" + File.ReadAllText(file) + "</style>";
+                    if (UseWeb2Home)
+                    {
+                        var file = Path.Combine(Web2Home, id);
+                        if (File.Exists(file))
+                            return "<style>" + File.ReadAllText(file) + "</style>";
+                    }
 
                     if (useLocalFileSystem)
                         return "<style>" + File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id)) + "</style>";
