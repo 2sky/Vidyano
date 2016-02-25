@@ -8,6 +8,14 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true
             },
+            collapsedWithGlobalSearch: {
+                type: Boolean,
+                computed: "_computeCollapsedWithGlobalSearch(collapsed, hasGlobalSearch)"
+            },
+            hasGlobalSearch: {
+                type: Boolean,
+                computed: "_computeHasGlobalSearch(isAttached)"
+            },
             filter: {
                 type: String,
                 observer: "_filterChanged"
@@ -24,6 +32,7 @@ module Vidyano.WebComponents {
         filtering: boolean;
         activeProgramUnit: ProgramUnit;
         collapsed: boolean;
+        hasGlobalSearch: boolean;
 
         attached() {
             super.attached();
@@ -46,11 +55,22 @@ module Vidyano.WebComponents {
             if(this.collapsed && this.filter)
                 Popup.closeAll();
 
-            if (!this.filtering || this.app.service.application.globalSearchId == "00000000-0000-0000-0000-000000000000")
+            if (!this.filtering || !this.hasGlobalSearch)
                 return;
 
             this.app.changePath(this.app.getUrlForPersistentObject(this.app.service.application.globalSearchId, this.filter));
             this.filter = "";
+        }
+
+        private _computeHasGlobalSearch(isAttached: boolean): boolean {
+            if (!isAttached)
+                return false;
+
+            return this.app.service.application.globalSearchId != "00000000-0000-0000-0000-000000000000";
+        }
+
+        private _computeCollapsedWithGlobalSearch(collapsed: boolean, hasGlobalSearch: boolean): boolean {
+            return collapsed && hasGlobalSearch;
         }
 
         private _toggleCollapse() {
