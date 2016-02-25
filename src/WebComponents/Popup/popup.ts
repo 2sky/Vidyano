@@ -492,19 +492,28 @@ module Vidyano.WebComponents {
         }
 
         private _toggleSizeChanged(e: Event, detail: { width: number; height: number }) {
-            if (!this.autoSizeContent && !this.boundingTarget) {
-                if (this._currentOrientation == "vertical")
-                    this.$["content"].style.minWidth = detail.width + "px";
+            if (!this.autoSizeContent) {
+                if (this._currentOrientation == "vertical") {
+                    let minWidth = detail.width;
+                    if (this.boundingTarget) {
+                        const maxWidth = this._getTargetRect(this.boundingTarget).targetRect.width;
+                        this.$["content"].style.maxWidth = maxWidth + "px";
+
+                        if (minWidth > maxWidth)
+                            minWidth = maxWidth;
+                    }
+
+                    this.$["content"].style.minWidth = minWidth + "px";
+                }
                 else
                     this.$["content"].style.minHeight = detail.height + "px";
             }
             else {
                 if (this._currentOrientation == "vertical") {
-                    let width = detail.width;
                     if (this.boundingTarget)
-                        width = Math.min(width, this._getTargetRect(this.boundingTarget).targetRect.width);
+                        this.$["content"].style.maxWidth = this._getTargetRect(this.boundingTarget).targetRect.width + "px";
 
-                    this.$["content"].style.width = width + "px";
+                    this.$["content"].style.width = detail.width + "px";
                 }
                 else
                     this.$["content"].style.height = detail.height + "px";
