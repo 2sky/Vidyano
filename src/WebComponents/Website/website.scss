@@ -20,6 +20,12 @@
     ::content {
         marked-element {
             display: block;
+
+            p {
+                padding-top: 1em;
+                padding-bottom: 1em;
+                margin: 0;
+            }
         }
     }
 }
