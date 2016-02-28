@@ -39,10 +39,17 @@ module Vidyano.WebComponents {
             this.app.noMenu = true;
             this.app.noHistory = true;
             this.app.path = `PersistentObject.${config.id}`;
+            this.app.hooks = "Vidyano.WebComponents.WebsiteAppServiceHooks";
 
             Polymer.dom(config).appendChild(template);
             Polymer.dom(this.app).appendChild(config);
             Polymer.dom(this).appendChild(this.app);
+        }
+    }
+
+    export class WebsiteAppServiceHooks extends AppServiceHooks {
+        createData(data: any) {
+            data.isMobile = false;
         }
     }
 
