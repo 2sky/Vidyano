@@ -19,6 +19,7 @@
  * Changes:
  * - Refactored for webcomponents :host styling
  * - Renamed prefix from mdl to vi
+ * - Use attributes instead of classes for determining the amount of columns, the offsets or the order
  */
 
 /*
@@ -55,34 +56,32 @@ $grid-max-columns: $grid-desktop-columns !default;
     &[no-spacing] {
         padding: 0;
 
-        ::content > .vi-grid-cell {
+        ::content > * {
             margin: 0;
         }
     }
 
-    ::content > {
-        .vi-grid-cell {
-            box-sizing: border-box;
-        }
+    ::content > * {
+        box-sizing: border-box;
 
-        .vi-grid-cell--top {
+        &[align-top] {
             align-self: flex-start;
         }
 
-        .vi-grid-cell--middle {
+        &[align-middle] {
             align-self: center;
         }
 
-        .vi-grid-cell--bottom {
+        &[align-bottom] {
             align-self: flex-end;
         }
 
-        .vi-grid-cell--stretch {
+        &[align-stretch] {
             align-self: stretch;
         }
         // Define order override classes.
         @for $i from 1 through $grid-max-columns {
-            .vi-grid-cell--order-#{$i} {
+            &[order-#{$i}] {
                 order: $i;
             }
         }
@@ -118,46 +117,44 @@ $grid-max-columns: $grid-desktop-columns !default;
 @media (max-width: $grid-tablet-breakpoint - 1) {
     :host {
         padding: $grid-phone-margin - ($grid-phone-gutter / 2);
+
+        ::content {
+            [hide-phone] {
+                display: none !important;
+            }
+        }
     }
 
-    :host ::content > {
-        .vi-grid-cell {
-            margin: $grid-phone-gutter / 2;
-        }
+    :host ::content > * {
+        margin: $grid-phone-gutter / 2;
 
-        .vi-grid-cell--hide-phone {
-            display: none !important;
-        }
         // Define order override classes.
         @for $i from 1 through $grid-max-columns {
-            .vi-grid-cell--order-#{$i}-phone.vi-grid-cell--order-#{$i}-phone {
+            &[order-phone-#{$i}] {
                 order: $i;
             }
         }
     }
 
-    .vi-grid-cell {
+    * {
         @include partial-size($grid-cell-default-columns, $grid-phone-columns, $grid-phone-gutter);
     }
 
     // Define partial sizes for columnNumber < totalColumns.
     @for $i from 1 through ($grid-phone-columns - 1) {
-        .vi-grid-cell--#{$i}-col,
-        .vi-grid-cell--#{$i}-col-phone.vi-grid-cell--#{$i}-col-phone {
+        *[columns-#{$i}], *[phone-#{$i}] {
             @include partial-size($i, $grid-phone-columns, $grid-phone-gutter);
         }
     }
     // Define 100% for everything else.
     @for $i from $grid-phone-columns through $grid-desktop-columns {
-        .vi-grid-cell--#{$i}-col,
-        .vi-grid-cell--#{$i}-col-phone.vi-grid-cell--#{$i}-col-phone {
+        *[columns-#{$i}], *[phone-#{$i}] {
             @include full-size($grid-phone-gutter);
         }
     }
     // Define valid phone offsets.
     @for $i from 1 through ($grid-phone-columns - 1) {
-        .vi-grid-cell--#{$i}-offset,
-        .vi-grid-cell--#{$i}-offset-phone.vi-grid-cell--#{$i}-offset-phone {
+        *[offset-#{$i}], *[offset-phone-#{$i}] {
             @include offset-size($i, $grid-phone-columns, $grid-phone-gutter);
         }
     }
@@ -167,46 +164,44 @@ $grid-max-columns: $grid-desktop-columns !default;
 @media (min-width: $grid-tablet-breakpoint) and (max-width: $grid-desktop-breakpoint - 1) {
     :host {
         padding: $grid-tablet-margin - ($grid-tablet-gutter / 2);
+
+        ::content {
+            [hide-tablet] {
+                display: none !important;
+            }
+        }
     }
 
-    :host ::content > {
-        .vi-grid-cell {
-            margin: $grid-tablet-gutter / 2;
-        }
+    :host ::content > * {
+        margin: $grid-tablet-gutter / 2;
 
-        .vi-grid-cell--hide-tablet {
-            display: none !important;
-        }
         // Define order override classes.
         @for $i from 1 through $grid-max-columns {
-            .vi-grid-cell--order-#{$i}-tablet.vi-grid-cell--order-#{$i}-tablet {
+            &[order-tablet-#{$i}] {
                 order: $i;
             }
         }
     }
 
-    .vi-grid-cell {
+    * {
         @include partial-size($grid-cell-default-columns, $grid-tablet-columns, $grid-tablet-gutter);
     }
 
     // Define partial sizes for columnNumber < totalColumns.
     @for $i from 1 through ($grid-tablet-columns - 1) {
-        .vi-grid-cell--#{$i}-col,
-        .vi-grid-cell--#{$i}-col-tablet.vi-grid-cell--#{$i}-col-tablet {
+        *[columns-#{$i}], *[tablet-#{$i}] {
             @include partial-size($i, $grid-tablet-columns, $grid-tablet-gutter);
         }
     }
     // Define 100% for everything else.
     @for $i from $grid-tablet-columns through $grid-desktop-columns {
-        .vi-grid-cell--#{$i}-col,
-        .vi-grid-cell--#{$i}-col-tablet.vi-grid-cell--#{$i}-col-tablet {
+        *[columns-#{$i}], *[tablet-#{$i}] {
             @include full-size($grid-tablet-gutter);
         }
     }
     // Define valid tablet offsets.
     @for $i from 1 through ($grid-tablet-columns - 1) {
-        .vi-grid-cell--#{$i}-offset,
-        .vi-grid-cell--#{$i}-offset-tablet.vi-grid-cell--#{$i}-offset-tablet {
+        *[offset-#{$i}], *[offset-tablet-#{$i}] {
             @include offset-size($i, $grid-tablet-columns, $grid-tablet-gutter);
         }
     }
@@ -216,19 +211,20 @@ $grid-max-columns: $grid-desktop-columns !default;
 @media (min-width: $grid-desktop-breakpoint) {
     :host {
         padding: $grid-desktop-margin - ($grid-desktop-gutter / 2);
+
+        ::content {
+            [hide-desktop] {
+                display: none !important;
+            }
+        }
     }
 
-    :host ::content > {
-        .vi-grid-cell {
-            margin: $grid-desktop-gutter / 2;
-        }
+    :host ::content > * {
+        margin: $grid-desktop-gutter / 2;
 
-        .vi-grid-cell--hide-desktop {
-            display: none !important;
-        }
         // Define order override classes.
         @for $i from 1 through $grid-max-columns {
-            .vi-grid-cell--order-#{$i}-desktop.vi-grid-cell--order-#{$i}-desktop {
+            &[order-desktop-#{$i}] {
                 order: $i;
             }
         }
@@ -236,16 +232,14 @@ $grid-max-columns: $grid-desktop-columns !default;
 
     // Define partial sizes for all numbers of columns.
     @for $i from 1 through $grid-desktop-columns {
-        .vi-grid-cell--#{$i}-col,
-        .vi-grid-cell--#{$i}-col-desktop.vi-grid-cell--#{$i}-col-desktop {
+        *[columns-#{$i}], *[desktop-#{$i}] {
             @include partial-size($i, $grid-desktop-columns, $grid-desktop-gutter);
         }
     }
 
     // Define valid desktop offsets.
     @for $i from 1 through ($grid-desktop-columns - 1) {
-        .vi-grid-cell--#{$i}-offset,
-        .vi-grid-cell--#{$i}-offset-desktop.vi-grid-cell--#{$i}-offset-desktop {
+        *[offset-#{$i}], *[offset-desktop-#{$i}] {
             @include offset-size($i, $grid-desktop-columns, $grid-desktop-gutter);
         }
     }
