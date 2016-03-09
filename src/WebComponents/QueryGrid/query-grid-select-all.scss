@@ -14,4 +14,8 @@
         width: var(--theme-h2);
         line-height: var(--theme-h2);
     }
+
+    &[inversed] {
+        opacity: 0.5;
+    }
 }
