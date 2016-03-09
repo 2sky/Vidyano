@@ -1562,7 +1562,6 @@ module Vidyano {
         attributes: PersistentObjectAttribute[];
         attributesByName: { [key: string]: PersistentObjectAttribute } = {};
         private _tabs: PersistentObjectTab[];
-        private _serviceTabs: any;
         queries: Query[];
         queriesByName: { [key: string]: Query } = {};
 
@@ -1613,7 +1612,6 @@ module Vidyano {
 
                 return newTab;
             })).toArray() : [];
-            this._serviceTabs = po.tabs;
             this._tabs = attributeTabs.concat(Enumerable.from(this.queries).select(q => <PersistentObjectTab>this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
 
             this._lastResult = po;
@@ -1820,7 +1818,6 @@ module Vidyano {
         refreshFromResult(result: PersistentObject) {
             this._lastResult = result;
 
-            this._serviceTabs = result._serviceTabs;
             this.setNotification(result.notification, result.notificationType);
 
             var changedAttributes: PersistentObjectAttribute[] = [];
@@ -1875,7 +1872,7 @@ module Vidyano {
                         var groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this)];
                         groups[0].index = 0;
 
-                        var serviceTab = this._serviceTabs[attr.tabKey];
+                        var serviceTab = this._lastResult.tabs[attr.tabKey];
                         attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tabKey, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
                         this.tabs.push(tab);
                         tabsAdded = true;
