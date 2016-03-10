@@ -46,6 +46,19 @@ interface PolymerDomApi {
     removeChild(oldChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;
     replaceChild(newChild: Node | Vidyano.WebComponents.WebComponent, oldChild: Node | Vidyano.WebComponents.WebComponent): Node;
     getEffectiveChildNodes(): Node[];
+    getEffectiveChildren(): HTMLElement[];
+    queryEffectiveChildren(selector: string);
+    queryAllEffectiveChildren(selector: string);
+    observeNodes(callBack: (info: PolymerDomChangedInfo) => void): PolymerDomChangeObserver;
+    unobserveNodes(observer: PolymerDomChangeObserver);
+}
+
+interface PolymerDomChangedInfo {
+    addedNodes: Node;
+    removedNodes: Node;
+}
+
+interface PolymerDomChangeObserver {
 }
 
 interface PolymerTrackEvent extends CustomEvent {
