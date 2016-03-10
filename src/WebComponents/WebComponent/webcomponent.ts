@@ -340,6 +340,11 @@
         updateStyles: () => void;
 
         /**
+         * Force immediate content distribution.
+         */
+        distributeContent: () => void;
+
+        /**
          * Returns a list of effective child nodes for this element.
          */
         getEffectiveChildNodes: () => Node[];
