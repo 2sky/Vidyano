@@ -338,6 +338,26 @@
          * Revaluates custom property values.
          */
         updateStyles: () => void;
+
+        /**
+         * Returns a list of effective child nodes for this element.
+         */
+        getEffectiveChildNodes: () => Node[];
+
+        /**
+         * Returns a list of effective child elements for this element.
+         */
+        getEffectiveChildren: () => HTMLElement[];
+
+        /**
+         * Returns the first effective child that matches selector.
+         */
+        queryEffectiveChildren: (selector: string) => HTMLElement;
+
+        /**
+         * Returns a list of effective children that match selector.
+         */
+        queryAllEffectiveChildren: (selector: string) => HTMLElement[];
     }
 
     // HACK: This fixes the default __extends for extending from HTMLElement
