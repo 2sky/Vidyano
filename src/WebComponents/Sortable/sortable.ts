@@ -5,6 +5,8 @@
         private _sortable: ISortable;
         group: string;
         filter: string;
+        handle: string;
+        draggableItems: string;
         enabled: boolean;
 
         private _setIsDragging: (isDragging: boolean) => void;
@@ -39,6 +41,14 @@
             this._sortable.option("filter", this.filter);
         }
 
+        handleChanged() {
+            this._sortable.option("handle", this.handle);
+        }
+
+        draggableItemsChangted() {
+            this._sortable.option("draggable", this.draggableItems);
+        }
+
         protected _dragStart() {
         }
 
@@ -51,7 +61,9 @@
             this._sortable = window["Sortable"].create(this, {
                 group: this.group,
                 filter: this.filter,
+                handle: this.handle,
                 disabled: !this.enabled,
+                animation: 150,
                 onStart: () => {
                     this._setIsDragging(true);
                     if (this.group)
@@ -67,6 +79,10 @@
                     this._dragEnd(e.item, e.newIndex, e.oldIndex);
                 }
             });
+
+            // Delay setting draggable
+            if (this.draggableItems)
+                this._sortable.option("draggable", this.draggableItems);
         }
 
         private _destroy() {
@@ -93,6 +109,16 @@
                     reflectToAttribute: true,
                 };
                 info.properties["filter"] =
+                {
+                    type: String,
+                    reflectToAttribute: true
+                };
+                info.properties["draggableItems"] =
+                {
+                    type: String,
+                    reflectToAttribute: true
+                };
+                info.properties["handle"] =
                 {
                     type: String,
                     reflectToAttribute: true
