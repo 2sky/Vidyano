@@ -1,6 +1,8 @@
 @import "../../vars.scss";
 
 :host {
+	@include layout-horizontal();
+	
 	&[editing] {
 		#inputs {
 			> * {

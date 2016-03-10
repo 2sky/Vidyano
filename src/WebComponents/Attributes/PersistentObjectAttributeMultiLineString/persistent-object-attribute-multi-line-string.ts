@@ -6,7 +6,6 @@ module Vidyano.WebComponents.Attributes {
     })
     export class PersistentObjectAttributeMultiLineString extends PersistentObjectAttribute {
         maxlength: number;
-        height: string; // TODO(sleeckx): Implement height
 
         protected _attributeChanged() {
             super._attributeChanged();

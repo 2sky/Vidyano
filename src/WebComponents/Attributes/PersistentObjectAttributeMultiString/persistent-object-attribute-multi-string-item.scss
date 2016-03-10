@@ -1,0 +1,42 @@
+@import "../../vars.scss";
+
+:host {
+    @include layout-horizontal();
+    margin-bottom: 2px;
+
+    input {
+        height: calc(var(--theme-h2) - 2px);
+        line-height: calc(var(--theme-h2) - 2px);
+        border: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+        -moz-transition: border-color 0.2s ease-in-out;
+        -o-transition: border-color 0.2s ease-in-out;
+        -webkit-transition: border-color 0.2s ease-in-out;
+        transition: border-color 0.2s ease-in-out;
+        padding: 0 6px;
+        box-sizing: border-box;
+        outline: none;
+
+        &:focus {
+            border-color: var(--theme-color-lighter);
+        }
+    }
+
+    vi-icon {
+        align-self: center;
+        margin-right: var(--theme-h5);
+        fill: #666;
+        cursor: pointer;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+    }
+
+    &[is-new] {
+        vi-icon {
+            visibility: hidden;
+        }
+
+        input {
+            border-style: dashed !important;
+        }
+    }
+}

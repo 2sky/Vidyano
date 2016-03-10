@@ -181,8 +181,8 @@ module Vidyano.WebComponents {
                 return { filename: "PersistentObjectAttributeKeyValueList/persistent-object-attribute-key-value-list.html", synonyms: synonyms };
             else if (type === "MultiLineString")
                 return { filename: "PersistentObjectAttributeMultiLineString/persistent-object-attribute-multi-line-string.html", synonyms: synonyms };
-            //else if (type === "MultiString")
-            //    return { filename: "PersistentObjectAttributeMultiString/persistent-object-attribute-multi-string.html", synonyms: synonyms };
+            else if (type === "MultiString")
+               return { filename: "PersistentObjectAttributeMultiString/persistent-object-attribute-multi-string.html", synonyms: synonyms };
             else if (type === "Numeric")
                 return { filename: "PersistentObjectAttributeNumeric/persistent-object-attribute-numeric.html", synonyms: synonyms };
             else if (type === "Password")

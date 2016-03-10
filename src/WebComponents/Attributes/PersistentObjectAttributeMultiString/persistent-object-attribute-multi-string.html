@@ -1,26 +1,28 @@
-<vi-icon name="vi-persistent-object-attribute-multi-string">
-	<template>
-		<pre>[[value || '&mdash;']]</pre>
-	</template>
-</vi-icon>
+<link rel="import" href="../../Sortable/sortable.html" />
 
-<vi-icon name="vi-persistent-object-attribute-multi-string+part:edit">
-	<template>
-		<div horizontal layout class="string">
-			<vi-icon source="Hamburger" class="sort-handle"></vi-icon>
-			<input flex value="{{value}}" type="text">
-		</div>
-	</template>
-</vi-icon>
+<dom-module id="vi-persistent-object-attribute-multi-string-item">
+    <template>
+        <link rel="stylesheet" href="persistent-object-attribute-multi-string-item.css" />
+        <vi-icon source="Hamburger" class="sort-handle"></vi-icon>
+        <input id="input" class="flex" value="{{value::input}}" on-blur="_onInputBlur" type="text">
+    </template>
+</dom-module>
 
-<vi-icon name="vi-persistent-object-attribute-multi-string:edit">
-	<template>
-		<div id="inputs"></div>
-		<div id="new"></div>
-	</template>
-</vi-icon>
-
-<polymer-element name="vi-persistent-object-attribute-multi-string" extends="vi-persistent-object-attribute">
-</polymer-element>
+<dom-module id="vi-persistent-object-attribute-multi-string">
+    <template>
+        <link rel="stylesheet" href="persistent-object-attribute-multi-string.css" />
+        <template is="dom-if" if="[[!editing]]">
+            <vi-scroller no-horizontal class="flex">
+                <pre>[[attribute.displayValue]]</pre>
+            </vi-scroller>
+        </template>
+        <template is="dom-if" if="[[editing]]">
+			<vi-scroller no-horizontal class="flex">
+                <vi-persistent-object-attribute-multi-string-items id="strings" draggable-items="vi-persistent-object-attribute-multi-string-item" handle=".sort-handle" enabled></vi-persistent-object-attribute-multi-string-items>
+                <vi-persistent-object-attribute-multi-string-item is-new></vi-persistent-object-attribute-multi-string-item>
+			</vi-scroller>
+        </template>
+    </template>
+</dom-module>
 
 <script src="persistent-object-attribute-multi-string.js"></script>

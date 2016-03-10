@@ -36,7 +36,6 @@ module Vidyano.WebComponents.Attributes {
         static typeSynonyms: { [key: string]: string[]; } = {
             "Boolean": ["YesNo"],
             "DropDown": ["Enum"],
-            "MultiLineString": ["MultiString"],
             "String": ["Guid", "NullableGuid"],
             "User": ["NullableUser"]
         };
