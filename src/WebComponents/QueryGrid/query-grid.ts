@@ -1048,6 +1048,9 @@
         }
 
         protected _dragEnd(element: HTMLElement, newIndex: number, oldIndex: number) {
+            if (newIndex == null)
+                return;
+
             this._table.rows.splice(newIndex, 0, this._table.rows.splice(oldIndex, 1)[0]);
 
             var item = (<QueryGridTableDataRow>this._table.rows[newIndex]).item;
