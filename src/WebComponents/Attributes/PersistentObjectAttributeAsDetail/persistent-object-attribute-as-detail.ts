@@ -154,6 +154,7 @@ module Vidyano.WebComponents.Attributes {
             this.newAction.skipOpen = true;
             this.newAction.execute(undefined, undefined, undefined, true).then(po => {
                 this.push("attribute.objects", po);
+                po.parent = this.attribute.parent;
 
                 if (this.attribute.lookupAttribute && po.attributesByName[this.attribute.lookupAttribute]) {
                     const lookupAttribute = <Vidyano.PersistentObjectAttributeWithReference>po.attributesByName[this.attribute.lookupAttribute];
