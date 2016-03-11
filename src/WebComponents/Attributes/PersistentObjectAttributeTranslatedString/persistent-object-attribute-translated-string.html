@@ -37,7 +37,7 @@
             <ul id="content">
                 <template is="dom-repeat" items="[[strings]]" as="string">
                     <li>
-                        <label>[[item.label]]</label>
+                        <label>[[string.label]]</label>
                         <template is="dom-if" if="[[!multiline]]">
                             <input value="{{string.value::input}}" type="text" readonly$="[[readonly]]">
                         </template>
