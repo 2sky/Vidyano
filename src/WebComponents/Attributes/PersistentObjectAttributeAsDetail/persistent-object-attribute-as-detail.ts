@@ -152,7 +152,7 @@ module Vidyano.WebComponents.Attributes {
 
         private _add(e: TapEvent) {
             this.newAction.skipOpen = true;
-            this.newAction.execute().then(po => {
+            this.newAction.execute(undefined, undefined, undefined, true).then(po => {
                 this.push("attribute.objects", po);
 
                 if (this.attribute.lookupAttribute && po.attributesByName[this.attribute.lookupAttribute]) {
@@ -171,6 +171,8 @@ module Vidyano.WebComponents.Attributes {
 
                 this.attribute.isValueChanged = true;
                 this.attribute.parent.triggerDirty();
+            }, e => {
+                this.attribute.parent.setNotification(e);
             });
         }
 
