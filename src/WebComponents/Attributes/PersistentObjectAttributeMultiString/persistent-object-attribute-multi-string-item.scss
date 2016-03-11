@@ -39,4 +39,10 @@
             border-style: dashed !important;
         }
     }
+
+    &[is-read-only] {
+        vi-icon {
+            display: none;
+        }
+    }
 }

@@ -12,6 +12,10 @@ module Vidyano.WebComponents.Attributes {
 				type: String,
 				observer: "_valueChanged"
 			},
+			isReadOnly: {
+				type: Boolean,
+				reflectToAttribute: true
+			},
 			isNew: {
 				type: Boolean,
 				reflectToAttribute: true
@@ -22,12 +26,13 @@ module Vidyano.WebComponents.Attributes {
 		private _focusQueued: boolean;
 		value: string;
 		isNew: boolean;
+		isReadOnly: boolean;
 
-		constructor(value: string, isNew: boolean = false) {
+		constructor(value: string, isReadOnly: boolean = false) {
 			super();
 
 			this.value = value;
-			this.isNew = isNew;
+			this.isReadOnly = isReadOnly;
 		}
 
 		attached() {
@@ -44,6 +49,9 @@ module Vidyano.WebComponents.Attributes {
 		}
 
 		private _valueChanged(value: string) {
+			if (this.isReadOnly)
+				return;
+
 			if (this.isNew) {
 				if (value) {
 					this.fire("multi-string-item-value-new", { value: value });
@@ -55,7 +63,7 @@ module Vidyano.WebComponents.Attributes {
 		}
 
 		private _onInputBlur() {
-			if (!this.isNew)
+			if (!this.isReadOnly && !this.isNew)
 				this.fire("multi-string-item-value-changed", null);
 		}
 	}
@@ -65,7 +73,7 @@ module Vidyano.WebComponents.Attributes {
             maxlength: Number,
             strings: {
                 type: Array,
-                computed: "_computeStrings(value)"
+                computed: "_computeStrings(value, attribute.isReadOnly)"
             }
         },
 		observers: [
@@ -81,8 +89,8 @@ module Vidyano.WebComponents.Attributes {
 		strings: PersistentObjectAttributeMultiStringItem[];
 		private _setNewString: (newString: PersistentObjectAttributeMultiStringItem) => void;
 
-		private _computeStrings(value: string): PersistentObjectAttributeMultiStringItem[] {
-			return value ? value.split("\n").filter(v => !!v.length).map((v: string, n: number) => this.strings && this.strings[n] && this.strings[n].value === v ? this.strings[n] : new PersistentObjectAttributeMultiStringItem(v)) : [];
+		private _computeStrings(value: string, readOnly: boolean): PersistentObjectAttributeMultiStringItem[] {
+			return value ? value.split("\n").filter(v => !!v.length).map((v: string, n: number) => this.strings && this.strings[n] && this.strings[n].value === v ? this.strings[n] : new PersistentObjectAttributeMultiStringItem(v, readOnly)) : [];
 		}
 
 		private _itemValueNew(e: Event, detail: { value: string }) {

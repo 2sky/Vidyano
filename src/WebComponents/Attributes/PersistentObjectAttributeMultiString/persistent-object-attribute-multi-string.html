@@ -4,7 +4,7 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-multi-string-item.css" />
         <vi-icon source="Hamburger" class="sort-handle"></vi-icon>
-        <input id="input" class="flex" value="{{value::input}}" on-blur="_onInputBlur" type="text">
+        <input id="input" class="flex" value="{{value::input}}" on-blur="_onInputBlur" type="text" readonly$="[[isReadOnly]]">
     </template>
 </dom-module>
 
@@ -19,7 +19,7 @@
         <template is="dom-if" if="[[editing]]">
 			<vi-scroller no-horizontal class="flex">
                 <vi-persistent-object-attribute-multi-string-items id="strings" draggable-items="vi-persistent-object-attribute-multi-string-item" handle=".sort-handle" enabled></vi-persistent-object-attribute-multi-string-items>
-                <vi-persistent-object-attribute-multi-string-item is-new></vi-persistent-object-attribute-multi-string-item>
+                <vi-persistent-object-attribute-multi-string-item is-new hidden$="[[readOnly]]"></vi-persistent-object-attribute-multi-string-item>
 			</vi-scroller>
         </template>
     </template>
