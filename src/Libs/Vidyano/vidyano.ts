@@ -3342,6 +3342,49 @@ module Vidyano {
                     this.selectAll.allSelected = true;
             }
         }
+
+        static FromJsonData(service: Service, data: JsonQueryData): Query {
+            const query = {
+                actions: [],
+                allowTextSearch: false,
+                autoQuery: true,
+                canRead: false,
+                columns: data.columns,
+                disableBulkEdit: true,
+                filters: {},
+                id: data.id || Unique.get(),
+                label: data.label,
+                name: data.name || data.label,
+                persistentObject: { label: data.singularLabel },
+                result: data
+            };
+
+            return new Query(service, query);
+        }
+    }
+
+    export interface JsonQueryData {
+        id?: string;
+        name?: string;
+        label?: string;
+        singularLabel?: string;
+
+        items: {
+            id: string | number;
+            breadcrumb?: string;
+            typeHints?: { [name: string]: string };
+            values: {
+                key: string;
+                value: string;
+                typeHints?: { [name: string]: string };
+            }[];
+        }[];
+
+        columns: {
+            name: string;
+            label: string;
+            type: string;
+        }[];
     }
 
     export class QueryColumn extends ServiceObject {
