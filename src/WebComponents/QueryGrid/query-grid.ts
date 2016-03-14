@@ -612,7 +612,7 @@
             }
 
             if (detail && detail.column) {
-                var width = detail.save ? "" : `${detail.columnWidth}px`;
+                var width = detail.save ? "" : detail.columnWidth + "px";
                 [this._tableData, this._tableFooter].forEach(table => {
                     table.rows.forEach(r => {
                         var col = Enumerable.from(r.columns).firstOrDefault(c => c.column === detail.column);
