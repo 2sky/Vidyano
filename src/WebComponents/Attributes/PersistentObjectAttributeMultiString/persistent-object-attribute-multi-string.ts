@@ -6,7 +6,7 @@ module Vidyano.WebComponents.Attributes {
 		}
 	}
 
-	@PersistentObjectAttribute.register({
+	@WebComponent.register({
         properties: {
             value: {
 				type: String,
