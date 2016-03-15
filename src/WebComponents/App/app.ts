@@ -16,7 +16,6 @@
         selectedMasterTab: Vidyano.PersistentObjectTab;
         selectedDetailTab: Vidyano.PersistentObjectTab;
 
-
         constructor(idOrPo: string | Vidyano.PersistentObject, public objectId?: string) {
             super(typeof idOrPo === "string" ? idOrPo : (idOrPo instanceof Vidyano.PersistentObject ? idOrPo.id : null));
 
@@ -215,6 +214,9 @@
 
         attached() {
             super.attached();
+
+            this.customStyle["--theme-scrollbar-width"] = `${scrollbarWidth()}px`;
+            this.updateStyles();
 
             if (!this.label)
                 this.label = this.title;

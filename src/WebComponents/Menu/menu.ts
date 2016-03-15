@@ -47,6 +47,13 @@ module Vidyano.WebComponents {
             this.updateStyles();
         }
 
+        detached() {
+            super.detached();
+
+            Enumerable.from(Polymer.dom(this.$["footerElements"]).children).forEach(element => Polymer.dom(this.app).appendChild(element));
+            Enumerable.from(Polymer.dom(this.$["headerElements"]).children).forEach(element => Polymer.dom(this.app).appendChild(element));
+        }
+
         private _filterChanged() {
             this.filtering = !StringEx.isNullOrEmpty(this.filter);
         }

@@ -10,6 +10,8 @@
     > #wrapper {
         @include flex();
         overflow: scroll;
+        margin-right: -var(--theme-scrollbar-width);
+        margin-bottom: -var(--theme-scrollbar-width);
     }
 
     &[no-horizontal]:not([no-vertical]) {

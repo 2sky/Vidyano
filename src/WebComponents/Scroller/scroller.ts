@@ -100,7 +100,6 @@
         private static _minBarSize: number = 20;
         private _setHovering: (hovering: boolean) => void;
         private _setScrolling: (scrolling: boolean) => void;
-        private _scrollbarWidth: number;
         private _verticalScrollHeight: number;
         private _verticalScrollTop: number;
         private _verticalScrollSpace: number;
@@ -144,15 +143,7 @@
         }
 
         private _outerSizeChanged(e: Event, detail: { width: number; height: number }) {
-            if (!this._scrollbarWidth) {
-                var wrapper = this.$["wrapper"];
-
-                this._scrollbarWidth = scrollbarWidth() || 0;
-                if (this._scrollbarWidth)
-                    wrapper.style.marginRight = wrapper.style.marginBottom = -this._scrollbarWidth + "px";
-                else
-                    this._setHiddenScrollbars(true);
-            }
+            this._setHiddenScrollbars(!parseInt(this.getComputedStyleValue("--theme-scrollbar-width")));
 
             this._setOuterWidth(detail.width);
             this._setOuterHeight(detail.height);
