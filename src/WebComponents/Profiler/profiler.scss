@@ -12,7 +12,7 @@
     vi-icon {
         fill: white;
         margin-left: var(--theme-h5);
-        margin-right: var(--theme-h5);
+        margin-right: var(--theme-h4);
         height: var(--theme-h1);
         line-height: var(--theme-h1);
         --vi-icon-height: var(--theme-h3);
@@ -21,6 +21,27 @@
 
     vi-popup {
         @include flex();
+    }
+
+    #lastRequest {
+        line-height: normal;
+
+        > div {
+            margin-right: var(--theme-h3);
+
+            label {
+                font-size: 9px;
+                line-height: 9px;
+                text-transform: uppercase;
+            }
+
+            h1 {
+                font-size: 15px;
+                line-height: 15px;
+                font-weight: bolder;
+                margin: 0;
+            }
+        }
     }
 
     #info {

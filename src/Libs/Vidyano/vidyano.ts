@@ -471,7 +471,7 @@ module Vidyano {
                         const request: ServiceRequest = {
                             when: createdRequest,
                             profiler: result.profiler,
-                            transport: requestEnd - requestStart - result.profiler.elapsedMilliseconds,
+                            transport: Math.round(requestEnd - requestStart - result.profiler.elapsedMilliseconds),
                             method: requestMethod,
                             request: data,
                             response: result

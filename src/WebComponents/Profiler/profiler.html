@@ -6,9 +6,26 @@
         <vi-popup sticky>
             <div header class="flex layout horizontal">
                 <vi-icon source="Profiler"></vi-icon>
-                <div class="flex" hidden$="[[lastRequest]]">[[awaiting]]</div>
-                <div class="flex">
-
+                <div class="flex" hidden="[[lastRequest]]">[[awaiting]]</div>
+                <div class="flex layout horizontal" hidden="[[!lastRequest]]" id="lastRequest">
+                    <div>
+                        <label>Method</label>
+                        <h1>[[lastRequest.method]]</h1>
+                    </div>
+                    <template is="dom-repeat" items="[[lastRequestParameters]]" as="parameter">
+                        <div>
+                            <label>[[parameter.key]]</label>
+                            <h1>[[parameter.value]]</h1>
+                        </div>
+                    </template>
+                    <div>
+                        <label>Server</label>
+                        <h1>[[lastRequest.profiler.elapsedMilliseconds]]ms</h1>
+                    </div>
+                    <div>
+                        <label>Transport</label>
+                        <h1>[[lastRequest.transport]]ms</h1>
+                    </div>
                 </div>
                 <button is="vi-button" icon="Remove" type="light-monochrome" inverse on-tap="_close"></button>
             </div>

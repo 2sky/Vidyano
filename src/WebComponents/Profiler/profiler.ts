@@ -10,6 +10,9 @@ module Vidyano.WebComponents {
                 typeHints ?: { [name: string]: string };
             } [];
         };
+        parameters: {
+            [name: string]: string;
+        };
     }
 
     @WebComponent.register({
@@ -22,6 +25,10 @@ module Vidyano.WebComponents {
             lastRequest: {
                 type: Object,
                 readOnly: true
+            },
+            lastRequestParameters: {
+                type: Array,
+                computed: "_computeLastRequestParameters(lastRequest)"
             },
             query: {
                 type: Object,
@@ -70,7 +77,7 @@ module Vidyano.WebComponents {
                             { key: "Method", value: request.method },
                             { key: "Parameters", value: this._computeParameters(request) },
                             { key: "Server", value: request.profiler.elapsedMilliseconds + "ms" },
-                            { key: "Transport", value: Math.round(request.transport) + "ms" },
+                            { key: "Transport", value: request.transport + "ms" },
                             { key: "SQL", value: request.profiler.sql ? request.profiler.sql.reduce((current, entry) => current + entry.elapsedMilliseconds, 0) + "ms" : "" },
                             { key: "SharpSQL", value: (request.profiler.sql ? request.profiler.sql.length : 0).toString() }
                         ]
@@ -78,30 +85,39 @@ module Vidyano.WebComponents {
                 })
             });
 
+            this._setLastRequest(profiledRequests[0]);
+
             return query;
         }
 
-        private _computeParameters(data: Vidyano.ServiceRequest): string {
-            switch (data.method) {
+        private _computeParameters(request: ProfilerServiceRequest): string {
+            if (!request.parameters)
+                request.parameters = {};
+
+            switch (request.method) {
                 case "GetPersistentObject":
-                    return `(${data.response.result.type}, ${data.response.result.objectId})`;
+                    return `(${request.parameters["Type"] = request.response.result.type}, ${request.parameters["Id"] = request.response.result.objectId})`;
 
                 case "GetQuery":
-                    return `(${data.response.query.name})`;
+                    return `(${request.parameters["Name"] = request.response.query.name})`;
 
                 case "ExecuteAction":
-                    return `(${data.request.action})`;
+                    return `(${request.parameters["Name"] = request.request.action})`;
 
                 case "ExecuteQuery": {
-                    let parameters = `(${data.request.query.name}, ${data.request.query.pageSize}`;
-                    if (data.request.query.top)
-                        parameters = `${parameters}, ${data.request.query.top}`;
-                    if (data.request.query.skip)
-                        parameters = `${parameters}, ${data.request.query.skip}`;
+                    let parameters = `(${request.parameters["Name"] = request.request.query.name}, ${request.parameters["PageSize"] = request.request.query.pageSize}`;
+                    if (request.request.query.top)
+                        parameters = `${parameters}, ${request.parameters["Top"] = request.request.query.top}`;
+                    if (request.request.query.skip)
+                        parameters = `${parameters}, ${request.parameters["Skip"] = request.request.query.skip}`;
 
                     return `${parameters})`;
                 }
             }
+        }
+
+        private _computeLastRequestParameters(request: ProfilerServiceRequest): { key: string; value: string; }[] {
+            return Enumerable.from(<any>request.parameters).toArray();
         }
 
         private _hasNPlusOne(profiler: ServiceRequestProfiler, entries: ServiceRequestProfilerEntry[] = profiler.entries): boolean {
