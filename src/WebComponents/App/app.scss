@@ -38,4 +38,15 @@
     &[is-desktop] ::content [hide-desktop] {
         display: none !important;
     }
+
+    &[is-profiling] {
+        padding-top: var(--theme-h1);
+
+        vi-profiler {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+    }
 }

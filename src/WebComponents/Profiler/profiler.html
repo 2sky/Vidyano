@@ -1,0 +1,22 @@
+<link rel="import" href="../QueryGrid/query-grid.html" />
+
+<dom-module id="vi-profiler">
+    <template>
+        <link rel="stylesheet" href="profiler.css" />
+        <vi-popup sticky>
+            <div header class="flex layout horizontal">
+                <vi-icon source="Profiler"></vi-icon>
+                <div class="flex" hidden$="[[lastRequest]]">[[awaiting]]</div>
+                <div class="flex">
+
+                </div>
+                <button is="vi-button" icon="Remove" type="light-monochrome" inverse on-tap="_close"></button>
+            </div>
+            <div id="info" content class="layout horizontal">
+                <vi-query-grid query="[[query]]"></vi-query-grid>
+            </div>
+        </vi-popup>
+    </template>
+</dom-module>
+
+<script src="profiler.js"></script>

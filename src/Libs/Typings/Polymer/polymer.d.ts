@@ -118,6 +118,11 @@ declare var Polymer: {
     dom(element: Node | Vidyano.WebComponents.WebComponent): PolymerDomApi;
     getRegisteredPrototype(tagName: string): any;
 
+    /**
+     * Returns true if the element is a Polymer web component.
+     */
+    isInstance(element: HTMLElement): boolean;
+
     whenReady(callback: () => void): void;
 
     /**

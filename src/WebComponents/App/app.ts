@@ -148,6 +148,16 @@
                 readOnly: true,
                 value: 0
             },
+            profilerLoaded: {
+                type: Boolean,
+                readOnly: true,
+                value: false
+            },
+            isProfiling: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeIsProfiling(service.isSignedIn, service.profile, profilerLoaded)"
+            },
             signInImage: String,
             showMenu: {
                 type: Boolean,
@@ -181,6 +191,7 @@
         },
         forwardObservers: [
             "service.isSignedIn",
+            "service.profile",
             "service.application"
         ]
     })
@@ -211,6 +222,7 @@
         private _setKeys: (keys: string) => void;
         private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setCurrentRoute: (route: AppRoute) => void;
+        private _setProfilerLoaded: (val: boolean) => void;
 
         attached() {
             super.attached();
@@ -352,6 +364,17 @@
 
         showMessageDialog(options: MessageDialogOptions): Promise<any> {
             return this.showDialog(new Vidyano.WebComponents.MessageDialog(), options);
+        }
+
+        private _computeIsProfiling(isSignedIn: boolean, profile: boolean, profilerLoaded: boolean): boolean {
+            const isProfiling = isSignedIn && profile;
+            if (isProfiling && !Polymer.isInstance(this.$["profiler"])) {
+                this.importHref(this.resolveUrl("../Profiler/profiler.html"), () => {
+                    this._setProfilerLoaded(true);
+                });
+            }
+
+            return isProfiling && profilerLoaded;
         }
 
         private _computeService(uri: string, user: string): Vidyano.Service {

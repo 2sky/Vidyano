@@ -22,6 +22,10 @@ module Vidyano.WebComponents {
                 type: Boolean,
                 readOnly: true
             },
+            canProfile: {
+                type: Boolean,
+                readOnly: true
+            },
             collapsed: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -41,6 +45,7 @@ module Vidyano.WebComponents {
         private _setIsSignedIn: (val: boolean) => void;
         private _setCanFeedback: (val: boolean) => void;
         private _setCanUserSettings: (val: boolean) => void;
+        private _setCanProfile: (val: boolean) => void;
         private _setUserName: (val: string) => void;
 
         attached() {
@@ -76,12 +81,17 @@ module Vidyano.WebComponents {
             this.app.changePath((this.app.programUnit ? this.app.programUnit.name + "/" : "") + "PersistentObject." + this.service.application.userSettingsId + "/" + this.service.application.userId);
         }
 
+        private _showProfiler() {
+            this.app.service.profile = true;
+        }
+
         private _signedInChanged() {
             var isSignedIn = this.service.isSignedIn && !this.service.isUsingDefaultCredentials;
             this._setIsSignedIn(isSignedIn);
             this._setUserName(isSignedIn ? this.service.application.friendlyUserName : null);
             this._setCanFeedback(isSignedIn && !!this.service.application.feedbackId);
             this._setCanUserSettings(isSignedIn && !!this.service.application.userSettingsId);
+            this._setCanProfile(isSignedIn && this.service.application.canProfile);
         }
     }
 }
