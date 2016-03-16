@@ -307,7 +307,11 @@ module Vidyano {
         entries: ServiceRequestProfilerEntry[];
         methodName: string;
         sql: string[];
+        started: number;
+        elapsedMilliseconds: number;
         hasNPlusOne?: boolean;
+        exception: string;
+        arguments: any[];
     }
 
     export interface ServiceRequestProfilerSQL {

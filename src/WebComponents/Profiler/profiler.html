@@ -1,4 +1,5 @@
 <link rel="import" href="../QueryGrid/query-grid.html" />
+<link rel="import" href="../Chart/chart-dependencies.html" />
 
 <dom-module id="vi-profiler">
     <template>
@@ -29,8 +30,32 @@
                 </div>
                 <button is="vi-button" icon="Remove" type="light-monochrome" inverse on-tap="_close"></button>
             </div>
-            <div id="info" content class="layout horizontal">
-                <vi-query-grid query="[[query]]"></vi-query-grid>
+            <div content class="layout horizontal">
+                <vi-query-grid query="[[query]]" on-item-tap="_gridItemTap"></vi-query-grid>
+                <div class="flex relative">
+                    <vi-size-tracker size="{{timelineSize}}"></vi-size-tracker>
+                    <vi-scroller id="timelineScroller" class="fit" no-vertical>
+                        <svg id="timeline" on-mousewheel="_onMousewheel">
+                            <g class="xaxis"></g>
+                        </svg>
+                    </vi-scroller>
+                    <div id="hoveredEntry" hidden$="[[!hoveredEntry]]">
+                        <table>
+                            <tr>
+                                <td>Method</td>
+                                <td>[[hoveredEntry.methodName]]</td>
+                            </tr>
+                            <tr>
+                                <td>Total time</td>
+                                <td>[[_formatMs(hoveredEntry.elapsedMilliseconds)]]</td>
+                            </tr>
+                            <tr>
+                                <td>SQL statements</td>
+                                <td>[[hoveredEntry.sql.length]]</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </vi-popup>
     </template>

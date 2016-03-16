@@ -1,4 +1,9 @@
 module Vidyano.WebComponents {
+    var d3timer = <any>d3.timer;
+    d3.timer = <any>function(callback, delay, then) {
+        d3timer(callback, 0, 0);
+    };
+
     interface ProfilerServiceRequest extends Vidyano.ServiceRequest {
         resultItem: {
             id: string | number;
@@ -13,6 +18,12 @@ module Vidyano.WebComponents {
         parameters: {
             [name: string]: string;
         };
+        flattenedEntries: FlattenedServiceRequestProfilerEntry[];
+    }
+
+    interface FlattenedServiceRequestProfilerEntry {
+        entry: ServiceRequestProfilerEntry;
+        level: number;
     }
 
     @WebComponent.register({
@@ -30,22 +41,60 @@ module Vidyano.WebComponents {
                 type: Array,
                 computed: "_computeLastRequestParameters(lastRequest)"
             },
+            selectedRequest: {
+                type: Object,
+                readOnly: true,
+                observer: "_selectedRequestChanged"
+            },
+            hoveredEntry: {
+                type: Object,
+                readOnly: true,
+                value: null
+            },
             query: {
                 type: Object,
                 computed: "_computeQuery(isAttached, service.profile, service.profiledRequests)"
+            },
+            timelineSize: Object,
+            zoom: {
+                type: Number,
+                readOnly: true,
+                value: 1
             }
         },
         forwardObservers: [
             "service.profile",
             "service.profiledRequests"
+        ],
+        observers: [
+            "_renderRequestTimeline(selectedRequest, timelineSize, zoom)"
         ]
     })
     export class Profiler extends WebComponent {
         private static _queryColumns: any[];
+        private _boundMousehweel = this._onMousewheel.bind(this);
         query: Vidyano.Query;
         lastRequest: Vidyano.ServiceRequest;
+        selectedRequest: Vidyano.ServiceRequest;
+        zoom: number;
+        timelineSize: Size;
 
         private _setLastRequest: (request: Vidyano.ServiceRequest) => void;
+        private _setSelectedRequest: (request: Vidyano.ServiceRequest) => void;
+        private _setHoveredEntry: (entry: ServiceRequestProfilerEntry) => void;
+        private _setZoom: (value: number) => void;
+
+        attached() {
+            super.attached();
+
+            this.$["timeline"].addEventListener("DOMMouseScroll", this._boundMousehweel);
+        }
+
+        detached() {
+            super.detached();
+
+            this.$["timeline"].removeEventListener("DOMMouseScroll", this._boundMousehweel);
+        }
 
         private _computeQuery(isAttached: boolean, profile: boolean, profiledRequests: ProfilerServiceRequest[]): Vidyano.Query {
             if (!isAttached || !profile)
@@ -76,9 +125,9 @@ module Vidyano.WebComponents {
                             { key: "When", value: Service.toServiceString(request.when, "DateTime") },
                             { key: "Method", value: request.method },
                             { key: "Parameters", value: this._computeParameters(request) },
-                            { key: "Server", value: request.profiler.elapsedMilliseconds + "ms" },
-                            { key: "Transport", value: request.transport + "ms" },
-                            { key: "SQL", value: request.profiler.sql ? request.profiler.sql.reduce((current, entry) => current + entry.elapsedMilliseconds, 0) + "ms" : "" },
+                            { key: "Server", value: this._formatMs(request.profiler.elapsedMilliseconds) },
+                            { key: "Transport", value: this._formatMs(request.transport) },
+                            { key: "SQL", value: request.profiler.sql ? this._formatMs(request.profiler.sql.reduce((current, entry) => current + entry.elapsedMilliseconds, 0)) : "0ms" },
                             { key: "SharpSQL", value: (request.profiler.sql ? request.profiler.sql.length : 0).toString() }
                         ]
                     })
@@ -86,6 +135,8 @@ module Vidyano.WebComponents {
             });
 
             this._setLastRequest(profiledRequests[0]);
+            if (!this.selectedRequest)
+                this._setSelectedRequest(this.lastRequest);
 
             return query;
         }
@@ -126,7 +177,6 @@ module Vidyano.WebComponents {
 
             let hasNPlusOne = false;
             entries.forEach(entry => {
-                // Detect N+1
                 const counts = Enumerable.from(entry.sql).groupBy(commandId => Enumerable.from(profiler.sql).firstOrDefault(s => s.commandId == commandId).commandText, s => s);
                 if (counts.firstOrDefault(c => c.count() > 1))
                     entry.hasNPlusOne = hasNPlusOne = true;
@@ -136,6 +186,149 @@ module Vidyano.WebComponents {
             });
 
             return hasNPlusOne;
+        }
+
+        private _onMousewheel(e: MouseWheelEvent) {
+            const scroller = <Scroller>this.$["timelineScroller"];
+
+            var rect = scroller.getBoundingClientRect();
+			var offsetX = e.pageX - rect.left - window.pageXOffset;
+            const mousePctg = 1 / scroller.outerWidth * offsetX;
+
+            const isZoomIn = (e.wheelDelta || -e.detail) > 0;
+            const newZoom = Math.max(isZoomIn ? this.zoom * 1.1 : this.zoom / 1.1, 1);
+            const newInnerWidth = (this.timelineSize.width - 2) * newZoom;
+
+            this._setZoom(newZoom);
+
+            scroller.horizontalScrollOffset = (newInnerWidth - scroller.outerWidth) * mousePctg;
+        }
+
+        private _selectedRequestChanged() {
+            this._setZoom(1);
+        }
+
+        private _renderRequestTimeline(request: ProfilerServiceRequest, size: Size, zoom: number) {
+            const width = (size.width - 2) * zoom; // Strip vi-scroller borders
+            const headerHeight = parseInt(this.getComputedStyleValue("--vi-profiler-header-height"));
+            const entryHeight = parseInt(this.getComputedStyleValue("--vi-profiler-entry-height"));
+            const entryLevelGap = parseInt(this.getComputedStyleValue("--vi-profiler-entry-level-gap"));
+            const scale = d3.scale.linear().domain([0, request.profiler.elapsedMilliseconds]).range([0, width]);
+
+            const svg = d3.select(this.$["timeline"]).
+                attr("width", width).
+                attr("height", size.height);
+
+            // Render x-axis
+            var xAxis = d3.svg.axis()
+                .scale(scale.copy().rangeRound([0, width - 12]))
+                .orient("top")
+                .tickSize(-size.height, 0)
+                .tickFormat(d => this._formatMs(d));
+
+            var xAxisGroup = svg.selectAll('g.xaxis')
+                .attr('transform', `translate(0, ${headerHeight})`)
+                .call(xAxis);
+
+            xAxisGroup.selectAll("line")
+                .attr("stroke-dasharray", "6, 4");
+
+            xAxisGroup.selectAll("text")
+                .style("text-anchor", "middle")
+                .attr("dy", "-0.5em");
+
+            // Render entries
+            let entriesGroup = svg.select(".entries");
+            if (entriesGroup.empty())
+                entriesGroup = svg.append("g").classed("entries", true);
+
+            const entryGroupSelection = entriesGroup.selectAll("g.entry").data(request.flattenedEntries || (request.flattenedEntries = this._flattenEntries(request.profiler.entries)));
+            const entryGroup = entryGroupSelection.enter()
+                .append("g")
+                .attr("class", e => this._computeEntryClassName(e.entry));
+
+            entryGroup.append("rect")
+                .attr("x", e => scale(e.entry.started || 0))
+                .attr("y", e => size.height - (e.level * entryHeight) - (e.level * entryLevelGap))
+                .attr("width", e => e.entry.elapsedMilliseconds ? scale(e.entry.elapsedMilliseconds) : 1)
+                .attr("height", entryHeight);
+
+            entryGroup
+                .append("foreignObject")
+                .attr("x", e => scale(e.entry.started || 0))
+                .attr("y", e => size.height - (e.level * entryHeight) - (e.level * entryLevelGap))
+                .attr("width", e => e.entry.elapsedMilliseconds ? scale(e.entry.elapsedMilliseconds) : 1)
+                .attr("height", entryHeight)
+                .html(e => `<div class="text" style="width: ${e.entry.elapsedMilliseconds ? scale(e.entry.elapsedMilliseconds) : 1}px;">` + e.entry.methodName + "</div>")
+                .on("mouseenter", e => this._setHoveredEntry(e.entry))
+                .on("mouseleave", e => this._setHoveredEntry(null));
+
+            const entryGroupTransition = entryGroupSelection.transition().duration(0)
+                .attr("class", e => this._computeEntryClassName(e.entry));
+
+            entryGroupTransition
+                .select("rect")
+                .attr("x", e => scale(e.entry.started || 0))
+                .attr("y", e => size.height - (e.level * entryHeight) - (e.level * entryLevelGap))
+                .attr("width", e => e.entry.elapsedMilliseconds ? scale(e.entry.elapsedMilliseconds) : 1)
+                .attr("height", entryHeight);
+
+            entryGroupTransition.select("foreignObject")
+                .attr("x", e => scale(e.entry.started || 0))
+                .attr("y", e => size.height - (e.level * entryHeight) - (e.level * entryLevelGap))
+                .attr("width", e => e.entry.elapsedMilliseconds ? scale(e.entry.elapsedMilliseconds) : 1)
+                .attr("height", entryHeight)
+                .select(".text")
+                .attr("style", e => `width: ${e.entry.elapsedMilliseconds ? scale(e.entry.elapsedMilliseconds) : 1}px;`)
+                .text(e => e.entry.methodName);
+
+            entryGroupSelection.exit().remove();
+        }
+
+        private _flattenEntries(entries: ServiceRequestProfilerEntry[], level: number = 1, flattenedEntries: FlattenedServiceRequestProfilerEntry[] = []): FlattenedServiceRequestProfilerEntry[] {
+            entries.forEach(entry => {
+                flattenedEntries.push({
+                    entry: entry,
+                    level: level
+                });
+
+                this._flattenEntries(entry.entries, level + 1, flattenedEntries);
+            });
+
+            return flattenedEntries;
+        };
+
+        private _computeEntryClassName(e: ServiceRequestProfilerEntry): string {
+            let className = "entry";
+            let hasDetails = false;
+
+            if (e.sql && e.sql.length > 0) {
+                className = `${className} has-sql`;
+
+                if (e.hasNPlusOne)
+                    className = `${className} has-n-plus-one`;
+
+                hasDetails = true;
+            }
+
+            if (e.exception)
+                className = `${className} has-exception`;
+
+            if (e.arguments)
+                hasDetails = true;
+
+            if (hasDetails)
+                className = `${className} has-details`;
+
+            return className;
+        }
+
+        private _formatMs(ms: number): string {
+            return `${ms || 0}ms`;
+        }
+
+        private _gridItemTap(e: CustomEvent, detail: { item: QueryResultItem; }) {
+            this._setSelectedRequest(Enumerable.from(<ProfilerServiceRequest[]>this.app.service.profiledRequests).firstOrDefault(r => r.resultItem.id === detail.item.id));
         }
 
         private _close(e: TapEvent) {

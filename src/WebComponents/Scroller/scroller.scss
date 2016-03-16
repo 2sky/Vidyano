@@ -27,6 +27,7 @@
     &[no-vertical]:not([no-horizontal]) {
         > #wrapper {
             @include layout-horizontal();
+            overflow-y: hidden;
         }
     }
 
