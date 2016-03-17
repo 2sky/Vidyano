@@ -32,6 +32,10 @@
                 readOnly: true,
                 reflectToAttribute: true
             },
+            alignVerticalScrollbar: {
+                type: String,
+                reflectToAttribute: true
+            },
             noHorizontal: {
                 type: Boolean,
                 reflectToAttribute: true,
