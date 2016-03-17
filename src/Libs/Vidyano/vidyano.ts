@@ -756,11 +756,13 @@ module Vidyano {
             if (currentProfileCookie != val)
                 Vidyano.cookie("profile", String(val));
 
-            if (!val)
-                this._profiledRequests = null;
-
             var oldValue = this._profile;
-            this.notifyPropertyChanged("profile", this._profile = val, oldValue);
+            this._profile = val;
+
+            if (!val)
+                this._setProfiledRequests([]);
+
+            this.notifyPropertyChanged("profile", val, oldValue);
         }
 
         get profiledRequests(): ServiceRequest[] {

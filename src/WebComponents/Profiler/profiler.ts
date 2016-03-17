@@ -31,7 +31,8 @@ module Vidyano.WebComponents {
             },
             lastRequest: {
                 type: Object,
-                readOnly: true
+                readOnly: true,
+                value: null
             },
             lastRequestParameters: {
                 type: Array,
@@ -129,7 +130,7 @@ module Vidyano.WebComponents {
         }
 
         private _computeLastRequestParameters(request: ProfilerServiceRequest): { key: string; value: string; }[] {
-            return Enumerable.from(<any>request.parameters).toArray();
+            return request ? Enumerable.from(<any>request.parameters).toArray() : [];
         }
 
         private _isSelected(request: ProfilerServiceRequest, selectedRequest: ProfilerServiceRequest): boolean {

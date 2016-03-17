@@ -4,11 +4,11 @@
 <dom-module id="vi-profiler">
     <template>
         <link rel="stylesheet" href="profiler.css" />
-        <vi-popup sticky>
+        <vi-popup sticky disabled$="[[!lastRequest]]">
             <div header class="flex layout horizontal">
                 <vi-icon source="Profiler"></vi-icon>
-                <div class="flex" hidden="[[lastRequest]]">[[awaiting]]</div>
-                <div class="flex layout horizontal" hidden="[[!lastRequest]]" id="lastRequest">
+                <div class="flex" hidden$="[[lastRequest]]">[[awaiting]]</div>
+                <div class="flex layout horizontal" hidden$="[[!lastRequest]]" id="lastRequest">
                     <div>
                         <label>Method</label>
                         <h1>[[lastRequest.method]]</h1>
