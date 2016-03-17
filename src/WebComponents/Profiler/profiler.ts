@@ -158,6 +158,10 @@ module Vidyano.WebComponents {
             return hasNPlusOne;
         }
 
+        private _hasSelectedEntry(selectedEntry: ServiceRequestProfilerEntry): boolean {
+            return !!selectedEntry;
+        }
+
         private _onMousewheel(e: MouseWheelEvent) {
             const scroller = <Scroller>this.$["timelineScroller"];
 

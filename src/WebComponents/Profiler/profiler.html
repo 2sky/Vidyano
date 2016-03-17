@@ -64,7 +64,7 @@
                         </template>
                     </div>
                 </vi-scroller>
-                <div class="flex relative" hidden$="[[selectedEntry]]">
+                <div class="flex relative" hidden$="[[_hasSelectedEntry(selectedEntry)]]">
                     <vi-size-tracker size="{{timelineSize}}"></vi-size-tracker>
                     <vi-scroller id="timelineScroller" class="fit" no-vertical>
                         <svg id="timeline" on-mousewheel="_onMousewheel">
@@ -88,12 +88,12 @@
                         </table>
                     </div>
                 </div>
-                <div class="flex vertical layout" hidden$="[[!selectedEntry]]" id="selectedEntry">
+                <div class="flex relative" hidden$="[[!_hasSelectedEntry(selectedEntry)]]" id="selectedEntry">
                     <header class="horizontal layout">
                         <h1 class="flex">[[selectedEntry.methodName]]</h1>
                         <button is="vi-button" icon="Remove" inverse on-tap="_closeSelectedEntry"></button>
                     </header>
-                    <vi-scroller class="flex">
+                    <vi-scroller class="fit">
                         <main id="selectedEntryInfo"></main>
                     </vi-scroller>
                 </div>
