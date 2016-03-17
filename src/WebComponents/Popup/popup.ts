@@ -156,7 +156,7 @@ module Vidyano.WebComponents {
                     content.classList.remove("left");
                 }
 
-                if (targetRect.top + targetRect.height + contentHeight < boundHeight) {
+                if (targetRect.top + targetRect.height + contentHeight < boundHeight || targetRect.top - contentHeight < 0) {
                     // Top-align
                     content.style.top = (targetRect.top + targetRect.height) + "px";
                     content.style.bottom = "auto";
