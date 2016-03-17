@@ -32,6 +32,10 @@
                 readOnly: true,
                 reflectToAttribute: true
             },
+            alignVerticalScrollbar: {
+                type: String,
+                reflectToAttribute: true
+            },
             noHorizontal: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -278,7 +282,7 @@
 
         private _verticalScrollOffsetChanged(newVerticalScrollOffset: number) {
             var wrapper = this.$["wrapper"];
-            if (!this.vertical || wrapper.scrollTop === newVerticalScrollOffset)
+            if (wrapper.scrollTop === newVerticalScrollOffset)
                 return;
 
             wrapper.scrollTop = newVerticalScrollOffset;
@@ -286,7 +290,7 @@
 
         private _horizontalScrollOffsetChanged(newHorizontalScrollOffset: number) {
             var wrapper = this.$["wrapper"];
-            if (!this.vertical || wrapper.scrollLeft === newHorizontalScrollOffset)
+            if (wrapper.scrollLeft === newHorizontalScrollOffset)
                 return;
 
             wrapper.scrollLeft = newHorizontalScrollOffset;

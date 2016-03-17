@@ -286,7 +286,55 @@ module Vidyano {
         providers: { [name: string]: { parameters: ProviderParameters } };
     }
 
+    export interface ServiceRequest {
+        when: Date;
+        profiler: ServiceRequestProfiler;
+        transport: number;
+        method: string;
+        request: any;
+        response: any;
+    }
+
+    export interface ServiceRequestProfiler {
+        taskId: number;
+        elapsedMilliseconds: number;
+        entries: ServiceRequestProfilerEntry[];
+        sql: ServiceRequestProfilerSQL[];
+        exceptions: {
+            id: string;
+            message: string;
+        }[];
+    }
+
+    export interface ServiceRequestProfilerEntry {
+        entries: ServiceRequestProfilerEntry[];
+        methodName: string;
+        sql: string[];
+        started: number;
+        elapsedMilliseconds: number;
+        hasNPlusOne?: boolean;
+        exception: string;
+        arguments: any[];
+    }
+
+    export interface ServiceRequestProfilerSQL {
+        commandId: string;
+        commandText: string;
+        elapsedMilliseconds: number;
+        recordsAffected: number;
+        taskId: number;
+        type: string;
+        parameters: ServiceRequestProfilerSQLParameter[];
+    }
+
+    export interface ServiceRequestProfilerSQLParameter {
+        name: string;
+        type: string;
+        value: string;
+    }
+
     export class Service extends Vidyano.Common.Observable<Service> {
+        private static _getMs = window.performance && window.performance.now ? () => window.performance.now() : () => new Date().getTime();
         private static _base64KeyStr: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         private _lastAuthTokenUpdate: Date = new Date();
         private _isUsingDefaultCredentials: boolean;
@@ -297,6 +345,8 @@ module Vidyano {
         private _providers: { [name: string]: ProviderParameters };
         private _isSignedIn: boolean;
         private _application: Application;
+        private _profile: boolean;
+        private _profiledRequests: ServiceRequest[];
         staySignedIn: boolean;
         icons: linqjs.Dictionary<string, string>;
         actionDefinitions: linqjs.Dictionary<string, ActionDefinition>;
@@ -333,17 +383,25 @@ module Vidyano {
                     data.authToken = this.authToken;
             }
 
-            data.profile = true;
+            if (this.profile)
+                data.profile = true;
 
             this.hooks.createData(data);
 
             return data;
         }
 
-        private _postJSON(url: string, data: any): Promise<any> {
-            delete data._method;
+        private _getMs(): number {
+            return Service._getMs();
+        }
 
-            var createdRequest = new Date();
+        private _postJSON(url: string, data: any): Promise<any> {
+            const createdRequest = new Date();
+            if (this.profile) {
+                var requestStart = this._getMs();
+                var requestMethod = url.split("/").pop();
+            }
+
             return new Promise((resolve, reject) => {
                 var r = new XMLHttpRequest();
                 r.open("POST", url, true);
@@ -354,7 +412,7 @@ module Vidyano {
                         return;
                     }
 
-                    var result = JSON.parse(r.responseText);
+                    const result = JSON.parse(r.responseText);
                     if (result.exception == null)
                         result.exception = result.ExceptionMessage;
 
@@ -368,9 +426,6 @@ module Vidyano {
                             this.application._updateSession(result.session);
 
                         resolve(result);
-
-                        if (result.operations)
-                            setTimeout(() => result.operations.forEach(o => this.hooks.onClientOperation(o)), 0);
                     } else if (result.exception == "Session expired") {
                         this.authToken = null;
                         delete data.authToken;
@@ -383,9 +438,61 @@ module Vidyano {
                             reject(result.exception);
                             this.hooks.onSessionExpired();
                         }
+
+                        return;
                     }
                     else
                         reject(result.exception);
+
+                    let finishProfile = this.profile;
+                    switch (requestMethod) {
+                        case "GetPersistentObject":
+                            finishProfile = finishProfile && result.result && result.result.id != "b15730ad-9f47-4775-aacb-0a181e95e53d" && !result.result.isSystem;
+                            break;
+
+                        case "GetQuery":
+                            finishProfile = finishProfile && result.query && !result.query.isSystem;
+                            break;
+
+                        case "ExecuteQuery":
+                            finishProfile = finishProfile && data.query && !data.query.isSystem;
+                            break;
+
+                        case "ExecuteAction":
+                            finishProfile = finishProfile && !((result.result != null && (result.result.id == "b15730ad-9f47-4775-aacb-0a181e95e53d" || result.result.isSystem) || (data.query != null && data.query.isSystem) || (data.parent != null && data.parent.isSystem && data.parent.id != "70381ffa-ae0b-4dc0-b4c3-b02dd9a9c0a0")));
+                            break;
+                    }
+
+                    if (finishProfile) {
+                        const requestEnd = this._getMs();
+
+                        if (!result.profiler) {
+                            result.profiler = { elapsedMilliseconds: -1 };
+                            if (result.exception)
+                                result.profiler.exceptions = [result.exception];
+                        }
+
+                        const elapsedMs = r.getResponseHeader("X-ElapsedMilliseconds");
+                        if (elapsedMs)
+                            result.profiler.elapsedMilliseconds = Service.fromServiceString(elapsedMs, "Int32");
+
+                        const request: ServiceRequest = {
+                            when: createdRequest,
+                            profiler: result.profiler,
+                            transport: Math.round(requestEnd - requestStart - result.profiler.elapsedMilliseconds),
+                            method: requestMethod,
+                            request: data,
+                            response: result
+                        };
+
+                        const requests = this.profiledRequests || [];
+                        requests.unshift(request);
+
+                        this._setProfiledRequests(requests.slice(0, 20));
+                    }
+
+                    if (result.operations)
+                        setTimeout(() => result.operations.forEach(o => this.hooks.onClientOperation(o)), 0);
                 };
                 r.onerror = () => { reject(r.statusText); };
 
@@ -551,6 +658,11 @@ module Vidyano {
 
             var oldApplication = this._application;
             this.notifyPropertyChanged("application", this._application = application, oldApplication);
+
+            if (this._application && this._application.canProfile)
+                this.profile = !!BooleanEx.parse(Vidyano.cookie("profile"));
+            else
+                this.profile = false;
         }
 
         get language(): Language {
@@ -630,6 +742,35 @@ module Vidyano {
                 Vidyano.cookie("authToken", val, { expires: 14 });
             else
                 Vidyano.cookie("authToken", val);
+        }
+
+        get profile(): boolean {
+            return this._profile;
+        }
+
+        set profile(val: boolean) {
+            if (this._profile === val)
+                return;
+
+            var currentProfileCookie = !!BooleanEx.parse(Vidyano.cookie("profile"));
+            if (currentProfileCookie != val)
+                Vidyano.cookie("profile", String(val));
+
+            var oldValue = this._profile;
+            this._profile = val;
+
+            if (!val)
+                this._setProfiledRequests([]);
+
+            this.notifyPropertyChanged("profile", val, oldValue);
+        }
+
+        get profiledRequests(): ServiceRequest[] {
+            return this._profiledRequests;
+        }
+
+        private _setProfiledRequests(requests: ServiceRequest[]) {
+            this.notifyPropertyChanged("profiledRequests", this._profiledRequests = requests);
         }
 
         getTranslatedMessage(key: string, ...params: string[]): string {
@@ -3384,6 +3525,8 @@ module Vidyano {
             name: string;
             label: string;
             type: string;
+            width?: string;
+            typeHints?: { [name: string]: string };
         }[];
     }
 
@@ -4522,6 +4665,7 @@ module Vidyano {
         private _globalSearchId: string;
         private _analyticsKey: string;
         private _userSettings: any;
+        private _canProfile: boolean;
         private _hasManagement: boolean;
         private _session: Vidyano.PersistentObject;
         private _routes: Routes;
@@ -4545,6 +4689,8 @@ module Vidyano {
 
             var userSettings = this.getAttributeValue("UserSettings");
             this._userSettings = JSON.parse(StringEx.isNullOrEmpty(userSettings) ? (localStorage["UserSettings"] || "{}") : userSettings);
+
+            this._canProfile = this.getAttributeValue("CanProfile");
 
             var pus = <{ hasManagement: boolean; units: any[] }>JSON.parse(this.getAttributeValue("ProgramUnits"));
             this.programUnits = Enumerable.from(pus.units).select(unit => new ProgramUnit(this.service, this.routes, unit)).toArray();
@@ -4576,6 +4722,10 @@ module Vidyano {
 
         get userSettings(): any {
             return this._userSettings;
+        }
+
+        get canProfile(): boolean {
+            return this._canProfile;
         }
 
         get hasManagement(): boolean {

@@ -27,6 +27,7 @@
     &[no-vertical]:not([no-horizontal]) {
         > #wrapper {
             @include layout-horizontal();
+            overflow-y: hidden;
         }
     }
 
@@ -151,6 +152,13 @@
     &[horizontal] {
         > .scrollbar-parent.horizontal:hover {
             background-color: rgba(0,0,0,0.2);
+        }
+    }
+
+    &[align-vertical-scrollbar="left"] {
+        > .vertical {
+            right: auto;
+            left: 0;
         }
     }
 
