@@ -4,7 +4,7 @@ module Vidyano.WebComponents {
         d3timer(callback, 0, 0);
     };
 
-    interface ProfilerServiceRequest extends Vidyano.ServiceRequest {
+    export interface ProfilerServiceRequest extends Vidyano.ServiceRequest {
         hasNPlusOne: boolean;
         parameters: {
             [name: string]: string;
@@ -12,7 +12,7 @@ module Vidyano.WebComponents {
         flattenedEntries: FlattenedServiceRequestProfilerEntry[];
     }
 
-    interface FlattenedServiceRequestProfilerEntry {
+    export interface FlattenedServiceRequestProfilerEntry {
         entry: ServiceRequestProfilerEntry;
         level: number;
     }
