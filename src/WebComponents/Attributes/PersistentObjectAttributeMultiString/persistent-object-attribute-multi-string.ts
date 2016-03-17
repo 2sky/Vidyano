@@ -94,7 +94,7 @@ module Vidyano.WebComponents.Attributes {
 		}
 
 		private _itemValueNew(e: Event, detail: { value: string }) {
-			this.value = `${this.value}\n${detail.value}`;
+			this.value = `${this.value || ""}\n${detail.value}`;
 			this.strings[this.strings.length - 1].$["input"].focus();
 
 			e.stopPropagation();
