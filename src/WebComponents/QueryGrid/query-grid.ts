@@ -86,7 +86,11 @@
             hasTotalItem: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "query.totalItem"
+                computed: "_computeHasTotalItem(query.totalItem, _items, columnWidthsCalculated)"
+            },
+            columnWidthsCalculated: {
+                type: Boolean,
+                readOnly: true
             },
             _verticalScrollOffset:{
                 type: Number,
@@ -155,6 +159,7 @@
         private _setInitializing: (initializing: boolean) => void;
         private _setViewportSize: (size: Size) => void;
         private _setRowHeight: (rowHeight: number) => void;
+        private _setColumnWidthsCalculated: (val: boolean) => void;
 
         attached() {
             if (QueryGrid.tableCache.length > 0 && !this._tableData) {
@@ -378,6 +383,10 @@
             return !!query && query.canFilter;
         }
 
+        private _computeHasTotalItem(totalItem: Vidyano.QueryResultItem, items: Vidyano.QueryResultItem[], columnWidthsUpdated: boolean): boolean {
+            return !!totalItem && items && items.length > 0 && columnWidthsUpdated;
+        }
+
         private _updateTables(items: Vidyano.QueryResultItem[], columns: QueryGridColumn[], canReorder: boolean, isAttached: boolean) {
             if (!isAttached)
                 return;
@@ -580,6 +589,7 @@
                             });
 
                             this._columnWidthsUpdated();
+                            this._setColumnWidthsCalculated(true);
                         }
 
                         if (!layoutUpdating) {
