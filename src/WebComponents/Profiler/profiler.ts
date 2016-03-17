@@ -5,16 +5,7 @@ module Vidyano.WebComponents {
     };
 
     interface ProfilerServiceRequest extends Vidyano.ServiceRequest {
-        resultItem: {
-            id: string | number;
-            breadcrumb ?: string;
-            typeHints ?: { [name: string]: string };
-            values: {
-                key: string;
-                value: string;
-                typeHints ?: { [name: string]: string };
-            } [];
-        };
+        hasNPlusOne: boolean;
         parameters: {
             [name: string]: string;
         };
@@ -32,6 +23,11 @@ module Vidyano.WebComponents {
             awaiting: {
                 type: String,
                 value: "Awaiting next request..."
+            },
+            profiledRequests: {
+                type: Array,
+                computed: "service.profiledRequests",
+                observer: "_profiledRequestsChanged"
             },
             lastRequest: {
                 type: Object,
@@ -51,9 +47,11 @@ module Vidyano.WebComponents {
                 readOnly: true,
                 value: null
             },
-            query: {
+            selectedEntry: {
                 type: Object,
-                computed: "_computeQuery(isAttached, service.profile, service.profiledRequests)"
+                readOnly: true,
+                value: null,
+                observer: "_selectedEntryChanged"
             },
             timelineSize: Object,
             zoom: {
@@ -71,17 +69,17 @@ module Vidyano.WebComponents {
         ]
     })
     export class Profiler extends WebComponent {
-        private static _queryColumns: any[];
         private _boundMousehweel = this._onMousewheel.bind(this);
-        query: Vidyano.Query;
-        lastRequest: Vidyano.ServiceRequest;
-        selectedRequest: Vidyano.ServiceRequest;
+        lastRequest: ProfilerServiceRequest;
+        selectedRequest: ProfilerServiceRequest;
         zoom: number;
         timelineSize: Size;
+        profiledRequests: ProfilerServiceRequest[];
 
         private _setLastRequest: (request: Vidyano.ServiceRequest) => void;
         private _setSelectedRequest: (request: Vidyano.ServiceRequest) => void;
         private _setHoveredEntry: (entry: ServiceRequestProfilerEntry) => void;
+        private _setSelectedEntry: (entry: ServiceRequestProfilerEntry) => void;
         private _setZoom: (value: number) => void;
 
         attached() {
@@ -94,51 +92,6 @@ module Vidyano.WebComponents {
             super.detached();
 
             this.$["timeline"].removeEventListener("DOMMouseScroll", this._boundMousehweel);
-        }
-
-        private _computeQuery(isAttached: boolean, profile: boolean, profiledRequests: ProfilerServiceRequest[]): Vidyano.Query {
-            if (!isAttached || !profile)
-                return null;
-
-            const query = this.query || Vidyano.Query.FromJsonData(this.app.service, {
-                label: "Profiler",
-                columns: Profiler._queryColumns || (Profiler._queryColumns = [
-                    { name: "HasWarnings", label: "", type: "Image", width: "30px", typeHints: { "Width": "30", "Height": "30" } },
-                    { name: "When", label: "When?", type: "DateTime", width: "90px", typeHints: { "DisplayFormat": "{0:HH:mm:ss}" } },
-                    { name: "Method", label: "Method", type: "String", width: "150px" },
-                    { name: "Parameters", label: "Parameters", type: "String", width: "200px" },
-                    { name: "Server", label: "Server", type: "String", width: "90px" },
-                    { name: "Transport", label: "Transport", type: "String", width: "90px" },
-                    { name: "SQL", label: "SQL", type: "String", width: "90px" },
-                    { name: "SharpSQL", label: "#SQL", type: "String", width: "90px" }
-                ]),
-                items: []
-            });
-
-            query._setResult({
-                columns: Profiler._queryColumns,
-                items: profiledRequests.map(request => {
-                    return request.resultItem || (request.resultItem = {
-                        id: Unique.get(),
-                        values: [
-                            { key: "HasWarnings", value: this._hasNPlusOne(request.profiler) || (request.profiler.exceptions && request.profiler.exceptions.length > 0) ? "iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAABTAAAAUwBaYa9OQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAKISURBVEiJ7ZbfS1NhHMafs3czdIII5gwvDL0JgrCLbiLN/0DL/oPwJggHlU7DCFIRQcuuK7vW/NHlcsicdTMhQ4NSWVMC8YhTdGOHufO+Tzdq2RbzzIUIPnDg8D4vz+f9vue8PzSSOAnZToR6Bj4NYA1AE4B7e+/WRTKbx8PfassmQ8tiOZVRypA+OlYApeC60xjXhKgCsPa/K34tEwkZqKhkoKKSKpGQJF9ZzbEKvaqUUj+6uumFoBeCoc4uUilFsvq/gZVpTid03fQVFh2AfYVFTOi6SdMMWMmy8lc3akLcWPK0CxmLHTTKWAyLrW0CQtQAuJ3rb3xOmebKzuwX+cHm4GRxCTcmfNyY8HGyuIRezc6dz7NS7e6ukMzL5VS3kmSwto5eCPrLyg/Wkr+snF4IBmtu7je15GqqXVCqY31klFuB6X922pr+CP3dCCjlEwClmUKPAu6klPkLj1oz7lCLLR5AqXwAz44LriZ5d7mv32aEwxlHaITDWO7rt4FsAnAlazClHEhGIirc3ZMRuq9wdw+SkYiClAPZgm9pQtQutT0WZjR6yJCGgbWhYawNDUMaxiHPjEax6GkXEKIOQL1VcB6lfB6bm5erbwZTXaUg43HIeBxQKsVeHXyL6Ny8YjL5AkCeFbBbE6Lie7NbME2wcDrhaqiHq6EewulM8akUFprdNs3huAjg/lHBpVCqY338PTf9U2lHJQ0D28EZbAdnUqZ6X5v+Kehj46CUTwGU/O2nOxZ7aZoPPl26bIuHQmlDj6qCqipc//aVNofjJQD3n549Tf8L0DTt2tRk8ljUPWl2uwNpNpR0FRcBeAjgfC7AAH4C6AVwqJBsbiA50am7ZZ6BLesXm5TlWBFDkl8AAAAASUVORK5CYII=" : "" },
-                            { key: "When", value: Service.toServiceString(request.when, "DateTime") },
-                            { key: "Method", value: request.method },
-                            { key: "Parameters", value: this._computeParameters(request) },
-                            { key: "Server", value: this._formatMs(request.profiler.elapsedMilliseconds) },
-                            { key: "Transport", value: this._formatMs(request.transport) },
-                            { key: "SQL", value: request.profiler.sql ? this._formatMs(request.profiler.sql.reduce((current, entry) => current + entry.elapsedMilliseconds, 0)) : "0ms" },
-                            { key: "SharpSQL", value: (request.profiler.sql ? request.profiler.sql.length : 0).toString() }
-                        ]
-                    })
-                })
-            });
-
-            this._setLastRequest(profiledRequests[0]);
-            if (!this.selectedRequest)
-                this._setSelectedRequest(this.lastRequest);
-
-            return query;
         }
 
         private _computeParameters(request: ProfilerServiceRequest): string {
@@ -167,22 +120,38 @@ module Vidyano.WebComponents {
             }
         }
 
+        private _computeSQL(request: ProfilerServiceRequest): string {
+            return request.profiler.sql ? this._formatMs(request.profiler.sql.reduce((current, entry) => current + entry.elapsedMilliseconds, 0)) : "0ms";
+        }
+
+        private _computeSharpSQL(request: ProfilerServiceRequest): string {
+            return (request.profiler.sql ? request.profiler.sql.length : 0).toString();
+        }
+
         private _computeLastRequestParameters(request: ProfilerServiceRequest): { key: string; value: string; }[] {
             return Enumerable.from(<any>request.parameters).toArray();
         }
 
-        private _hasNPlusOne(profiler: ServiceRequestProfiler, entries: ServiceRequestProfilerEntry[] = profiler.entries): boolean {
+        private _isSelected(request: ProfilerServiceRequest, selectedRequest: ProfilerServiceRequest): boolean {
+            return request === selectedRequest;
+        }
+
+        private _hasWarnings(request: ProfilerServiceRequest): boolean {
+            return request.hasNPlusOne || (request.profiler.exceptions && request.profiler.exceptions.length > 0);
+        }
+
+        private _hasNPlusOne(request: ServiceRequest, entries: ServiceRequestProfilerEntry[] = request.profiler.entries): boolean {
             if (!entries)
                 return false;
 
             let hasNPlusOne = false;
             entries.forEach(entry => {
-                const counts = Enumerable.from(entry.sql).groupBy(commandId => Enumerable.from(profiler.sql).firstOrDefault(s => s.commandId == commandId).commandText, s => s);
+                const counts = Enumerable.from(entry.sql).groupBy(commandId => Enumerable.from(request.profiler.sql).firstOrDefault(s => s.commandId == commandId).commandText, s => s);
                 if (counts.firstOrDefault(c => c.count() > 1))
                     entry.hasNPlusOne = hasNPlusOne = true;
 
                 if (entry.entries && entry.entries.length > 0)
-                    hasNPlusOne = this._hasNPlusOne(profiler, entry.entries) || hasNPlusOne;
+                    hasNPlusOne = this._hasNPlusOne(request, entry.entries) || hasNPlusOne;
             });
 
             return hasNPlusOne;
@@ -204,8 +173,23 @@ module Vidyano.WebComponents {
             scroller.horizontalScrollOffset = (newInnerWidth - scroller.outerWidth) * mousePctg;
         }
 
+        private _selectRequest(e: TapEvent) {
+            this._setSelectedRequest(e.model.request);
+        }
+
         private _selectedRequestChanged() {
             this._setZoom(1);
+            this._setSelectedEntry(null);
+        }
+
+        private _profiledRequestsChanged(profiledRequests: ProfilerServiceRequest[] = []) {
+            profiledRequests.forEach(r => {
+                if (r.hasNPlusOne === undefined)
+                    r.hasNPlusOne = this._hasNPlusOne(r);
+            });
+
+            this._setSelectedRequest(profiledRequests[0]);
+            this._setLastRequest(profiledRequests[0]);
         }
 
         private _renderRequestTimeline(request: ProfilerServiceRequest, size: Size, zoom: number) {
@@ -245,7 +229,8 @@ module Vidyano.WebComponents {
             const entryGroupSelection = entriesGroup.selectAll("g.entry").data(request.flattenedEntries || (request.flattenedEntries = this._flattenEntries(request.profiler.entries)));
             const entryGroup = entryGroupSelection.enter()
                 .append("g")
-                .attr("class", e => this._computeEntryClassName(e.entry));
+                .attr("class", e => this._computeEntryClassName(e.entry))
+                .on("click", e => this._setSelectedEntry(e.entry));
 
             entryGroup.append("rect")
                 .attr("x", e => scale(e.entry.started || 0))
@@ -285,7 +270,7 @@ module Vidyano.WebComponents {
             entryGroupSelection.exit().remove();
         }
 
-        private _flattenEntries(entries: ServiceRequestProfilerEntry[], level: number = 1, flattenedEntries: FlattenedServiceRequestProfilerEntry[] = []): FlattenedServiceRequestProfilerEntry[] {
+        private _flattenEntries(entries: ServiceRequestProfilerEntry[] = [], level: number = 1, flattenedEntries: FlattenedServiceRequestProfilerEntry[] = []): FlattenedServiceRequestProfilerEntry[] {
             entries.forEach(entry => {
                 flattenedEntries.push({
                     entry: entry,
@@ -327,8 +312,137 @@ module Vidyano.WebComponents {
             return `${ms || 0}ms`;
         }
 
-        private _gridItemTap(e: CustomEvent, detail: { item: QueryResultItem; }) {
-            this._setSelectedRequest(Enumerable.from(<ProfilerServiceRequest[]>this.app.service.profiledRequests).firstOrDefault(r => r.resultItem.id === detail.item.id));
+        private _formatDate(date: Date): string {
+            return StringEx.format(`{0:${Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern} ${Vidyano.CultureInfo.currentCulture.dateFormat.shortTimePattern}}`, date);
+        }
+
+        private _selectedEntryChanged(entry: ServiceRequestProfilerEntry) {
+            const info = document.createDocumentFragment();
+            this.empty(this.$["selectedEntryInfo"]);
+
+            if (!entry)
+                return;
+
+            const createTableCell = (content?: any | HTMLElement, colspan?: number) => {
+                var td = document.createElement("td");
+
+                if (content instanceof HTMLElement)
+                    td.appendChild(content);
+                else
+                    td.textContent = <string>content;
+
+                if (colspan)
+                    td.setAttribute("colspan", colspan.toString());
+
+                return td;
+            };
+
+            const createTableRow = (...contents: (any | HTMLElement)[]) => {
+                var row = document.createElement("tr");
+
+                if (contents)
+                    contents.forEach(content => row.appendChild(createTableCell(content)));
+
+                return row;
+            };
+
+            // Arguments information
+            if (entry.arguments && entry.arguments.length > 0) {
+                const title = document.createElement("h2");
+                title.textContent = "Arguments";
+                info.appendChild(title);
+
+                const argumentNames = entry.methodName.replace(")", "").split("(")[1].split(", ");
+                const table = document.createElement("table");
+                table.className = "arguments";
+
+                argumentNames.forEach((argName, argIndex) => {
+                    let row = table.appendChild(document.createElement("tr"));
+                    row.appendChild(createTableCell(argName));
+
+                    if (typeof (entry.arguments[argIndex]) == "object") {
+                        let first = true;
+                        for (let p in entry.arguments[argIndex]) {
+                            if (!first) {
+                                row = table.appendChild(document.createElement("tr"));
+                                row.appendChild(createTableCell());
+                            }
+                            else
+                                first = false;
+
+                            row.appendChild(createTableCell(p));
+                            row.appendChild(createTableCell(entry.arguments[argIndex][p]));
+                        }
+                    }
+                    else
+                        row.appendChild(createTableCell(entry.arguments[argIndex], 2));
+                });
+
+                info.appendChild(table);
+            }
+
+            // SQL information
+            if (entry.sql  && entry.sql.length > 0) {
+                const title = document.createElement("h2");
+                title.textContent = "SQL Statements";
+                info.appendChild(title);
+
+                const sqlEnum = Enumerable.from(this.selectedRequest.profiler.sql).memoize();
+                entry.sql.forEach(sqlCommandId => {
+                    var sql = sqlEnum.firstOrDefault(s => s.commandId === sqlCommandId);
+                    if (!sql)
+                        return;
+
+                    const table = document.createElement("table");
+                    table.className = "sql-statement";
+
+                    const commandText = document.createElement("pre");
+                    commandText.textContent = sql.commandText;
+                    table.appendChild(createTableRow("CommandText", commandText));
+
+                    if (sql.parameters) {
+                        const parametersRow = table.appendChild(createTableRow("Parameters"));
+                        const parametersTable = document.createElement("table");
+                        parametersRow.appendChild(createTableCell(parametersTable));
+
+                        sql.parameters.forEach(sqlParam => parametersTable.appendChild(createTableRow(sqlParam.name, sqlParam.value, sqlParam.type)));
+
+                        table.appendChild(parametersRow);
+                    }
+
+                    if (sql.recordsAffected)
+                        table.appendChild(createTableRow("Records affected", sql.recordsAffected));
+
+                    table.appendChild(createTableRow("Total time", `${sql.elapsedMilliseconds || 0}ms`));
+
+                    if (sql.taskId)
+                        table.appendChild(createTableRow("Task id", sql.taskId));
+
+                    if (entry.hasNPlusOne)
+                        table.appendChild(createTableRow("Warning", "Possible N+1 detected"));
+
+                    info.appendChild(table);
+                });
+            }
+
+            if (entry.exception) {
+                const title = document.createElement("h2");
+                title.textContent = "Exception";
+                info.appendChild(title);
+
+                const exception = Enumerable.from(this.selectedRequest.profiler.exceptions).firstOrDefault(e => e.id == entry.exception);
+                if (exception) {
+                    const exceptionPre = document.createElement("pre");
+                    exceptionPre.textContent = exception.message;
+                    info.appendChild(exceptionPre);
+                }
+            }
+
+            Polymer.dom(this.$["selectedEntryInfo"]).appendChild(info);
+        }
+
+        private _closeSelectedEntry() {
+            this._setSelectedEntry(null);
         }
 
         private _close(e: TapEvent) {

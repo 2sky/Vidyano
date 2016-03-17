@@ -31,8 +31,40 @@
                 <button is="vi-button" icon="Remove" type="light-monochrome" inverse on-tap="_close"></button>
             </div>
             <div content class="layout horizontal">
-                <vi-query-grid query="[[query]]" on-item-tap="_gridItemTap"></vi-query-grid>
-                <div class="flex relative">
+                <vi-scroller no-horizontal align-vertical-scrollbar="left">
+                    <div>
+                        <template is="dom-repeat" items="[[profiledRequests]]" as="request">
+                            <div class="request" selected$="[[_isSelected(request, selectedRequest)]]" has-warnings$="[[_hasWarnings(request)]]" on-tap="_selectRequest">
+                                <div class="layout horizontal-reverse method">
+                                    <h3>[[_formatDate(request.when)]]</h3>
+                                    <div class="flex layout horizontal wrap">
+                                        <h1>[[request.method]]</h1>
+                                        <h2>[[_computeParameters(request)]]</h2>
+                                    </div>
+                                </div>
+                                <div class="layout horizontal wrap extra">
+                                    <div>
+                                        <label>Server:</label>
+                                        <span>[[_formatMs(request.profiler.elapsedMilliseconds)]]</span>
+                                    </div>
+                                    <div>
+                                        <label>Transport:</label>
+                                        <span>[[_formatMs(request.transport)]]</span>
+                                    </div>
+                                    <div>
+                                        <label>SQL:</label>
+                                        <span>[[_computeSQL(request)]]</span>
+                                    </div>
+                                    <div>
+                                        <label>#SQL:</label>
+                                        <span>[[_computeSharpSQL(request)]]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </vi-scroller>
+                <div class="flex relative" hidden$="[[selectedEntry]]">
                     <vi-size-tracker size="{{timelineSize}}"></vi-size-tracker>
                     <vi-scroller id="timelineScroller" class="fit" no-vertical>
                         <svg id="timeline" on-mousewheel="_onMousewheel">
@@ -55,6 +87,15 @@
                             </tr>
                         </table>
                     </div>
+                </div>
+                <div class="flex vertical layout" hidden$="[[!selectedEntry]]" id="selectedEntry">
+                    <header class="horizontal layout">
+                        <h1 class="flex">[[selectedEntry.methodName]]</h1>
+                        <button is="vi-button" icon="Remove" inverse on-tap="_closeSelectedEntry"></button>
+                    </header>
+                    <vi-scroller class="flex">
+                        <main id="selectedEntryInfo"></main>
+                    </vi-scroller>
                 </div>
             </div>
         </vi-popup>

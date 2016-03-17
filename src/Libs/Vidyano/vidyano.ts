@@ -300,7 +300,10 @@ module Vidyano {
         elapsedMilliseconds: number;
         entries: ServiceRequestProfilerEntry[];
         sql: ServiceRequestProfilerSQL[];
-        exceptions: string[];
+        exceptions: {
+            id: string;
+            message: string;
+        }[];
     }
 
     export interface ServiceRequestProfilerEntry {
@@ -321,6 +324,7 @@ module Vidyano {
         recordsAffected: number;
         taskId: number;
         type: string;
+        parameters: ServiceRequestProfilerSQLParameter[];
     }
 
     export interface ServiceRequestProfilerSQLParameter {
@@ -764,7 +768,7 @@ module Vidyano {
         }
 
         private _setProfiledRequests(requests: ServiceRequest[]) {
-            this.notifyPropertyChanged("profile", this._profiledRequests = requests);
+            this.notifyPropertyChanged("profiledRequests", this._profiledRequests = requests);
         }
 
         getTranslatedMessage(key: string, ...params: string[]): string {

@@ -47,72 +47,160 @@
         }
 
         [content] {
-            padding: var(--theme-h5);
             height: calc(15 * var(--theme-h1));
             max-height: 40vh;
             background-color: #e7e7e7;
             @apply(--theme-shadow);
+            padding: 6px;
 
-            vi-query-grid {
-                width: 40%;
+            > * {
+                overflow: hidden;
                 background-color: white;
-                border: 1px solid #d0d0d0;
-                margin-right: var(--theme-h5);
-            }
 
-            vi-scroller {
-                background-color: white;
-                border: 1px solid #d0d0d0;
+                &:first-child {
+                    width: 40%;
+                    z-index: 1;
+                    @apply(--theme-shadow);
 
-                svg ::content {
-                    g.xaxis {
-                        font-size: 10px;
+                    .request {
+                        background-color: #FAFAFA;
+                        color: #333;
+                        border-radius: var(--theme-h5);
+                        margin: var(--theme-h5) var(--theme-h4);
+                        padding: var(--theme-h5);
+                        cursor: pointer;
+                        border: 1px solid #EAEAEA;
+                        transition: all 0.2s ease;
 
-                        line {
-                            stroke: #eee;
+                        &[selected] {
+                            background-color: var(--theme-color);
+                            color: white;
+                            margin-right: 0;
+                            border-radius: var(--theme-h5) 0 0 var(--theme-h5);
+                            border-right-width: 0;
+
+                            h3 {
+                                margin-right: calc(var(--theme-h4) + 2px);
+                            }
+                        }
+
+                        &[has-warnings] {
+                            background-color: #a00;
+                            color: white;
+
+                            &[selected] {
+                                background-color: #800;
+                            }
+                        }
+
+                        h1, h2, h3 {
+                            margin: 0;
+                        }
+
+                        h1 {
+                            font-size: 16px;
+                            margin-right: var(--theme-h5);
+                        }
+
+                        h2 {
+                            font-size: 13px;
+                        }
+
+                        h3 {
+                            font-size: 10px;
+                            font-weight: 300;
+                            transition: margin-right 0.2s ease;
+                        }
+
+                        .method > div {
+                            line-height: 20px;
+                        }
+
+                        .extra {
+                            font-size: 12px;
+                            padding-top: var(--theme-h5);
+                            letter-spacing: 0.5px;
+
+                            > div {
+                                margin-right: var(--theme-h4);
+
+                                label {
+                                    font-weight: 400;
+                                }
+
+                                span {
+                                    font-weight: bold;
+                                }
+                            }
                         }
                     }
+                }
+            }
 
-                    g.entries {
-                        .entry {
-                            cursor: default;
+            > div:nth-child(2) {
+                border: 1px solid #C7C7C7;
+                border-left-width: 0;
+                margin-top: 1px;
+                margin-bottom: 1px;
 
-                            rect {
-                                fill: #63b08a;
+                vi-scroller {
+                    svg ::content {
+                        g.xaxis {
+                            font-size: 10px;
+
+                            line {
+                                stroke: #eee;
                             }
 
-                            &.has-details {
-                                rect {
-                                    fill: #008042;
-                                }
-
-                                cursor: pointer;
-
-                                .text {
-                                    cursor: pointer !important;
-                                }
+                            g.tick:first-child {
+                                display: none;
                             }
+                        }
 
-                            &.has-sql {
+                        g.entries {
+                            .entry {
+                                cursor: default;
+
                                 rect {
-                                    fill: #7e007e;
+                                    fill: #63b08a;
+                                    stroke: white;
+                                    stroke-width: 1px;
                                 }
 
-                                &.has-n-plus-one, &.has-exception {
+                                &.has-details {
                                     rect {
-                                        fill: #a00;
+                                        fill: #008042;
+                                    }
+
+                                    cursor: pointer;
+
+                                    .text {
+                                        cursor: pointer !important;
                                     }
                                 }
-                            }
 
-                            .text {
-                                color: white;
-                                white-space: nowrap;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                                padding: 0 6px;
-                                font-size: 12px;
-                                line-height: var(--vi-profiler-entry-height);
+                                &.has-sql {
+                                    rect {
+                                        fill: #7e007e;
+                                    }
+
+                                    &.has-n-plus-one, &.has-exception {
+                                        rect {
+                                            fill: #a00;
+                                        }
+                                    }
+                                }
+
+                                .text {
+                                    color: white;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    padding: 0 6px;
+                                    font-size: 12px;
+                                    line-height: var(--vi-profiler-entry-height);
+                                    box-sizing: border-box;
+                                }
                             }
                         }
                     }
@@ -136,6 +224,55 @@
                         td:last-child {
                             font-weight: bold;
                         }
+                    }
+                }
+            }
+
+            #selectedEntry {
+                min-width: 0;
+
+                header {
+                    height: var(--theme-h2);
+                    line-height: var(--theme-h2);
+                    border-bottom: 1px solid var(--theme-light-border);
+                    box-sizing: border-box;
+
+                    h1 {
+                        margin: 0;
+                        font-size: 13px;
+                        font-weight: normal;
+                        padding: 0 var(--theme-h5);
+                        color: var(--theme-color);
+                    }
+                }
+
+                main {
+                    padding-left: var(--theme-h5);
+                    font-size: 13px;
+
+                    table {
+                        tr {
+                            td {
+                                line-height: 1.2em;
+                                padding: 0 var(--theme-h3) var(--theme-h5) 0;
+                                vertical-align: top;
+
+                                &:first-of-type {
+                                    font-weight: bold;
+                                }
+                            }
+                        }
+                    }
+
+                    pre {
+                        font-family: monospace !important
+                    }
+
+                    h2 {
+                        font-size: var(--theme-h3);
+                        margin: var(--theme-h4) 0;
+                        font-weight: 400;
+                        color: var(--theme-color);
                     }
                 }
             }
