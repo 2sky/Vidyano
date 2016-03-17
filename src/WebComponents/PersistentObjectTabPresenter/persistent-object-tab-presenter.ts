@@ -34,8 +34,10 @@ module Vidyano.WebComponents {
 
             this.empty();
 
-            if (!tab)
+            if (!tab) {
+                this._setLoading(false);
                 return;
+            }
 
             this._setLoading(true);
 
