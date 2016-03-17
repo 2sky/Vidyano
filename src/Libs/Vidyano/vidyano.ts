@@ -1755,6 +1755,9 @@ module Vidyano {
             })).toArray() : [];
             this._tabs = attributeTabs.concat(Enumerable.from(this.queries).select(q => <PersistentObjectTab>this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
 
+            if (this._tabs.length == 0)
+                this._tabs = [this.service.hooks.onConstructPersistentObjectAttributeTab(service, Enumerable.empty<PersistentObjectAttributeGroup>(), "", "", "", null, this, 0, true)];
+
             this._lastResult = po;
 
             if (this.isNew || this.stateBehavior == "OpenInEdit" || this.stateBehavior.indexOf("OpenInEdit") >= 0 || this.stateBehavior == "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)

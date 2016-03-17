@@ -24,6 +24,7 @@
             },
             selectedMasterTab: {
                 type: Object,
+                value: null,
                 observer: "_selectedMasterTabChanged"
             },
             detailTabs: {
@@ -38,6 +39,7 @@
             },
             selectedDetailTab: {
                 type: Object,
+                value: null,
                 observer: "_selectedDetailTabChanged"
             },
             layoutMasterDetail: {
@@ -119,8 +121,8 @@
             if (persistentObject && isAttached) {
                 this._cacheEntry = <PersistentObjectAppCacheEntry>this.app.cache(new PersistentObjectAppCacheEntry(this.persistentObject));
 
-                this.selectedMasterTab = this._cacheEntry.selectedMasterTab || this._computeMasterTabs(this.persistentObject, this.persistentObject.tabs)[0];
-                this.selectedDetailTab = this._cacheEntry.selectedDetailTab || this._computeDetailTabs(this.persistentObject, this.persistentObject.tabs)[0];
+                this.selectedMasterTab = this._cacheEntry.selectedMasterTab || this._computeMasterTabs(this.persistentObject, this.persistentObject.tabs)[0] || null;
+                this.selectedDetailTab = this._cacheEntry.selectedDetailTab || this._computeDetailTabs(this.persistentObject, this.persistentObject.tabs)[0] || null
 
                 if (this.app.service.application.userSettings["PersistentObjectSettings"] &&
                     this.app.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id] &&
