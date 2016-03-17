@@ -7,13 +7,13 @@
         <vi-popup sticky disabled$="[[!lastRequest]]">
             <div header class="flex layout horizontal">
                 <vi-icon source="Profiler"></vi-icon>
-                <div class="flex" hidden$="[[lastRequest]]">[[awaiting]]</div>
-                <div class="flex layout horizontal" hidden$="[[!lastRequest]]" id="lastRequest">
+                <div class="flex" hidden$="[[_hasLastRequest(lastRequest)]]">[[awaiting]]</div>
+                <div class="flex layout horizontal" hidden$="[[!_hasLastRequest(lastRequest)]]" id="lastRequest">
                     <div>
                         <label>Method</label>
                         <h1>[[lastRequest.method]]</h1>
                     </div>
-                    <template is="dom-repeat" items="[[lastRequestParameters]]" as="parameter">
+                    <template is="dom-repeat" items="[[lastRequest.parameters]]" as="parameter">
                         <div>
                             <label>[[parameter.key]]</label>
                             <h1>[[parameter.value]]</h1>
@@ -39,7 +39,7 @@
                                     <h3>[[_formatDate(request.when)]]</h3>
                                     <div class="flex layout horizontal wrap">
                                         <h1>[[request.method]]</h1>
-                                        <h2>[[_computeParameters(request)]]</h2>
+                                        <h2>[[_formatRequestParameters(request)]]</h2>
                                     </div>
                                 </div>
                                 <div class="layout horizontal wrap extra">

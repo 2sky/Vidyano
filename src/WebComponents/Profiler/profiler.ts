@@ -7,8 +7,9 @@ module Vidyano.WebComponents {
     export interface ProfilerServiceRequest extends Vidyano.ServiceRequest {
         hasNPlusOne: boolean;
         parameters: {
-            [name: string]: string;
-        };
+            key: string;
+            value: string;
+        }[];
         flattenedEntries: FlattenedServiceRequestProfilerEntry[];
     }
 
@@ -33,10 +34,6 @@ module Vidyano.WebComponents {
                 type: Object,
                 readOnly: true,
                 value: null
-            },
-            lastRequestParameters: {
-                type: Array,
-                computed: "_computeLastRequestParameters(lastRequest)"
             },
             selectedRequest: {
                 type: Object,
@@ -95,42 +92,12 @@ module Vidyano.WebComponents {
             this.$["timeline"].removeEventListener("DOMMouseScroll", this._boundMousehweel);
         }
 
-        private _computeParameters(request: ProfilerServiceRequest): string {
-            if (!request.parameters)
-                request.parameters = {};
-
-            switch (request.method) {
-                case "GetPersistentObject":
-                    return `(${request.parameters["Type"] = request.response.result.type}, ${request.parameters["Id"] = request.response.result.objectId})`;
-
-                case "GetQuery":
-                    return `(${request.parameters["Name"] = request.response.query.name})`;
-
-                case "ExecuteAction":
-                    return `(${request.parameters["Name"] = request.request.action})`;
-
-                case "ExecuteQuery": {
-                    let parameters = `(${request.parameters["Name"] = request.request.query.name}, ${request.parameters["PageSize"] = request.request.query.pageSize}`;
-                    if (request.request.query.top)
-                        parameters = `${parameters}, ${request.parameters["Top"] = request.request.query.top}`;
-                    if (request.request.query.skip)
-                        parameters = `${parameters}, ${request.parameters["Skip"] = request.request.query.skip}`;
-
-                    return `${parameters})`;
-                }
-            }
-        }
-
         private _computeSQL(request: ProfilerServiceRequest): string {
             return request.profiler.sql ? this._formatMs(request.profiler.sql.reduce((current, entry) => current + entry.elapsedMilliseconds, 0)) : "0ms";
         }
 
         private _computeSharpSQL(request: ProfilerServiceRequest): string {
             return (request.profiler.sql ? request.profiler.sql.length : 0).toString();
-        }
-
-        private _computeLastRequestParameters(request: ProfilerServiceRequest): { key: string; value: string; }[] {
-            return request ? Enumerable.from(<any>request.parameters).toArray() : [];
         }
 
         private _isSelected(request: ProfilerServiceRequest, selectedRequest: ProfilerServiceRequest): boolean {
@@ -162,6 +129,10 @@ module Vidyano.WebComponents {
             return !!selectedEntry;
         }
 
+        private _hasLastRequest(request: ProfilerServiceRequest): boolean {
+            return !!request;
+        }
+
         private _onMousewheel(e: MouseWheelEvent) {
             const scroller = <Scroller>this.$["timelineScroller"];
 
@@ -188,9 +159,43 @@ module Vidyano.WebComponents {
         }
 
         private _profiledRequestsChanged(profiledRequests: ProfilerServiceRequest[] = []) {
-            profiledRequests.forEach(r => {
-                if (r.hasNPlusOne === undefined)
-                    r.hasNPlusOne = this._hasNPlusOne(r);
+            profiledRequests.forEach(request => {
+                if (request.hasNPlusOne === undefined)
+                    request.hasNPlusOne = this._hasNPlusOne(request);
+
+                if (request.parameters === undefined) {
+                    request.parameters = [];
+
+                    switch (request.method) {
+                        case "GetPersistentObject": {
+                            request.parameters.push({ key: "Type", value: request.response.result.type});
+                            request.parameters.push({ key: "Id", value: request.response.result.objectId});
+                            break;
+                        }
+
+                        case "GetQuery": {
+                            request.parameters.push({ key: "Name", value: request.response.query.name});
+                            break;
+                        }
+
+                        case "ExecuteAction": {
+                            request.parameters.push({ key: "Name", value: request.request.action});
+                            break;
+                        }
+
+                        case "ExecuteQuery": {
+                            request.parameters.push({ key: "Name", value: request.request.query.name});
+                            request.parameters.push({ key: "PageSize", value: request.request.query.pageSize});
+
+                            if (request.request.query.top)
+                                request.parameters.push({ key: "Top", value: request.request.query.top});
+                            if (request.request.query.skip)
+                                request.parameters.push({ key: "Skip", value: request.request.query.skip});
+
+                            break;
+                        }
+                    }
+                }
             });
 
             this._setSelectedRequest(profiledRequests[0]);
@@ -311,6 +316,13 @@ module Vidyano.WebComponents {
                 className = `${className} has-details`;
 
             return className;
+        }
+
+        private _formatRequestParameters(request: ProfilerServiceRequest): string {
+            if (!request || !request.parameters)
+                return "";
+
+            return `(${request.parameters.map(p =>p.value).join(", ")})`;
         }
 
         private _formatMs(ms: number): string {
