@@ -11,6 +11,7 @@ $min-main-width: 400px;
 
         > vi-persistent-object-tab-presenter {
             @include flex();
+            min-height: calc(var(--theme-h2) * 3);
         }
     }
 }

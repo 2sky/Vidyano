@@ -240,9 +240,9 @@ module Vidyano.WebComponents {
 
         private _loadingChanged(loading: boolean) {
             if (loading)
-                this.fire("attribute-loading", null, { bubbles: true });
+                this.fire("attribute-loading", { attribute: this.attribute }, { bubbles: true });
             else
-                this.fire("attribute-loaded", null, { bubbles: true });
+                this.fire("attribute-loaded", { attribute: this.attribute }, { bubbles: true });
         }
     }
 }

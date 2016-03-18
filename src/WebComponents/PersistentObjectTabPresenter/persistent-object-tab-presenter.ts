@@ -16,11 +16,15 @@ module Vidyano.WebComponents {
         },
         observers: [
             "_renderTab(tab, isAttached)"
-        ]
+        ],
+        listeners: {
+            "attribute-loaded": "_attributeLoaded"
+        }
     })
     export class PersistentObjectTabPresenter extends WebComponent {
         private static _persistentObjectTabComponentLoader: Promise<any>;
         private _renderedTab: Vidyano.PersistentObjectTab;
+        private _tabAttributes: Vidyano.PersistentObjectAttribute[];
         tab: Vidyano.PersistentObjectTab;
         templated: boolean;
         scroll: boolean;
@@ -79,16 +83,27 @@ module Vidyano.WebComponents {
                         if (tab !== this.tab)
                             return;
 
+                        this._tabAttributes = tab.attributes.slice(0);
+
                         var attributeTab = new WebComponents.PersistentObjectTab();
                         attributeTab.className = childClassName;
                         attributeTab.tab = <Vidyano.PersistentObjectAttributeTab>tab;
 
                         Polymer.dom(this).appendChild(attributeTab);
-
-                        this._setLoading(false);
                     });
                 }
             }
+        }
+
+        private _attributeLoaded(e: Event, detail: { attribute: Vidyano.PersistentObjectAttribute; }) {
+            if (!this._tabAttributes)
+                return;
+
+            if (this._tabAttributes.length > 0)
+                this._tabAttributes.remove(detail.attribute);
+
+            if (this._tabAttributes.length === 0)
+                this._setLoading(false);
         }
     }
 }

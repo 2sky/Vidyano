@@ -233,15 +233,11 @@
             }
             else
                 this._presentersLoading++;
-
-            e.stopPropagation();
         }
 
         private _onAttributeLoaded(e: CustomEvent) {
            if (--this._presentersLoading <= 0)
                this._setLoading(false);
-
-           e.stopPropagation();
         }
     }
 }
