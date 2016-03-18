@@ -72,6 +72,8 @@ module Vidyano.WebComponents {
             if (!component.fire("app-route-activate", null, { bubbles: false, cancelable: true }).defaultPrevented) {
                 this._setActive(true);
                 this._setPath(this.app.path);
+
+                (<AppServiceHooks>this.app.service.hooks).trackPageView(this.app.path);
             }
         }
 

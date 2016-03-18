@@ -1010,6 +1010,8 @@ module Vidyano {
                     else if (parent)
                         parent.setNotification(null);
 
+                    this.hooks.trackEvent(action, parameters ? parameters.MenuLabel || parameters.MenuOption : null, query || parent); 
+
                     var args = new ExecuteActionArgs(this, action, parent, query, selectedItems, parameters);
                     this.hooks.onAction(args).then(() => {
                         if (args.isHandled)
@@ -1435,6 +1437,9 @@ module Vidyano {
         }
 
         setNotification(notification: string, type: NotificationType) {
+        }
+
+        trackEvent(name: string, option: string, owner: ServiceObjectWithActions) {
         }
 
         onInitialize(clientData: ServiceClientData) {

@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿var _gaq: any[];
+
+module Vidyano.WebComponents {
     var hashBang: string = "#!/";
     var hashBangRe: RegExp = /^#!\/?/;
 
@@ -634,6 +636,65 @@
     export class AppServiceHooks extends Vidyano.ServiceHooks {
         constructor(public app: App) {
             super();
+        }
+
+        private _initializeGoogleAnalytics() {
+            var addScript = false;
+            if (typeof (_gaq) === "undefined") {
+                _gaq = [];
+                addScript = true;
+            }
+
+            _gaq.push(['_setAccount', this.app.service.application.analyticsKey]);
+            _gaq.push(['_setDomainName', 'none']); // NOTE: Track all domains
+
+            if (addScript) {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            }
+        }
+
+        trackEvent(action: string, option: string, owner: ServiceObjectWithActions) {
+            if (!this.app.service.application.analyticsKey)
+                return;
+
+            this._initializeGoogleAnalytics();
+
+            let page = 'Unknown';
+            let type = 'Unknown';
+
+            if (owner != null) {
+                if (owner instanceof Vidyano.Query) {
+                    page = 'Query';
+                    type = owner.persistentObject.type;
+                }
+                else if (owner instanceof Vidyano.PersistentObject) {
+                    page = 'PersistentObject';
+                    type = owner.type;
+                }
+            }
+
+            _gaq.push(['_setCustomVar', 1, 'UserId', this.app.service.application.userId, 1]);
+            _gaq.push(['_setCustomVar', 2, 'Page', page, 2]);
+            _gaq.push(['_setCustomVar', 3, 'Type', type, 2]);
+            _gaq.push(['_setCustomVar', 4, 'Option', option, 2]);
+
+            _gaq.push(['_trackEvent', "Action", action.split(".").pop()]);
+        }
+
+        trackPageView(path: string) {
+            if (!this.app.service.application.analyticsKey)
+                return;
+
+            path = Vidyano.WebComponents.App.stripHashBang(path);
+            if (!path || path.startsWith("FromAction"))
+                return;
+
+            this._initializeGoogleAnalytics();
+
+            _gaq.push(['_setCustomVar', 1, 'UserId', this.app.service.application.userId, 1]);
+            _gaq.push(['_trackPageview', path]);
         }
 
         onConstructQuery(service: Service, query: any, parent?: Vidyano.PersistentObject, asLookup: boolean = false, maxSelectedItems?: number): Vidyano.Query {
