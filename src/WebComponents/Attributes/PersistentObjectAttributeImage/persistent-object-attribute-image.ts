@@ -101,6 +101,9 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _showDialog() {
+            if (!this.value)
+                return;
+
             this.app.showDialog(new Vidyano.WebComponents.Attributes.PersistentObjectAttributeImageDialog(this.attribute.label, this.value.asDataUri()));
         }
     }
