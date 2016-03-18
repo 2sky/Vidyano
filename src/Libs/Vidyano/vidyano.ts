@@ -1682,6 +1682,7 @@ module Vidyano {
         private _type: string;
         private _breadcrumb: string;
         private _isDeleted: boolean;
+        private _tabs: PersistentObjectTab[];
 
         fullTypeName: string;
         label: string;
@@ -1701,10 +1702,7 @@ module Vidyano {
         bulkObjectIds: string;
         queriesToRefresh: Array<string> = [];
         attributes: PersistentObjectAttribute[];
-        attributesByName: { [key: string]: PersistentObjectAttribute } = {};
-        private _tabs: PersistentObjectTab[];
         queries: Query[];
-        queriesByName: { [key: string]: Query } = {};
 
         constructor(service: Service, po: any) {
             super(service, (po._actionNames || po.actions || []).map(a => a == "Edit" && po.isNew ? "Save" : a));
@@ -1732,10 +1730,10 @@ module Vidyano {
             this.parent = po.parent != null ? service.hooks.onConstructPersistentObject(service, po.parent) : null;
 
             this.attributes = po.attributes ? Enumerable.from<PersistentObjectAttribute>(po.attributes).select(attr => this._createPersistentObjectAttribute(attr)).toArray() : [];
-            this.attributes.forEach(attr => this.attributesByName[attr.name] = attr);
+            this.attributes.forEach(attr => this.attributes[attr.name] = attr);
 
             this.queries = po.queries ? Enumerable.from<Query>(po.queries).select(query => service.hooks.onConstructQuery(service, query, this)).orderBy(q => q.offset).toArray() : [];
-            this.queries.forEach(query => this.queriesByName[query.name] = query);
+            this.queries.forEach(query => this.queries[query.name] = query);
 
             var visibility = this.isNew ? "New" : "Read";
             var attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility == "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => attr.tabKey, attr => attr).select(attributesByTab => {
@@ -1842,16 +1840,16 @@ module Vidyano {
         }
 
         getAttribute(name: string): PersistentObjectAttribute {
-            return this.attributesByName[name];
+            return this.attributes[name];
         }
 
         getAttributeValue(name: string): any {
-            var attr = this.attributesByName[name];
+            var attr = this.attributes[name];
             return attr != null ? attr.value : null;
         }
 
         getQuery(name: string): Query {
-            return this.queriesByName[name];
+            return this.queries[name];
         }
 
         beginEdit() {
@@ -1969,7 +1967,7 @@ module Vidyano {
 
             this.attributes.removeAll(attr => {
                 if (!result.attributes.some(a => a.id === attr.id)) {
-                    delete this.attributesByName[attr.name];
+                    delete this.attributes[attr.name];
                     changedAttributes.push(attr);
 
                     return true;
@@ -3687,8 +3685,8 @@ module Vidyano {
                         col.distincts.isDirty = true;
                 });
 
-                const matchingDistinctsAttr = result.attributesByName["MatchingDistincts"];
-                const remainingDistinctsAttr = result.attributesByName["RemainingDistincts"];
+                const matchingDistinctsAttr = result.attributes["MatchingDistincts"];
+                const remainingDistinctsAttr = result.attributes["RemainingDistincts"];
 
                 this.distincts = {
                     matching: <string[]>matchingDistinctsAttr.options,
@@ -3888,7 +3886,7 @@ module Vidyano {
         constructor(private _query: Query, private _filtersPO: Vidyano.PersistentObject) {
             super();
 
-            this._filtersAsDetail = <Vidyano.PersistentObjectAttributeAsDetail>this._filtersPO.attributesByName["Filters"];
+            this._filtersAsDetail = <Vidyano.PersistentObjectAttributeAsDetail>this._filtersPO.attributes["Filters"];
             this._computeFilters(true);
 
             var defaultFilter = Enumerable.from(this._filters).firstOrDefault(f => f.isDefault);
@@ -4006,7 +4004,7 @@ module Vidyano {
 
             if (filter === this.currentFilter || filter.persistentObject.isNew) {
                 filter.persistentObject.beginEdit();
-                filter.persistentObject.attributesByName["Columns"].setValue(this._computeFilterData());
+                filter.persistentObject.attributes["Columns"].setValue(this._computeFilterData());
             }
 
             if (filter.persistentObject.isNew)
@@ -4754,7 +4752,7 @@ module Vidyano {
         saveUserSettings(): Promise<any> {
             if (this.userSettingsId != "00000000-0000-0000-0000-000000000000") {
                 return this.service.getPersistentObject(null, this.userSettingsId, null).then(po => {
-                    po.attributesByName["Settings"].value = JSON.stringify(this.userSettings);
+                    po.attributes["Settings"].value = JSON.stringify(this.userSettings);
                     return po.save().then(() => this.userSettings);
                 });
             }

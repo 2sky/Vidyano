@@ -156,8 +156,8 @@ module Vidyano.WebComponents.Attributes {
                 this.push("attribute.objects", po);
                 po.parent = this.attribute.parent;
 
-                if (this.attribute.lookupAttribute && po.attributesByName[this.attribute.lookupAttribute]) {
-                    const lookupAttribute = <Vidyano.PersistentObjectAttributeWithReference>po.attributesByName[this.attribute.lookupAttribute];
+                if (this.attribute.lookupAttribute && po.attributes[this.attribute.lookupAttribute]) {
+                    const lookupAttribute = <Vidyano.PersistentObjectAttributeWithReference>po.attributes[this.attribute.lookupAttribute];
                     lookupAttribute.lookup.search();
 
                     this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(lookupAttribute.lookup)).then(result => {
@@ -210,7 +210,7 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _getAttributeForColumn(obj: Vidyano.PersistentObject, column: QueryColumn): Vidyano.PersistentObjectAttribute {
-            return obj.attributesByName[column.name];
+            return obj.attributes[column.name];
         }
 
         private _scrollNewDetailRowIntoView(serviceObject: Vidyano.PersistentObject, columns: Vidyano.QueryColumn[], editing: boolean, isAttached: boolean) {

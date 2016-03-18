@@ -26,8 +26,8 @@ module Vidyano.WebComponents {
             config.as = "website";
             config.asModel = po => {
                 const model = {
-                    label: po.attributesByName["Label"].displayValue,
-                    pages: po.queriesByName["Website_Pages"].items.map(i => new WebsitePageModel(i))
+                    label: po.attributes["Label"].displayValue,
+                    pages: po.queries["Website_Pages"].items.map(i => new WebsitePageModel(i))
                 };
 
                 model.pages.forEach(p => model.pages[p.name] = p);
