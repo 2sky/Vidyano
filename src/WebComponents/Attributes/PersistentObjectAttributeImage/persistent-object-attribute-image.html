@@ -2,17 +2,17 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-image.css" />
         <template is="dom-if" if="[[!editing]]" restamp>
-            <div class="image test" style$="[[image]]"></div>
+            <div class="image" style$="[[image]]" on-tap="_showDialog" can-open$="[[hasValue]]"></div>
         </template>
         <template is="dom-if" if="[[editing]]" restamp>
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <div class="image" style$="[[image]]" content></div>
+                <div class="image" style$="[[image]]" content on-tap="_showDialog" can-open$="[[hasValue]]"></div>
                 <template is="dom-if" if="[[!readOnly]]">
                     <div class="button browse">
                         <vi-icon source="ImageUpload"></vi-icon>
                         <input type="file" accept="image/*" on-change="_change">
                     </div>
-                    <template is="dom-if" if="[[canClear]]" restamp>
+                    <template is="dom-if" if="[[hasValue]]" restamp>
                         <button on-tap="_clear" tabindex="-1">
                             <vi-icon source="Remove"></vi-icon>
                         </button>
@@ -20,6 +20,20 @@
                 </template>
             </vi-persistent-object-attribute-edit>
         </template>
+    </template>
+</dom-module>
+
+<dom-module id="vi-persistent-object-attribute-image-dialog">
+    <template>
+        <header>
+            <h4 class="flex">[[label]]</h4>
+        </header>
+        <main>
+            <img src$="[[src]]" style="max-width: 100%; max-height: 100%;" />
+        </main>
+        <footer class="horizontal layout end-justified">
+            <button is="vi-button" on-tap="_close" action-type="Default" label="[[translations.Close]]"></button>
+        </footer>
     </template>
 </dom-module>
 

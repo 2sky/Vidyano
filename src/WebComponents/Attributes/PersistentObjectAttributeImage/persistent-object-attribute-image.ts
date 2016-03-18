@@ -1,9 +1,9 @@
 module Vidyano.WebComponents.Attributes {
     @PersistentObjectAttribute.register({
         properties: {
-            canClear: {
+            hasValue: {
                 type: Boolean,
-                computed: "_computeCanClear(value)"
+                computed: "_computeHasValue(value)"
             },
             image: {
                 type: String,
@@ -57,7 +57,7 @@ module Vidyano.WebComponents.Attributes {
             this.value = null;
         }
 
-        private _computeCanClear(value: string): boolean {
+        private _computeHasValue(value: string): boolean {
             return !StringEx.isNullOrEmpty(value);
         }
 
@@ -98,6 +98,26 @@ module Vidyano.WebComponents.Attributes {
                 this.value = canvas.toDataURL().match(/,(.*)$/)[1];
             };
             pastedImage.src = source;
+        }
+
+        private _showDialog() {
+            this.app.showDialog(new Vidyano.WebComponents.Attributes.PersistentObjectAttributeImageDialog(this.attribute.label, this.value.asDataUri()));
+        }
+    }
+
+    @Dialog.register({
+        properties: {
+            label: String,
+            src: String
+        }
+    })
+    export class PersistentObjectAttributeImageDialog extends WebComponents.Dialog {
+        constructor(public label: string, public src: string) {
+            super();
+        }
+
+        private _close() {
+            this.cancel();
         }
     }
 }
