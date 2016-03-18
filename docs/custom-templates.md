@@ -11,7 +11,7 @@ The ```vi-query-items-presenter``` component checks for a ```vi-query-config``` 
 	<template is="dom-template">
 		<vi-scroller>
 			<template is="dom-repeat" items="{{query.items}}">
-				<div>{{item.values.FirstName}}</div>
+				<div>[[item.values.FirstName]]</div>
 			</template>
 		</vi-scroller>
 	</template>
@@ -25,7 +25,7 @@ The ```vi-query-items-presenter``` component checks for a ```vi-query-chart-conf
 ```html
 <vi-query-chart-config id="ba6e297b-5ea8-42a3-8ee9-484ec8768305">
 	<template is="dom-template">
-		<my-d3js-chart chart="{{chart}}"></my-d3js-chart>
+		<my-d3js-chart chart="[[chart]]"></my-d3js-chart>
 	</template>
 </vi-query-config>
 ```
@@ -38,7 +38,7 @@ The ```vi-persistent-object-tab-presenter``` component checks for a ```vi-persis
 ```html
 <vi-persistent-object-tab-config type="Customer" name="General">
 	<template is="dom-template">
-		<div>{{tab.label}}</div>
+		<div>[[tab.label]]</div>
 	</template>
 </vi-persistent-object-tab-config>
 ```
@@ -50,7 +50,7 @@ The ```vi-persistent-object-attribute-presenter``` component uses the ```vi-pers
 ```html
 <vi-persistent-object-attribute-config type="String">
 	<template is="dom-template">
-		<div>{{attribute.displayValue}}</div>
+		<div>[[attribute.displayValue]]</div>
 	</template>
 </vi-persistent-object-attribute-config>
 ```
@@ -61,7 +61,7 @@ It is worth noting that you are able to reuse the existing attribute controls. F
 <vi-persistent-object-attribute-config type="String">
 	<template is="dom-template">
 		<div class="horizontal layout">
-			<vi-persistent-object-attribute-string class="flex" attribute="{{attribute}}"></vi-persistent-object-attribute-string>
+			<vi-persistent-object-attribute-string class="flex" attribute="[[attribute]]"></vi-persistent-object-attribute-string>
 			<button>Click me</button>
 		</div>
 	</template>
