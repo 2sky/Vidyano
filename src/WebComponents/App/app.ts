@@ -656,7 +656,7 @@ module Vidyano.WebComponents {
         }
 
         trackEvent(action: string, option: string, owner: ServiceObjectWithActions) {
-            if (!this.app.service.application.analyticsKey)
+            if (!this.app || !this.app.service || !this.app.service.application || !this.app.service.application.analyticsKey)
                 return;
 
             this._initializeGoogleAnalytics();
@@ -684,7 +684,7 @@ module Vidyano.WebComponents {
         }
 
         trackPageView(path: string) {
-            if (!this.app.service.application.analyticsKey)
+            if (!this.app || !this.app.service || !this.app.service.application || !this.app.service.application.analyticsKey)
                 return;
 
             path = Vidyano.WebComponents.App.stripHashBang(path);
