@@ -46,6 +46,12 @@
             }
         }
 
+        &:not([disabled]) {
+            [header], label {
+                cursor: pointer !important;
+            }
+        }
+
         [content] {
             height: calc(15 * var(--theme-h1));
             max-height: 40vh;
@@ -68,7 +74,7 @@
                         border-radius: var(--theme-h5);
                         margin: var(--theme-h5) var(--theme-h4);
                         padding: var(--theme-h5);
-                        cursor: pointer;
+                        cursor: pointer !important;
                         border: 1px solid #EAEAEA;
                         transition: all 0.2s ease;
 
