@@ -791,7 +791,7 @@ module Vidyano {
                     languages.push({ culture: name, name: clientData.languages[name].name, isDefault: clientData.languages[name].isDefault, messages: clientData.languages[name].messages });
                 }
                 this._languages = languages;
-                this.language = Enumerable.from(this._languages).firstOrDefault(l => l.isDefault);
+                this.language = Enumerable.from(this._languages).firstOrDefault(l => l.isDefault) || this._languages[0];
 
                 this._providers = {};
                 for (var provider in clientData.providers) {
