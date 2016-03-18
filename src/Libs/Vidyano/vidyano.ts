@@ -2889,6 +2889,7 @@ module Vidyano {
         private _lastUpdated: Date;
         private _isReorderable: boolean;
         private _totalItem: QueryResultItem;
+        private _isSystem: boolean;
 
         persistentObject: PersistentObject;
         columns: QueryColumn[];
@@ -2921,6 +2922,7 @@ module Vidyano {
             super(service, query._actionNames || query.actions);
 
             this._asLookup = asLookup;
+            this._isSystem = !!query.isSystem;
             this.id = query.id;
             this.name = query.name;
             this.autoQuery = query.autoQuery;
@@ -2970,6 +2972,10 @@ module Vidyano {
                 this._labelWithTotalItems = this.label;
                 this._lastUpdated = new Date();
             }
+        }
+
+        get isSystem(): boolean {
+            return this._isSystem;
         }
 
         get filters(): QueryFilters {
@@ -3183,7 +3189,7 @@ module Vidyano {
         }
 
         _toServiceObject() {
-            var result = this.copyProperties(["id", "name", "label", "pageSize", "skip", "top", "textSearch"]);
+            var result = this.copyProperties(["id", "isSystem", "name", "label", "pageSize", "skip", "top", "textSearch"]);
             if (this.selectAll.allSelected) {
                 result["allSelected"] = true;
                 if (this.selectAll.inverse)
