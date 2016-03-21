@@ -4,4 +4,4 @@ This directory contains miscellaneous documentation that allows you to customize
 
 ### Contents
 
-- [Custom templates](docs/custom-templates.md)
+- [Custom templates](custom-templates.md)
