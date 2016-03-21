@@ -444,60 +444,63 @@ module Vidyano {
                     else
                         reject(result.exception);
 
-                    let finishProfile = this.profile;
-                    switch (requestMethod) {
-                        case "GetPersistentObject":
-                            finishProfile = finishProfile && result.result && result.result.id != "b15730ad-9f47-4775-aacb-0a181e95e53d" && !result.result.isSystem;
-                            break;
-
-                        case "GetQuery":
-                            finishProfile = finishProfile && result.query && !result.query.isSystem;
-                            break;
-
-                        case "ExecuteQuery":
-                            finishProfile = finishProfile && data.query && !data.query.isSystem;
-                            break;
-
-                        case "ExecuteAction":
-                            finishProfile = finishProfile && !((result.result != null && (result.result.id == "b15730ad-9f47-4775-aacb-0a181e95e53d" || result.result.isSystem) || (data.query != null && data.query.isSystem) || (data.parent != null && data.parent.isSystem && data.parent.id != "70381ffa-ae0b-4dc0-b4c3-b02dd9a9c0a0")));
-                            break;
-                    }
-
-                    if (finishProfile) {
-                        const requestEnd = this._getMs();
-
-                        if (!result.profiler) {
-                            result.profiler = { elapsedMilliseconds: -1 };
-                            if (result.exception)
-                                result.profiler.exceptions = [result.exception];
-                        }
-
-                        const elapsedMs = r.getResponseHeader("X-ElapsedMilliseconds");
-                        if (elapsedMs)
-                            result.profiler.elapsedMilliseconds = Service.fromServiceString(elapsedMs, "Int32");
-
-                        const request: ServiceRequest = {
-                            when: createdRequest,
-                            profiler: result.profiler,
-                            transport: Math.round(requestEnd - requestStart - result.profiler.elapsedMilliseconds),
-                            method: requestMethod,
-                            request: data,
-                            response: result
-                        };
-
-                        const requests = this.profiledRequests || [];
-                        requests.unshift(request);
-
-                        this._setProfiledRequests(requests.slice(0, 20));
-                    }
-
-                    if (result.operations)
-                        setTimeout(() => result.operations.forEach(o => this.hooks.onClientOperation(o)), 0);
+                    this._postJSONProcess(data, result, requestMethod, createdRequest, requestStart, r.getResponseHeader("X-ElapsedMilliseconds"));
                 };
                 r.onerror = () => { reject(r.statusText); };
 
                 r.send(JSON.stringify(data));
             });
+        }
+
+        private _postJSONProcess(data: any, result: any, requestMethod: string, createdRequest: Date, requestStart: number, elapsedMs: string) {
+            let finishProfile = this.profile;
+            switch (requestMethod) {
+                case "GetPersistentObject":
+                    finishProfile = finishProfile && result.result && result.result.id != "b15730ad-9f47-4775-aacb-0a181e95e53d" && !result.result.isSystem;
+                    break;
+
+                case "GetQuery":
+                    finishProfile = finishProfile && result.query && !result.query.isSystem;
+                    break;
+
+                case "ExecuteQuery":
+                    finishProfile = finishProfile && data.query && !data.query.isSystem;
+                    break;
+
+                case "ExecuteAction":
+                    finishProfile = finishProfile && !((result.result != null && (result.result.id == "b15730ad-9f47-4775-aacb-0a181e95e53d" || result.result.isSystem) || (data.query != null && data.query.isSystem) || (data.parent != null && data.parent.isSystem && data.parent.id != "70381ffa-ae0b-4dc0-b4c3-b02dd9a9c0a0")));
+                    break;
+            }
+
+            if (finishProfile) {
+                const requestEnd = this._getMs();
+
+                if (!result.profiler) {
+                    result.profiler = { elapsedMilliseconds: -1 };
+                    if (result.exception)
+                        result.profiler.exceptions = [result.exception];
+                }
+
+                if (elapsedMs)
+                    result.profiler.elapsedMilliseconds = Service.fromServiceString(elapsedMs, "Int32");
+
+                const request: ServiceRequest = {
+                    when: createdRequest,
+                    profiler: result.profiler,
+                    transport: Math.round(requestEnd - requestStart - result.profiler.elapsedMilliseconds),
+                    method: requestMethod,
+                    request: data,
+                    response: result
+                };
+
+                const requests = this.profiledRequests || [];
+                requests.unshift(request);
+
+                this._setProfiledRequests(requests.slice(0, 20));
+            }
+
+            if (result.operations)
+                setTimeout(() => result.operations.forEach(o => this.hooks.onClientOperation(o)), 0);
         }
 
         private _getJSON(url: string): Promise<any> {
@@ -1010,7 +1013,7 @@ module Vidyano {
                     else if (parent)
                         parent.setNotification(null);
 
-                    this.hooks.trackEvent(action, parameters ? parameters.MenuLabel || parameters.MenuOption : null, query || parent); 
+                    this.hooks.trackEvent(action, parameters ? parameters.MenuLabel || parameters.MenuOption : null, query || parent);
 
                     var args = new ExecuteActionArgs(this, action, parent, query, selectedItems, parameters);
                     this.hooks.onAction(args).then(() => {
@@ -1121,6 +1124,10 @@ module Vidyano {
                             clonedForm.appendChild(input);
                         });
 
+                        const createdRequest = new Date();
+                        if (this.profile)
+                            var requestStart = this._getMs();
+
                         const service = this;
                         // NOTE: The first load event gets fired after the iframe has been injected into the DOM, and is used to prepare the actual submission.
                         iframe.onload = function (e: Event) {
@@ -1147,6 +1154,8 @@ module Vidyano {
                                 }
                                 else
                                     reject(result.exception);
+
+                                service._postJSONProcess(data, result, "ExecuteAction", createdRequest, requestStart, (service._getMs() - requestStart).toString());
 
                                 document.body.removeChild(clonedForm);
                             };
