@@ -2,11 +2,17 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-image.css" />
         <template is="dom-if" if="[[!editing]]" restamp>
-            <div class="image" style$="[[image]]" on-tap="_showDialog" can-open$="[[hasValue]]"></div>
+            <div class="fit">
+                <img src="[[image]]" on-tap="_showDialog" can-open$="[[hasValue]]" />
+            </div>
         </template>
         <template is="dom-if" if="[[editing]]" restamp>
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <div class="image" style$="[[image]]" content on-tap="_showDialog" can-open$="[[hasValue]]"></div>
+                <div class="flex relative" content>
+                    <div class="fit" content>
+                        <img src="[[image]]" on-tap="_showDialog" can-open$="[[hasValue]]" />
+                    </div>
+                </div>
                 <template is="dom-if" if="[[!readOnly]]">
                     <div class="button browse">
                         <vi-icon source="ImageUpload"></vi-icon>

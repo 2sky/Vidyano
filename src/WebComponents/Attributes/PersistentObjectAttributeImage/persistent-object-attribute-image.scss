@@ -5,15 +5,17 @@
     @include relative();
     outline: none;
 
-    .image {
-        @include flex();
-        z-index: 1;
-        background-repeat: no-repeat;
-        background-size: contain;
+    img {
+        max-height: 100%;
+        max-width: 100%;
 
         &[can-open] {
             cursor: zoom-in;
         }
+    }
+
+    .fit[content] {
+        padding: var(--theme-h5);
     }
 
     .button.browse {

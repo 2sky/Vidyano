@@ -62,7 +62,7 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _computeImage(value: string): string {
-            return value ? "background-image: url(" + value.asDataUri() + ")" : "";
+            return value ? value.asDataUri() : "";
         }
 
         private _pasteAuto(e: ClipboardEvent) {
