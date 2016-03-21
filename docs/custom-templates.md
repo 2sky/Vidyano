@@ -1,16 +1,16 @@
 # Custom templates
 
-More than often, developers will want to extend Vidyano applications with custom user interface components. The Vidyano Web Client takes advantage of Polymer's ```dom-bind``` template functionality to accomplish this.
+The Vidyano Web² client allows developers to override the template for persistent objects, tabs, attributes and queries. Templates are matched to the Vidyano model via configuration elements on ```vi-app```. To override the entire DOM template, simply add a ```<template is="dom-template">``` child element.
 
 ## Query templates
 
-The ```vi-query-items-presenter``` component checks for a ```vi-query-config``` element on the the ```vi-app``` that corresponds to the current query. Add a ```<template is="dom-template">``` child element to this configuration element in order to override the complete DOM template for displaying the items of a query.
+The ```vi-query-items-presenter``` component checks for a ```vi-query-config``` element on the the ```vi-app``` that corresponds to the current query.
 
 ```html
 <vi-query-config id="ba6e297b-5ea8-42a3-8ee9-484ec8768305">
 	<template is="dom-template">
 		<vi-scroller>
-			<template is="dom-repeat" items="{{query.items}}">
+			<template is="dom-repeat" items="[[query.items]]">
 				<div>[[item.values.FirstName]]</div>
 			</template>
 		</vi-scroller>
@@ -18,34 +18,61 @@ The ```vi-query-items-presenter``` component checks for a ```vi-query-config``` 
 </vi-query-config>
 ```
 
-## Query Chart templates
+#### Bound properties
+| Property      | Description                 |
+| ------------- | --------------------------- |
+| query         | Represents the query object |
 
-The ```vi-query-items-presenter``` component checks for a ```vi-query-chart-config``` element on the the ```vi-app``` that corresponds to the current query. Add a ```<template is="dom-template">``` child element to this configuration element in order to present the data as a custom chart.
+## Persistent Object templates
+
+The ```vi-persistent-object-presenter``` component checks for a ```vi-persistent-object-config``` element on the the ```vi-app``` that corresponds to the current persistent object.
 
 ```html
-<vi-query-chart-config id="ba6e297b-5ea8-42a3-8ee9-484ec8768305">
+<vi-persistent-object-config id="506ddde6-6eb1-41f6-af9b-399474fd69a5">
 	<template is="dom-template">
-		<my-d3js-chart chart="[[chart]]"></my-d3js-chart>
+		<h1>[[persistentObject.label]]</h1>
+		<vi-scroller>
+			<div>
+				<vi-persistent-object-attribute-presenter attribute="[[persistentObject.attributes.FirstName]]" non-edit no-label></vi-persistent-object-attribute-presenter>
+				<vi-persistent-object-attribute-presenter attribute="[[persistentObject.attributes.LastName]]"></vi-persistent-object-attribute-presenter>
+			</div>
+		</vi-scroller>
 	</template>
-</vi-query-config>
+</vi-persistent-object-config>
 ```
 
+#### Bound properties
+| Property         | Description                      |
+| ---------------- | -------------------------------- |
+| persistentObject | Represents the persistent object |
 
 ## Persistent Object Tab templates
 
-The ```vi-persistent-object-tab-presenter``` component checks for a ```vi-persistent-object-tab-config``` element on the the ```vi-app``` that corresponds to the current persistent object's tab. If you want to override the complete DOM template for a tab, you will simply have to add a ```<template is="dom-template">``` child element to it:
+The ```vi-persistent-object-tab-presenter``` component checks for a ```vi-persistent-object-tab-config``` element on the the ```vi-app``` that corresponds to the current persistent object tab.
 
 ```html
-<vi-persistent-object-tab-config type="Customer" name="General">
+<vi-persistent-object-tab-config type="Customer" name="Customer">
 	<template is="dom-template">
-		<div>[[tab.label]]</div>
+		<div>
+			<h1>[[tab.label]]</h1>
+			<div>
+				<template is="dom-repeat" items="[[tab.attributes]]" as="attribute">
+					<div>[[attribute.label]]: [[attribute.displayValue]]</div>
+				</template>
+			</div>
+		</div>
 	</template>
 </vi-persistent-object-tab-config>
 ```
 
+#### Bound properties
+| Property | Description                          |
+| -------- | ------------------------------------ |
+| tab      | Represents the persistent object tab |
+
 ## Persistent Object Attribute templates
 
-The ```vi-persistent-object-attribute-presenter``` component uses the ```vi-persistent-object-attribute-config``` element for influencing the rendering behavior. If you want to override the complete DOM template for an attribute, you will simply have to add a ```<template is="dom-template">``` child element to it:
+The ```vi-persistent-object-attribute-presenter``` component uses the ```vi-persistent-object-attribute-config``` element for tweaking the rendering behavior.
 
 ```html
 <vi-persistent-object-attribute-config type="String">
@@ -54,6 +81,11 @@ The ```vi-persistent-object-attribute-presenter``` component uses the ```vi-pers
 	</template>
 </vi-persistent-object-attribute-config>
 ```
+
+#### Bound properties
+| Property  | Description                                |
+| --------- | ------------------------------------------ |
+| attribute | Represents the persistent object attribute |
 
 It is worth noting that you are able to reuse the existing attribute controls. For instance, in case you want to keep the default rendering behavior and append it with a button that does something specific:
 
