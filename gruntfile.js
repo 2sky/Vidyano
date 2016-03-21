@@ -91,7 +91,7 @@ module.exports = function(grunt) {
                 src: ['dist\\Vidyano.Web2\\Properties\\AssemblyInfo.cs'],
                 overwrite: true,
                 replacements: [
-                    {from: "0.0.0.0", to: grunt.option("vidyano-version") + '.0'},
+                    {from: "0.0.0", to: grunt.option("vidyano-version")},
                     {from: "-prerelease", to: grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : ""}
                 ]
             },
@@ -99,8 +99,8 @@ module.exports = function(grunt) {
                 src: ['dist\\Vidyano.Web2\\Properties\\AssemblyInfo.cs'],
                 overwrite: true,
                 replacements: [
-                    {from: grunt.option("vidyano-version") + '.0', to: "0.0.0.0"},
-                    {from: 'AssemblyInformationalVersion("0.0.0.0' + (grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : ""), to: 'AssemblyInformationalVersion("0.0.0.0-prerelease'}
+                    {from: grunt.option("vidyano-version"), to: "0.0.0"},
+                    {from: 'AssemblyInformationalVersion("0.0.0' + (grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : ""), to: 'AssemblyInformationalVersion("0.0.0-prerelease'}
                 ]
             }
         }
