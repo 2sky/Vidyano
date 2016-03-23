@@ -51,6 +51,10 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 readOnly: true,
                 observer: "_hoverChanged"
+            },
+            closeDelay: {
+                type: Number,
+                value: 300
             }
         },
         listeners: {
@@ -76,6 +80,7 @@ namespace Vidyano.WebComponents {
         sticky: boolean;
         hover: boolean;
         boundingTarget: HTMLElement;
+        closeDelay: number;
 
         protected _setOpen: (val: boolean) => void;
         private _setHover: (val: boolean) => void;
@@ -333,7 +338,7 @@ namespace Vidyano.WebComponents {
             if (!this.sticky) {
                 this._closeOnMoveoutTimer = setTimeout(() => {
                     this.close();
-                }, 300);
+                }, this.closeDelay);
             }
         }
 
