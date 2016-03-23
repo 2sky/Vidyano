@@ -15,6 +15,20 @@
 
         constructor(public query: Vidyano.Query) {
             super();
+
+            let search = !!query.textSearch || !query.hasSearched;
+            query.textSearch = "";
+            query.columns.forEach(c => {
+                if (!c.selectedDistincts.isEmpty()) {
+                    search = search || true;
+                    c.selectedDistincts = Enumerable.empty<string>();
+                }
+
+                c.selectedDistinctsInversed = false;
+            });
+
+            if (search)
+                query.search();
         }
 
         private _selectedItemsChanged() {

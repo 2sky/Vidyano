@@ -242,6 +242,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _updateFilters() {
+            if (!this.queryColumn.query.filters)
+                return;
+
             if (!this.queryColumn.selectedDistincts.isEmpty() && !this.queryColumn.query.filters.currentFilter) {
                 this.queryColumn.query.filters.createNew().then(filter => {
                     this.queryColumn.query.filters.currentFilter = filter;

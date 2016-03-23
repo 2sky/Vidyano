@@ -25,4 +25,12 @@
             }
         }
     }
+
+    &[hidden] {
+        display: block !important;
+
+        > vi-popup-menu {
+            visibility: hidden;
+        }
+    }
 }

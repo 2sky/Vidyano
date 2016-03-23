@@ -8,6 +8,11 @@
                 type: Object,
                 computed: "query.filters"
             },
+            hidden: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeHidden(query.filters)"
+            },
             filters: {
                 type: Array,
                 computed: "_computeFilters(query.filters.filters)"
@@ -57,6 +62,10 @@
 
         private _computeFilters(filters: QueryFilter[]): QueryFilter[] {
             return filters;
+        }
+
+        private _computeHidden(filters: Vidyano.QueryFilters): boolean {
+            return !filters;
         }
 
         private _computeDisabled(filters: QueryFilter[], currentFilter: QueryFilter): boolean {

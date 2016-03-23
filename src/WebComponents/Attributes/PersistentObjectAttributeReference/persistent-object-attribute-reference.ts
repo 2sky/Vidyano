@@ -105,7 +105,6 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _browseReference(throwExceptions?: boolean): Promise<any> {
             this.attribute.lookup.selectedItems = [];
-            this.attribute.lookup.search();
 
             return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup)).then(result => {
                 if (!result) {

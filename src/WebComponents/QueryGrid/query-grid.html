@@ -23,7 +23,7 @@
                         <vi-query-grid-select-all query="[[query]]" disabled$="[[!canSelectAll]]"></vi-query-grid-select-all>
                     </template>
                     <template is="dom-if" if="[[canFilter]]">
-                        <vi-query-grid-filters id="filters" query="[[query]]" hidden$="[[!canFilter]]"></vi-query-grid-filters>
+                        <vi-query-grid-filters id="filters" query="[[query]]"></vi-query-grid-filters>
                     </template>
                 </header>
                 <vi-popup-menu id="columnMenu" context-menu-only>

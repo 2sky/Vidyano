@@ -2987,7 +2987,7 @@ namespace Vidyano {
             else
                 this._filters = null;
 
-            this._canFilter = this._filters && this.actions.some(a => a.name === "Filter") && this.columns.some(c => c.canFilter);
+            this._canFilter = this.actions.some(a => a.name === "Filter") && this.columns.some(c => c.canFilter);
 
             if (query.result)
                 this._setResult(query.result);
@@ -3008,6 +3008,14 @@ namespace Vidyano {
 
         get canFilter(): boolean {
             return this._canFilter;
+        }
+
+        private _setCanFilter(val: boolean) {
+            if (this._canFilter === val)
+                return;
+
+            const oldValue = this._canFilter;
+            this.notifyPropertyChanged("canFilter", this._canFilter = val, oldValue);
         }
 
         get canRead(): boolean {
@@ -3461,6 +3469,8 @@ namespace Vidyano {
 
                 this.notifyPropertyChanged("columns", this.columns, oldColumns);
             }
+
+            this._setCanFilter(this.actions.some(a => a.name === "Filter") && this.columns.some(c => c.canFilter));
         }
 
         private _updateItems(items: QueryResultItem[], reset: boolean = false) {

@@ -83,7 +83,7 @@
             canFilter: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeCanFilter(query)"
+                computed: "query.canFilter"
             },
             hasTotalItem: {
                 type: Boolean,
@@ -112,6 +112,7 @@
             "query.items",
             "query.isBusy",
             "query.lastUpdated",
+            "query.canFilter",
             "query.totalItems",
             "query.totalItem",
             "query.selectAll.isAvailable",
@@ -379,10 +380,6 @@
 
         private _computeInlineActions(query: Vidyano.Query, noInlineActions: boolean): boolean {
             return !noInlineActions && !!query && !query.asLookup && !this.asLookup && (query.actions.some(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue && a.definition.selectionRule(1)));
-        }
-
-        private _computeCanFilter(query: Vidyano.Query): boolean {
-            return !!query && query.canFilter;
         }
 
         private _computeHasTotalItem(totalItem: Vidyano.QueryResultItem, items: Vidyano.QueryResultItem[], columnWidthsUpdated: boolean): boolean {
