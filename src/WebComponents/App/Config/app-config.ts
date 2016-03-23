@@ -58,7 +58,8 @@
             if (!this._queryConfigs)
                 this._queryConfigs = this._getConfigs<QueryConfig>(Vidyano.WebComponents.QueryConfig);
 
-            return this._queryConfigs.firstOrDefault(c => (query.id && c.id === query.id) || (query.name && c.name === query.name));
+            return this._queryConfigs.firstOrDefault(c => (query.id && c.id === query.id) || (query.name && c.name === query.name)) ||
+                this._queryConfigs.firstOrDefault(c => !c.id && !c.name);
         }
 
         getQueryChartConfig(type: string): QueryChartConfig {

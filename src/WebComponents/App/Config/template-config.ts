@@ -26,6 +26,11 @@ namespace Vidyano.WebComponents {
             return this._template.stamp(model).root;
         }
 
+        getSetting(key: string, defaultValue?: string): string {
+            const setting = <ConfigSetting>this.queryEffectiveChildren(`vi-config-setting[key="${key}"]`);
+            return setting ? setting.getAttribute("value") : defaultValue;
+        }
+
         static register(info?: IWebComponentRegistrationInfo): (obj: any) => void {
             info.properties = info.properties || {};
             info.properties["hasTemplate"] = {
