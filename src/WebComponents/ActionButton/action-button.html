@@ -2,7 +2,7 @@
     <template>
         <link rel="stylesheet" href="action-button.css" />
         <template is="dom-if" if="[[!options]]">
-            <button is="vi-button" disabled="[[!canExecute]]" header on-tap="_executeWithoutOptions" inverse>
+            <button is="vi-button" disabled="[[!canExecute]]" header on-tap="_onExecuteWithoutOptions" inverse>
                 <div class="layout horizontal">
                     <vi-icon source="[[icon]]"></vi-icon>
                     <span class="label">[[action.definition.displayName]]</span>
@@ -19,7 +19,7 @@
                     </div>
                 </button>
                 <template is="dom-repeat" items="[[options]]" as="option">
-                    <vi-popup-menu-item label="[[option.value]]" on-tap="_executeWithOption"></vi-popup-menu-item>
+                    <vi-popup-menu-item label="[[option.value]]" on-tap="_onExecuteWithOption"></vi-popup-menu-item>
                 </template>
             </vi-popup-menu>
         </template>

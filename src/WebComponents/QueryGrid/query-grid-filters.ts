@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             query: Object,
@@ -74,7 +76,7 @@
         }
 
         private _computeCurrentFilterSaveLabel(currentFilter: QueryFilter): string {
-            return !!currentFilter ? `${this.translateMessage('Save')} '${currentFilter.name}'` : "";
+            return !!currentFilter ? `${this.translateMessage("Save")} '${currentFilter.name}'` : "";
         }
 
         private _computeCanSaveAs(currentFilter: QueryFilter): boolean {
@@ -91,7 +93,7 @@
         }
 
         private _load(e: Event) {
-            var name = (<HTMLElement>e.currentTarget).getAttribute("data-filter");
+            const name = (<HTMLElement>e.currentTarget).getAttribute("data-filter");
             if (!name)
                 return;
 
@@ -114,7 +116,7 @@
         private _delete(e: TapEvent) {
             e.stopPropagation();
 
-            var name = (<HTMLElement>e.currentTarget).getAttribute("data-filter");
+            const name = (<HTMLElement>e.currentTarget).getAttribute("data-filter");
             if (!name)
                 return;
 

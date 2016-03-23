@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents.Attributes {
+﻿namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register({
         properties: {
             selectedDate: {
@@ -93,10 +95,10 @@
             super._valueChanged(newValue);
 
             if (this.attribute && this.value) {
-                if (this.attribute.type == "Time" || this.attribute.type == "NullableTime") {
-                    if (this.value && typeof this.value == "string") {
-                        var parts = (<string>this.value).split(/[:.]/);
-                        var time = new Date();
+                if (this.attribute.type === "Time" || this.attribute.type === "NullableTime") {
+                    if (this.value && typeof this.value === "string") {
+                        const parts = (<string>this.value).split(/[:.]/);
+                        const time = new Date();
                         time.setHours(parseInt(parts[1], 10), parseInt(parts[2], 10), parseInt(parts[3], 10), parseInt(parts[4].substr(0, 3), 10));
 
                         this.selectedDate = time;
@@ -114,11 +116,11 @@
         }
 
         private _selectedDateChanged() {
-			if (this._syncedSelectedDate != this.selectedDate) {
+			if (this._syncedSelectedDate !== this.selectedDate) {
                 if ((!this.hasDateComponent || !this.hasInvalidDate) && (!this.hasTimeComponent || !this.hasInvalidTime)) {
-                    if (this.selectedDate != null && (this.attribute.type == "Time" || this.attribute.type == "NullableTime")) {
-                        var newTimeValue = StringEx.format("0:{0:D2}:{1:D2}:{2:D2}.{3:D3}0000", this.selectedDate.getHours(), this.selectedDate.getMinutes(), this.selectedDate.getSeconds(), this.selectedDate.getMilliseconds());
-                        if (!this.value || (<string>this.value).substr(0, newTimeValue.length - 4) != newTimeValue.substr(0, newTimeValue.length - 4))
+                    if (this.selectedDate != null && (this.attribute.type === "Time" || this.attribute.type === "NullableTime")) {
+                        const newTimeValue = StringEx.format("0:{0:D2}:{1:D2}:{2:D2}.{3:D3}0000", this.selectedDate.getHours(), this.selectedDate.getMinutes(), this.selectedDate.getSeconds(), this.selectedDate.getMilliseconds());
+                        if (!this.value || (<string>this.value).substr(0, newTimeValue.length - 4) !== newTimeValue.substr(0, newTimeValue.length - 4))
                             this.attribute.setValue(newTimeValue, true);
                     }
 					else
@@ -134,22 +136,22 @@
 		}
 
 		private _renderSelectedDate(forceDate?: boolean, forceTime?: boolean) {
-			if (!forceDate && !forceTime && this._lastRenderedSelectedDate == this.selectedDate)
+			if (!forceDate && !forceTime && this._lastRenderedSelectedDate === this.selectedDate)
                 return;
 
-			var dateMoment: moment.Moment;
+			let dateMoment: moment.Moment;
 
 			if (this.selectedDate)
 				dateMoment = moment(this.selectedDate);
 
-            if (this.hasDateComponent && this.dateInput && !this.hasInvalidDate && (this._lastRenderedSelectedDate != this.selectedDate || forceDate)) {
+            if (this.hasDateComponent && this.dateInput && !this.hasInvalidDate && (this._lastRenderedSelectedDate !== this.selectedDate || forceDate)) {
 				if (dateMoment) {
-					var newDate = dateMoment.format(Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toUpperCase());
-					if (newDate != this.dateInput.value) {
-                        var selectionStart = this.dateInput.selectionStart;
-                        var selectionEnd = this.dateInput.selectionEnd;
+					const newDate = dateMoment.format(Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toUpperCase());
+					if (newDate !== this.dateInput.value) {
+                        const selectionStart = this.dateInput.selectionStart;
+                        const selectionEnd = this.dateInput.selectionEnd;
                         this.dateInput.value = newDate;
-                        this.dateInput.selectionStart = selectionStart
+                        this.dateInput.selectionStart = selectionStart;
                         this.dateInput.selectionEnd = selectionEnd;
 					}
 				}
@@ -157,13 +159,13 @@
                     this.dateInput.value = this._computeDateFormat();
 			}
 
-			if (this.hasTimeComponent && this.timeInput && !this.hasInvalidTime && (this._lastRenderedSelectedDate != this.selectedDate || forceTime)) {
-				var newTime = dateMoment ? dateMoment.format("HH" + Vidyano.CultureInfo.currentCulture.dateFormat.timeSeparator + "mm") : this._computeTimeFormat();
-				if (newTime != this.timeInput.value) {
-                    var selectionStart = this.timeInput.selectionStart;
-                    var selectionEnd = this.timeInput.selectionEnd;
+			if (this.hasTimeComponent && this.timeInput && !this.hasInvalidTime && (this._lastRenderedSelectedDate !== this.selectedDate || forceTime)) {
+				const newTime = dateMoment ? dateMoment.format("HH" + Vidyano.CultureInfo.currentCulture.dateFormat.timeSeparator + "mm") : this._computeTimeFormat();
+				if (newTime !== this.timeInput.value) {
+                    const selectionStart = this.timeInput.selectionStart;
+                    const selectionEnd = this.timeInput.selectionEnd;
                     this.timeInput.value = newTime;
-                    this.timeInput.selectionStart = selectionStart
+                    this.timeInput.selectionStart = selectionStart;
                     this.timeInput.selectionEnd = selectionEnd;
 				}
 			}
@@ -172,7 +174,7 @@
 		}
 
         private _dateFilled(e: Event, detail: any) {
-			if (this.hasTimeComponent && this.dateInput.selectionStart == this.dateInput.value.length) {
+			if (this.hasTimeComponent && this.dateInput.selectionStart === this.dateInput.value.length) {
 				this.timeInput.focus();
 				this.timeInput.selectionStart = 0;
 			}
@@ -197,9 +199,9 @@
 		}
 
 		private _updateSelectedDate(date: string, time?: string) {
-			var dateMoment: moment.Moment;
-			var timeMoment: moment.Moment;
-			var newDate = new Date();
+			let dateMoment: moment.Moment;
+			let timeMoment: moment.Moment;
+			const newDate = new Date();
 			if (this.selectedDate) {
 				newDate.setFullYear(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate());
 				newDate.setHours(this.selectedDate.getHours(), this.selectedDate.getMinutes(), this.selectedDate.getSeconds(), this.selectedDate.getMilliseconds());

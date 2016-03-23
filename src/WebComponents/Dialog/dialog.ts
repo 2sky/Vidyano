@@ -1,9 +1,11 @@
-module Vidyano.WebComponents {
-    export interface DialogOptions {
+namespace Vidyano.WebComponents {
+    "use strict";
+
+    export interface IDialogOptions {
     }
 
     export class DialogInstance {
-        constructor(public options: DialogOptions, public result: Promise<any>, private _resolve: Function, private _reject: Function) {
+        constructor(public options: IDialogOptions, public result: Promise<any>, private _resolve: Function, private _reject: Function) {
         }
 
         resolve(result?: any) {
@@ -28,7 +30,8 @@ module Vidyano.WebComponents {
             return this._instance;
         }
 
-        protected show(options: DialogOptions) {
+        protected show(options: IDialogOptions) {
+            // Noop
         }
 
         protected close(result?: any) {
@@ -42,8 +45,8 @@ module Vidyano.WebComponents {
             this._instance.reject(result);
         }
 
-        static register(info: WebComponentRegistrationInfo = {}): any {
-            if (typeof info == "function")
+        static register(info: IWebComponentRegistrationInfo = {}): any {
+            if (typeof info === "function")
                 return Dialog.register({})(info);
 
             return (obj: Function) => {
@@ -102,7 +105,7 @@ module Vidyano.WebComponents {
         }
 
         private _track(e: PolymerTrackEvent) {
-            var detail = <PolymerTrackDetail>e.detail;
+            const detail = <PolymerTrackDetail>e.detail;
             if (!e.detail.sourceEvent.srcElement.tagName.startsWith("H")) {
                 e.stopPropagation();
                 e.preventDefault();
@@ -110,38 +113,41 @@ module Vidyano.WebComponents {
                 return;
             }
 
-            if (detail.state == "track") {
+            if (detail.state === "track") {
                 this._set_translate({
                     x: this._translate.x + detail.ddx,
                     y: this._translate.y + detail.ddy
                 });
             }
-            else if (detail.state == "start") {
+            else if (detail.state === "start") {
                 if (!this._translate)
                     this._set_translate({ x: 0, y: 0 });
 
                 this._dialog.setAttribute("dragging", "");
             }
-            else if (detail.state == "end")
+            else if (detail.state === "end")
                 this._dialog.removeAttribute("dragging");
         }
 
-        show(options: DialogOptions = {}): Promise<any> {
+        show(options: IDialogOptions = {}): Promise<any> {
             Polymer.dom(this).appendChild(this._dialog);
 
             const dialog = <WebComponent>Polymer.dom(this).querySelector("[dialog]");
+
+            let trackHandler: Function;
             let header: HTMLElement;
+
             if (dialog) {
                 header = <HTMLElement>Polymer.dom(dialog.root).querySelector("header");
                 if (header) {
-                    var trackHandler: Function;
                     Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));
                 }
             }
 
-            var resolve: Function;
-            var reject: Function;
-            var promise = new Promise((_resolve, _reject) => {
+            let resolve: Function;
+            let reject: Function;
+
+            const promise = new Promise((_resolve, _reject) => {
                 resolve = _resolve;
                 reject = _reject;
 

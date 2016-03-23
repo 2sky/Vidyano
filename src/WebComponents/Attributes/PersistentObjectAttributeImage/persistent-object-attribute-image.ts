@@ -1,4 +1,6 @@
-module Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register({
         properties: {
             hasValue: {
@@ -20,7 +22,7 @@ module Vidyano.WebComponents.Attributes {
                 this._pasteListener = null;
             }
 
-            if (this.attribute && this.attribute.getTypeHint("AllowPaste") == "true") {
+            if (this.attribute && this.attribute.getTypeHint("AllowPaste") === "true") {
                 this._pasteListener = this._pasteAuto.bind(this);
                 document.addEventListener("paste", this._pasteListener, false);
             }
@@ -38,12 +40,12 @@ module Vidyano.WebComponents.Attributes {
         private _change(e: Event) {
             this.attribute.parent.queueWork(() => {
                 return new Promise((resolve, reject) => {
-                    var input = <HTMLInputElement>e.target;
-                    if (input.files && input.files.length == 1) {
-                        var fr = new FileReader();
+                    const input = <HTMLInputElement>e.target;
+                    if (input.files && input.files.length === 1) {
+                        const fr = new FileReader();
                         fr.readAsDataURL(input.files[0]);
                         fr.onload = () => {
-                            resolve(this.value = fr.result.match(/,(.*)$/)[1])
+                            resolve(this.value = fr.result.match(/,(.*)$/)[1]);
                         };
                         fr.onerror = () => {
                             reject(fr.error);
@@ -70,13 +72,13 @@ module Vidyano.WebComponents.Attributes {
                 return;
 
             if (e.clipboardData) {
-                var items = e.clipboardData.items;
+                const items = e.clipboardData.items;
                 if (items) {
-                    for (var i = 0; i < items.length; i++) {
+                    for (let i = 0; i < items.length; i++) {
                         if (items[i].type.indexOf("image") !== -1) {
-                            var blob = (<any>items[i]).getAsFile();
-                            var URLObj = window["URL"] || window["webkitURL"];
-                            var source = URLObj.createObjectURL(blob);
+                            const blob = (<any>items[i]).getAsFile();
+                            const URLObj = window["URL"] || window["webkitURL"];
+                            const source = URLObj.createObjectURL(blob);
                             this._pasteCreateImage(source);
 
                             e.preventDefault();
@@ -87,12 +89,12 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _pasteCreateImage(source) {
-            var pastedImage = new Image();
+            const pastedImage = new Image();
             pastedImage.onload = () => {
-                var canvas = document.createElement("canvas");
+                const canvas = document.createElement("canvas");
                 canvas.width = pastedImage.width;
                 canvas.height = pastedImage.height;
-                var ctx = canvas.getContext("2d");
+                const ctx = canvas.getContext("2d");
                 ctx.drawImage(pastedImage, 0, 0);
 
                 this.value = canvas.toDataURL().match(/,(.*)$/)[1];

@@ -1,37 +1,39 @@
 ﻿// https://gist.github.com/nuxodin/9250e56a3ce6c0446efa
 /* focusin/out event polyfill (firefox) */
-!function () {
-    var w = window,
-        d = w.document;
+(function () {
+    const w = window,
+          d = w.document;
 
     if ((<any>w).onfocusin === undefined) {
-        d.addEventListener('focus', addPolyfill, true);
-        d.addEventListener('blur', addPolyfill, true);
-        d.addEventListener('focusin', removePolyfill, true);
-        d.addEventListener('focusout', removePolyfill, true);
+        d.addEventListener("focus", addPolyfill, true);
+        d.addEventListener("blur", addPolyfill, true);
+        d.addEventListener("focusin", removePolyfill, true);
+        d.addEventListener("focusout", removePolyfill, true);
     }
     function addPolyfill(e) {
-        var type = e.type === 'focus' ? 'focusin' : 'focusout';
-        var event = new CustomEvent(type, { bubbles: true, cancelable: false });
+        const type = e.type === "focus" ? "focusin" : "focusout";
+        const event = new CustomEvent(type, { bubbles: true, cancelable: false });
         (<any>event).c1Generated = true;
         e.target.dispatchEvent(event);
     }
     function removePolyfill(e) {
         if (!e.c1Generated) { // focus after focusin, so chrome will the first time trigger tow times focusin
-            d.removeEventListener('focus', addPolyfill, true);
-            d.removeEventListener('blur', addPolyfill, true);
-            d.removeEventListener('focusin', removePolyfill, true);
-            d.removeEventListener('focusout', removePolyfill, true);
+            d.removeEventListener("focus", addPolyfill, true);
+            d.removeEventListener("blur", addPolyfill, true);
+            d.removeEventListener("focusin", removePolyfill, true);
+            d.removeEventListener("focusout", removePolyfill, true);
         }
         setTimeout(function () {
-            d.removeEventListener('focusin', removePolyfill, true);
-            d.removeEventListener('focusout', removePolyfill, true);
+            d.removeEventListener("focusin", removePolyfill, true);
+            d.removeEventListener("focusout", removePolyfill, true);
         });
     }
 
-} ();
+})();
 
-module Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     export class PersistentObjectAttribute extends WebComponent {
         static typeSynonyms: { [key: string]: string[]; } = {
             "Boolean": ["YesNo"],
@@ -52,12 +54,15 @@ module Vidyano.WebComponents.Attributes {
         }
 
         protected _optionsChanged() {
+            // Noop
         }
 
         protected _attributeChanged() {
+            // Noop
         }
 
         protected _editingChanged() {
+            // Noop
         }
 
         protected _valueChanged(newValue: any) {
@@ -74,7 +79,7 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _updateForegroundDataTypeHint(attribute: Vidyano.PersistentObjectAttribute, isEditing: boolean, isReadOnly: boolean) {
-            var foreground = this.attribute.getTypeHint("foreground", null, true);
+            const foreground = this.attribute.getTypeHint("foreground", null, true);
 
             if ((!isEditing || isReadOnly) && foreground) {
                 this._foreground = this.customStyle["--vi-persistent-object-attribute-foreground"] = foreground;
@@ -86,15 +91,14 @@ module Vidyano.WebComponents.Attributes {
             }
         }
 
-        static register(info: WebComponentRegistrationInfo = {}): any {
-            if (typeof info == "function")
+        static register(info: IWebComponentRegistrationInfo = {}): any {
+            if (typeof info === "function")
                 return PersistentObjectAttribute.register({})(info);
 
             return (obj: Function) => {
                 info.properties = info.properties || {};
 
-                info.properties["isAttached"] =
-                {
+                info.properties["isAttached"] = {
                     type: Boolean,
                     readOnly: true
                 };
@@ -102,44 +106,37 @@ module Vidyano.WebComponents.Attributes {
                     type: Object,
                     observer: "_attributeChanged"
                 };
-                info.properties["editing"] =
-                {
+                info.properties["editing"] = {
                     type: Boolean,
                     reflectToAttribute: true,
                     computed: "_computeEditing(attribute.parent.isEditing, nonEdit)"
                 };
-                info.properties["nonEdit"] =
-                {
+                info.properties["nonEdit"] = {
                     type: Boolean,
                     reflectToAttribute: true,
                     value: false
                 };
-                info.properties["readOnly"] =
-                {
+                info.properties["readOnly"] = {
                     type: Boolean,
                     reflectToAttribute: true,
                     computed: "attribute.isReadOnly"
                 };
-                info.properties["required"] =
-                {
+                info.properties["required"] = {
                     type: Boolean,
                     reflectToAttribute: true,
                     computed: "attribute.isRequired"
                 };
-                info.properties["value"] =
-                {
+                info.properties["value"] = {
                     type: Object,
                     notify: true,
                     observer: "_valueChanged"
                 };
-                info.properties["validationError"] =
-                {
+                info.properties["validationError"] = {
                     type: Object,
                     notify: true,
                     computed: "attribute.validationError"
                 };
-                info.properties["hasError"] =
-                {
+                info.properties["hasError"] = {
                     type: Boolean,
                     reflectToAttribute: true,
                     computed: "_computeHasError(attribute.validationError)"
@@ -157,9 +154,9 @@ module Vidyano.WebComponents.Attributes {
                 info.observers = info.observers || [];
                 info.observers.push("_updateForegroundDataTypeHint(attribute, editing, readOnly)");
 
-                var ctor = WebComponent.register(obj, info);
+                const ctor = WebComponent.register(obj, info);
 
-                var synonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[WebComponent.getName(obj).replace("PersistentObjectAttribute", "")];
+                const synonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[WebComponent.getName(obj).replace("PersistentObjectAttribute", "")];
                 if (synonyms) {
                     synonyms.forEach(ss => {
                         Attributes["PersistentObjectAttribute" + ss] = ctor;

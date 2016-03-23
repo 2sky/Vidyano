@@ -1,4 +1,6 @@
-module Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register({
         properties: {
             columns: {
@@ -69,16 +71,16 @@ module Vidyano.WebComponents.Attributes {
             if (!height || !newAction)
                 return false;
 
-            var scroller = (<Scroller><any>this.$["body"]);
+            const scroller = (<Scroller><any>this.$["body"]);
             if (!this._inlineAddHeight) {
-                var inlineAdd = <HTMLElement>scroller.querySelector(".row.add.inline");
+                const inlineAdd = <HTMLElement>scroller.querySelector(".row.add.inline");
                 if (!inlineAdd)
                     return false;
 
                 this._inlineAddHeight = inlineAdd.offsetHeight;
             }
 
-            var contentHeight = this.newActionPinned ? height : height - this._inlineAddHeight;
+            const contentHeight = this.newActionPinned ? height : height - this._inlineAddHeight;
             return contentHeight + this._inlineAddHeight > this.$["table"].offsetHeight - this.$["head"].offsetHeight;
         }
 
@@ -91,12 +93,12 @@ module Vidyano.WebComponents.Attributes {
             if (!isAttached || !columns || !columns.length || !width || this._lastComputedWidths === width)
                 return;
 
-            var widths: { name: string; width: number; }[] = [];
-            var remainingWidth = this._lastComputedWidths = width;
-            var usedWidth = 0;
+            const widths: { name: string; width: number; }[] = [];
+            let remainingWidth = this._lastComputedWidths = width;
+            let usedWidth = 0;
 
-            columns.filter(c => !StringEx.isNullOrEmpty(c.width) && !c.width.endsWith('%')).forEach(c => {
-                var intWidth = parseInt(c.width, 10);
+            columns.filter(c => !StringEx.isNullOrEmpty(c.width) && !c.width.endsWith("%")).forEach(c => {
+                const intWidth = parseInt(c.width);
                 if (!isNaN(intWidth)) {
                     widths.push({
                         name: c.name,
@@ -108,11 +110,11 @@ module Vidyano.WebComponents.Attributes {
                 }
             });
 
-            var percentagesRemainingWidth = width;
-            columns.filter(c => !StringEx.isNullOrEmpty(c.width) && c.width.endsWith('%')).forEach(c => {
-                var intWidthPercentage = parseInt(c.width, 10);
+            const percentagesRemainingWidth = width;
+            columns.filter(c => !StringEx.isNullOrEmpty(c.width) && c.width.endsWith("%")).forEach(c => {
+                const intWidthPercentage = parseInt(c.width);
                 if (!isNaN(intWidthPercentage)) {
-                    var intWidth = Math.floor(percentagesRemainingWidth * intWidthPercentage / 100);
+                    const intWidth = Math.floor(percentagesRemainingWidth * intWidthPercentage / 100);
                     widths.push({
                         name: c.name,
                         width: intWidth
@@ -123,8 +125,8 @@ module Vidyano.WebComponents.Attributes {
                 }
             });
 
-            var udColumns = columns.filter(c => StringEx.isNullOrEmpty(c.width))
-            var remainingColumnWidth = Math.floor(remainingWidth / udColumns.length);
+            const udColumns = columns.filter(c => StringEx.isNullOrEmpty(c.width));
+            const remainingColumnWidth = Math.floor(remainingWidth / udColumns.length);
             udColumns.forEach(c => {
                 widths.push({
                     name: c.name,
@@ -137,14 +139,14 @@ module Vidyano.WebComponents.Attributes {
             if (usedWidth < width)
                 widths[0].width += width - usedWidth;
 
-            var style = <Style><any>this.$["style"];
+            const style = <Style><any>this.$["style"];
             style.setStyle("ColumnStyles", ...widths.map(w => `.column[data-column='${w.name}'] { width: ${w.width}px; }`));
 
             this._setInitializing(false);
         }
 
         private _rowAdded(e: CustomEvent) {
-            var row = (<HTMLElement>e.target).parentElement;
+            const row = (<HTMLElement>e.target).parentElement;
             this.async(() => {
                 row.scrollIntoView(false);
             });
@@ -178,7 +180,7 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _delete(e: TapEvent) {
-            var obj = <Vidyano.PersistentObject>e.model.obj;
+            const obj = <Vidyano.PersistentObject>e.model.obj;
             if (!obj.isNew)
                 obj.isDeleted = true;
             else
@@ -205,7 +207,7 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _getDisplayValue(obj: Vidyano.PersistentObject, column: QueryColumn): string {
-            var attr = this._getAttributeForColumn(obj, column);
+            const attr = this._getAttributeForColumn(obj, column);
             return attr && attr.displayValue || "";
         }
 

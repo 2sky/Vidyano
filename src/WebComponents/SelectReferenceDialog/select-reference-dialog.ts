@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @Dialog.register({
         properties: {
             query: Object,
@@ -27,7 +29,7 @@
         }
 
         private _queryPropertyChanged(sender: Query, detail: Vidyano.Common.PropertyChangedArgs) {
-            if (detail.propertyName == "selectedItems")
+            if (detail.propertyName === "selectedItems")
                 this._invalidateCanSelect(detail.newValue);
         }
 
@@ -49,8 +51,8 @@
         private _selectReference(e: CustomEvent) {
             e.preventDefault();
 
-            var detail = <QueryGridItemTapEventArgs>e.detail;
-            if (this.query.maxSelectedItems == 1)
+            const detail = <IQueryGridItemTapEventArgs>e.detail;
+            if (this.query.maxSelectedItems === 1)
                 this.instance.resolve([detail.item]);
             else
                 detail.item.isSelected = !detail.item.isSelected;

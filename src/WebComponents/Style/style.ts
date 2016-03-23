@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             key: String
@@ -32,9 +34,9 @@
         }
 
         setStyle(name: string, ...css: string[]) {
-            var cssBody = "";
+            let cssBody = "";
             css.filter(c => !StringEx.isNullOrEmpty(c)).forEach(c => {
-                cssBody += this.key + '[style-scope-id="' + this._uniqueId + '"] ' + c + (css.length > 0 ? "\n" : "");
+                cssBody += this.key + "[style-scope-id=\"" + this._uniqueId + "\"] " + c + (css.length > 0 ? "\n" : "");
             });
 
             console.warn("Writing global style: " + name);

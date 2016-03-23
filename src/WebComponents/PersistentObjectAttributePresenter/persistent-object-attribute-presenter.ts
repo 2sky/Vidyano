@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             attribute: Object,
@@ -102,7 +104,7 @@ module Vidyano.WebComponents {
                 if (!this.getAttribute("height"))
                     this.height = this.app.configuration.getAttributeConfig(attribute).calculateHeight(attribute);
 
-                var attributeType: string;
+                let attributeType: string;
                 if (Vidyano.Service.isNumericType(attribute.type))
                     attributeType = "Numeric";
                 else if (Vidyano.Service.isDateTimeType(attribute.type))
@@ -117,14 +119,14 @@ module Vidyano.WebComponents {
                     return;
                 }
 
-                var typeImport = this._getAttributeTypeImportInfo(attributeType);
+                const typeImport = this._getAttributeTypeImportInfo(attributeType);
                 if (!typeImport) {
                     Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type] = Promise.resolve(false);
                     this._renderAttribute(attribute, attributeType);
                     return;
                 }
 
-                var synonymResolvers: ((result: {}) => void)[];
+                let synonymResolvers: ((result: {}) => void)[];
                 if (typeImport.synonyms) {
                     synonymResolvers = [];
                     typeImport.synonyms.forEach(s => Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[s] = new Promise(resolve => { synonymResolvers.push(resolve); }));
@@ -148,9 +150,9 @@ module Vidyano.WebComponents {
         }
 
         private _getAttributeTypeImportInfo(type: string): { filename: string; synonyms?: string[]; } {
-            var synonyms: string[];
-            for (var key in Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms) {
-                var typeSynonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[key];
+            let synonyms: string[];
+            for (const key in Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms) {
+                const typeSynonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[key];
                 if (key === type)
                     synonyms = typeSynonyms;
                 else if (typeSynonyms.indexOf(type) >= 0) {
@@ -205,7 +207,7 @@ module Vidyano.WebComponents {
                     return;
 
                 try {
-                    var config = this.app.configuration.getAttributeConfig(attribute);
+                    const config = this.app.configuration.getAttributeConfig(attribute);
                     if (!!config && config.hasTemplate)
                         Polymer.dom(this.$["content"]).appendChild(config.stamp(attribute, config.as || "attribute"));
                     else {

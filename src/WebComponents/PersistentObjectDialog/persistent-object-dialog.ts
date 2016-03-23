@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @Dialog.register({
         properties: {
             persistentObject: Object,
@@ -29,16 +31,16 @@
             if (this._forwardSave)
                 this.instance.resolve(this.persistentObject);
             else {
-                var wasNew = this.persistentObject.isNew;
+                const wasNew = this.persistentObject.isNew;
                 this.persistentObject.save().then(() => {
-                    if (StringEx.isNullOrWhiteSpace(this.persistentObject.notification) || this.persistentObject.notificationType != NotificationType.Error) {
-                        if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") != -1)
+                    if (StringEx.isNullOrWhiteSpace(this.persistentObject.notification) || this.persistentObject.notificationType !== NotificationType.Error) {
+                        if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") !== -1)
                             this.app.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId).then(po2 => {
                                 this.app.service.hooks.onOpen(po2, true);
                                 this.instance.resolve(this.persistentObject);
                             }, e => {
                                 this.instance.resolve(this.persistentObject);
-                                var owner: ServiceObjectWithActions = this.persistentObject.ownerQuery || this.persistentObject.parent;
+                                const owner: ServiceObjectWithActions = this.persistentObject.ownerQuery || this.persistentObject.parent;
                                 if (!!owner)
                                     owner.setNotification(e);
                             });
@@ -60,10 +62,10 @@
             if (!persistentObject || !isAttached)
                 return null;
 
-            var tab = <Vidyano.PersistentObjectAttributeTab>Enumerable.from(persistentObject.tabs).firstOrDefault(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
+            const tab = <Vidyano.PersistentObjectAttributeTab>Enumerable.from(persistentObject.tabs).firstOrDefault(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
             tab.columnCount = tab.columnCount > 1 ? tab.columnCount : 1;
 
-            var width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * tab.columnCount;
+            const width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * tab.columnCount;
             this.customStyle["--vi-persistent-object-dialog-computed-width"] = `${width}px`;
             this.updateStyles();
 

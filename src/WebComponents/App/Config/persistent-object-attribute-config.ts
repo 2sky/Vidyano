@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @TemplateConfig.register({
         properties: {
             type: String,
@@ -29,7 +31,7 @@
         calculateHeight(attr: Vidyano.PersistentObjectAttribute): number {
             if (!this._calculateHeight) {
                 if (/d+/.test(this.height)) {
-                    var height = parseInt(this.height);
+                    const height = parseInt(this.height);
                     this._calculateHeight = () => height;
                 }
                 else
@@ -42,7 +44,7 @@
         calculateWidth(attr: Vidyano.PersistentObjectAttribute): number {
             if (!this._calculateWidth) {
                 if (/d+/.test(this.width)) {
-                    var width = parseInt(this.width);
+                    const width = parseInt(this.width);
                     this._calculateWidth = () => width;
                 }
                 else

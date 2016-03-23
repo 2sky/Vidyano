@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             isSignedIn: {
@@ -65,9 +67,9 @@ module Vidyano.WebComponents {
 
         feedback() {
             this.service.getPersistentObject(null, this.service.application.feedbackId).then(po => {
-                var commentAttr = po.getAttribute("Comment");
-                var commentOptions = ["Browser: " + navigator.userAgent];
-                var location = window.location.toString();
+                const commentAttr = po.getAttribute("Comment");
+                const commentOptions = ["Browser: " + navigator.userAgent];
+                const location = window.location.toString();
                 if (!location.contains("FromAction/"))
                     commentOptions.push("Url: " + location);
                 commentAttr.options = commentOptions;
@@ -86,7 +88,8 @@ module Vidyano.WebComponents {
         }
 
         private _signedInChanged() {
-            var isSignedIn = this.service.isSignedIn && !this.service.isUsingDefaultCredentials;
+            const isSignedIn = this.service.isSignedIn && !this.service.isUsingDefaultCredentials;
+
             this._setIsSignedIn(isSignedIn);
             this._setUserName(isSignedIn ? this.service.application.friendlyUserName : null);
             this._setCanFeedback(isSignedIn && !!this.service.application.feedbackId);

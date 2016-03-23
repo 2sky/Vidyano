@@ -1,4 +1,6 @@
-module Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
 	@Sortable.register
 	export class PersistentObjectAttributeMultiStringItems extends Sortable {
 		protected _dragEnd() {
@@ -122,7 +124,7 @@ module Vidyano.WebComponents.Attributes {
 			Polymer.dom(this).flush();
 
 			const stringsContainer = <HTMLElement>Polymer.dom(this.root).querySelector("#strings");
-			const diff = stringsContainer.children.length != strings.length || strings.some((s, n) => stringsContainer.children[n] !== s);
+			const diff = stringsContainer.children.length !== strings.length || strings.some((s, n) => stringsContainer.children[n] !== s);
 
 			strings.forEach((s: PersistentObjectAttributeMultiStringItem, index: number) => {
 				if (diff)

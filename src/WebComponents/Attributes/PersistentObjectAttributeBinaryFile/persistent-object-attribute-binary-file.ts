@@ -1,4 +1,6 @@
-module Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register({
         properties: {
             canClear: {
@@ -19,7 +21,7 @@ module Vidyano.WebComponents.Attributes {
         private _inputAttribute: Vidyano.PersistentObjectAttribute;
 
         private _change(e: Event) {
-            var targetInput = <HTMLInputElement>e.target;
+            const targetInput = <HTMLInputElement>e.target;
             if (targetInput.files && targetInput.files.length > 0)
                 this.value = targetInput.files[0].name;
         }
@@ -36,7 +38,7 @@ module Vidyano.WebComponents.Attributes {
             if (attribute && isAttached) {
                 this._inputAttribute = attribute;
 
-                var input = document.createElement("input");
+                const input = document.createElement("input");
                 this._inputAttribute.registerInput(input);
                 input.type = "file";
                 input.accept = this.attribute.getTypeHint("accept");

@@ -1,8 +1,10 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @Resource.register
     export class QueryGridCellTemplate extends Resource {
         static Load(source: string): PolymerTemplate {
-            var cellTemplate = <QueryGridCellTemplate>Resource.LoadResource(source, "VI-QUERY-GRID-CELL-TEMPLATE");
+            const cellTemplate = <QueryGridCellTemplate>Resource.LoadResource(source, "VI-QUERY-GRID-CELL-TEMPLATE");
             if (!cellTemplate)
                 return null;
 
@@ -70,7 +72,7 @@
 
                 if (this._textNode && this._textNode.nodeValue)
                     this._textNode.nodeValue = "";
-            } else if (value === undefined || value === null) {
+            } else if (value == null) {
                 if (this._icon)
                     this._icon.setAttribute("hidden", "");
 

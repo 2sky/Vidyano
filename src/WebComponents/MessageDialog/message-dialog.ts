@@ -1,5 +1,7 @@
-﻿module Vidyano.WebComponents {
-    export interface MessageDialogOptions extends DialogOptions {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
+    export interface IMessageDialogOptions extends Vidyano.WebComponents.IDialogOptions {
         noClose?: boolean;
         title?: string;
         titleIcon?: string;
@@ -25,11 +27,11 @@
         }
     })
     export class MessageDialog extends Dialog {
-        options: MessageDialogOptions;
+        options: IMessageDialogOptions;
 
-        private _setOptions: (options: MessageDialogOptions) => void;
+        private _setOptions: (options: IMessageDialogOptions) => void;
 
-        protected show(options: MessageDialogOptions) {
+        protected show(options: IMessageDialogOptions) {
             this._setOptions(options);
 
             if (options.html)
@@ -38,11 +40,11 @@
                 this.$["pre"].textContent = options.message;
         }
 
-        private _hasHeaderIcon(options: MessageDialogOptions): boolean {
-            return this.options && typeof this.options.titleIcon == "string";
+        private _hasHeaderIcon(options: IMessageDialogOptions): boolean {
+            return this.options && typeof this.options.titleIcon === "string";
         }
 
-        private _getActionType(options: MessageDialogOptions, index: number): string {
+        private _getActionType(options: IMessageDialogOptions, index: number): string {
             if (!options || !options.actionTypes)
                 return undefined;
 

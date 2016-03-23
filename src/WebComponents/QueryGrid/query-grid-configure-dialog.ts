@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @Dialog.register({
         properties: {
             grid: Object,
@@ -19,12 +21,12 @@
         constructor(public grid: QueryGrid, private _settings: QueryGridUserSettings) {
             super();
 
-            this._set_columnElements(this._settings.columns.filter(c => c.width != "0").map(c => new Vidyano.WebComponents.QueryGridConfigureDialogColumn(c)));
+            this._set_columnElements(this._settings.columns.filter(c => c.width !== "0").map(c => new Vidyano.WebComponents.QueryGridConfigureDialogColumn(c)));
             this._distributeColumns();
         }
 
         private _distributeColumns(e?: CustomEvent) {
-            var columns = Enumerable.from(this._columnElements).orderBy(c => c.column.offset).memoize();
+            const columns = Enumerable.from(this._columnElements).orderBy(c => c.column.offset).memoize();
 
             requestAnimationFrame(() => {
                 this._updateColumns(this.$["pinned"], columns.where(c => c.isPinned).toArray());
@@ -40,8 +42,8 @@
         }
 
         private _reorderColumns(e: CustomEvent) {
-            var children = <QueryGridConfigureDialogColumn[]>Polymer.dom(e.srcElement).children;
-            var offsets = Enumerable.from(children).orderBy(c => c.column.offset).select(c => c.column.offset).toArray();
+            const children = <QueryGridConfigureDialogColumn[]>Polymer.dom(e.srcElement).children;
+            const offsets = Enumerable.from(children).orderBy(c => c.column.offset).select(c => c.column.offset).toArray();
 
             children.forEach((child: QueryGridConfigureDialogColumn, index: number) => {
                 child.offset = offsets[index];

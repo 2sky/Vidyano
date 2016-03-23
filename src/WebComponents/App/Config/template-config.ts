@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     export abstract class TemplateConfig<T> extends WebComponent {
         private _template: PolymerTemplate;
         hasTemplate: boolean;
@@ -24,7 +26,7 @@ module Vidyano.WebComponents {
             return this._template.stamp(model).root;
         }
 
-        static register(info?: WebComponentRegistrationInfo): (obj: any) => void {
+        static register(info?: IWebComponentRegistrationInfo): (obj: any) => void {
             info.properties = info.properties || {};
             info.properties["hasTemplate"] = {
                 type: Boolean,

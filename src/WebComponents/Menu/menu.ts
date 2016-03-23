@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             menuTitle: String,
@@ -73,7 +75,7 @@ module Vidyano.WebComponents {
             if (!isAttached)
                 return false;
 
-            return this.app.service.application.globalSearchId != "00000000-0000-0000-0000-000000000000";
+            return this.app.service.application.globalSearchId !== "00000000-0000-0000-0000-000000000000";
         }
 
         private _computeCollapsedWithGlobalSearch(collapsed: boolean, hasGlobalSearch: boolean): boolean {
@@ -94,7 +96,7 @@ module Vidyano.WebComponents {
         }
 
         private _focusSearch() {
-            var inputSearch =  <InputSearch>Polymer.dom(this.root).querySelector("#collapsedInputSearch");
+            const inputSearch =  <InputSearch>Polymer.dom(this.root).querySelector("#collapsedInputSearch");
             inputSearch.focus();
         }
 
@@ -172,7 +174,7 @@ module Vidyano.WebComponents {
                 e.stopPropagation();
             }
             else {
-                var item = this.item;
+                let item = this.item;
                 if (item instanceof Vidyano.ProgramUnit && item.openFirst && item.items)
                     item = (<Vidyano.ProgramUnit>item).items[0];
 
@@ -198,11 +200,11 @@ module Vidyano.WebComponents {
         }
 
         private _hasMatch(item: ProgramUnitItem, search: string): boolean {
-            var matchOnItem = item.title.toUpperCase().contains(search);
-            var items = (<any>item).items;
-            var matchOnSubItems = (items != null && items.filter(i => this._hasMatch(i, search)).length > 0);
+            const matchOnItem = item.title.toUpperCase().contains(search);
+            const items = (<any>item).items;
+            const matchOnSubItems = (items != null && items.filter(i => this._hasMatch(i, search)).length > 0);
 
-            var hasMatch = matchOnItem || matchOnSubItems;
+            let hasMatch = matchOnItem || matchOnSubItems;
             if (!hasMatch && this.filterParent instanceof Vidyano.ProgramUnitItemGroup && this.filterParent.title.toUpperCase().contains(search))
                 hasMatch = true;
 
@@ -216,13 +218,13 @@ module Vidyano.WebComponents {
             if (!this.classList.contains("program-unit"))
                 return;
 
-            this._setExpand(this.item && this.item == this.programUnit);
+            this._setExpand(this.item && this.item === this.programUnit);
         }
 
         private _updateItemTitle(item: Vidyano.ProgramUnitItem, filter: string, filtering: boolean, collapsed: boolean) {
             if (collapsed) {
                 if (item instanceof ProgramUnit && !this.$["title"].querySelector("vi-resource")) {
-                    var resourceName = item.offset < 2147483647 ? "ProgramUnit_" + item.name : "Vidyano";
+                    const resourceName = item.offset < 2147483647 ? "ProgramUnit_" + item.name : "Vidyano";
                     if (Vidyano.WebComponents.Icon.Exists(resourceName)) {
                         this.$["title"].textContent = "";
                         Polymer.dom(this.$["title"]).appendChild(new Vidyano.WebComponents.Icon(resourceName));
@@ -238,7 +240,7 @@ module Vidyano.WebComponents {
             if (!filtering)
                 this.$["title"].textContent = item.title;
             else if (this._hasMatch(item, this.filter.toUpperCase())) {
-                var exp = new RegExp('(' + filter + ')', 'gi');
+                const exp = new RegExp(`(${filter})`, "gi");
                 this.$["title"].innerHTML = item.title.replace(exp, "<span class='style-scope vi-menu-item match'>$1</span>");
             }
         }
@@ -254,7 +256,7 @@ module Vidyano.WebComponents {
             if (item instanceof Vidyano.ProgramUnitItemUrl)
                 return item.path;
 
-            return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? this.app.noHistory ? "#" : '#!/' + this.item.path : undefined;
+            return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? this.app.noHistory ? "#" : hashBang + this.item.path : undefined;
         }
 
         private _titleMouseenter() {

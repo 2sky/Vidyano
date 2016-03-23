@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             tabs: Array,
@@ -17,7 +19,7 @@ module Vidyano.WebComponents {
         ]
     })
     export class PersistentObjectTabBar extends WebComponent {
-        private _observeDisposer: ObserveChainDisposer;
+        private _observeDisposer: IObserveChainDisposer;
         tabs: Vidyano.PersistentObjectTab[];
         selectedTab: Vidyano.PersistentObjectTab;
 
@@ -45,11 +47,11 @@ module Vidyano.WebComponents {
         }
 
         private isInline(mode: string): boolean {
-            return mode == "inline";
+            return mode === "inline";
         }
 
         private isDropDown(mode: string): boolean {
-            return mode == "dropdown";
+            return mode === "dropdown";
         }
 
         private _isVisible(tab: Vidyano.PersistentObjectTab): boolean {
@@ -93,7 +95,7 @@ module Vidyano.WebComponents {
         }
 
         private _computeIsSelected(tab: Vidyano.PersistentObjectTab, selectedTab: Vidyano.PersistentObjectTab): boolean {
-            return tab == selectedTab;
+            return tab === selectedTab;
         }
 
         private _computeHasBadge(badge: number): boolean {

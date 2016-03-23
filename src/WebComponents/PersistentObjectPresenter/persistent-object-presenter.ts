@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             persistentObjectId: {
@@ -78,7 +80,7 @@ module Vidyano.WebComponents {
                     return;
                 }
             } else {
-                var cacheEntry = new PersistentObjectAppCacheEntry(route.parameters.id, route.parameters.objectId);
+                const cacheEntry = new PersistentObjectAppCacheEntry(route.parameters.id, route.parameters.objectId);
                 this._cacheEntry = <PersistentObjectAppCacheEntry>route.app.cachePing(cacheEntry);
                 if (!this._cacheEntry)
                     route.app.cache(this._cacheEntry = cacheEntry);
@@ -135,16 +137,16 @@ module Vidyano.WebComponents {
         private _computePersistentObject(persistentObjectId: string, persistentObjectObjectId: string, isAttached: boolean) {
             this._setError(null);
 
-            if (!this.isAttached || (this.persistentObject && this.persistentObject.id == persistentObjectId && this.persistentObject.objectId == persistentObjectObjectId))
+            if (!this.isAttached || (this.persistentObject && this.persistentObject.id === persistentObjectId && this.persistentObject.objectId === persistentObjectObjectId))
                 return;
 
             if (persistentObjectId != null) {
                 this._setLoading(true);
                 this.app.service.getPersistentObject(null, persistentObjectId, persistentObjectObjectId).then(po => {
-                    var cacheEntry = <PersistentObjectAppCacheEntry>this.app.cache(new PersistentObjectAppCacheEntry(po.id, po.objectId));
+                    const cacheEntry = <PersistentObjectAppCacheEntry>this.app.cache(new PersistentObjectAppCacheEntry(po.id, po.objectId));
                     cacheEntry.persistentObject = po;
 
-                    if (persistentObjectId == this.persistentObjectId && persistentObjectObjectId == this.persistentObjectObjectId) {
+                    if (persistentObjectId === this.persistentObjectId && persistentObjectObjectId === this.persistentObjectObjectId) {
                         this.persistentObject = po;
                         this._cacheEntry = cacheEntry;
                     }
@@ -168,7 +170,7 @@ module Vidyano.WebComponents {
                 this.empty();
 
             if (persistentObject) {
-                var config = this.app.configuration.getPersistentObjectConfig(persistentObject);
+                const config = this.app.configuration.getPersistentObjectConfig(persistentObject);
                 this._setTemplated(!!config && config.hasTemplate);
 
                 if (this.templated) {
@@ -199,7 +201,7 @@ module Vidyano.WebComponents {
                 if (persistentObject !== this.persistentObject)
                     return;
 
-                var persistentObjectComponent = new Vidyano.WebComponents.PersistentObject();
+                const persistentObjectComponent = new Vidyano.WebComponents.PersistentObject();
                 persistentObjectComponent.persistentObject = persistentObject;
                 Polymer.dom(this).appendChild(persistentObjectComponent);
 
@@ -211,7 +213,7 @@ module Vidyano.WebComponents {
             if (!this.persistentObject)
                 return;
 
-            var action = <Vidyano.Action>this.persistentObject.actions["Edit"];
+            const action = <Vidyano.Action>this.persistentObject.actions["Edit"];
             if (action)
                 action.execute();
         }
@@ -220,7 +222,7 @@ module Vidyano.WebComponents {
             if (!this.persistentObject)
                 return;
 
-            var action = <Vidyano.Action>(this.persistentObject.actions["Save"] || this.persistentObject.actions["EndEdit"]);
+            const action = <Vidyano.Action>(this.persistentObject.actions["Save"] || this.persistentObject.actions["EndEdit"]);
             if (action)
                 action.execute();
         }
@@ -229,7 +231,7 @@ module Vidyano.WebComponents {
             if (!this.persistentObject)
                 return;
 
-            var action = <Vidyano.Action>(this.persistentObject.actions["CancelEdit"] || this.persistentObject.actions["CancelSave"]);
+            const action = <Vidyano.Action>(this.persistentObject.actions["CancelEdit"] || this.persistentObject.actions["CancelSave"]);
             if (action)
                 action.execute();
         }

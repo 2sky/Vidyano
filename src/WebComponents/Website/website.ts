@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             scroll: {
@@ -15,13 +17,13 @@ module Vidyano.WebComponents {
             if (this.app)
                 return;
 
-            var template = Polymer.dom(this).querySelector("template[is='dom-template']");
+            const template = Polymer.dom(this).querySelector("template[is='dom-template']");
             if (!template) {
                 console.error("Website requires a valid template.");
                 return;
             }
 
-            var config = new Vidyano.WebComponents.PersistentObjectConfig();
+            const config = new Vidyano.WebComponents.PersistentObjectConfig();
             config.id = "3256a3ad-3035-44ec-b3dd-7c9bdd14a3a7";
             config.as = "website";
             config.asModel = po => {

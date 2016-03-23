@@ -1,4 +1,6 @@
-module Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register({
         properties: {
             maxlength: Number
@@ -11,7 +13,7 @@ module Vidyano.WebComponents.Attributes {
             super._attributeChanged();
 
             if (this.attribute) {
-                var maxlength = parseInt(this.attribute.getTypeHint("MaxLength", "0"), 10);
+                const maxlength = parseInt(this.attribute.getTypeHint("MaxLength", "0"), 10);
                 this.maxlength = maxlength > 0 ? maxlength : null;
             }
         }

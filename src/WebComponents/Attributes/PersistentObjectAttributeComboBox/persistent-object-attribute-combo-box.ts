@@ -1,4 +1,6 @@
-module Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register({
         properties: {
             newValue: {
@@ -37,9 +39,9 @@ module Vidyano.WebComponents.Attributes {
         }
 
         protected _optionsChanged() {
-            var options = this.attribute.options ? (<string[]>this.attribute.options).slice() : [];
+            const options = this.attribute.options ? (<string[]>this.attribute.options).slice() : [];
 
-            var empty = options.indexOf(null);
+            let empty = options.indexOf(null);
             if (empty < 0)
                 empty = options.indexOf("");
 
@@ -56,7 +58,7 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _computeCanAdd(newValue: string, options: string[]): boolean {
-            return newValue != null && options && !options.some(o => o == newValue);
+            return newValue != null && options && !options.some(o => o === newValue);
         }
     }
 }

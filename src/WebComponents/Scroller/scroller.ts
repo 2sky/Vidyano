@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             hovering: {
@@ -167,7 +169,7 @@
         }
 
         private _updateVerticalScrollbar(outerHeight: number, innerHeight: number, verticalScrollOffset: number, noVertical: boolean) {
-            var height = outerHeight < innerHeight ? outerHeight / innerHeight * outerHeight : 0;
+            let height = outerHeight < innerHeight ? outerHeight / innerHeight * outerHeight : 0;
             if (height !== this._verticalScrollHeight) {
                 if (height > 0 && height < Scroller._minBarSize)
                     height = Scroller._minBarSize;
@@ -184,7 +186,7 @@
 
             this._setVertical(!noVertical && height > 0);
 
-            var verticalScrollTop = verticalScrollOffset === 0 ? 0 : Math.round((1 / ((innerHeight - outerHeight) / verticalScrollOffset)) * this._verticalScrollSpace);
+            const verticalScrollTop = verticalScrollOffset === 0 ? 0 : Math.round((1 / ((innerHeight - outerHeight) / verticalScrollOffset)) * this._verticalScrollSpace);
             if (verticalScrollTop !== this._verticalScrollTop)
                 this.$["vertical"].style.transform = `translate3d(0, ${this._verticalScrollTop = verticalScrollTop}px, 0)`;
 
@@ -193,7 +195,7 @@
         }
 
         private _updateHorizontalScrollbar(outerWidth: number, innerWidth: number, horizontalScrollOffset: number, noHorizontal: boolean) {
-            var width = outerWidth < innerWidth ? outerWidth / innerWidth * outerWidth : 0;
+            let width = outerWidth < innerWidth ? outerWidth / innerWidth * outerWidth : 0;
             if (width !== this._horizontalScrollWidth) {
                 if (width > 0 && width < Scroller._minBarSize)
                     width = Scroller._minBarSize;
@@ -210,23 +212,23 @@
 
             this._setHorizontal(!noHorizontal && width > 0);
 
-            var horizontalScrollLeft = horizontalScrollOffset === 0 ? 0 : Math.round((1 / ((innerWidth - outerWidth) / horizontalScrollOffset)) * this._horizontalScrollSpace);
+            const horizontalScrollLeft = horizontalScrollOffset === 0 ? 0 : Math.round((1 / ((innerWidth - outerWidth) / horizontalScrollOffset)) * this._horizontalScrollSpace);
             if (horizontalScrollLeft !== this._horizontalScrollLeft)
                 this.$["horizontal"].style.transform = `translate3d(${this._horizontalScrollLeft = horizontalScrollLeft}px, 0, 0)`;
         }
 
         private _trackVertical(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
-            var wrapper = this.$["wrapper"];
+            const wrapper = this.$["wrapper"];
 
-            if (detail.state == "start") {
+            if (detail.state === "start") {
                 this._setScrolling(true);
                 this._trackStart = this._verticalScrollTop;
             }
-            else if (detail.state == "track") {
-                var newVerticalScrollTop = this._trackStart + detail.dy;
+            else if (detail.state === "track") {
+                const newVerticalScrollTop = this._trackStart + detail.dy;
                 wrapper.scrollTop = newVerticalScrollTop === 0 ? 0 : (this.innerHeight - this.outerHeight) * ((1 / this._verticalScrollSpace) * newVerticalScrollTop);
             }
-            else if (detail.state == "end") {
+            else if (detail.state === "end") {
                 this._setScrolling(false);
                 this._trackStart = undefined;
             }
@@ -238,17 +240,17 @@
         }
 
         private _trackHorizontal(e: CustomEvent, detail: PolymerTrackDetail) {
-            var wrapper = this.$["wrapper"];
+            const wrapper = this.$["wrapper"];
 
-            if (detail.state == "start") {
+            if (detail.state === "start") {
                 this._setScrolling(true);
                 this._trackStart = this._horizontalScrollLeft;
             }
-            else if (detail.state == "track") {
-                var newHorizontalScrollLeft = this._trackStart + detail.dx;
+            else if (detail.state === "track") {
+                const newHorizontalScrollLeft = this._trackStart + detail.dx;
                 wrapper.scrollLeft = newHorizontalScrollLeft === 0 ? 0 : (this.innerWidth - this.outerWidth) * ((1 / this._horizontalScrollSpace) * newHorizontalScrollLeft);
             }
-            else if (detail.state == "end") {
+            else if (detail.state === "end") {
                 this._setScrolling(false);
                 this._trackStart = undefined;
             }
@@ -272,7 +274,7 @@
         }
 
         private _updateScrollOffsets() {
-            var wrapper = this.$["wrapper"];
+            const wrapper = this.$["wrapper"];
             if (this.vertical)
                 this.verticalScrollOffset = wrapper.scrollTop;
 
@@ -281,7 +283,7 @@
         }
 
         private _verticalScrollOffsetChanged(newVerticalScrollOffset: number) {
-            var wrapper = this.$["wrapper"];
+            const wrapper = this.$["wrapper"];
             if (wrapper.scrollTop === newVerticalScrollOffset)
                 return;
 
@@ -289,7 +291,7 @@
         }
 
         private _horizontalScrollOffsetChanged(newHorizontalScrollOffset: number) {
-            var wrapper = this.$["wrapper"];
+            const wrapper = this.$["wrapper"];
             if (wrapper.scrollLeft === newHorizontalScrollOffset)
                 return;
 
@@ -305,7 +307,7 @@
         }
 
         private _verticalScrollbarParentTap(e: TapEvent) {
-            var event = <MouseEvent>e.detail.sourceEvent;
+            const event = <MouseEvent>e.detail.sourceEvent;
             if (event.offsetY) {
                 if (event.offsetY > this._verticalScrollTop + this._verticalScrollHeight)
                     this.$["wrapper"].scrollTop += this.$["wrapper"].scrollHeight * 0.1;
@@ -317,7 +319,7 @@
         }
 
         private _horizontalScrollbarParentTap(e: TapEvent) {
-            var event = <MouseEvent>e.detail.sourceEvent;
+            const event = <MouseEvent>e.detail.sourceEvent;
             if (event.offsetX) {
                 if (event.offsetX > this._horizontalScrollLeft + this._horizontalScrollLeft)
                     this.$["wrapper"].scrollLeft += this.$["wrapper"].scrollWidth * 0.1;

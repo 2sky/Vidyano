@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             tab: Object,
@@ -45,9 +47,9 @@ module Vidyano.WebComponents {
 
             this._setLoading(true);
 
-            var childClassName = "style-scope vi-persistent-object";
+            const childClassName = "style-scope vi-persistent-object";
 
-            var config = this.app.configuration.getTabConfig(tab);
+            const config = this.app.configuration.getTabConfig(tab);
             this._setTemplated(!!config && config.hasTemplate);
 
             if (this.templated) {
@@ -57,7 +59,7 @@ module Vidyano.WebComponents {
             }
             else {
                 if (tab instanceof Vidyano.PersistentObjectQueryTab) {
-                    var itemPresenter = new QueryItemsPresenter();
+                    const itemPresenter = new QueryItemsPresenter();
                     itemPresenter.className = childClassName;
                     itemPresenter.query = (<Vidyano.PersistentObjectQueryTab>tab).query;
                     if (itemPresenter.query.autoQuery && !itemPresenter.query.hasSearched)
@@ -85,7 +87,7 @@ module Vidyano.WebComponents {
 
                         this._tabAttributes = tab.attributes.slice(0);
 
-                        var attributeTab = new WebComponents.PersistentObjectTab();
+                        const attributeTab = new WebComponents.PersistentObjectTab();
                         attributeTab.className = childClassName;
                         attributeTab.tab = <Vidyano.PersistentObjectAttributeTab>tab;
 

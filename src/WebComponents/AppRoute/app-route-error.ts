@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             title: {
@@ -20,7 +22,7 @@ module Vidyano.WebComponents {
 
         private _activate(e: CustomEvent) {
             const route = <AppRoute>Polymer.dom(this).parentNode;
-            var message = decodeURIComponent(route.parameters.message);
+            const message = decodeURIComponent(route.parameters.message);
 
             this._setTitle(this.translations && this.translations[message + "Title"] ? this.translations[message + "Title"] : null);
             this._setMessage(this.translations && this.translations[message] ? this.translations[message] : message);

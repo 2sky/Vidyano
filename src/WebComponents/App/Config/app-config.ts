@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register
     export class AppConfig extends WebComponent {
         private _defaultAttributeConfig: PersistentObjectAttributeConfig;
@@ -29,11 +31,11 @@
             if (!this._attributeConfigs)
                 this._attributeConfigs = this._getConfigs<PersistentObjectAttributeConfig>(Vidyano.WebComponents.PersistentObjectAttributeConfig);
 
-            return this._attributeConfigs.firstOrDefault(c => c.parentObjectId == attr.parent.objectId && c.parentId == attr.parent.id && (c.name == attr.name || c.type == attr.type)) ||
-                this._attributeConfigs.firstOrDefault(c => c.parentId == attr.parent.id && (c.name == attr.name || c.type == attr.type)) ||
-                this._attributeConfigs.firstOrDefault(c => c.name == attr.name && c.type == attr.type) ||
-                this._attributeConfigs.firstOrDefault(c => c.name == attr.name) ||
-                this._attributeConfigs.firstOrDefault(c => c.type == attr.type) ||
+            return this._attributeConfigs.firstOrDefault(c => c.parentObjectId === attr.parent.objectId && c.parentId === attr.parent.id && (c.name === attr.name || c.type === attr.type)) ||
+                this._attributeConfigs.firstOrDefault(c => c.parentId === attr.parent.id && (c.name === attr.name || c.type === attr.type)) ||
+                this._attributeConfigs.firstOrDefault(c => c.name === attr.name && c.type === attr.type) ||
+                this._attributeConfigs.firstOrDefault(c => c.name === attr.name) ||
+                this._attributeConfigs.firstOrDefault(c => c.type === attr.type) ||
                 this._defaultAttributeConfig;
         }
 
@@ -41,35 +43,35 @@
             if (!this._tabConfigs)
                 this._tabConfigs = this._getConfigs<PersistentObjectTabConfig>(Vidyano.WebComponents.PersistentObjectTabConfig);
 
-            return this._tabConfigs.firstOrDefault(c => c.name == tab.name && c.type == tab.parent.type && c.objectId == tab.parent.objectId) ||
-                this._tabConfigs.firstOrDefault(c => c.name == tab.name && c.type == tab.parent.type);
+            return this._tabConfigs.firstOrDefault(c => c.name === tab.name && c.type === tab.parent.type && c.objectId === tab.parent.objectId) ||
+                this._tabConfigs.firstOrDefault(c => c.name === tab.name && c.type === tab.parent.type);
         }
 
         getProgramUnitConfig(name: string): ProgramUnitConfig {
             if (!this._programUnitConfigs)
                 this._programUnitConfigs = this._getConfigs<ProgramUnitConfig>(Vidyano.WebComponents.ProgramUnitConfig);
 
-            return this._programUnitConfigs.firstOrDefault(c => c.name == name);
+            return this._programUnitConfigs.firstOrDefault(c => c.name === name);
         }
 
         getQueryConfig(query: Vidyano.Query): QueryConfig {
             if (!this._queryConfigs)
                 this._queryConfigs = this._getConfigs<QueryConfig>(Vidyano.WebComponents.QueryConfig);
 
-            return this._queryConfigs.firstOrDefault(c => (query.id && c.id == query.id) || (query.name && c.name == query.name));
+            return this._queryConfigs.firstOrDefault(c => (query.id && c.id === query.id) || (query.name && c.name === query.name));
         }
 
         getQueryChartConfig(type: string): QueryChartConfig {
             if (!this._queryChartConfigs)
                 this._queryChartConfigs = this._getConfigs<QueryChartConfig>(Vidyano.WebComponents.QueryChartConfig);
 
-            return this._queryChartConfigs.firstOrDefault(c => c.type == type);
+            return this._queryChartConfigs.firstOrDefault(c => c.type === type);
         }
 
         private _getConfigs<T>(type: any): linqjs.Enumerable<T> {
-            return <linqjs.Enumerable<T>>Enumerable.from(Polymer.dom(this).children).where(c => c.tagName != "TEMPLATE").selectMany(element => {
-                if (element.tagName == "CONTENT")
-                    return Enumerable.from(Polymer.dom(element).getDistributedNodes()).where(c => c.tagName != "TEMPLATE").toArray();
+            return <linqjs.Enumerable<T>>Enumerable.from(Polymer.dom(this).children).where(c => c.tagName !== "TEMPLATE").selectMany(element => {
+                if (element.tagName === "CONTENT")
+                    return Enumerable.from(Polymer.dom(element).getDistributedNodes()).where(c => c.tagName !== "TEMPLATE").toArray();
 
                 return [element];
             }).where(child => child instanceof type).select(child => <T><any>child).memoize();

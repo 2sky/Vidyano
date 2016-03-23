@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents.Attributes {
+﻿namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register
     export class PersistentObjectAttributeNumeric extends WebComponents.Attributes.PersistentObjectAttribute {
         private _allowDecimal: boolean;
@@ -25,7 +27,7 @@
                 return;
             }
 
-            var value = this.attribute.value.toString();
+            const value = this.attribute.value.toString();
             if (this._decimalSeparator !== ".")
                 this.value = value.replace(".", this._decimalSeparator);
             else
@@ -47,14 +49,14 @@
 
         private _editInputBlur(e: Event) {
             if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh) {
-                var newValue = this.value;
+                let newValue = this.value;
                 if (newValue != null && this._decimalSeparator !== ".")
                     newValue = newValue.replace(this._decimalSeparator, ".");
 
                 this.attribute.value = newValue;
             }
 
-            var input = <HTMLInputElement>e.target;
+            const input = <HTMLInputElement>e.target;
             if (input.value === "" || input.value == null)
                 input.value = this.attribute.value;
         }
@@ -112,24 +114,23 @@
         }
 
         private _keypress(e: KeyboardEvent): void {
-            var keyCode = e.keyCode || e.which;
-            
-            if (keyCode == Keyboard.KeyCodes.backspace || keyCode == Keyboard.KeyCodes.tab || keyCode == Keyboard.KeyCodes.shift || keyCode == Keyboard.KeyCodes.control || keyCode == Keyboard.KeyCodes.alt || 
-                keyCode == Keyboard.KeyCodes.leftarrow || keyCode == Keyboard.KeyCodes.rightarrow || keyCode == Keyboard.KeyCodes.uparrow || keyCode == Keyboard.KeyCodes.downarrow)
+            const keyCode = e.keyCode || e.which;
+
+            if (keyCode === Keyboard.KeyCodes.backspace || keyCode === Keyboard.KeyCodes.tab || keyCode === Keyboard.KeyCodes.shift || keyCode === Keyboard.KeyCodes.control || keyCode === Keyboard.KeyCodes.alt || keyCode === Keyboard.KeyCodes.leftarrow || keyCode === Keyboard.KeyCodes.rightarrow || keyCode === Keyboard.KeyCodes.uparrow || keyCode === Keyboard.KeyCodes.downarrow)
                 return;
 
-            var input = <HTMLInputElement>e.target;
-            var value = input.value;
-            var carretIndex = input.selectionStart;
-            if (input.selectionEnd != carretIndex)
+            const input = <HTMLInputElement>e.target;
+            let value = input.value;
+            const carretIndex = input.selectionStart;
+            if (input.selectionEnd !== carretIndex)
                 value = value.slice(0, Math.min(input.selectionEnd, carretIndex)) + value.slice(Math.max(input.selectionEnd, carretIndex));
 
             if (keyCode < Keyboard.KeyCodes.zero || keyCode > Keyboard.KeyCodes.nine) {
-                if ((keyCode == Keyboard.KeyCodes.comma || keyCode == Keyboard.KeyCodes.period) && !value.contains(this._decimalSeparator) && this._allowDecimal) {
+                if ((keyCode === Keyboard.KeyCodes.comma || keyCode === Keyboard.KeyCodes.period) && !value.contains(this._decimalSeparator) && this._allowDecimal) {
                     input.value = value.insert(this._decimalSeparator, carretIndex);
                     this._setCarretIndex(input, carretIndex + 1);
                 }
-                else if (keyCode == Keyboard.KeyCodes.subtract && !value.contains("-") && carretIndex == 0 && PersistentObjectAttributeNumeric._unsignedTypes.indexOf(this.attribute.type) == -1) {
+                else if (keyCode === Keyboard.KeyCodes.subtract && !value.contains("-") && carretIndex === 0 && PersistentObjectAttributeNumeric._unsignedTypes.indexOf(this.attribute.type) === -1) {
                     input.value = value.insert("-", carretIndex);
                     this._setCarretIndex(input, carretIndex + 1);
                 }

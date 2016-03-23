@@ -1,11 +1,13 @@
-module Vidyano.WebComponents {
-    var _documentClosePopupListener: EventListener;
+namespace Vidyano.WebComponents {
+    "use strict";
+
+    let _documentClosePopupListener: EventListener;
     document.addEventListener("mousedown", _documentClosePopupListener = e => {
-        var el = <HTMLElement>e.target;
-        var popup: Popup;
+        let el = <HTMLElement>e.target;
+        let popup: Popup;
 
         while (true) {
-            if (!el || el == <any>document) {
+            if (!el || el === <any>document) {
                 WebComponents.PopupCore.closeAll();
                 break;
             }
@@ -98,17 +100,17 @@ module Vidyano.WebComponents {
                 return;
 
             // Close non-parent popups
-            var parentPopup = this._findParentPopup();
-            var firstOpenNonParentChild = Popup._openPopups[parentPopup == null ? 0 : Popup._openPopups.indexOf(parentPopup) + 1];
+            const parentPopup = this._findParentPopup();
+            const firstOpenNonParentChild = Popup._openPopups[parentPopup == null ? 0 : Popup._openPopups.indexOf(parentPopup) + 1];
             if (firstOpenNonParentChild != null)
                 firstOpenNonParentChild.close();
 
             // Position content
-            var {targetRect, transformedRect} = this._getTargetRect(<HTMLElement>target);
-            var windowWidth = window.innerWidth;
-            var windowHeight = window.innerHeight;
-            var contentWidth = content.offsetWidth;
-            var contentHeight = content.offsetHeight;
+            const {targetRect, transformedRect} = this._getTargetRect(<HTMLElement>target);
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const contentWidth = content.offsetWidth;
+            const contentHeight = content.offsetHeight;
 
             let boundWidth = windowWidth;
             let boundHeight = windowHeight;
@@ -120,14 +122,14 @@ module Vidyano.WebComponents {
                 boundLeft = boundTargetRect.targetRect.left;
             }
 
-            var alignments = (this.contentAlign || "").toUpperCase().split(" ");
-            var alignCenter = alignments.indexOf("CENTER") >= 0;
-            var alignRight = alignments.indexOf("RIGHT") >= 0;
+            const alignments = (this.contentAlign || "").toUpperCase().split(" ");
+            const alignCenter = alignments.indexOf("CENTER") >= 0;
+            const alignRight = alignments.indexOf("RIGHT") >= 0;
 
-            if (this._currentOrientation == "vertical") {
+            if (this._currentOrientation === "vertical") {
                 if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + (transformedRect ? transformedRect.left : 0) + contentWidth <= boundWidth) {
                     // Left-align
-                    var left = targetRect.left;
+                    let left = targetRect.left;
                     if (this.boundingTarget && transformedRect && (left + transformedRect.left < boundLeft))
                         left += boundLeft - left - transformedRect.left;
 
@@ -173,7 +175,7 @@ module Vidyano.WebComponents {
                     content.classList.remove("top");
                 }
             }
-            else if (this._currentOrientation == "horizontal") {
+            else if (this._currentOrientation === "horizontal") {
                 if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + targetRect.width + contentWidth <= boundWidth) {
                     // Left-align
                     content.style.left = (targetRect.left + targetRect.width) + "px";
@@ -219,7 +221,7 @@ module Vidyano.WebComponents {
         }
 
         protected _getTargetRect(target: HTMLElement): { targetRect: ClientRect, transformedRect?: ClientRect } {
-            var targetRect = target.getBoundingClientRect();
+            let targetRect = target.getBoundingClientRect();
             if (target === this) {
                 targetRect = {
                     left: targetRect.left,
@@ -232,30 +234,30 @@ module Vidyano.WebComponents {
             }
 
             if (Popup._isBuggyGetBoundingClientRect === undefined) {
-                var outer = document.createElement("div");
+                const outer = document.createElement("div");
                 outer.style.webkitTransform = outer.style.transform = "translate(-100px, -100px)";
 
-                var inner = document.createElement("div");
+                const inner = document.createElement("div");
                 inner.style.position = "fixed";
 
                 outer.appendChild(inner);
 
                 document.body.appendChild(outer);
-                var outerRect = outer.getBoundingClientRect();
-                var innerRect = inner.getBoundingClientRect();
+                const outerRect = outer.getBoundingClientRect();
+                const innerRect = inner.getBoundingClientRect();
                 document.body.removeChild(outer);
 
                 Popup._isBuggyGetBoundingClientRect = outerRect.left === innerRect.left;
             }
 
             if (Popup._isBuggyGetBoundingClientRect) {
-                var parent = this.findParent(p => p === target) != null ? target.parentElement : this.parentElement;
+                let parent = this.findParent(p => p === target) != null ? target.parentElement : this.parentElement;
                 while (parent != null) {
-                    var computedStyle = getComputedStyle(parent, null),
+                    const computedStyle = getComputedStyle(parent, null),
                         transform = <string>(computedStyle.transform || computedStyle.webkitTransform);
 
                     if (transform.startsWith("matrix")) {
-                        var transformedParentRect = parent.getBoundingClientRect();
+                        const transformedParentRect = parent.getBoundingClientRect();
 
                         return {
                             targetRect: {
@@ -286,7 +288,7 @@ module Vidyano.WebComponents {
                 this._closeOnMoveoutTimer = undefined;
             }
 
-            var openChild = Popup._openPopups[Popup._openPopups.indexOf(this) + 1];
+            const openChild = Popup._openPopups[Popup._openPopups.indexOf(this) + 1];
             if (openChild != null)
                 openChild.close();
 
@@ -302,8 +304,8 @@ module Vidyano.WebComponents {
         }
 
         protected _findParentPopup(): Popup {
-            var element = this.parentNode;
-            while (element != null && Popup._openPopups.indexOf(<any>element) == -1)
+            let element = this.parentNode;
+            while (element != null && Popup._openPopups.indexOf(<any>element) === -1)
                 element = (<any>element).host || element.parentNode;
 
             return <Popup><any>element;
@@ -340,15 +342,15 @@ module Vidyano.WebComponents {
         }
 
         static closeAll(parent?: HTMLElement | WebComponent) {
-            var rootPopup = Popup._openPopups[0];
+            const rootPopup = Popup._openPopups[0];
             if (rootPopup && (!parent || Popup._isDescendant(<HTMLElement>parent, rootPopup)))
                 rootPopup.close();
         }
 
         private static _isDescendant(parent: HTMLElement, child: HTMLElement): boolean {
-            var node = child.parentNode;
+            let node = child.parentNode;
             while (node != null) {
-                if (node == parent)
+                if (node === parent)
                     return true;
 
                 node = node.parentNode;
@@ -415,19 +417,19 @@ module Vidyano.WebComponents {
         protected _open(target: HTMLElement | WebComponent) {
             super._open(target, this.$["content"]);
 
-            var rootSizeTracker = <WebComponents.SizeTracker><any>this.$["toggleSizeTracker"];
+            const rootSizeTracker = <WebComponents.SizeTracker><any>this.$["toggleSizeTracker"];
             rootSizeTracker.measure();
         }
 
         private _hookTapAndHoverEvents() {
             this._header = <HTMLElement>Polymer.dom(this.root).querySelector("[toggle]") || this.parentElement;
 
-            if (this._header == this.parentElement)
+            if (this._header === this.parentElement)
                 (<any>this._header).popup = this;
 
             if (this.isAttached) {
                 if (this.openOnHover) {
-                    this._header.addEventListener("mouseenter", this._enterHandler = this._onOpen.bind(this))
+                    this._header.addEventListener("mouseenter", this._enterHandler = this._onOpen.bind(this));
                     this.addEventListener("mouseleave", this._leaveHandler = this.close.bind(this));
                 }
                 else
@@ -462,9 +464,9 @@ module Vidyano.WebComponents {
                 return;
             }
 
-            var el = <HTMLElement>e.target;
+            let el = <HTMLElement>e.target;
             do {
-                if (el == this._header) {
+                if (el === this._header) {
                     this._onOpen(e);
 
                     e.stopPropagation();
@@ -473,7 +475,7 @@ module Vidyano.WebComponents {
 
                 el = el.parentElement;
             }
-            while (el && el != this);
+            while (el && el !== this);
         }
 
         private _onOpen(e: Event) {
@@ -493,7 +495,7 @@ module Vidyano.WebComponents {
 
         private _toggleSizeChanged(e: Event, detail: { width: number; height: number }) {
             if (!this.autoSizeContent) {
-                if (this._currentOrientation == "vertical") {
+                if (this._currentOrientation === "vertical") {
                     let minWidth = detail.width;
                     if (this.boundingTarget) {
                         const maxWidth = this._getTargetRect(this.boundingTarget).targetRect.width;
@@ -513,7 +515,7 @@ module Vidyano.WebComponents {
                     this.$["content"].style.minHeight = detail.height + "px";
             }
             else {
-                if (this._currentOrientation == "vertical") {
+                if (this._currentOrientation === "vertical") {
                     if (this.boundingTarget)
                         this.$["content"].style.maxWidth = this._getTargetRect(this.boundingTarget).targetRect.width + "px";
 

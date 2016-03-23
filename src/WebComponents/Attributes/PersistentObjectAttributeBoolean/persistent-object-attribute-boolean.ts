@@ -1,8 +1,10 @@
-module Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register
     export class PersistentObjectAttributeBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
         protected _valueChanged(newValue: any) {
-            if (this.attribute && newValue != this.attribute.value)
+            if (this.attribute && newValue !== this.attribute.value)
                 this.attribute.setValue(newValue, true);
         }
     }
@@ -16,7 +18,7 @@ module Vidyano.WebComponents.Attributes {
         }
     })
     export class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
-        private _computeOptions(attribute: Vidyano.PersistentObjectAttribute): Common.KeyValuePair[] {
+        private _computeOptions(attribute: Vidyano.PersistentObjectAttribute): Common.IKeyValuePair[] {
             if (!attribute)
                 return [];
 
@@ -40,7 +42,7 @@ module Vidyano.WebComponents.Attributes {
         }
 
         protected _valueChanged(newValue: any) {
-            if (this.attribute && newValue != this.attribute.value)
+            if (this.attribute && newValue !== this.attribute.value)
                 this.attribute.setValue(newValue, true);
         }
 

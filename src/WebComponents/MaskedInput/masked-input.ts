@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         extends: "input",
         properties: {
@@ -53,7 +55,7 @@ module Vidyano.WebComponents {
             this.setEnabled(!this.readonly);
         }
 
-        /**
+        /*
 		 * Resets the text field so just the format is present.
 		 */
         resetField() {
@@ -61,7 +63,7 @@ module Vidyano.WebComponents {
                 this._maskedInput.resetField();
         }
 
-        /**
+        /*
 		 * Set the allowed characters that can be used in the mask.
 		 * @param a string of characters that can be used.
 		 */
@@ -70,7 +72,7 @@ module Vidyano.WebComponents {
                 this._maskedInput.setAllowed(a);
         }
 
-        /**
+        /*
 		 * The format to be used in the mask.
 		 * @param f string of the format.
 		 */
@@ -79,7 +81,7 @@ module Vidyano.WebComponents {
                 this._maskedInput.setFormat(f);
         }
 
-        /**
+        /*
 		 * Set the characters to be used as separators.
 		 * @param s string representing the separator characters.
 		 */
@@ -88,7 +90,7 @@ module Vidyano.WebComponents {
                 this._maskedInput.setSeparator(s);
         }
 
-        /**
+        /*
 		 * Set the characters that the user will be typing over.
 		 * @param t string representing the characters that will be typed over.
 		 */
@@ -97,7 +99,7 @@ module Vidyano.WebComponents {
                 this._maskedInput.setTypeon(t);
         }
 
-        /**
+        /*
 		 * Sets whether the mask is active.
 		 */
         setEnabled(val: boolean) {

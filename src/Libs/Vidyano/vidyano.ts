@@ -1,28 +1,28 @@
-﻿declare var unescape;
-declare var Windows;
+﻿declare const unescape;
+declare const Windows;
 
-interface Set<T> {
-    add(value: T): Set<T>;
+interface ISet<T> {
+    add(value: T): ISet<T>;
     clear(): void;
     delete(value: T): boolean;
     entries(): Array<[T, T]>;
-    forEach(callbackfn: (value: T, index: T, set: Set<T>) => void, thisArg?: any): void;
+    forEach(callbackfn: (value: T, index: T, set: ISet<T>) => void, thisArg?: any): void;
     has(value: T): boolean;
     keys(): Array<T>;
     size: number;
 }
 
-interface SetConstructor {
-    new <T>(): Set<T>;
-    prototype: Set<any>;
+interface ISetConstructor {
+    new <T>(): ISet<T>;
+    prototype: ISet<any>;
 }
 
-declare var Set: SetConstructor;
+declare const Set: ISetConstructor;
 
-module Vidyano {
+namespace Vidyano {
     "use strict";
 
-    export var version = "latest";
+    export const version = "latest";
 
     export enum NotificationType {
         Error,
@@ -31,7 +31,7 @@ module Vidyano {
         Warning
     }
 
-    export interface Language {
+    export interface ILanguage {
         culture: string;
         name: string;
         isDefault: boolean;
@@ -40,7 +40,7 @@ module Vidyano {
         };
     }
 
-    export interface ProviderParameters {
+    export interface IProviderParameters {
         label: string;
         description: string;
         requestUri: string;
@@ -48,14 +48,14 @@ module Vidyano {
         redirectUri: string;
     }
 
-    export interface Routes {
+    export interface IRoutes {
         programUnits: { [name: string]: string};
         persistentObjects: { [type: string]: string};
         queries: { [type: string]: string};
     }
 
-    var hasStorage = (function () {
-        var vi = 'Vidyano';
+    const hasStorage = (function () {
+        const vi = "Vidyano";
         try {
             window.localStorage.setItem(vi, vi);
             window.localStorage.removeItem(vi);
@@ -68,22 +68,23 @@ module Vidyano {
             return false;
         }
     })();
-    var locationPrefix = document.location.pathname;
+    const locationPrefix = document.location.pathname;
 
-    var mobile: boolean = (function (a) { return /android.+mobile|avantgo|bada\/|blackberry|bb10|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)); })(navigator.userAgent || navigator.vendor);
+    const mobile: boolean = (function (a: string) { return /android.+mobile|avantgo|bada\/|blackberry|bb10|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|e\-|e\/|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(di|rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|xda(\-|2|g)|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)); })(navigator.userAgent || navigator.vendor);
 
     export function extend(target: any, ...sources: any[]) {
-        sources.forEach(source => {
-            for (var key in source)
+        sources.forEach((source: any) => {
+            for (const key in source) {
                 if (source.hasOwnProperty(key))
                     target[key] = source[key];
+            }
         });
 
         return target;
     }
 
     export function cookie(key: string, value?: any, options?: { force?: boolean; raw?: boolean; path?: string; domain?: string; secure?: boolean; expires?: number | Date; }) {
-        var now = new Date();
+        const now = new Date();
 
         // key and at least value given, set cookie...
         if (arguments.length > 1 && (Object.prototype.toString.call(value) === "[object String]" || value === null || value === undefined)) {
@@ -92,8 +93,8 @@ module Vidyano {
             if (value == null)
                 options.expires = -1;
 
-            var expires: Date = <Date>options.expires;
-            if (typeof options.expires === 'number') {
+            let expires: Date = <Date>options.expires;
+            if (typeof options.expires === "number") {
                 expires = new Date();
                 expires.setDate(expires.getDate() + <number>options.expires);
             }
@@ -102,7 +103,7 @@ module Vidyano {
 
             if (hasStorage && !options.force) {
                 // Clear cookie
-                document.cookie = encodeURIComponent(key) + '=; expires=' + new Date(Date.parse("2000-01-01")).toUTCString();
+                document.cookie = encodeURIComponent(key) + "=; expires=" + new Date(Date.parse("2000-01-01")).toUTCString();
 
                 // Save to localStorage/sessionStorage
                 key = locationPrefix + key;
@@ -122,24 +123,24 @@ module Vidyano {
                 return key;
             } else {
                 return (document.cookie = [
-                    encodeURIComponent(key), '=',
+                    encodeURIComponent(key), "=",
                     options.raw ? value : encodeURIComponent(value),
-                    options.expires ? '; expires=' + expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
-                    options.path ? '; path=' + options.path : '',
-                    options.domain ? '; domain=' + options.domain : '',
-                    options.secure ? '; secure' : ''
-                ].join(''));
+                    options.expires ? "; expires=" + expires.toUTCString() : "", // use expires attribute, max-age is not supported by IE
+                    options.path ? "; path=" + options.path : "",
+                    options.domain ? "; domain=" + options.domain : "",
+                    options.secure ? "; secure" : ""
+                ].join(""));
             }
         }
 
         // key and possibly options given, get cookie...
         options = value || {};
-        var decode = options.raw ? function (s) { return s; } : decodeURIComponent;
+        const decode = options.raw ? s => s : decodeURIComponent;
 
         if (hasStorage && !options.force) {
             key = locationPrefix + key;
 
-            var item = window.sessionStorage.getItem(key) || window.localStorage.getItem(key);
+            let item = window.sessionStorage.getItem(key) || window.localStorage.getItem(key);
             if (item != null) {
                 item = JSON.parse(item);
                 if (item.exp && new Date(item.exp) < now) {
@@ -150,25 +151,25 @@ module Vidyano {
                 return decode(item.val);
             }
         } else {
-            var parts = document.cookie.split('; ');
-            for (var i = 0, part; part = parts[i]; i++) {
-                var pair = part.split('=');
-                if (decodeURIComponent(pair[0]) === key) return decode(pair[1] || ''); // IE saves cookies with empty string as "c; ", e.g. without "=" as opposed to EOMB
+            const parts = document.cookie.split("; ");
+            for (let i = 0, part; part = parts[i]; i++) {
+                const pair = part.split("=");
+                if (decodeURIComponent(pair[0]) === key) return decode(pair[1] || ""); // IE saves cookies with empty string as "c; ", e.g. without "=" as opposed to EOMB
             }
         }
         return null;
     }
 
     export function _debounce(func: Function, wait: number, immediate?: boolean): Function {
-        var result;
-        var timeout = null;
+        let result;
+        let timeout = null;
         return function () {
-            var context = this, args = arguments;
-            var later = function () {
+            const context = this, args = arguments;
+            const later = function () {
                 timeout = null;
                 if (!immediate) result = func.apply(context, args);
             };
-            var callNow = immediate && !timeout;
+            const callNow = immediate && !timeout;
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
             if (callNow) result = func.apply(context, args);
@@ -176,13 +177,13 @@ module Vidyano {
         };
     }
 
-    export module Common {
-        export interface KeyValuePair {
+    export namespace Common {
+        export interface IKeyValuePair {
             key: any;
             value: string;
         }
 
-        export interface SubjectNotifier<TSource, TDetail> {
+        export interface ISubjectNotifier<TSource, TDetail> {
             notify: (source: TSource, detail?: TDetail) => void;
         }
 
@@ -191,25 +192,25 @@ module Vidyano {
             }
         }
 
-        export interface SubjectDisposer {
+        export interface ISubjectDisposer {
             (): void;
         }
 
         export class Subject<TSource, TDetail> {
             private _observers: ((sender: TSource, detail: TDetail) => void)[] = [];
 
-            constructor(notifier: SubjectNotifier<TSource, TDetail>) {
+            constructor(notifier: ISubjectNotifier<TSource, TDetail>) {
                 notifier.notify = (source: TSource, detail: TDetail) => {
-                    for (var i in this._observers)
+                    for (const i in this._observers)
                         this._observers[i](source, detail);
-                }
+                };
             }
 
-            attach(observer: SubjectObserver<TSource, TDetail>): SubjectDisposer {
-                var id = this._observers.length;
+            attach(observer: ISubjectObserver<TSource, TDetail>): ISubjectDisposer {
+                const id = this._observers.length;
                 this._observers.push(observer);
 
-                return <SubjectDisposer>this._detach.bind(this, id);
+                return <ISubjectDisposer>this._detach.bind(this, id);
             }
 
             private _detach(observerId: number) {
@@ -217,12 +218,12 @@ module Vidyano {
             }
         }
 
-        export interface SubjectObserver<TSource, TDetail> {
+        export interface ISubjectObserver<TSource, TDetail> {
             (sender: TSource, detail: TDetail): void;
         }
 
         export class Observable<T> {
-            private _propertyChangedNotifier: Vidyano.Common.SubjectNotifier<T, Vidyano.Common.PropertyChangedArgs>;
+            private _propertyChangedNotifier: Vidyano.Common.ISubjectNotifier<T, Vidyano.Common.PropertyChangedArgs>;
             propertyChanged: Vidyano.Common.Subject<T, Vidyano.Common.PropertyChangedArgs>;
 
             constructor() {
@@ -238,28 +239,28 @@ module Vidyano {
             }
         }
 
-        export interface PropertyChangedObserver<T> extends SubjectObserver<T, Vidyano.Common.PropertyChangedArgs> {
+        export interface IPropertyChangedObserver<T> extends ISubjectObserver<T, Vidyano.Common.PropertyChangedArgs> {
         }
     }
 
-    export module ClientOperations {
-        export interface ClientOperation {
+    export namespace ClientOperations {
+        export interface IClientOperation {
             type: string;
         }
 
-        export interface RefreshOperation extends ClientOperation {
+        export interface IRefreshOperation extends IClientOperation {
             delay?: number;
             queryId?: string;
             fullTypeName?: string;
             objectId?: string;
         }
 
-        export interface ExecuteMethodOperation extends ClientOperation {
+        export interface IExecuteMethodOperation extends IClientOperation {
             name: string;
             arguments: any[];
         }
 
-        export interface OpenOperation extends ClientOperation {
+        export interface IOpenOperation extends IClientOperation {
             persistentObject: any;
             replace?: boolean;
         }
@@ -279,35 +280,35 @@ module Vidyano {
         }
     }
 
-    export interface ServiceClientData {
+    export interface IServiceClientData {
         defaultUser: string;
         exception: string;
         languages: { [code: string]: { name: string; isDefault: boolean; messages: { [key: string]: string; } } };
-        providers: { [name: string]: { parameters: ProviderParameters } };
+        providers: { [name: string]: { parameters: IProviderParameters } };
     }
 
-    export interface ServiceRequest {
+    export interface IServiceRequest {
         when: Date;
-        profiler: ServiceRequestProfiler;
+        profiler: IServiceRequestProfiler;
         transport: number;
         method: string;
         request: any;
         response: any;
     }
 
-    export interface ServiceRequestProfiler {
+    export interface IServiceRequestProfiler {
         taskId: number;
         elapsedMilliseconds: number;
-        entries: ServiceRequestProfilerEntry[];
-        sql: ServiceRequestProfilerSQL[];
+        entries: IServiceRequestProfilerEntry[];
+        sql: IServiceRequestProfilerSQL[];
         exceptions: {
             id: string;
             message: string;
         }[];
     }
 
-    export interface ServiceRequestProfilerEntry {
-        entries: ServiceRequestProfilerEntry[];
+    export interface IServiceRequestProfilerEntry {
+        entries: IServiceRequestProfilerEntry[];
         methodName: string;
         sql: string[];
         started: number;
@@ -317,17 +318,17 @@ module Vidyano {
         arguments: any[];
     }
 
-    export interface ServiceRequestProfilerSQL {
+    export interface IServiceRequestProfilerSQL {
         commandId: string;
         commandText: string;
         elapsedMilliseconds: number;
         recordsAffected: number;
         taskId: number;
         type: string;
-        parameters: ServiceRequestProfilerSQLParameter[];
+        parameters: IServiceRequestProfilerSQLParameter[];
     }
 
-    export interface ServiceRequestProfilerSQLParameter {
+    export interface IServiceRequestProfilerSQLParameter {
         name: string;
         type: string;
         value: string;
@@ -339,14 +340,14 @@ module Vidyano {
         private _lastAuthTokenUpdate: Date = new Date();
         private _isUsingDefaultCredentials: boolean;
         private _clientData: any;
-        private _language: Language;
-        private _languages: Language[];
+        private _language: ILanguage;
+        private _languages: ILanguage[];
         private _windowsAuthentication: boolean;
-        private _providers: { [name: string]: ProviderParameters };
+        private _providers: { [name: string]: IProviderParameters };
         private _isSignedIn: boolean;
         private _application: Application;
         private _profile: boolean;
-        private _profiledRequests: ServiceRequest[];
+        private _profiledRequests: IServiceRequest[];
         staySignedIn: boolean;
         icons: linqjs.Dictionary<string, string>;
         actionDefinitions: linqjs.Dictionary<string, ActionDefinition>;
@@ -362,9 +363,9 @@ module Vidyano {
         }
 
         private _createUri(method: string) {
-            var uri = this.serviceUri;
-            if (!StringEx.isNullOrEmpty(uri) && !uri.endsWith('/'))
-                uri += '/';
+            let uri = this.serviceUri;
+            if (!StringEx.isNullOrEmpty(uri) && !uri.endsWith("/"))
+                uri += "/";
             return uri + method;
         }
 
@@ -377,7 +378,7 @@ module Vidyano {
             data.environment = this.environment;
             data.environmentVersion = this.environmentVersion;
 
-            if (method != "getApplication") {
+            if (method !== "getApplication") {
                 data.userName = this.userName;
                 if (data.userName !== this.defaultUserName)
                     data.authToken = this.authToken;
@@ -398,16 +399,18 @@ module Vidyano {
         private _postJSON(url: string, data: any): Promise<any> {
             const createdRequest = new Date();
             if (this.profile) {
+                /* tslint:disable:no-var-keyword */
                 var requestStart = this._getMs();
                 var requestMethod = url.split("/").pop();
+                /* tslint:enable:no-var-keyword */
             }
 
             return new Promise((resolve, reject) => {
-                var r = new XMLHttpRequest();
+                const r = new XMLHttpRequest();
                 r.open("POST", url, true);
                 r.overrideMimeType("application/json; charset=utf-8");
                 r.onload = () => {
-                    if (r.status != 200) {
+                    if (r.status !== 200) {
                         reject(r.statusText);
                         return;
                     }
@@ -426,7 +429,7 @@ module Vidyano {
                             this.application._updateSession(result.session);
 
                         resolve(result);
-                    } else if (result.exception == "Session expired") {
+                    } else if (result.exception === "Session expired") {
                         this.authToken = null;
                         delete data.authToken;
 
@@ -456,7 +459,7 @@ module Vidyano {
             let finishProfile = this.profile;
             switch (requestMethod) {
                 case "GetPersistentObject":
-                    finishProfile = finishProfile && result.result && result.result.id != "b15730ad-9f47-4775-aacb-0a181e95e53d" && !result.result.isSystem;
+                    finishProfile = finishProfile && result.result && result.result.id !== "b15730ad-9f47-4775-aacb-0a181e95e53d" && !result.result.isSystem;
                     break;
 
                 case "GetQuery":
@@ -468,7 +471,7 @@ module Vidyano {
                     break;
 
                 case "ExecuteAction":
-                    finishProfile = finishProfile && !((result.result != null && (result.result.id == "b15730ad-9f47-4775-aacb-0a181e95e53d" || result.result.isSystem) || (data.query != null && data.query.isSystem) || (data.parent != null && data.parent.isSystem && data.parent.id != "70381ffa-ae0b-4dc0-b4c3-b02dd9a9c0a0")));
+                    finishProfile = finishProfile && !((result.result != null && (result.result.id === "b15730ad-9f47-4775-aacb-0a181e95e53d" || result.result.isSystem) || (data.query != null && data.query.isSystem) || (data.parent != null && data.parent.isSystem && data.parent.id !== "70381ffa-ae0b-4dc0-b4c3-b02dd9a9c0a0")));
                     break;
             }
 
@@ -484,7 +487,7 @@ module Vidyano {
                 if (elapsedMs)
                     result.profiler.elapsedMilliseconds = Service.fromServiceString(elapsedMs, "Int32");
 
-                const request: ServiceRequest = {
+                const request: IServiceRequest = {
                     when: createdRequest,
                     profiler: result.profiler,
                     transport: Math.round(requestEnd - requestStart - result.profiler.elapsedMilliseconds),
@@ -505,10 +508,10 @@ module Vidyano {
 
         private _getJSON(url: string): Promise<any> {
             return new Promise((resolve, reject) => {
-                var r = new XMLHttpRequest();
+                const r = new XMLHttpRequest();
                 r.open("GET", url, true);
                 r.onload = () => {
-                    if (r.status != 200) {
+                    if (r.status !== 200) {
                         reject(r.statusText);
                         return;
                     }
@@ -521,14 +524,14 @@ module Vidyano {
             });
         }
 
-        private static _decodeBase64(input): string {
-            var output = "";
-            var chr1, chr2, chr3;
-            var enc1, enc2, enc3, enc4;
-            var i = 0;
+        private static _decodeBase64(input: string): string {
+            let output = "";
+            let chr1, chr2, chr3;
+            let enc1, enc2, enc3, enc4;
+            let i = 0;
 
             // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
-            var base64test = /[^A-Za-z0-9\+\/\=]/g;
+            const base64test = /[^A-Za-z0-9\+\/\=]/g;
             if (base64test.exec(input)) {
                 throw "There were invalid base64 characters in the input text.";
             }
@@ -546,10 +549,10 @@ module Vidyano {
 
                 output = output + String.fromCharCode(chr1);
 
-                if (enc3 != 64) {
+                if (enc3 !== 64) {
                     output = output + String.fromCharCode(chr2);
                 }
-                if (enc4 != 64) {
+                if (enc4 !== 64) {
                     output = output + String.fromCharCode(chr3);
                 }
             } while (i < input.length);
@@ -562,32 +565,32 @@ module Vidyano {
                 timeString = timeString.trim();
 
                 // 00:00.0000000
-                var ms = "0000000";
-                var parts = timeString.split('.');
-                if (parts.length == 2) {
+                let ms = "0000000";
+                const parts = timeString.split(".");
+                if (parts.length === 2) {
                     ms = parts[1];
                     timeString = parts[0];
                 }
-                else if (parts.length != 1)
+                else if (parts.length !== 1)
                     return defaultValue;
 
-                var length = timeString.length;
+                const length = timeString.length;
                 if (length >= 4) {
-                    var values = timeString.split(':'), valuesLen = values.length;
-                    var days = 0, hours, minutes, seconds = 0;
+                    const values = timeString.split(":"), valuesLen = values.length;
+                    let days = 0, hours, minutes, seconds = 0;
 
-                    if ((length == 4 || length == 5) && valuesLen == 2) {
+                    if ((length === 4 || length === 5) && valuesLen === 2) {
                         // [0]0:00
                         hours = parseInt(values[0], 10);
                         minutes = parseInt(values[1], 10);
                     }
-                    else if ((length == 7 || length == 8) && valuesLen == 3) {
+                    else if ((length === 7 || length === 8) && valuesLen === 3) {
                         // [0]0:00:00
                         hours = parseInt(values[0], 10);
                         minutes = parseInt(values[1], 10);
                         seconds = parseInt(values[2], 10);
                     }
-                    else if (length >= 10 && valuesLen == 4) {
+                    else if (length >= 10 && valuesLen === 4) {
                         // 0:00:00:00
                         days = parseInt(values[0], 10);
                         hours = parseInt(values[1], 10);
@@ -597,16 +600,16 @@ module Vidyano {
                     else
                         return defaultValue;
 
-                    if (days != NaN && hours != NaN && minutes != NaN && seconds != NaN && days >= 0 && hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59 && seconds >= 0 && seconds <= 59)
-                        return StringEx.format("{0}:{1:d2}:{2:d2}:{3:d2}.{4}", days, hours, minutes, seconds, ms.padRight(7, '0'));
+                    if (!isNaN(days) && !isNaN(hours) && !isNaN(minutes) && !isNaN(seconds) && days >= 0 && hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59 && seconds >= 0 && seconds <= 59)
+                        return StringEx.format("{0}:{1:d2}:{2:d2}:{3:d2}.{4}", days, hours, minutes, seconds, ms.padRight(7, "0"));
                 }
             }
 
             return defaultValue;
-        }
+        };
 
         _getStream(obj: PersistentObject, action?: string, parent?: PersistentObject, query?: Query, selectedItems?: Array<QueryResultItem>, parameters?: any) {
-            var data = this._createData("getStream");
+            const data = this._createData("getStream");
             data.action = action;
             if (obj != null)
                 data.id = obj.objectId;
@@ -615,12 +618,12 @@ module Vidyano {
             if (query != null)
                 data.query = query._toServiceObject();
             if (selectedItems != null)
-                data.selectedItems = selectedItems.map(function (si) { return si._toServiceObject(); });
+                data.selectedItems = selectedItems.map(si => si._toServiceObject());
             if (parameters != null)
                 data.parameters = parameters;
 
-            var name = "iframe-vidyano-download";
-            var iframe = <HTMLIFrameElement>document.querySelector("iframe[name='" + name + "']");
+            const name = "iframe-vidyano-download";
+            let iframe = <HTMLIFrameElement>document.querySelector("iframe[name='" + name + "']");
             if (!iframe) {
                 iframe = document.createElement("iframe");
                 iframe.src = "javascript:false;";
@@ -632,14 +635,14 @@ module Vidyano {
                 document.body.appendChild(iframe);
             }
 
-            var form = document.createElement("form");
+            const form = document.createElement("form");
             form.enctype = "multipart/form-data";
             form.encoding = "multipart/form-data";
             form.method = "post";
             form.action = this._createUri("GetStream");
             form.target = name;
 
-            var input = document.createElement("input");
+            const input = document.createElement("input");
             input.type = "hidden";
             input.name = "data";
             input.value = JSON.stringify(data);
@@ -659,7 +662,7 @@ module Vidyano {
             if (this._application === application)
                 return;
 
-            var oldApplication = this._application;
+            const oldApplication = this._application;
             this.notifyPropertyChanged("application", this._application = application, oldApplication);
 
             if (this._application && this._application.canProfile)
@@ -668,10 +671,10 @@ module Vidyano {
                 this.profile = false;
         }
 
-        get language(): Language {
+        get language(): ILanguage {
             return this._language;
         }
-        set language(l: Language) {
+        set language(l: ILanguage) {
             this._language = l;
         }
 
@@ -685,11 +688,11 @@ module Vidyano {
 
             this._setIsUsingDefaultCredentials(val && this.defaultUserName && this.userName && this.defaultUserName.toLowerCase() === this.userName.toLowerCase());
 
-            var oldIsSignedIn = this._isSignedIn;
+            const oldIsSignedIn = this._isSignedIn;
             this.notifyPropertyChanged("isSignedIn", this._isSignedIn = val, oldIsSignedIn);
         }
 
-        get languages(): Language[] {
+        get languages(): ILanguage[] {
             return this._languages;
         }
 
@@ -697,7 +700,7 @@ module Vidyano {
             return this._windowsAuthentication;
         }
 
-        get providers(): { [name: string]: ProviderParameters } {
+        get providers(): { [name: string]: IProviderParameters } {
             return this._providers;
         }
 
@@ -714,7 +717,7 @@ module Vidyano {
         }
 
         private _setUserName(val: string) {
-            var oldUserName = this.userName;
+            const oldUserName = this.userName;
             if (oldUserName === val)
                 return;
 
@@ -755,11 +758,11 @@ module Vidyano {
             if (this._profile === val)
                 return;
 
-            var currentProfileCookie = !!BooleanEx.parse(Vidyano.cookie("profile"));
-            if (currentProfileCookie != val)
+            const currentProfileCookie = !!BooleanEx.parse(Vidyano.cookie("profile"));
+            if (currentProfileCookie !== val)
                 Vidyano.cookie("profile", String(val));
 
-            var oldValue = this._profile;
+            const oldValue = this._profile;
             this._profile = val;
 
             if (!val)
@@ -768,11 +771,11 @@ module Vidyano {
             this.notifyPropertyChanged("profile", val, oldValue);
         }
 
-        get profiledRequests(): ServiceRequest[] {
+        get profiledRequests(): IServiceRequest[] {
             return this._profiledRequests;
         }
 
-        private _setProfiledRequests(requests: ServiceRequest[]) {
+        private _setProfiledRequests(requests: IServiceRequest[]) {
             this.notifyPropertyChanged("profiledRequests", this._profiledRequests = requests);
         }
 
@@ -781,7 +784,7 @@ module Vidyano {
         }
 
         initialize(skipDefaultCredentialLogin: boolean = false): Promise<Application> {
-            return this._getJSON(this._createUri("GetClientData?v=2")).then((clientData: ServiceClientData) => {
+            return this._getJSON(this._createUri("GetClientData?v=2")).then((clientData: IServiceClientData) => {
                 this.hooks.onInitialize(clientData);
 
                 this._clientData = clientData;
@@ -789,26 +792,26 @@ module Vidyano {
                 if (clientData.exception)
                     throw clientData.exception;
 
-                var languages: Language[] = [];
-                for (var name in clientData.languages) {
+                const languages: ILanguage[] = [];
+                for (const name in clientData.languages) {
                     languages.push({ culture: name, name: clientData.languages[name].name, isDefault: clientData.languages[name].isDefault, messages: clientData.languages[name].messages });
                 }
                 this._languages = languages;
                 this.language = Enumerable.from(this._languages).firstOrDefault(l => l.isDefault) || this._languages[0];
 
                 this._providers = {};
-                for (var provider in clientData.providers) {
+                for (const provider in clientData.providers) {
                     this._providers[provider] = clientData.providers[provider].parameters;
                 }
                 this._windowsAuthentication = this._clientData.windowsAuthentication;
 
                 if (!StringEx.isNullOrEmpty(document.location.hash) && document.location.hash.startsWith("#!/SignInWithToken/")) {
-                    var token = document.location.hash.substr(19);
-                    var tokenParts = token.split("/", 2);
+                    const token = document.location.hash.substr(19);
+                    const tokenParts = token.split("/", 2);
                     this._setUserName(Service._decodeBase64(tokenParts[0]));
                     this.authToken = tokenParts[1].replace("_", "/");
 
-                    var returnUrl = Vidyano.cookie("returnUrl", { force: true });
+                    const returnUrl = Vidyano.cookie("returnUrl", { force: true });
                     if (returnUrl) {
                         Vidyano.cookie("returnUrl", null, { force: true });
                         document.location.hash = "!/" + returnUrl;
@@ -832,21 +835,21 @@ module Vidyano {
         }
 
         signInExternal(providerName: string) {
-            var provider = this.providers[providerName];
+            const provider = this.providers[providerName];
             if (provider != null) {
-                var requestUri = provider.requestUri;
-                if (typeof (Windows) != "undefined") {
-                    var broker = Windows.Security.Authentication.Web.WebAuthenticationBroker;
-                    var redirectUri = provider.redirectUri;
-                    var authenticate = broker.authenticateAsync(Windows.Security.Authentication.Web.WebAuthenticationOptions.none, new Windows.Foundation.Uri(requestUri), new Windows.Foundation.Uri(redirectUri));
+                const requestUri = provider.requestUri;
+                if (typeof (Windows) !== "undefined") {
+                    const broker = Windows.Security.Authentication.Web.WebAuthenticationBroker;
+                    const redirectUri = provider.redirectUri;
+                    const authenticate = broker.authenticateAsync(Windows.Security.Authentication.Web.WebAuthenticationOptions.none, new Windows.Foundation.Uri(requestUri), new Windows.Foundation.Uri(redirectUri));
                     authenticate.then(result => {
-                        if (result.responseStatus == Windows.Security.Authentication.Web.WebAuthenticationStatus.success) {
-                            var data = this._createData("getApplication");
-                            data.accessToken = result.responseData.split('#')[0].replace(redirectUri + "?code=", "");
+                        if (result.responseStatus === Windows.Security.Authentication.Web.WebAuthenticationStatus.success) {
+                            const data = this._createData("getApplication");
+                            data.accessToken = result.responseData.split("#")[0].replace(redirectUri + "?code=", "");
                             data.serviceProvider = "Yammer";
 
                             this._getApplication(data).then(() => {
-                                if (document.location.hash != "")
+                                if (document.location.hash !== "")
                                     document.location.hash = "";
                                 document.location.reload();
                             }, e => {
@@ -863,7 +866,7 @@ module Vidyano {
         signInUsingCredentials(userName: string, password: string): Promise<Application> {
             this._setUserName(userName);
 
-            var data = this._createData("getApplication");
+            const data = this._createData("getApplication");
             data.userName = userName;
             data.password = password;
 
@@ -882,7 +885,7 @@ module Vidyano {
             this._setApplication(null);
 
             if (this._providers["Acs"] && this._providers["Acs"].signOutUri) {
-                var iframe = document.createElement("iframe");
+                const iframe = document.createElement("iframe");
                 iframe.width = "0";
                 iframe.height = "0";
                 iframe.src = this._providers["Acs"].signOutUri;
@@ -912,15 +915,15 @@ module Vidyano {
 
                     this._setApplication(new Application(this, result.application));
 
-                    var resourcesQuery = this.application.getQuery("Resources");
+                    const resourcesQuery = this.application.getQuery("Resources");
                     if (resourcesQuery)
-                        this.icons = Enumerable.from(resourcesQuery.items).where(i => i.getValue("Type") == "Icon").toDictionary(i => <string>i.getValue("Key"), i => <string>i.getValue("Data"));
+                        this.icons = Enumerable.from(resourcesQuery.items).where((i => i.getValue("Type") === "Icon")).toDictionary(i => <string>i.getValue("Key"), i => <string>i.getValue("Data"));
                     else
                         this.icons = Enumerable.empty<string>().toDictionary(i => i, i => i);
                     this.actionDefinitions = Enumerable.from(this.application.getQuery("Actions").items).toDictionary(i => <string>i.getValue("Name"), i => new ActionDefinition(this, i));
 
-                    this.language = Enumerable.from(this._languages).firstOrDefault(l => l.culture == result.userLanguage) || Enumerable.from(this._languages).firstOrDefault(l => l.isDefault);
-                    var clientMessagesQuery = this.application.getQuery("ClientMessages");
+                    this.language = Enumerable.from(this._languages).firstOrDefault(l => l.culture === result.userLanguage) || Enumerable.from(this._languages).firstOrDefault(l => l.isDefault);
+                    const clientMessagesQuery = this.application.getQuery("ClientMessages");
                     if (clientMessagesQuery)
                         clientMessagesQuery.items.forEach(msg => this.language.messages[msg.getValue("Key")] = msg.getValue("Value"));
 
@@ -944,7 +947,7 @@ module Vidyano {
         }
 
         getQuery(id: string, asLookup?: boolean): Promise<Query> {
-            var data = this._createData("getQuery");
+            const data = this._createData("getQuery");
             data.id = id;
 
             return new Promise<Query>((resolve, reject) => {
@@ -960,7 +963,7 @@ module Vidyano {
         }
 
         getPersistentObject(parent: PersistentObject, id: string, objectId?: string): Promise<PersistentObject> {
-            var data = this._createData("getPersistentObject");
+            const data = this._createData("getPersistentObject");
             data.persistentObjectTypeId = id;
             data.objectId = objectId;
             if (parent != null)
@@ -968,7 +971,7 @@ module Vidyano {
 
             return new Promise<PersistentObject>((resolve, reject) => {
                 this._postJSON(this._createUri("GetPersistentObject"), data).then(result => {
-                    if (result.exception || (result.result && result.result.notification && result.result.notificationType == "Error"))
+                    if (result.exception || (result.result && result.result.notification && result.result.notificationType === "Error"))
                         reject(result.exception || result.result.notification);
                     else
                         resolve(this.hooks.onConstructPersistentObject(this, result.result));
@@ -979,7 +982,7 @@ module Vidyano {
         }
 
         executeQuery(parent: PersistentObject, query: Query, asLookup: boolean = false): Promise<any> {
-            var data = this._createData("executeQuery");
+            const data = this._createData("executeQuery");
             data.query = query._toServiceObject();
 
             if (parent != null)
@@ -1002,7 +1005,7 @@ module Vidyano {
         }
 
         executeAction(action: string, parent: PersistentObject, query: Query, selectedItems: Array<QueryResultItem>, parameters?: any, skipHooks: boolean = false): Promise<PersistentObject> {
-            var isObjectAction = action.startsWith("PersistentObject.") || query == null;
+            const isObjectAction = action.startsWith("PersistentObject.") || query == null;
             return new Promise<PersistentObject>((resolve, reject) => {
                 if (!skipHooks) {
                     if (!isObjectAction) {
@@ -1015,7 +1018,7 @@ module Vidyano {
 
                     this.hooks.trackEvent(action, parameters ? parameters.MenuLabel || parameters.MenuOption : null, query || parent);
 
-                    var args = new ExecuteActionArgs(this, action, parent, query, selectedItems, parameters);
+                    const args = new ExecuteActionArgs(this, action, parent, query, selectedItems, parameters);
                     this.hooks.onAction(args).then(() => {
                         if (args.isHandled)
                             resolve(args.result);
@@ -1037,7 +1040,7 @@ module Vidyano {
                     return;
                 }
 
-                var data = this._createData("executeAction");
+                const data = this._createData("executeAction");
                 data.action = action;
                 if (parent != null)
                     data.parent = parent.toServiceObject();
@@ -1049,25 +1052,25 @@ module Vidyano {
                     data.parameters = parameters;
 
                 if (parent != null) {
-                    var inputs = parent.getRegisteredInputs();
+                    const inputs = parent.getRegisteredInputs();
                     if (inputs.count() > 0) {
-                        var origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+                        const origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port: "");
                         if (this.serviceUri.startsWith("http") && !this.serviceUri.startsWith(origin) + "/") {
                             Promise.all(inputs.select(input => {
                                 return new Promise((resolve, reject) => {
-                                    var file = input.value.files[0];
-                                    if (!file){
+                                    const file = input.value.files[0];
+                                    if (!file) {
                                         resolve(true);
                                         return;
                                     }
 
-                                    var attribute = parent.getAttribute(input.key);
-                                    var reader = new FileReader();
+                                    const attribute = parent.getAttribute(input.key);
+                                    const reader = new FileReader();
 
                                     reader.onload = event => {
-                                        var fileName = attribute.value;
+                                        const fileName = attribute.value;
                                         attribute.value = (<any>event.target).result.match(/,(.*)$/)[1];
-                                        if (attribute.type == "BinaryFile")
+                                        if (attribute.type === "BinaryFile")
                                             attribute.value = fileName + "|" + attribute.value;
 
                                         resolve(true);
@@ -1091,22 +1094,22 @@ module Vidyano {
                             return;
                         }
 
-                        var iframeName = "iframe-" + new Date();
-                        var iframe = document.createElement("iframe");
+                        const iframeName = "iframe-" + new Date();
+                        const iframe = document.createElement("iframe");
                         iframe.src = "javascript:false;";
                         iframe.name = iframeName;
                         iframe.style.position = "absolute";
                         iframe.style.top = "-1000px";
                         iframe.style.left = "-1000px";
 
-                        var clonedForm = document.createElement("form");
+                        const clonedForm = document.createElement("form");
                         clonedForm.enctype = "multipart/form-data";
                         clonedForm.encoding = "multipart/form-data";
                         clonedForm.method = "post";
                         clonedForm.action = this._createUri("ExecuteAction");
                         clonedForm.target = iframeName;
 
-                        var input = document.createElement("input");
+                        const input = document.createElement("input");
                         input.type = "hidden";
                         input.name = "data";
                         input.value = JSON.stringify(data);
@@ -1114,10 +1117,10 @@ module Vidyano {
                         clonedForm.appendChild(input);
                         clonedForm.style.display = "none";
 
-                        inputs.where(function (item) { return item.value.value != ""; }).forEach(function (item) {
-                            var input = item.value;
+                        inputs.where(item => item.value.value !== "").forEach(function (item) {
+                            const input = item.value;
                             input.name = item.key;
-                            var replacement = document.createElement("input");
+                            const replacement = document.createElement("input");
                             replacement.type = "file";
                             input.insertAdjacentElement("afterend", replacement);
                             (<any>input).replacement = replacement;
@@ -1126,14 +1129,14 @@ module Vidyano {
 
                         const createdRequest = new Date();
                         if (this.profile)
-                            var requestStart = this._getMs();
+                            /* tslint:disable:no-var-keyword */ var requestStart = this._getMs(); /* tslint:enable:no-var-keyword*/
 
                         const service = this;
                         // NOTE: The first load event gets fired after the iframe has been injected into the DOM, and is used to prepare the actual submission.
                         iframe.onload = function (e: Event) {
                             // NOTE: The second load event gets fired when the response to the form submission is received. The implementation detects whether the actual payload is embedded in a <textarea> element, and prepares the required conversions to be made in that case.
                             iframe.onload = function (e: Event) {
-                                var doc = this.contentWindow ? this.contentWindow.document : (this.contentDocument ? this.contentDocument : this.document),
+                                const doc = this.contentWindow ? this.contentWindow.document : (this.contentDocument ? this.contentDocument : this.document),
                                     root = doc.documentElement ? doc.documentElement : doc.body,
                                     textarea = root.getElementsByTagName("textarea")[0],
                                     type = textarea ? textarea.getAttribute("data-type") : null,
@@ -1144,7 +1147,7 @@ module Vidyano {
                                             root ? (root.textContent || root.innerText) : null
                                     };
 
-                                var result = JSON.parse(content.text);
+                                const result = JSON.parse(content.text);
 
                                 if (result.exception == null) {
                                     iframe.src = "javascript:false;";
@@ -1164,11 +1167,11 @@ module Vidyano {
                             clonedForm.submit();
                             parent.clearRegisteredInputs();
                             inputs.forEach(item => {
-                                var replacement: HTMLInputElement = (<any>item.value).replacement;
+                                const replacement: HTMLInputElement = (<any>item.value).replacement;
                                 if (replacement != null) {
-                                    var tempParent = document.createElement("div");
+                                    const tempParent = document.createElement("div");
                                     tempParent.innerHTML = item.value.outerHTML;
-                                    var newInput = <HTMLInputElement>tempParent.querySelector("input")
+                                    const newInput = <HTMLInputElement>tempParent.querySelector("input");
                                     replacement.parentNode.replaceChild(newInput, replacement);
                                     parent.registerInput(item.key, newInput);
                                 }
@@ -1198,16 +1201,16 @@ module Vidyano {
         }
 
         static getDate = function (yearString: string, monthString: string, dayString: string, hourString: string, minuteString: string, secondString: string, msString: string) {
-            var year = parseInt(yearString, 10);
-            var month = parseInt(monthString || "1", 10) - 1;
-            var day = parseInt(dayString || "1", 10);
-            var hour = parseInt(hourString || "0", 10);
-            var minutes = parseInt(minuteString || "0", 10);
-            var seconds = parseInt(secondString || "0", 10);
-            var ms = parseInt(msString || "0", 10);
+            const year = parseInt(yearString, 10);
+            const month = parseInt(monthString || "1", 10) - 1;
+            const day = parseInt(dayString || "1", 10);
+            const hour = parseInt(hourString || "0", 10);
+            const minutes = parseInt(minuteString || "0", 10);
+            const seconds = parseInt(secondString || "0", 10);
+            const ms = parseInt(msString || "0", 10);
 
             return new Date(year, month, day, hour, minutes, seconds, ms);
-        }
+        };
 
         static fromServiceString(value: string, typeName: string): any {
             switch (typeName) {
@@ -1261,11 +1264,11 @@ module Vidyano {
                 case "NullableDateTimeOffset":
                     // Example format: 17-07-2003 00:00:00[.000] [+00:00]
                     if (!StringEx.isNullOrEmpty(value) && value.length >= 19) {
-                        var parts = value.split(" ");
-                        var date = parts[0].split("-");
-                        var time = parts[1].split(":");
-                        var dateTime = Service.getDate(date[2], date[1], date[0], time[0], time[1], time[2].substring(0, 2), time[2].length > 2 ? time[2].substr(3, 3) : null);
-                        if (parts.length == 3) {
+                        const parts = value.split(" ");
+                        const date = parts[0].split("-");
+                        const time = parts[1].split(":");
+                        const dateTime = Service.getDate(date[2], date[1], date[0], time[0], time[1], time[2].substring(0, 2), time[2].length > 2 ? time[2].substr(3, 3) : null);
+                        if (parts.length === 3) {
                             dateTime.netType("DateTimeOffset");
                             dateTime.netOffset(parts[2]);
                         }
@@ -1273,18 +1276,18 @@ module Vidyano {
                         return dateTime;
                     }
 
-                    var now = new Date();
-                    if (typeName == "Date") {
+                    const now = new Date();
+                    if (typeName === "Date") {
                         now.setHours(0, 0, 0, 0);
                         return now;
                     }
-                    else if (typeName == "DateTime")
+                    else if (typeName === "DateTime")
                         return now;
-                    else if (typeName == "DateTimeOffset") {
+                    else if (typeName === "DateTimeOffset") {
                         now.netType("DateTimeOffset");
-                        var zone = now.getTimezoneOffset() * -1;
-                        var zoneHour = zone / 60;
-                        var zoneMinutes = zone % 60;
+                        const zone = now.getTimezoneOffset() * -1;
+                        const zoneHour = zone / 60;
+                        const zoneMinutes = zone % 60;
                         now.netOffset(StringEx.format("{0}{1:D2}:{2:D2}", zone < 0 ? "-" : "+", zoneHour, zoneMinutes)); // +00:00
                         return now;
                     }
@@ -1339,11 +1342,11 @@ module Vidyano {
                 case "DateTime":
                 case "NullableDateTime":
                     if (!StringEx.isNullOrEmpty(value)) {
-                        var date = value;
-                        if (typeof (date) == "string")
+                        let date = value;
+                        if (typeof (date) === "string")
                             date = new Date(value);
 
-                        return date.format("dd-MM-yyyy HH:mm:ss.fff").trimEnd('0').trimEnd('.');
+                        return date.format("dd-MM-yyyy HH:mm:ss.fff").trimEnd("0").trimEnd(".");
                     }
 
                     break;
@@ -1351,10 +1354,10 @@ module Vidyano {
                 case "DateTimeOffset":
                 case "NullableDateTimeOffset":
                     if (!StringEx.isNullOrEmpty(value)) {
-                        var dateOffset = value;
-                        if (typeof (value) == "string") {
+                        let dateOffset = value;
+                        if (typeof (value) === "string") {
                             if (value.length >= 23 && value.length <= 30) {
-                                var dateParts = value.split(" ");
+                                const dateParts = value.split(" ");
 
                                 dateOffset = new Date(dateParts[0] + " " + dateParts[1]);
                                 dateOffset.netOffset(dateParts[2]);
@@ -1375,7 +1378,7 @@ module Vidyano {
                     if (value == null)
                         return null;
 
-                    if (typeof (value) == "string")
+                    if (typeof (value) === "string")
                         value = BooleanEx.parse(value);
 
                     return value ? "True" : "False";
@@ -1387,7 +1390,7 @@ module Vidyano {
                     return Service._getServiceTimeString(value, null);
             }
 
-            return typeof (value) == "string" || value == null ? value : String(value);
+            return typeof (value) === "string" || value == null ? value : String(value);
         }
 
         static numericTypes = [
@@ -1443,18 +1446,23 @@ module Vidyano {
         }
 
         createData(data: any) {
+            // Noop
         }
 
         setNotification(notification: string, type: NotificationType) {
+            // Noop
         }
 
         trackEvent(name: string, option: string, owner: ServiceObjectWithActions) {
+            // Noop
         }
 
-        onInitialize(clientData: ServiceClientData) {
+        onInitialize(clientData: IServiceClientData) {
+            // Noop
         }
 
         onSessionExpired() {
+            // Noop
         }
 
         onActionConfirmation(action: Action, option: number): Promise<boolean> {
@@ -1466,9 +1474,11 @@ module Vidyano {
         }
 
         onOpen(obj: ServiceObject, replaceCurrent: boolean = false, fromAction: boolean = false) {
+            // Noop
         }
 
         onClose(obj: ServiceObject) {
+            // Noop
         }
 
         onConstructPersistentObject(service: Service, po: any): PersistentObject {
@@ -1528,14 +1538,15 @@ module Vidyano {
         }
 
         onNavigate(path: string, replaceCurrent: boolean = false) {
+            // Noop
         }
 
-        onClientOperation(operation: ClientOperations.ClientOperation) {
+        onClientOperation(operation: ClientOperations.IClientOperation) {
             switch (operation.type) {
                 case "ExecuteMethod":
-                    var executeMethod = <ClientOperations.ExecuteMethodOperation>operation;
-                    var method: Function = Vidyano.ClientOperations[executeMethod.name];
-                    if (typeof (method) == "function") {
+                    const executeMethod = <ClientOperations.IExecuteMethodOperation>operation;
+                    const method: Function = Vidyano.ClientOperations[executeMethod.name];
+                    if (typeof (method) === "function") {
                         method.apply(Vidyano.ClientOperations, [this].concat(executeMethod.arguments));
                     }
                     else if (window.console && console.error)
@@ -1544,7 +1555,7 @@ module Vidyano {
                     break;
 
                 case "Open":
-                    var open = <ClientOperations.OpenOperation>operation;
+                    const open = <ClientOperations.IOpenOperation>operation;
                     this.onOpen(this.onConstructPersistentObject(this.service, open.persistentObject), open.replace, true);
                     break;
 
@@ -1555,11 +1566,12 @@ module Vidyano {
             }
         }
 
-        onSelectedItemsActions(query: Query, selectedItems: QueryResultItem[], action: SelectedItemsActionArgs) {
+        onSelectedItemsActions(query: Query, selectedItems: QueryResultItem[], action: ISelectedItemsActionArgs) {
+            // Noop
         }
     }
 
-    export interface SelectedItemsActionArgs {
+    export interface ISelectedItemsActionArgs {
        name: string;
        isVisible: boolean;
        canExecute: boolean;
@@ -1591,7 +1603,7 @@ module Vidyano {
         }
     }
 
-    export interface ServiceObjectPropertyChangedObserver extends Common.PropertyChangedObserver<ServiceObject> {
+    export interface IServiceObjectPropertyChangedObserver extends Common.IPropertyChangedObserver<ServiceObject> {
     }
 
     export class ServiceObject extends Vidyano.Common.Observable<ServiceObject> {
@@ -1602,8 +1614,8 @@ module Vidyano {
         copyProperties(propertyNames: Array<string>, includeNullValues?: boolean, result?: any): any {
             result = result || {};
             propertyNames.forEach(p => {
-                var value = this[p];
-                if (includeNullValues || (value != null && value !== false && (value !== 0 || p == "pageSize") && (!Array.isArray(value) || value.length > 0)))
+                const value = this[p];
+                if (includeNullValues || (value != null && value !== false && (value !== 0 || p === "pageSize") && (!Array.isArray(value) || value.length > 0)))
                     result[p] = value;
             });
             return result;
@@ -1628,18 +1640,18 @@ module Vidyano {
         }
 
         private _setIsBusy(val: boolean) {
-            if (this._isBusy == val)
+            if (this._isBusy === val)
                 return;
 
-            var oldIsBusy = this._isBusy;
+            const oldIsBusy = this._isBusy;
             this.notifyPropertyChanged("isBusy", this._isBusy = val, oldIsBusy);
         }
 
         setNotification(notification: string = null, type: NotificationType = NotificationType.Error) {
-            var oldNotificationType = this.notificationType;
+            const oldNotificationType = this.notificationType;
             this.notifyPropertyChanged("notificationType", this.notificationType = type, oldNotificationType);
 
-            var oldNotification = this.notification;
+            const oldNotification = this.notification;
             this.notifyPropertyChanged("notification", this.notification = notification, oldNotification);
         }
 
@@ -1719,7 +1731,7 @@ module Vidyano {
         queries: Query[];
 
         constructor(service: Service, po: any) {
-            super(service, (po._actionNames || po.actions || []).map(a => a == "Edit" && po.isNew ? "Save" : a));
+            super(service, (po._actionNames || po.actions || []).map(a => a === "Edit" && po.isNew ? "Save" : a));
 
             this._id = po.id;
             this._isSystem = !!po.isSystem;
@@ -1730,7 +1742,7 @@ module Vidyano {
             this.objectId = po.objectId;
             this._breadcrumb = po.breadcrumb;
             this.notification = po.notification;
-            this.notificationType = typeof (po.notificationType) == "number" ? po.notificationType : NotificationType[<string>po.notificationType];
+            this.notificationType = typeof (po.notificationType) === "number" ? po.notificationType : NotificationType[<string>po.notificationType];
             this.isNew = !!po.isNew;
             this.newOptions = po.newOptions;
             this.isReadOnly = !!po.isReadOnly;
@@ -1749,30 +1761,30 @@ module Vidyano {
             this.queries = po.queries ? Enumerable.from<Query>(po.queries).select(query => service.hooks.onConstructQuery(service, query, this)).orderBy(q => q.offset).toArray() : [];
             this.queries.forEach(query => this.queries[query.name] = query);
 
-            var visibility = this.isNew ? "New" : "Read";
-            var attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility == "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => attr.tabKey, attr => attr).select(attributesByTab => {
-                var groups = attributesByTab.orderBy(attr => attr.offset).groupBy(attr => attr.groupKey, attr => attr).select(attributesByGroup => {
-                    var newGroup = this.service.hooks.onConstructPersistentObjectAttributeGroup(service, attributesByGroup.key(), attributesByGroup, this);
+            const visibility = this.isNew ? "New" : "Read";
+            const attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility === "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => attr.tabKey, attr => attr).select(attributesByTab => {
+                const groups = attributesByTab.orderBy(attr => attr.offset).groupBy(attr => attr.groupKey, attr => attr).select(attributesByGroup => {
+                    const newGroup = this.service.hooks.onConstructPersistentObjectAttributeGroup(service, attributesByGroup.key(), attributesByGroup, this);
                     attributesByGroup.forEach(attr => attr.group = newGroup);
 
                     return newGroup;
                 }).memoize();
                 groups.toArray().forEach((g, n) => g.index = n);
 
-                var serviceTab = po.tabs[attributesByTab.key()] || {};
-                var newTab = this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, attributesByTab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
+                const serviceTab = po.tabs[attributesByTab.key()] || {};
+                const newTab = this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, attributesByTab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
                 attributesByTab.forEach(attr => attr.tab = newTab);
 
                 return newTab;
             })).toArray() : [];
             this._tabs = attributeTabs.concat(Enumerable.from(this.queries).select(q => <PersistentObjectTab>this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
 
-            if (this._tabs.length == 0)
+            if (this._tabs.length === 0)
                 this._tabs = [this.service.hooks.onConstructPersistentObjectAttributeTab(service, Enumerable.empty<PersistentObjectAttributeGroup>(), "", "", "", null, this, 0, true)];
 
             this._lastResult = po;
 
-            if (this.isNew || this.stateBehavior == "OpenInEdit" || this.stateBehavior.indexOf("OpenInEdit") >= 0 || this.stateBehavior == "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
+            if (this.isNew || this.stateBehavior === "OpenInEdit" || this.stateBehavior.indexOf("OpenInEdit") >= 0 || this.stateBehavior === "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
                 this.beginEdit();
 
             this._initializeActions();
@@ -1809,7 +1821,7 @@ module Vidyano {
         }
 
         set tabs(tabs: PersistentObjectTab[]) {
-            var oldTabs = this._tabs;
+            const oldTabs = this._tabs;
             this.notifyPropertyChanged("tabs", this._tabs = tabs, oldTabs);
         }
 
@@ -1826,7 +1838,7 @@ module Vidyano {
             return this._breadcrumb;
         }
         private _setBreadcrumb(breadcrumb: string) {
-            var oldBreadcrumb = this._breadcrumb;
+            const oldBreadcrumb = this._breadcrumb;
             if (oldBreadcrumb !== breadcrumb)
                 this.notifyPropertyChanged("breadcrumb", this._breadcrumb = breadcrumb, oldBreadcrumb);
         }
@@ -1848,7 +1860,7 @@ module Vidyano {
         }
 
         set isDeleted(isDeleted: boolean) {
-            var oldIsDeleted = this._isDeleted;
+            const oldIsDeleted = this._isDeleted;
             if (oldIsDeleted !== isDeleted)
                 this.notifyPropertyChanged("isDeleted", this._isDeleted = isDeleted, oldIsDeleted);
         }
@@ -1858,7 +1870,7 @@ module Vidyano {
         }
 
         getAttributeValue(name: string): any {
-            var attr = this.attributes[name];
+            const attr = this.attributes[name];
             return attr != null ? attr.value : null;
         }
 
@@ -1885,7 +1897,7 @@ module Vidyano {
                 if (!!this.notification)
                     this.setNotification();
 
-                if (this.stateBehavior == "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
+                if (this.stateBehavior === "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
                     this.beginEdit();
             }
         }
@@ -1895,28 +1907,28 @@ module Vidyano {
                 if (this.isEditing) {
                     this.service.executeAction("PersistentObject.Save", this, null, null, null).then(po => {
                         if (po) {
-                            var wasNew = this.isNew;
+                            const wasNew = this.isNew;
                             this.refreshFromResult(po);
 
-                            if (StringEx.isNullOrWhiteSpace(this.notification) || this.notificationType != NotificationType.Error) {
+                            if (StringEx.isNullOrWhiteSpace(this.notification) || this.notificationType !== NotificationType.Error) {
                                 this._setIsDirty(false);
 
                                 if (!wasNew) {
                                     this.setIsEditing(false);
-                                    if (this.stateBehavior == "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
+                                    if (this.stateBehavior === "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
                                         this.beginEdit();
                                 }
 
                                 if (this.ownerAttributeWithReference) {
-                                    if (this.ownerAttributeWithReference.objectId != this.objectId) {
-                                        var parent = this.ownerAttributeWithReference.parent;
+                                    if (this.ownerAttributeWithReference.objectId !== this.objectId) {
+                                        let parent = this.ownerAttributeWithReference.parent;
                                         if (parent.ownerDetailAttribute != null)
                                             parent = parent.ownerDetailAttribute.parent;
                                         parent.beginEdit();
 
                                         this.ownerAttributeWithReference.changeReference([po.objectId]);
                                     }
-                                    else if ((<any>this.ownerAttributeWithReference).value != this.breadcrumb)
+                                    else if ((<any>this.ownerAttributeWithReference).value !== this.breadcrumb)
                                         (<any>this.ownerAttributeWithReference).value = this.breadcrumb;
                                 }
                                 else if (this.ownerQuery)
@@ -1961,7 +1973,7 @@ module Vidyano {
         }
 
         toServiceObject(skipParent: boolean = false): any {
-            var result = this.copyProperties(["id", "type", "objectId", "isNew", "isHidden", "bulkObjectIds", "securityToken", "isSystem"]);
+            const result = this.copyProperties(["id", "type", "objectId", "isNew", "isHidden", "bulkObjectIds", "securityToken", "isSystem"]);
 
             if (this.parent && !skipParent)
                 result.parent = this.parent.toServiceObject();
@@ -1976,8 +1988,8 @@ module Vidyano {
 
             this.setNotification(result.notification, result.notificationType);
 
-            var changedAttributes: PersistentObjectAttribute[] = [];
-            var isDirty = false;
+            const changedAttributes: PersistentObjectAttribute[] = [];
+            let isDirty = false;
 
             this.attributes.removeAll(attr => {
                 if (!result.attributes.some(a => a.id === attr.id)) {
@@ -1991,7 +2003,7 @@ module Vidyano {
             });
 
             this.attributes.forEach(attr => {
-                var serviceAttr = Enumerable.from(result.attributes).firstOrDefault(a => a.id == attr.id);
+                let serviceAttr = Enumerable.from(result.attributes).firstOrDefault(a => a.id === attr.id);
                 if (serviceAttr) {
                     if (!(serviceAttr instanceof PersistentObjectAttribute))
                         serviceAttr = this._createPersistentObjectAttribute(serviceAttr);
@@ -2015,27 +2027,27 @@ module Vidyano {
             });
 
             if (changedAttributes.length > 0) {
-                var tabGroupsChanged = new Set<PersistentObjectAttributeTab>();
-                var tabGroupAttributesChanged = new Set<PersistentObjectAttributeGroup>();
-                var tabsRemoved = false;
-                var tabsAdded = false;
+                const tabGroupsChanged = new Set<PersistentObjectAttributeTab>();
+                const tabGroupAttributesChanged = new Set<PersistentObjectAttributeGroup>();
+                let tabsRemoved = false;
+                let tabsAdded = false;
                 changedAttributes.forEach(attr => {
-                    var tab = <PersistentObjectAttributeTab>Enumerable.from(this.tabs).firstOrDefault(t => t instanceof PersistentObjectAttributeTab && t.key === attr.tabKey);
+                    let tab = <PersistentObjectAttributeTab>Enumerable.from(this.tabs).firstOrDefault(t => t instanceof PersistentObjectAttributeTab && t.key === attr.tabKey);
                     if (!tab) {
                         if (!attr.isVisible)
                             return;
 
-                        var groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this)];
+                        const groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this)];
                         groups[0].index = 0;
 
-                        var serviceTab = this._lastResult.tabs[attr.tabKey];
+                        const serviceTab = this._lastResult.tabs[attr.tabKey];
                         attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tabKey, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
                         this.tabs.push(tab);
                         tabsAdded = true;
                         return;
                     }
 
-                    var group = Enumerable.from(tab.groups).firstOrDefault(g => g.key == attr.groupKey);
+                    let group = Enumerable.from(tab.groups).firstOrDefault(g => g.key === attr.groupKey);
                     if (!group && attr.isVisible) {
                         group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this);
                         tab.groups.push(group);
@@ -2057,11 +2069,11 @@ module Vidyano {
                         group.attributes.remove(attr);
                         delete group.attributes[attr.name];
 
-                        if (group.attributes.length == 0) {
+                        if (group.attributes.length === 0) {
                             tab.groups.remove(group);
                             tabGroupsChanged.add(tab);
 
-                            if (tab.groups.length == 0) {
+                            if (tab.groups.length === 0) {
                                 this.tabs.remove(tab);
                                 tabsRemoved = true;
                                 return;
@@ -2075,7 +2087,7 @@ module Vidyano {
                 });
 
                 if (tabsAdded) {
-                    var attrTabs = <PersistentObjectAttributeTab[]>this.tabs.filter(t => t instanceof PersistentObjectAttributeTab);
+                    const attrTabs = <PersistentObjectAttributeTab[]>this.tabs.filter(t => t instanceof PersistentObjectAttributeTab);
                     attrTabs.sort((t1, t2) => Enumerable.from(t1.groups).selectMany(g => g.attributes).min(a => a.offset) - Enumerable.from(t2.groups).selectMany(g => g.attributes).min(a => a.offset));
                     this.tabs = attrTabs.concat.apply(attrTabs, this.tabs.filter(t => t instanceof PersistentObjectQueryTab));
                 }
@@ -2105,7 +2117,7 @@ module Vidyano {
 
             if (result.queriesToRefresh) {
                 result.queriesToRefresh.forEach(id => {
-                    var query = Enumerable.from(this.queries).firstOrDefault(q => q.id == id || q.name == id);
+                    const query = Enumerable.from(this.queries).firstOrDefault(q => q.id === id || q.name === id);
                     if (query && (query.hasSearched || query.totalItems != null)) {
                         query.search();
                     }
@@ -2120,7 +2132,7 @@ module Vidyano {
         _triggerAttributeRefresh(attr: PersistentObjectAttribute): Promise<boolean> {
             return this.queueWork(() => {
                 return new Promise<any>((resolve, reject) => {
-                    var parameters = [{ RefreshedPersistentObjectAttributeId: attr.id }];
+                    const parameters = [{ RefreshedPersistentObjectAttributeId: attr.id }];
 
                     this._prepareAttributesForRefresh(attr);
                     this.service.executeAction("PersistentObject.Refresh", this, null, null, parameters).then((result) => {
@@ -2136,10 +2148,10 @@ module Vidyano {
         }
 
         _prepareAttributesForRefresh(sender: PersistentObjectAttribute) {
-            Enumerable.from(this.attributes).where(a => a.id != sender.id).forEach(attr => {
+            Enumerable.from(this.attributes).where(a => a.id !== sender.id).forEach(attr => {
                 (<any>attr)._refreshValue = (<any>attr).value;
                 if (attr instanceof PersistentObjectAttributeWithReference) {
-                    var attrWithRef = <any>attr;
+                    const attrWithRef = <any>attr;
                     attrWithRef._refreshObjectId = attrWithRef.objectId;
                 }
             });
@@ -2169,7 +2181,7 @@ module Vidyano {
         id: string;
         name: string;
         label: string;
-        options: string[] | Common.KeyValuePair[];
+        options: string[] | Common.IKeyValuePair[];
         offset: number;
         type: string;
         toolTip: string;
@@ -2220,7 +2232,7 @@ module Vidyano {
             return this._group;
         }
         set group(group: PersistentObjectAttributeGroup) {
-            var oldGroup = this._group;
+            const oldGroup = this._group;
             this._group = group;
 
             this._groupKey = group ? group.key : null;
@@ -2236,7 +2248,7 @@ module Vidyano {
             return this._tab;
         }
         set tab(tab: PersistentObjectAttributeTab) {
-            var oldTab = this._tab;
+            const oldTab = this._tab;
             this._tab = tab;
 
             this._tabKey = tab ? tab.key : null;
@@ -2257,8 +2269,8 @@ module Vidyano {
         }
 
         set validationError(error: string) {
-            var oldValidationError = this._validationError;
-            if (oldValidationError != error)
+            const oldValidationError = this._validationError;
+            if (oldValidationError !== error)
                 this.notifyPropertyChanged("validationError", this._validationError = error, oldValidationError);
         }
 
@@ -2267,7 +2279,7 @@ module Vidyano {
         }
 
         private _setIsRequired(isRequired: boolean) {
-            var oldIsRequired = this._isRequired;
+            const oldIsRequired = this._isRequired;
             if (oldIsRequired !== isRequired)
                 this.notifyPropertyChanged("isRequired", this._isRequired = isRequired, oldIsRequired);
         }
@@ -2277,46 +2289,46 @@ module Vidyano {
         }
 
         private _setIsReadOnly(isReadOnly: boolean) {
-            var oldisReadOnly = this._isReadOnly;
+            const oldisReadOnly = this._isReadOnly;
             if (oldisReadOnly !== isReadOnly)
                 this.notifyPropertyChanged("isReadOnly", this._isReadOnly = isReadOnly, oldisReadOnly);
         }
 
         get displayValue(): string {
-            if (this._displayValueSource == this._serviceValue)
+            if (this._displayValueSource === this._serviceValue)
                 return !StringEx.isNullOrEmpty(this._displayValue) ? this._displayValue : "—";
 
-            var format = this.getTypeHint("DisplayFormat", "{0}");
+            let format = this.getTypeHint("DisplayFormat", "{0}");
 
-            var value = this.value;
-            if (value != null && (this.type == "Boolean" || this.type == "NullableBoolean" || this.type == "YesNo"))
+            let value = this.value;
+            if (value != null && (this.type === "Boolean" || this.type === "NullableBoolean" || this.type === "YesNo"))
                 value = this.service.getTranslatedMessage(value ? this.getTypeHint("TrueKey", "Yes") : this.getTypeHint("FalseKey", "No"));
-            else if (this.type == "KeyValueList") {
+            else if (this.type === "KeyValueList") {
                 if (this.options && this.options.length > 0) {
-                    var isEmpty = StringEx.isNullOrEmpty(value);
-                    var option = Enumerable.from(<Common.KeyValuePair[]>this.options).firstOrDefault(o => o.key == value || (isEmpty && StringEx.isNullOrEmpty(o.key)));
+                    const isEmpty = StringEx.isNullOrEmpty(value);
+                    let option = Enumerable.from(<Common.IKeyValuePair[]>this.options).firstOrDefault(o => o.key === value || (isEmpty && StringEx.isNullOrEmpty(o.key)));
                     if (this.isRequired && option == null)
-                        option = Enumerable.from(<Common.KeyValuePair[]>this.options).firstOrDefault(o => StringEx.isNullOrEmpty(o.key));
+                        option = Enumerable.from(<Common.IKeyValuePair[]>this.options).firstOrDefault(o => StringEx.isNullOrEmpty(o.key));
 
                     if (option != null)
                         value = option.value;
                     else if (this.isRequired)
-                        value = this.options.length > 0 ? (<Common.KeyValuePair>this.options[0]).value : null;
+                        value = this.options.length > 0 ? (<Common.IKeyValuePair>this.options[0]).value : null;
                 }
             }
-            else if (value != null && (this.type == "Time" || this.type == "NullableTime")) {
-                value = value.trimEnd('0').trimEnd('.');
-                if (value.startsWith('0:'))
+            else if (value != null && (this.type === "Time" || this.type === "NullableTime")) {
+                value = value.trimEnd("0").trimEnd(".");
+                if (value.startsWith("0:"))
                     value = value.substr(2);
-                if (value.endsWith(':00'))
+                if (value.endsWith(":00"))
                     value = value.substr(0, value.length - 3);
-            } else if (value != null && (this.type == "User" || this.type == "NullableUser") && this.options.length > 0)
+            } else if (value != null && (this.type === "User" || this.type === "NullableUser") && this.options.length > 0)
                 value = this.options[0];
 
-            if (format == "{0}") {
-                if (this.type == "Date" || this.type == "NullableDate")
+            if (format === "{0}") {
+                if (this.type === "Date" || this.type === "NullableDate")
                     format = "{0:" + CultureInfo.currentCulture.dateFormat.shortDatePattern + "}";
-                else if (this.type == "DateTime" || this.type == "NullableDateTime")
+                else if (this.type === "DateTime" || this.type === "NullableDateTime")
                     format = "{0:" + CultureInfo.currentCulture.dateFormat.shortDatePattern + " " + CultureInfo.currentCulture.dateFormat.shortTimePattern + "}";
             }
 
@@ -2348,22 +2360,22 @@ module Vidyano {
                     return;
                 }
 
-                var newServiceValue = Service.toServiceString(val, this.type);
-                var queuedTriggersRefresh = null;
+                const newServiceValue = Service.toServiceString(val, this.type);
+                let queuedTriggersRefresh = null;
 
                 // If value is equal
-                if (this._cachedValue === val || (this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || this._serviceValue == newServiceValue) {
+                if (this._cachedValue === val || (this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || this._serviceValue === newServiceValue) {
                     if (allowRefresh && this._queueRefresh)
                         queuedTriggersRefresh = this._triggerAttributeRefresh();
                 }
                 else {
-                    var oldDisplayValue = this.displayValue;
-                    var oldServiceValue = this._serviceValue;
+                    const oldDisplayValue = this.displayValue;
+                    const oldServiceValue = this._serviceValue;
                     this.notifyPropertyChanged("value", this._serviceValue = newServiceValue, oldServiceValue);
                     this.isValueChanged = true;
 
-                    var newDisplayValue = this.displayValue;
-                    if (oldDisplayValue != newDisplayValue)
+                    const newDisplayValue = this.displayValue;
+                    if (oldDisplayValue !== newDisplayValue)
                         this.notifyPropertyChanged("displayValue", newDisplayValue, oldDisplayValue);
 
                     if (this.triggersRefresh) {
@@ -2391,7 +2403,7 @@ module Vidyano {
             if (isValueChanged === this._isValueChanged)
                 return;
 
-            var oldIsValueChanged = this._isValueChanged;
+            const oldIsValueChanged = this._isValueChanged;
             this.notifyPropertyChanged("isValueChanged", this._isValueChanged = isValueChanged, oldIsValueChanged);
         }
 
@@ -2404,7 +2416,7 @@ module Vidyano {
                 typeHints = this.typeHints;
 
             if (typeHints != null) {
-                var typeHint = typeHints[ignoreCasing ? name : name.toLowerCase()];
+                const typeHint = typeHints[ignoreCasing ? name : name.toLowerCase()];
 
                 if (typeHint != null)
                     return typeHint;
@@ -2414,7 +2426,7 @@ module Vidyano {
         }
 
         getRegisteredInput(): HTMLInputElement {
-            var inputKvp = this.parent.getRegisteredInputs().firstOrDefault(kvp => kvp.key == this.name);
+            const inputKvp = this.parent.getRegisteredInputs().firstOrDefault(kvp => kvp.key === this.name);
             return inputKvp ? inputKvp.value : null;
         }
 
@@ -2427,11 +2439,11 @@ module Vidyano {
         }
 
         _toServiceObject() {
-            var result = this.copyProperties(["id", "name", "label", "type", "isReadOnly", "triggersRefresh", "isRequired", "differsInBulkEditMode", "isValueChanged", "displayAttribute", "objectId", "visibility"]);
+            const result = this.copyProperties(["id", "name", "label", "type", "isReadOnly", "triggersRefresh", "isRequired", "differsInBulkEditMode", "isValueChanged", "displayAttribute", "objectId", "visibility"]);
             result.value = this._serviceValue;
 
             if (this.options && this.options.length > 0 && this.isValueChanged)
-                result.options = (<any[]>this.options).map(o => o ? (typeof (o) != "string" ? o.key + "=" + o.value : o) : null);
+                result.options = (<any[]>this.options).map(o => o ? (typeof (o) !== "string" ? o.key + "=" + o.value : o) : null);
             else
                 result.options = this._serviceOptions;
 
@@ -2439,18 +2451,18 @@ module Vidyano {
         }
 
         _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean {
-            var visibilityChanged = false;
+            let visibilityChanged = false;
 
             this._setOptions(resultAttr._serviceOptions);
             this._setIsReadOnly(resultAttr.isReadOnly);
             this._setIsRequired(resultAttr.isRequired);
-            if (this.visibility != resultAttr.visibility) {
+            if (this.visibility !== resultAttr.visibility) {
                 this.visibility = resultAttr.visibility;
                 visibilityChanged = true;
             }
-            if ((!this.isReadOnly && this._refreshValue !== undefined ? this._refreshValue : this.value) != resultAttr.value) {
-                var oldDisplayValue = this.displayValue;
-                var oldValue = this.value;
+            if ((!this.isReadOnly && this._refreshValue !== undefined ? this._refreshValue : this.value) !== resultAttr.value) {
+                const oldDisplayValue = this.displayValue;
+                const oldValue = this.value;
 
                 this._serviceValue = resultAttr._serviceValue;
                 this._lastParsedValue = undefined;
@@ -2473,16 +2485,16 @@ module Vidyano {
         }
 
         private _setOptions(options: string[]) {
-            var oldOptions = this.options ? this.options.slice() : undefined;
+            const oldOptions = this.options ? this.options.slice() : undefined;
 
-            if (!options || options.length == 0) {
+            if (!options || options.length === 0) {
                 this.options = this._serviceOptions = options;
                 return;
             }
 
             this._serviceOptions = <any[]>options.slice(0);
-            var addEmptyOption = !this.isRequired && !options.some(o => o == null || o.startsWith("=")) && ["KeyValueList", "DropDown", "ComboBox"].indexOf(this.type) != -1;
-            var keyValuePairOptionType = ["FlagsEnum", "KeyValueList", "Reference"].indexOf(this.type) != -1;
+            const addEmptyOption = !this.isRequired && !options.some(o => o == null || o.startsWith("=")) && ["KeyValueList", "DropDown", "ComboBox"].indexOf(this.type) !== -1;
+            const keyValuePairOptionType = ["FlagsEnum", "KeyValueList", "Reference"].indexOf(this.type) !== -1;
 
             if (!keyValuePairOptionType) {
                 if (addEmptyOption)
@@ -2492,7 +2504,7 @@ module Vidyano {
             }
             else {
                 this.options = (addEmptyOption ? [{ key: null, value: "" }] : []).concat(options.map(o => {
-                    var optionSplit = o.split("=", 2);
+                    const optionSplit = o.split("=", 2);
                     return {
                         key: optionSplit[0],
                         value: optionSplit[1]
@@ -2519,7 +2531,7 @@ module Vidyano {
             else
                 this.lookup = null;
 
-            this.objectId = typeof attr.objectId == "undefined" ? null : attr.objectId;
+            this.objectId = typeof attr.objectId === "undefined" ? null : attr.objectId;
             this.displayAttribute = attr.displayAttribute;
             this.canAddNewReference = !!attr.canAddNewReference;
             this.selectInPlace = !!attr.selectInPlace;
@@ -2548,7 +2560,7 @@ module Vidyano {
                 else {
                     this.parent._prepareAttributesForRefresh(this);
                     if (selectedItems.length && selectedItems.length > 0 && typeof selectedItems[0] === "string") {
-                        var selectedObjectIds = <string[]>selectedItems;
+                        const selectedObjectIds = <string[]>selectedItems;
                         selectedItems = selectedObjectIds.map(id => this.service.hooks.onConstructQueryResultItem(this.service, { id: id }, null));
                     }
 
@@ -2572,10 +2584,10 @@ module Vidyano {
         }
 
         _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean {
-            var resultAttrWithRef = <PersistentObjectAttributeWithReference>resultAttr;
+            const resultAttrWithRef = <PersistentObjectAttributeWithReference>resultAttr;
             this.objectId = resultAttrWithRef.objectId;
 
-            var visibilityChanged = super._refreshFromResult(resultAttr);
+            const visibilityChanged = super._refreshFromResult(resultAttr);
 
             this.displayAttribute = resultAttrWithRef.displayAttribute;
             this.canAddNewReference = resultAttrWithRef.canAddNewReference;
@@ -2600,7 +2612,7 @@ module Vidyano {
 
             if (attr.objects) {
                 this._objects = attr.objects.map(po => {
-                    var detailObj = this.service.hooks.onConstructPersistentObject(service, po);
+                    const detailObj = this.service.hooks.onConstructPersistentObject(service, po);
                     detailObj.parent = this.parent;
                     detailObj.ownerDetailAttribute = this;
 
@@ -2628,8 +2640,8 @@ module Vidyano {
         private _setObjects(objects: Vidyano.PersistentObject[]) {
             if (objects === this._objects) {
                 if (!!objects && objects.length === this._objects.length) {
-                    var hasDifferences: boolean;
-                    for (var n = 0; n < objects.length; n++) {
+                    let hasDifferences: boolean;
+                    for (let n = 0; n < objects.length; n++) {
                         if (objects[n] !== this.objects[n]) {
                             hasDifferences = true;
                             break;
@@ -2641,18 +2653,17 @@ module Vidyano {
                 }
             }
 
-            var oldObjects = this.objects;
+            const oldObjects = this.objects;
             this.notifyPropertyChanged("objects", this._objects = objects, oldObjects);
         }
 
         _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean {
-            var asDetailAttr = <PersistentObjectAttributeAsDetail>resultAttr;
+            const asDetailAttr = <PersistentObjectAttributeAsDetail>resultAttr;
 
-            var visibilityChanged = super._refreshFromResult(resultAttr);
+            const visibilityChanged = super._refreshFromResult(resultAttr);
 
             if (this.objects != null && asDetailAttr.objects != null) {
-                var isEditing = this.parent.isEditing;
-                var oldObjects = this.objects;
+                const isEditing = this.parent.isEditing;
                 this._setObjects(asDetailAttr.objects.map(obj => {
                     obj.parent = this.parent;
                     obj.ownerDetailAttribute = this;
@@ -2666,11 +2677,11 @@ module Vidyano {
         }
 
         _toServiceObject() {
-            var result = super._toServiceObject();
+            const result = super._toServiceObject();
 
             if (this.objects != null) {
                 result.objects = this.objects.map(obj => {
-                    var detailObj = obj.toServiceObject(true);
+                    const detailObj = obj.toServiceObject(true);
                     if (obj.isDeleted)
                         detailObj.isDeleted = true;
 
@@ -2713,8 +2724,8 @@ module Vidyano {
         }
 
         set isVisible(val: boolean) {
-            var oldIsVisible = this._isVisible;
-            if (oldIsVisible != val)
+            const oldIsVisible = this._isVisible;
+            if (oldIsVisible !== val)
                 this.notifyPropertyChanged("isVisible", this._isVisible = val, oldIsVisible);
         }
     }
@@ -2734,7 +2745,7 @@ module Vidyano {
         }
 
         private _setLayout(layout: any) {
-            var oldLayout = this._layout;
+            const oldLayout = this._layout;
             this.notifyPropertyChanged("layout", this._layout = layout, oldLayout);
         }
 
@@ -2747,10 +2758,10 @@ module Vidyano {
         }
 
         set groups(groups: PersistentObjectAttributeGroup[]) {
-            var oldGroups = this._groups;
+            const oldGroups = this._groups;
             this.notifyPropertyChanged("groups", this._groups = groups, oldGroups);
 
-            var oldAttributes = this._attributes;
+            const oldAttributes = this._attributes;
             this.notifyPropertyChanged("attributes", this._attributes = this._updateAttributes(), oldAttributes);
         }
 
@@ -2761,7 +2772,7 @@ module Vidyano {
         }
 
         private _updateAttributes(): Vidyano.PersistentObjectAttribute[] {
-            var attributes = Enumerable.from(this.groups).selectMany(grp => grp.attributes).toArray();
+            const attributes = Enumerable.from(this.groups).selectMany(grp => grp.attributes).toArray();
             attributes.forEach(attr => attributes[attr.name] = attr);
 
             return attributes;
@@ -2792,8 +2803,8 @@ module Vidyano {
         }
 
         set attributes(attributes: PersistentObjectAttribute[]) {
-            var oldAttributes = this._attributes;
-            var newAttributes = attributes;
+            const oldAttributes = this._attributes;
+            const newAttributes = attributes;
             newAttributes.forEach(attr => newAttributes[attr.name] = attr);
 
             this.notifyPropertyChanged("attributes", this._attributes = newAttributes, oldAttributes);
@@ -2806,22 +2817,22 @@ module Vidyano {
         Descending
     }
 
-    export interface SortOption {
+    export interface ISortOption {
         column: QueryColumn;
         direction: SortDirection;
     }
 
-    export interface QuerySelectAll {
+    export interface IQuerySelectAll {
         isAvailable: boolean;
         allSelected: boolean;
         inverse: boolean;
     }
 
-    class QuerySelectAllImpl extends Vidyano.Common.Observable<QuerySelectAll> implements QuerySelectAll {
+    class QuerySelectAllImpl extends Vidyano.Common.Observable<IQuerySelectAll> implements IQuerySelectAll {
         private _allSelected: boolean = false;
         private _inverse: boolean = false;
 
-        constructor(private _query: Query, private _isAvailable: boolean, observer: Common.PropertyChangedObserver<QuerySelectAllImpl>) {
+        constructor(private _query: Query, private _isAvailable: boolean, observer: Common.IPropertyChangedObserver<QuerySelectAllImpl>) {
             super();
 
             this.propertyChanged.attach(observer);
@@ -2843,7 +2854,7 @@ module Vidyano {
 
             this.allSelected = this.inverse = false;
 
-            var oldValue = this._isAvailable;
+            const oldValue = this._isAvailable;
             this.notifyPropertyChanged("isAvailable", this._isAvailable = isAvailable, oldValue);
         }
 
@@ -2858,11 +2869,11 @@ module Vidyano {
             if (this._allSelected === allSelected)
                 return;
 
-            var oldInverse = this._inverse;
+            const oldInverse = this._inverse;
             if (oldInverse)
                 this._inverse = false;
 
-            var oldValue = this._allSelected;
+            const oldValue = this._allSelected;
             this.notifyPropertyChanged("allSelected", this._allSelected = allSelected, oldValue);
 
             if (oldInverse)
@@ -2880,7 +2891,7 @@ module Vidyano {
             if (this._inverse === inverse)
                 return;
 
-            var oldValue = this._inverse;
+            const oldValue = this._inverse;
             this.notifyPropertyChanged("inverse", this._inverse = inverse, oldValue);
         }
     }
@@ -2891,7 +2902,7 @@ module Vidyano {
         private _isSelectionModifying: boolean;
         private _totalItems: number;
         private _labelWithTotalItems: string;
-        private _sortOptions: SortOption[];
+        private _sortOptions: ISortOption[];
         private _queriedPages: Array<number> = [];
         private _filters: QueryFilters;
         private _canFilter: boolean;
@@ -2901,7 +2912,6 @@ module Vidyano {
         private _defaultChartName: string = null;
         private _currentChart: QueryChart = null;
         private _lastUpdated: Date;
-        private _isReorderable: boolean;
         private _totalItem: QueryResultItem;
         private _isSystem: boolean;
 
@@ -2930,7 +2940,7 @@ module Vidyano {
                 end: number;
             }[];
         };
-        selectAll: QuerySelectAll;
+        selectAll: IQuerySelectAll;
 
         constructor(service: Service, query: any, public parent?: PersistentObject, asLookup: boolean = false, public maxSelectedItems?: number) {
             super(service, query._actionNames || query.actions);
@@ -2948,7 +2958,7 @@ module Vidyano {
             this.isHidden = query.isHidden;
             this.label = query.label;
             this.notification = query.notification;
-            this.notificationType = typeof (query.notificationType) == "number" ? query.notificationType : NotificationType[<string>query.notificationType];
+            this.notificationType = typeof (query.notificationType) === "number" ? query.notificationType : NotificationType[<string>query.notificationType];
             this.offset = query.offset || 0;
             this.textSearch = query.textSearch || "";
             this.pageSize = query.pageSize;
@@ -2961,15 +2971,15 @@ module Vidyano {
 
             this._updateColumns(query.columns);
             this._initializeActions();
-            this.selectAll = new QuerySelectAllImpl(this, !!query.isSystem && !query.maxSelectedItems && this.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue), this._selectAllPropertyChanged.bind(this));
+            this.selectAll = new QuerySelectAllImpl(this, !!query.isSystem && !query.maxSelectedItems && this.actions.some(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue), this._selectAllPropertyChanged.bind(this));
 
             this._setTotalItems(query.totalItems);
             this._setSortOptionsFromService(query.sortOptions);
 
             if (query.disableBulkEdit) {
-                var bulkEdit = <Action>this.actions["BulkEdit"];
+                const bulkEdit = <Action>this.actions["BulkEdit"];
                 if (bulkEdit)
-                    bulkEdit.selectionRule = count => count == 1;
+                    bulkEdit.selectionRule = count => count === 1;
             }
 
             if (!asLookup && query.filters && !(query.filters instanceof PersistentObject))
@@ -3016,7 +3026,7 @@ module Vidyano {
             if (this._charts && charts && !this._charts.isEmpty() && this._charts.count() === charts.count() && this._charts.orderBy(c => c.name).toArray().join("\n") === charts.orderBy(c => c.name).toArray().join("\n"))
                 return;
 
-            var oldCharts = this._charts;
+            const oldCharts = this._charts;
             this.notifyPropertyChanged("charts", this._charts = Enumerable.from(charts).memoize(), oldCharts);
 
             if (charts && this.defaultChartName && !this.currentChart)
@@ -3031,7 +3041,7 @@ module Vidyano {
             if (this._currentChart === currentChart)
                 return;
 
-            var oldCurrentChart = this._currentChart;
+            const oldCurrentChart = this._currentChart;
             this.notifyPropertyChanged("currentChart", this._currentChart = currentChart !== undefined ? currentChart : null, oldCurrentChart);
         }
 
@@ -3043,7 +3053,7 @@ module Vidyano {
             if (this._defaultChartName === defaultChart)
                 return;
 
-            var oldDefaultChart = this._defaultChartName;
+            const oldDefaultChart = this._defaultChartName;
             this.notifyPropertyChanged("defaultChartName", this._defaultChartName = defaultChart !== undefined ? defaultChart : null, oldDefaultChart);
 
             if (this.charts && defaultChart && !this.currentChart)
@@ -3058,7 +3068,7 @@ module Vidyano {
             if (this._lastUpdated === date)
                 return;
 
-            var oldLastUpdated = this._lastUpdated;
+            const oldLastUpdated = this._lastUpdated;
             this.notifyPropertyChanged("lastUpdated", this._lastUpdated = date, oldLastUpdated);
         }
 
@@ -3071,7 +3081,7 @@ module Vidyano {
                 this._isSelectionModifying = true;
                 items = items || [];
 
-                var selectedItems = this.selectedItems;
+                const selectedItems = this.selectedItems;
                 if (selectedItems && selectedItems.length > 0)
                     selectedItems.forEach(item => item.isSelected = false);
 
@@ -3084,22 +3094,22 @@ module Vidyano {
         }
 
         private _selectAllPropertyChanged(selectAll: QuerySelectAllImpl, args: Vidyano.Common.PropertyChangedArgs) {
-            if (args.propertyName == "allSelected")
+            if (args.propertyName === "allSelected")
                 this.selectedItems = this.selectAll.allSelected ? this.items : [];
         }
 
         selectRange(from: number, to: number): boolean {
-            var selectionUpdated: boolean;
+            let selectionUpdated: boolean;
 
             try {
                 this._isSelectionModifying = true;
-                var itemsToSelect = this.items.slice(from, ++to);
+                const itemsToSelect = this.items.slice(from, ++to);
 
                 if (this.maxSelectedItems && Enumerable.from(this.selectedItems.concat(itemsToSelect)).distinct().count() > this.maxSelectedItems)
                     return;
 
                 // Detect if array has gaps
-                if (Object.keys(itemsToSelect).length == to - from) {
+                if (Object.keys(itemsToSelect).length === to - from) {
                     itemsToSelect.forEach(item => {
                         item.isSelected = true;
                     });
@@ -3131,7 +3141,7 @@ module Vidyano {
             return this._labelWithTotalItems;
         }
 
-        get sortOptions(): SortOption[] {
+        get sortOptions(): ISortOption[] {
             return this._sortOptions;
         }
 
@@ -3143,15 +3153,15 @@ module Vidyano {
             if (this._totalItem === item)
                 return;
 
-            var oldTotalItem = this._totalItem;
+            const oldTotalItem = this._totalItem;
             this.notifyPropertyChanged("totalItem", this._totalItem = item, oldTotalItem);
         }
 
-        set sortOptions(options: SortOption[]) {
+        set sortOptions(options: ISortOption[]) {
             if (this._sortOptions === options)
                 return;
 
-            var oldSortOptions = this._sortOptions;
+            const oldSortOptions = this._sortOptions;
             this.notifyPropertyChanged("sortOptions", this._sortOptions = options, oldSortOptions);
         }
 
@@ -3165,20 +3175,18 @@ module Vidyano {
             }));
         }
 
-        private _setSortOptionsFromService(options: string | SortOption[]) {
-            var oldSortOptions = this._sortOptions;
-
-            var newSortOptions: SortOption[];
+        private _setSortOptionsFromService(options: string | ISortOption[]) {
+            let newSortOptions: ISortOption[];
             if (typeof options === "string") {
                 if (!StringEx.isNullOrEmpty(options)) {
                     newSortOptions = [];
-                    options.split(';').map(option => option.trim()).forEach(option => {
-                        var optionParts = option.split(' ', 2).map(option => option.trim());
-                        var col = this.getColumn(optionParts[0]);
+                    options.split(";").map(option => option.trim()).forEach(option => {
+                        const optionParts = option.split(" ", 2).map(option => option.trim());
+                        const col = this.getColumn(optionParts[0]);
                         if (col) {
                             newSortOptions.push({
                                 column: col,
-                                direction: optionParts.length < 2 || optionParts[1].toUpperCase() == "ASC" ? SortDirection.Ascending : SortDirection.Descending
+                                direction: optionParts.length < 2 || optionParts[1].toUpperCase() === "ASC" ? SortDirection.Ascending : SortDirection.Descending
                             });
                         }
                     });
@@ -3194,23 +3202,23 @@ module Vidyano {
             if (this._totalItems === items)
                 return;
 
-            var oldTotalItems = this._totalItems;
+            const oldTotalItems = this._totalItems;
             this.notifyPropertyChanged("totalItems", this._totalItems = items, oldTotalItems);
 
-            var oldLabelWithTotalItems = this._labelWithTotalItems;
-            this._labelWithTotalItems = (this.totalItems != null ? this.totalItems + " " : "") + (this.totalItems != 1 ? this.label : (this.singularLabel || this.persistentObject.label || this.persistentObject.type));
+            const oldLabelWithTotalItems = this._labelWithTotalItems;
+            this._labelWithTotalItems = (this.totalItems != null ? this.totalItems + " " : "") + (this.totalItems !== 1 ? this.label : (this.singularLabel || this.persistentObject.label || this.persistentObject.type));
             this.notifyPropertyChanged("labelWithTotalItems", this._labelWithTotalItems, oldLabelWithTotalItems);
         }
 
         _toServiceObject() {
-            var result = this.copyProperties(["id", "isSystem", "name", "label", "pageSize", "skip", "top", "textSearch"]);
+            const result = this.copyProperties(["id", "isSystem", "name", "label", "pageSize", "skip", "top", "textSearch"]);
             if (this.selectAll.allSelected) {
                 result["allSelected"] = true;
                 if (this.selectAll.inverse)
                     result["allSelectedInversed"] = true;
             }
 
-            result["sortOptions"] = this.sortOptions ? this.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction == SortDirection.Ascending ? " ASC" : " DESC")).join("; ") : "";
+            result["sortOptions"] = this.sortOptions ? this.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ") : "";
 
             if (this.persistentObject)
                 result.persistentObject = this.persistentObject.toServiceObject();
@@ -3227,7 +3235,7 @@ module Vidyano {
 
             this.groupingInfo = result.groupingInfo;
             if (this.groupingInfo) {
-                var start = 0;
+                let start = 0;
                 this.groupingInfo.groups.forEach(g => {
                     g.start = start;
                     g.end = (start = start + g.count) - 1;
@@ -3257,7 +3265,7 @@ module Vidyano {
         }
 
         getColumn(name: string): QueryColumn {
-            return Enumerable.from(this.columns).firstOrDefault(c => c.name == name);
+            return Enumerable.from(this.columns).firstOrDefault(c => c.name === name);
         }
 
         getItemsInMemory(start: number, length: number): QueryResultItem[] {
@@ -3272,18 +3280,18 @@ module Vidyano {
                     length = this.totalItems - start;
             }
 
-            if (this.pageSize <= 0 || length == 0)
+            if (this.pageSize <= 0 || length === 0)
                 return Enumerable.from(this.items).skip(start).take(length).toArray();
 
-            var startPage = Math.floor(start / this.pageSize);
-            var endPage = Math.floor((start + length - 1) / this.pageSize);
+            let startPage = Math.floor(start / this.pageSize);
+            let endPage = Math.floor((start + length - 1) / this.pageSize);
 
             while (startPage < endPage && this._queriedPages.indexOf(startPage) >= 0)
                 startPage++;
             while (endPage > startPage && this._queriedPages.indexOf(endPage) >= 0)
                 endPage--;
 
-            if (startPage == endPage && this._queriedPages.indexOf(startPage) >= 0)
+            if (startPage === endPage && this._queriedPages.indexOf(startPage) >= 0)
                 return Enumerable.from(this.items).skip(start).take(length).toArray();
 
             return null;
@@ -3301,21 +3309,21 @@ module Vidyano {
                         length = this.totalItems - start;
                 }
 
-                if (this.pageSize <= 0 || length == 0)
+                if (this.pageSize <= 0 || length === 0)
                     return Promise.resolve(this.items.slice(start, start + length));
 
-                var startPage = Math.floor(start / this.pageSize);
-                var endPage = Math.floor((start + length - 1) / this.pageSize);
+                let startPage = Math.floor(start / this.pageSize);
+                let endPage = Math.floor((start + length - 1) / this.pageSize);
 
                 while (startPage < endPage && this._queriedPages.indexOf(startPage) >= 0)
                     startPage++;
                 while (endPage > startPage && this._queriedPages.indexOf(endPage) >= 0)
                     endPage--;
 
-                if (startPage == endPage && this._queriedPages.indexOf(startPage) >= 0)
+                if (startPage === endPage && this._queriedPages.indexOf(startPage) >= 0)
                     return Promise.resolve(this.items.slice(start, start + length));
 
-                var clonedQuery = this.clone(this._asLookup);
+                const clonedQuery = this.clone(this._asLookup);
                 clonedQuery.skip = startPage * this.pageSize;
                 clonedQuery.top = (endPage - startPage + 1) * this.pageSize;
 
@@ -3324,18 +3332,18 @@ module Vidyano {
                         return Promise.resolve(this.items.slice(start, start + length));
 
                     return this.service.executeQuery(this.parent, clonedQuery, this._asLookup).then(result => {
-                        for (var p = startPage; p <= endPage; p++)
+                        for (let p = startPage; p <= endPage; p++)
                             this._queriedPages.push(p);
 
-                        var isChanged = this.pageSize > 0 && result.totalItems != this.totalItems;
+                        const isChanged = this.pageSize > 0 && result.totalItems !== this.totalItems;
                         if (isChanged) {
                             // NOTE: Query has changed (items added/deleted) so remove old data
                             this._queriedPages = [];
-                            for (var i = startPage; i <= endPage; i++)
+                            for (let i = startPage; i <= endPage; i++)
                                 this._queriedPages.push(i);
 
                             if (!this.selectAll.allSelected) {
-                                var selectedItems = {};
+                                /* tslint:disable:no-var */ var selectedItems = {}; /* tslint:enable:no-var */
                                 this.selectedItems.forEach(i => selectedItems[i.id] = i);
                             }
 
@@ -3343,9 +3351,9 @@ module Vidyano {
                             this._setTotalItems(result.totalItems);
                         }
 
-                        for (var n = 0; n < clonedQuery.top && (clonedQuery.skip + n < clonedQuery.totalItems); n++) {
+                        for (let n = 0; n < clonedQuery.top && (clonedQuery.skip + n < clonedQuery.totalItems); n++) {
                             if (this.items[clonedQuery.skip + n] == null) {
-                                var item = this.items[clonedQuery.skip + n] = this.service.hooks.onConstructQueryResultItem(this.service, result.items[n], this);
+                                const item = this.items[clonedQuery.skip + n] = this.service.hooks.onConstructQueryResultItem(this.service, result.items[n], this);
                                 if (this.selectAll.allSelected || (selectedItems && selectedItems[item.id]))
                                     (<any>item)._isSelected = true;
                             }
@@ -3375,11 +3383,11 @@ module Vidyano {
         }
 
         search(delay?: number): Promise<QueryResultItem[]> {
-            var search = () => {
+            const search = () => {
                 this._queriedPages = [];
                 this._updateItems([], true);
 
-                var now = new Date();
+                const now = new Date();
                 return this.queueWork(() => {
                     if (this._lastUpdated && this._lastUpdated > now)
                         return Promise.resolve(this.items);
@@ -3399,7 +3407,7 @@ module Vidyano {
                 return search();
             else {
                 if (delay > 0) {
-                    var now = new Date();
+                    const now = new Date();
                     return new Promise((resolve, reject) => {
                         setTimeout(() => {
                             if (!this._lastUpdated || this._lastUpdated <= now)
@@ -3419,15 +3427,15 @@ module Vidyano {
         }
 
         private _updateColumns(_columns: any[] = []) {
-            var oldColumns = this.columns ? this.columns.slice(0) : this.columns;
-            var columns = this.columns || [];
-            var columnsChanged = columns != this.columns;
+            const oldColumns = this.columns ? this.columns.slice(0) : this.columns;
+            const columns = this.columns || [];
+            let columnsChanged = columns !== this.columns;
 
-            var _columnsEnum = Enumerable.from(_columns || []);
-            var i = columns.length;
+            const _columnsEnum = Enumerable.from(_columns || []);
+            let i = columns.length;
 
             while (i--) {
-                if (_columnsEnum.firstOrDefault(c => columns[i].name == c.name) == null) {
+                if (_columnsEnum.firstOrDefault(c => columns[i].name === c.name) == null) {
                     let column = columns.splice(i, 1)[0];
                     columns[column.name] = undefined;
                     columnsChanged = true;
@@ -3448,7 +3456,7 @@ module Vidyano {
             });
 
             if (columnsChanged) {
-                if (this.columns != columns)
+                if (this.columns !== columns)
                     this.columns = columns;
 
                 this.notifyPropertyChanged("columns", this.columns, oldColumns);
@@ -3463,7 +3471,7 @@ module Vidyano {
 
             this.selectAll.inverse = this.selectAll.allSelected = false;
 
-            var oldItems = this.items;
+            const oldItems = this.items;
             this.notifyPropertyChanged("items", this.items = items, oldItems);
             this.selectedItems = this.selectedItems;
         }
@@ -3476,7 +3484,7 @@ module Vidyano {
             if (this.maxSelectedItems && selectedItems.length > this.maxSelectedItems) {
                 try {
                     this._isSelectionModifying = true;
-                    selectedItems.filter(i => i != item && selectedItems.length > this.maxSelectedItems).forEach(i => i.isSelected = false);
+                    selectedItems.filter(i => i !== item && selectedItems.length > this.maxSelectedItems).forEach(i => i.isSelected = false);
                     selectedItems = this.selectedItems;
                 } finally {
                     this._isSelectionModifying = false;
@@ -3500,12 +3508,12 @@ module Vidyano {
                             this.selectAll.inverse = false;
                     }
                 }
-                else if (selectedItems.length == this.totalItems)
+                else if (selectedItems.length === this.totalItems)
                     this.selectAll.allSelected = true;
             }
         }
 
-        static FromJsonData(service: Service, data: JsonQueryData): Query {
+        static FromJsonData(service: Service, data: IJsonQueryData): Query {
             const query = {
                 actions: [],
                 allowTextSearch: false,
@@ -3525,7 +3533,7 @@ module Vidyano {
         }
     }
 
-    export interface JsonQueryData {
+    export interface IJsonQueryData {
         id?: string;
         name?: string;
         label?: string;
@@ -3560,7 +3568,7 @@ module Vidyano {
         private _name: string;
         private _type: string;
         private _label: string;
-        private _distincts: QueryColumnDistincts;
+        private _distincts: IQueryColumnDistincts;
         private _selectedDistincts: linqjs.Enumerable<string>;
         private _selectedDistinctsInversed: boolean;
         private _total: QueryResultItemValue;
@@ -3636,7 +3644,7 @@ module Vidyano {
         }
 
         set selectedDistincts(selectedDistincts: linqjs.Enumerable<string>) {
-            var oldSelectedIncludes = this._selectedDistincts;
+            const oldSelectedIncludes = this._selectedDistincts;
 
             this.notifyPropertyChanged("selectedDistincts", this._selectedDistincts = (selectedDistincts || Enumerable.empty<string>()).memoize(), oldSelectedIncludes);
             this.query.columns.forEach(c => {
@@ -3653,17 +3661,17 @@ module Vidyano {
         }
 
         set selectedDistinctsInversed(selectedDistinctsInversed: boolean) {
-            var oldSelectedDistinctsInversed = this._selectedDistinctsInversed;
+            const oldSelectedDistinctsInversed = this._selectedDistinctsInversed;
 
             this.notifyPropertyChanged("selectedDistinctsInversed", this._selectedDistinctsInversed = selectedDistinctsInversed, oldSelectedDistinctsInversed);
         }
 
-        get distincts(): QueryColumnDistincts {
+        get distincts(): IQueryColumnDistincts {
             return this._distincts;
         }
 
-        set distincts(distincts: QueryColumnDistincts) {
-            var oldDistincts = this._distincts;
+        set distincts(distincts: IQueryColumnDistincts) {
+            const oldDistincts = this._distincts;
 
             this.notifyPropertyChanged("distincts", this._distincts = distincts, oldDistincts);
         }
@@ -3673,7 +3681,7 @@ module Vidyano {
         }
 
         private _setTotal(total: QueryResultItemValue) {
-            var oldTotal = this._total;
+            const oldTotal = this._total;
 
             this.notifyPropertyChanged("total", this._total = total, oldTotal);
         }
@@ -3682,12 +3690,12 @@ module Vidyano {
             if (this._sortDirection === direction)
                 return;
 
-            var oldSortDirection = this._sortDirection;
+            const oldSortDirection = this._sortDirection;
             this.notifyPropertyChanged("sortDirection", this._sortDirection = direction, oldSortDirection);
         }
 
         _toServiceObject() {
-            var serviceObject = this.copyProperties(["id", "name", "label", "type", "displayAttribute"]);
+            const serviceObject = this.copyProperties(["id", "name", "label", "type", "displayAttribute"]);
             serviceObject.includes = !this.selectedDistinctsInversed ? this.selectedDistincts.toArray() : [];
             serviceObject.excludes = this.selectedDistinctsInversed ? this.selectedDistincts.toArray() : [];
 
@@ -3698,9 +3706,9 @@ module Vidyano {
             return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);
         }
 
-        refreshDistincts(): Promise<QueryColumnDistincts> {
+        refreshDistincts(): Promise<IQueryColumnDistincts> {
             return this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query, null, [{ ColumnName: this.name }]).then(result => {
-                this.query.columns.filter(q => q != this).forEach(col => {
+                this.query.columns.filter(q => q !== this).forEach(col => {
                     if (col.distincts)
                         col.distincts.isDirty = true;
                 });
@@ -3721,7 +3729,7 @@ module Vidyano {
 
         sort(direction: SortDirection, multiSort?: boolean): Promise<QueryResultItem[]> {
             if (!!multiSort) {
-                var sortOption = this.query.sortOptions.filter(option => option.column === this)[0];
+                const sortOption = this.query.sortOptions.filter(option => option.column === this)[0];
                 if (sortOption && sortOption.direction === direction)
                     return;
 
@@ -3741,8 +3749,8 @@ module Vidyano {
                 this.query.sortOptions = direction !== SortDirection.None ? [{ column: this, direction: direction }] : [];
 
             return this.query.search().then(result => {
-                var querySettings = (this.service.application.userSettings["QuerySettings"] || (this.service.application.userSettings["QuerySettings"] = {}))[this.query.id] || {};
-                querySettings["sortOptions"] = this.query.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction == SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
+                const querySettings = (this.service.application.userSettings["QuerySettings"] || (this.service.application.userSettings["QuerySettings"] = {}))[this.query.id] || {};
+                querySettings["sortOptions"] = this.query.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
 
                 this.service.application.userSettings["QuerySettings"][this.query.id] = querySettings;
                 return this.service.application.saveUserSettings().then(() => {
@@ -3752,15 +3760,15 @@ module Vidyano {
         }
 
         private _queryPropertyChanged(sender: Vidyano.Query, args: Vidyano.Common.PropertyChangedArgs) {
-            if (args.propertyName == "sortOptions") {
-                var sortOption = this.query.sortOptions ? this.query.sortOptions.filter(option => option.column === this)[0] : null;
+            if (args.propertyName === "sortOptions") {
+                const sortOption = this.query.sortOptions ? this.query.sortOptions.filter(option => option.column === this)[0] : null;
                 this._setSortDirection(sortOption ? sortOption.direction : SortDirection.None);
             } else if (args.propertyName === "totalItem")
                 this._setTotal(sender.totalItem ? sender.totalItem.getFullValue(this.name) : null);
         }
     }
 
-    export interface QueryColumnDistincts {
+    export interface IQueryColumnDistincts {
         matching: string[];
         remaining: string[];
         isDirty: boolean;
@@ -3793,7 +3801,7 @@ module Vidyano {
             if (!this._values) {
                 this._values = {};
                 this.rawValues.forEach(v => {
-                    var col = this.query.columns[v.key];
+                    const col = this.query.columns[v.key];
                     if (!col)
                         return;
 
@@ -3809,10 +3817,10 @@ module Vidyano {
         }
 
         set isSelected(val: boolean) {
-            if (this._isSelected == val)
+            if (this._isSelected === val)
                 return;
 
-            var oldIsSelected = this._isSelected;
+            const oldIsSelected = this._isSelected;
             this.notifyPropertyChanged("isSelected", this._isSelected = val, oldIsSelected);
 
             (<any>this.query)._notifyItemSelectionChanged(this);
@@ -3851,7 +3859,7 @@ module Vidyano {
         }
 
         _toServiceObject() {
-            var result = this.copyProperties(["id"]);
+            const result = this.copyProperties(["id"]);
             result.values = this.rawValues.select(v => v._toServiceObject()).toArray();
 
             return result;
@@ -3909,7 +3917,7 @@ module Vidyano {
             this._filtersAsDetail = <Vidyano.PersistentObjectAttributeAsDetail>this._filtersPO.attributes["Filters"];
             this._computeFilters(true);
 
-            var defaultFilter = Enumerable.from(this._filters).firstOrDefault(f => f.isDefault);
+            const defaultFilter = Enumerable.from(this._filters).firstOrDefault(f => f.isDefault);
             if (defaultFilter) {
                 this._skipSearch = true;
                 try {
@@ -3926,7 +3934,7 @@ module Vidyano {
         }
 
         private _setFilters(filters: QueryFilter[]) {
-            var oldFilters = this._filters;
+            const oldFilters = this._filters;
             this.notifyPropertyChanged("filters", this._filters = filters, oldFilters);
         }
 
@@ -3975,10 +3983,6 @@ module Vidyano {
                 this._query.search();
         }
 
-        private _getFilterPersistentObject(name: string): Vidyano.PersistentObject {
-            return Enumerable.from(this._filtersAsDetail.objects).firstOrDefault(filter => filter.getAttributeValue("Name") === name);
-        }
-
         private _computeFilters(setDefaultFilter?: boolean) {
             if (!this._filtersAsDetail) {
                 this._setFilters([]);
@@ -4006,7 +4010,7 @@ module Vidyano {
         }
 
         createNew(): Promise<QueryFilter> {
-            var newAction = (<Action>this._filtersAsDetail.details.actions["New"]);
+            const newAction = (<Action>this._filtersAsDetail.details.actions["New"]);
             newAction.skipOpen = true;
 
             return this._query.queueWork(() => {
@@ -4039,7 +4043,7 @@ module Vidyano {
         }
 
         delete(name: string): Promise<any> {
-            var filter = this.getFilter(name);
+            const filter = this.getFilter(name);
             if (!filter)
                 return Promise.reject(`No filter found with name '${name}'.`);
 
@@ -4060,8 +4064,6 @@ module Vidyano {
     }
 
     export class QueryFilter extends Vidyano.Common.Observable<QueryFilter> {
-        private _name: string
-
         constructor(private _po: PersistentObject) {
             super();
         }
@@ -4115,7 +4117,6 @@ module Vidyano {
 
     export class Action extends ServiceObject {
         private _targetType: string;
-        private _target: ServiceObjectWithActions;
         private _query: Query;
         private _parent: PersistentObject;
         private _isVisible: boolean = true;
@@ -4141,19 +4142,19 @@ module Vidyano {
                 this._targetType = "Query";
                 this._query = <Query>owner;
                 this._parent = this.query.parent;
-                if (definition.name == "New" && this.query.persistentObject != null && !StringEx.isNullOrEmpty(this.query.persistentObject.newOptions))
+                if (definition.name === "New" && this.query.persistentObject != null && !StringEx.isNullOrEmpty(this.query.persistentObject.newOptions))
                     this._setOptions(this.query.persistentObject.newOptions.split(";"));
 
                 this.query.propertyChanged.attach((source, detail) => {
-                    if (detail.propertyName == "selectedItems") {
-                        var options: string[];
+                    if (detail.propertyName === "selectedItems") {
+                        let options: string[];
 
-                        if (definition.name == "New" && this.query.persistentObject != null && !StringEx.isNullOrEmpty(this.query.persistentObject.newOptions))
+                        if (definition.name === "New" && this.query.persistentObject != null && !StringEx.isNullOrEmpty(this.query.persistentObject.newOptions))
                             options = this.query.persistentObject.newOptions.split(";");
                         else
                             options = definition.options.slice();
 
-                        var args: SelectedItemsActionArgs = {
+                        const args: ISelectedItemsActionArgs = {
                             name: this.name,
                             isVisible: this.isVisible,
                             canExecute: this.selectionRule(detail.newValue ? detail.newValue.length : 0),
@@ -4205,7 +4206,7 @@ module Vidyano {
         }
 
         set canExecute(val: boolean) {
-            if (this._canExecute == val)
+            if (this._canExecute === val)
                 return;
 
             this._canExecute = val;
@@ -4222,7 +4223,7 @@ module Vidyano {
         }
 
         set isVisible(val: boolean) {
-            if (this._isVisible == val)
+            if (this._isVisible === val)
                 return;
 
             this._isVisible = val;
@@ -4238,10 +4239,10 @@ module Vidyano {
         }
 
         private _setOptions(options: string[]) {
-            if (this._options == options)
+            if (this._options === options)
                 return;
 
-            var oldOptions = this._options;
+            const oldOptions = this._options;
             this.notifyPropertyChanged("options", this._options = options, oldOptions);
         }
 
@@ -4260,7 +4261,7 @@ module Vidyano {
         }
 
         _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
-            var confirmation = this.definition.confirmation ? this.service.hooks.onActionConfirmation(this, option) : Promise.resolve(true);
+            const confirmation = this.definition.confirmation ? this.service.hooks.onActionConfirmation(this, option) : Promise.resolve(true);
 
             return confirmation.then(result => {
                 if (result) {
@@ -4281,20 +4282,20 @@ module Vidyano {
 
                             this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters).then(po => {
                                 if (po != null) {
-                                    if (po.fullTypeName == "Vidyano.Notification") {
+                                    if (po.fullTypeName === "Vidyano.Notification") {
                                         if (po.objectId != null && JSON.parse(po.objectId).dialog) {
                                             this._setNotification();
                                             this.service.hooks.onMessageDialog(NotificationType[po.notificationType], po.notification, false, this.service.hooks.service.getTranslatedMessage("OK"));
                                         }
                                         else {
                                             if (this.query && this.definition.refreshQueryOnCompleted)
-                                                var notificationPO = po;
+                                                /* tslint:disable:no-var */ var notificationPO = po; /* tslint:enable:no-var */
                                             else
                                                 this._setNotification(po.notification, po.notificationType);
                                         }
-                                    } else if (po.fullTypeName == "Vidyano.RegisteredStream") {
+                                    } else if (po.fullTypeName === "Vidyano.RegisteredStream") {
                                         this.service._getStream(po);
-                                    } else if (po.fullTypeName == "Vidyano.AddReference") {
+                                    } else if (po.fullTypeName === "Vidyano.AddReference") {
                                         const query = po.queries[0];
                                         query.parent = this.parent;
 
@@ -4308,7 +4309,7 @@ module Vidyano {
                                                 this.query.setNotification(e, NotificationType.Error);
                                             });
                                         });
-                                    } else if (this.parent != null && (po.fullTypeName == this.parent.fullTypeName || po.isNew == this.parent.isNew) && po.id == this.parent.id && po.objectId == this.parent.objectId) {
+                                    } else if (this.parent != null && (po.fullTypeName === this.parent.fullTypeName || po.isNew === this.parent.isNew) && po.id === this.parent.id && po.objectId === this.parent.objectId) {
                                         this.parent.refreshFromResult(po);
                                         this.parent.setNotification(po.notification, po.notificationType);
                                     } else {
@@ -4354,9 +4355,11 @@ module Vidyano {
         }
 
         _onParentIsEditingChanged(isEditing: boolean) {
+            // Noop
         }
 
         _onParentIsDirtyChanged(isDirty: boolean) {
+            // Noop
         }
 
         private _setNotification(notification: string = null, notificationType: NotificationType = NotificationType.Error) {
@@ -4367,9 +4370,9 @@ module Vidyano {
         }
 
         static get(service: Service, name: string, owner: ServiceObjectWithActions): Action {
-            var definition = service.actionDefinitions.get(name);
+            const definition = service.actionDefinitions.get(name);
             if (definition != null) {
-                var hook = Actions[name];
+                const hook = Actions[name];
                 return service.hooks.onConstructAction(service, hook != null ? new hook(service, definition, owner) : new Action(service, definition, owner));
             }
             else
@@ -4377,11 +4380,11 @@ module Vidyano {
         }
 
         static addActions(service: Service, owner: ServiceObjectWithActions, actions: Action[], actionNames: string[]) {
-            if (actionNames == null || actionNames.length == 0)
+            if (actionNames == null || actionNames.length === 0)
                 return;
 
             actionNames.forEach(actionName => {
-                var action = Action.get(service, actionName, owner);
+                const action = Action.get(service, actionName, owner);
                 action.offset = actions.length;
                 actions.push(action);
 
@@ -4390,7 +4393,7 @@ module Vidyano {
         }
     }
 
-    export module Actions {
+    export namespace Actions {
         export class RefreshQuery extends Action {
             constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions) {
                 super(service, definition, owner);
@@ -4445,11 +4448,11 @@ module Vidyano {
             _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
                 return new Promise<PersistentObject>((resolve, reject) => {
                     this.parent.save().then(() => {
-                        if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType != NotificationType.Error) {
-                            var edit = this.parent.actions["Edit"];
-                            var endEdit = this.parent.actions["EndEdit"];
+                        if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
+                            const edit = this.parent.actions["Edit"];
+                            const endEdit = this.parent.actions["EndEdit"];
 
-                            if (this.parent.stateBehavior.indexOf("StayInEdit") != -1 && endEdit != null) {
+                            if (this.parent.stateBehavior.indexOf("StayInEdit") !== -1 && endEdit != null) {
                                 endEdit.canExecute = false;
                             } else if (edit) {
                                 edit.isVisible = true;
@@ -4473,11 +4476,11 @@ module Vidyano {
             }
 
             _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
-                var wasNew = this.parent.isNew;
+                const wasNew = this.parent.isNew;
                 return new Promise<PersistentObject>((resolve, reject) => {
                     this.parent.save().then(() => {
-                        if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType != NotificationType.Error) {
-                            if (wasNew && this.parent.ownerAttributeWithReference == null && this.parent.stateBehavior.indexOf("OpenAfterNew") != -1)
+                        if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
+                            if (wasNew && this.parent.ownerAttributeWithReference == null && this.parent.stateBehavior.indexOf("OpenAfterNew") !== -1)
                                 this.service.getPersistentObject(this.parent.parent, this.parent.id, this.parent.objectId).then(po2 => {
                                     this.service.hooks.onOpen(po2, true);
                                     resolve(this.parent);
@@ -4543,11 +4546,11 @@ module Vidyano {
             }
 
             _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
-                var owner = this.query ? this.query.persistentObject : this.parent;
-                var helpWindow = window.open();
+                const owner = this.query ? this.query.persistentObject : this.parent;
+                const helpWindow = window.open();
                 return this.service.executeAction("PersistentObject.ShowHelp", owner, null, null).then(po => {
                     if (po != null) {
-                        if (po.fullTypeName == "Vidyano.RegisteredStream" || po.getAttributeValue("Type") == "0") {
+                        if (po.fullTypeName === "Vidyano.RegisteredStream" || po.getAttributeValue("Type") === "0") {
                             helpWindow.close();
                             this.service._getStream(po);
                         } else {
@@ -4565,16 +4568,18 @@ module Vidyano {
             }
         }
 
+        /* tslint:disable:class-name */
         export class viSearch extends Action {
             constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions) {
                 super(service, definition, owner);
 
-                this.isVisible = this.parent == null || this.parent.fullTypeName == "Vidyano.Search";
+                this.isVisible = this.parent == null || this.parent.fullTypeName === "Vidyano.Search";
 
-                if (this.parent != null && this.parent.fullTypeName == "Vidyano.Search")
+                if (this.parent != null && this.parent.fullTypeName === "Vidyano.Search")
                     this._isPinned = false;
             }
         }
+        /* tslint:enable:class-name */
     }
 
     export class ActionDefinition {
@@ -4597,31 +4602,31 @@ module Vidyano {
             this._selectionRule = ExpressionParser.get(item.getValue("SelectionRule"));
             this._refreshQueryOnCompleted = item.getValue("RefreshQueryOnCompleted");
 
-            var icon = item.getFullValue("Icon");
+            const icon = item.getFullValue("Icon");
 
-            var options = item.getValue("Options");
+            const options = item.getValue("Options");
             this._options = !StringEx.isNullOrWhiteSpace(options) ? options.split(";") : [];
 
             if (icon != null) {
-                var appIcon = service.icons.get(icon.objectId);
+                const appIcon = service.icons.get(icon.objectId);
                 if (StringEx.isNullOrWhiteSpace(appIcon))
                     return;
 
-                var iconWidth = 20, iconHeight = 20;
-                var img = new Image();
+                const iconWidth = 20, iconHeight = 20;
+                const img = new Image();
                 img.width = iconWidth;
                 img.height = iconHeight;
                 img.onload = () => {
-                    var canvas = document.createElement("canvas");
+                    const canvas = document.createElement("canvas");
                     canvas.width = iconWidth;
                     canvas.height = iconHeight;
-                    var canvasContext = <CanvasRenderingContext2D>canvas.getContext("2d");
+                    const canvasContext = <CanvasRenderingContext2D>canvas.getContext("2d");
                     canvasContext.drawImage(img, 0, 0, iconWidth, iconHeight);
 
-                    var imgd = canvasContext.getImageData(0, 0, iconWidth, iconHeight);
-                    var pix = imgd.data;
+                    const imgd = canvasContext.getImageData(0, 0, iconWidth, iconHeight);
+                    const pix = imgd.data;
 
-                    for (var i = 0, n = pix.length; i < n; i += 4) {
+                    for (let i = 0, n = pix.length; i < n; i += 4) {
                         pix[i] = 255 - pix[i];
                         pix[i + 1] = 255 - pix[i + 1];
                         pix[i + 2] = 255 - pix[i + 2];
@@ -4689,7 +4694,7 @@ module Vidyano {
         private _canProfile: boolean;
         private _hasManagement: boolean;
         private _session: Vidyano.PersistentObject;
-        private _routes: Routes;
+        private _routes: IRoutes;
         private _poRe: RegExp;
         private _queryRe: RegExp;
         programUnits: ProgramUnit[];
@@ -4704,16 +4709,16 @@ module Vidyano {
             this._globalSearchId = this.getAttributeValue("GlobalSearchId");
             this._analyticsKey = this.getAttributeValue("AnalyticsKey");
             this._routes = JSON.parse(this.getAttributeValue("Routes"));
-            var puRoutes = "^((" + Object.keys(this._routes.programUnits).join("|") + ")/)?";
+            const puRoutes = "^((" + Object.keys(this._routes.programUnits).join("|") + ")/)?";
             this._poRe = new RegExp(puRoutes + "(" + Object.keys(this._routes.persistentObjects).join("|") + ")(/.+)?$");
             this._queryRe = new RegExp(puRoutes + "(" + Object.keys(this._routes.queries).join("|") + ")$");
 
-            var userSettings = this.getAttributeValue("UserSettings");
+            const userSettings = this.getAttributeValue("UserSettings");
             this._userSettings = JSON.parse(StringEx.isNullOrEmpty(userSettings) ? (localStorage["UserSettings"] || "{}") : userSettings);
 
             this._canProfile = this.getAttributeValue("CanProfile");
 
-            var pus = <{ hasManagement: boolean; units: any[] }>JSON.parse(this.getAttributeValue("ProgramUnits"));
+            const pus = <{ hasManagement: boolean; units: any[] }>JSON.parse(this.getAttributeValue("ProgramUnits"));
             this.programUnits = Enumerable.from(pus.units).select(unit => new ProgramUnit(this.service, this.routes, unit)).toArray();
         }
 
@@ -4757,7 +4762,7 @@ module Vidyano {
             return this._session;
         }
 
-        get routes(): Routes {
+        get routes(): IRoutes {
             return this._routes;
         }
 
@@ -4770,7 +4775,7 @@ module Vidyano {
         }
 
         saveUserSettings(): Promise<any> {
-            if (this.userSettingsId != "00000000-0000-0000-0000-000000000000") {
+            if (this.userSettingsId !== "00000000-0000-0000-0000-000000000000") {
                 return this.service.getPersistentObject(null, this.userSettingsId, null).then(po => {
                     po.attributes["Settings"].value = JSON.stringify(this.userSettings);
                     return po.save().then(() => this.userSettings);
@@ -4783,7 +4788,7 @@ module Vidyano {
         }
 
         _updateSession(session: any) {
-            var oldSession = this._session;
+            const oldSession = this._session;
 
             if (!session) {
                 if (this._session)
@@ -4795,7 +4800,7 @@ module Vidyano {
                     this._session = new PersistentObject(this.service, session);
             }
 
-            if (oldSession != this._session)
+            if (oldSession !== this._session)
                 this.notifyPropertyChanged("session", this._session, oldSession);
         }
     }
@@ -4820,7 +4825,7 @@ module Vidyano {
         openFirst: boolean;
         items: ProgramUnitItem[];
 
-        constructor(service: Service, routes: Routes, unit: any) {
+        constructor(service: Service, routes: IRoutes, unit: any) {
             super(service, unit, unit.name);
 
             this._id = unit.id;
@@ -4829,14 +4834,14 @@ module Vidyano {
 
             if (unit.items) {
                 this.items = [];
-                var usedGroups = {};
+                const usedGroups = {};
 
-                var unitItems = Enumerable.from<any>(unit.items);
+                const unitItems = Enumerable.from<any>(unit.items);
                 unitItems.forEach(itemData => {
                     if (itemData.group) {
-                        var group = usedGroups[itemData.group.id];
+                        let group = usedGroups[itemData.group.id];
                         if (!group) {
-                            var groupItems = unitItems.where(groupItemData => groupItemData.group && groupItemData.group.id == itemData.group.id).select(groupItemData => this._createItem(routes, groupItemData)).toArray();
+                            const groupItems = unitItems.where(groupItemData => groupItemData.group && groupItemData.group.id === itemData.group.id).select(groupItemData => this._createItem(routes, groupItemData)).toArray();
                             group = new ProgramUnitItemGroup(this.service, itemData.group, groupItems);
                             this.items.push(group);
                             usedGroups[itemData.group.id] = group;
@@ -4851,7 +4856,7 @@ module Vidyano {
                 this.path = this.items[0].path;
         }
 
-        private _createItem(routes: Routes, itemData: any): ProgramUnitItem {
+        private _createItem(routes: IRoutes, itemData: any): ProgramUnitItem {
             if (itemData.query)
                 return new ProgramUnitItemQuery(this.service, routes, itemData, this);
 
@@ -4871,15 +4876,15 @@ module Vidyano {
     export class ProgramUnitItemQuery extends ProgramUnitItem {
         queryId: string;
 
-        constructor(service: Service, routes: Routes, unitItem: any, parent: ProgramUnit) {
+        constructor(service: Service, routes: IRoutes, unitItem: any, parent: ProgramUnit) {
             super(service, unitItem, parent.name + ProgramUnitItemQuery._getPath(routes, unitItem.query));
 
             this.queryId = unitItem.query;
         }
 
-        private static _getPath(routes: Routes, id: string): string {
-            var queries = routes.queries;
-            for (var name in queries) {
+        private static _getPath(routes: IRoutes, id: string): string {
+            const queries = routes.queries;
+            for (const name in queries) {
                 if (queries[name] === id)
                     return "/" + name;
             }
@@ -4892,16 +4897,16 @@ module Vidyano {
         persistentObjectId: string;
         persistentObjectObjectId: string;
 
-        constructor(service: Service, routes: Routes, unitItem: any, parent: ProgramUnit) {
+        constructor(service: Service, routes: IRoutes, unitItem: any, parent: ProgramUnit) {
             super(service, unitItem, parent.name + ProgramUnitItemPersistentObject._getPath(routes, unitItem.persistentObject, unitItem.objectId));
 
             this.persistentObjectId = unitItem.persistentObject;
             this.persistentObjectObjectId = unitItem.objectId;
         }
 
-        private static _getPath(routes: Routes, id: string, objectId: string): string {
-            var persistentObjects = routes.persistentObjects;
-            for (var name in persistentObjects) {
+        private static _getPath(routes: IRoutes, id: string, objectId: string): string {
+            const persistentObjects = routes.persistentObjects;
+            for (const name in persistentObjects) {
                 if (persistentObjects[name] === id)
                     return "/" + name + (objectId ? "/" + objectId : "");
             }
@@ -4960,7 +4965,7 @@ module Vidyano {
                 new NoInternetMessage("tr", "Sunucuya bağlantı kurulamıyor", "Lütfen Internet bağlantı ayarlarınızı denetleyin ve yeniden deneyin", "Yeniden Deneyin"),
                 new NoInternetMessage("uk", "Не вдалося підключитися до сервера", "Перевірте параметри підключення до Інтернету та повторіть спробу", "Спробуй ще раз"),
                 new NoInternetMessage("vi", "Không thể kết nối đến máy chủ", "Hãy kiểm tra cài đặt kết nối internet của bạn và thử lại", "Thử lại")
-            ]).toDictionary(m => m.language, m => m);
+            ]).toDictionary((m: NoInternetMessage) => m.language, (m: NoInternetMessage) => m);
         }
     }
 }

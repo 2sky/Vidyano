@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
         }
@@ -6,7 +8,7 @@
     export class QueryGridColumnFooter extends WebComponent {
         private _resizingRAF: number;
         private _column: QueryGridColumn;
-        private _columnObserver: Vidyano.Common.SubjectDisposer;
+        private _columnObserver: Vidyano.Common.ISubjectDisposer;
         private _labelTextNode: Text;
         private _typeHints: any;
         private _renderedValue: any;
@@ -46,7 +48,7 @@
                 else
                     this._renderedValue = value;
 
-                var format = this._getTypeHint("displayformat", null);
+                const format = this._getTypeHint("displayformat", null);
                 if (!StringEx.isNullOrEmpty(format))
                     value = StringEx.format(format, value);
 

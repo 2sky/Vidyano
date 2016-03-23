@@ -1,5 +1,7 @@
-﻿module Vidyano.WebComponents {
-    var minimumColumnWidth = 30;
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
+    const minimumColumnWidth = 30;
 
     @WebComponent.register({
         properties: {
@@ -21,7 +23,7 @@
     export class QueryGridColumnHeader extends WebComponent {
         private _resizingRAF: number;
         private _column: QueryGridColumn;
-        private _columnObserver: Vidyano.Common.SubjectDisposer;
+        private _columnObserver: Vidyano.Common.ISubjectDisposer;
         private _labelTextNode: Text;
         private _filter: QueryGridColumnFilterProxyBase;
         private _sorting: string;
@@ -37,7 +39,7 @@
         }
 
         private _onUpgradeFilterProxy(e: Event) {
-            var proxy = this._filter;
+            const proxy = this._filter;
 
             Polymer.dom(this).replaceChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilter(), proxy);
             Polymer.dom(this).flush();
@@ -79,8 +81,8 @@
             if (!this._column.canSort || this._column.query.canReorder)
                 return;
 
-            var multiSort = (<any>e).detail.sourceEvent.ctrlKey;
-            var newSortingDirection: SortDirection;
+            const multiSort = (<any>e).detail.sourceEvent.ctrlKey;
+            let newSortingDirection: SortDirection;
             switch (this._column.sortDirection) {
                 case SortDirection.Ascending: {
                     newSortingDirection = SortDirection.Descending;
@@ -116,20 +118,20 @@
         }
 
         private _resizeTrack(e: TrackEvent, detail: PolymerTrackDetail) {
-            if (detail.state == "start")
+            if (detail.state === "start")
                 this.classList.add("resizing");
-            else if (detail.state == "track") {
+            else if (detail.state === "track") {
                 if (this._resizingRAF)
                     cancelAnimationFrame(this._resizingRAF);
 
                 this._resizingRAF = requestAnimationFrame(() => {
-                    var width = Math.max(this.column.calculatedWidth + detail.dx, minimumColumnWidth);
+                    const width = Math.max(this.column.calculatedWidth + detail.dx, minimumColumnWidth);
 
                     this.style.width = `${width}px`;
                     this.fire("column-widths-updated", { column: this.column, columnWidth: width });
                 });
             }
-            else if (detail.state == "end") {
+            else if (detail.state === "end") {
                 this.classList.remove("resizing");
 
                 this.style.width = "";

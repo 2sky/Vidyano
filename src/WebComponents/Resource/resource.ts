@@ -1,5 +1,7 @@
-module Vidyano.WebComponents {
-    var resources: { [name: string]: Resource } = {};
+namespace Vidyano.WebComponents {
+    "use strict";
+
+    const resources: { [name: string]: Resource } = {};
 
     export abstract class Resource extends WebComponent {
         private _loadedSource: string;
@@ -33,12 +35,12 @@ module Vidyano.WebComponents {
 
         private _load() {
             if (this.source) {
-                if (this.source == this._loadedSource)
+                if (this.source === this._loadedSource)
                     return;
 
                 this.empty(this._contentTarget);
 
-                var resource = Resource.LoadResource(this.source, this.tagName);
+                const resource = Resource.LoadResource(this.source, this.tagName);
                 if (resource != null)
                     Polymer.dom(this._contentTarget).appendChild(Resource.LoadFragment(resource, this.tagName));
 
@@ -47,8 +49,8 @@ module Vidyano.WebComponents {
             }
         }
 
-        static register(info: WebComponentRegistrationInfo = {}): any {
-            if (typeof info == "function")
+        static register(info: IWebComponentRegistrationInfo = {}): any {
+            if (typeof info === "function")
                 return Resource.register({})(info);
 
             return (obj: Function) => {
@@ -78,9 +80,9 @@ module Vidyano.WebComponents {
         }
 
         static LoadFragment(source: string | Resource, tagName: string): DocumentFragment {
-            var resource = (typeof source === "string") ? resources[`${tagName}+${source.toUpperCase() }`] : source;
+            const resource = (typeof source === "string") ? resources[`${tagName}+${source.toUpperCase() }`] : source;
 
-            var fragment = document.createDocumentFragment();
+            const fragment = document.createDocumentFragment();
 
             Enumerable.from(Polymer.dom(resource).children).forEach((child: HTMLElement) => {
                 fragment.appendChild(child.cloneNode(true));
@@ -94,7 +96,7 @@ module Vidyano.WebComponents {
         }
 
         static Exists(name: string, tagName: string): boolean {
-            return resources[`${tagName}+${name.toUpperCase() }`] != undefined;
+            return resources[`${tagName}+${name.toUpperCase() }`] !== undefined;
         }
     }
 }

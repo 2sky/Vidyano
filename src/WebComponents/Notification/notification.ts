@@ -1,7 +1,9 @@
-﻿module Vidyano.WebComponents {
-    var findUriLabel = /\[url:([^|]+)\|((https?:\/\/[-\w]+(\.[-\w]+)*(:\d+)?(\/#?!?[^\.\s]*(\.[^\.\s]+)*)?)|#!\/[^\]]+)]/g;
-    var findUri = /(https?:\/\/[-\w]+(\.[-\w]+)*(:\d+)?(\/#?!?[^\.\s]*(\.[^\.\s]+)*)?)/g;
-    var findNewLine = /\r?\n|\r/g;
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
+    const findUriLabel = /\[url:([^|]+)\|((https?:\/\/[-\w]+(\.[-\w]+)*(:\d+)?(\/#?!?[^\.\s]*(\.[^\.\s]+)*)?)|#!\/[^\]]+)]/g;
+    const findUri = /(https?:\/\/[-\w]+(\.[-\w]+)*(:\d+)?(\/#?!?[^\.\s]*(\.[^\.\s]+)*)?)/g;
+    const findNewLine = /\r?\n|\r/g;
 
     @WebComponent.register({
         properties: {
@@ -50,8 +52,8 @@
 
         private _moreInfo(e: Event) {
             if (this.isOverflowing) {
-                var header: string;
-                var headerIcon: string;
+                let header: string;
+                let headerIcon: string;
                 switch (this._getIconType(this.type)) {
                     case NotificationType.Error: {
                         header = this.app.translateMessage(NotificationType[NotificationType.Error]);
@@ -96,7 +98,7 @@
         }
 
         private _setTextOverflow() {
-            var text = <HTMLSpanElement>this.$["text"];
+            const text = <HTMLSpanElement>this.$["text"];
             text.innerHTML = this.text;
             this._setIsOverflowing(text.offsetWidth < text.scrollWidth);
             text.style.cursor = this.isOverflowing ? "pointer" : "auto";
@@ -104,8 +106,8 @@
 
         private _computeText(notification: string): string {
             if (notification) {
-                var html2 = notification.replace(findUriLabel, "<a class=\"style-scope vi-notification\" href=\"$2\" title=\"\">$1</a>");
-                if (notification == html2)
+                const html2 = notification.replace(findUriLabel, "<a class=\"style-scope vi-notification\" href=\"$2\" title=\"\">$1</a>");
+                if (notification === html2)
                     notification = notification.replace(findUri, "<a class=\"style-scope vi-notification\" href=\"$1\" title=\"\">$1</a>");
                 else
                     notification = html2;

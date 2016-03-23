@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents.Attributes {
+﻿namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register({
         properties: {
             characterCasing: {
@@ -42,12 +44,12 @@
             if (this.attribute instanceof Vidyano.PersistentObjectAttribute) {
                 this.characterCasing = this.attribute.getTypeHint("CharacterCasing", "Normal");
                 this.inputtype = this.attribute.getTypeHint("InputType", "text");
-                var maxlength = parseInt(this.attribute.getTypeHint("MaxLength", "0"), 10);
+                const maxlength = parseInt(this.attribute.getTypeHint("MaxLength", "0"), 10);
                 this.maxlength = maxlength > 0 ? maxlength : null;
 
                 this._suggestionsSeparator = this.attribute.getTypeHint("SuggestionsSeparator");
                 if (this._suggestionsSeparator != null && this.attribute.options != null && this.attribute.options.length > 0) {
-                    var value = <string>this.attribute.value;
+                    const value = <string>this.attribute.value;
                     this._setSuggestions((<string[]>this.attribute.options).filter(o => !StringEx.isNullOrEmpty(o) && (value == null || !value.contains(o))));
                 }
             }
@@ -59,20 +61,20 @@
         }
 
         protected _valueChanged() {
-            var newValue = this._changeCasing(this.value);
-            if (newValue == this.value)
+            const newValue = this._changeCasing(this.value);
+            if (newValue === this.value)
                 super._valueChanged(newValue);
             else
                 this.attribute.setValue(newValue, false);
         }
 
         private _addSuggestion(e: TapEvent) {
-            var suggestion = e.model.suggestion;
+            const suggestion = e.model.suggestion;
             this.attribute.setValue(StringEx.isNullOrEmpty(this.value) ? suggestion : (this.value.endsWith(this._suggestionsSeparator) ? this.value + suggestion : this.value + this._suggestionsSeparator + suggestion));
         }
 
         private _computeFilteredSuggestions(suggestions: string[], value: string): string[] {
-            if (!suggestions || suggestions.length == 0)
+            if (!suggestions || suggestions.length === 0)
                 return [];
 
             if (StringEx.isNullOrEmpty(value))
@@ -86,9 +88,9 @@
         }
 
         private _characterCasingChanged(casing: string) {
-            if (casing == "Upper")
+            if (casing === "Upper")
                 this._setEditInputStyle("text-transform: uppercase;");
-            else if (casing == "Lower")
+            else if (casing === "Lower")
                 this._setEditInputStyle("text-transform: lowercase;");
             else
                 this._setEditInputStyle(undefined);
@@ -98,10 +100,10 @@
             if (val == null)
                 return null;
 
-            if (this.characterCasing == "Normal")
+            if (this.characterCasing === "Normal")
                 return val;
 
-            return this.characterCasing == "Upper" ? val.toUpperCase() : val.toLowerCase();
+            return this.characterCasing === "Upper" ? val.toUpperCase() : val.toLowerCase();
         }
     }
 }

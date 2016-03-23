@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             persistentObject: {
@@ -122,7 +124,7 @@
                 this._cacheEntry = <PersistentObjectAppCacheEntry>this.app.cache(new PersistentObjectAppCacheEntry(this.persistentObject));
 
                 this.selectedMasterTab = this._cacheEntry.selectedMasterTab || this._computeMasterTabs(this.persistentObject, this.persistentObject.tabs)[0] || null;
-                this.selectedDetailTab = this._cacheEntry.selectedDetailTab || this._computeDetailTabs(this.persistentObject, this.persistentObject.tabs)[0] || null
+                this.selectedDetailTab = this._cacheEntry.selectedDetailTab || this._computeDetailTabs(this.persistentObject, this.persistentObject.tabs)[0] || null;
 
                 if (this.app.service.application.userSettings["PersistentObjectSettings"] &&
                     this.app.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id] &&
@@ -139,29 +141,29 @@
             this.updateStyles();
         }
 
-        private _computeMasterTabs(persistentObject: Vidyano.PersistentObject, tabs: Vidyano.PersistentObjectTab[]): Vidyano.PersistentObjectTab[]{
-            if (persistentObject.queryLayoutMode == PersistentObjectLayoutMode.FullPage)
+        private _computeMasterTabs(persistentObject: Vidyano.PersistentObject, tabs: Vidyano.PersistentObjectTab[]): Vidyano.PersistentObjectTab[] {
+            if (persistentObject.queryLayoutMode === PersistentObjectLayoutMode.FullPage)
                 return tabs.filter(t => t.isVisible);
 
-            return tabs ? tabs.filter(t => t.isVisible && t.tabGroupIndex == 0) : [];
+            return tabs ? tabs.filter(t => t.isVisible && t.tabGroupIndex === 0) : [];
         }
 
         private _computeDetailTabs(persistentObject: Vidyano.PersistentObject, tabs: Vidyano.PersistentObjectTab[]): Vidyano.PersistentObjectTab[] {
-            if (persistentObject.queryLayoutMode == PersistentObjectLayoutMode.FullPage)
+            if (persistentObject.queryLayoutMode === PersistentObjectLayoutMode.FullPage)
                 return [];
 
-            return tabs ? tabs.filter(t => t.isVisible && t.tabGroupIndex == 1) : [];
+            return tabs ? tabs.filter(t => t.isVisible && t.tabGroupIndex === 1) : [];
         }
 
         private _detailTabsChanged() {
-            if (!this.detailTabs || this.detailTabs.length == 0) {
+            if (!this.detailTabs || this.detailTabs.length === 0) {
                 this.selectedDetailTab = null;
                 return;
             }
         }
 
         private _masterTabsChanged() {
-            if (!this.masterTabs || this.masterTabs.length == 0) {
+            if (!this.masterTabs || this.masterTabs.length === 0) {
                 this.selectedMasterTab = null;
                 return;
             }
@@ -185,20 +187,20 @@
             if (!persistentObject)
                 return undefined;
 
-            var hasDetailTabs = detailTabs.length > 0;
-            var hasMasterTabs = masterTabs.length > 0;
+            const hasDetailTabs = detailTabs.length > 0;
+            const hasMasterTabs = masterTabs.length > 0;
 
-            var layoutFlags = [hasDetailTabs ? (hasMasterTabs ? 'master-detail' : 'details-only') : 'full-page'];
+            const layoutFlags = [hasDetailTabs ? (hasMasterTabs ? "master-detail" : "details-only") : "full-page"];
             if (hasDetailTabs)
                 layoutFlags.push("dt");
 
             if (hasMasterTabs && (hasDetailTabs || masterTabs.length > 1))
                 layoutFlags.push("mt");
 
-            if (hasMasterTabs && masterTabs.some(t => t.parent.actions.some(a => a.isVisible || a.name == "Filter")))
+            if (hasMasterTabs && masterTabs.some(t => t.parent.actions.some(a => a.isVisible || a.name === "Filter")))
                 layoutFlags.push("ma");
 
-            if (hasDetailTabs && detailTabs.some(t => t.parent.actions.some(a => a.isVisible || a.name == "Filter")))
+            if (hasDetailTabs && detailTabs.some(t => t.parent.actions.some(a => a.isVisible || a.name === "Filter")))
                 layoutFlags.push("da");
 
             return layoutFlags.join(" ");
@@ -209,19 +211,19 @@
         }
 
         private _computeLayoutDetailsOnly(persistentObject: Vidyano.PersistentObject, masterTabs: Vidyano.PersistentObjectTab[] = [], detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
-            return !!persistentObject && masterTabs.length == 0 && detailTabs.length > 0;
+            return !!persistentObject && masterTabs.length === 0 && detailTabs.length > 0;
         }
 
         private _computeLayoutFullPage(persistentObject: Vidyano.PersistentObject, detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
-            return !!persistentObject && detailTabs.length == 0;
+            return !!persistentObject && detailTabs.length === 0;
         }
 
         private _computeLayoutMasterActions(persistentObject: Vidyano.PersistentObject, masterTabs: Vidyano.PersistentObjectTab[] = []): boolean {
-            return !!persistentObject && masterTabs.some(t => t.target.actions.some(a => a.isVisible || a.name == "Filter"));
+            return !!persistentObject && masterTabs.some(t => t.target.actions.some(a => a.isVisible || a.name === "Filter"));
         }
 
         private _computeLayoutDetailActions(persistentObject: Vidyano.PersistentObject, detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
-            return !!persistentObject && detailTabs.some(t => t.target.actions.some(a => a.isVisible || a.name == "Filter"));
+            return !!persistentObject && detailTabs.some(t => t.target.actions.some(a => a.isVisible || a.name === "Filter"));
         }
 
         private _computeLayoutMasterTabs(persistentObject: Vidyano.PersistentObject, masterTabs: Vidyano.PersistentObjectTab[] = [], detailTabs: Vidyano.PersistentObjectTab[] = []): boolean {
@@ -261,26 +263,26 @@
         }
 
         private _trackSplitter(e: CustomEvent, detail: PolymerTrackDetail) {
-            if (detail.state == "track") {
-                var px = parseInt(this.masterWidth);
+            if (detail.state === "track") {
+                const px = parseInt(this.masterWidth);
                 this.masterWidth = (px + detail.ddx) + "px";
             }
-            else if (detail.state == "start") {
+            else if (detail.state === "start") {
                 this.app.classList.add("dragging");
                 if (this.masterWidth.endsWith("%"))
                     this.masterWidth = (this.offsetWidth * (parseInt(this.masterWidth) / 100)).toString() + "px";
             }
-            else if (detail.state == "end") {
+            else if (detail.state === "end") {
                 this.app.classList.remove("dragging");
                 window.getSelection().removeAllRanges();
 
                 if (this.masterWidth.endsWith("px")) {
-                    var px = parseInt(this.masterWidth);
+                    const px = parseInt(this.masterWidth);
                     this.masterWidth = (100 / this.offsetWidth * px).toString() + "%";
                 }
 
                 const persistentObjectSettings = this.app.service.application.userSettings["PersistentObjectSettings"] || (this.app.service.application.userSettings["PersistentObjectSettings"] = {});
-                var thisPersistentObjectSettings = persistentObjectSettings[this.persistentObject.id] || (persistentObjectSettings[this.persistentObject.id] = {});
+                const thisPersistentObjectSettings = persistentObjectSettings[this.persistentObject.id] || (persistentObjectSettings[this.persistentObject.id] = {});
                 thisPersistentObjectSettings["master-detail"] = this.masterWidth;
 
                 this.app.service.application.saveUserSettings();

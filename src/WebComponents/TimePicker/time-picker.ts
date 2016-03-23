@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             time: {
@@ -43,14 +45,14 @@
         }
 
         private _tap(e: Event, detail: any, sender: HTMLElement) {
-            var source: HTMLElement;
-            if (e.srcElement.tagName == "SPAN") {
-                var parent = <HTMLElement>e.srcElement.parentNode;
+            let source: HTMLElement;
+            if (e.srcElement.tagName === "SPAN") {
+                const parent = <HTMLElement>e.srcElement.parentNode;
                 if (parent.classList && parent.classList.contains("item"))
                     source = parent;
             }
             else {
-                var parent = <HTMLElement>e.srcElement;
+                const parent = <HTMLElement>e.srcElement;
                 if (parent.classList && parent.classList.contains("item"))
                     source = parent;
             }
@@ -58,7 +60,7 @@
             if (!source)
                 return;
 
-            var newTime = new Date();
+            const newTime = new Date();
             if (this.time) {
                 newTime.netOffset(this.time.netOffset());
                 newTime.netType(this.time.netType());
@@ -69,12 +71,12 @@
             else
                 newTime.setHours(0, 0, 0, 0);
 
-            if (this.state == "hours") {
+            if (this.state === "hours") {
                 this._setHours(parseInt(source.getAttribute("data-hours"), 10));
                 newTime.setHours(this.hours);
                 this.state = "minutes";
             }
-            else if (this.state == "minutes") {
+            else if (this.state === "minutes") {
                 this._setMinutes(parseInt(source.getAttribute("data-minutes"), 10));
                 newTime.setMinutes(this.minutes);
             }
@@ -85,7 +87,7 @@
         }
 
         private _switch(e: Event, detail: any) {
-            var target = <HTMLElement>e.target;
+            const target = <HTMLElement>e.target;
             if (target.classList.contains("hours"))
                 this.state = "hours";
             else if (target.classList.contains("minutes"))
@@ -98,12 +100,12 @@
             this._setHours(this.time ? this.time.getHours() : 0);
             this._setMinutes(this.time ? this.time.getMinutes() : 0);
 
-            var items = this.querySelectorAll(".item");
+            const items = this.querySelectorAll(".item");
             [].forEach.apply(items, [(item: HTMLElement) => {
-                var hours = parseInt(item.getAttribute("data-hours"), 10);
-                var minutes = parseInt(item.getAttribute("data-minutes"), 10);
+                const hours = parseInt(item.getAttribute("data-hours"), 10);
+                const minutes = parseInt(item.getAttribute("data-minutes"), 10);
 
-                if (hours == this.hours || minutes == this.minutes)
+                if (hours === this.hours || minutes === this.minutes)
                     item.classList.add("active");
                 else
                     item.classList.remove("active");
@@ -115,7 +117,7 @@
         }
 
         private _zeroPrefix(n: number): string {
-            return n < 10 ? '0' + n : n.toString();
+            return n < 10 ? "0" + n : n.toString();
         }
     }
 }

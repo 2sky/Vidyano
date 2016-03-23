@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             value: {
@@ -21,7 +23,7 @@ module Vidyano.WebComponents {
         focused: boolean;
 
         private _searchKeypressed(e: KeyboardEvent) {
-            if (e.keyCode == 13)
+            if (e.keyCode === 13)
                 this._searchClick();
         }
 
@@ -47,7 +49,7 @@ module Vidyano.WebComponents {
 
         focus() {
             setTimeout(() => {
-                var input = (<HTMLInputElement>this.$$("#input"));
+                const input = (<HTMLInputElement>this.$$("#input"));
                 if (input)
                     input.focus();
             }, 100);

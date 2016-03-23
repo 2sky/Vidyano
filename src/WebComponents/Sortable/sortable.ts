@@ -1,5 +1,7 @@
-﻿module Vidyano.WebComponents {
-    var _groups: Sortable[] = [];
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
+    const _groups: Sortable[] = [];
 
     export abstract class Sortable extends WebComponent {
         private _sortable: ISortable;
@@ -50,9 +52,11 @@
         }
 
         protected _dragStart() {
+            // Noop
         }
 
         protected _dragEnd(element: HTMLElement, newIndex: number, oldIndex: number) {
+            // Noop
         }
 
         private _create() {
@@ -67,14 +71,14 @@
                 onStart: () => {
                     this._setIsDragging(true);
                     if (this.group)
-                        _groups.filter(s => s.group == this.group).forEach(s => s._setIsGroupDragging(true));
+                        _groups.filter(s => s.group === this.group).forEach(s => s._setIsGroupDragging(true));
 
                     this._dragStart();
                 },
                 onEnd: (e: any) => {
                     this._setIsDragging(false);
                     if (this.group)
-                        _groups.filter(s => s.group == this.group).forEach(s => s._setIsGroupDragging(false));
+                        _groups.filter(s => s.group === this.group).forEach(s => s._setIsGroupDragging(false));
 
                     this._dragEnd(e.item, e.newIndex, e.oldIndex);
                 }
@@ -97,8 +101,8 @@
                 this._sortable.option("disabled", !enabled);
         }
 
-        static register(info: WebComponentRegistrationInfo = {}): any {
-            if (typeof info == "function")
+        static register(info: IWebComponentRegistrationInfo = {}): any {
+            if (typeof info === "function")
                 return Sortable.register({})(info);
 
             return (obj: Function) => {
@@ -108,35 +112,29 @@
                     type: String,
                     reflectToAttribute: true,
                 };
-                info.properties["filter"] =
-                {
+                info.properties["filter"] = {
                     type: String,
                     reflectToAttribute: true
                 };
-                info.properties["draggableItems"] =
-                {
+                info.properties["draggableItems"] = {
                     type: String,
                     reflectToAttribute: true
                 };
-                info.properties["handle"] =
-                {
+                info.properties["handle"] = {
                     type: String,
                     reflectToAttribute: true
                 };
-                info.properties["isDragging"] =
-                {
+                info.properties["isDragging"] = {
                     type: Boolean,
                     reflectToAttribute: true,
                     readOnly: true
                 };
-                info.properties["isGroupDragging"] =
-                {
+                info.properties["isGroupDragging"] = {
                     type: Boolean,
                     reflectToAttribute: true,
                     readOnly: true
                 };
-                info.properties["enabled"] = // Use enabled before disabled to prevent IE from blocking all events
-                {
+                info.properties["enabled"] = { // Use enabled before disabled to prevent IE from blocking all events
                     type: Boolean,
                     observer: "_enabledChanged"
                 };

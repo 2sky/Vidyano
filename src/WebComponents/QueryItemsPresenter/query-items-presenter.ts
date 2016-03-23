@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             query: Object,
@@ -51,7 +53,7 @@ module Vidyano.WebComponents {
 
             this._setLoading(true);
 
-            var config = this.app.configuration.getQueryConfig(query);
+            const config = this.app.configuration.getQueryConfig(query);
             this._setTemplated(!!config && config.hasTemplate);
 
             if (this.templated) {
@@ -75,7 +77,7 @@ module Vidyano.WebComponents {
                         if (query !== this.query || !!query.currentChart)
                             return;
 
-                        var grid = new Vidyano.WebComponents.QueryGrid();
+                        const grid = new Vidyano.WebComponents.QueryGrid();
                         grid.query = this.query;
                         Polymer.dom(this).appendChild(grid);
 
@@ -83,7 +85,7 @@ module Vidyano.WebComponents {
                     });
                 }
                 else {
-                    var chartConfig = this.app.configuration.getQueryChartConfig(currentChart.type);
+                    const chartConfig = this.app.configuration.getQueryChartConfig(currentChart.type);
                     if (!chartConfig) {
                         console.error(`No chart configuration found for type '${currentChart.type}'`);
                         return;
@@ -120,7 +122,7 @@ module Vidyano.WebComponents {
             if (!this.query)
                 return;
 
-            var action = <Vidyano.Action>this.query.actions["New"];
+            const action = <Vidyano.Action>this.query.actions["New"];
             if (action)
                 action.execute();
         }
@@ -129,7 +131,7 @@ module Vidyano.WebComponents {
             if (!this.query)
                 return;
 
-            var action = <Vidyano.Action>this.query.actions["Delete"];
+            const action = <Vidyano.Action>this.query.actions["Delete"];
             if (action)
                 action.execute();
         }
@@ -138,7 +140,7 @@ module Vidyano.WebComponents {
             if (!this.query)
                 return;
 
-            var action = <Vidyano.Action>this.query.actions["BulkEdit"];
+            const action = <Vidyano.Action>this.query.actions["BulkEdit"];
             if (action)
                 action.execute();
         }

@@ -12,6 +12,7 @@
     "typescript": "^1.6.2",
     "grunt-sass": "^1.1.0",
     "grunt-ts": "^5.1.0",
+    "grunt-tslint": "^3.0.3",
     "dts-generator": "1.6.0-pre.1"
   }
 }

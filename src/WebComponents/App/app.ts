@@ -1,15 +1,19 @@
-﻿var _gaq: any[];
+﻿/* tslint:disable:no-var-keyword */
+var _gaq: any[];
+/* tslint:enable:no-var-keyword */
 
-module Vidyano.WebComponents {
-    var hashBang: string = "#!/";
-    var hashBangRe: RegExp = /^#!\/?/;
+namespace Vidyano.WebComponents {
+    "use strict";
+
+    export const hashBang: string = "#!/";
+    export const hashBangRe: RegExp = /^#!\/?/;
 
     export class AppCacheEntry {
         constructor(public id: string) {
         }
 
         isMatch(entry: AppCacheEntry): boolean {
-            return entry.id == this.id;
+            return entry.id === this.id;
         }
     }
 
@@ -59,7 +63,7 @@ module Vidyano.WebComponents {
             if (!(entry instanceof PersistentObjectFromActionAppCacheEntry))
                 return false;
 
-            return this.fromActionId == entry.fromActionId || entry.persistentObject === this.persistentObject;
+            return this.fromActionId === entry.fromActionId || entry.persistentObject === this.persistentObject;
         }
     }
 
@@ -202,7 +206,7 @@ module Vidyano.WebComponents {
         private _initializationError: string;
         private _routeMap: { [key: string]: AppRoute } = {};
         private _routeUpdater: Promise<any> = Promise.resolve();
-        private _keybindingRegistrations: { [key: string]: Keyboard.KeybindingRegistration[]; } = {};
+        private _keybindingRegistrations: { [key: string]: Keyboard.IKeybindingRegistration[]; } = {};
         private routeMapVersion: number;
         private _configuration: AppConfig;
         private _beforeUnloadEventHandler: EventListener;
@@ -235,7 +239,7 @@ module Vidyano.WebComponents {
             if (!this.label)
                 this.label = this.title;
 
-            var keys = <any>this.$$("iron-a11y-keys");
+            const keys = <any>this.$$("iron-a11y-keys");
             keys.target = document.body;
         }
 
@@ -266,8 +270,8 @@ module Vidyano.WebComponents {
         }
 
         getUrlForPersistentObject(id: string, objectId: string, pu: ProgramUnit = this.programUnit) {
-            var persistentObjects = this.service.application.routes.persistentObjects;
-            for (var type in persistentObjects) {
+            const persistentObjects = this.service.application.routes.persistentObjects;
+            for (const type in persistentObjects) {
                 if (persistentObjects[type] === id)
                     return (pu ? pu.name + "/" : "") + type + (objectId ? "/" + objectId : "");
             }
@@ -276,8 +280,8 @@ module Vidyano.WebComponents {
         }
 
         getUrlForQuery(id: string, pu: ProgramUnit = this.programUnit) {
-            var queries = this.service.application.routes.persistentObjects;
-            for (var name in queries) {
+            const queries = this.service.application.routes.persistentObjects;
+            for (const name in queries) {
                 if (queries[name] === id)
                     return (pu ? pu.name + "/" : "") + `${name}`;
             }
@@ -294,7 +298,7 @@ module Vidyano.WebComponents {
             if (this._cache.length >= this.cacheSize)
                 this._cache.splice(0, this._cache.length - this.cacheSize);
 
-            var cacheEntry = this.cachePing(entry);
+            let cacheEntry = this.cachePing(entry);
             if (!cacheEntry)
                 this._cache.push(cacheEntry = entry);
 
@@ -302,7 +306,7 @@ module Vidyano.WebComponents {
         }
 
         cachePing(entry: Vidyano.WebComponents.AppCacheEntry): Vidyano.WebComponents.AppCacheEntry {
-            var cacheEntry = Enumerable.from(this._cache).lastOrDefault(e => entry.isMatch(e));
+            const cacheEntry = Enumerable.from(this._cache).lastOrDefault(e => entry.isMatch(e));
             if (cacheEntry) {
                 this._cache.remove(cacheEntry);
                 this._cache.push(cacheEntry);
@@ -312,7 +316,7 @@ module Vidyano.WebComponents {
         }
 
         cacheRemove(key: Vidyano.WebComponents.AppCacheEntry) {
-            var entry = Enumerable.from(this._cache).firstOrDefault(e => key.isMatch(e));
+            const entry = Enumerable.from(this._cache).firstOrDefault(e => key.isMatch(e));
             if (entry)
                 this._cache.remove(entry);
         }
@@ -327,7 +331,7 @@ module Vidyano.WebComponents {
 
         createServiceHooks(): ServiceHooks {
             if (this.hooks) {
-                var ctor = this.hooks.split(".").reduce((obj: any, path: string) => obj[path], window);
+                const ctor = this.hooks.split(".").reduce((obj: any, path: string) => obj[path], window);
                 if (ctor)
                     return new ctor(this);
             }
@@ -349,7 +353,7 @@ module Vidyano.WebComponents {
             this.changePath("Error/" + encodeURIComponent(message), replaceCurrent);
         }
 
-        showDialog(dialog: Dialog, options?: DialogOptions): Promise<any> {
+        showDialog(dialog: Dialog, options?: Vidyano.WebComponents.IDialogOptions): Promise<any> {
             const dialogHost = new Vidyano.WebComponents.DialogHost(dialog);
             Polymer.dom(this.root).appendChild(dialogHost);
 
@@ -364,7 +368,7 @@ module Vidyano.WebComponents {
             });
         }
 
-        showMessageDialog(options: MessageDialogOptions): Promise<any> {
+        showMessageDialog(options: Vidyano.WebComponents.IMessageDialogOptions): Promise<any> {
             return this.showDialog(new Vidyano.WebComponents.MessageDialog(), options);
         }
 
@@ -380,11 +384,11 @@ module Vidyano.WebComponents {
         }
 
         private _computeService(uri: string, user: string): Vidyano.Service {
-            var service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
+            const service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
             this._setInitializing(true);
 
             Promise.all([service.initialize(document.location.hash && App.stripHashBang(document.location.hash).startsWith("SignIn"))]).then(() => {
-                if (this.service == service) {
+                if (this.service === service) {
                     this._initializationError = null;
                     this._onInitialized();
                 }
@@ -416,7 +420,7 @@ module Vidyano.WebComponents {
 
         private _convertPath(application: Vidyano.Application, path: string) : string {
             if (application) {
-                var match = application.poRe.exec(path);
+                let match = application.poRe.exec(path);
                 if (match)
                     path = (match[1] || "") + "PersistentObject." + application.routes.persistentObjects[match[3]] + (match[4] || "");
                 else {
@@ -449,7 +453,7 @@ module Vidyano.WebComponents {
                         programUnit = this.service.application.programUnits[0];
 
                     if (programUnit && programUnit.openFirst) {
-                        var openFirstPath = programUnit.items[0].path;
+                        const openFirstPath = programUnit.items[0].path;
                         if (path !== openFirstPath) {
                             this.async(() => this.changePath(openFirstPath));
                             return;
@@ -484,7 +488,7 @@ module Vidyano.WebComponents {
         }
 
         private _appRouteAdded(e: Event, detail: { route: string; }) {
-            var route = App.stripHashBang(detail.route);
+            const route = App.stripHashBang(detail.route);
 
             if (!this._routeMap[route]) {
                 Vidyano.Path.map(hashBang + route).to(() => this.path = Vidyano.Path.routes.current);
@@ -497,11 +501,11 @@ module Vidyano.WebComponents {
         private _computeProgramUnit(application: Vidyano.Application, path: string): ProgramUnit {
             path = this._convertPath(application, path);
 
-            var mappedPathRoute = Vidyano.Path.match(hashBang + App.stripHashBang(path), true);
+            const mappedPathRoute = Vidyano.Path.match(hashBang + App.stripHashBang(path), true);
 
             if (mappedPathRoute && application) {
                 if (mappedPathRoute.params && mappedPathRoute.params.programUnitName)
-                    return Enumerable.from(application.programUnits).firstOrDefault(pu => pu.name == mappedPathRoute.params.programUnitName);
+                    return Enumerable.from(application.programUnits).firstOrDefault(pu => pu.name === mappedPathRoute.params.programUnitName);
                 else if (application.programUnits.length > 0)
                     return application.programUnits[0];
             }
@@ -532,7 +536,7 @@ module Vidyano.WebComponents {
         private _cleanUpOnSignOut(isSignedIn: boolean) {
             if (!isSignedIn) {
                 this.cacheClear();
-                for(var route in this._routeMap)
+                for(const route in this._routeMap)
                     this._routeMap[route].reset();
             }
         }
@@ -549,20 +553,20 @@ module Vidyano.WebComponents {
 
         private _beforeUnload(e: Event) {
             if (this._cache.some(entry => entry instanceof Vidyano.WebComponents.PersistentObjectAppCacheEntry && !!entry.persistentObject && entry.persistentObject.isDirty && entry.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) && this.service) {
-                var confirmationMessage = this.service.getTranslatedMessage("PagesWithUnsavedChanges");
+                const confirmationMessage = this.service.getTranslatedMessage("PagesWithUnsavedChanges");
 
-                (e || window.event).returnValue = <any>confirmationMessage; //Gecko + IE
-                return confirmationMessage; //Webkit, Safari, Chrome etc.
+                (e || window.event).returnValue = <any>confirmationMessage; // Gecko + IE
+                return confirmationMessage; // Webkit, Safari, Chrome etc.
             }
         }
 
-        private _registerKeybindings(registration: Keyboard.KeybindingRegistration) {
-            var currentKeys = this.keys ? this.keys.split(" ") : [];
+        private _registerKeybindings(registration: Keyboard.IKeybindingRegistration) {
+            const currentKeys = this.keys ? this.keys.split(" ") : [];
             registration.keys.forEach(key => {
-                var registrations = this._keybindingRegistrations[key] || (this._keybindingRegistrations[key] = []);
+                const registrations = this._keybindingRegistrations[key] || (this._keybindingRegistrations[key] = []);
                 registrations.push(registration);
 
-                var e = registration.element;
+                let e = registration.element;
                 do {
                     if (e instanceof Vidyano.WebComponents.AppRoute) {
                         registration.appRoute = <Vidyano.WebComponents.AppRoute><any>e;
@@ -579,14 +583,14 @@ module Vidyano.WebComponents {
             this._setKeys(Enumerable.from(currentKeys).distinct().toArray().join(" "));
         }
 
-        private _unregisterKeybindings(registration: Keyboard.KeybindingRegistration) {
-            var currentKeys = this.keys.split(" ");
+        private _unregisterKeybindings(registration: Keyboard.IKeybindingRegistration) {
+            const currentKeys = this.keys.split(" ");
 
             registration.keys.forEach(key => {
-                var registrations = this._keybindingRegistrations[key];
+                const registrations = this._keybindingRegistrations[key];
                 registrations.remove(registration);
 
-                if (registrations.length == 0) {
+                if (registrations.length === 0) {
                     this._keybindingRegistrations[key] = undefined;
                     currentKeys.remove(key);
                 }
@@ -595,7 +599,7 @@ module Vidyano.WebComponents {
             this._setKeys(Enumerable.from(currentKeys).distinct().toArray().join(" "));
         }
 
-        private _keysPressed(e: Keyboard.KeysEvent) {
+        private _keysPressed(e: Keyboard.IKeysEvent) {
             if (!this._keybindingRegistrations[e.detail.combo])
                 return;
 
@@ -612,11 +616,11 @@ module Vidyano.WebComponents {
                 return;
 
             const activeRegs = registrations.filter(reg => !reg.appRoute || reg.appRoute.active);
-            var highestPriorityRegs = Enumerable.from(activeRegs).groupBy(r => r.priority, r => r).orderByDescending(kvp => kvp.key()).firstOrDefault();
+            const highestPriorityRegs = Enumerable.from(activeRegs).groupBy(r => r.priority, r => r).orderByDescending(kvp => kvp.key()).firstOrDefault();
             if (!highestPriorityRegs || highestPriorityRegs.isEmpty())
                 return;
 
-            var regs = highestPriorityRegs.toArray();
+            const regs = highestPriorityRegs.toArray();
             if (regs.length > 1 && regs.some(r => !r.nonExclusive))
                 return;
 
@@ -639,19 +643,22 @@ module Vidyano.WebComponents {
         }
 
         private _initializeGoogleAnalytics() {
-            var addScript = false;
+            let addScript = false;
             if (typeof (_gaq) === "undefined") {
                 _gaq = [];
                 addScript = true;
             }
 
-            _gaq.push(['_setAccount', this.app.service.application.analyticsKey]);
-            _gaq.push(['_setDomainName', 'none']); // NOTE: Track all domains
+            _gaq.push(["_setAccount", this.app.service.application.analyticsKey]);
+            _gaq.push(["_setDomainName", "none"]); // NOTE: Track all domains
 
             if (addScript) {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+                const ga = document.createElement("script");
+                ga.type = "text/javascript"; ga.async = true;
+                ga.src = ("https:" === document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";
+
+                const script = document.getElementsByTagName("script")[0];
+                script.parentNode.insertBefore(ga, script);
             }
         }
 
@@ -661,26 +668,26 @@ module Vidyano.WebComponents {
 
             this._initializeGoogleAnalytics();
 
-            let page = 'Unknown';
-            let type = 'Unknown';
+            let page = "Unknown";
+            let type = "Unknown";
 
             if (owner != null) {
                 if (owner instanceof Vidyano.Query) {
-                    page = 'Query';
+                    page = "Query";
                     type = owner.persistentObject.type;
                 }
                 else if (owner instanceof Vidyano.PersistentObject) {
-                    page = 'PersistentObject';
+                    page = "PersistentObject";
                     type = owner.type;
                 }
             }
 
-            _gaq.push(['_setCustomVar', 1, 'UserId', this.app.service.application.userId, 1]);
-            _gaq.push(['_setCustomVar', 2, 'Page', page, 2]);
-            _gaq.push(['_setCustomVar', 3, 'Type', type, 2]);
-            _gaq.push(['_setCustomVar', 4, 'Option', option, 2]);
+            _gaq.push(["_setCustomVar", 1, "UserId", this.app.service.application.userId, 1]);
+            _gaq.push(["_setCustomVar", 2, "Page", page, 2]);
+            _gaq.push(["_setCustomVar", 3, "Type", type, 2]);
+            _gaq.push(["_setCustomVar", 4, "Option", option, 2]);
 
-            _gaq.push(['_trackEvent', "Action", action.split(".").pop()]);
+            _gaq.push(["_trackEvent", "Action", action.split(".").pop()]);
         }
 
         trackPageView(path: string) {
@@ -693,14 +700,14 @@ module Vidyano.WebComponents {
 
             this._initializeGoogleAnalytics();
 
-            _gaq.push(['_setCustomVar', 1, 'UserId', this.app.service.application.userId, 1]);
-            _gaq.push(['_trackPageview', path]);
+            _gaq.push(["_setCustomVar", 1, "UserId", this.app.service.application.userId, 1]);
+            _gaq.push(["_trackPageview", path]);
         }
 
         onConstructQuery(service: Service, query: any, parent?: Vidyano.PersistentObject, asLookup: boolean = false, maxSelectedItems?: number): Vidyano.Query {
-            var newQuery = super.onConstructQuery(service, query, parent, asLookup, maxSelectedItems);
+            const newQuery = super.onConstructQuery(service, query, parent, asLookup, maxSelectedItems);
 
-            var queryConfig = this.app.configuration.getQueryConfig(newQuery);
+            const queryConfig = this.app.configuration.getQueryConfig(newQuery);
             if (queryConfig && queryConfig.defaultChart)
                 newQuery.defaultChartName = queryConfig.defaultChart;
 
@@ -714,9 +721,9 @@ module Vidyano.WebComponents {
                     titleIcon: "Action_" + action.name,
                     message: this.service.getTranslatedMessage(action.definition.confirmation, option >= 0 ? action.options[option] : undefined),
                     actions: [action.displayName, this.service.getTranslatedMessage("Cancel")],
-                    actionTypes: action.name == "Delete" ? ["Danger"] : []
+                    actionTypes: action.name === "Delete" ? ["Danger"] : []
                 }).then(result => {
-                    resolve(result == 0);
+                    resolve(result === 0);
                 }).catch(e => {
                     resolve(false);
                 });
@@ -724,12 +731,12 @@ module Vidyano.WebComponents {
         }
 
         onAction(args: ExecuteActionArgs): Promise<any> {
-            if (args.action == "AddReference") {
+            if (args.action === "AddReference") {
                 return new Promise((resolve, reject) => {
                     args.isHandled = true;
 
                     this.app.importHref(this.app.resolveUrl("../SelectReferenceDialog/select-reference-dialog.html"), () => {
-                        var query = args.query.clone(true);
+                        const query = args.query.clone(true);
                         query.search();
 
                         this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then((result: QueryResultItem[]) => {
@@ -756,26 +763,26 @@ module Vidyano.WebComponents {
 
         onOpen(obj: ServiceObject, replaceCurrent: boolean = false, fromAction: boolean = false) {
             if (obj instanceof Vidyano.PersistentObject) {
-                var po = <Vidyano.PersistentObject>obj;
+                const po = <Vidyano.PersistentObject>obj;
 
                 if (po.stateBehavior.indexOf("OpenAsDialog") >= 0) {
                     this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po));
                     return;
                 }
 
-                var path: string;
+                let path: string;
                 if (!fromAction) {
                     path = this.app.getUrlForPersistentObject(po.id, po.objectId);
 
-                    var cacheEntry = new PersistentObjectAppCacheEntry(po);
-                    var existing = this.app.cachePing(cacheEntry);
+                    const cacheEntry = new PersistentObjectAppCacheEntry(po);
+                    const existing = this.app.cachePing(cacheEntry);
                     if (existing)
                         this.app.cacheRemove(existing);
 
                     this.app.cache(cacheEntry);
                 }
                 else {
-                    var fromActionId = Unique.get();
+                    const fromActionId = Unique.get();
                     path = this.app.getUrlForFromAction(fromActionId);
                     this.app.cache(new PersistentObjectFromActionAppCacheEntry(po, fromActionId, this.app.path));
                 }
@@ -786,9 +793,9 @@ module Vidyano.WebComponents {
 
         onClose(parent: Vidyano.ServiceObject) {
             if (parent instanceof Vidyano.PersistentObject) {
-                var cacheEntry = <PersistentObjectFromActionAppCacheEntry>this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(parent));
+                const cacheEntry = <PersistentObjectFromActionAppCacheEntry>this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(parent));
                 if (cacheEntry instanceof PersistentObjectFromActionAppCacheEntry && cacheEntry.fromActionIdReturnPath) {
-                    if (App.stripHashBang(this.app.getUrlForFromAction(cacheEntry.fromActionId)) == App.stripHashBang(this.app.path)) {
+                    if (App.stripHashBang(this.app.getUrlForFromAction(cacheEntry.fromActionId)) === App.stripHashBang(this.app.path)) {
                         this.app.cacheRemove(cacheEntry);
 
                         if (this.app.noHistory)
@@ -827,18 +834,18 @@ module Vidyano.WebComponents {
             this.app.changePath(path, replaceCurrent);
         }
 
-        onClientOperation(operation: ClientOperations.ClientOperation) {
+        onClientOperation(operation: ClientOperations.IClientOperation) {
             switch (operation.type) {
                 case "Refresh":
-                    var refresh = <ClientOperations.RefreshOperation>operation;
+                    const refresh = <ClientOperations.IRefreshOperation>operation;
                     if (refresh.queryId) {
-                        var cacheEntry = <QueryAppCacheEntry>this.app.cachePing(new QueryAppCacheEntry(refresh.queryId));
+                        const cacheEntry = <QueryAppCacheEntry>this.app.cachePing(new QueryAppCacheEntry(refresh.queryId));
                         if (cacheEntry && cacheEntry.query)
                             cacheEntry.query.search(refresh.delay);
                     }
                     else {
-                        var refreshPersistentObject = () => {
-                            var cacheEntry = <PersistentObjectAppCacheEntry>this.app.cachePing(new PersistentObjectAppCacheEntry(refresh.fullTypeName, refresh.objectId));
+                        const refreshPersistentObject = () => {
+                            const cacheEntry = <PersistentObjectAppCacheEntry>this.app.cachePing(new PersistentObjectAppCacheEntry(refresh.fullTypeName, refresh.objectId));
                             if (!cacheEntry || !cacheEntry.persistentObject)
                                 return;
 

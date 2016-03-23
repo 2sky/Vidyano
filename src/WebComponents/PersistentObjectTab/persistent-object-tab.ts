@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             tab: Object,
@@ -15,7 +17,7 @@ module Vidyano.WebComponents {
     export class PersistentObjectTab extends WebComponent {
         tab: Vidyano.PersistentObjectAttributeTab;
 
-        private _computeColumns(size: Size, defaultColumnCount: number): number {
+        private _computeColumns(size: ISize, defaultColumnCount: number): number {
             if (defaultColumnCount)
                 return defaultColumnCount;
 

@@ -1,7 +1,9 @@
-﻿module Vidyano.WebComponents {
-    var verboseLogElements = [];
-    var verboseLogFunctions = [];
-    var verboseSkipLogFunctions = [];
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
+    const verboseLogElements = [];
+    const verboseLogFunctions = [];
+    const verboseSkipLogFunctions = [];
 
     export module Keyboard {
         export enum KeyCodes {
@@ -80,13 +82,13 @@
             "y": "U+0059",
             "z": "U+005A",
             "del": "U+007F",
-        }
+        };
 
-        export interface Event extends KeyboardEvent {
+        export interface IEvent extends KeyboardEvent {
             keyIdentifier: string;
         }
 
-        export interface KeysEvent extends CustomEvent {
+        export interface IKeysEvent extends CustomEvent {
             detail: {
                 combo: string;
                 key: string;
@@ -95,26 +97,26 @@
                 altKey?: boolean;
                 metaKey?: boolean;
                 event: string;
-                keyboardEvent: Event;
+                keyboardEvent: IEvent;
             };
         }
 
-        export interface KeybindingRegistration {
+        export interface IKeybindingRegistration {
             keys: string[];
             element: HTMLElement;
-            listener: (e: KeysEvent) => void;
+            listener: (e: IKeysEvent) => void;
             nonExclusive: boolean;
             priority?: number;
             appRoute?: Vidyano.WebComponents.AppRoute;
         }
     }
 
-    export interface Position {
+    export interface IPosition {
         x: number;
         y: number;
     }
 
-    export interface Size {
+    export interface ISize {
         width: number;
         height: number;
     }
@@ -124,15 +126,15 @@
     ////////////////////////////////////////////////////
 
     export var scrollbarWidth = function (): number {
-        var width = <number>scrollbarWidth["cached"];
+        let width = <number>scrollbarWidth["cached"];
         if (width)
             return width;
 
-        var inner = document.createElement('p');
+        const inner = document.createElement("p");
         inner.style.width = "100%";
         inner.style.height = "100px";
 
-        var outer = document.createElement('div');
+        const outer = document.createElement("div");
         outer.style.position = "absolute";
         outer.style.top = "0px";
         outer.style.left = "0px";
@@ -143,32 +145,34 @@
 
         document.body.appendChild(outer);
         outer.style.overflow = "hidden";
-        var w1 = inner.offsetWidth;
-        outer.style.overflow = 'scroll';
-        var w2 = inner.offsetWidth;
-        if (w1 == w2) w2 = outer.clientWidth;
+
+        const w1 = inner.offsetWidth;
+        outer.style.overflow = "scroll";
+
+        let w2 = inner.offsetWidth;
+        if (w1 === w2) w2 = outer.clientWidth;
 
         width = scrollbarWidth["cached"] = (w1 - w2);
 
         document.body.removeChild(outer);
 
         return width;
-    }
+    };
 
-    export interface WebComponentKeybindingInfo {
+    export interface IWebComponentKeybindingInfo {
         [keys: string]: {
             listener: string;
 
-            /**
-            * if nonExclusive is set to true then the observer will also be called when there are other observers bound to any of the same keys.
-            */
+            /*
+             * if nonExclusive is set to true then the observer will also be called when there are other observers bound to any of the same keys.
+             */
             nonExclusive?: boolean;
 
             priority?: number;
         } | string;
     }
 
-    export interface WebComponentRegistrationInfo {
+    export interface IWebComponentRegistrationInfo {
         properties?: PolymerProperties;
         hostAttributes?: { [name: string]: any };
         listeners?: { [eventName: string]: string };
@@ -177,18 +181,18 @@
 
         // Non-default Polymer registration info
 
-        /**
-        * Binds keys to local observer functions
-        */
-        keybindings?: WebComponentKeybindingInfo;
+        /*
+         * Binds keys to local observer functions
+         */
+        keybindings?: IWebComponentKeybindingInfo;
 
-        /**
-        * forwardObservers is used to forward Vidyano.Common.Observable notifications to Polymer notifyPath
-        */
+        /*
+         * forwardObservers is used to forward Vidyano.Common.Observable notifications to Polymer notifyPath
+         */
         forwardObservers?: string[];
     }
 
-    export interface ObserveChainDisposer {
+    export interface IObserveChainDisposer {
         (): void;
     }
 
@@ -226,14 +230,14 @@
          */
         cancelAsync: (handle: number) => void;
 
-        /**
-          * Fire an event.
-          * @method fire
-          * @returns {Object} event
-          * @param {string} type An event name.
-          * @param {any} detail
-          * @param {Node} onNode Target node.
-          */
+        /*
+         * Fire an event.
+         * @method fire
+         * @returns {Object} event
+         * @param {string} type An event name.
+         * @param {any} detail
+         * @param {Node} onNode Target node.
+         */
         fire: (type: string, detail: any, options?: { onNode?: Node; bubbles?: boolean; cancelable?: boolean; }) => CustomEvent;
 
         /**
@@ -256,29 +260,29 @@
          */
         isDebouncerActive: (jobName: string) => void;
 
-        /**
-          * Adds new elements to the end of an array, returns the new length and notifies Polymer that the array has changed.
-        **/
+        /*
+         * Adds new elements to the end of an array, returns the new length and notifies Polymer that the array has changed.
+         */
         push: (path: string, ...items: any[]) => number;
 
-        /**
-          * Removes the last element of an array, returns that element and notifies Polymer that the array has changed.
-        **/
+        /*
+         * Removes the last element of an array, returns that element and notifies Polymer that the array has changed.
+         */
         pop: (path: string) => any;
 
-        /**
-          * Adds new elements to the beginning of an array, returns the new length and notifies Polymer that the array has changed.
-        **/
+        /*
+         * Adds new elements to the beginning of an array, returns the new length and notifies Polymer that the array has changed.
+         */
         unshift: (path: string, items: any[]) => number;
 
-        /**
-          * Removes the first element of an array, returns that element and notifies Polymer that the array has changed.
-        **/
+        /*
+         * Removes the first element of an array, returns that element and notifies Polymer that the array has changed.
+         */
         shift: (path: string) => any;
 
-        /**
-          * Adds/Removes elements from an array and notifies Polymer that the array has changed.
-        **/
+        /*
+         * Adds/Removes elements from an array and notifies Polymer that the array has changed.
+         */
         splice: (path: string, index: number, removeCount?: number, items?: any[]) => any[];
 
         /**
@@ -318,10 +322,10 @@
          */
         toggleClass: (name: string, bool: boolean, node?: Node | WebComponent) => void;
 
-        /**
+        /*
          * Toggles the named boolean attribute on the host element, adding the attribute if bool is truthy and removing it if bool is falsey.
          * If node is specified, sets the attribute on node instead of the host element.
-        */
+         */
         toggleAttribute: (name: string, bool: boolean, node?: Node | WebComponent) => void;
 
         /**
@@ -366,7 +370,9 @@
     }
 
     // HACK: This fixes the default __extends for extending from HTMLElement
+    /* tslint:disable:no-eval */
     eval("PolymerBase = (function (_super) { function PolymerBase() { } return PolymerBase; })(HTMLElement); WebComponents.PolymerBase = PolymerBase;");
+    /* tslint:enable:no-eval */
 
     export abstract class WebComponent extends PolymerBase {
         private _appRequested: boolean;
@@ -386,7 +392,7 @@
                 if (this instanceof Vidyano.WebComponents.App)
                     this._setApp(<Vidyano.WebComponents.App><any>this);
                 else {
-                    var component = <Vidyano.WebComponents.WebComponent>this.findParent(e => !!e && e instanceof Vidyano.WebComponents.App || (<any>e).app instanceof Vidyano.WebComponents.App);
+                    const component = <Vidyano.WebComponents.WebComponent>this.findParent(e => !!e && e instanceof Vidyano.WebComponents.App || (<any>e).app instanceof Vidyano.WebComponents.App);
                     if (!!component)
                         this._setApp(component instanceof Vidyano.WebComponents.App ? component : component.app);
                 }
@@ -415,7 +421,7 @@
         }
 
         findParent<T>(condition: (element: Node) => boolean): T {
-            var element = this;
+            let element = this;
             while (!!element && !condition(element))
                 element = element.parentNode || (<any>element).host;
 
@@ -430,17 +436,17 @@
         }
 
         protected escapeHTML(val: string): string {
-            var span = document.createElement("span");
+            const span = document.createElement("span");
             span.innerText = val;
 
             return span.innerHTML;
         }
 
-        protected _forwardObservable(source: Vidyano.Common.Observable<any> | Array<any>, path: string, pathPrefix: string, callback?: (path: string) => void): ObserveChainDisposer {
-            var paths = path.split(".", 2);
-            var disposers: ObserveChainDisposer[] = [];
-            var subDispose = null;
-            var pathToNotify = pathPrefix ? pathPrefix + "." + paths[0] : paths[0];
+        protected _forwardObservable(source: Vidyano.Common.Observable<any> | Array<any>, path: string, pathPrefix: string, callback?: (path: string) => void): IObserveChainDisposer {
+            const paths = path.split(".", 2);
+            const pathToNotify = pathPrefix ? pathPrefix + "." + paths[0] : paths[0];
+            const disposers: IObserveChainDisposer[] = [];
+            let subDispose = null;
 
             if (Array.isArray(source)) {
                 (<any>source).forEach((item, idx) => {
@@ -448,15 +454,15 @@
                 });
             }
             else if ((<Vidyano.Common.Observable<any>>source).propertyChanged) {
-                var dispose = (<Vidyano.Common.Observable<any>>source).propertyChanged.attach((sender, detail) => {
-                    if (detail.propertyName == paths[0]) {
+                const dispose = (<Vidyano.Common.Observable<any>>source).propertyChanged.attach((sender, detail) => {
+                    if (detail.propertyName === paths[0]) {
                         if (subDispose) {
                             subDispose();
                             disposers.remove(subDispose);
                         }
 
-                        var newValue = detail.newValue;
-                        if (newValue && paths.length == 2) {
+                        const newValue = detail.newValue;
+                        if (newValue && paths.length === 2) {
                             subDispose = this._forwardObservable(newValue, paths[1], pathToNotify, callback);
                             disposers.push(subDispose);
                         }
@@ -468,8 +474,8 @@
                 });
                 disposers.push(dispose);
 
-                if (paths.length == 2) {
-                    var subSource = source[paths[0]];
+                if (paths.length === 2) {
+                    const subSource = source[paths[0]];
                     if (subSource) {
                         subDispose = this._forwardObservable(subSource, paths[1], pathToNotify, callback);
                         disposers.push(subDispose);
@@ -494,15 +500,15 @@
         }
 
         static getName(fnc: Function): string {
-            var results = /function (.+?)\(/.exec(fnc.toString());
+            const results = /function (.+?)\(/.exec(fnc.toString());
             return results && results[1] || "";
         }
 
-        private static _register(obj: Function, info: WebComponentRegistrationInfo = {}, prefix: string = "vi", ns?: any) {
-            var name = WebComponent.getName(obj);
-            var elementName = prefix + name.replace(/([A-Z])/g, m => "-" + m[0].toLowerCase());
+        private static _register(obj: Function, info: IWebComponentRegistrationInfo = {}, prefix: string = "vi", ns?: any) {
+            const name = WebComponent.getName(obj);
+            const elementName = prefix + name.replace(/([A-Z])/g, m => "-" + m[0].toLowerCase());
 
-            var wcPrototype = <any>info;
+            const wcPrototype = <any>info;
             (<any>wcPrototype).is = elementName;
 
             if (obj.length > 0)
@@ -517,7 +523,7 @@
             };
             info.properties["translations"] = Object;
 
-            for (var prop in info.properties) {
+            for (const prop in info.properties) {
                 if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed)) {
                     if (wcPrototype.properties[prop].computed[0] !== "!")
                         info.properties[prop]["computed"] = "_forwardComputed(" + wcPrototype.properties[prop].computed + ")";
@@ -528,12 +534,12 @@
 
             if (!info.properties["isAttached"]) {
                 // forwardObservers and keybindings count on isAttached
-                var isAttached = (info.forwardObservers || info.keybindings) && !info.properties["isAttached"];
+                let isAttached = (info.forwardObservers || info.keybindings) && !info.properties["isAttached"];
 
                 // Check computed properties
                 if (!isAttached) {
-                    for (var p in info.properties) {
-                        var propInfo = <any>info.properties[p];
+                    for (const p in info.properties) {
+                        const propInfo = <any>info.properties[p];
                         if (propInfo.computed && propInfo.computed.indexOf("isAttached") >= 0) {
                             isAttached = true;
                             break;
@@ -558,22 +564,19 @@
                 info.observers = info.observers || [];
 
                 Enumerable.from(info.forwardObservers).groupBy(path => {
-                    var functionIndex = path.indexOf("(");
+                    const functionIndex = path.indexOf("(");
                     return (functionIndex > 0 ? path.substr(functionIndex + 1) : path).split(".", 2)[0];
                 }, path => path).forEach(source => {
-                    var methodName = "_observablePropertyObserver_" + source.key();
+                    const methodName = "_observablePropertyObserver_" + source.key();
                     info.observers.push(methodName + "(" + source.key() + ", isAttached)");
 
-                    var properties = source.toArray();
+                    const properties = source.toArray();
                     wcPrototype[methodName] = function (sourceObj: any, attached: boolean) {
                         if (sourceObj == null)
                             return;
 
-                        var forwardObserversCollectionName = `_forwardObservers_${source.key()}`;
-                        var forwardObservers = this[forwardObserversCollectionName] || (this[forwardObserversCollectionName] = []);
-
-                        if (!forwardObservers)
-                            forwardObservers = [];
+                        const forwardObserversCollectionName = `_forwardObservers_${source.key()}`;
+                        const forwardObservers = this[forwardObserversCollectionName] || (this[forwardObserversCollectionName] = []) || [];
 
                         while (forwardObservers.length > 0)
                             forwardObservers.pop()();
@@ -582,19 +585,21 @@
                             return;
 
                         properties.forEach(p => {
-                            var functionIndex = p.indexOf("(");
-                            var path = functionIndex > 0 ? p.substr(functionIndex + source.key().length + 2, p.length - (functionIndex + source.key().length + 2) - 1) : p.substr(source.key().length + 1);
+                            const functionIndex = p.indexOf("(");
+                            const path = functionIndex > 0 ? p.substr(functionIndex + source.key().length + 2, p.length - (functionIndex + source.key().length + 2) - 1) : p.substr(source.key().length + 1);
 
-                            var observer = functionIndex > 0 ? this[p.substr(0, functionIndex)] : null;
+                            let observer = functionIndex > 0 ? this[p.substr(0, functionIndex)] : null;
                             if (observer)
                                 observer = observer.bind(this);
 
                             forwardObservers.push(this._forwardObservable(sourceObj, path, source.key(), observer));
                             if (observer && sourceObj && attached) {
-                                var valuePath = path.slice().split(".").reverse();
-                                var value = sourceObj;
+                                const valuePath = path.slice().split(".").reverse();
+                                let value = sourceObj;
 
-                                do value = value[valuePath.pop()];
+                                do {
+                                    value = value[valuePath.pop()];
+                                }
                                 while (value && valuePath.length > 0);
 
                                 observer(value);
@@ -612,18 +617,18 @@
                         if (!this._keybindingRegistrations)
                             this._keybindingRegistrations = [];
 
-                        var registerKeybinding = (keys: string) => {
-                            var keybinding = this.keybindings[keys];
+                        const registerKeybinding = (keys: string) => {
+                            let keybinding = this.keybindings[keys];
                             if (typeof keybinding === "string")
                                 keybinding = { listener: keybinding };
 
-                            var listener = this[keybinding.listener];
+                            const listener = this[keybinding.listener];
                             if (!listener) {
                                 console.warn("Keybindings listener '" + keybinding.listener + "' not found on element " + this.is);
                                 return;
                             }
 
-                            var eventListener = (e: Keyboard.KeysEvent) => {
+                            const eventListener = (e: Keyboard.IKeysEvent) => {
                                 listener.call(this, e.detail.keyboardEvent);
 
                                 e.stopPropagation();
@@ -631,11 +636,11 @@
                                 e.detail.keyboardEvent.preventDefault();
                             };
 
-                            var element = <any>document.createElement("iron-a11y-keys");
+                            const element = <any>document.createElement("iron-a11y-keys");
                             element.keys = keys;
                             element.addEventListener("keys-pressed", eventListener);
 
-                            var registration: Keyboard.KeybindingRegistration = {
+                            const registration: Keyboard.IKeybindingRegistration = {
                                 keys: keys.split(" "),
                                 element: element,
                                 listener: eventListener,
@@ -649,14 +654,14 @@
                             this.app._registerKeybindings(registration);
                         };
 
-                        for (var keys in this.keybindings) {
+                        for (const keys in this.keybindings) {
                             registerKeybinding(keys);
                         }
                     }
                     else {
                         if (this._keybindingRegistrations) {
                             while (this._keybindingRegistrations.length > 0) {
-                                var reg = this._keybindingRegistrations.splice(0, 1)[0];
+                                const reg = this._keybindingRegistrations.splice(0, 1)[0];
 
                                 this.app._unregisterKeybindings(reg);
 
@@ -668,14 +673,14 @@
                 };
             }
 
-            var extendFunction = (proto: any, p: string, elementName: string): Function => {
-                if (verboseSkipLogFunctions.indexOf(p) == -1 && (verboseLogElements.indexOf(elementName) > -1 || verboseLogFunctions.indexOf(p) > -1)) {
+            const extendFunction = (proto: any, p: string, elementName: string): Function => {
+                if (verboseSkipLogFunctions.indexOf(p) === -1 && (verboseLogElements.indexOf(elementName) > -1 || verboseLogFunctions.indexOf(p) > -1)) {
                     return function () {
                         if (!this._uniqueId)
                             this._uniqueId = Unique.get();
 
-                        console.group(p + (p == "attributeChanged" ? ": " + arguments[0] : "") + " (" + elementName + "#" + this._uniqueId + ")");
-                        var result = proto[p].apply(this, arguments);
+                        console.group(p + (p === "attributeChanged" ? ": " + arguments[0] : "") + " (" + elementName + "#" + this._uniqueId + ")");
+                        const result = proto[p].apply(this, arguments);
                         console.groupEnd();
                         return result;
                     };
@@ -684,9 +689,9 @@
                     return proto[p];
             };
 
-            for (var p in obj.prototype) {
-                var getter = obj.prototype.__lookupGetter__(p);
-                var setter = obj.prototype.__lookupSetter__(p);
+            for (const p in obj.prototype) {
+                const getter = obj.prototype.__lookupGetter__(p);
+                const setter = obj.prototype.__lookupSetter__(p);
                 if (getter || setter) {
                     Object.defineProperty(wcPrototype, p, {
                         get: getter || Polymer.nop,
@@ -695,9 +700,9 @@
                         configurable: true
                     });
                 }
-                else if (p != "constructor" && typeof obj.prototype[p] == 'function') {
+                else if (p !== "constructor" && typeof obj.prototype[p] === "function") {
                     if (p.startsWith("_set") && p.length > 4) {
-                        var property = p.substr(4, 1).toLowerCase() + p.slice(5);
+                        const property = p.substr(4, 1).toLowerCase() + p.slice(5);
                         if (info.properties[property] && (<any>info.properties[property]).readOnly)
                             continue;
                     }
@@ -707,9 +712,9 @@
             }
 
 
-            var wc = Polymer(wcPrototype);
-            for (var method in obj) {
-                if (obj.hasOwnProperty(method) && method != "getName" && method != "registerOverride" && method != "_finalizeRegistration" && method != "publish")
+            const wc = Polymer(wcPrototype);
+            for (const method in obj) {
+                if (obj.hasOwnProperty(method) && method !== "getName" && method !== "registerOverride" && method !== "_finalizeRegistration" && method !== "publish")
                     wc[method] = obj[method];
             }
 
@@ -719,9 +724,9 @@
             return wc;
         }
 
-        static register(obj: Function, info: WebComponentRegistrationInfo, prefix?: string, ns?: any): Function;
-        static register(info?: WebComponentRegistrationInfo, prefix?: string);
-        static register(info?: WebComponentRegistrationInfo, prefix?: string): (obj: any) => void {
+        static register(obj: Function, info: IWebComponentRegistrationInfo, prefix?: string, ns?: any): Function;
+        static register(info?: IWebComponentRegistrationInfo, prefix?: string);
+        static register(info?: IWebComponentRegistrationInfo, prefix?: string): (obj: any) => void {
             if (!info || typeof info === "object") {
                 return (obj: Function) => {
                     return WebComponent._register(obj, info, prefix);

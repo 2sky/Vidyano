@@ -1,8 +1,10 @@
-module Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register
     export class PersistentObjectAttributeKeyValueList extends WebComponents.Attributes.PersistentObjectAttribute {
         protected _valueChanged(newValue: any) {
-            if (this.attribute && newValue != this.attribute.value)
+            if (this.attribute && newValue !== this.attribute.value)
                 this.attribute.setValue(newValue, true);
         }
     }

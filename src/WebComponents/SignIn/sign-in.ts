@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             error: {
@@ -39,7 +41,7 @@
 
             this.empty(undefined, c => c instanceof Vidyano.WebComponents.SignInProvider);
 
-            for (var name in route.app.service.providers) {
+            for (const name in route.app.service.providers) {
                 const provider = new WebComponents.SignInProvider();
                 provider.name = name;
 
@@ -137,18 +139,18 @@
 
         private _vidyanoSignInAttached() {
             this.userName = this.app.service.userName !== this.app.service.defaultUserName ? this.app.service.userName : "";
-            this.staySignedIn = Vidyano.cookie("staySignedIn", { force: true }) == "true";
+            this.staySignedIn = Vidyano.cookie("staySignedIn", { force: true }) === "true";
             this._autoFocus();
         }
 
         private _keydown(e: KeyboardEvent) {
-            if (e.which == Keyboard.KeyCodes.enter && !StringEx.isNullOrEmpty(this.userName) && !StringEx.isNullOrEmpty(this.password))
+            if (e.which === Keyboard.KeyCodes.enter && !StringEx.isNullOrEmpty(this.userName) && !StringEx.isNullOrEmpty(this.password))
                 this._signIn();
         }
 
         private _computeLabel(): string {
-            var parameters = this.app.service.providers[this.name];
-            if (this.name == "Vidyano" && !parameters.label)
+            const parameters = this.app.service.providers[this.name];
+            if (this.name === "Vidyano" && !parameters.label)
                 return "Vidyano";
 
             return parameters.label;
@@ -159,7 +161,7 @@
         }
 
         private _computeIsVidyano(): boolean {
-            return this.name == "Vidyano";
+            return this.name === "Vidyano";
         }
 
         private _tap() {
@@ -173,11 +175,11 @@
 
         private _autoFocus() {
             if (StringEx.isNullOrEmpty(this.userName)) {
-                var user = <HTMLInputElement><any>this.$$("input#user");
+                const user = <HTMLInputElement><any>this.$$("input#user");
                 user.focus();
             }
             else {
-                var pass = <HTMLInputElement><any>this.$$("input#pass");
+                const pass = <HTMLInputElement><any>this.$$("input#pass");
                 pass.focus();
             }
         }
@@ -185,22 +187,22 @@
         private _signIn() {
             this._setSigningIn(true);
 
-            var password = this.password;
+            const password = this.password;
             this.password = "";
 
-            var currentRoute = this.app.currentRoute;
+            const currentRoute = this.app.currentRoute;
             this.app.service.staySignedIn = this.staySignedIn;
             this.app.service.signInUsingCredentials(this.userName, password).then(() => {
                 this._setSigningIn(false);
 
-                if (currentRoute == this.app.currentRoute) {
-                    var route = this.findParent<AppRoute>(e => e instanceof Vidyano.WebComponents.AppRoute);
+                if (currentRoute === this.app.currentRoute) {
+                    const route = this.findParent<AppRoute>(e => e instanceof Vidyano.WebComponents.AppRoute);
                     this.app.changePath(decodeURIComponent(route.parameters.returnUrl || ""));
                 }
             }, e => {
                     this._setSigningIn(false);
 
-                    var pass = <HTMLInputElement><any>this.$$("input#pass");
+                    const pass = <HTMLInputElement><any>this.$$("input#pass");
                     pass.focus();
 
                     this.app.showMessageDialog({
@@ -216,10 +218,10 @@
             if (!signingIn)
                 return this.app.service.getTranslatedMessage("SignIn");
 
-            var button = this._signInButton || (this._signInButton = <HTMLButtonElement><any>this.$$("button#signIn"));
+            const button = this._signInButton || (this._signInButton = <HTMLButtonElement><any>this.$$("button#signIn"));
             if (!this._signingInMessage) {
                 this._signingInMessage = this.app.service.getTranslatedMessage("SigningIn").trimEnd(".").trimEnd(" ") + " ";
-                var span = document.createElement("span");
+                const span = document.createElement("span");
                 span.textContent = this._signingInMessage + "...";
                 button.appendChild(span);
                 button.style.width = span.offsetWidth + "px";

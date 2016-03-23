@@ -1,5 +1,7 @@
-﻿module Vidyano.WebComponents {
-    interface PersistentObjectGroupItem {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
+    interface IPersistentObjectGroupItem {
         attribute: Vidyano.PersistentObjectAttribute;
         config: Vidyano.WebComponents.PersistentObjectAttributeConfig;
         presenter?: Vidyano.WebComponents.PersistentObjectAttributePresenter;
@@ -9,7 +11,7 @@
         height: number;
     }
 
-    interface PersistentObjectGroupRow {
+    interface IPersistentObjectGroupRow {
         host: HTMLTableRowElement;
         cells: HTMLTableCellElement[];
     }
@@ -42,7 +44,7 @@
         ]
     })
     export class PersistentObjectGroup extends WebComponent {
-        private _items: PersistentObjectGroupItem[];
+        private _items: IPersistentObjectGroupItem[];
         private _itemsChecksum: string;
         private _presentersLoading: number = 0;
         private _layout: HTMLTableElement;
@@ -97,7 +99,7 @@
 
             const layoutFragment = document.createDocumentFragment();
             const layout = layoutFragment.appendChild(document.createElement("table"));
-            const rows: PersistentObjectGroupRow[] = [];
+            const rows: IPersistentObjectGroupRow[] = [];
             const addRow = () => {
                 rows.push({
                     host: document.createElement("tr"),
@@ -131,7 +133,7 @@
                     let canAdd = groupX + item.width <= this.columns;
                     for (let xx = 0; item.x == null && canAdd && xx < item.width; xx++) {
                         for (let yy = 0; yy < itemHeight; yy++) {
-                            if (rows[groupY + yy].cells[groupX + xx] || (xx == 0 && groupX + xx > 0 && !rows[groupY + yy].cells[groupX + xx - 1])) {
+                            if (rows[groupY + yy].cells[groupX + xx] || (xx === 0 && groupX + xx > 0 && !rows[groupY + yy].cells[groupX + xx - 1])) {
                                 canAdd = false;
                                 break;
                             }
@@ -142,7 +144,7 @@
                         item.x = groupX;
                         item.y = groupY;
 
-                        var cell = document.createElement("td");
+                        const cell = document.createElement("td");
                         cell.colSpan = item.width;
                         cell.rowSpan = item.height > 0 ? itemHeight : 0;
 
@@ -166,7 +168,7 @@
                         groupX += item.width;
                         if (groupX >= this.columns) {
                             if (rows[groupY].cells.some(cell => cell.rowSpan === 0)) {
-                                var totalRowHeight = Enumerable.from(rows[groupY].cells).max(cell => cell.rowSpan);
+                                const totalRowHeight = Enumerable.from(rows[groupY].cells).max(cell => cell.rowSpan);
                                 rows[groupY].cells.forEach(cell => {
                                     if (!cell.rowSpan)
                                         cell.rowSpan = totalRowHeight;
@@ -202,7 +204,7 @@
             }
 
             rows.forEach(r => {
-                for (var i=columns-1; i>=0 && !r.cells[i]; i--)
+                for (let i=columns-1; i>=0 && !r.cells[i]; i--)
                     r.host.appendChild(document.createElement("td"));
             });
 
@@ -214,8 +216,8 @@
             this._layout = layout;
         }
 
-        private _itemFromAttribute(attribute: Vidyano.PersistentObjectAttribute): PersistentObjectGroupItem {
-            var config = this.app.configuration.getAttributeConfig(attribute);
+        private _itemFromAttribute(attribute: Vidyano.PersistentObjectAttribute): IPersistentObjectGroupItem {
+            const config = this.app.configuration.getAttributeConfig(attribute);
 
             return {
                 attribute: attribute,

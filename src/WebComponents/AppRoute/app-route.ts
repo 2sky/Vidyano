@@ -1,8 +1,8 @@
-module Vidyano.WebComponents {
-    var hashBang: string = "#!/";
+namespace Vidyano.WebComponents {
+    "use strict";
 
-    interface AppRouteComponentConstructor extends HTMLElement {
-        new (app: App): AppRouteComponentConstructor;
+    interface IAppRouteComponentConstructor extends HTMLElement {
+        new (app: App): IAppRouteComponentConstructor;
     }
 
     @WebComponent.register({
@@ -31,7 +31,7 @@ module Vidyano.WebComponents {
         }
     })
     export class AppRoute extends WebComponent {
-        private _constructor: AppRouteComponentConstructor;
+        private _constructor: IAppRouteComponentConstructor;
         private _constructorChanged: boolean;
         private _parameters: { [key: string]: string } = {};
         private _documentTitleBackup: string;
@@ -58,7 +58,7 @@ module Vidyano.WebComponents {
 
             this._documentTitleBackup = document.title;
 
-            var component = <WebComponent>Polymer.dom(this).children[0];
+            let component = <WebComponent>Polymer.dom(this).children[0];
             if (!component || this._constructorChanged) {
                 this._constructorChanged = false;
 
@@ -78,7 +78,7 @@ module Vidyano.WebComponents {
         }
 
         deactivate(): Promise<boolean> {
-            var component = <WebComponent>Polymer.dom(this).children[0];
+            const component = <WebComponent>Polymer.dom(this).children[0];
 
             return new Promise(resolve => {
                 this.deactivator = resolve;
@@ -98,7 +98,7 @@ module Vidyano.WebComponents {
             if (!this._constructor)
                 return;
 
-            var component = <WebComponent>Polymer.dom(this).children[0];
+            const component = <WebComponent>Polymer.dom(this).children[0];
             if (component) {
                 Polymer.dom(this).removeChild(component);
                 Polymer.dom(this).flush();
@@ -126,7 +126,7 @@ module Vidyano.WebComponents {
         }
 
         private _componentChanged() {
-            this._constructor = <AppRouteComponentConstructor><any>this.component.split(".").reduce((obj: any, path: string) => obj[path], window);
+            this._constructor = <IAppRouteComponentConstructor><any>this.component.split(".").reduce((obj: any, path: string) => obj[path], window);
             this._constructorChanged = true;
         }
     }

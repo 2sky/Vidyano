@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             hasOverflow: {
@@ -16,12 +18,12 @@ module Vidyano.WebComponents {
         private _setHasOverflow: (val: boolean) => void;
 
         private _visibleSizeChanged(e: Event, detail: { width: number; height: number }) {
-            var popup = <WebComponents.Popup><any>this.$["overflowPopup"];
+            const popup = <WebComponents.Popup><any>this.$["overflowPopup"];
             if (popup.open)
                 return;
 
             requestAnimationFrame(() => {
-                var children = this._getChildren();
+                const children = this._getChildren();
                 children.forEach(child => {
                     Polymer.dom(child).removeAttribute("overflow");
                 });
@@ -31,9 +33,9 @@ module Vidyano.WebComponents {
         }
 
         protected _getChildren(): linqjs.Enumerable<HTMLElement> {
-            return Enumerable.from(Enumerable.from(Polymer.dom(this).children).where(c => c.tagName != "TEMPLATE").selectMany(element => {
-                if (element.tagName == "CONTENT")
-                    return Enumerable.from(Polymer.dom(element).getDistributedNodes()).where(c => c.tagName != "TEMPLATE").toArray();
+            return Enumerable.from(Enumerable.from(Polymer.dom(this).children).where(c => c.tagName !== "TEMPLATE").selectMany(element => {
+                if (element.tagName === "CONTENT")
+                    return Enumerable.from(Polymer.dom(element).getDistributedNodes()).where(c => c.tagName !== "TEMPLATE").toArray();
 
                 return [element];
             }).select(child => <HTMLElement>child).toArray());
@@ -60,7 +62,7 @@ module Vidyano.WebComponents {
         }
 
         private _popup(e: Event) {
-            var children = this._getChildren();
+            const children = this._getChildren();
             children.forEach(child => {
                 if (child.offsetTop > 0)
                     Polymer.dom(child).setAttribute("overflow", "");
@@ -68,7 +70,7 @@ module Vidyano.WebComponents {
 
             Polymer.dom(this).flush();
 
-            var popup = <WebComponents.Popup><any>this.$["overflowPopup"];
+            const popup = <WebComponents.Popup><any>this.$["overflowPopup"];
             popup.popup().then(() => {
                 children.forEach(child => {
                     Polymer.dom(child).removeAttribute("overflow");

@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             queryId: {
@@ -74,7 +76,7 @@ module Vidyano.WebComponents {
         private _computeQuery(queryId: string, isAttached: boolean) {
             this._setError(null);
 
-            if (!isAttached || (this.query && queryId && this.query.id.toUpperCase() == queryId.toUpperCase()))
+            if (!isAttached || (this.query && queryId && this.query.id.toUpperCase() === queryId.toUpperCase()))
                 return;
 
             if (!this._customTemplate)
@@ -86,7 +88,7 @@ module Vidyano.WebComponents {
 
                 this._setLoading(true);
                 this.app.service.getQuery(this.queryId).then(query => {
-                    if (query.id.toUpperCase() == this.queryId.toUpperCase()) {
+                    if (query.id.toUpperCase() === this.queryId.toUpperCase()) {
                         this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(query.id));
                         this.query = this._cacheEntry.query = query;
                     }
@@ -135,7 +137,7 @@ module Vidyano.WebComponents {
                 if (query !== this.query)
                     return;
 
-                var queryComponent = new Vidyano.WebComponents.Query();
+                const queryComponent = new Vidyano.WebComponents.Query();
                 queryComponent.query = query;
                 Polymer.dom(this).appendChild(queryComponent);
 

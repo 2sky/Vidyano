@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents.Attributes {
+﻿namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register
     export class PersistentObjectAttributeFlagsEnum extends WebComponents.Attributes.PersistentObjectAttribute {
     }
@@ -34,27 +36,27 @@
         attribute: Vidyano.PersistentObjectAttribute;
         checked: boolean;
         label: string;
-        option: Vidyano.Common.KeyValuePair;
+        option: Vidyano.Common.IKeyValuePair;
 
         private _checkedChanged() {
             if (this._skipCheckedChanged || !this.attribute)
                 return;
 
-            var myValue = parseInt(this.option.key);
-            if (this.checked && myValue == 0)
+            const myValue = parseInt(this.option.key);
+            if (this.checked && myValue === 0)
                 this.attribute.value = this.option.value;
             else {
-                var currentOptions = Enumerable.from(<Vidyano.Common.KeyValuePair[]>this.attribute.options);
-                var currentValue = this.attribute.value ? this._values(this.attribute.value).sum(v => parseInt(currentOptions.first(o => o.value == v).key)) : 0;
+                const currentOptions = Enumerable.from(<Vidyano.Common.IKeyValuePair[]>this.attribute.options);
+                let currentValue = this.attribute.value ? this._values(this.attribute.value).sum(v => parseInt(currentOptions.first(o => o.value === v).key)) : 0;
                 if (this.checked)
                     currentValue |= myValue;
                 else
                     currentValue &= ~myValue;
 
-                var value = [];
+                const value = [];
                 currentOptions.orderByDescending(o => parseInt(o.key)).forEach(option => {
-                    var optionKey = parseInt(option.key);
-                    if (optionKey != 0 && (currentValue & optionKey) == optionKey) {
+                    const optionKey = parseInt(option.key);
+                    if (optionKey !== 0 && (currentValue & optionKey) === optionKey) {
                         currentValue &= ~optionKey;
                         value.splice(0, 0, option.value);
                     }
@@ -63,14 +65,14 @@
                 if (value.length > 0)
                     this.attribute.value = value.join(", ");
                 else {
-                    this.attribute.value = currentOptions.first(o => o.key == "0").value;
-                    if (myValue == 0)
+                    this.attribute.value = currentOptions.first(o => o.key === "0").value;
+                    if (myValue === 0)
                         this.checked = true;
                 }
             }
         }
 
-        private _computeLabel(option: Vidyano.Common.KeyValuePair): string {
+        private _computeLabel(option: Vidyano.Common.IKeyValuePair): string {
             return option.value;
         }
 
@@ -78,11 +80,11 @@
             try {
                 this._skipCheckedChanged = true;
 
-                var currentOptions = Enumerable.from(<Vidyano.Common.KeyValuePair[]>this.attribute.options);
-                var currentValue = this.attribute.value ? this._values(this.attribute.value).sum(v => parseInt(currentOptions.first(o => o.value == v).key)) : 0;
-                var myValue = parseInt(this.option.key);
+                const currentOptions = Enumerable.from(<Vidyano.Common.IKeyValuePair[]>this.attribute.options);
+                const currentValue = this.attribute.value ? this._values(this.attribute.value).sum(v => parseInt(currentOptions.first(o => o.value === v).key)) : 0;
+                const myValue = parseInt(this.option.key);
 
-                this.checked = (currentValue == 0 && myValue == 0) || (myValue != 0 && (currentValue & myValue) == myValue);
+                this.checked = (currentValue === 0 && myValue === 0) || (myValue !== 0 && (currentValue & myValue) === myValue);
             }
             finally {
                 this._skipCheckedChanged = false;

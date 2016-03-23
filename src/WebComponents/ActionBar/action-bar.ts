@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties:
         {
@@ -45,13 +47,13 @@
         private _setHasCharts: (val: boolean) => void;
 
         executeAction(e: Event, details: any, sender: HTMLElement) {
-            var action = this.serviceObject.actions[sender.getAttribute("data-action-name")];
+            const action = this.serviceObject.actions[sender.getAttribute("data-action-name")];
             if (action)
                 action.execute(parseInt(sender.getAttribute("data-option") || "-1", 10));
         }
 
         filterActions(actions: Vidyano.Action[], pinned: boolean): Vidyano.Action[] {
-            return actions.filter(a => a.isPinned == pinned);
+            return actions.filter(a => a.isPinned === pinned);
         }
 
         private _serviceObjectChanged(serviceObject: Vidyano.ServiceObject) {
@@ -72,7 +74,7 @@
             if (!this.canSearch)
                 return;
 
-            var query = <Vidyano.Query>this.serviceObject;
+            const query = <Vidyano.Query>this.serviceObject;
             query.search();
         }
 
@@ -89,11 +91,11 @@
         }
 
         private _computeNoActions(pinnedActions: Vidyano.Action[], unpinnedActions: Vidyano.Action[]): boolean {
-            var actions = (pinnedActions || []).concat(unpinnedActions || []);
-            if (actions.length == 0)
+            const actions = (pinnedActions || []).concat(unpinnedActions || []);
+            if (actions.length === 0)
                 return true;
 
-            return Enumerable.from(actions).where(a => a.isVisible).count() == 0;
+            return Enumerable.from(actions).where(a => a.isVisible).count() === 0;
         }
     }
 }

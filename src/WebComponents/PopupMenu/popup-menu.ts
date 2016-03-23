@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             disabled: {
@@ -47,10 +49,9 @@ module Vidyano.WebComponents {
         }
 
         private _popupOpening() {
-            var children = Enumerable.from((<HTMLElement>Polymer.dom(this.$["popup"]).querySelector("[content]")).children).where((c: HTMLElement) => c.tagName === "VI-POPUP-MENU-ITEM" && c.style.display !== "none").toArray();
-
-            var hasIcons = children.filter(c => c.hasAttribute("icon")).length > 0;
-            var hasSplits = children.filter(c => c.hasAttribute("split")).length > 0;
+            const children = Enumerable.from((<HTMLElement>Polymer.dom(this.$["popup"]).querySelector("[content]")).children).where((c: HTMLElement) => c.tagName === "VI-POPUP-MENU-ITEM" && c.style.display !== "none").toArray();
+            const hasIcons = children.filter(c => c.hasAttribute("icon")).length > 0;
+            const hasSplits = children.filter(c => c.hasAttribute("split")).length > 0;
 
             children.forEach((c: PopupMenuItem) => {
                 c.toggleAttribute("icon-space", hasIcons && (!c.icon || !Icon.Exists(c.icon)));
@@ -71,8 +72,8 @@ module Vidyano.WebComponents {
             if (!this.contextMenuOnly)
                 return true;
 
-            if (e.which == 3 && (!this.shiftKey || e.shiftKey) && (!this.ctrlKey || e.ctrlKey)) {
-                var popup = <Popup><any>this.$["popup"];
+            if (e.which === 3 && (!this.shiftKey || e.shiftKey) && (!this.ctrlKey || e.ctrlKey)) {
+                const popup = <Popup><any>this.$["popup"];
 
                 popup.style.left = e.pageX + "px";
                 popup.style.top = e.pageY + "px";

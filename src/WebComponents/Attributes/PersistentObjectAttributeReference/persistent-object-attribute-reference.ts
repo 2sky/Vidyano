@@ -1,4 +1,6 @@
-module Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
+    "use strict";
+
     @PersistentObjectAttribute.register({
         properties: {
             href: String,
@@ -75,14 +77,14 @@ module Vidyano.WebComponents.Attributes {
             if (!this.attribute)
                 return;
 
-            if (!StringEx.isNullOrEmpty(this.filter) && this.filter != this.attribute.value) {
-                this.attribute.lookup.textSearch = 'vi-breadcrumb:"' + this.filter + '"';
+            if (!StringEx.isNullOrEmpty(this.filter) && this.filter !== this.attribute.value) {
+                this.attribute.lookup.textSearch = "vi-breadcrumb:\"" + this.filter + "\"";
                 this.attribute.lookup.search().then(result => {
                     this.attribute.lookup.textSearch = null;
 
-                    if (result.length == 0)
+                    if (result.length === 0)
                         this.filter = this.attribute.value;
-                    else if (result.length == 1)
+                    else if (result.length === 1)
                         this.attribute.changeReference([result[0]]).then(() => this._update());
                     else {
                         this.attribute.lookup.textSearch = this.filter;
@@ -128,7 +130,7 @@ module Vidyano.WebComponents.Attributes {
         }
 
         private _update() {
-            var hasReference = this.attribute instanceof Vidyano.PersistentObjectAttributeWithReference;
+            const hasReference = this.attribute instanceof Vidyano.PersistentObjectAttributeWithReference;
 
             if (hasReference && this.attribute.objectId !== this.objectId)
                 this.objectId = this.attribute ? this.attribute.objectId : null;

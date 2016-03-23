@@ -1,12 +1,14 @@
-﻿module Vidyano.WebComponents {
-    var requestFrame = (function () {
-        var raf = window.requestAnimationFrame || (<any>window).mozRequestAnimationFrame || (<any>window).webkitRequestAnimationFrame ||
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
+    const requestFrame = (function () {
+        const raf = window.requestAnimationFrame || (<any>window).mozRequestAnimationFrame || (<any>window).webkitRequestAnimationFrame ||
             function (fn) { return window.setTimeout(fn, 20); };
         return function (fn) { return raf(fn); };
     })();
 
-    var cancelFrame = (function () {
-        var cancel = window.cancelAnimationFrame || (<any>window).mozCancelAnimationFrame || (<any>window).webkitCancelAnimationFrame ||
+    const cancelFrame = (function () {
+        const cancel = window.cancelAnimationFrame || (<any>window).mozCancelAnimationFrame || (<any>window).webkitCancelAnimationFrame ||
             window.clearTimeout;
         return function (id) { return cancel(id); };
     })();
@@ -37,7 +39,7 @@
         deferred: boolean;
         triggerZero: boolean;
 
-        private _setSize: (size: Vidyano.WebComponents.Size) => void;
+        private _setSize: (size: Vidyano.WebComponents.ISize) => void;
 
         attached() {
             if (this.deferred)
@@ -48,7 +50,7 @@
 
         detached() {
             if (this._scrollListener) {
-                this.$["root"].removeEventListener('scroll', this._scrollListener);
+                this.$["root"].removeEventListener("scroll", this._scrollListener);
                 this._scrollListener = undefined;
             }
         }
@@ -56,10 +58,10 @@
         measure() {
             this.deferred = false;
 
-            var root = <any>this.$["root"];
+            const root = <any>this.$["root"];
             if (!this._scrollListener) {
                 this._resetTriggers(root);
-                root.addEventListener('scroll', this._scrollListener = this._onScroll.bind(this), true);
+                root.addEventListener("scroll", this._scrollListener = this._onScroll.bind(this), true);
             }
 
             this._triggerSizeChanged();
@@ -76,7 +78,7 @@
         }
 
         private _triggerSizeChanged() {
-            var root = this.$["root"];
+            const root = this.$["root"];
             if (!this._resizeLast || root.offsetWidth !== this._resizeLast.width || root.offsetHeight !== this._resizeLast.height) {
                 this._resizeLast = {
                     width: root.offsetWidth,
@@ -96,15 +98,15 @@
         }
 
         private _resetTriggers(element: HTMLElement) {
-            var expand = <HTMLElement>element.querySelector("#expand"),
-                contract = <HTMLElement>element.querySelector("#contract"),
-                expandChild = <HTMLElement>element.querySelector("#expandChild");
+            const expand = <HTMLElement>element.querySelector("#expand"),
+                  contract = <HTMLElement>element.querySelector("#contract"),
+                  expandChild = <HTMLElement>element.querySelector("#expandChild");
 
             contract.scrollLeft = contract.scrollWidth;
             contract.scrollTop = contract.scrollHeight;
 
-            var width = expand.offsetWidth;
-            var height = expand.offsetHeight;
+            const width = expand.offsetWidth;
+            const height = expand.offsetHeight;
 
             if (!width || !height) {
                 if (!(<any>element).__resizeTimerQueued__) {
@@ -118,7 +120,7 @@
             else if ((<any>element).__resizeTimerQueued__) {
                 this._resizeTimerQueuedElements.splice(this._resizeTimerQueuedElements.indexOf(element), 1);
                 (<any>element).__resizeTimerQueued__ = false;
-                if (this._resizeTimerQueuedElements.length == 0) {
+                if (this._resizeTimerQueuedElements.length === 0) {
                     clearInterval(this._resizeTimer);
                     this._resizeTimer = null;
                 }
@@ -127,11 +129,11 @@
             if (!(<any>expandChild).__resizeLast__)
                 (<any>expandChild).__resizeLast__ = {};
 
-            if ((<any>expandChild).__resizeLast__.width != width + 1)
-                expandChild.style.width = ((<any>expandChild).__resizeLast__.width = width + 1) + 'px';
+            if ((<any>expandChild).__resizeLast__.width !== width + 1)
+                expandChild.style.width = ((<any>expandChild).__resizeLast__.width = width + 1) + "px";
 
-            if ((<any>expandChild).__resizeLast__.height != height + 1)
-                expandChild.style.height = ((<any>expandChild).__resizeLast__.height = height + 1) + 'px';
+            if ((<any>expandChild).__resizeLast__.height !== height + 1)
+                expandChild.style.height = ((<any>expandChild).__resizeLast__.height = height + 1) + "px";
 
             expand.scrollLeft = expand.scrollWidth;
             expand.scrollTop = expand.scrollHeight;

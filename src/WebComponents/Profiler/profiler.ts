@@ -1,20 +1,17 @@
-module Vidyano.WebComponents {
-    var d3timer = <any>d3.timer;
-    d3.timer = <any>function(callback, delay, then) {
-        d3timer(callback, 0, 0);
-    };
+namespace Vidyano.WebComponents {
+    "use strict";
 
-    export interface ProfilerServiceRequest extends Vidyano.ServiceRequest {
+    export interface IProfilerServiceRequest extends Vidyano.IServiceRequest {
         hasNPlusOne: boolean;
         parameters: {
             key: string;
             value: string;
         }[];
-        flattenedEntries: FlattenedServiceRequestProfilerEntry[];
+        flattenedEntries: IFlattenedServiceRequestProfilerEntry[];
     }
 
-    export interface FlattenedServiceRequestProfilerEntry {
-        entry: ServiceRequestProfilerEntry;
+    export interface IFlattenedServiceRequestProfilerEntry {
+        entry: IServiceRequestProfilerEntry;
         level: number;
     }
 
@@ -68,16 +65,16 @@ module Vidyano.WebComponents {
     })
     export class Profiler extends WebComponent {
         private _boundMousehweel = this._onMousewheel.bind(this);
-        lastRequest: ProfilerServiceRequest;
-        selectedRequest: ProfilerServiceRequest;
+        lastRequest: IProfilerServiceRequest;
+        selectedRequest: IProfilerServiceRequest;
         zoom: number;
-        timelineSize: Size;
-        profiledRequests: ProfilerServiceRequest[];
+        timelineSize: ISize;
+        profiledRequests: IProfilerServiceRequest[];
 
-        private _setLastRequest: (request: Vidyano.ServiceRequest) => void;
-        private _setSelectedRequest: (request: Vidyano.ServiceRequest) => void;
-        private _setHoveredEntry: (entry: ServiceRequestProfilerEntry) => void;
-        private _setSelectedEntry: (entry: ServiceRequestProfilerEntry) => void;
+        private _setLastRequest: (request: Vidyano.IServiceRequest) => void;
+        private _setSelectedRequest: (request: Vidyano.IServiceRequest) => void;
+        private _setHoveredEntry: (entry: IServiceRequestProfilerEntry) => void;
+        private _setSelectedEntry: (entry: IServiceRequestProfilerEntry) => void;
         private _setZoom: (value: number) => void;
 
         attached() {
@@ -92,29 +89,29 @@ module Vidyano.WebComponents {
             this.$["timeline"].removeEventListener("DOMMouseScroll", this._boundMousehweel);
         }
 
-        private _computeSQL(request: ProfilerServiceRequest): string {
+        private _computeSQL(request: IProfilerServiceRequest): string {
             return request.profiler.sql ? this._formatMs(request.profiler.sql.reduce((current, entry) => current + entry.elapsedMilliseconds, 0)) : "0ms";
         }
 
-        private _computeSharpSQL(request: ProfilerServiceRequest): string {
+        private _computeSharpSQL(request: IProfilerServiceRequest): string {
             return (request.profiler.sql ? request.profiler.sql.length : 0).toString();
         }
 
-        private _isSelected(request: ProfilerServiceRequest, selectedRequest: ProfilerServiceRequest): boolean {
+        private _isSelected(request: IProfilerServiceRequest, selectedRequest: IProfilerServiceRequest): boolean {
             return request === selectedRequest;
         }
 
-        private _hasWarnings(request: ProfilerServiceRequest): boolean {
+        private _hasWarnings(request: IProfilerServiceRequest): boolean {
             return request.hasNPlusOne || (request.profiler.exceptions && request.profiler.exceptions.length > 0);
         }
 
-        private _hasNPlusOne(request: ServiceRequest, entries: ServiceRequestProfilerEntry[] = request.profiler.entries): boolean {
+        private _hasNPlusOne(request: IServiceRequest, entries: IServiceRequestProfilerEntry[] = request.profiler.entries): boolean {
             if (!entries)
                 return false;
 
             let hasNPlusOne = false;
             entries.forEach(entry => {
-                const counts = Enumerable.from(entry.sql).groupBy(commandId => Enumerable.from(request.profiler.sql).firstOrDefault(s => s.commandId == commandId).commandText, s => s);
+                const counts = Enumerable.from(entry.sql).groupBy(commandId => Enumerable.from(request.profiler.sql).firstOrDefault(s => s.commandId === commandId).commandText, s => s);
                 if (counts.firstOrDefault(c => c.count() > 1))
                     entry.hasNPlusOne = hasNPlusOne = true;
 
@@ -125,19 +122,19 @@ module Vidyano.WebComponents {
             return hasNPlusOne;
         }
 
-        private _hasSelectedEntry(selectedEntry: ServiceRequestProfilerEntry): boolean {
+        private _hasSelectedEntry(selectedEntry: IServiceRequestProfilerEntry): boolean {
             return !!selectedEntry;
         }
 
-        private _hasLastRequest(request: ProfilerServiceRequest): boolean {
+        private _hasLastRequest(request: IProfilerServiceRequest): boolean {
             return !!request;
         }
 
         private _onMousewheel(e: MouseWheelEvent) {
             const scroller = <Scroller>this.$["timelineScroller"];
 
-            var rect = scroller.getBoundingClientRect();
-			var offsetX = e.pageX - rect.left - window.pageXOffset;
+            const rect = scroller.getBoundingClientRect();
+			const offsetX = e.pageX - rect.left - window.pageXOffset;
             const mousePctg = 1 / scroller.outerWidth * offsetX;
 
             const isZoomIn = (e.wheelDelta || -e.detail) > 0;
@@ -158,7 +155,7 @@ module Vidyano.WebComponents {
             this._setSelectedEntry(null);
         }
 
-        private _profiledRequestsChanged(profiledRequests: ProfilerServiceRequest[] = []) {
+        private _profiledRequestsChanged(profiledRequests: IProfilerServiceRequest[] = []) {
             profiledRequests.forEach(request => {
                 if (request.hasNPlusOne === undefined)
                     request.hasNPlusOne = this._hasNPlusOne(request);
@@ -202,7 +199,7 @@ module Vidyano.WebComponents {
             this._setLastRequest(profiledRequests[0]);
         }
 
-        private _renderRequestTimeline(request: ProfilerServiceRequest, size: Size, zoom: number) {
+        private _renderRequestTimeline(request: IProfilerServiceRequest, size: ISize, zoom: number) {
             const width = (size.width - 2) * zoom; // Strip vi-scroller borders
             const headerHeight = parseInt(this.getComputedStyleValue("--vi-profiler-header-height"));
             const entryHeight = parseInt(this.getComputedStyleValue("--vi-profiler-entry-height"));
@@ -214,14 +211,14 @@ module Vidyano.WebComponents {
                 attr("height", size.height);
 
             // Render x-axis
-            var xAxis = d3.svg.axis()
+            const xAxis = d3.svg.axis()
                 .scale(scale.copy().rangeRound([0, width - 12]))
                 .orient("top")
                 .tickSize(-size.height, 0)
                 .tickFormat(d => this._formatMs(d));
 
-            var xAxisGroup = svg.selectAll('g.xaxis')
-                .attr('transform', `translate(0, ${headerHeight})`)
+            const xAxisGroup = svg.selectAll("g.xaxis")
+                .attr("transform", `translate(0, ${headerHeight})`)
                 .call(xAxis);
 
             xAxisGroup.selectAll("line")
@@ -280,7 +277,7 @@ module Vidyano.WebComponents {
             entryGroupSelection.exit().remove();
         }
 
-        private _flattenEntries(entries: ServiceRequestProfilerEntry[] = [], level: number = 1, flattenedEntries: FlattenedServiceRequestProfilerEntry[] = []): FlattenedServiceRequestProfilerEntry[] {
+        private _flattenEntries(entries: IServiceRequestProfilerEntry[] = [], level: number = 1, flattenedEntries: IFlattenedServiceRequestProfilerEntry[] = []): IFlattenedServiceRequestProfilerEntry[] {
             entries.forEach(entry => {
                 flattenedEntries.push({
                     entry: entry,
@@ -293,7 +290,7 @@ module Vidyano.WebComponents {
             return flattenedEntries;
         };
 
-        private _computeEntryClassName(e: ServiceRequestProfilerEntry): string {
+        private _computeEntryClassName(e: IServiceRequestProfilerEntry): string {
             let className = "entry";
             let hasDetails = false;
 
@@ -318,7 +315,7 @@ module Vidyano.WebComponents {
             return className;
         }
 
-        private _formatRequestParameters(request: ProfilerServiceRequest): string {
+        private _formatRequestParameters(request: IProfilerServiceRequest): string {
             if (!request || !request.parameters)
                 return "";
 
@@ -333,7 +330,7 @@ module Vidyano.WebComponents {
             return StringEx.format(`{0:${Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern} ${Vidyano.CultureInfo.currentCulture.dateFormat.shortTimePattern}}`, date);
         }
 
-        private _selectedEntryChanged(entry: ServiceRequestProfilerEntry) {
+        private _selectedEntryChanged(entry: IServiceRequestProfilerEntry) {
             const info = document.createDocumentFragment();
             this.empty(this.$["selectedEntryInfo"]);
 
@@ -341,7 +338,7 @@ module Vidyano.WebComponents {
                 return;
 
             const createTableCell = (content?: any | HTMLElement, colspan?: number) => {
-                var td = document.createElement("td");
+                const td = document.createElement("td");
 
                 if (content instanceof HTMLElement)
                     td.appendChild(content);
@@ -355,7 +352,7 @@ module Vidyano.WebComponents {
             };
 
             const createTableRow = (...contents: (any | HTMLElement)[]) => {
-                var row = document.createElement("tr");
+                const row = document.createElement("tr");
 
                 if (contents)
                     contents.forEach(content => row.appendChild(createTableCell(content)));
@@ -377,7 +374,7 @@ module Vidyano.WebComponents {
                     let row = table.appendChild(document.createElement("tr"));
                     row.appendChild(createTableCell(argName));
 
-                    if (typeof (entry.arguments[argIndex]) == "object") {
+                    if (typeof (entry.arguments[argIndex]) === "object") {
                         let first = true;
                         for (let p in entry.arguments[argIndex]) {
                             if (!first) {
@@ -406,7 +403,7 @@ module Vidyano.WebComponents {
 
                 const sqlEnum = Enumerable.from(this.selectedRequest.profiler.sql).memoize();
                 entry.sql.forEach(sqlCommandId => {
-                    var sql = sqlEnum.firstOrDefault(s => s.commandId === sqlCommandId);
+                    const sql = sqlEnum.firstOrDefault(s => s.commandId === sqlCommandId);
                     if (!sql)
                         return;
 
@@ -447,7 +444,7 @@ module Vidyano.WebComponents {
                 title.textContent = "Exception";
                 info.appendChild(title);
 
-                const exception = Enumerable.from(this.selectedRequest.profiler.exceptions).firstOrDefault(e => e.id == entry.exception);
+                const exception = Enumerable.from(this.selectedRequest.profiler.exceptions).firstOrDefault(e => e.id === entry.exception);
                 if (exception) {
                     const exceptionPre = document.createElement("pre");
                     exceptionPre.textContent = exception.message;

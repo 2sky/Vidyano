@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             programUnit: {
@@ -21,7 +23,7 @@ module Vidyano.WebComponents {
             if (!route.app.service || !route.app.service.application)
                 return;
 
-            this._setProgramUnit(Enumerable.from(route.app.service.application.programUnits).firstOrDefault(pu => pu.name == route.parameters.programUnitName));
+            this._setProgramUnit(Enumerable.from(route.app.service.application.programUnits).firstOrDefault(pu => pu.name === route.parameters.programUnitName));
             if (!this.programUnit) {
                 e.preventDefault();
 
@@ -38,7 +40,7 @@ module Vidyano.WebComponents {
             if (!programUnit)
                 return;
 
-            var config = this.app.configuration.getProgramUnitConfig(programUnit.name);
+            const config = this.app.configuration.getProgramUnitConfig(programUnit.name);
             if (!!config && config.hasTemplate)
                 Polymer.dom(this).appendChild(config.stamp(programUnit, config.as || "programUnit"));
         }

@@ -29,6 +29,17 @@ module.exports = function(grunt) {
                 }
             }
         },
+        tslint: {
+            options: {
+                configuration: "tslint.json"
+            },
+            files: {
+                src: [
+                    'src/Libs/Vidyano/*.ts',
+                    'src/WebComponents/**/*.ts'
+                ]
+            }
+        },
         clean: ["dist/Vidyano.Web2/src/"],
         copy: {
             dist: {
@@ -109,12 +120,14 @@ module.exports = function(grunt) {
     grunt.registerTask("default", [
         "bower:install",
         "sass",
-        "ts"
+        "ts",
+        "tslint"
     ]);
 
     grunt.registerTask("nuget", [
         "bower:install",
         "ts",
+        "tslint",
         "clean",
         "copy:dist",
         "revision",
@@ -136,5 +149,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-git-revision");
     grunt.loadNpmTasks("grunt-ts");
+    grunt.loadNpmTasks("grunt-tslint");
     grunt.loadNpmTasks('dts-generator');
 };

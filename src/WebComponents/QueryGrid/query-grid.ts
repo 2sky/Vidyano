@@ -1,7 +1,9 @@
-﻿module Vidyano.WebComponents {
-    var minimumColumnWidth = 30;
+﻿namespace Vidyano.WebComponents {
+    "use strict";
 
-    export interface QueryGridItemTapEventArgs {
+    const minimumColumnWidth = 30;
+
+    export interface IQueryGridItemTapEventArgs {
         item: Vidyano.QueryResultItem;
     }
 
@@ -151,19 +153,19 @@
         private _lastUpdated: Date;
         canReorder: boolean;
         rowHeight: number;
-        viewportSize: Size;
+        viewportSize: ISize;
         query: Vidyano.Query;
         asLookup: boolean;
         initializing: boolean;
 
         private _setInitializing: (initializing: boolean) => void;
-        private _setViewportSize: (size: Size) => void;
+        private _setViewportSize: (size: ISize) => void;
         private _setRowHeight: (rowHeight: number) => void;
         private _setColumnWidthsCalculated: (val: boolean) => void;
 
         attached() {
             if (QueryGrid.tableCache.length > 0 && !this._tableData) {
-                var tableCache = QueryGrid.tableCache.pop();
+                const tableCache = QueryGrid.tableCache.pop();
 
                 requestAnimationFrame(() => {
                     this._tableHeader = tableCache.header;
@@ -189,10 +191,10 @@
             this._columnMenuColumn = null;
 
             if (this._tableData) {
-                var headerFragment = document.createDocumentFragment();
-                var dataFragment = document.createDocumentFragment();
+                const headerFragment = document.createDocumentFragment();
+                const dataFragment = document.createDocumentFragment();
 
-                var cachEntry = {
+                const cachEntry = {
                     header: this._tableHeader,
                     data: this._tableData,
                     footer: this._tableFooter
@@ -257,7 +259,7 @@
             this.toggleClass("initializing", this.initializing);
         }
 
-        private _sizeChanged(e: CustomEvent, detail: Size) {
+        private _sizeChanged(e: CustomEvent, detail: ISize) {
             this._setViewportSize(detail);
             this._setRowHeight(parseInt(getComputedStyle(this).lineHeight));
 
@@ -311,10 +313,10 @@
             if (!columns || columns.length === 0)
                 return [];
 
-            var visibleColumns = Enumerable.from(
+            const visibleColumns = Enumerable.from(
             columns).where(c => !c.isHidden).memoize();
-            var pinnedColumns = visibleColumns.where(c => c.isPinned).orderBy(c => c.offset).toArray();
-            var unpinnedColumns = visibleColumns.where(c => !c.isPinned).orderBy(c => c.offset).toArray();
+            const pinnedColumns = visibleColumns.where(c => c.isPinned).orderBy(c => c.offset).toArray();
+            const unpinnedColumns = visibleColumns.where(c => !c.isPinned).orderBy(c => c.offset).toArray();
 
             columns = pinnedColumns.concat(unpinnedColumns);
             columns.forEach(c => c.reset());
@@ -322,11 +324,11 @@
             return columns;
         }
 
-        private _computeItems(items: Vidyano.QueryResultItem[], viewportSize: Size, verticalScrollOffset: number, rowHeight: number, lastUpdated: Date): Vidyano.QueryResultItem[] {
+        private _computeItems(items: Vidyano.QueryResultItem[], viewportSize: ISize, verticalScrollOffset: number, rowHeight: number, lastUpdated: Date): Vidyano.QueryResultItem[] {
             if (!rowHeight || !viewportSize.height)
                 return [];
 
-            if (verticalScrollOffset > 0 && (!items || items.length == 0)) {
+            if (verticalScrollOffset > 0 && (!items || items.length === 0)) {
                 this._verticalScrollOffset = 0;
                 return undefined;
             }
@@ -334,10 +336,10 @@
             if (this._actionMenu.open)
                 this._actionMenu.close();
 
-            var maxTableRowCount = Math.floor(viewportSize.height * 1.5 / rowHeight);
-            var viewportStartRowIndex = Math.floor(verticalScrollOffset / rowHeight);
-            var viewportEndRowIndex = Math.ceil((verticalScrollOffset + viewportSize.height) / rowHeight);
-            var newVirtualTableStartIndex;
+            const maxTableRowCount = Math.floor(viewportSize.height * 1.5 / rowHeight);
+            const viewportStartRowIndex = Math.floor(verticalScrollOffset / rowHeight);
+            const viewportEndRowIndex = Math.ceil((verticalScrollOffset + viewportSize.height) / rowHeight);
+            let newVirtualTableStartIndex;
 
             if (this._virtualTableStartIndex === undefined)
                 this._virtualTableStartIndex = newVirtualTableStartIndex = 0;
@@ -347,7 +349,7 @@
                 newVirtualTableStartIndex = viewportEndRowIndex - maxTableRowCount;
 
             if (newVirtualTableStartIndex !== undefined) {
-                if (newVirtualTableStartIndex % 2 != 0)
+                if (newVirtualTableStartIndex % 2 !== 0)
                     newVirtualTableStartIndex--;
 
                 if (newVirtualTableStartIndex < 0)
@@ -357,7 +359,7 @@
                 this._virtualTableOffset = this._virtualTableStartIndex * rowHeight;
             }
 
-            var newItems = items.slice(this._virtualTableStartIndex, this._virtualTableStartIndex + maxTableRowCount).filter(item => !!item);
+            const newItems = items.slice(this._virtualTableStartIndex, this._virtualTableStartIndex + maxTableRowCount).filter(item => !!item);
             if (newItems.length !== maxTableRowCount && this.query.totalItems && (!(this._virtualTableStartIndex in items) || !((this._virtualTableStartIndex + maxTableRowCount) in items)))
                 this.debounce(`QueryGrid.Query.${this.query.id}.GetItems`, () => this.query.getItems(this._virtualTableStartIndex), 250);
             else if (newVirtualTableStartIndex === undefined && this._items && this._items.length === newItems.length && lastUpdated === this._lastUpdated)
@@ -368,7 +370,7 @@
         }
 
         private _computeCanSelect(query: Vidyano.Query, noSelection: boolean): boolean {
-            return !noSelection && !!query && query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue);
+            return !noSelection && !!query && query.actions.some(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue);
         }
 
         private _computeCanSelectAll(canSelect: boolean, isAvailable: boolean): boolean {
@@ -376,7 +378,7 @@
         }
 
         private _computeInlineActions(query: Vidyano.Query, noInlineActions: boolean): boolean {
-            return !noInlineActions && !!query && !query.asLookup && !this.asLookup && (query.actions.some(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1)));
+            return !noInlineActions && !!query && !query.asLookup && !this.asLookup && (query.actions.some(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue && a.definition.selectionRule(1)));
         }
 
         private _computeCanFilter(query: Vidyano.Query): boolean {
@@ -391,14 +393,14 @@
             if (!isAttached)
                 return;
 
-            var _tablesUpdatingTimestamp = this._tablesUpdatingTimestamp = new Date();
+            const _tablesUpdatingTimestamp = this._tablesUpdatingTimestamp = new Date();
 
-            var tablesUpdating = this._tablesUpdating = (this._tablesUpdating || Promise.resolve()).then(() => new Promise(resolve => {
+            const tablesUpdating = this._tablesUpdating = (this._tablesUpdating || Promise.resolve()).then(() => new Promise(resolve => {
                 if (_tablesUpdatingTimestamp !== this._tablesUpdatingTimestamp)
                     return resolve(null);
 
                 this._requestAnimationFrame(() => {
-                    var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                    const start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                     if (!this._tableHeader)
                         Polymer.dom(this.$["dataHeaderHost"]).appendChild((this._tableHeader = new Vidyano.WebComponents.QueryGridTableHeader(this)).host);
@@ -412,7 +414,7 @@
                     Promise.all([this._tableHeader.update(columns.length), this._tableFooter.update(columns.length), this._tableData.update(items.length, columns.length)]).then(() => {
                         (<QueryGridTableDataBody><any>this._tableData.section).enabled = canReorder;
 
-                        var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                        const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                         console.info(`Tables Updated: ${Math.round(timeTaken) }ms`);
 
                         this._updateTableHeadersAndFooters(columns).then(cont => {
@@ -437,7 +439,7 @@
 
         private _updateVerticalSpacer(totalItems: number, rowHeight: number) {
             this._requestAnimationFrame(() => {
-                var newHeight = totalItems * rowHeight;
+                const newHeight = totalItems * rowHeight;
                 this.$["verticalSpacer"].style.height = `${newHeight}px`;
             });
         }
@@ -450,8 +452,8 @@
                         return;
                     }
 
-                    this._tableHeader.rows.forEach((row: QueryGridTableHeaderRow) => row.setColumns(columns))
-                    this._tableFooter.rows.forEach((row: QueryGridTableFooterRow) => row.setColumns(columns))
+                    this._tableHeader.rows.forEach((row: QueryGridTableHeaderRow) => row.setColumns(columns));
+                    this._tableFooter.rows.forEach((row: QueryGridTableFooterRow) => row.setColumns(columns));
 
                     resolve(true);
                 });
@@ -459,21 +461,21 @@
         }
 
         private _updateTableData(items: Vidyano.QueryResultItem[], columns: QueryGridColumn[]): Promise<any> {
-            var horizontalScrollOffset = this._horizontalScrollOffset;
-            var virtualTableStartIndex = this._virtualTableStartIndex;
+            const horizontalScrollOffset = this._horizontalScrollOffset;
+            const virtualTableStartIndex = this._virtualTableStartIndex;
 
             return new Promise(resolve => {
-                var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                const start = Vidyano.WebComponents.QueryGrid.perf.now();
 
-                var rowCount = this._tableData && this._tableData.rows && this._tableData.rows.length > 0 ? this._tableData.rows.length : 0;
-                var virtualTableOffset = this._virtualTableOffset;
+                const rowCount = this._tableData && this._tableData.rows && this._tableData.rows.length > 0 ? this._tableData.rows.length : 0;
+                const virtualTableOffset = this._virtualTableOffset;
 
                 this._requestAnimationFrame(() => {
-                    var lastPinnedColumnIndex = Enumerable.from(columns).lastIndexOf(c => c.isPinned);
-                    var hasPendingUpdates = false;
+                    const lastPinnedColumnIndex = Enumerable.from(columns).lastIndexOf(c => c.isPinned);
+                    let hasPendingUpdates = false;
 
-                    for (var index = 0; index < rowCount; index++) {
-                        if (items != this._items || virtualTableStartIndex !== this._virtualTableStartIndex) {
+                    for (let index = 0; index < rowCount; index++) {
+                        if (items !== this._items || virtualTableStartIndex !== this._virtualTableStartIndex) {
                             resolve(false);
                             return;
                         }
@@ -486,7 +488,7 @@
                     if (this._virtualTableOffsetCurrent !== this._virtualTableOffset && this._virtualTableOffset === virtualTableOffset)
                         this.translate3d("0", `${this._virtualTableOffsetCurrent = this._virtualTableOffset}px`, "0", this.$["dataHost"]);
 
-                    var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                    const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                     console.info(`Data Updated: ${timeTaken }ms`);
 
                     this._updateColumnWidths().then(() => {
@@ -506,14 +508,14 @@
                     cancelAnimationFrame(this._updateTableDataPendingUpdatesRAF);
 
                 this._updateTableDataPendingUpdatesRAF = this._requestAnimationFrame(() => {
-                    var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                    const start = Vidyano.WebComponents.QueryGrid.perf.now();
 
-                    var hasPendingUpdates = false;
+                    let hasPendingUpdates = false;
                     Enumerable.from((<QueryGridTableDataRow[]>this._tableData.rows)).forEach(row => {
                         hasPendingUpdates = row.updatePendingCellUpdates() || hasPendingUpdates;
                     });
 
-                    var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                    const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                     console.info(`Pending Data Updated: ${timeTaken }ms`);
 
                     resolve(this._hasPendingUpdates = hasPendingUpdates);
@@ -522,8 +524,8 @@
         }
 
         private _updateColumnWidths(): Promise<any> {
-            if (!this._columns.some(c => !c.calculatedWidth) || !this._tableData || !this._tableData.rows || this._tableData.rows.length == 0 || (<QueryGridTableDataRow>this._tableData.rows[0]).noData) {
-                if (this.query && !this.query.isBusy && this.query.items.length == 0) {
+            if (!this._columns.some(c => !c.calculatedWidth) || !this._tableData || !this._tableData.rows || this._tableData.rows.length === 0 || (<QueryGridTableDataRow>this._tableData.rows[0]).noData) {
+                if (this.query && !this.query.isBusy && this.query.items.length === 0) {
                     this._tableData.host.style.minWidth = `${this.$["dataHeaderHost"].scrollWidth}px`;
                     this._setInitializing(false);
                 }
@@ -535,19 +537,19 @@
                 this._tableData.host.style.minWidth = null;
 
             return new Promise(resolve => {
-                var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                const start = Vidyano.WebComponents.QueryGrid.perf.now();
 
-                var tryCompute = () => {
+                const tryCompute = () => {
                     this._requestAnimationFrame(() => {
-                        var layoutUpdating: boolean;
-                        var invalidateColumnWidths: boolean;
-                        var columnWidths: { [key: string]: number; } = {};
-                        var columnOffsets: { [key: string]: number; } = {};
-                        var hasWidthsStyle = !!this._style.getStyle("ColumnWidths");
+                        let layoutUpdating: boolean;
+                        let invalidateColumnWidths: boolean;
+                        const columnWidths: { [key: string]: number; } = {};
+                        const columnOffsets: { [key: string]: number; } = {};
+                        let hasWidthsStyle = !!this._style.getStyle("ColumnWidths");
 
                         [this._tableHeader, this._tableData, this._tableFooter].some(table => {
                             if (table.rows && table.rows.length > 0) {
-                                var offset = 0;
+                                let offset = 0;
 
                                 return table.rows[0].columns.filter(cell => !!cell.column && !cell.column.calculatedWidth).some(cell => {
                                     if (hasWidthsStyle) {
@@ -555,14 +557,14 @@
                                         hasWidthsStyle = false;
                                     }
 
-                                    var width = parseInt(cell.column.width);
+                                    let width = parseInt(cell.column.width);
                                     if (isNaN(width)) {
                                         width = cell.cell.offsetWidth;
                                         if (width === 0 && getComputedStyle(cell.cell).display === "none")
                                             return layoutUpdating = true; // Layout is still updating
                                     }
 
-                                    width = Math.max(width + 10, minimumColumnWidth)
+                                    width = Math.max(width + 10, minimumColumnWidth);
                                     if (width !== columnWidths[cell.column.name]) {
                                         columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
                                         invalidateColumnWidths = true;
@@ -581,7 +583,7 @@
 
                         if (!layoutUpdating && invalidateColumnWidths) {
                             this._columns.forEach(c => {
-                                var width = columnWidths[c.name];
+                                const width = columnWidths[c.name];
                                 if (width >= 0) {
                                     c.calculatedWidth = width;
                                     c.calculatedOffset = columnOffsets[c.name];
@@ -593,7 +595,7 @@
                         }
 
                         if (!layoutUpdating) {
-                            var timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                            const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
                             console.info(`Column Widths Updated: ${timeTaken}ms`);
 
                             this._setInitializing(false);
@@ -611,10 +613,10 @@
 
         private _columnWidthsUpdated(e?: CustomEvent, detail?: { column: QueryGridColumn; columnWidth: number; save: boolean; }) {
             if (!detail || detail.save) {
-                var columnWidthsStyle: string[] = [];
+                const columnWidthsStyle: string[] = [];
 
                 this._columns.forEach((col, index) => {
-                    var columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
+                    const columnName = Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(col.name);
                     columnWidthsStyle.push(`table td[name="${columnName}"] > * { width: ${col.calculatedWidth}px; } `);
                 });
 
@@ -622,10 +624,10 @@
             }
 
             if (detail && detail.column) {
-                var width = detail.save ? "" : detail.columnWidth + "px";
+                const width = detail.save ? "" : detail.columnWidth + "px";
                 [this._tableData, this._tableFooter].forEach(table => {
                     table.rows.forEach(r => {
-                        var col = Enumerable.from(r.columns).firstOrDefault(c => c.column === detail.column);
+                        const col = Enumerable.from(r.columns).firstOrDefault(c => c.column === detail.column);
                         if (col) {
                             col.cell.style.width = width;
 
@@ -658,7 +660,7 @@
             if (!detail.item)
                 return;
 
-            var indexOfItem = this.query.items.indexOf(detail.item);
+            const indexOfItem = this.query.items.indexOf(detail.item);
             if (!detail.item.isSelected && this._lastSelectedItemIndex >= 0 && detail.rangeSelect) {
                 if (this.query.selectRange(Math.min(this._lastSelectedItemIndex, indexOfItem), Math.max(this._lastSelectedItemIndex, indexOfItem))) {
                     this._lastSelectedItemIndex = indexOfItem;
@@ -670,15 +672,15 @@
                 this._lastSelectedItemIndex = indexOfItem;
         }
 
-        private _itemActions(e: CustomEvent, detail: { row: QueryGridTableDataRow; host: HTMLElement; position: Position; }) {
+        private _itemActions(e: CustomEvent, detail: { row: QueryGridTableDataRow; host: HTMLElement; position: IPosition; }) {
             if (detail.row.item.getTypeHint("extraclass", "").split(" ").map(c => c.toUpperCase()).some(c => c === "DISABLED" || c === "READONLY"))
                 return;
 
-            var actions = (detail.row.item.query.actions || []).filter(a => a.isVisible && a.definition.selectionRule != ExpressionParser.alwaysTrue && a.definition.selectionRule(1));
-            if (actions.length == 0)
+            const actions = (detail.row.item.query.actions || []).filter(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue && a.definition.selectionRule(1));
+            if (actions.length === 0)
                 return;
 
-            var host = detail.host;
+            let host = detail.host;
             if (!host && detail.position) {
                 host = this.$$("#actionsAnchor");
                 if (!host) {
@@ -696,7 +698,7 @@
             }
 
             actions.forEach(action => {
-                var button = new Vidyano.WebComponents.ActionButton(detail.row.item, action);
+                const button = new Vidyano.WebComponents.ActionButton(detail.row.item, action);
                 button.forceLabel = true;
                 button.openOnHover = true;
                 button.setAttribute("overflow", "");
@@ -721,14 +723,14 @@
                 !this.query || this.query.asLookup || this.asLookup)
                 return true;
 
-            var src = <HTMLElement>e.target;
+            let src = <HTMLElement>e.target;
             while (src && src.tagName !== "TR")
                 src = src.parentElement;
 
             if (!src)
                 return true;
 
-            var row = Enumerable.from(this._tableData.rows).firstOrDefault(r => r.host === src);
+            const row = Enumerable.from(this._tableData.rows).firstOrDefault(r => r.host === src);
             if (!row)
                 return true;
 
@@ -754,12 +756,12 @@
             if (!this.query || this.query.asLookup || this.asLookup)
                 return true;
 
-            var src: HTMLElement | QueryGridColumnHeader = <HTMLElement>e.target;
+            let src: HTMLElement | QueryGridColumnHeader = <HTMLElement>e.target;
             while (src && src.tagName !== "VI-QUERY-GRID-COLUMN-HEADER")
                 src = src.parentElement;
 
-            var column = this._columnMenuColumn = src instanceof QueryGridColumnHeader ? src.column : null;
-            var togglePin = <PopupMenuItem>this.$["columnMenuTogglePin"];
+            const column = this._columnMenuColumn = src instanceof QueryGridColumnHeader ? src.column : null;
+            const togglePin = <PopupMenuItem>this.$["columnMenuTogglePin"];
 
             if (column) {
                 togglePin.removeAttribute("hidden");
@@ -808,11 +810,11 @@
         }
     }
 
-    export class QueryGridColumn implements QueryGridUserSettingsColumnData {
+    export class QueryGridColumn implements IQueryGridUserSettingsColumnData {
         calculatedWidth: number;
         calculatedOffset: number;
 
-        constructor(private _column: Vidyano.QueryColumn, private _userSettingsColumnData: QueryGridUserSettingsColumnData) {
+        constructor(private _column: Vidyano.QueryColumn, private _userSettingsColumnData: IQueryGridUserSettingsColumnData) {
         }
 
         get column(): Vidyano.QueryColumn {
@@ -851,7 +853,7 @@
             return this._column.sortDirection;
         }
 
-        get distincts(): QueryColumnDistincts {
+        get distincts(): IQueryColumnDistincts {
             return this._column.distincts;
         }
 
@@ -892,7 +894,7 @@
         }
     }
 
-    export interface QueryGridUserSettingsColumnData {
+    export interface IQueryGridUserSettingsColumnData {
         offset?: number;
         isPinned?: boolean;
         isHidden?: boolean;
@@ -903,10 +905,10 @@
         private _columnsByName: { [key: string]: QueryGridColumn; } = {};
         private _columns: QueryGridColumn[] = [];
 
-        constructor(private _query: Vidyano.Query, data: { [key: string]: QueryGridUserSettingsColumnData; } = {}) {
+        constructor(private _query: Vidyano.Query, data: { [key: string]: IQueryGridUserSettingsColumnData; } = {}) {
             super();
 
-            this._columns = this._query.columns.filter(c => c.width != "0").map(c => this._columnsByName[c.name] = new QueryGridColumn(c, data[c.name] || {
+            this._columns = this._query.columns.filter(c => c.width !== "0").map(c => this._columnsByName[c.name] = new QueryGridColumn(c, data[c.name] || {
                 offset: c.offset,
                 isPinned: c.isPinned,
                 isHidden: c.isHidden,
@@ -923,8 +925,8 @@
         }
 
         save(refreshOnComplete: boolean = true): Promise<any> {
-            var queryData: { [key: string]: QueryGridUserSettingsColumnData; };
-            var columnData = (name: string) => (queryData || (queryData = {}))[name] || (queryData[name] = {});
+            let queryData: { [key: string]: IQueryGridUserSettingsColumnData; };
+            const columnData = (name: string) => (queryData || (queryData = {}))[name] || (queryData[name] = {});
 
             this._columns.forEach(c => {
                 if (c.offset !== c.column.offset)
@@ -952,7 +954,7 @@
         }
 
         static Load(query: Vidyano.Query): QueryGridUserSettings {
-            var queryGridSettings = query.service.application.service.application.userSettings["QueryGridSettings"] || (query.service.application.userSettings["QueryGridSettings"] = {});
+            const queryGridSettings = query.service.application.service.application.userSettings["QueryGridSettings"] || (query.service.application.userSettings["QueryGridSettings"] = {});
             return new QueryGridUserSettings(query, queryGridSettings[query.id]);
         }
     }
@@ -971,10 +973,10 @@
                 this._section = this._createSection();
 
             if (this.rows.length < rowCount) {
-                var fragment = document.createDocumentFragment();
+                const fragment = document.createDocumentFragment();
 
                 while (this.rows.length < rowCount) {
-                    var row = this._addRow(this.rows.length + 1);
+                    const row = this._addRow(this.rows.length + 1);
                     this.rows.push(row);
 
                     Polymer.dom(fragment).appendChild(row.host);
@@ -1063,9 +1065,9 @@
 
             this._table.rows.splice(newIndex, 0, this._table.rows.splice(oldIndex, 1)[0]);
 
-            var item = (<QueryGridTableDataRow>this._table.rows[newIndex]).item;
-            var before = newIndex > 0 ? (<QueryGridTableDataRow>this._table.rows[newIndex - 1]).item : null;
-            var after = this._table.rows.length > newIndex + 1 ? (<QueryGridTableDataRow>this._table.rows[newIndex + 1]).item : null;
+            const item = (<QueryGridTableDataRow>this._table.rows[newIndex]).item;
+            const before = newIndex > 0 ? (<QueryGridTableDataRow>this._table.rows[newIndex - 1]).item : null;
+            const after = this._table.rows.length > newIndex + 1 ? (<QueryGridTableDataRow>this._table.rows[newIndex + 1]).item : null;
 
             this._table.grid.query.reorder(before, item, after);
         }
@@ -1087,10 +1089,10 @@
                 return Promise.resolve();
 
             return new Promise(resolve => {
-                var columnsFragment = document.createDocumentFragment();
+                const columnsFragment = document.createDocumentFragment();
 
                 while (this.columns.length < columnCount) {
-                    var column = this._createColumn();
+                    const column = this._createColumn();
                     this.columns.push(column);
 
                     Polymer.dom(columnsFragment).appendChild(column.host);
@@ -1119,7 +1121,7 @@
         }
 
         setColumns(columns: QueryGridColumn[]) {
-            var lastPinnedColumn = Enumerable.from(columns).lastOrDefault(c => c.isPinned);
+            const lastPinnedColumn = Enumerable.from(columns).lastOrDefault(c => c.isPinned);
             this.columns.forEach((col, index) => col.setColumn(columns[index], columns[index] === lastPinnedColumn));
         }
 
@@ -1134,7 +1136,7 @@
         }
 
         setColumns(columns: QueryGridColumn[]) {
-            var lastPinnedColumn = Enumerable.from(columns).lastOrDefault(c => c.isPinned);
+            const lastPinnedColumn = Enumerable.from(columns).lastOrDefault(c => c.isPinned);
             this.columns.forEach((col, index) => col.setColumn(columns[index], columns[index] === lastPinnedColumn));
         }
 
@@ -1144,8 +1146,8 @@
     }
 
     export class QueryGridTableDataRow extends QueryGridTableRow {
-        private _itemPropertyChangedListener: Vidyano.Common.SubjectDisposer;
-        private _itemQueryPropertyChangedListener: Vidyano.Common.SubjectDisposer;
+        private _itemPropertyChangedListener: Vidyano.Common.ISubjectDisposer;
+        private _itemQueryPropertyChangedListener: Vidyano.Common.ISubjectDisposer;
         private _selector: QueryGridTableDataColumnSelector;
         private _actions: QueryGridTableDataColumnActions;
         private _item: Vidyano.QueryResultItem;
@@ -1163,7 +1165,7 @@
             this._noData = true;
             this.host.setAttribute("no-data", "");
 
-            var specialColumns = document.createDocumentFragment();
+            const specialColumns = document.createDocumentFragment();
 
             Polymer.dom(specialColumns).appendChild((this._selector = new Vidyano.WebComponents.QueryGridTableDataColumnSelector(this)).host);
             Polymer.dom(specialColumns).appendChild((this._actions = new Vidyano.WebComponents.QueryGridTableDataColumnActions(this)).host);
@@ -1201,7 +1203,7 @@
 
                 this._item = this.selector.item = this.actions.item = item;
 
-                if (this._noData != !item) {
+                if (this._noData !== !item) {
                     if (this._noData = !item)
                         this.host.setAttribute("no-data", "");
                     else
@@ -1244,14 +1246,14 @@
             if (this._firstCellWithPendingUpdates < 0)
                 return false;
 
-            for (var i = this._firstCellWithPendingUpdates; i < this.columns.length; i++) {
+            for (let i = this._firstCellWithPendingUpdates; i < this.columns.length; i++) {
                 if (this.columns[i].update())
                     this._firstCellWithPendingUpdates++;
                 else
                     break;
             }
 
-            if (this._firstCellWithPendingUpdates == this.columns.length) {
+            if (this._firstCellWithPendingUpdates === this.columns.length) {
                 this._firstCellWithPendingUpdates = -1;
                 return false;
             }
@@ -1302,7 +1304,7 @@
         }
 
         private _updateIsSelected() {
-            if (this._isSelected != (!!this.item && this.item.isSelected)) {
+            if (this._isSelected !== (!!this.item && this.item.isSelected)) {
                 if (this._isSelected = !!this.item && this.item.isSelected) {
                     this.host.setAttribute("is-selected", "");
                     this._selector.cell.setAttribute("is-selected", "");
@@ -1389,7 +1391,7 @@
         }
 
         static columnSafeName(name: string): string {
-            var safeName = name.replace(/[\. ]/g, "_");
+            let safeName = name.replace(/[\. ]/g, "_");
 
             if (/^\d/.test(safeName))
                 safeName = "_" + safeName;
@@ -1501,29 +1503,30 @@
             if (!this._row.table.grid.isColumnInView(this.column))
                 return false;
 
-            var itemValue = this._item.getFullValue(this.column.name);
+            const itemValue = this._item.getFullValue(this.column.name);
+            let value: any;
 
             // Render Text
             if (!this._customCellTemplate) {
                 this._typeHints = Vidyano.extend({}, this._item.typeHints, itemValue ? itemValue.typeHints : undefined);
-                var value = this._item.getValue(this.column.name);
-                if (value != null && (this.column.type == "Boolean" || this.column.type == "NullableBoolean"))
+                value = this._item.getValue(this.column.name);
+                if (value != null && (this.column.type === "Boolean" || this.column.type === "NullableBoolean"))
                     value = this._item.query.service.getTranslatedMessage(value ? this._getTypeHint("truekey", "True") : this._getTypeHint("falsekey", "False"));
-                else if (this.column.type == "YesNo")
+                else if (this.column.type === "YesNo")
                     value = this._item.query.service.getTranslatedMessage(value ? this._getTypeHint("truekey", "Yes") : this._getTypeHint("falsekey", "No"));
-                else if (this.column.type == "Time" || this.column.type == "NullableTime") {
-                    if (value != null) {
-                        value = value.trimEnd('0').trimEnd('.');
-                        if (value.startsWith('0:'))
+                else if (this.column.type === "Time" || this.column.type === "NullableTime") {
+                    if (typeof value === "string") {
+                        value = value.trimEnd("0").trimEnd(".");
+                        if (value.startsWith("0:"))
                             value = value.substr(2);
-                        if (value.endsWith(':00'))
+                        if (value.endsWith(":00"))
                             value = value.substr(0, value.length - 3);
                     }
                 }
 
                 if (value != null) {
-                    var format = this._getTypeHint("displayformat", null);
-                    if (format == null || format == "{0}") {
+                    let format = this._getTypeHint("displayformat", null);
+                    if (format == null || format === "{0}") {
                         switch (this.column.type) {
                             case "Date":
                             case "NullableDate":
@@ -1549,34 +1552,34 @@
                 else
                     value = "";
 
-                var foreground = this._getTypeHint("foreground", null);
-                if (foreground != this._foreground.currentValue) {
+                const foreground = this._getTypeHint("foreground", null);
+                if (foreground !== this._foreground.currentValue) {
                     if (this._foreground.originalValue === undefined)
                         this._foreground.originalValue = this.cell.style.color;
 
                     this.cell.style.color = this._foreground.currentValue = foreground || this._foreground.originalValue;
                 }
 
-                var textAlign = this._getTypeHint("horizontalcontentalignment", null);
-                if (textAlign != this._textAlign.currentValue)
+                const textAlign = this._getTypeHint("horizontalcontentalignment", null);
+                if (textAlign !== this._textAlign.currentValue)
                     this.cell.style.textAlign = this._textAlign.currentValue = textAlign || this._textAlign.originalValue;
 
-                var extraClass = this.column.column.getTypeHint("extraclass", undefined, value && value.typeHints, true);
-                if (extraClass != this._extraClass) {
+                const extraClass = this.column.column.getTypeHint("extraclass", undefined, value && itemValue.typeHints, true);
+                if (extraClass !== this._extraClass) {
                     if (!StringEx.isNullOrEmpty(this._extraClass))
-                        this.cell.classList.remove(...this._extraClass.split(' '));
+                        this.cell.classList.remove(...this._extraClass.split(" "));
 
                     this._extraClass = extraClass;
                     if (!StringEx.isNullOrEmpty(extraClass))
-                        this.cell.classList.add(...this._extraClass.split(' '));
+                        this.cell.classList.add(...this._extraClass.split(" "));
                 }
 
                 if (this._textNode) {
                     if (this._textNodeValue !== value)
-                        this._textNode.nodeValue = this._textNodeValue = value;
+                        this._textNode.nodeValue = this._textNodeValue = <string>value;
                 }
                 else
-                    Polymer.dom(this.cell).appendChild(this._textNode = document.createTextNode(this._textNodeValue = value));
+                    Polymer.dom(this.cell).appendChild(this._textNode = document.createTextNode(this._textNodeValue = <string>value));
             }
             else if (this._customCellTemplate) {
                 Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);

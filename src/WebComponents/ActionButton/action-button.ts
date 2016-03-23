@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             action: Object,
@@ -99,7 +101,7 @@ module Vidyano.WebComponents {
             super();
 
             if(item && action) {
-                var args: SelectedItemsActionArgs = {
+                const args: ISelectedItemsActionArgs = {
                     name: action.name,
                     isVisible: action.isVisible,
                     canExecute: action.definition.selectionRule(1),
@@ -121,7 +123,7 @@ module Vidyano.WebComponents {
             }
         }
 
-        private _executeWithoutOptions(e: TapEvent) {
+        private _onExecuteWithoutOptions(e: TapEvent) {
             if (!this.canExecute) {
                 e.stopPropagation();
                 return;
@@ -133,7 +135,7 @@ module Vidyano.WebComponents {
             e.preventDefault();
         }
 
-        private _executeWithOption(e: TapEvent) {
+        private _onExecuteWithOption(e: TapEvent) {
             if (!this.canExecute) {
                 e.stopPropagation();
                 return;
@@ -180,7 +182,7 @@ module Vidyano.WebComponents {
             if (!action)
                 return "";
 
-            var actionIcon = `Action_${action.definition.name}`;
+            const actionIcon = `Action_${action.definition.name}`;
             return action.isPinned && !Icon.Exists(actionIcon) ? "Action_Default$" : actionIcon;
         }
 
@@ -193,7 +195,7 @@ module Vidyano.WebComponents {
         }
 
         private _computeSiblingIcon(overflow: boolean, isAttached: boolean) {
-            var siblingIcon = overflow && isAttached && this.parentElement != null && Enumerable.from(this.parentElement.children).firstOrDefault((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
+            const siblingIcon = overflow && isAttached && this.parentElement != null && Enumerable.from(this.parentElement.children).firstOrDefault((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
             this._setSiblingIcon(siblingIcon);
             if (siblingIcon) {
                 Enumerable.from(this.parentElement.children).forEach((ab: ActionButton) => {

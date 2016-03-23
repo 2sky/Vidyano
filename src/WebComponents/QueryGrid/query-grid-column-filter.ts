@@ -1,4 +1,6 @@
-module Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
+    "use strict";
+
     export class QueryGridColumnFilterProxyBase extends Vidyano.WebComponents.WebComponent {
         private _label: string;
         private _labelTextNode: Text;
@@ -8,10 +10,10 @@ module Vidyano.WebComponents {
         filtered: boolean;
 
         protected _update() {
-            var filtered = this.filtered;
+            const filtered = this.filtered;
             if (this.filtered = !!this.queryColumn && !this.queryColumn.selectedDistincts.isEmpty()) {
-                var objects = [];
-                var textSearch = [];
+                const objects = [];
+                const textSearch = [];
 
                 this.queryColumn.selectedDistincts.forEach(value => {
                     if (value && value.startsWith("1|@"))
@@ -20,7 +22,7 @@ module Vidyano.WebComponents {
                         objects.push(value);
                 });
 
-                var label = "";
+                let label = "";
                 if (objects.length > 0)
                     label += objects.map(o => this._getDistinctDisplayValue(o)).join(", ");
 
@@ -38,10 +40,10 @@ module Vidyano.WebComponents {
         }
 
         protected _getDistinctDisplayValue(value: string) {
-            if (!StringEx.isNullOrWhiteSpace(value) && value != "|") {
-                var indexOfPipe = value.indexOf("|");
+            if (!StringEx.isNullOrWhiteSpace(value) && value !== "|") {
+                const indexOfPipe = value.indexOf("|");
 
-                if (indexOfPipe == 0)
+                if (indexOfPipe === 0)
                     return value.substr(1);
 
                 if (indexOfPipe > 0)
@@ -114,7 +116,7 @@ module Vidyano.WebComponents {
         }
     }
 
-    export interface QueryGridColumnFilterDistinct {
+    export interface IQueryGridColumnFilterDistinct {
         type: string;
         value: string;
         displayValue: string;
@@ -166,7 +168,7 @@ module Vidyano.WebComponents {
         column: QueryGridColumn;
         searchText: string;
         label: string;
-        distincts: QueryGridColumnFilterDistinct[];
+        distincts: IQueryGridColumnFilterDistinct[];
 
         private _setLoading: (loading: boolean) => void;
 
@@ -183,7 +185,7 @@ module Vidyano.WebComponents {
                     // Specifies that the inner wrapper of the vi-scoller element will handle the scroll event on the behalf of the iron-list
                     (<any>this.$["distincts"]).scrollTarget = (<any>this.$["distinctsContainer"]).$["wrapper"];
 
-                    var popup = <Popup><any>this.querySelector("vi-popup#filter");
+                    const popup = <Popup><any>this.querySelector("vi-popup#filter");
                     popup.popup();
                 });
             }
@@ -193,26 +195,26 @@ module Vidyano.WebComponents {
             if (!this.column.canFilter)
                 return;
 
-            var popup = <Vidyano.WebComponents.Popup>this.$["filter"];
+            const popup = <Vidyano.WebComponents.Popup>this.$["filter"];
             popup.boundingTarget = this.findParent<QueryGrid>(p => p instanceof Vidyano.WebComponents.QueryGrid).parentElement;
 
             if (this.column.canListDistincts && (!this.column.column.distincts || this.column.distincts.isDirty)) {
                 this._setLoading(true);
 
                 this.column.column.refreshDistincts().then(() => {
-                    var distinctsList = <HTMLElement>this.$["distincts"];
+                    const distinctsList = <HTMLElement>this.$["distincts"];
                     distinctsList.style.minWidth = this.offsetWidth + "px";
 
                     this._setLoading(false);
 
-                    var input = <InputSearch><any>this.$["search"];
+                    const input = <InputSearch><any>this.$["search"];
                     input.focus();
                 }).catch(() => {
                     this._setLoading(false);
                 });
             }
             else {
-                var distinctsList = <HTMLElement>this.$["distincts"];
+                const distinctsList = <HTMLElement>this.$["distincts"];
                 distinctsList.style.minWidth = this.offsetWidth + "px";
                 distinctsList.scrollTop = 0;
             }
@@ -225,7 +227,7 @@ module Vidyano.WebComponents {
         private _distinctClick(e: TapEvent) {
             const distinctValue = e.model.item.value;
 
-            if (this.queryColumn.selectedDistincts.indexOf(distinctValue) == -1)
+            if (this.queryColumn.selectedDistincts.indexOf(distinctValue) === -1)
                 this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.concat([distinctValue]);
             else
                 this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.except([distinctValue]);
@@ -267,14 +269,14 @@ module Vidyano.WebComponents {
             });
 
             if (this.queryColumn.distincts) {
-                const distincts = distinctsEnum.concat(this.queryColumn.distincts.matching.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).map(v => {
+                const distincts = distinctsEnum.concat(this.queryColumn.distincts.matching.filter(v => this.queryColumn.selectedDistincts.indexOf(v) === -1).map(v => {
                     return {
                         type: "matching",
                         value: v,
                         displayValue: this._getDistinctDisplayValue(v),
                         checked: false
                     };
-                })).concat(this.queryColumn.distincts.remaining.filter(v => this.queryColumn.selectedDistincts.indexOf(v) == -1).map(v => {
+                })).concat(this.queryColumn.distincts.remaining.filter(v => this.queryColumn.selectedDistincts.indexOf(v) === -1).map(v => {
                     return {
                         type: "remaining",
                         value: v,

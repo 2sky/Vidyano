@@ -1,4 +1,6 @@
-﻿module Vidyano.WebComponents {
+﻿namespace Vidyano.WebComponents {
+    "use strict";
+
     @WebComponent.register({
         properties: {
             query: {
@@ -35,7 +37,7 @@
         }
 
         private _computeNoActions(actions: Vidyano.Action[]): boolean {
-            return actions && actions.filter(a => a.isVisible).length == 0 && actions["Filter"] == null;
+            return actions && actions.filter(a => a.isVisible).length === 0 && actions["Filter"] == null;
         }
 
         private _computeSearchOnHeader(noActions: boolean, query: Vidyano.Query): boolean {

@@ -1,3 +1,4 @@
+/* tslint:disable:interface-name */
 interface String {
     asDataUri(): string;
     contains(str: string): boolean;
@@ -8,6 +9,7 @@ interface String {
     startsWith(prefix: string): boolean;
     trimEnd(c: string): string;
     trimStart(c: string): string;
+    localeFormat(format: string, useDefault: boolean): string;
 }
 
 interface Date {
@@ -62,4 +64,5 @@ interface BigNumber {
 
 declare var BigNumber: {
     new (number: number | string): BigNumber;
-}
+};
+/* tslint:enable:interface-name */
