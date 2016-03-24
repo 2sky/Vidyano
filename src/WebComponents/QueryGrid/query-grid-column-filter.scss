@@ -27,6 +27,10 @@
         fill: var(--theme-light-border);
     }'};
 
+    --vi-input-search-input-focused-button: #{'{
+        fill: var(--theme-color-light);
+    }'};
+
     &[disabled] {
         cursor: default;
         background-color: #F9F9F9;
@@ -89,8 +93,11 @@
     [content] {
         @include noSelection();
 
-        .filter {
+        #filterContent {
             position: relative;
+            min-width: 20em;
+            min-height: 25em;
+            max-width: 100%;
 
             .left {
                 position: absolute;
@@ -107,10 +114,12 @@
             text-align: left;
             line-height: var(--theme-h2);
             font-weight: normal;
+            overflow: hidden;
+            padding-right: var(--theme-h5);
 
             vi-icon {
                 text-align: center;
-                width: var(--theme-h2);
+                min-width: var(--theme-h2);
                 height: var(--theme-h2);
             }
 
@@ -121,6 +130,9 @@
 
             span {
                 margin-left: var(--theme-h5);
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
             }
         }
 
@@ -135,6 +147,7 @@
             position: relative;
 
             > div {
+                min-height: 0;
                 padding-left: var(--theme-h2);
 
                 button#inverse {
@@ -165,8 +178,6 @@
         }
 
         #distinctsContainer {
-            height: 15em;
-            min-width: 15em;
             border: 1px solid var(--theme-light-border);
             margin-left: var(--theme-h5);
             box-sizing: border-box;
@@ -225,10 +236,16 @@
             }
         }
 
-        button.close {
-            border-top: 1px solid var(--theme-light-border);
-            line-height: var(--theme-h2);
-            width: 100%;
+        #resizehandle {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border-width: 0 var(--theme-h5) var(--theme-h5) 0;
+            border-style: solid;
+            border-color: #EAEAEA;
+            width: var(--theme-h4);
+            height: var(--theme-h4);
+            cursor: nwse-resize;
         }
     }
 

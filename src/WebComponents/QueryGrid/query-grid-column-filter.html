@@ -16,24 +16,24 @@
                 <span id="label"></span>
                 <vi-icon source="Filter"></vi-icon>
             </button>
-            <div content>
-                <div class="filter" on-click="_catchClick">
+            <div content class="relative" on-click="_catchClick">
+                <div id="filterContent" class="vertical layout">
                     <div class="left"></div>
                     <div class="menuItem horizontal layout" disabled$="[[!filtered]]" on-tap="_clear">
                         <vi-icon source="Filter_Reset"></vi-icon>
                         <span flex>[[translateMessage('ClearFilterFrom', column.label, isAttached)]]</span>
                     </div>
                     <div class="split"></div>
-                    <div class="advanced">
+                    <div class="flex advanced vertical layout">
                         <vi-input-search id="search" value="{{searchText}}" on-search="_search"></vi-input-search>
-                        <div class="relative">
+                        <div class="relative flex horizontal layout">
                             <button id="inverse" on-tap="_inverse" inversed$="[[inversed]]">
                                 <vi-icon source="Filter_Inverse"></vi-icon>
                             </button>
                             <template is="dom-if" if="[[loading]]">
                                 <vi-spinner></vi-spinner>
                             </template>
-                            <vi-scroller id="distinctsContainer" no-horizontal>
+                            <vi-scroller id="distinctsContainer" no-horizontal class="flex">
                                 <iron-list id="distincts" items="[[distincts]]" as="item" inversed$="[[inversed]]">
                                     <template>
                                         <div>
@@ -53,7 +53,7 @@
                         </div>
                     </div>
                 </div>
-                <button is="vi-button" class="close" on-tap="_closePopup" label="[[translations.Close]]"></button>
+                <div id="resizehandle" on-track="_onResize"></div>
             </div>
         </vi-popup>
     </template>

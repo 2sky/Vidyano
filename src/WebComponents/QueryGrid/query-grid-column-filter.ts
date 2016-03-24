@@ -165,6 +165,7 @@ namespace Vidyano.WebComponents {
         private static _selector: DocumentFragment;
         private _openOnAttach: boolean = true;
         private _distinctHeight: number;
+        private _resizeStart: ISize;
         column: QueryGridColumn;
         searchText: string;
         label: string;
@@ -197,10 +198,7 @@ namespace Vidyano.WebComponents {
 
             const popup = <Vidyano.WebComponents.Popup>this.$["filter"];
             popup.boundingTarget = this.findParent<QueryGrid>(p => p instanceof Vidyano.WebComponents.QueryGrid).parentElement;
-
-            const delay = this.app.configuration.getSetting("vi-query-grid-column-filter.close-delay");
-            if (delay)
-                popup.closeDelay = parseInt(delay);
+            popup.closeDelay = parseInt(this.app.configuration.getSetting("vi-query-grid-column-filter.close-delay", "750"));
 
             if (this.column.canListDistincts && (!this.column.column.distincts || this.column.distincts.isDirty)) {
                 this._setLoading(true);
@@ -222,10 +220,6 @@ namespace Vidyano.WebComponents {
                 distinctsList.style.minWidth = this.offsetWidth + "px";
                 distinctsList.scrollTop = 0;
             }
-        }
-
-        private _closePopup() {
-            WebComponents.Popup.closeAll();
         }
 
         private _distinctClick(e: TapEvent) {
@@ -333,7 +327,26 @@ namespace Vidyano.WebComponents {
             this.queryColumn.selectedDistincts = Enumerable.empty<string>();
             this._updateDistincts();
 
-            this._closePopup();
+            WebComponents.Popup.closeAll();
+        }
+
+        private _onResize(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
+            if (detail.state === "start") {
+                const filter = <Popup>this.$["filter"];
+                filter.sticky = true;
+
+                this._resizeStart = { width: this.$["filterContent"].offsetWidth, height: this.$["filterContent"].offsetHeight };
+            }
+            else if (detail.state === "track") {
+                this.$["filterContent"].style.width = `${this._resizeStart.width + detail.dx}px`;
+                this.$["filterContent"].style.height = `${this._resizeStart.height + detail.dy}px`;
+            }
+            else if (detail.state === "end") {
+                const filter = <Popup>this.$["filter"];
+                filter.sticky = false;
+
+                this._resizeStart = null;
+            }
         }
 
         private _catchClick(e: Event) {
