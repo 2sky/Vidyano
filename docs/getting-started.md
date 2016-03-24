@@ -4,16 +4,16 @@
 
 The easiest way to use the Vidyano Web² client for your Vidyano application is by adding our NuGet package to your backend project. We host this package via our MyGet feed.
 
-###### 1. In Visual Studio, register the Vidyano MyGet feed (https://www.myget.org/F/vidyano/) as package source:
+##### 1. In Visual Studio, register the Vidyano MyGet feed (https://www.myget.org/F/vidyano/) as package source:
 
 ![RegisterPackageSource](images/register-myget.png "Register MyGet package source")
 
-###### 2. Add the Vidyano.Web2 NuGet package to your Vidyano project.
+##### 2. Add the Vidyano.Web2 NuGet package to your Vidyano project.
 
 ![InstallPackage](images/select-web2-package.png)
 > *Note: make sure to select the Vidyano package source and optionally include prerelease packages.*
 
-###### 3. Add a new html file to your project with the following code:
+##### 3. Add a new html file to your project with the following code:
 
 ```html
 <!DOCTYPE html>
@@ -33,7 +33,7 @@ The easiest way to use the Vidyano Web² client for your Vidyano application is 
 </html>
 ```
 
-###### 4. Run your project and navigate to the html file in your browser.
+##### 4. Run your project and navigate to the html file in your browser.
 
 ## 2. Setting the Vidyano Web² client as default
 
