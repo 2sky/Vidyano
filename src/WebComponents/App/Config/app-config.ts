@@ -19,6 +19,11 @@
             }
         }
 
+        getSetting(key: string, defaultValue?: string): string {
+            const setting = <AppSetting>this.queryEffectiveChildren(`vi-app-setting[key="${key}"]`);
+            return setting ? setting.getAttribute("value") : defaultValue;
+        }
+
         getPersistentObjectConfig(persistentObject: Vidyano.PersistentObject): PersistentObjectConfig {
             if (!this._persistentObjectConfigs)
                 this._persistentObjectConfigs = this._getConfigs<PersistentObjectConfig>(Vidyano.WebComponents.PersistentObjectConfig);

@@ -7,7 +7,7 @@ namespace Vidyano.WebComponents {
             value: String
         }
     })
-    export class ConfigSetting extends WebComponent {
+    export class AppSetting extends WebComponent {
         key: string;
         value: string;
     }

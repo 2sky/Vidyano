@@ -29,7 +29,7 @@
     "src/WebComponents/ActionButton/action-button.ts",
     "src/WebComponents/App/app.ts",
     "src/WebComponents/App/Config/app-config.ts",
-    "src/WebComponents/App/Config/config-setting.ts",
+    "src/WebComponents/App/Config/app-setting.ts",
     "src/WebComponents/App/Config/persistent-object-attribute-config.ts",
     "src/WebComponents/App/Config/persistent-object-config.ts",
     "src/WebComponents/App/Config/persistent-object-tab-config.ts",

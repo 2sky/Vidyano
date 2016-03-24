@@ -198,8 +198,9 @@ namespace Vidyano.WebComponents {
             const popup = <Vidyano.WebComponents.Popup>this.$["filter"];
             popup.boundingTarget = this.findParent<QueryGrid>(p => p instanceof Vidyano.WebComponents.QueryGrid).parentElement;
 
-            const config = this.app.configuration.getQueryConfig(this.column.query);
-            popup.closeDelay = config ? parseInt(config.getSetting("vi-query-grid-filter-close-delay", "300")) : 300;
+            const delay = this.app.configuration.getSetting("vi-query-grid-column-filter.close-delay");
+            if (delay)
+                popup.closeDelay = parseInt(delay);
 
             if (this.column.canListDistincts && (!this.column.column.distincts || this.column.distincts.isDirty)) {
                 this._setLoading(true);
