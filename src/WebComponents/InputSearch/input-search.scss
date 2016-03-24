@@ -18,6 +18,7 @@
         -o-transition: all 0.3s ease-in-out;
         -webkit-transition: all 0.3s ease-in-out;
         transition: all 0.3s ease-in-out;
+        width: 100%;
 
         &::-webkit-input-placeholder {
             color: var(--vi-input-search-placeholder-color, #aaa);
