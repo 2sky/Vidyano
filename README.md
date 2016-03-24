@@ -1,106 +1,57 @@
-# Vidyano Web²
+# Vidyano
 
-The Vidyano Web² client provides a modern out of the box scaffolded UI that connects to a Vidyano backend.
+*[Vidyano](http://www.vidyano.com) is .NET based application platform for building data-driven applications.*
 
-## Dependencies
+For instructions about _using_ Vidyano to develop applications, please refer to [www.vidyano.com](http://www.vidyano.com)
 
-This project is heavily based on the [Polymer project](https://www.polymer-project.org/). if you want to add your own web components to your application, check out the site for all library documentation, including getting started guides and tutorials, developer reference, and more.
+# What is Vidyano Web²
+This repository contains the complete code for our next generation web client, **Vidyano Web²**. It provides an out of the box, scaffolded, modern Single Page Application (SPA) that interacts with a Vidyano backend.
 
-Apart from Polymer, the Vidyano Web² client also uses a number of support libraries such as:
+# Quick Setup
+The easiest way to use the Vidyano Web² client for your Vidyano application is by adding our NuGet package to your backend project. We host this package via our MyGet feed.
 
-* [bignumber.js](https://github.com/MikeMcl/bignumber.js/)
-* [moment.js](http://momentjs.com/)
-* [linq.js](http://linqjs.codeplex.com/)
-* [masked input](http://digitalbush.com/projects/masked-input-plugin/)
-* [PathJS](https://github.com/mtrpcic/pathjs)
-* [es6-promise](https://github.com/jakearchibald/es6-promise) (subset of [rsvp.js](https://github.com/tildeio/rsvp.js))
-* [promise-queue](https://github.com/azproduction/promise-queue/)
-* [Sortable](https://github.com/RubaXa/Sortable)
+**1. In Visual Studio, register the Vidyano MyGet feed (https://www.myget.org/F/vidyano/) as package source:**
 
-## Project structure
+![RegisterPackageSource](docs/images/register-myget.png "Register MyGet package source")
 
-The project structure of the Vidyano Web² client looks something like this:
+**2. Add the Vidyano.Web2 NuGet package to your Vidyano project.
+*Note: make sure to select the Vidyano package source and optionally include prerelease packages.***
 
-```
-/
-├── bower.json
-├── gruntfile.js
-├── package.json
-├── dist/
-│   ├── readme.md
-│   ├── Vidyano.Web2
-│   │   ├── .nuget
-│   │   ├── Embedded
-│   │   ├── Properties
-│   │   ├── Vidyano.Web2.csproj
-│   │   ├── Vidyano.Web2.sln
-│   │   ├── Web2Controller.cs
-│   │   ├── ...
-├── docs/
-│   ├── default-component-hooks.md
-│   ├── ...
-├── src/
-│   ├── demo.html
-│   ├── vidyano.html
-│   ├── 2sky.png
-│   ├── Libs/
-│   │   ├── es6-promise/
-│   │   │   └── es6-promise.js
-│   │   ├── ...
-│   ├── WebComponents/
-│   │   ├── vidyano.scss
-│   │   ├── ActionBar/
-│   │   │   ├── action-bar.html
-│   │   │   ├── action-bar.scss
-│   │   │   ├── action-bar.ts
-│   │   ├── ActionButton/
-│   │   │   ├── action-button.html
-│   │   │   ├── action-button.scss
-│   │   │   ├── action-button.ts
-│   │   ├── App/
-│   │   │   ├── app.html
-│   │   │   ├── app.scss
-│   │   │   ├── app.ts
-│   │   ├── ...
-```
+![InstallPackage](docs/images/select-web2-package.png)
 
-The [src/WebComponents](https://github.com/2sky/Vidyano/tree/master/src/WebComponents) folder is where you will find all individual web components that make up the Vidyano web application.
-
-The [src/Libs](https://github.com/2sky/Vidyano/tree/master/src/Libs) folder contains dependencies on external support libraries as well as the vidyano base library for interaction with a Vidyano backend.
-
-The [dist/Vidyano.Web2](https://github.com/2sky/Vidyano/tree/master/dist/Vidyano.Web2) folder contains the C# project for exposing the Vidyano Web² client files via an ASP.NET Web API controller. You do not need to compile this project as the result is offered to you via a NuGet package on the 2sky MyGet channel.
-
-## Getting Started
-
-As mentioned above, the latest version of the Vidyano Web² client is available via the 2sky MyGet channel. You can however also add the client via Bower. To install Bower, see the [Bower web site](http://bower.io/). After installing Bower, go into the project folder and run **```bower install --save Vidyano```** to install.
-
-### Setting up your index.html
-
-As shown in the [demo.html](https://github.com/2sky/Vidyano/blob/master/src/demo.html) file, you will have to include the webcomponents-lite.js script and import the vidyano.html file to get started.
-
-You will then add a ```vi-app``` component and points its ```uri``` attribute to a Vidyano backend. You can also set the label for your application and supply an image that will be shown on the sign in page.
+**3. Add a new html file to your project with the following code:**
 
 ```html
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	...
-	<script src="web2/webcomponentsjs/webcomponents-lite.js"></script>
+    <meta charset="utf-8" />
+    <title>Your project name</title>
+
+    <script src="web2/Libs/webcomponentsjs/webcomponents-lite.js"></script>
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800" rel="stylesheet" type="text/css">
     <link rel="import" href="web2/vidyano.html" />
 </head>
 
 <body class="fullbleed">
-    <vi-app uri="<your-backend-url>" label="My application" sign-in-image="signin.png" class="fit"></vi-app>
+    <vi-app uri="" label="Your project name" class="fit"></vi-app>
 </body>
 </html>
 ```
 
-## Documentation
+**4. Run your project and navigate to the html file in your browser.**
 
-Vidyano Web² client's documentation is included in this repo in the [docs](./docs) folder.
+## Table of Contents
+*The following is a table of contents for the documentation found in the docs folder of this repository.*
 
-## Versioning
+* [Overview](docs/overview.md)
+* [Getting Started](docs/getting-started.md)
+* [Project Structure](docs/project-structure.md)
+* [Web Component Structure](docs/web-component-structure.md)
+* [Custom Templates](docs/custom-templates.md)
+* [Session Presenter](docs/session-presenter.md)
 
-For transparency into our release cycle and in striving to maintain backward compatibility, Vidyano is maintained under [the Semantic Versioning guidelines](http://semver.org/) and we will adhere to those rules whenever possible.
 
 ## Copyright and license
 
-Code and documentation copyright 2011-2015 2sky NV. Code released under the MIT license available [here](./LICENSE)
+Code and documentation copyright 2011-2016 2sky NV. Code released under the MIT license available [here](./LICENSE)

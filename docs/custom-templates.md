@@ -1,6 +1,6 @@
 # Custom templates
 
-The Vidyano Web² client allows developers to override the template for persistent objects, tabs, attributes and queries. Templates are matched to the Vidyano model via configuration elements on ```vi-app```. To override the entire DOM template, simply add a ```<template is="dom-template">``` child element.
+The Vidyano Web² client allows developers to override the DOM template for persistent objects, tabs, attributes and queries. Templates are matched to the Vidyano model via configuration elements on ```vi-app```. To override the entire DOM template, simply add a ```<template is="dom-template">``` child element.
 
 ## Query templates
 
