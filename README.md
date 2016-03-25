@@ -7,6 +7,8 @@ For instructions about _using_ Vidyano to develop applications, please refer to 
 # What is Vidyano Web²
 This repository contains the complete code for our next generation web client, **Vidyano Web²**. It provides an out of the box, scaffolded, modern Single Page Application (SPA) that interacts with a Vidyano backend.
 
+You can play around with a live demo at [demo.vidyano.com](https://demo.vidyano.com)
+
 # Quick Setup
 The easiest way to use the Vidyano Web² client for your Vidyano application is by adding our NuGet package to your backend project. We host this package via our MyGet feed.
 
