@@ -3,6 +3,7 @@
 :host {
     @include layout-vertical();
     @include noSelection();
+    overflow: hidden;
 
     --vi-menu-indent: 16px;
     --vi-menu--expand-width: 16em;

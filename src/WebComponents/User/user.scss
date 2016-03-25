@@ -8,11 +8,6 @@ $footerHeight: var(--theme-h1);
     background-color: rgba(255, 255, 255, 0.08);
     border-top-color: rgba(255, 255, 255, 0.08);
 
-    > span {
-        line-height: $footerHeight;
-        height: $footerHeight;
-    }
-
     button {
         height: $footerHeight !important;
         line-height: $footerHeight !important;
@@ -34,7 +29,15 @@ $footerHeight: var(--theme-h1);
             @include color-button(rgba(255, 255, 255, 0.05));
         }
 
+        > span {
+            display: inline-block;
+            vertical-align: top;
+            line-height: $footerHeight;
+            height: $footerHeight;
+        }
+
         > vi-icon {
+            display: inline-block;
             fill: white;
         }
     }
