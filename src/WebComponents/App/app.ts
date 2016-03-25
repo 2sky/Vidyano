@@ -92,7 +92,8 @@ namespace Vidyano.WebComponents {
         properties: {
             uri: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: ""
             },
             hooks: {
                 type: String,
