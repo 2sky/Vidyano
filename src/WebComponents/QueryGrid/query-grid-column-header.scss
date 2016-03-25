@@ -3,7 +3,7 @@
 :host {
     display: block;
     box-sizing: border-box;
-    min-width: var(--theme-h2);
+    min-width: var(--vi-query-grid-minimum-column-width);
     border-right: 1px solid var(--theme-light-border);
     @include relative();
 

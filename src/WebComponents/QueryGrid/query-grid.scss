@@ -7,6 +7,8 @@
     overflow: hidden;
     position: relative;
 
+    --vi-query-grid-minimum-column-width: 30px;
+
     #dataHeaderHost {
         @include noSelection();
         @include relative();
@@ -187,7 +189,11 @@
                     }
 
                     &[is="vi-query-grid-table-data-column"] {
-                        min-width: var(--theme-h2);
+                        min-width: var(--vi-query-grid-minimum-column-width);
+
+                        > div {
+                            min-width: var(--vi-query-grid-minimum-column-width);
+                        }
 
                         &[name=""], &:not([name]) {
                             display: none;

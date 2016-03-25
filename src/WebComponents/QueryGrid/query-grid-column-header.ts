@@ -1,8 +1,6 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    const minimumColumnWidth = 30;
-
     @WebComponent.register({
         properties: {
             disableSort: {
@@ -24,6 +22,7 @@
         private _resizingRAF: number;
         private _column: QueryGridColumn;
         private _columnObserver: Vidyano.Common.ISubjectDisposer;
+        private _minimumColumnWidth: number;
         private _labelTextNode: Text;
         private _filter: QueryGridColumnFilterProxyBase;
         private _sorting: string;
@@ -32,6 +31,8 @@
         private _setDisableSort: (disable: boolean) => void;
 
         attached() {
+            this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid-minimum-column-width"));
+
             super.attached();
 
             if (!this._filter)
@@ -125,7 +126,7 @@
                     cancelAnimationFrame(this._resizingRAF);
 
                 this._resizingRAF = requestAnimationFrame(() => {
-                    const width = Math.max(this.column.calculatedWidth + detail.dx, minimumColumnWidth);
+                    const width = Math.max(this.column.calculatedWidth + detail.dx, this._minimumColumnWidth);
 
                     this.style.width = `${width}px`;
                     this.fire("column-widths-updated", { column: this.column, columnWidth: width });
@@ -136,7 +137,7 @@
 
                 this.style.width = "";
 
-                this.column.calculatedWidth = Math.max(this.column.calculatedWidth + detail.dx, minimumColumnWidth);
+                this.column.calculatedWidth = Math.max(this.column.calculatedWidth + detail.dx, this._minimumColumnWidth);
                 this.column.width = `${this.column.calculatedWidth}px`;
 
                 this.fire("column-widths-updated", { column: this.column, save: true });

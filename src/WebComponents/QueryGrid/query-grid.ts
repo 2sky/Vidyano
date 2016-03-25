@@ -1,8 +1,6 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    const minimumColumnWidth = 30;
-
     export interface IQueryGridItemTapEventArgs {
         item: Vidyano.QueryResultItem;
     }
@@ -148,6 +146,7 @@
         private _hasPendingUpdates: boolean;
         private _itemOpening: Vidyano.QueryResultItem;
         private _lastSelectedItemIndex: number;
+        private _minimumColumnWidth: number;
         private _remainderWidth: number;
         private _settings: QueryGridUserSettings;
         private _columnMenuColumn: QueryGridColumn;
@@ -182,6 +181,8 @@
                     this.updateStyles();
                 });
             }
+
+            this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid-minimum-column-width"));
 
             super.attached();
         }
@@ -561,7 +562,7 @@
                                             return layoutUpdating = true; // Layout is still updating
                                     }
 
-                                    width = Math.max(width + 10, minimumColumnWidth);
+                                    width = Math.max(width + 10, this._minimumColumnWidth);
                                     if (width !== columnWidths[cell.column.name]) {
                                         columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
                                         invalidateColumnWidths = true;
