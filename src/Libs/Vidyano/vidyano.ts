@@ -447,7 +447,7 @@ namespace Vidyano {
                     else
                         reject(result.exception);
 
-                    this._postJSONProcess(data, result, requestMethod, createdRequest, requestStart, r.getResponseHeader("X-ElapsedMilliseconds"));
+                    this._postJSONProcess(data, result, requestMethod, createdRequest, requestStart, result.profiler ? r.getResponseHeader("X-ElapsedMilliseconds") : undefined);
                 };
                 r.onerror = () => { reject(r.statusText); };
 
