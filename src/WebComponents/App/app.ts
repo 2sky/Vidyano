@@ -437,7 +437,7 @@ namespace Vidyano.WebComponents {
             if (initializing || !routeMapVersion)
                 return;
 
-            Polymer.dom(this).flush(); // Make sure all known routes are added
+            Polymer.dom(this).flush(); // Make sure all known routes and configs are added
 
             let currentRoute = this.currentRoute;
             this._routeUpdater = this._routeUpdater.then(() => {
@@ -452,11 +452,20 @@ namespace Vidyano.WebComponents {
                     if (!programUnit && this.service.application.programUnits.length > 0)
                         programUnit = this.service.application.programUnits[0];
 
-                    if (programUnit && programUnit.openFirst) {
-                        const openFirstPath = programUnit.items[0].path;
-                        if (path !== openFirstPath) {
-                            this.async(() => this.changePath(openFirstPath));
-                            return;
+                    if (programUnit) {
+                        if (programUnit.openFirst) {
+                            const openFirstPath = programUnit.items[0].path;
+                            if (path !== openFirstPath) {
+                                this.async(() => this.changePath(openFirstPath));
+                                return;
+                            }
+                        }
+                        else {
+                            const config = this.app.configuration.getProgramUnitConfig(programUnit.name);
+                            if (!!config && config.hasTemplate) {
+                                this.async(() => this.changePath(programUnit.name));
+                                return;
+                            }
                         }
                     }
                 }
