@@ -86,6 +86,7 @@
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="Global.asax" />
+    <Content Include="test.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

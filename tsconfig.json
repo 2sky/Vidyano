@@ -8,10 +8,12 @@
     "sourceMap": false
   },
   "filesGlob": [
+    "src/Test/**/*.ts",
     "src/Libs/**/*.ts",
     "src/WebComponents/**/*.ts"
   ],
   "files": [
+    "src/Test/vidyano.ts",
     "src/Libs/Typings/d3/d3.d.ts",
     "src/Libs/Typings/es6-promises/es6-promises.d.ts",
     "src/Libs/Typings/Linq/linq.d.ts",
@@ -20,6 +22,7 @@
     "src/Libs/Typings/Path/path.d.ts",
     "src/Libs/Typings/Polymer/polymer.d.ts",
     "src/Libs/Typings/PromiseQueue/promise-queue.ts",
+    "src/Libs/Typings/QUnit/qunit.d.ts",
     "src/Libs/Typings/Sortable/sortable.d.ts",
     "src/Libs/Typings/Vidyano.Common/vidyano.common.d.ts",
     "src/Libs/Typings/Vidyano.Common/webcomponent.d.ts",
