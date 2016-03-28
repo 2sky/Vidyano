@@ -109,6 +109,10 @@
                 line-height: var(--theme-h2);
                 height: var(--theme-h2);
 
+                &.sortable-chosen.sortable-ghost {
+                    opacity: 0;
+                }
+
                 td {
                     padding: 0;
                     cursor: pointer;

@@ -88,6 +88,11 @@
                 reflectToAttribute: true,
                 computed: "_computeHasTotalItem(query.totalItem, _items, columnWidthsCalculated)"
             },
+            isReordering: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            },
             columnWidthsCalculated: {
                 type: Boolean,
                 readOnly: true
@@ -123,7 +128,9 @@
             "column-widths-updated": "_columnWidthsUpdated",
             "dataHeaderHost.contextmenu": "_contextmenuColumn",
             "dataHost.contextmenu": "_contextmenuData",
-            "scroll": "_preventScroll"
+            "scroll": "_preventScroll",
+            "drag-start": "_dragStart",
+            "drag-end": "_dragEnd"
         }
     })
     export class QueryGrid extends WebComponent {
@@ -151,17 +158,20 @@
         private _settings: QueryGridUserSettings;
         private _columnMenuColumn: QueryGridColumn;
         private _lastUpdated: Date;
+        private _reorderRow: QueryGridTableDataRow;
         canReorder: boolean;
         rowHeight: number;
         viewportSize: ISize;
         query: Vidyano.Query;
         asLookup: boolean;
         initializing: boolean;
+        isReordering: boolean;
 
         private _setInitializing: (initializing: boolean) => void;
         private _setViewportSize: (size: ISize) => void;
         private _setRowHeight: (rowHeight: number) => void;
         private _setColumnWidthsCalculated: (val: boolean) => void;
+        private _setIsReordering: (reodering: boolean) => void;
 
         attached() {
             if (QueryGrid.tableCache.length > 0 && !this._tableData) {
@@ -339,7 +349,7 @@
                 this._actionMenu.close();
 
             const maxTableRowCount = Math.floor(viewportSize.height * 1.5 / rowHeight);
-            const viewportStartRowIndex = Math.floor(verticalScrollOffset / rowHeight);
+            let viewportStartRowIndex = Math.floor(verticalScrollOffset / rowHeight);
             const viewportEndRowIndex = Math.ceil((verticalScrollOffset + viewportSize.height) / rowHeight);
             let newVirtualTableStartIndex;
 
@@ -470,15 +480,20 @@
 
                 this._requestAnimationFrame(() => {
                     const lastPinnedColumnIndex = Enumerable.from(columns).lastIndexOf(c => c.isPinned);
-                    let hasPendingUpdates = false;
+                    let hasPendingUpdates = this.isReordering || false;
 
-                    for (let index = 0; index < rowCount; index++) {
+                    let itemsIndex = 0;
+                    for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
                         if (items !== this._items || virtualTableStartIndex !== this._virtualTableStartIndex) {
                             resolve(false);
                             return;
                         }
 
-                        hasPendingUpdates = (<QueryGridTableDataRow>this._tableData.rows[index]).setItem(items[index], columns, lastPinnedColumnIndex) || hasPendingUpdates;
+                        const row = <QueryGridTableDataRow>this._tableData.rows[rowIndex];
+                        if (row === this._reorderRow)
+                            continue;
+
+                        hasPendingUpdates = row.setItem(items[itemsIndex++], columns, lastPinnedColumnIndex) || hasPendingUpdates;
                     }
 
                     this._hasPendingUpdates = hasPendingUpdates;
@@ -652,6 +667,39 @@
 
                 action();
             });
+        }
+
+        private _dragStart(e: CustomEvent) {
+            e.stopPropagation();
+
+            const row = <QueryGridTableDataRow>Enumerable.from(this._tableData.rows).firstOrDefault(r => r.host.classList.contains("sortable-chosen"));
+            if (!row)
+                return;
+
+            this._reorderRow = row;
+            this._setIsReordering(true);
+        }
+
+        private _dragEnd(e: CustomEvent, details: ISortableDragEndDetails) {
+            e.stopPropagation();
+
+            if (!this.isReordering)
+                return;
+
+            this._setIsReordering(false);
+
+            const item = this._reorderRow.item;
+            this._reorderRow = null;
+
+            if (details.newIndex == null)
+                return;
+
+            this._tableData.rows.splice(details.newIndex, 0, this._tableData.rows.splice(details.oldIndex, 1)[0]);
+
+            const before = details.newIndex > 0 ? (<QueryGridTableDataRow>this._tableData.rows[details.newIndex - 1]).item : null;
+            const after = this._tableData.rows.length > details.newIndex + 1 ? (<QueryGridTableDataRow>this._tableData.rows[details.newIndex + 1]).item : null;
+
+            this.query.reorder(before, item, after);
         }
 
         private _itemSelect(e: CustomEvent, detail: { item: Vidyano.QueryResultItem; rangeSelect: boolean }) {
@@ -1055,19 +1103,6 @@
     export class QueryGridTableDataBody extends Sortable {
         constructor(private _table: QueryGridTableData) {
             super();
-        }
-
-        protected _dragEnd(element: HTMLElement, newIndex: number, oldIndex: number) {
-            if (newIndex == null)
-                return;
-
-            this._table.rows.splice(newIndex, 0, this._table.rows.splice(oldIndex, 1)[0]);
-
-            const item = (<QueryGridTableDataRow>this._table.rows[newIndex]).item;
-            const before = newIndex > 0 ? (<QueryGridTableDataRow>this._table.rows[newIndex - 1]).item : null;
-            const after = this._table.rows.length > newIndex + 1 ? (<QueryGridTableDataRow>this._table.rows[newIndex + 1]).item : null;
-
-            this._table.grid.query.reorder(before, item, after);
         }
     }
 
