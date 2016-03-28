@@ -9,6 +9,7 @@
 
     > #wrapper {
         @include flex();
+        z-index: 0;
         overflow: scroll;
         margin-right: -var(--theme-scrollbar-width);
         margin-bottom: -var(--theme-scrollbar-width);

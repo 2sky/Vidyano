@@ -13,6 +13,12 @@
                 readOnly: true,
                 reflectToAttribute: true
             },
+            atTop: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true,
+                value: true
+            },
             outerWidth: {
                 type: Number,
                 readOnly: true
@@ -69,6 +75,10 @@
                 notify: true,
                 observer: "_horizontalScrollOffsetChanged"
             },
+            noScrollShadow: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             scrollTopShadow: {
                 type: Boolean,
                 readOnly: true,
@@ -124,7 +134,9 @@
         horizontalScrollOffset: number;
         verticalScrollOffset: number;
         forceScrollbars: boolean;
+        noScrollShadow: boolean;
 
+        private _setAtTop: (atTop: boolean) => void;
         private _setOuterWidth: (width: number) => void;
         private _setOuterHeight: (height: number) => void;
         private _setInnerWidth: (width: number) => void;
@@ -190,8 +202,8 @@
             if (verticalScrollTop !== this._verticalScrollTop)
                 this.$["vertical"].style.transform = `translate3d(0, ${this._verticalScrollTop = verticalScrollTop}px, 0)`;
 
-            this._setScrollTopShadow(verticalScrollTop > 0);
-            this._setScrollBottomShadow(innerHeight - verticalScrollOffset - outerHeight > 0);
+            this._setScrollTopShadow(!this.noScrollShadow && verticalScrollTop > 0);
+            this._setScrollBottomShadow(!this.noScrollShadow && innerHeight - verticalScrollOffset - outerHeight > 0);
         }
 
         private _updateHorizontalScrollbar(outerWidth: number, innerWidth: number, horizontalScrollOffset: number, noHorizontal: boolean) {
@@ -276,7 +288,7 @@
         private _updateScrollOffsets() {
             const wrapper = this.$["wrapper"];
             if (this.vertical)
-                this.verticalScrollOffset = wrapper.scrollTop;
+                this._setAtTop((this.verticalScrollOffset = wrapper.scrollTop) === 0);
 
             if (this.horizontal)
                 this.horizontalScrollOffset = wrapper.scrollLeft;
