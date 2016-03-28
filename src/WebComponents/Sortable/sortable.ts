@@ -3,6 +3,12 @@
 
     const _groups: Sortable[] = [];
 
+    export interface ISortableDragEndDetails {
+        element: HTMLElement;
+        newIndex: number;
+        oldIndex: number;
+    }
+
     export abstract class Sortable extends WebComponent {
         private _sortable: ISortable;
         group: string;
@@ -52,11 +58,15 @@
         }
 
         protected _dragStart() {
-            // Noop
+            this.fire("drag-start", undefined);
         }
 
         protected _dragEnd(element: HTMLElement, newIndex: number, oldIndex: number) {
-            // Noop
+            this.fire("drag-end", {
+                element: element,
+                newIndex: newIndex,
+                oldIndex: oldIndex
+            });
         }
 
         private _create() {
