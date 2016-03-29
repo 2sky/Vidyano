@@ -1874,6 +1874,14 @@ namespace Vidyano {
             return attr != null ? attr.value : null;
         }
 
+        setAttributeValue(name: string, value: any, allowRefresh?: boolean): Promise<any> {
+            const attr = <Vidyano.PersistentObjectAttribute>this.attributes[name];
+            if (!attr)
+                return Promise.reject("Attribute does not exist.");
+
+            return attr.setValue(value, allowRefresh);
+        }
+
         getQuery(name: string): Query {
             return this.queries[name];
         }
@@ -4021,10 +4029,9 @@ namespace Vidyano {
 
         createNew(): Promise<QueryFilter> {
             const newAction = (<Action>this._filtersAsDetail.details.actions["New"]);
-            newAction.skipOpen = true;
 
             return this._query.queueWork(() => {
-                return newAction.execute().then(po => new QueryFilter(po));
+                return newAction.execute(undefined, undefined, undefined, { skipOpen: true }).then(po => new QueryFilter(po));
             });
         }
 
@@ -4125,6 +4132,12 @@ namespace Vidyano {
         }
     }
 
+    export interface IActionExecuteOptions {
+        skipOpen?: boolean;
+        noConfirmation?: boolean;
+        throwExceptions?: boolean;
+    }
+
     export class Action extends ServiceObject {
         private _targetType: string;
         private _query: Query;
@@ -4136,7 +4149,6 @@ namespace Vidyano {
         private _offset: number;
         protected _isPinned: boolean;
         private _options: string[] = [];
-        skipOpen: boolean;
         selectionRule: (count: number) => boolean;
         displayName: string;
         dependentActions = [];
@@ -4256,13 +4268,13 @@ namespace Vidyano {
             this.notifyPropertyChanged("options", this._options = options, oldOptions);
         }
 
-        execute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], throwExceptions?: boolean): Promise<PersistentObject> {
+        execute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
             return new Promise<PersistentObject>((resolve, reject) => {
                 if (this.canExecute || (selectedItems != null && this.selectionRule(selectedItems.length)))
-                    this._onExecute(option, parameters, selectedItems).then(po => {
+                    this._onExecute(option, parameters, selectedItems, executeOptions).then(po => {
                         resolve(po);
                     }, e => {
-                        if (throwExceptions)
+                        if (executeOptions && executeOptions.throwExceptions)
                             reject(e);
                         else
                             this.owner.setNotification(e);
@@ -4270,8 +4282,8 @@ namespace Vidyano {
             });
         }
 
-        _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
-            const confirmation = this.definition.confirmation ? this.service.hooks.onActionConfirmation(this, option) : Promise.resolve(true);
+        protected _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
+            const confirmation = this.definition.confirmation && (!executeOptions || !executeOptions.noConfirmation) ? this.service.hooks.onActionConfirmation(this, option) : Promise.resolve(true);
 
             return confirmation.then(result => {
                 if (result) {
@@ -4326,7 +4338,7 @@ namespace Vidyano {
                                         po.ownerQuery = this.query;
                                         po.ownerPersistentObject = this.parent;
 
-                                        if (!this.skipOpen)
+                                        if (!executeOptions || !executeOptions.skipOpen)
                                             this.service.hooks.onOpen(po, false, true);
                                     }
                                 }
@@ -4410,7 +4422,7 @@ namespace Vidyano {
                 this.isVisible = false;
             }
 
-            _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<any> {
+            protected _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<any> {
                 return this.query.search();
             }
         }
@@ -4434,7 +4446,7 @@ namespace Vidyano {
                 this.isVisible = !isEditing;
             }
 
-            _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
+            protected _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
                 this.parent.beginEdit();
                 return Promise.resolve(null);
             }
@@ -4455,7 +4467,7 @@ namespace Vidyano {
                 this.canExecute = isDirty;
             }
 
-            _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
+            protected _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
                 return new Promise<PersistentObject>((resolve, reject) => {
                     this.parent.save().then(() => {
                         if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
@@ -4485,7 +4497,7 @@ namespace Vidyano {
                 this.dependentActions = ["CancelSave"];
             }
 
-            _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
+            protected _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
                 const wasNew = this.parent.isNew;
                 return new Promise<PersistentObject>((resolve, reject) => {
                     this.parent.save().then(() => {
@@ -4512,7 +4524,7 @@ namespace Vidyano {
                 super(service, definition, owner);
             }
 
-            _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
+            protected _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
                 this.service.hooks.onClose(this.parent);
                 return Promise.resolve(null);
             }
@@ -4533,7 +4545,7 @@ namespace Vidyano {
                 this.canExecute = this.parent.stateBehavior.indexOf("StayInEdit") < 0 || isDirty;
             }
 
-            _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
+            protected _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
                 this.parent.cancelEdit();
                 return Promise.resolve(null);
             }
@@ -4544,7 +4556,7 @@ namespace Vidyano {
                 super(service, definition, owner);
             }
 
-            _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
+            protected _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
                 this.service._getStream(null, "Query.ExportToExcel", this.parent, this.query, null, this._getParameters(parameters, option));
                 return Promise.resolve(null);
             }
@@ -4555,7 +4567,7 @@ namespace Vidyano {
                 super(service, definition, owner);
             }
 
-            _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[]): Promise<PersistentObject> {
+            protected _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
                 const owner = this.query ? this.query.persistentObject : this.parent;
                 const helpWindow = window.open();
                 return this.service.executeAction("PersistentObject.ShowHelp", owner, null, null).then(po => {

@@ -153,8 +153,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _add(e: TapEvent) {
-            this.newAction.skipOpen = true;
-            this.newAction.execute(undefined, undefined, undefined, true).then(po => {
+            this.newAction.execute(undefined, undefined, undefined, { throwExceptions: true, skipOpen: true }).then(po => {
                 this.push("attribute.objects", po);
                 po.parent = this.attribute.parent;
 
