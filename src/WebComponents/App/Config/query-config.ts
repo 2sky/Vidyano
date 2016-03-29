@@ -5,12 +5,14 @@ namespace Vidyano.WebComponents {
         properties: {
             name: String,
             id: String,
-            defaultChart: String
+            defaultChart: String,
+            fileDropAttribute: String
         }
     })
     export class QueryConfig extends TemplateConfig<Vidyano.Query> {
         name: string;
         id: string;
         defaultChart: string;
+        fileDropAttribute: string;
     }
 }

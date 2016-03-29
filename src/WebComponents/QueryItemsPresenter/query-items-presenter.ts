@@ -14,6 +14,11 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 readOnly: true
+            },
+            fileDrop: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
             }
         },
         hostAttributes: {
@@ -30,7 +35,10 @@ namespace Vidyano.WebComponents {
         ],
         forwardObservers: [
             "query.currentChart"
-        ]
+        ],
+        listeners: {
+            "file-dropped": "_onFileDropped"
+        }
     })
     export class QueryItemsPresenter extends WebComponent {
         private static _queryGridComponentLoader: Promise<any>;
@@ -38,9 +46,11 @@ namespace Vidyano.WebComponents {
         private _renderedQuery: Vidyano.Query;
         query: Vidyano.Query;
         templated: boolean;
+        fileDrop: boolean;
 
         private _setLoading: (loading: boolean) => void;
         private _setTemplated: (templated: boolean) => void;
+        private _setFileDrop: (fileDrop: boolean) => void;
 
         private _renderQuery(query: Vidyano.Query, currentChart: Vidyano.QueryChart, isAttached: boolean) {
             if (!isAttached || this._renderedQuery === query)
@@ -48,12 +58,18 @@ namespace Vidyano.WebComponents {
 
             this.empty();
 
-            if (!query)
+            if (!query) {
+                this._setFileDrop(false);
+                this._setTemplated(false);
+
                 return;
+            }
 
             this._setLoading(true);
 
             const config = this.app.configuration.getQueryConfig(query);
+
+            this._setFileDrop(!!config && !!config.fileDropAttribute && query.actions["New"]);
             this._setTemplated(!!config && config.hasTemplate);
 
             if (this.templated) {
@@ -111,6 +127,13 @@ namespace Vidyano.WebComponents {
                     });
                 }
             }
+        }
+
+        private _onFileDropped(e: CustomEvent, details: IFileDropDetails) {
+            if (!this.fileDrop)
+                return;
+
+            (<AppServiceHooks>this.app.service.hooks).onQueryFileDrop(this.query, details.name, details.contents);
         }
 
         private _refresh() {

@@ -1,9 +1,17 @@
 <link rel="import" href="../Chart/chart.html" />
+<link rel="import" href="../FileDrop/file-drop.html" />
 
 <dom-module id="vi-query-items-presenter">
     <template>
         <link rel="stylesheet" href="query-items-presenter.css" />
-        <content></content>
+        <template is="dom-if" if="[[fileDrop]]">
+            <vi-file-drop class="layout horizontal">
+                <content></content>
+            </vi-file-drop>
+        </template>
+        <template is="dom-if" if="[[!fileDrop]]">
+            <content></content>
+        </template>
     </template>
 </dom-module>
 
