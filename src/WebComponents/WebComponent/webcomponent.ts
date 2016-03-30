@@ -420,8 +420,8 @@
             });
         }
 
-        findParent<T>(condition: (element: Node) => boolean): T {
-            let element = this;
+        findParent<T>(condition: (element: Node) => boolean, parent: Node = this): T {
+            let element = parent;
             while (!!element && !condition(element))
                 element = element.parentNode || (<any>element).host;
 
