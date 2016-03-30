@@ -3,10 +3,22 @@ namespace Vidyano.WebComponents {
 
     @TemplateConfig.register({
         properties: {
-            name: String,
-            id: String,
-            defaultChart: String,
-            fileDropAttribute: String
+            name: {
+                type: String,
+                reflectToAttribute: true
+            },
+            id: {
+                type: String,
+                reflectToAttribute: true
+            },
+            defaultChart: {
+                type: String,
+                reflectToAttribute: true
+            },
+            fileDropAttribute: {
+                type: String,
+                reflectToAttribute: true
+            }
         }
     })
     export class QueryConfig extends TemplateConfig<Vidyano.Query> {
