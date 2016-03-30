@@ -894,7 +894,7 @@ namespace Vidyano.WebComponents {
                         return fileDropAttribute.setValue(`${name}|${contents}`).then(() => Promise.resolve(po.save().catch(e => {
                             query.setNotification(e);
                             return Promise.resolve(false);
-                        }));
+                        })));
                     }, true);
                 });
             });
