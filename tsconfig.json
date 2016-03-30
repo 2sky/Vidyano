@@ -69,6 +69,7 @@
     "src/WebComponents/Checkbox/checkbox.ts",
     "src/WebComponents/DatePicker/date-picker.ts",
     "src/WebComponents/Dialog/dialog.ts",
+    "src/WebComponents/FileDrop/file-drop.ts",
     "src/WebComponents/Grid/grid.ts",
     "src/WebComponents/Icon/icon.ts",
     "src/WebComponents/InputSearch/input-search.ts",

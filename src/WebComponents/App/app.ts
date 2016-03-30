@@ -879,5 +879,25 @@ namespace Vidyano.WebComponents {
                     break;
             }
         }
+
+        onQueryFileDrop(query: Vidyano.Query, name: string, contents: string): Promise<boolean> {
+            const config = this.app.configuration.getQueryConfig(query);
+
+            return new Promise((resolve, reject) => {
+                const newAction = <Vidyano.Action>query.actions["New"];
+                return newAction.execute(undefined, undefined, undefined, { skipOpen: true }).then(po => {
+                    return query.queueWork(() => {
+                        const fileDropAttribute = po.getAttribute(config.fileDropAttribute);
+                        if (!fileDropAttribute)
+                            return Promise.resolve(false);
+
+                        return fileDropAttribute.setValue(`${name}|${contents}`).then(() => Promise.resolve(po.save().catch(e => {
+                            query.setNotification(e);
+                            return Promise.resolve(false);
+                        })));
+                    }, true);
+                });
+            });
+        }
     }
 }
