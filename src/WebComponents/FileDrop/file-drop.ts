@@ -8,6 +8,12 @@ namespace Vidyano.WebComponents {
 
     @WebComponent.register({
         properties: {
+            "dragOver": {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true,
+                value: false
+            }
         },
         listeners: {
             "dragenter": "_dragEnter",
@@ -17,20 +23,34 @@ namespace Vidyano.WebComponents {
         }
     })
     export class FileDrop extends WebComponent {
+        dragOver: boolean;
+
+        private _setDragOver: (val: boolean) => void;
+
         private _dragEnter(e: DragEvent) {
             e.preventDefault();
+            e.stopPropagation();
+
+            this._setDragOver(true);
         }
 
         private _dragOver(e: DragEvent) {
             e.preventDefault();
+            e.stopPropagation();
+            this._setDragOver(true);
         }
 
         private _dragLeave(e: DragEvent) {
-            // Noop
+            if (e.srcElement !== this.$["overlay"] && !!this.findParent(node => node === this, e.srcElement))
+                return;
+
+            this._setDragOver(false);
         }
 
         private _drop(e: DragEvent) {
             e.preventDefault();
+            e.stopPropagation();
+            this._setDragOver(false);
 
             const file = e.dataTransfer.files[0];
             if (!file)

@@ -2,4 +2,37 @@
 
 :host {
     display: block;
+    @include relative();
+
+    &:not([drag-over]) #dragOver {
+        display: none;
+    }
+
+    &[drag-over] {
+        & ::content > *:first-child {
+            z-index: 0;
+            pointer-events: none;
+        }
+    }
+
+    #dragOver {
+        @include layout-horizontal();
+        @include layout-center-center();
+        @include fit();
+        z-index: 1;
+
+        #overlay {
+            @include fit();
+            background-color: rgba(255, 255, 255, 0.6);
+            transform: translate3d(0, 0, 0);
+        }
+
+        vi-icon {
+            --vi-icon-width: calc(var(--theme-h1) * 2);
+            --vi-icon-height: calc(var(--theme-h1) * 2);
+            z-index: 2;
+            fill: var(--theme-color);
+            pointer-events: none;
+        }
+    }
 }
