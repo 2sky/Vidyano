@@ -14,6 +14,7 @@
   ],
   "files": [
     "src/Test/vidyano.ts",
+    "src/Libs/Typings/CodeMirror/codemirror.d.ts",
     "src/Libs/Typings/d3/d3.d.ts",
     "src/Libs/Typings/es6-promises/es6-promises.d.ts",
     "src/Libs/Typings/Linq/linq.d.ts",
@@ -67,6 +68,7 @@
     "src/WebComponents/Chart/chart.ts",
     "src/WebComponents/ChartSelector/chart-selector.ts",
     "src/WebComponents/Checkbox/checkbox.ts",
+    "src/WebComponents/CodeMirror/code-mirror.ts",
     "src/WebComponents/DatePicker/date-picker.ts",
     "src/WebComponents/Dialog/dialog.ts",
     "src/WebComponents/FileDrop/file-drop.ts",

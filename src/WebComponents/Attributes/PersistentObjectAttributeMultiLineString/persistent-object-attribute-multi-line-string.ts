@@ -3,7 +3,16 @@ namespace Vidyano.WebComponents.Attributes {
 
     @PersistentObjectAttribute.register({
         properties: {
-            maxlength: Number
+            maxlength: Number,
+            codeMirror: {
+                type: String,
+                computed: "_computeCodeMirror(attribute)",
+                value: ""
+            },
+            isCodeMirrorReadOnly: {
+                type: Boolean,
+                computed: "_computeIsCodeMirrorReadOnly(readOnly, editing)"
+            }
         }
     })
     export class PersistentObjectAttributeMultiLineString extends PersistentObjectAttribute {
@@ -21,6 +30,14 @@ namespace Vidyano.WebComponents.Attributes {
         private _editTextAreaBlur() {
             if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)
                 this.attribute.setValue(this.value = this.attribute.value, true);
+        }
+
+        private _computeCodeMirror(attribute: Vidyano.PersistentObjectAttribute): string {
+            return attribute ? attribute.getTypeHint("language") : null;
+        }
+
+        private _computeIsCodeMirrorReadOnly(readOnly: boolean, editing: boolean): boolean {
+            return readOnly || !editing;
         }
     }
 }

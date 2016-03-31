@@ -48,8 +48,8 @@
             if (!this._tabConfigs)
                 this._tabConfigs = this._getConfigs<PersistentObjectTabConfig>(Vidyano.WebComponents.PersistentObjectTabConfig);
 
-            return this._tabConfigs.firstOrDefault(c => c.name === tab.name && c.type === tab.parent.type && c.objectId === tab.parent.objectId) ||
-                this._tabConfigs.firstOrDefault(c => c.name === tab.name && c.type === tab.parent.type);
+            return this._tabConfigs.firstOrDefault(c => c.name === tab.name && (c.type === tab.parent.type || c.type === tab.parent.fullTypeName || c.id === tab.parent.id) && c.objectId === tab.parent.objectId) ||
+                this._tabConfigs.firstOrDefault(c => c.name === tab.name && (c.type === tab.parent.type || c.type === tab.parent.fullTypeName || c.id === tab.parent.id));
         }
 
         getProgramUnitConfig(name: string): ProgramUnitConfig {

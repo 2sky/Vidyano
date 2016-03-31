@@ -1,0 +1,20 @@
+<script src="../../Libs/codemirror/lib/codemirror.js"></script>
+<link rel="stylesheet" href="../../Libs/codemirror/lib/codemirror.css" />
+<script src="../../Libs/codemirror/mode/css/css.js"></script>
+<script src="../../Libs/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="../../Libs/codemirror/mode/javascript/javascript.js"></script>
+<script src="../../Libs/codemirror/mode/markdown/markdown.js"></script>
+<script src="../../Libs/codemirror/mode/sass/sass.js"></script>
+<script src="../../Libs/codemirror/mode/xml/xml.js"></script>
+
+<dom-module id="vi-code-mirror">
+    <template>
+        <link rel="stylesheet" href="code-mirror.css" />
+        <div id="container" class="flex relative">
+            <textarea id="target"></textarea>
+            <vi-size-tracker size="{{size}}"></vi-size-tracker>
+        </div>
+    </template>
+</dom-module>
+
+<script src="code-mirror.js"></script>

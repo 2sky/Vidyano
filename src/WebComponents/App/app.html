@@ -65,6 +65,19 @@
             <vi-persistent-object-attribute-config type="Image" height="2"></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="TranslatedString" height="attr.getTypeHint('MultiLine') == 'True' ? 3 : 1"></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="AsDetail" height="attr.getTypeHint('Height', 'auto') == 'auto' ? 0 : 6" width="4"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-tab-config type="Vidyano.Rule" name="Rule">
+                <template is="dom-template">
+                    <div class="vertical layout flex">
+                        <vi-grid style="padding-top: 0; padding-bottom: 0;">
+                            <vi-persistent-object-attribute-presenter desktop-6 attribute="[[tab.attributes.Name]]"></vi-persistent-object-attribute-presenter>
+                            <vi-persistent-object-attribute-presenter desktop-6 attribute="[[tab.attributes.Type]]"></vi-persistent-object-attribute-presenter>
+                        </vi-grid>
+                        <vi-grid class="flex" style="padding-top: 0; padding-bottom: 0;">
+                            <vi-persistent-object-attribute-presenter class="layout vertical" desktop-12 tablet-8 phone-6 height="0" attribute="[[tab.attributes.Data]]"></vi-persistent-object-attribute-presenter>
+                        </vi-grid>
+                    </div>
+                </template>
+            </vi-persistent-object-tab-config>
             <content select="vi-app-setting, vi-persistent-object-config, vi-persistent-object-attribute-config, vi-persistent-object-tab-config, vi-program-unit-config, vi-query-config, vi-query-chart-config"></content>
         </vi-app-config>
     </template>

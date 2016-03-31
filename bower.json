@@ -40,6 +40,15 @@
     },
     "d3": {
       "": "d3.min.js"
+    },
+    "codemirror": {
+        "lib": "lib/*.*",
+        "mode/css": "mode/css/*.*",
+        "mode/htmlmixed": "mode/htmlmixed/*.*",
+        "mode/javascript": "mode/javascript/*.*",
+        "mode/markdown": "mode/markdown/*.*",
+        "mode/sass": "mode/sass/*.*",
+        "mode/xml": "mode/xml/*.*"
     }
   },
   "dependencies": {
@@ -54,6 +63,7 @@
     "moment": "^2.10.6",
     "sortable": "RubaXa/sortable#^1.2.1",
     "d3": "^3.5.6",
+    "codemirror": "^5.13.2",
     "linqjs": "2sky/linqjs#3.0.3-Beta4",
     "pathjs": "2sky/pathjs#master",
     "layout": "2sky/layout#master"
