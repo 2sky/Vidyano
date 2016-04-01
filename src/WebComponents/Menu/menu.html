@@ -46,7 +46,7 @@
                 <template is="dom-repeat" items="[[programUnits]]" as="programUnit">
                     <vi-popup orientation="horizontal" content-align="right" open-on-hover>
                         <vi-menu-item header class="program-unit" item="[[programUnit]]" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]"></vi-menu-item>
-                        <div content class="subItems" has-group-items$="[[_hasGroupItems(programUnit.items)]]" item-count$="[[_countItems(programUnit.items)]]">
+                        <vi-scroller content no-horizontal class="subItems" has-group-items$="[[_hasGroupItems(programUnit.items)]]" item-count$="[[_countItems(programUnit.items)]]">
                             <template is="dom-repeat" items="[[programUnit.items]]" as="programUnitItem">
                                 <vi-menu-item class="program-unit-item" item="[[programUnitItem]]"></vi-menu-item>
                                 <div class="subItems">
@@ -55,7 +55,7 @@
                                     </template>
                                 </div>
                             </template>
-                        </div>
+                        </vi-scroller>
                     </vi-popup>
                 </template>
             </div>

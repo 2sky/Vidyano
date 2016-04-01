@@ -131,6 +131,8 @@ namespace Vidyano.WebComponents {
             const alignCenter = alignments.indexOf("CENTER") >= 0;
             const alignRight = alignments.indexOf("RIGHT") >= 0;
 
+            const contentChild = <HTMLElement>Polymer.dom(this).querySelector("[content]");
+
             if (this._currentOrientation === "vertical") {
                 if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + (transformedRect ? transformedRect.left : 0) + contentWidth <= boundWidth) {
                     // Left-align
@@ -170,6 +172,8 @@ namespace Vidyano.WebComponents {
 
                     content.classList.add("top");
                     content.classList.remove("bottom");
+
+                    contentChild.style.maxHeight = `${boundHeight - targetRect.top}px`;
                 }
                 else {
                     // Bottom-align
@@ -178,6 +182,8 @@ namespace Vidyano.WebComponents {
 
                     content.classList.add("bottom");
                     content.classList.remove("top");
+
+                    contentChild.style.maxHeight = content.style.bottom;
                 }
             }
             else if (this._currentOrientation === "horizontal") {
@@ -198,13 +204,15 @@ namespace Vidyano.WebComponents {
                     content.classList.remove("left");
                 }
 
-                if (targetRect.top + contentHeight < boundHeight) {
+                if (targetRect.top + contentHeight < boundHeight || targetRect.top + contentHeight >= windowHeight) {
                     // Top-align
                     content.style.top = targetRect.top + "px";
                     content.style.bottom = "auto";
 
                     content.classList.add("top");
                     content.classList.remove("bottom");
+
+                    contentChild.style.maxHeight = `${windowHeight - targetRect.top}px`;
                 }
                 else {
                     // Bottom-align
@@ -213,6 +221,8 @@ namespace Vidyano.WebComponents {
 
                     content.classList.add("bottom");
                     content.classList.remove("top");
+
+                    contentChild.style.maxHeight = content.style.bottom;
                 }
             }
 
