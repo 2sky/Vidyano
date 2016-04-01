@@ -22,7 +22,7 @@
             </template>
         </header>
         <template is="dom-if" if="[[!collapsed]]">
-            <div class="horizontal layout flex">
+            <div class="horizontal layout flex relative">
                 <vi-scroller class="flex programUnits" no-horizontal>
                     <template is="dom-repeat" items="[[programUnits]]" as="programUnit">
                         <vi-menu-item class="program-unit" item="[[programUnit]]" filter="{{filter}}" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]"></vi-menu-item>
