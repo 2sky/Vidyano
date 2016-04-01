@@ -131,7 +131,7 @@ namespace Vidyano.WebComponents {
             const alignCenter = alignments.indexOf("CENTER") >= 0;
             const alignRight = alignments.indexOf("RIGHT") >= 0;
 
-            const contentChild = <HTMLElement>Polymer.dom(this).querySelector("[content]");
+            let maxContentHeight = "none";
 
             if (this._currentOrientation === "vertical") {
                 if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + (transformedRect ? transformedRect.left : 0) + contentWidth <= boundWidth) {
@@ -173,7 +173,7 @@ namespace Vidyano.WebComponents {
                     content.classList.add("top");
                     content.classList.remove("bottom");
 
-                    contentChild.style.maxHeight = `${boundHeight - targetRect.top}px`;
+                    maxContentHeight = `${boundHeight - targetRect.top}px`;
                 }
                 else {
                     // Bottom-align
@@ -183,7 +183,7 @@ namespace Vidyano.WebComponents {
                     content.classList.add("bottom");
                     content.classList.remove("top");
 
-                    contentChild.style.maxHeight = content.style.bottom;
+                    maxContentHeight = content.style.bottom;
                 }
             }
             else if (this._currentOrientation === "horizontal") {
@@ -212,7 +212,7 @@ namespace Vidyano.WebComponents {
                     content.classList.add("top");
                     content.classList.remove("bottom");
 
-                    contentChild.style.maxHeight = `${windowHeight - targetRect.top}px`;
+                    maxContentHeight = `${windowHeight - targetRect.top}px`;
                 }
                 else {
                     // Bottom-align
@@ -222,9 +222,13 @@ namespace Vidyano.WebComponents {
                     content.classList.add("bottom");
                     content.classList.remove("top");
 
-                    contentChild.style.maxHeight = content.style.bottom;
+                    maxContentHeight = content.style.bottom;
                 }
             }
+
+            const contentChild = <HTMLElement>Polymer.dom(this).querySelector("[content]");
+            if (contentChild)
+                contentChild.style.maxHeight = maxContentHeight;
 
             this._currentTarget = target;
             this._currentContent = content;
