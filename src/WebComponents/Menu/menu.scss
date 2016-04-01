@@ -32,6 +32,12 @@
                 display: block;
             }
         }
+
+        #resizer {
+            width: var(--theme-h5);
+            background-color: transparent;
+            cursor: ew-resize;
+        }
     }
 
     &[collapsed] {

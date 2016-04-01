@@ -22,21 +22,24 @@
             </template>
         </header>
         <template is="dom-if" if="[[!collapsed]]">
-            <vi-scroller class="flex programUnits" no-horizontal>
-                <template is="dom-repeat" items="[[programUnits]]" as="programUnit">
-                    <vi-menu-item class="program-unit" item="[[programUnit]]" filter="{{filter}}" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]"></vi-menu-item>
-                    <div class="subItems">
-                        <template is="dom-repeat" items="[[programUnit.items]]" as="programUnitItem">
-                            <vi-menu-item class="program-unit-item" item="[[programUnitItem]]" filter="{{filter}}"></vi-menu-item>
-                            <div class="subItems">
-                                <template is="dom-repeat" items="[[programUnitItem.items]]" as="groupItem">
-                                    <vi-menu-item class="program-unit-group-item" item="[[groupItem]]" filter="{{filter}}" filter-parent="[[item]]"></vi-menu-item>
-                                </template>
-                            </div>
-                        </template>
-                    </div>
-                </template>
-            </vi-scroller>
+            <div class="horizontal layout flex">
+                <vi-scroller class="flex programUnits" no-horizontal>
+                    <template is="dom-repeat" items="[[programUnits]]" as="programUnit">
+                        <vi-menu-item class="program-unit" item="[[programUnit]]" filter="{{filter}}" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]"></vi-menu-item>
+                        <div class="subItems">
+                            <template is="dom-repeat" items="[[programUnit.items]]" as="programUnitItem">
+                                <vi-menu-item class="program-unit-item" item="[[programUnitItem]]" filter="{{filter}}"></vi-menu-item>
+                                <div class="subItems">
+                                    <template is="dom-repeat" items="[[programUnitItem.items]]" as="groupItem">
+                                        <vi-menu-item class="program-unit-group-item" item="[[groupItem]]" filter="{{filter}}" filter-parent="[[item]]"></vi-menu-item>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </vi-scroller>
+                <div id="resizer" on-track="_onResize"></div>
+            </div>
         </template>
         <template is="dom-if" if="[[collapsed]]">
             <div class="flex programUnits">
