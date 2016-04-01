@@ -654,6 +654,14 @@
 
                 if (detail.save)
                     this._settings.save(false);
+
+                let columnOffset = detail.column.calculatedOffset + detail.columnWidth;
+                this._columns.slice(this._columns.indexOf(detail.column) + 1).forEach(c => {
+                    c.calculatedOffset = columnOffset;
+                    columnOffset += c.calculatedWidth;
+                });
+
+                this._updateTableDataPendingUpdates();
             }
 
             if (e)

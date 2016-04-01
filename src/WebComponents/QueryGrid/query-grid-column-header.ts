@@ -140,7 +140,7 @@
                 this.column.calculatedWidth = Math.max(this.column.calculatedWidth + detail.dx, this._minimumColumnWidth);
                 this.column.width = `${this.column.calculatedWidth}px`;
 
-                this.fire("column-widths-updated", { column: this.column, save: true });
+                this.fire("column-widths-updated", { column: this.column, columnWidth: this.column.calculatedWidth, save: true });
             }
         }
     }
