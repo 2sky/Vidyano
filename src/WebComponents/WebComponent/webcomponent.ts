@@ -642,7 +642,7 @@
                                     return;
 
                                 listener.call(this, e.detail.keyboardEvent);
-                                
+
                                 e.stopPropagation();
                                 e.detail.keyboardEvent.stopPropagation();
                                 e.detail.keyboardEvent.preventDefault();
