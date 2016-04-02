@@ -42,7 +42,7 @@
             },
             viewportSize: {
                 type: Object,
-                readOnly: true
+                observer: "_viewportSizeChanged"
             },
             rowHeight: {
                 type: Number,
@@ -131,6 +131,12 @@
             "scroll": "_preventScroll",
             "drag-start": "_dragStart",
             "drag-end": "_dragEnd"
+        },
+        keybindings: {
+            "pagedown": "_pageDown",
+            "pageup": "_pageUp",
+            "down": "_downArrow",
+            "up": "_upArrow"
         }
     })
     export class QueryGrid extends WebComponent {
@@ -271,15 +277,14 @@
             this.toggleClass("initializing", this.initializing);
         }
 
-        private _sizeChanged(e: CustomEvent, detail: ISize) {
-            this._setViewportSize(detail);
+        private _viewportSizeChanged(viewportSize: ISize) {
             this._setRowHeight(parseInt(getComputedStyle(this).lineHeight));
 
             if (!this._hasPendingUpdates) {
                 this._updateTableDataPendingUpdates();
-                if (!this._remainderWidth || this._remainderWidth < detail.width) {
-                    this._style.setStyle("Remainder", `td[is="vi-query-grid-table-column-remainder"] { width: ${detail.width}px; }`);
-                    this._remainderWidth = detail.width * 2;
+                if (!this._remainderWidth || this._remainderWidth < viewportSize.width) {
+                    this._style.setStyle("Remainder", `td[is="vi-query-grid-table-column-remainder"] { width: ${viewportSize.width}px; }`);
+                    this._remainderWidth = viewportSize.width * 2;
                 }
             }
         }
@@ -850,6 +855,48 @@
 
                 this._settings.save(true);
             });
+        }
+
+        private _upArrow(e: Event) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!this.query || this.initializing)
+                return;
+
+            this._verticalScrollOffset = Math.max(this._verticalScrollOffset - this.rowHeight, 0);
+        }
+
+        private _pageUp(e: Event) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!this.query || this.initializing)
+                return;
+
+            const rows = Math.floor(this.viewportSize.height / this.rowHeight) - 2;
+            this._verticalScrollOffset = Math.max(this._verticalScrollOffset - rows * this.rowHeight, 0);
+        }
+
+        private _downArrow(e: Event) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!this.query || this.initializing)
+                return;
+
+            this._verticalScrollOffset = Math.min(this._verticalScrollOffset + this.rowHeight, this.rowHeight * this.query.totalItems - this.viewportSize.height);
+        }
+
+        private _pageDown(e: Event) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (!this.query || this.initializing)
+                return;
+
+            const rows = Math.floor(this.viewportSize.height / this.rowHeight) - 2;
+            this._verticalScrollOffset = Math.min(this._verticalScrollOffset + rows * this.rowHeight, this.rowHeight * this.query.totalItems - this.viewportSize.height);
         }
 
         private _preventScroll(e: Event) {

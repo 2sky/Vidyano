@@ -14,7 +14,6 @@
 <dom-module id="vi-query-grid">
     <template>
         <link rel="stylesheet" href="query-grid.css" />
-        <vi-size-tracker on-sizechanged="_sizeChanged"></vi-size-tracker>
         <vi-style id="style" key="vi-query-grid"></vi-style>
         <div class="vertical layout fit">
             <header id="dataHeaderHost" class="horizontal layout">
@@ -31,11 +30,14 @@
                     <vi-popup-menu-item id="columnMenuConfigure" label="[[translations.Manage]]" icon="Configure" on-tap="_configureColumns"></vi-popup-menu-item>
                 </vi-popup-menu>
             </header>
-            <vi-scroller class="flex" vertical-scroll-offset="{{_verticalScrollOffset}}" horizontal-scroll-offset="{{_horizontalScrollOffset}}">
-                <div id="verticalSpacer">
-                    <div id="dataHost"></div>
-                </div>
-            </vi-scroller>
+            <div class="horizontal layout flex relative">
+                <vi-size-tracker size="{{viewportSize}}"></vi-size-tracker>
+                <vi-scroller class="flex" vertical-scroll-offset="{{_verticalScrollOffset}}" horizontal-scroll-offset="{{_horizontalScrollOffset}}">
+                    <div id="verticalSpacer">
+                        <div id="dataHost"></div>
+                    </div>
+                </vi-scroller>
+            </div>
             <footer id="dataFooterHost"></footer>
         </div>
         <div id="initializingOverlay"></div>
