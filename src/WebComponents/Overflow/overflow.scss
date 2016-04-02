@@ -7,9 +7,13 @@
     @include layout-horizontal();
     @include relative();
 
-    #visible {
-        position: relative;
+    #visibleContainer {
         overflow: hidden;
+    }
+
+    #visible {
+        @include layout-inline();
+        position: relative;
 
         vi-size-tracker {
             z-index: -1;
