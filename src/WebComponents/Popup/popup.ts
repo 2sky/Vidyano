@@ -178,12 +178,13 @@ namespace Vidyano.WebComponents {
                 else {
                     // Bottom-align
                     content.style.top = "auto";
-                    content.style.bottom = Math.max(windowHeight - targetRect.top, 0) + "px";
+                    const bottom = Math.max(windowHeight - targetRect.top, 0);
+                    content.style.bottom = `${bottom}px`;
 
                     content.classList.add("bottom");
                     content.classList.remove("top");
 
-                    maxContentHeight = content.style.bottom;
+                    maxContentHeight = `${windowHeight - bottom}px`;
                 }
             }
             else if (this._currentOrientation === "horizontal") {
