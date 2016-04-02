@@ -2048,7 +2048,7 @@ namespace Vidyano {
                         const groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this)];
                         groups[0].index = 0;
 
-                        const serviceTab = this._lastResult.tabs[attr.tabKey];
+                        const serviceTab = this._lastResult.tabs.filter(tab => tab.name === attr.tabKey)[0];
                         attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tabKey, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
                         this.tabs.push(tab);
                         tabsAdded = true;
