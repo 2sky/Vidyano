@@ -9,6 +9,7 @@
     }'};
 
     vi-checkbox {
+        display: inline-block;
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
     }
 
