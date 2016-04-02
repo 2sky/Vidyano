@@ -629,8 +629,20 @@
                             }
 
                             const eventListener = (e: Keyboard.IKeysEvent) => {
-                                listener.call(this, e.detail.keyboardEvent);
+                                let combo = e.detail.combo;
+                                if (e.detail.keyboardEvent.ctrlKey && combo.indexOf("ctrl") < 0)
+                                    combo = "ctrl+" + combo;
+                                if (e.detail.keyboardEvent.shiftKey && combo.indexOf("shift") < 0)
+                                    combo = "shift+" + combo;
+                                if (e.detail.keyboardEvent.altKey && combo.indexOf("alt") < 0)
+                                    combo = "alt+" + combo;
 
+                                const registrations = Enumerable.from(this._keybindingRegistrations).firstOrDefault(r => r.keys.some(k => k === combo));
+                                if (!registrations)
+                                    return;
+
+                                listener.call(this, e.detail.keyboardEvent);
+                                
                                 e.stopPropagation();
                                 e.detail.keyboardEvent.stopPropagation();
                                 e.detail.keyboardEvent.preventDefault();
