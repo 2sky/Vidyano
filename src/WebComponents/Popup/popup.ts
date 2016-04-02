@@ -173,7 +173,7 @@ namespace Vidyano.WebComponents {
                     content.classList.add("top");
                     content.classList.remove("bottom");
 
-                    maxContentHeight = `${boundHeight - targetRect.top}px`;
+                    maxContentHeight = `${boundHeight - targetRect.top - targetRect.height}px`;
                 }
                 else {
                     // Bottom-align
