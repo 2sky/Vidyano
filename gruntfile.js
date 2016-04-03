@@ -126,6 +126,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask("nuget", [
         "bower:install",
+        "sass",
         "ts",
         "tslint",
         "clean",
