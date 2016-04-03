@@ -66,6 +66,8 @@
     -ms-flex: 1;
     -webkit-flex: 1;
     flex: 1;
+	min-height: 0;
+    min-width: 0;
 }
 
 @mixin flex-1() {

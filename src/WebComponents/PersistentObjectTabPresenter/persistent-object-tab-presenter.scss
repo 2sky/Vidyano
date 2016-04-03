@@ -10,8 +10,4 @@
             @include fit();
         }
     }
-
-    ::content > .flex {
-        min-width: 0;
-    }
 }

@@ -3,8 +3,4 @@
 :host {
     @include layout-horizontal();
     position: relative;
-
-    #container {
-        min-width: 0;
-    }
 }

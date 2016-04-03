@@ -106,11 +106,9 @@
     #content {
         @include layout-horizontal();
         @include flex();
-        min-width: 0;
 
         .attribute {
             @include flex();
-            min-width: 0;
         }
     }
 
