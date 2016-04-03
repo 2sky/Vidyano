@@ -20,6 +20,7 @@
 
             > #content {
                 @include flex();
+                min-height: initial;
             }
         }
     }
@@ -40,6 +41,8 @@
             > #content {
                 @include flex();
                 @include layout-horizontal();
+                min-height: initial;
+                min-width: initial;
 
                 > :not(vi-size-tracker) {
                     @include flex();
