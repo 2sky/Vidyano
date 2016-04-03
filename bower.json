@@ -30,7 +30,7 @@
       "": "marked*.html"
     },
     "layout": {
-      "": "layout.*"
+      "": [ "layout.html", "_layout.scss" ]
     },
     "bignumber.js": {
       "": "*.min.js"
