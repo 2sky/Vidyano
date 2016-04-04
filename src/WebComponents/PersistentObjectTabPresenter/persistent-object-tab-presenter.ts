@@ -85,7 +85,7 @@ namespace Vidyano.WebComponents {
                         if (tab !== this.tab)
                             return;
 
-                        this._tabAttributes = tab.attributes.slice(0);
+                        this._tabAttributes = (<Vidyano.PersistentObjectAttributeTab>tab).attributes.slice(0);
 
                         const attributeTab = new WebComponents.PersistentObjectTab();
                         attributeTab.className = childClassName;
