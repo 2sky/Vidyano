@@ -58,7 +58,12 @@
             if (!isAttached)
                 return;
 
-            if (!group.label && groupIndex > 0)
+            if (group.label && groupIndex === 0) {
+                const firstAttribute = group.attributes[0];
+                if (firstAttribute && firstAttribute.tab.label === group.label)
+                    return "";
+            }
+            else if (!group.label && groupIndex > 0)
                 return this.app.translateMessage("DefaultAttributesGroup");
 
             return group.label;
