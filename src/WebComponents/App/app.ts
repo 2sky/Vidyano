@@ -885,7 +885,7 @@ namespace Vidyano.WebComponents {
 
             return new Promise((resolve, reject) => {
                 const newAction = <Vidyano.Action>query.actions["New"];
-                return newAction.execute(undefined, undefined, undefined, { skipOpen: true }).then(po => {
+                return newAction.execute({ skipOpen: true }).then(po => {
                     return query.queueWork(() => {
                         const fileDropAttribute = po.getAttribute(config.fileDropAttribute);
                         if (!fileDropAttribute)

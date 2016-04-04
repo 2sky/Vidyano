@@ -4031,7 +4031,7 @@ namespace Vidyano {
             const newAction = (<Action>this._filtersAsDetail.details.actions["New"]);
 
             return this._query.queueWork(() => {
-                return newAction.execute(undefined, undefined, undefined, { skipOpen: true }).then(po => new QueryFilter(po));
+                return newAction.execute({ skipOpen: true }).then(po => new QueryFilter(po));
             });
         }
 
@@ -4133,6 +4133,9 @@ namespace Vidyano {
     }
 
     export interface IActionExecuteOptions {
+        menuOption?: number;
+        parameters?: any;
+        selectedItems?: QueryResultItem[];
         skipOpen?: boolean;
         noConfirmation?: boolean;
         throwExceptions?: boolean;
@@ -4268,13 +4271,13 @@ namespace Vidyano {
             this.notifyPropertyChanged("options", this._options = options, oldOptions);
         }
 
-        execute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
+        execute(options: IActionExecuteOptions = {}): Promise<PersistentObject> {
             return new Promise<PersistentObject>((resolve, reject) => {
-                if (this.canExecute || (selectedItems != null && this.selectionRule(selectedItems.length)))
-                    this._onExecute(option, parameters, selectedItems, executeOptions).then(po => {
+                if (this.canExecute || (options.selectedItems != null && this.selectionRule(options.selectedItems.length)))
+                    this._onExecute(options).then(po => {
                         resolve(po);
                     }, e => {
-                        if (executeOptions && executeOptions.throwExceptions)
+                        if (options.throwExceptions)
                             reject(e);
                         else
                             this.owner.setNotification(e);
@@ -4282,14 +4285,14 @@ namespace Vidyano {
             });
         }
 
-        protected _onExecute(option: number = -1, parameters?: any, selectedItems?: QueryResultItem[], executeOptions?: IActionExecuteOptions): Promise<PersistentObject> {
-            const confirmation = this.definition.confirmation && (!executeOptions || !executeOptions.noConfirmation) ? this.service.hooks.onActionConfirmation(this, option) : Promise.resolve(true);
+        protected _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
+            const confirmation = this.definition.confirmation && (!noConfirmation) ? this.service.hooks.onActionConfirmation(this, menuOption) : Promise.resolve(true);
 
             return confirmation.then(result => {
                 if (result) {
                     return this.owner.queueWork(() => {
                         return new Promise<PersistentObject>((resolve, reject) => {
-                            parameters = this._getParameters(parameters, option);
+                            parameters = this._getParameters(parameters, menuOption);
 
                             if (selectedItems == null && this.query) {
                                 if (this.query.selectAll.allSelected) {
@@ -4338,7 +4341,7 @@ namespace Vidyano {
                                         po.ownerQuery = this.query;
                                         po.ownerPersistentObject = this.parent;
 
-                                        if (!executeOptions || !executeOptions.skipOpen)
+                                        if (!skipOpen)
                                             this.service.hooks.onOpen(po, false, true);
                                     }
                                 }

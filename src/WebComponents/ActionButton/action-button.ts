@@ -147,11 +147,15 @@ namespace Vidyano.WebComponents {
         private _execute(option: number = -1) {
             if (this.canExecute) {
                 if (!this.item)
-                    this.action.execute(option);
+                    this.action.execute({
+                        menuOption: option
+                    });
                 else {
-                    this.action.execute(option, this.options && option < this.options.length ? {
-                        MenuLabel: this.options[option].value
-                    } : null, [this.item]);
+                    this.action.execute({
+                        menuOption: option,
+                        parameters: this.options && option < this.options.length ? { MenuLabel: this.options[option].value } : null,
+                        selectedItems: [this.item]
+                    });
                 }
             }
         }

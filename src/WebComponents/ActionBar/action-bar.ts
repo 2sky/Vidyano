@@ -46,12 +46,6 @@
 
         private _setHasCharts: (val: boolean) => void;
 
-        executeAction(e: Event, details: any, sender: HTMLElement) {
-            const action = this.serviceObject.actions[sender.getAttribute("data-action-name")];
-            if (action)
-                action.execute(parseInt(sender.getAttribute("data-option") || "-1", 10));
-        }
-
         filterActions(actions: Vidyano.Action[], pinned: boolean): Vidyano.Action[] {
             return actions.filter(a => a.isPinned === pinned);
         }
