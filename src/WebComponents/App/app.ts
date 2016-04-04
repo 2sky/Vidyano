@@ -181,6 +181,11 @@ namespace Vidyano.WebComponents {
             isPhone: {
                 type: Boolean,
                 reflectToAttribute: true
+            },
+            isTracking: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
             }
         },
         observers: [
@@ -194,7 +199,8 @@ namespace Vidyano.WebComponents {
             "tabindex": 0
         },
         listeners: {
-            "app-route-add": "_appRouteAdded"
+            "app-route-add": "_appRouteAdded",
+            "track": "_onTrack"
         },
         forwardObservers: [
             "service.isSignedIn",
@@ -230,6 +236,7 @@ namespace Vidyano.WebComponents {
         private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setCurrentRoute: (route: AppRoute) => void;
         private _setProfilerLoaded: (val: boolean) => void;
+        private _setIsTracking: (val:boolean) => void;
 
         attached() {
             super.attached();
@@ -568,6 +575,13 @@ namespace Vidyano.WebComponents {
                 (e || window.event).returnValue = <any>confirmationMessage; // Gecko + IE
                 return confirmationMessage; // Webkit, Safari, Chrome etc.
             }
+        }
+
+        private _onTrack(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
+            if (detail.state === "start")
+                this._setIsTracking(true);
+            else if(detail.state === "end")
+            this._setIsTracking(false);
         }
 
         private _registerKeybindings(registration: Keyboard.IKeybindingRegistration) {

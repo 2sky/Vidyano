@@ -49,4 +49,8 @@
             right: 0;
         }
     }
+
+    &[is-tracking] {
+        @include noSelection();
+    }
 }

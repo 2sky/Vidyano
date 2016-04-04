@@ -113,6 +113,7 @@ namespace Vidyano.WebComponents {
         private _catchInputSearchTap(e: TapEvent) {
             e.stopPropagation();
         }
+
         private _onResize(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
             if (detail.state === "start") {
                 this._resizeWidth = Math.max(Menu._minResizeWidth, this.offsetWidth);
