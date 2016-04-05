@@ -2368,6 +2368,16 @@ namespace Vidyano {
                     return;
                 }
 
+                if (val && typeof val === "string") {
+                    const charactercasing = this.getTypeHint("charactercasing", "", undefined, true);
+                    if (charactercasing) {
+                        if (charactercasing.toUpperCase() === "LOWER")
+                            val = (<string>val).toLowerCase();
+                        else if (charactercasing.toUpperCase() === "UPPER")
+                            val = (<string>val).toUpperCase();
+                    }
+                }
+
                 const newServiceValue = Service.toServiceString(val, this.type);
                 let queuedTriggersRefresh = null;
 
