@@ -7,10 +7,21 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 value: false
+            },
+            serviceUri: {
+                type: String,
+                value: ""
+            },
+            serviceHooks: {
+                type: String,
+                value: "Vidyano.WebComponents.WebsiteAppServiceHooks"
             }
         }
     })
     export class Website extends WebComponent {
+        serviceUri: string;
+        serviceHooks: string;
+
         attached() {
             super.attached();
 
@@ -37,11 +48,11 @@ namespace Vidyano.WebComponents {
             };
 
             this._setApp(new Vidyano.WebComponents.App());
-            this.app.uri = "";
+            this.app.uri = this.serviceUri;
             this.app.noMenu = true;
             this.app.noHistory = true;
             this.app.path = `PersistentObject.${config.id}`;
-            this.app.hooks = "Vidyano.WebComponents.WebsiteAppServiceHooks";
+            this.app.hooks = this.serviceHooks;
 
             Polymer.dom(config).appendChild(template);
             Polymer.dom(this.app).appendChild(config);

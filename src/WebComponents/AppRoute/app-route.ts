@@ -24,7 +24,8 @@ namespace Vidyano.WebComponents {
             path: {
                 type: String,
                 readOnly: true
-            }
+            },
+            allowSignedOut: Boolean
         },
         listeners: {
             "title-changed": "_titleChanged"
@@ -35,6 +36,7 @@ namespace Vidyano.WebComponents {
         private _constructorChanged: boolean;
         private _parameters: { [key: string]: string } = {};
         private _documentTitleBackup: string;
+        allowSignedOut: boolean;
         active: boolean;
         path: string;
         deactivator: (result: boolean) => void;
@@ -61,15 +63,22 @@ namespace Vidyano.WebComponents {
             let component = <WebComponent>Polymer.dom(this).children[0];
             if (!component || this._constructorChanged) {
                 this._constructorChanged = false;
+                component = <WebComponent><any>new this._constructor(this.app);
 
                 this.empty();
-                component = <WebComponent><any>new this._constructor(this.app);
                 Polymer.dom(this).appendChild(component);
+                Polymer.dom(this).flush();
+            }
+            else if (component.tagName === "TEMPLATE" && component.getAttribute("is") === "dom-template") {
+                const template = <PolymerTemplate><any>component;
+
+                this.empty();
+                Polymer.dom(this).appendChild(template.stamp({ app: this.app }).root);
                 Polymer.dom(this).flush();
             }
 
             this._parameters = parameters;
-            if (!component.fire("app-route-activate", null, { bubbles: false, cancelable: true }).defaultPrevented) {
+            if (!component.fire || !component.fire("app-route-activate", null, { bubbles: false, cancelable: true }).defaultPrevented) {
                 this._setActive(true);
                 this._setPath(this.app.path);
 
@@ -82,7 +91,7 @@ namespace Vidyano.WebComponents {
 
             return new Promise(resolve => {
                 this.deactivator = resolve;
-                if (!component || !component.fire("app-route-deactivate", null, { bubbles: false, cancelable: true }).defaultPrevented)
+                if (!component || !component.fire || !component.fire("app-route-deactivate", null, { bubbles: false, cancelable: true }).defaultPrevented)
                     resolve(true);
             }).then(result => {
                 if (result) {

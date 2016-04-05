@@ -189,7 +189,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_start(initializing, path)",
+            "_start(initializing, path, currentRoute)",
             "_updateRoute(path, initializing, routeMapVersion)",
             "_hookWindowBeforeUnload(noHistory, isAttached)",
             "_cleanUpOnSignOut(service.isSignedIn)"
@@ -249,6 +249,10 @@ namespace Vidyano.WebComponents {
 
             const keys = <any>this.$$("iron-a11y-keys");
             keys.target = document.body;
+
+            Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => {
+                Polymer.dom(this.root).appendChild(route);
+            });
         }
 
         get configuration(): AppConfig {
@@ -534,8 +538,11 @@ namespace Vidyano.WebComponents {
             return isSignedIn && !noMenu;
         }
 
-        private _start(initializing: boolean, path: string) {
+        private _start(initializing: boolean, path: string, currentRoute: Vidyano.WebComponents.AppRoute) {
             if (initializing)
+                return;
+
+            if (currentRoute && currentRoute.allowSignedOut)
                 return;
 
             if (!this.service.isSignedIn && !App.stripHashBang(path).startsWith("SignIn")) {
