@@ -21,10 +21,11 @@
     &[no-horizontal]:not([no-vertical]) {
         > #wrapper {
             @include layout-vertical();
+            margin-bottom: 0;
+            overflow-x: hidden;
 
             > #content {
-                @include flex();
-                min-height: initial;
+                min-height: auto;
             }
         }
     }
@@ -32,6 +33,7 @@
     &[no-vertical]:not([no-horizontal]) {
         > #wrapper {
             @include layout-horizontal();
+            margin-right: 0;
             overflow-y: hidden;
         }
     }
