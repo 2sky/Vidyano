@@ -682,14 +682,15 @@ namespace Vidyano {
             return this._isSignedIn;
         }
 
-        private _setIsSignedIn(val: boolean) {
-            if (this._isSignedIn === val)
-                return;
+        private _setIsSignedIn(val: boolean)
+        {
+            const oldIsSignedIn = this._isSignedIn;
+            this._isSignedIn = val;
 
             this._setIsUsingDefaultCredentials(val && this.defaultUserName && this.userName && this.defaultUserName.toLowerCase() === this.userName.toLowerCase());
 
-            const oldIsSignedIn = this._isSignedIn;
-            this.notifyPropertyChanged("isSignedIn", this._isSignedIn = val, oldIsSignedIn);
+            if (val !== oldIsSignedIn)
+                this.notifyPropertyChanged("isSignedIn", this._isSignedIn, oldIsSignedIn);
         }
 
         get languages(): ILanguage[] {
@@ -709,7 +710,8 @@ namespace Vidyano {
         }
 
         private _setIsUsingDefaultCredentials(val: boolean) {
-            this._isUsingDefaultCredentials = val;
+            const oldIsUsingDefaultCredentials = this._isUsingDefaultCredentials;
+            this.notifyPropertyChanged("isUsingDefaultCredentials", this._isUsingDefaultCredentials = val, oldIsUsingDefaultCredentials);
         }
 
         get userName(): string {

@@ -26,7 +26,7 @@
             const returnUrl = decodeURIComponent(route.parameters.returnUrl || "");
 
             if (route.app.service.isSignedIn) {
-                this.async(() => route.app.changePath("SignOut"), 0);
+                this.async(() => route.app.redirectToSignOut(), 0);
 
                 e.preventDefault();
                 return;

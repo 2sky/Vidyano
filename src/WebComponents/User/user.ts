@@ -58,11 +58,11 @@ namespace Vidyano.WebComponents {
         }
 
         signIn() {
-            this.app.changePath("SignIn");
+            this.app.redirectToSignIn();
         }
 
         signOut() {
-            this.app.changePath("SignOut");
+            this.app.redirectToSignOut(false);
         }
 
         feedback() {

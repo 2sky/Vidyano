@@ -355,6 +355,10 @@ namespace Vidyano.WebComponents {
             this.changePath("SignIn" + (keepUrl && this.path ? "/" + encodeURIComponent(App.stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
         }
 
+        redirectToSignOut(keepUrl: boolean = true) {
+            this.changePath("SignOut" + (keepUrl && this.path ? "/" + encodeURIComponent(App.stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
+        }
+
         redirectToNotFound() {
             this.async(() => {
                 this.redirectToError("NotFound", true);
@@ -505,6 +509,8 @@ namespace Vidyano.WebComponents {
                     newRoute.activate(mappedPathRoute.params);
                     this._setCurrentRoute(newRoute);
                 }
+                else
+                    this._setCurrentRoute(null);
             });
         }
 
@@ -542,10 +548,10 @@ namespace Vidyano.WebComponents {
             if (initializing)
                 return;
 
-            if (currentRoute && currentRoute.allowSignedOut)
-                return;
+            if (path && App.stripHashBang(path) && currentRoute && currentRoute.allowSignedOut)
+                return
 
-            if (!this.service.isSignedIn && !App.stripHashBang(path).startsWith("SignIn")) {
+            if (!this.service.isSignedIn) {
                 if (this.service.defaultUserName) {
                     this._setInitializing(true);
                     this.service.signInUsingDefaultCredentials().then(() => {
