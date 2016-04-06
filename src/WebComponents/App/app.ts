@@ -549,7 +549,7 @@ namespace Vidyano.WebComponents {
                 return;
 
             if (path && App.stripHashBang(path) && currentRoute && currentRoute.allowSignedOut)
-                return
+                return;
 
             if (!this.service.isSignedIn) {
                 if (this.service.defaultUserName) {

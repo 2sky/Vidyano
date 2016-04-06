@@ -682,8 +682,7 @@ namespace Vidyano {
             return this._isSignedIn;
         }
 
-        private _setIsSignedIn(val: boolean)
-        {
+        private _setIsSignedIn(val: boolean) {
             const oldIsSignedIn = this._isSignedIn;
             this._isSignedIn = val;
 
