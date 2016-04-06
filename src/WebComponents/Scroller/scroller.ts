@@ -97,6 +97,11 @@
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true
+            },
+            tabindex: {
+                type: Number,
+                reflectToAttribute: true,
+                value: 0
             }
         },
         forwardObservers: [
@@ -110,6 +115,14 @@
             "mouseenter": "_mouseenter",
             "mouseleave": "_mouseleave",
             "scroll": "_trapEvent"
+        },
+        keybindings: {
+            "home": "scrollToTop",
+            "end": "scrollToBottom",
+            "pageup": "_pageUp",
+            "pagedown": "_pageDown",
+            "up": "_up",
+            "down": "_down"
         }
     })
     export class Scroller extends WebComponent {
@@ -152,12 +165,46 @@
             return this.$["wrapper"];
         }
 
-        scrollToTop() {
+        scrollToTop(e?: KeyboardEvent) {
+            if (e && (e.target || e.srcElement) !== this)
+                return true;
+
             this.$["wrapper"].scrollTop = 0;
         }
 
-        scrollToBottom() {
+        scrollToBottom(e?: KeyboardEvent) {
+            if (e && (e.target || e.srcElement) !== this)
+                return true;
+
             this.$["wrapper"].scrollTop = this.innerHeight;
+        }
+
+        private _pageUp(e: KeyboardEvent) {
+            if ((e.target || e.srcElement) !== this)
+                return true;
+
+            this.$["wrapper"].scrollTop = Math.max(this.$["wrapper"].scrollTop - this.outerHeight, 0);
+        }
+
+        private _pageDown(e: KeyboardEvent) {
+            if ((e.target || e.srcElement) !== this)
+                return true;
+
+            this.$["wrapper"].scrollTop += this.outerHeight;
+        }
+
+        private _up(e: KeyboardEvent) {
+            if ((e.target || e.srcElement) !== this)
+                return true;
+
+            this.$["wrapper"].scrollTop = Math.max(this.$["wrapper"].scrollTop - this.outerHeight / 10, 0);
+        }
+
+        private _down(e: KeyboardEvent) {
+            if ((e.target || e.srcElement) !== this)
+                return true;
+
+            this.$["wrapper"].scrollTop += this.outerHeight / 10;
         }
 
         private _outerSizeChanged(e: Event, detail: { width: number; height: number }) {

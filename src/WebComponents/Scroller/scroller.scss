@@ -14,6 +14,10 @@
         margin-bottom: -var(--theme-scrollbar-width);
     }
 
+    &:focus {
+        outline: none;
+    }
+
     &[no-horizontal]:not([no-vertical]) {
         > #wrapper {
             @include layout-vertical();

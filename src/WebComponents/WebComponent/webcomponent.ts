@@ -641,7 +641,8 @@
                                 if (!registrations)
                                     return;
 
-                                listener.call(this, e.detail.keyboardEvent);
+                                if (listener.call(this, e.detail.keyboardEvent) === true)
+                                    return;
 
                                 e.stopPropagation();
                                 e.detail.keyboardEvent.stopPropagation();
