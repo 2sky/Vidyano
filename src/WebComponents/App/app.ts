@@ -548,10 +548,11 @@ namespace Vidyano.WebComponents {
             if (initializing)
                 return;
 
-            if (path && App.stripHashBang(path) && currentRoute && currentRoute.allowSignedOut)
+            path = App.stripHashBang(path);
+            if (path && currentRoute && currentRoute.allowSignedOut)
                 return;
 
-            if (!this.service.isSignedIn) {
+            if (!this.service.isSignedIn && !path.startsWith("SignIn")) {
                 if (this.service.defaultUserName) {
                     this._setInitializing(true);
                     this.service.signInUsingDefaultCredentials().then(() => {
