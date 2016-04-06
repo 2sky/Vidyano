@@ -12,10 +12,10 @@
         overflow: scroll;
         margin-right: -var(--theme-scrollbar-width);
         margin-bottom: -var(--theme-scrollbar-width);
-    }
 
-    &:focus {
-        outline: none;
+        &:focus {
+            outline: none;
+        }
     }
 
     &[no-horizontal]:not([no-vertical]) {

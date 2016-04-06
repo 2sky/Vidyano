@@ -2,7 +2,7 @@
     <template>
         <link rel="stylesheet" href="scroller.css" />
         <vi-size-tracker class="fit" on-sizechanged="_outerSizeChanged"></vi-size-tracker>
-        <div id="wrapper" on-scroll="_scroll">
+        <div id="wrapper" on-scroll="_scroll" tabindex="0">
             <div id="content" class="relative">
                 <vi-size-tracker on-sizechanged="_innerSizeChanged" trigger-zero></vi-size-tracker>
                 <content></content>
