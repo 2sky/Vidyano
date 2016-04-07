@@ -9,13 +9,11 @@
 
     > #wrapper {
         @include flex();
+        @include relative();
         overflow: scroll;
         margin-right: -var(--theme-scrollbar-width);
         margin-bottom: -var(--theme-scrollbar-width);
-
-        &:focus {
-            outline: none;
-        }
+        outline: none !important;
     }
 
     &[no-horizontal]:not([no-vertical]) {
@@ -55,10 +53,6 @@
                 }
             }
         }
-
-        > .scrollbar-parent {
-            display: none !important;
-        }
     }
 
     &:not([no-vertical]):not([no-horizontal]) {
@@ -80,9 +74,11 @@
         }
     }
 
-    > .scrollbar-parent {
+    .scrollbar-parent {
         position: absolute;
         background-color: transparent;
+        z-index: 1;
+        display: none;
         -moz-transition: opacity 0.2s, background-color 0.2s;
         -o-transition: opacity 0.2s, background-color 0.2s;
         -webkit-transition: opacity 0.2s, background-color 0.2s;
@@ -153,14 +149,23 @@
     }
 
     &[vertical] {
-        > .scrollbar-parent.vertical:hover {
-            background-color: rgba(0,0,0,0.2);
+        .scrollbar-parent.vertical {
+            display: block;
+
+            &:hover {
+                background-color: rgba(0,0,0,0.2);
+            }
         }
     }
 
     &[horizontal] {
-        > .scrollbar-parent.horizontal:hover {
-            background-color: rgba(0,0,0,0.2);
+        .scrollbar-parent.horizontal
+        {
+            display: block;
+
+            &:hover {
+                background-color: rgba(0,0,0,0.2);
+            }
         }
     }
 
