@@ -21,6 +21,7 @@
             @include relative();
             z-index: 1;
             background-color: white;
+            flex-shrink: 0; // Note: Needed for Safari
         }
     }
 
