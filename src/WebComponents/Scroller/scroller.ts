@@ -1,7 +1,15 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    declare var zenscroll;
+    interface IZenscroll {
+        toY(y: number);
+    }
+
+    class Zenscroll {
+        createScroller: (el: HTMLElement, duration: number, edgeOffset: number) => IZenscroll;
+    }
+
+    declare var zenscroll: Zenscroll;
 
     @WebComponent.register({
         properties: {
@@ -125,7 +133,7 @@
         private _horizontalScrollLeft: number;
         private _horizontalScrollSpace: number;
         private _trackStart: number;
-        private _zenscroll: any;
+        private _zenscroll: IZenscroll;
         outerWidth: number;
         outerHeight: number;
         innerWidth: number;
