@@ -134,7 +134,7 @@ namespace Vidyano.WebComponents.Attributes {
             if (hasReference && this.attribute.objectId !== this.objectId)
                 this.objectId = this.attribute ? this.attribute.objectId : null;
 
-            if (hasReference && this.attribute.lookup && this.attribute.lookup.canRead && this.attribute.objectId && this.app)
+            if (hasReference && this.attribute.lookup && this.attribute.lookup.canRead && this.attribute.objectId && this.app && !this.app.noHistory)
                 this.href = "#!/" + this.app.getUrlForPersistentObject(this.attribute.lookup.persistentObject.id, this.attribute.objectId);
             else
                 this.href = null;
