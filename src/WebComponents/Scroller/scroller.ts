@@ -1,6 +1,8 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
+    declare var zenscroll;
+
     @WebComponent.register({
         properties: {
             hovering: {
@@ -123,6 +125,7 @@
         private _horizontalScrollLeft: number;
         private _horizontalScrollSpace: number;
         private _trackStart: number;
+        private _zenscroll: any;
         outerWidth: number;
         outerHeight: number;
         innerWidth: number;
@@ -152,12 +155,27 @@
             return this.$["wrapper"];
         }
 
-        scrollToTop() {
-            this.$["wrapper"].scrollTop = 0;
+        private _initializeZenscroll() {
+            if (!this._zenscroll)
+                this._zenscroll = zenscroll.createScroller(this.$["wrapper"], 500, 0);
         }
 
-        scrollToBottom() {
-            this.$["wrapper"].scrollTop = this.innerHeight;
+        scrollToTop(animated?: boolean) {
+            if (animated) {
+                this._initializeZenscroll();
+                this._zenscroll.toY(0);
+            }
+            else
+                this.$["wrapper"].scrollTop = 0;
+        }
+
+        scrollToBottom(animated?: boolean) {
+            if (animated) {
+                this._initializeZenscroll();
+                this._zenscroll.toY(this.innerHeight);
+            }
+            else
+                this.$["wrapper"].scrollTop = this.innerHeight;
         }
 
         private _outerSizeChanged(e: Event, detail: { width: number; height: number }) {
