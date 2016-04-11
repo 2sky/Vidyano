@@ -111,7 +111,11 @@ namespace Vidyano.WebComponents {
             },
             service: {
                 type: Object,
-                computed: "_computeService(uri, user, hooks)"
+                computed: "_computeService(uri, user, hooks, configuration)"
+            },
+            configuration: {
+                type: Object,
+                readOnly: true
             },
             user: {
                 type: String,
@@ -199,6 +203,7 @@ namespace Vidyano.WebComponents {
             "tabindex": 0
         },
         listeners: {
+            "app-config-attached": "_configurationAttached",
             "app-route-add": "_appRouteAdded",
             "track": "_onTrack"
         },
@@ -215,8 +220,8 @@ namespace Vidyano.WebComponents {
         private _routeUpdater: Promise<any> = Promise.resolve();
         private _keybindingRegistrations: { [key: string]: Keyboard.IKeybindingRegistration[]; } = {};
         private routeMapVersion: number;
-        private _configuration: AppConfig;
         private _beforeUnloadEventHandler: EventListener;
+        configuration: AppConfig;
         service: Vidyano.Service;
         programUnit: ProgramUnit;
         currentRoute: AppRoute;
@@ -230,6 +235,7 @@ namespace Vidyano.WebComponents {
         label: string;
         keys: string;
 
+        private _setConfiguration: (config: AppConfig) => void;
         private _setInitializing: (init: boolean) => void;
         private _setRouteMapVersion: (version: number) => void;
         private _setKeys: (keys: string) => void;
@@ -253,13 +259,6 @@ namespace Vidyano.WebComponents {
             Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => {
                 Polymer.dom(this.root).appendChild(route);
             });
-        }
-
-        get configuration(): AppConfig {
-            if (!this._configuration)
-                this._configuration = <AppConfig>Polymer.dom(this.root).querySelector("vi-app-config");
-
-            return this._configuration;
         }
 
         get initializationError(): string {
@@ -397,6 +396,10 @@ namespace Vidyano.WebComponents {
             }
 
             return isProfiling && profilerLoaded;
+        }
+
+        private _configurationAttached(e: Event, configuration: AppConfig) {
+            this._setConfiguration(configuration);
         }
 
         private _computeService(uri: string, user: string): Vidyano.Service {

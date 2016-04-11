@@ -11,6 +11,12 @@
         private _queryConfigs: linqjs.Enumerable<QueryConfig>;
         private _queryChartConfigs: linqjs.Enumerable<QueryChartConfig>;
 
+        attached() {
+            super.attached();
+
+            this.fire("app-config-attached", this);
+        }
+
         getSetting(key: string, defaultValue?: string): string {
             const setting = <AppSetting>this.queryEffectiveChildren(`vi-app-setting[key="${key}"]`);
             return setting ? setting.getAttribute("value") : defaultValue;
