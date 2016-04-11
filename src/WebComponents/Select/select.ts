@@ -71,10 +71,18 @@ namespace Vidyano.WebComponents {
         private _pendingSelectedOption: string;
         options: string[] | Common.IKeyValuePair[];
         selectedOption: string;
+        readonly: boolean;
 
         private _setSuggestion: (suggestion: ISelectItem) => void;
         private _setSelectedItem: (item: ISelectItem) => void;
         private _setFiltering: (filtering: boolean) => void;
+
+        open() {
+            if (this.readonly || !this.items || this.items.length === 0)
+                return;
+
+            this.popup.popup();
+        }
 
         private get popup(): WebComponents.Popup {
             return <WebComponents.Popup><any>this.$["popup"];
