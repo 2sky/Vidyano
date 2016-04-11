@@ -11,10 +11,15 @@
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "_computeNoActions(query.actions)"
+            },
+            label: {
+                type: String,
+                computed: "_computeLabel(query.labelWithTotalItems, query.filters.currentFilter)"
             }
         },
         forwardObservers: [
-            "query.labelWithTotalItems"
+            "query.labelWithTotalItems",
+            "query.filters.currentFilter.name"
         ]
     })
     export class Query extends WebComponent {
@@ -42,6 +47,10 @@
 
         private _computeSearchOnHeader(noActions: boolean, query: Vidyano.Query): boolean {
             return noActions && query && query.actions["Filter"] != null;
+        }
+
+        private _computeLabel(labelWithTotalItems: string, currentFilter: Vidyano.QueryFilter): string {
+            return labelWithTotalItems + (currentFilter && currentFilter.name ? " — " + currentFilter.name : "");
         }
     }
 }

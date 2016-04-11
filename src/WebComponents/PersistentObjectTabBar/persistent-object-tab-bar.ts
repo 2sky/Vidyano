@@ -68,9 +68,22 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 computed: "_computeIsSelected(tab, selectedTab)"
             },
+            label: {
+                type: String,
+                computed: "_computeLabel(tab.label, queryLabel)"
+            },
+            query: {
+                type: Object,
+                computed: "tab.query"
+            },
+            queryLabel: {
+                type: String,
+                value: null,
+                computed: "_computeQueryLabel(query.label, query.filters.currentFilter)"
+            },
             badge: {
                 type: Number,
-                computed: "tab.query.totalItems"
+                computed: "query.totalItems"
             },
             hasBadge: {
                 type: Boolean,
@@ -84,7 +97,9 @@ namespace Vidyano.WebComponents {
             "tap": "_select"
         },
         forwardObservers: [
-            "tab.query.totalItems"
+            "query.totalItems",
+            "query.label",
+            "query.filters.currentFilter.name"
         ]
     })
     export class PersistentObjectTabBarItem extends WebComponent {
@@ -100,6 +115,14 @@ namespace Vidyano.WebComponents {
 
         private _computeHasBadge(badge: number): boolean {
             return badge !== undefined && badge >= 0;
+        }
+
+        private _computeLabel(tabLabel: string, queryLabel: string): string {
+            return queryLabel || tabLabel;
+        }
+
+        private _computeQueryLabel(label: string, currentFilter: Vidyano.QueryFilter): string {
+            return label + (currentFilter && currentFilter.name ? " — " + currentFilter.name : "");
         }
     }
 }
