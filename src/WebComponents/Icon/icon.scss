@@ -68,4 +68,24 @@
             }
         }
     }
+
+    &[source="SelectedRadio"] {
+        fill: var(--theme-color-light);
+
+        &[is-selected ] {
+            #check, #box {
+                fill: var(--theme-color);
+            }
+        }
+
+        &:not([is-selected]) {
+            #check {
+                display: none;
+            }
+        }
+
+        &[disabled] {
+            fill: var(--vi-icon-selected-disabled-color, #666) !important;
+        }
+    }
 }

@@ -15,25 +15,36 @@
         </template>
         <template is="dom-if" if="[[editing]]">
             <template is="dom-if" if="[[attribute.selectInPlace]]">
-                <vi-persistent-object-attribute-edit attribute="[[attribute]]" class="reverse-content">
-                    <vi-select id="selectInPlace" content class="flex" options="[[attribute.options]]" selected-option="{{objectId}}" readonly$="[[attribute.isReadOnly]]"></vi-select>
-                    <button on-tap="_openSelect" hidden$="[[attribute.isReadOnly]]">
-                        <vi-icon source="CaretDown"></vi-icon>
-                    </button>
-                    <a class="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
-                        <vi-icon source="ArrowUpRight"></vi-icon>
-                    </a>
-                    <template is="dom-if" if="[[canAddNewReference]]" restamp>
-                        <button on-tap="_addNewReference" tabindex="-1">
-                            <vi-icon source="Add"></vi-icon>
+                <template is="dom-if" if="[[!selectInPlaceAsRadio]]">
+                    <vi-persistent-object-attribute-edit attribute="[[attribute]]" class="reverse-content">
+                        <vi-select id="selectInPlace" content class="flex" options="[[attribute.options]]" selected-option="{{objectId}}" readonly$="[[attribute.isReadOnly]]"></vi-select>
+                        <button on-tap="_openSelect" hidden$="[[attribute.isReadOnly]]">
+                            <vi-icon source="CaretDown"></vi-icon>
                         </button>
-                    </template>
-                    <template is="dom-if" if="[[canClear]]" restamp>
-                        <button on-tap="_clearReference" tabindex="-1">
-                            <vi-icon source="Remove"></vi-icon>
-                        </button>
-                    </template>
-                </vi-persistent-object-attribute-edit>
+                        <a class="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
+                            <vi-icon source="ArrowUpRight"></vi-icon>
+                        </a>
+                        <template is="dom-if" if="[[canAddNewReference]]" restamp>
+                            <button on-tap="_addNewReference" tabindex="-1">
+                                <vi-icon source="Add"></vi-icon>
+                            </button>
+                        </template>
+                        <template is="dom-if" if="[[canClear]]" restamp>
+                            <button on-tap="_clearReference" tabindex="-1">
+                                <vi-icon source="Remove"></vi-icon>
+                            </button>
+                        </template>
+                    </vi-persistent-object-attribute-edit>
+                </template>
+                <template is="dom-if" if="[[selectInPlaceAsRadio]]">
+                    <div content>
+                        <template is="dom-repeat" items="[[attribute.options]]" as="option">
+                            <div id="radiobuttons">
+                                <vi-checkbox label="[[option.value]]" checked="[[_isRadioChecked(option.key, objectId)]]" on-changed="_radioChanged" radio></vi-checkbox>
+                            </div>
+                        </template>
+                    </div>
+                </template>
             </template>
             <template is="dom-if" if="[[!attribute.selectInPlace]]">
                 <vi-persistent-object-attribute-edit attribute="[[attribute]]">

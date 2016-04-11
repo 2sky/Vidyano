@@ -18,7 +18,7 @@
 
     &:not([editing]) {
         overflow: hidden;
-        
+
         a {
             @include layout-horizontal();
             text-decoration: none;
@@ -82,5 +82,9 @@
         --vi--attribute-edit-buttons: #{'{
             z-index: 2;
         }'};
+    }
+
+    #radiobuttons {
+        line-height: var(--theme-h2);
     }
 }

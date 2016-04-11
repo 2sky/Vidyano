@@ -30,6 +30,10 @@ namespace Vidyano.WebComponents.Attributes {
                 reflectToAttribute: true,
                 computed: "attribute.selectInPlace"
             },
+            selectInPlaceAsRadio: {
+                type: Boolean,
+                computed: "_computeSelectInPlaceAsRadio(attribute)"
+            },
             target: {
                 type: String,
                 computed: "_computeTarget(attribute, href)"
@@ -165,6 +169,20 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _computeTarget(attribute: Vidyano.PersistentObjectAttribute, href: string): string {
             return attribute && href && attribute.parent.isNew ? "_blank" : "";
+        }
+
+        private _computeSelectInPlaceAsRadio(attribute: Vidyano.PersistentObjectAttributeWithReference): boolean {
+            return attribute && attribute.getTypeHint("inputtype", undefined, undefined, true) === "radio";
+        }
+
+        private _isRadioChecked(optionKey: string, objectId: string): boolean {
+            return optionKey === objectId;
+        }
+
+        private _radioChanged(e: CustomEvent) {
+            e.stopPropagation();
+
+            this.objectId = (<any>e).model.option.key;
         }
     }
 }
