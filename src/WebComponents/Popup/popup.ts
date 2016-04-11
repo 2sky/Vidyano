@@ -54,7 +54,7 @@ namespace Vidyano.WebComponents {
             },
             closeDelay: {
                 type: Number,
-                value: 300
+                value: 500
             }
         },
         listeners: {
@@ -413,6 +413,10 @@ namespace Vidyano.WebComponents {
                 type: String,
                 reflectToAttribute: true,
                 value: "auto"
+            },
+            closeDelay: {
+                type: Number,
+                value: 500
             }
         },
         observers: [
