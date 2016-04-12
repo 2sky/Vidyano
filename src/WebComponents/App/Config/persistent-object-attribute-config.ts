@@ -30,7 +30,7 @@
 
         calculateHeight(attr: Vidyano.PersistentObjectAttribute): number {
             if (!this._calculateHeight) {
-                if (/d+/.test(this.height)) {
+                if (/^\d+$/.test(this.height)) {
                     const height = parseInt(this.height);
                     this._calculateHeight = () => height;
                 }
