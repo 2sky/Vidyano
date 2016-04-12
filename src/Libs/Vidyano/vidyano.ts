@@ -2273,6 +2273,11 @@ namespace Vidyano {
             return this.visibility.indexOf("Always") >= 0 || this.visibility.indexOf(this.parent.isNew ? "New" : "Read") >= 0;
         }
 
+        private _setIsVisible(visibility: string) {
+            const isVisible = visibility.indexOf("Always") >= 0 || visibility.indexOf(this.parent.isNew ? "New" : "Read") >= 0;
+            this.notifyPropertyChanged("isVisible", isVisible, !isVisible);
+        }
+
         get validationError(): string {
             return this._validationError;
         }
@@ -2476,7 +2481,7 @@ namespace Vidyano {
             this._setIsReadOnly(resultAttr.isReadOnly);
             this._setIsRequired(resultAttr.isRequired);
             if (this.visibility !== resultAttr.visibility) {
-                this.visibility = resultAttr.visibility;
+                this._setIsVisible(this.visibility = resultAttr.visibility);
                 visibilityChanged = true;
             }
             if ((!this.isReadOnly && this._refreshValue !== undefined ? this._refreshValue : this.value) !== resultAttr.value) {
