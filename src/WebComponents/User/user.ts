@@ -68,7 +68,7 @@ namespace Vidyano.WebComponents {
         feedback() {
             this.service.getPersistentObject(null, this.service.application.feedbackId).then(po => {
                 const commentAttr = po.getAttribute("Comment");
-                const commentOptions = ["Browser: " + navigator.userAgent];
+                const commentOptions = ["Browser: " + navigator.userAgent, "Vidyano Client: " + Vidyano.version];
                 const location = window.location.toString();
                 if (!location.contains("FromAction/"))
                     commentOptions.push("Url: " + location);
