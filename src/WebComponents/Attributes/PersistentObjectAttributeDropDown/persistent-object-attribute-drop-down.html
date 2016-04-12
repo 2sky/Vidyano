@@ -7,9 +7,18 @@
             <span>[[attribute.displayValue]]</span>
         </template>
         <template is="dom-if" if="[[editing]]">
-            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <vi-select content options="[[attribute.options]]" selected-option="{{value}}" readonly="[[readOnly]]"></vi-select>
-            </vi-persistent-object-attribute-edit>
+            <template is="dom-if" if="[[!radio]]">
+                <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                    <vi-select content options="[[attribute.options]]" selected-option="{{value}}" readonly="[[readOnly]]"></vi-select>
+                </vi-persistent-object-attribute-edit>
+            </template>
+            <template is="dom-if" if="[[radio]]">
+                <div id="radiobuttons">
+                    <template is="dom-repeat" items="[[attribute.options]]" as="option">
+                        <vi-checkbox label="[[_radioLabel(option)]]" checked="[[_isRadioChecked(option, value)]]" on-changed="_radioChanged" radio></vi-checkbox>
+                    </template>
+                </div>
+            </template>
         </template>
     </template>
 </dom-module>

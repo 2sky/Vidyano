@@ -14,4 +14,8 @@
             color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
         }'};
     }
+
+    #radiobuttons {
+        line-height: var(--theme-h2);
+    }
 }
