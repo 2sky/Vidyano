@@ -163,15 +163,22 @@
             return this.$["wrapper"];
         }
 
-        private _initializeZenscroll() {
-            if (!this._zenscroll)
-                this._zenscroll = zenscroll.createScroller(this.$["wrapper"], 500, 0);
+        private _initializeZenscroll(): Promise<any> {
+            if (!this._zenscroll) {
+                return new Promise(resolve => this.importHref(this.resolveUrl("zenscroller.html"), () => {
+                    this._zenscroll = zenscroll.createScroller(this.$["wrapper"], 500, 0);
+                    resolve(true);
+                }));
+            }
+
+            return Promise.resolve(true);
         }
 
         scrollToTop(animated?: boolean) {
             if (animated) {
-                this._initializeZenscroll();
-                this._zenscroll.toY(0);
+                this._initializeZenscroll().then(() => {
+                    this._zenscroll.toY(0);
+                });
             }
             else
                 this.$["wrapper"].scrollTop = 0;
@@ -179,8 +186,9 @@
 
         scrollToBottom(animated?: boolean) {
             if (animated) {
-                this._initializeZenscroll();
-                this._zenscroll.toY(this.innerHeight);
+                this._initializeZenscroll().then(() => {
+                    this._zenscroll.toY(this.innerHeight);
+                });
             }
             else
                 this.$["wrapper"].scrollTop = this.innerHeight;
