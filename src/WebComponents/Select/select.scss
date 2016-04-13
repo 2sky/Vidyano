@@ -65,6 +65,10 @@ $border-color: #ddd;
                 &:hover {
                     @apply(--vi-select-input-hover);
                 }
+
+                &::-ms-clear {
+                    display: none;
+                }
             }
 
             vi-icon {
