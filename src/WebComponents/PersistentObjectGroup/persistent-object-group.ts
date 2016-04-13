@@ -151,7 +151,7 @@
 
                         const cell = document.createElement("td");
                         cell.colSpan = item.width;
-                        cell.rowSpan = item.height > 0 ? itemHeight : 0;
+                        cell.rowSpan = itemHeight > 0 ? itemHeight : 0;
 
                         rows[item.y].host.appendChild(cell);
 
