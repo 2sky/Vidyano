@@ -145,7 +145,7 @@ namespace Vidyano.WebComponents.Attributes {
 
             this.filter = hasReference ? this.attribute.value : "";
 
-            this._setCanClear(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.attribute.isRequired && !StringEx.isNullOrEmpty(this.attribute.objectId) && !this.attribute.selectInPlace);
+            this._setCanClear(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.attribute.isRequired && !StringEx.isNullOrEmpty(this.attribute.objectId));
             this._setCanAddNewReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && this.attribute.canAddNewReference);
             this._setCanBrowseReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.attribute.selectInPlace);
         }
