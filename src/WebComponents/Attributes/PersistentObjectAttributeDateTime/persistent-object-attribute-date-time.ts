@@ -53,10 +53,10 @@
     export class PersistentObjectAttributeDateTime extends WebComponents.Attributes.PersistentObjectAttribute {
         private _dateInput: HTMLInputElement;
         private _timeInput: HTMLInputElement;
-		private _syncedSelectedDate: any;
-		private _lastRenderedSelectedDate: any;
-		private _isDateFilled: boolean;
-		private _isTimeFilled: boolean;
+        private _syncedSelectedDate: any;
+        private _lastRenderedSelectedDate: any;
+        private _isDateFilled: boolean;
+        private _isTimeFilled: boolean;
         hasTimeComponent: boolean;
         hasInvalidTime: boolean;
         hasDateComponent: boolean;
@@ -116,130 +116,138 @@
         }
 
         private _selectedDateChanged() {
-			if (this._syncedSelectedDate !== this.selectedDate) {
+            if (this._syncedSelectedDate !== this.selectedDate) {
                 if ((!this.hasDateComponent || !this.hasInvalidDate) && (!this.hasTimeComponent || !this.hasInvalidTime)) {
                     if (this.selectedDate != null && (this.attribute.type === "Time" || this.attribute.type === "NullableTime")) {
                         const newTimeValue = StringEx.format("0:{0:D2}:{1:D2}:{2:D2}.{3:D3}0000", this.selectedDate.getHours(), this.selectedDate.getMinutes(), this.selectedDate.getSeconds(), this.selectedDate.getMilliseconds());
                         if (!this.value || (<string>this.value).substr(0, newTimeValue.length - 4) !== newTimeValue.substr(0, newTimeValue.length - 4))
                             this.attribute.setValue(newTimeValue, true);
                     }
-					else
+                    else
                         this.attribute.setValue(this.selectedDate, true);
-				}
-			}
+                }
+            }
 
-			this._renderSelectedDate();
-		}
+            this._renderSelectedDate();
+        }
 
         private _clear() {
             this.attribute.setValue(null, true);
-		}
+        }
 
-		private _renderSelectedDate(forceDate?: boolean, forceTime?: boolean) {
-			if (!forceDate && !forceTime && this._lastRenderedSelectedDate === this.selectedDate)
+        private _renderSelectedDate(forceDate?: boolean, forceTime?: boolean) {
+            if (!forceDate && !forceTime && this._lastRenderedSelectedDate === this.selectedDate)
                 return;
 
-			let dateMoment: moment.Moment;
+            let dateMoment: moment.Moment;
 
-			if (this.selectedDate)
-				dateMoment = moment(this.selectedDate);
+            if (this.selectedDate)
+                dateMoment = moment(this.selectedDate);
 
             if (this.hasDateComponent && this.dateInput && !this.hasInvalidDate && (this._lastRenderedSelectedDate !== this.selectedDate || forceDate)) {
-				if (dateMoment) {
-					const newDate = dateMoment.format(Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toUpperCase());
-					if (newDate !== this.dateInput.value) {
+                if (dateMoment) {
+                    const newDate = dateMoment.format(Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toUpperCase());
+                    if (newDate !== this.dateInput.value) {
                         const selectionStart = this.dateInput.selectionStart;
                         const selectionEnd = this.dateInput.selectionEnd;
                         this.dateInput.value = newDate;
-                        this.dateInput.selectionStart = selectionStart;
-                        this.dateInput.selectionEnd = selectionEnd;
-					}
-				}
-				else
-                    this.dateInput.value = this._computeDateFormat();
-			}
 
-			if (this.hasTimeComponent && this.timeInput && !this.hasInvalidTime && (this._lastRenderedSelectedDate !== this.selectedDate || forceTime)) {
-				const newTime = dateMoment ? dateMoment.format("HH" + Vidyano.CultureInfo.currentCulture.dateFormat.timeSeparator + "mm") : this._computeTimeFormat();
-				if (newTime !== this.timeInput.value) {
+                        if (selectionStart > 0)
+                            this.dateInput.selectionStart = selectionStart;
+
+                        if (selectionEnd > 0)
+                            this.dateInput.selectionEnd = selectionEnd;
+                    }
+                }
+                else
+                    this.dateInput.value = this._computeDateFormat();
+            }
+
+            if (this.hasTimeComponent && this.timeInput && !this.hasInvalidTime && (this._lastRenderedSelectedDate !== this.selectedDate || forceTime)) {
+                const newTime = dateMoment ? dateMoment.format("HH" + Vidyano.CultureInfo.currentCulture.dateFormat.timeSeparator + "mm") : this._computeTimeFormat();
+                if (newTime !== this.timeInput.value) {
                     const selectionStart = this.timeInput.selectionStart;
                     const selectionEnd = this.timeInput.selectionEnd;
                     this.timeInput.value = newTime;
-                    this.timeInput.selectionStart = selectionStart;
-                    this.timeInput.selectionEnd = selectionEnd;
-				}
-			}
 
-			this._lastRenderedSelectedDate = this.selectedDate;
-		}
+                    if (selectionStart > 0)
+                        this.timeInput.selectionStart = selectionStart;
+
+                    if (selectionEnd > 0)
+                        this.timeInput.selectionEnd = selectionEnd;
+                }
+            }
+
+            this._lastRenderedSelectedDate = this.selectedDate;
+        }
 
         private _dateFilled(e: Event, detail: any) {
-			if (this.hasTimeComponent && this.dateInput.selectionStart === this.dateInput.value.length) {
-				this.timeInput.focus();
-				this.timeInput.selectionStart = 0;
-			}
+            if (this.hasTimeComponent && this.dateInput.selectionStart === this.dateInput.value.length) {
+                this.timeInput.focus();
+                this.timeInput.selectionStart = 0;
+            }
 
-			this._isDateFilled = true;
-			this._updateSelectedDate(detail.value);
+            this._isDateFilled = true;
+            this._updateSelectedDate(detail.value);
 
-			e.stopPropagation();
-		}
+            e.stopPropagation();
+        }
 
-		private _timeChanged(e: Event, detail: any) {
-			this._selectedDateChanged();
+        private _timeChanged(e: Event, detail: any) {
+            this._selectedDateChanged();
 
-			e.stopPropagation();
-		}
+            e.stopPropagation();
+        }
 
-		private _timeFilled(e: Event, detail: any) {
-			this._isTimeFilled = true;
-			this._updateSelectedDate(undefined, detail.value);
+        private _timeFilled(e: Event, detail: any) {
+            this._isTimeFilled = true;
+            this._updateSelectedDate(undefined, detail.value);
 
-			e.stopPropagation();
-		}
+            e.stopPropagation();
+        }
 
-		private _updateSelectedDate(date: string, time?: string) {
-			let dateMoment: moment.Moment;
-			let timeMoment: moment.Moment;
-			const newDate = new Date();
-			if (this.selectedDate) {
-				newDate.setFullYear(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate());
-				newDate.setHours(this.selectedDate.getHours(), this.selectedDate.getMinutes(), this.selectedDate.getSeconds(), this.selectedDate.getMilliseconds());
-				newDate.netOffset(this.selectedDate.netOffset());
-				newDate.netType(this.selectedDate.netType());
-			}
+        private _updateSelectedDate(date: string, time?: string) {
+            let dateMoment: moment.Moment;
+            let timeMoment: moment.Moment;
+            const newDate = new Date();
+            if (this.selectedDate) {
+                newDate.setFullYear(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate());
+                newDate.setHours(this.selectedDate.getHours(), this.selectedDate.getMinutes(), this.selectedDate.getSeconds(), this.selectedDate.getMilliseconds());
+                newDate.netOffset(this.selectedDate.netOffset());
+                newDate.netType(this.selectedDate.netType());
+            }
 
-			if (this.hasDateComponent && this._isDateFilled && date) {
+            if (this.hasDateComponent && this._isDateFilled && date) {
                 dateMoment = moment(date, Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toUpperCase());
                 this._setHasInvalidDate(!dateMoment.isValid());
-				if (!this.hasInvalidDate)
-					newDate.setFullYear(dateMoment.year(), dateMoment.month(), dateMoment.date());
-			}
+                if (!this.hasInvalidDate)
+                    newDate.setFullYear(dateMoment.year(), dateMoment.month(), dateMoment.date());
+            }
 
-			if (this.hasTimeComponent && this._isTimeFilled && time) {
+            if (this.hasTimeComponent && this._isTimeFilled && time) {
                 timeMoment = moment(time, "HH:mm");
                 this._setHasInvalidTime(!timeMoment.isValid());
-				if (!this.hasInvalidTime)
-					newDate.setHours(timeMoment.hours(), timeMoment.minutes(), 0, 0);
-			}
+                if (!this.hasInvalidTime)
+                    newDate.setHours(timeMoment.hours(), timeMoment.minutes(), 0, 0);
+            }
 
-			this.selectedDate = newDate;
-		}
+            this.selectedDate = newDate;
+        }
 
-		private _computeHasComponent(target: Vidyano.PersistentObjectAttribute, component: string): boolean {
-			return target && target.type.contains(component);
-		}
+        private _computeHasComponent(target: Vidyano.PersistentObjectAttribute, component: string): boolean {
+            return target && target.type.contains(component);
+        }
 
-		private _computeDateFormat(): string {
-			return Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toLowerCase().replace(/[ymd]/g, "_");
+        private _computeDateFormat(): string {
+            return Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toLowerCase().replace(/[ymd]/g, "_");
         }
 
         private _computeDateSeparator(): string {
             return Vidyano.CultureInfo.currentCulture.dateFormat.dateSeparator;
         }
 
-		private _computeTimeFormat(): string {
-			return "__" + Vidyano.CultureInfo.currentCulture.dateFormat.timeSeparator + "__";
+        private _computeTimeFormat(): string {
+            return "__" + Vidyano.CultureInfo.currentCulture.dateFormat.timeSeparator + "__";
         }
 
         private _computeTimeSeparator(): string {
