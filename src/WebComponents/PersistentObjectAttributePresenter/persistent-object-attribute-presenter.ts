@@ -50,6 +50,11 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "_isHidden(attribute.isVisible)"
+            },
+            hasError: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeHasError(attribute.validationError)"
             }
         },
         observers: [
@@ -62,6 +67,7 @@ namespace Vidyano.WebComponents {
             "attribute.isVisible",
             "attribute.value",
             "attribute.isValueChanged",
+            "attribute.validationError",
             "attribute.parent.isBulkEdit"
         ]
     })
@@ -244,6 +250,10 @@ namespace Vidyano.WebComponents {
 
         private _computeRequired(attribute: Vidyano.PersistentObjectAttribute, required: boolean, value: any): boolean {
             return required && (value == null || (attribute && attribute.rules && attribute.rules.contains("NotEmpty") && value === ""));
+        }
+
+        private _computeHasError(validationError: string): boolean {
+            return !StringEx.isNullOrEmpty(validationError);
         }
 
         private _isHidden(isVisible: boolean): boolean {

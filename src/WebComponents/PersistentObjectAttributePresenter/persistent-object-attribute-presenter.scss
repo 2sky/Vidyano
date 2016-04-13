@@ -84,6 +84,16 @@
         }
     }
 
+    &[has-error] {
+        .label .required {
+            background-color: var(--theme-color-error) !important;
+
+            &::before {
+                border-right-color: var(--theme-color-error) !important;
+            }
+        }
+    }
+
     &[editing][required]:not([bulk-edit]):not([read-only]) .required {
         display: inline-block;
     }
