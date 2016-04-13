@@ -70,7 +70,7 @@
     }
 
     &[source="SelectedRadio"] {
-        fill: var(--theme-color-light);
+        fill: var(--vi-icon-selected-unchecked-color, #bbb) !important;
 
         &[is-selected ] {
             #check, #box {
