@@ -38,7 +38,6 @@
                         </div>
                     </template>
                 </vi-scroller>
-                <div id="resizer" on-track="_onResize"></div>
             </div>
         </template>
         <template is="dom-if" if="[[collapsed]]">
@@ -64,6 +63,7 @@
             <div id="footerElements"></div>
             <vi-user collapsed="[[collapsed]]"></vi-user>
         </footer>
+        <div id="resizer" on-track="_onResize"></div>
     </template>
 </dom-module>
 

@@ -27,6 +27,11 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true
             },
             currentProgramUnit: Object,
+            isResizing: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            }
         }
     })
     export class Menu extends WebComponent {
@@ -37,6 +42,8 @@ namespace Vidyano.WebComponents {
         activeProgramUnit: ProgramUnit;
         collapsed: boolean;
         hasGlobalSearch: boolean;
+
+        private _setIsResizing: (val: boolean) => void;
 
         attached() {
             super.attached();
@@ -119,14 +126,17 @@ namespace Vidyano.WebComponents {
                 this._resizeWidth = Math.max(Menu._minResizeWidth, this.offsetWidth);
                 this.customStyle["--vi-menu--expand-width"] = `${this._resizeWidth}px`;
                 this.updateStyles();
+                this._setIsResizing(true);
             }
             else if (detail.state === "track") {
                 this._resizeWidth = Math.max(Menu._minResizeWidth, this._resizeWidth + detail.ddx);
                 this.customStyle["--vi-menu--expand-width"] = `${this._resizeWidth}px`;
                 this.updateStyles();
             }
-            else if (detail.state === "end")
+            else if (detail.state === "end") {
                 Vidyano.cookie("menu-width", String(this._resizeWidth));
+                this._setIsResizing(false);
+            }
         }
     }
 

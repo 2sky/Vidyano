@@ -2,8 +2,8 @@
 
 :host {
     @include layout-vertical();
+    @include relative();
     @include noSelection();
-    overflow: hidden;
 
     --vi-menu-indent: 16px;
     --vi-menu--expand-width: 16em;
@@ -31,17 +31,6 @@
             vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
                 display: block;
             }
-        }
-
-        #resizer {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
-            width: var(--theme-h5);
-            background-color: transparent;
-            cursor: ew-resize;
-            z-index: 1;
         }
 
         vi-scroller[vertical][hovering] + #resizer {
@@ -110,6 +99,7 @@
     header, footer {
         display: block;
         line-height: var(--theme-h1);
+        flex-shrink: 0;
     }
 
     header {
@@ -146,6 +136,10 @@
         }
     }
 
+    footer {
+        overflow: hidden;
+    }
+
     vi-input-search:not([collapsed]) {
         --vi-input-search: #{'{
             margin: calc(var(--vi-menu-indent) / 2) calc(var(--vi-menu-indent) - var(--vi-menu-indent) / 2);
@@ -175,5 +169,26 @@
                 box-sizing: border-box;
             }
         }
+
+        #resizer {
+            display: none;
+        }
+    }
+
+    #resizer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: var(--theme-h5);
+        background-color: transparent;
+        cursor: ew-resize;
+        z-index: 9999;
+        opacity: 0.5;
+        transform: translateX(calc(var(--theme-h5) / 2));
+    }
+
+    &[is-resizing] #resizer, #resizer:hover {
+        background-color: #333;
     }
 }
