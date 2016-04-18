@@ -492,7 +492,7 @@ namespace Vidyano.WebComponents {
                 const mappedPathRoute = !!path ? Vidyano.Path.match(hashBangPath, true) : null;
                 const newRoute = mappedPathRoute ? this._routeMap[App.stripHashBang(mappedPathRoute.path)] : null;
 
-                if (!!path && !newRoute) {
+                if (!!path && !newRoute && this.service.isSignedIn) {
                     this.redirectToNotFound();
                     return;
                 }
