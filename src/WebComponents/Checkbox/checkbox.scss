@@ -3,6 +3,7 @@
 :host {
     display: block;
     padding-right: var(--theme-h5);
+    box-sizing: border-box;
 
     &:not([disabled]) {
         cursor: pointer;
@@ -12,6 +13,8 @@
         > span {
             @include flex();
             padding-left: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         > vi-icon:not([hidden]) + span {
