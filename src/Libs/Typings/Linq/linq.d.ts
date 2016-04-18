@@ -77,7 +77,7 @@ declare module linqjs {
         alternate(alternateSequence: Enumerable<T>): Enumerable<T>;
         contains(value: T, compareSelector: (element: T) => T): Enumerable<T>;
         defaultIfEmpty(defaultValue?: T): Enumerable<T>;
-        distinct(compareSelector?: (element: T) => T): Enumerable<T>;
+        distinct<TKey>(compareSelector?: (element: T) => TKey): Enumerable<T>;
         distinctUntilChanged(compareSelector: (element: T) => T): Enumerable<T>;
         except(second: T[], compareSelector?: (element: T) => T): Enumerable<T>;
         except(second: { length: number;[x: number]: T; }, compareSelector?: (element: T) => T): Enumerable<T>;
