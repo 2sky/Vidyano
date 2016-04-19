@@ -34,6 +34,9 @@
         <iron-media-query query="(max-width: 479px)" query-matches="{{isPhone}}"></iron-media-query>
         <iron-media-query query="(min-width: 480px) and (max-width: 839px)" query-matches="{{isTablet}}"></iron-media-query>
         <iron-media-query query="(min-width: 840px)" query-matches="{{isDesktop}}"></iron-media-query>
+        <template is="dom-if" if="[[isTrial]]">
+            <div id="trial" inner-h-t-m-l="[[_computeTrialMessage(isTrial)]]"></div>
+        </template>
         <vi-profiler service="[[service]]" hidden$="[[!isProfiling]]"></vi-profiler>
         <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
         <template is="dom-if" if="[[showMenu]]" restamp>

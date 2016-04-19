@@ -50,6 +50,36 @@
         }
     }
 
+    &[is-trial] {
+        padding-top: var(--theme-h1);
+
+        #trial {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            height: var(--theme-h1);
+            line-height: var(--theme-h1);
+            background-color: var(--theme-color-error);
+            color: white;
+            overflow: hidden;
+
+            ::content a {
+                color: white !important;
+                font-weight: bold;
+            }
+        }
+
+        &[is-profiling] {
+            padding-top: calc(var(--theme-h1) * 2);
+
+            vi-profiler {
+                top: var(--theme-h1);
+            }
+        }
+    }
+
     &[is-tracking] {
         @include noSelection();
     }

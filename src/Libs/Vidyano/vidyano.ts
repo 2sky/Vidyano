@@ -346,6 +346,7 @@ namespace Vidyano {
         private _providers: { [name: string]: IProviderParameters };
         private _isSignedIn: boolean;
         private _application: Application;
+        private _isTrial: boolean;
         private _profile: boolean;
         private _profiledRequests: IServiceRequest[];
         staySignedIn: boolean;
@@ -671,6 +672,15 @@ namespace Vidyano {
                 this.profile = false;
         }
 
+        get isTrial(): boolean {
+            return this._isTrial;
+        }
+
+        private _setIsTrial(isTrial: boolean) {
+            const oldIsTrial = !!this._isTrial;
+            this.notifyPropertyChanged("isTrial", this._isTrial = isTrial, oldIsTrial);
+        }
+
         get language(): ILanguage {
             return this._language;
         }
@@ -914,6 +924,7 @@ namespace Vidyano {
                         return;
                     }
 
+                    this._setIsTrial(!!result.isTrial);
                     this._setApplication(new Application(this, result.application));
 
                     const resourcesQuery = this.application.getQuery("Resources");
@@ -4760,6 +4771,7 @@ namespace Vidyano {
             this._canProfile = this.getAttributeValue("CanProfile");
 
             const pus = <{ hasManagement: boolean; units: any[] }>JSON.parse(this.getAttributeValue("ProgramUnits"));
+            this._hasManagement = pus.hasManagement;
             this.programUnits = Enumerable.from(pus.units).select(unit => new ProgramUnit(this.service, this.routes, unit)).toArray();
         }
 
