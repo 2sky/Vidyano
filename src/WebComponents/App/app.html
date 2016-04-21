@@ -47,8 +47,8 @@
         <vi-app-route route="Error/:message" component="Vidyano.WebComponents.AppRouteError"></vi-app-route>
         <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
         <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
-        <vi-app-route route="PersistentObject.:id(/:objectId)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
-        <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+        <vi-app-route route="PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+        <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
         <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
         <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
         <vi-app-route class="fit" route="SignIn(/)(:returnUrl)" allow-signed-out>
