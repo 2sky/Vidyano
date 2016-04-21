@@ -189,7 +189,7 @@
             vi-checkbox {
                 line-height: var(--theme-h3);
                 height: var(--theme-h3);
-                padding: 3px var(--theme-h5);
+                padding: 0 var(--theme-h5);
 
                 &:hover {
                     background-color: var(--vi-query-grid-column-filter-distinct-hover-color, --theme-color-faint);
@@ -219,7 +219,7 @@
                     display: inline-block;
                     line-height: var(--theme-h3);
                     height: var(--theme-h3);
-                    padding: 3px var(--theme-h5);
+                    padding: 0 var(--theme-h5);
                     box-sizing: border-box;
 
                     &:first-of-type ::content {
