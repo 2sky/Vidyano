@@ -13,11 +13,12 @@
     export class SelectReferenceDialog extends Dialog {
         canSelect: boolean;
 
-        constructor(public query: Vidyano.Query) {
+        constructor(public query: Vidyano.Query, forceSearch?: boolean) {
             super();
 
-            let search = !!query.textSearch || !query.hasSearched;
-            query.textSearch = "";
+            query["_query-grid-vertical-scroll-offset"] = undefined;
+
+            let search = forceSearch || !!query.textSearch || !query.hasSearched;
             query.columns.forEach(c => {
                 if (!c.selectedDistincts.isEmpty()) {
                     search = search || true;

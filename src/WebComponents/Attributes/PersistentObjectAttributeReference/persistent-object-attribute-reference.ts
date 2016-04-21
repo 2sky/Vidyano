@@ -93,7 +93,7 @@ namespace Vidyano.WebComponents.Attributes {
                     else {
                         this.attribute.lookup.textSearch = this.filter;
 
-                        this._browseReference(true).catch(() => {
+                        this._browseReference(true, true).catch(() => {
                             this.filter = this.attribute.value;
                         });
                     }
@@ -107,10 +107,15 @@ namespace Vidyano.WebComponents.Attributes {
             this._update();
         }
 
-        private _browseReference(throwExceptions?: boolean): Promise<any> {
+        private _browse(e: TapEvent) {
+            this.attribute.lookup.textSearch = "";
+            this._browseReference(false, true);
+        }
+
+        private _browseReference(throwExceptions?: boolean, forceSearch?: boolean): Promise<any> {
             this.attribute.lookup.selectedItems = [];
 
-            return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup)).then(result => {
+            return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup, forceSearch)).then(result => {
                 if (!result) {
                     if (throwExceptions === true)
                         return Promise.reject("Nothing selected");
