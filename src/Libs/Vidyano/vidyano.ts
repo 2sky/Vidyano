@@ -385,6 +385,9 @@ namespace Vidyano {
                     data.authToken = this.authToken;
             }
 
+            if (this.application && this.application.session)
+                data.session = this.application.session.toServiceObject(true);
+
             if (this.profile)
                 data.profile = true;
 
