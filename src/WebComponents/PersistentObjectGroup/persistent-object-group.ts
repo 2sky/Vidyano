@@ -75,7 +75,7 @@
 
             if (!attributes || attributes.length === 0)
                 this._items = [];
-            else  if (!this._items)
+            else if (!this._items)
                 this._items = attributes.map(attr => this._itemFromAttribute(attr));
             else {
                 const itemsEnum = Enumerable.from(this._items).memoize();
@@ -106,12 +106,16 @@
             const layout = layoutFragment.appendChild(document.createElement("table"));
             const rows: IPersistentObjectGroupRow[] = [];
             const addRow = () => {
-                rows.push({
+                const newRow = {
                     host: document.createElement("tr"),
                     cells: new Array<HTMLTableCellElement>(columns)
-                });
+                };
 
-                layout.appendChild(rows[rows.length - 1].host);
+                rows.push(newRow);
+
+                layout.appendChild(newRow.host);
+                for (let c = 0; c < columns; c++)
+                    newRow.cells[c] = null;
             };
 
             let groupX = 0;
@@ -180,8 +184,8 @@
                                 });
                             }
 
-                            groupX = 0;
                             groupY += itemHeight;
+                            groupX = rows[groupY] ? Math.max(rows[groupY].cells.indexOf(null), 0) : 0;
                         }
 
                         found = true;
@@ -209,8 +213,10 @@
             }
 
             rows.forEach(r => {
-                for (let i=columns-1; i>=0 && !r.cells[i]; i--)
-                    r.host.appendChild(document.createElement("td"));
+                for (let i = columns - 1; i >= 0; i--) {
+                    if (!r.cells[i])
+                        r.host.appendChild(document.createElement("td"));
+                }
             });
 
             if (this._layout)
@@ -243,8 +249,8 @@
         }
 
         private _onAttributeLoaded(e: CustomEvent) {
-           if (--this._presentersLoading <= 0)
-               this._setLoading(false);
+            if (--this._presentersLoading <= 0)
+                this._setLoading(false);
         }
     }
 }
