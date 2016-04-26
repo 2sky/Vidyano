@@ -38,6 +38,10 @@
                 e.preventDefault();
                 return;
             }
+            else if (Object.keys(route.app.service.providers).length === 1 && !route.app.service.providers["Vidyano"]) {
+                this.app.service.signInExternal(Object.keys(route.app.service.providers)[0]);
+                return;
+            }
 
             this.empty(undefined, c => c instanceof Vidyano.WebComponents.SignInProvider);
 
