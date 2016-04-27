@@ -92,8 +92,8 @@ namespace Vidyano.WebComponents {
 
             this._setIsSignedIn(isSignedIn);
             this._setUserName(isSignedIn ? this.service.application.friendlyUserName : null);
-            this._setCanFeedback(isSignedIn && !!this.service.application.feedbackId);
-            this._setCanUserSettings(isSignedIn && !!this.service.application.userSettingsId);
+            this._setCanFeedback(isSignedIn && !!this.service.application.feedbackId && this.service.application.feedbackId !== "00000000-0000-0000-0000-000000000000");
+            this._setCanUserSettings(isSignedIn && !!this.service.application.userSettingsId && this.service.application.userSettingsId !== "00000000-0000-0000-0000-000000000000");
             this._setCanProfile(isSignedIn && this.service.application.canProfile);
         }
     }
