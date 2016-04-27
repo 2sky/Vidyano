@@ -2019,8 +2019,6 @@ namespace Vidyano {
         refreshFromResult(result: PersistentObject) {
             this._lastResult = result;
 
-            this.setNotification(result.notification, result.notificationType);
-
             const changedAttributes: PersistentObjectAttribute[] = [];
             let isDirty = false;
 
@@ -2137,6 +2135,7 @@ namespace Vidyano {
                 }
             }
 
+            this.setNotification(result.notification, result.notificationType);
             this._setIsDirty(isDirty);
 
             if (this.isNew) {

@@ -81,11 +81,13 @@
             }
         },
         observers: [
-            "_persistentObjectChanged(persistentObject, isAttached)"
+            "_persistentObjectChanged(persistentObject, isAttached)",
+            "_persistentObjectNotificationChanged(persistentObject.notification, isAttached)"
         ],
         forwardObservers: [
             "persistentObject.tabs.isVisible",
-            "persistentObject.breadcrumb"
+            "persistentObject.breadcrumb",
+            "persistentObject.notification"
         ],
         listeners: {
             "tabselect": "_tabselect"
@@ -260,6 +262,18 @@
                 this.selectedDetailTab = detail.tab;
 
             e.stopPropagation();
+        }
+
+        private _persistentObjectNotificationChanged(notification: string) {
+            if (!notification || !this.persistentObject || this.persistentObject.notificationType !== Vidyano.NotificationType.Error)
+                return;
+
+            const firstAttributeWithValidationError = Enumerable.from(this.persistentObject.attributes).firstOrDefault(attr => !!attr.validationError);
+            if (!firstAttributeWithValidationError)
+                return;
+
+            if (firstAttributeWithValidationError.tab !== this.selectedMasterTab && this.masterTabs.indexOf(firstAttributeWithValidationError.tab) >= 0)
+                this.selectedMasterTab = firstAttributeWithValidationError.tab;
         }
 
         private _trackSplitter(e: CustomEvent, detail: PolymerTrackDetail) {
