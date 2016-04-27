@@ -195,6 +195,11 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 readOnly: true
+            },
+            cookiePrefix: {
+                type: Boolean,
+                reflectToAttribute: true,
+                observer: "_cookiePrefixChanged"
             }
         },
         observers: [
@@ -406,6 +411,10 @@ namespace Vidyano.WebComponents {
 
         private _configurationAttached(e: Event, configuration: AppConfig) {
             this._setConfiguration(configuration);
+        }
+
+        private _cookiePrefixChanged(cookiePrefix: string) {
+            Vidyano.cookiePrefix = cookiePrefix;
         }
 
         private _computeService(uri: string, user: string): Vidyano.Service {

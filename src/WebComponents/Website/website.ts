@@ -15,12 +15,18 @@ namespace Vidyano.WebComponents {
             serviceHooks: {
                 type: String,
                 value: "Vidyano.WebComponents.WebsiteAppServiceHooks"
+            },
+            cookiePrefix: {
+                type: Boolean,
+                reflectToAttribute: true,
+                observer: "_cookiePrefixChanged"
             }
         }
     })
     export class Website extends WebComponent {
         serviceUri: string;
         serviceHooks: string;
+        cookiePrefix: string;
 
         attached() {
             super.attached();
@@ -57,6 +63,10 @@ namespace Vidyano.WebComponents {
             Polymer.dom(config).appendChild(template);
             Polymer.dom(this.app).appendChild(config);
             Polymer.dom(this).appendChild(this.app);
+        }
+
+        private _cookiePrefixChanged(cookiePrefix: string) {
+            Vidyano.cookiePrefix = cookiePrefix;
         }
     }
 
