@@ -21,18 +21,12 @@ $tabsBG: #f1f1f1;
     }
 
     vi-persistent-object-tab-presenter {
-        overflow: hidden;
-
         > vi-query-items-presenter {
             @include fit();
         }
     }
 
     .content {
-        .master {
-            overflow: hidden;
-        }
-
         .detail {
             vi-persistent-object-tab-presenter {
                 margin: 1px 1px 1px 0;

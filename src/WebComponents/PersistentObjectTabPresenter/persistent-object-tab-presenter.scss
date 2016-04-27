@@ -3,8 +3,7 @@
 :host {
     @include layout-horizontal();
     @include relative();
-    overflow: hidden;
-
+    
     &:not(.vi-persistent-object-dialog) ::content {
         > vi-persistent-object-tab, > vi-query-items-presenter {
             @include fit();

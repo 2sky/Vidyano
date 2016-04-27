@@ -14,14 +14,11 @@
         margin-right: -var(--theme-scrollbar-width);
         margin-bottom: -var(--theme-scrollbar-width);
         outline: none !important;
-        z-index: 0;
     }
 
     &[no-horizontal]:not([no-vertical]) {
         > #wrapper {
             @include layout-vertical();
-            margin-bottom: 0;
-            overflow-x: hidden;
 
             > #content {
                 min-height: auto;
@@ -78,7 +75,6 @@
     .scrollbar-parent {
         position: absolute;
         background-color: transparent;
-        z-index: 1;
         display: none;
         -moz-transition: opacity 0.2s, background-color 0.2s;
         -o-transition: opacity 0.2s, background-color 0.2s;
