@@ -197,7 +197,7 @@ namespace Vidyano.WebComponents {
                 readOnly: true
             },
             cookiePrefix: {
-                type: Boolean,
+                type: String,
                 reflectToAttribute: true,
                 observer: "_cookiePrefixChanged"
             }

@@ -17,7 +17,7 @@ namespace Vidyano.WebComponents {
                 value: "Vidyano.WebComponents.WebsiteAppServiceHooks"
             },
             cookiePrefix: {
-                type: Boolean,
+                type: String,
                 reflectToAttribute: true,
                 observer: "_cookiePrefixChanged"
             }
