@@ -65,7 +65,7 @@
 
     &[expand], &[filtering] {
         > .title {
-            > vi-icon {
+            > vi-icon[source="ProgramUnitGroup"] {
                 -moz-transform: rotate(90deg);
     			-ms-transform: rotate(90deg);
     			-o-transform: rotate(90deg);
