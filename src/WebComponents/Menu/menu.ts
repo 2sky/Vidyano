@@ -78,7 +78,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _search() {
-            if(this.collapsed && this.filter)
+            if (this.collapsed && this.filter)
                 Popup.closeAll();
 
             if (!this.filtering || !this.hasGlobalSearch)
@@ -113,7 +113,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _focusSearch() {
-            const inputSearch =  <InputSearch>Polymer.dom(this.root).querySelector("#collapsedInputSearch");
+            const inputSearch = <InputSearch>Polymer.dom(this.root).querySelector("#collapsedInputSearch");
             inputSearch.focus();
         }
 
@@ -143,6 +143,15 @@ namespace Vidyano.WebComponents {
     @WebComponent.register({
         properties: {
             item: Object,
+            items: Array,
+            level: {
+                type: Number,
+                value: 0
+            },
+            subLevel: {
+                type: Number,
+                computed: "_computeSubLevel(level)"
+            },
             collapsed: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -157,6 +166,10 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 computed: "_computedHasItems(item)"
             },
+            icon: {
+                type: String,
+                computed: "_computeIcon(item)"
+            },
             expand: {
                 type: Boolean,
                 readOnly: true,
@@ -169,12 +182,11 @@ namespace Vidyano.WebComponents {
             },
             filter: {
                 type: String,
-                notify: true,
                 observer: "_filterChanged",
                 value: ""
             },
             filterParent: Object,
-            hide: {
+            hidden: {
                 type: Boolean,
                 reflectToAttribute: true
             },
@@ -184,7 +196,8 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_updateItemTitle(item, filter, filtering, collapsed)"
+            "_updateItemTitle(item, filter, filtering, collapsed)",
+            "_updateIndentVariable(level, isAttached)"
         ],
         listeners: {
             "tap": "_tap"
@@ -194,19 +207,30 @@ namespace Vidyano.WebComponents {
         item: Vidyano.ProgramUnitItem;
         programUnit: Vidyano.ProgramUnit;
         expand: boolean;
+        collapsed: boolean;
         filter: string;
         filtering: boolean;
-        hide: boolean;
+        hidden: boolean;
         filterParent: ProgramUnitItem;
 
         private _setExpand: (val: boolean) => void;
 
+        private _updateIndentVariable(level: number, isAttached: boolean) {
+            if (!isAttached)
+                return;
+
+            this.customStyle["--vi-menu-item-indent-level"] = level.toString();
+            this.updateStyles();
+        }
+
+        private _computeSubLevel(level: number): number {
+            return level + 1;
+        }
+
         private _tap(e: Event) {
             if (!this.item || !this.item.path) {
-                this._setExpand(!this.expand);
-
                 e.preventDefault();
-                e.stopPropagation();
+                this._setExpand(!this.expand);
             }
             else {
                 let item = this.item;
@@ -218,20 +242,18 @@ namespace Vidyano.WebComponents {
                 else if (item instanceof Vidyano.ProgramUnitItemPersistentObject)
                     this.app.cacheRemove(new PersistentObjectAppCacheEntry((<Vidyano.ProgramUnitItemPersistentObject>item).persistentObjectId, (<Vidyano.ProgramUnitItemPersistentObject>item).persistentObjectObjectId));
 
-                this.filter = "";
-
                 if (this.app.noHistory) {
-                    this.app.changePath(item.path);
-
                     e.preventDefault();
-                    e.stopPropagation();
+                    this.app.changePath(item.path);
                 }
             }
+
+            e.stopPropagation();
         }
 
         private _filterChanged() {
             this.filtering = !StringEx.isNullOrEmpty(this.filter);
-            this.hide = this.filtering && !this._hasMatch(<ProgramUnitItem><any>this.item, this.filter.toUpperCase());
+            this.hidden = this.filtering && !this._hasMatch(<ProgramUnitItem><any>this.item, this.filter.toUpperCase());
         }
 
         private _hasMatch(item: ProgramUnitItem, search: string): boolean {
@@ -253,35 +275,47 @@ namespace Vidyano.WebComponents {
             if (!this.classList.contains("program-unit"))
                 return;
 
-            this._setExpand(this.item && this.item === this.programUnit);
+            this._setExpand(this.item && (this.item === this.programUnit || this.collapsed));
         }
 
         private _updateItemTitle(item: Vidyano.ProgramUnitItem, filter: string, filtering: boolean, collapsed: boolean) {
-            if (collapsed) {
-                if (item instanceof ProgramUnit && !this.$["title"].querySelector("vi-resource")) {
-                    const resourceName = item.offset < 2147483647 ? "ProgramUnit_" + item.name : "Vidyano";
-                    if (Vidyano.WebComponents.Icon.Exists(resourceName)) {
-                        this.$["title"].textContent = "";
-                        Polymer.dom(this.$["title"]).appendChild(new Vidyano.WebComponents.Icon(resourceName));
-
-                        return;
-                    }
-                }
-
+            if (item instanceof Vidyano.ProgramUnit && collapsed)
                 this.$["title"].textContent = item.title[0];
-                return;
-            }
-
-            if (!filtering)
-                this.$["title"].textContent = item.title;
-            else if (this._hasMatch(item, this.filter.toUpperCase())) {
+            else if (filtering && this._hasMatch(item, this.filter.toUpperCase())) {
                 const exp = new RegExp(`(${filter})`, "gi");
                 this.$["title"].innerHTML = item.title.replace(exp, "<span class='style-scope vi-menu-item match'>$1</span>");
             }
+            else
+                this.$["title"].textContent = item.title;
+        }
+
+        private _computeIcon(item: Vidyano.ProgramUnitItem): string {
+            let prefix: string;
+
+            if (item instanceof ProgramUnitItemGroup)
+                return "ProgramUnitGroup";
+
+            if (item instanceof ProgramUnit) {
+                if (item.offset === 2147483647)
+                    return "ProgramUnit_Vidyano";
+                else
+                    prefix = "ProgramUnit_";
+            }
+            else if (item instanceof ProgramUnitItemQuery)
+                prefix = "ProgramUnitItem_Query_";
+            else if (item instanceof ProgramUnitItemPersistentObject)
+                prefix = "ProgramUnitItem_PersistentObject_";
+            else if (item instanceof ProgramUnitItemUrl)
+                prefix = "ProgramUnitItem_Url_";
+
+            if (Vidyano.WebComponents.Icon.Exists(prefix + item.name))
+                return prefix + item.name;
+
+            return null;
         }
 
         private _computedHasItems(item: Vidyano.ProgramUnitItem): boolean {
-            return item instanceof Vidyano.ProgramUnitItemGroup;
+            return item instanceof Vidyano.ProgramUnit || item instanceof Vidyano.ProgramUnitItemGroup;
         }
 
         private _computedHref(item: Vidyano.ProgramUnitItem): string {

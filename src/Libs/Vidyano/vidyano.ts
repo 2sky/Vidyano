@@ -4899,21 +4899,43 @@ namespace Vidyano {
 
             if (unit.items) {
                 this.items = [];
-                const usedGroups = {};
+                const usedGroups: { [key: string]: ProgramUnitItemGroup } = {};
 
                 const unitItems = Enumerable.from<any>(unit.items);
                 unitItems.forEach(itemData => {
-                    if (itemData.group) {
-                        let group = usedGroups[itemData.group.id];
-                        if (!group) {
-                            const groupItems = unitItems.where(groupItemData => groupItemData.group && groupItemData.group.id === itemData.group.id).select(groupItemData => this._createItem(routes, groupItemData)).toArray();
-                            group = new ProgramUnitItemGroup(this.service, itemData.group, groupItems);
-                            this.items.push(group);
-                            usedGroups[itemData.group.id] = group;
+                    let itemsTarget = this.items;
+
+                    if (!itemData.group) {
+                        const pathIndex = itemData.name.lastIndexOf("\\");
+                        if (pathIndex >= 0) {
+                            const groupNames = <string[]>itemData.name.split("\\");
+                            groupNames.pop();
+
+                            let groupId = null;
+                            groupNames.forEach(groupName => {
+                                const parentGroup = usedGroups[groupId];
+                                let group = usedGroups[groupId = groupId ? `${groupId}\\${groupName}` : groupName];
+
+                                if (!group) {
+                                    usedGroups[groupId] = group = new ProgramUnitItemGroup(service, { id: groupId, title: groupName, name: groupId }, []);
+                                    if (parentGroup)
+                                        parentGroup.items.push(group);
+                                    else
+                                        this.items.push(group);
+                                }
+
+                                itemsTarget = group.items;
+                            });
                         }
                     }
-                    else
-                        this.items.push(this._createItem(routes, itemData));
+                    else {
+                        if (!usedGroups[itemData.group.id])
+                            itemsTarget.push(usedGroups[itemData.group.id] = new ProgramUnitItemGroup(service, itemData.group, []));
+
+                        itemsTarget = usedGroups[itemData.group.id].items;
+                    }
+
+                    itemsTarget.push(this._createItem(routes, itemData));
                 });
             }
 

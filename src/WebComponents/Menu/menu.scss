@@ -5,7 +5,6 @@
     @include relative();
     @include noSelection();
 
-    --vi-menu-indent: 16px;
     --vi-menu--expand-width: 16em;
     --vi-menu-color: #FAFAFA;
     --vi-menu-background: $blue-grey-900;
@@ -19,17 +18,6 @@
         header {
             #toggleCollapse {
                 background-color: transparent;
-            }
-        }
-
-        .programUnits {
-            .subItems {
-                display: none;
-                margin-bottom: var(--theme-h5);
-            }
-
-            vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
-                display: block;
             }
         }
 
@@ -142,7 +130,7 @@
 
     vi-input-search:not([collapsed]) {
         --vi-input-search: #{'{
-            margin: calc(var(--vi-menu-indent) / 2) calc(var(--vi-menu-indent) - var(--vi-menu-indent) / 2);
+            margin: calc(var(--theme-h4) / 2) calc(var(--theme-h4) - var(--theme-h4) / 2);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }'};
 
