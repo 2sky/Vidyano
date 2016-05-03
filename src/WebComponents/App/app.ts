@@ -193,8 +193,7 @@ namespace Vidyano.WebComponents {
             },
             isTracking: {
                 type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
+                reflectToAttribute: true
             },
             cookiePrefix: {
                 type: String,
@@ -214,8 +213,7 @@ namespace Vidyano.WebComponents {
         },
         listeners: {
             "app-config-attached": "_configurationAttached",
-            "app-route-add": "_appRouteAdded",
-            "track": "_onTrack"
+            "app-route-add": "_appRouteAdded"
         },
         forwardObservers: [
             "service.isSignedIn",
@@ -245,6 +243,7 @@ namespace Vidyano.WebComponents {
         noMenu: boolean;
         label: string;
         keys: string;
+        isTracking: boolean;
 
         private _setConfiguration: (config: AppConfig) => void;
         private _setInitializing: (init: boolean) => void;
@@ -253,7 +252,6 @@ namespace Vidyano.WebComponents {
         private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setCurrentRoute: (route: AppRoute) => void;
         private _setProfilerLoaded: (val: boolean) => void;
-        private _setIsTracking: (val:boolean) => void;
 
         attached() {
             super.attached();
@@ -618,13 +616,6 @@ namespace Vidyano.WebComponents {
                 (e || window.event).returnValue = <any>confirmationMessage; // Gecko + IE
                 return confirmationMessage; // Webkit, Safari, Chrome etc.
             }
-        }
-
-        private _onTrack(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
-            if (detail.state === "start")
-                this._setIsTracking(true);
-            else if(detail.state === "end")
-            this._setIsTracking(false);
         }
 
         private _registerKeybindings(registration: Keyboard.IKeybindingRegistration) {

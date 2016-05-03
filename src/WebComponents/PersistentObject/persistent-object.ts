@@ -282,6 +282,7 @@
                 this.masterWidth = (px + detail.ddx) + "px";
             }
             else if (detail.state === "start") {
+                this.app.isTracking = true;
                 this.app.classList.add("dragging");
                 if (this.masterWidth.endsWith("%"))
                     this.masterWidth = (this.offsetWidth * (parseInt(this.masterWidth) / 100)).toString() + "px";
@@ -300,6 +301,7 @@
                 thisPersistentObjectSettings["master-detail"] = this.masterWidth;
 
                 this.app.service.application.saveUserSettings();
+                this.app.isTracking = false;
             }
 
             e.stopPropagation();

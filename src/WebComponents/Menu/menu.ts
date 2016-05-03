@@ -123,6 +123,7 @@ namespace Vidyano.WebComponents {
 
         private _onResize(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
             if (detail.state === "start") {
+                this.app.isTracking = true;
                 this._resizeWidth = Math.max(Menu._minResizeWidth, this.offsetWidth);
                 this.customStyle["--vi-menu--expand-width"] = `${this._resizeWidth}px`;
                 this.updateStyles();
@@ -136,6 +137,7 @@ namespace Vidyano.WebComponents {
             else if (detail.state === "end") {
                 Vidyano.cookie("menu-width", String(this._resizeWidth));
                 this._setIsResizing(false);
+                this.app.isTracking = false;
             }
         }
     }

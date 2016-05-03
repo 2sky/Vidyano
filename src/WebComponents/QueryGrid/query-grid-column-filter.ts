@@ -332,6 +332,7 @@ namespace Vidyano.WebComponents {
 
         private _onResize(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
             if (detail.state === "start") {
+                this.app.isTracking = true;
                 const filter = <Popup>this.$["filter"];
                 filter.sticky = true;
 
@@ -346,6 +347,7 @@ namespace Vidyano.WebComponents {
                 filter.sticky = false;
 
                 this._resizeStart = null;
+                this.app.isTracking = false;
             }
         }
 

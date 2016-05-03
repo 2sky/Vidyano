@@ -120,13 +120,16 @@ namespace Vidyano.WebComponents {
                 });
             }
             else if (detail.state === "start") {
+                this.app.isTracking = true;
                 if (!this._translate)
                     this._set_translate({ x: 0, y: 0 });
 
                 this._dialog.setAttribute("dragging", "");
             }
-            else if (detail.state === "end")
+            else if (detail.state === "end") {
                 this._dialog.removeAttribute("dragging");
+                this.app.isTracking = false;
+            }
         }
 
         show(options: IDialogOptions = {}): Promise<any> {

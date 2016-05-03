@@ -119,8 +119,10 @@
         }
 
         private _resizeTrack(e: TrackEvent, detail: PolymerTrackDetail) {
-            if (detail.state === "start")
+            if (detail.state === "start") {
+                this.app.isTracking = true;
                 this.classList.add("resizing");
+            }
             else if (detail.state === "track") {
                 if (this._resizingRAF)
                     cancelAnimationFrame(this._resizingRAF);
@@ -141,6 +143,7 @@
                 this.column.width = `${this.column.calculatedWidth}px`;
 
                 this.fire("column-widths-updated", { column: this.column, columnWidth: this.column.calculatedWidth, save: true });
+                this.app.isTracking = false;
             }
         }
     }
