@@ -32,6 +32,9 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 readOnly: true
             }
+        },
+        listeners: {
+            "reset-filter": "_resetFilter"
         }
     })
     export class Menu extends WebComponent {
@@ -119,6 +122,10 @@ namespace Vidyano.WebComponents {
 
         private _catchInputSearchTap(e: TapEvent) {
             e.stopPropagation();
+        }
+
+        private _resetFilter(e: CustomEvent) {
+            this.filter = "";
         }
 
         private _onResize(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
@@ -248,6 +255,9 @@ namespace Vidyano.WebComponents {
                     e.preventDefault();
                     this.app.changePath(item.path);
                 }
+
+                if (this.filtering && this.app.configuration.getSetting("vi-menu.sticky-search", "false").toLowerCase() !== "true")
+                    this.fire("reset-filter", null);
             }
 
             e.stopPropagation();
