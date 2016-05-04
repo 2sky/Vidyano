@@ -2,7 +2,7 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-common-mark.css" />
         <template is="dom-if" if="[[notEditing]]">
-            <vi-scroller>
+            <vi-scroller class="flex">
                 <marked-element markdown="[[attribute.displayValue]]"></marked-element>
             </vi-scroller>
         </template>
