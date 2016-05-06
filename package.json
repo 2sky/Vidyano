@@ -9,10 +9,11 @@
     "grunt-contrib-uglify": "^0.11.0",
     "grunt-text-replace": "^0.4.0",
     "grunt-git-revision": "^0.0.1",
-    "typescript": "^1.6.2",
+    "typescript": "^1.8.0",
     "grunt-sass": "^1.1.0",
     "grunt-ts": "^5.1.0",
-    "grunt-tslint": "^3.0.3",
+    "grunt-tslint": "^3.1.0",
+    "tslint": "^3.7.3",
     "dts-generator": "1.6.0-pre.1"
   }
 }
