@@ -61,7 +61,7 @@
         <template is="dom-if" if="[[hasItems]]">
             <div class="subItems">
                 <template is="dom-repeat" items="[[items]]" as="subItem">
-                    <vi-menu-item item="[[subItem]]" items="[[subItem.items]]" level="[[subLevel]]" filter="[[filter]]"></vi-menu-item>
+                    <vi-menu-item item="[[subItem]]" items="[[subItem.items]]" level="[[subLevel]]" filter="[[filter]]" filter-parent="[[item]]"></vi-menu-item>
                 </template>
             </div>
         </template>
