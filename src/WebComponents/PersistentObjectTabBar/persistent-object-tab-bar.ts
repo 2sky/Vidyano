@@ -70,11 +70,11 @@ namespace Vidyano.WebComponents {
             },
             label: {
                 type: String,
-                computed: "_computeLabel(tab.label, queryLabel)"
+                computed: "_computeLabel(tab.label, query, queryLabel)"
             },
             query: {
                 type: Object,
-                computed: "tab.query"
+                computed: "_computeQuery(tab)"
             },
             queryLabel: {
                 type: String,
@@ -89,9 +89,6 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 computed: "_computeHasBadge(badge)"
             }
-        },
-        hostAttributes: {
-            class: "horizontal layout"
         },
         listeners: {
             "tap": "_select"
@@ -117,8 +114,12 @@ namespace Vidyano.WebComponents {
             return badge !== undefined && badge >= 0;
         }
 
-        private _computeLabel(tabLabel: string, queryLabel: string): string {
-            return queryLabel || tabLabel;
+        private _computeLabel(tabLabel: string, query: Vidyano.Query, queryLabel: string): string {
+            return query && queryLabel || tabLabel;
+        }
+
+        private _computeQuery(tab: Vidyano.PersistentObjectQueryTab): Vidyano.Query {
+            return tab.query || null;
         }
 
         private _computeQueryLabel(label: string, currentFilter: Vidyano.QueryFilter): string {

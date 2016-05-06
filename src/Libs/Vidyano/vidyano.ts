@@ -1554,6 +1554,10 @@ namespace Vidyano {
             return action;
         }
 
+        onSortPersistentObjectTabs(parent: Vidyano.PersistentObject, attributeTabs: Vidyano.PersistentObjectAttributeTab[], queryTabs: Vidyano.PersistentObjectQueryTab[]): Vidyano.PersistentObjectTab[] {
+            return (<PersistentObjectTab[]>attributeTabs).concat(queryTabs);
+        }
+
         onMessageDialog(title: string, message: string, html: boolean, ...actions: string[]): Promise<number> {
             return Promise.resolve(-1);
         }
@@ -1802,7 +1806,7 @@ namespace Vidyano {
 
                 return newTab;
             })).toArray() : [];
-            this._tabs = attributeTabs.concat(Enumerable.from(this.queries).select(q => <PersistentObjectTab>this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
+            this._tabs = this.service.hooks.onSortPersistentObjectTabs(this, <PersistentObjectAttributeTab[]>attributeTabs, Enumerable.from(this.queries).select(q => this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
 
             if (this._tabs.length === 0)
                 this._tabs = [this.service.hooks.onConstructPersistentObjectAttributeTab(service, Enumerable.empty<PersistentObjectAttributeGroup>(), "", "", "", null, this, 0, true)];
@@ -2071,7 +2075,7 @@ namespace Vidyano {
                         const groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this)];
                         groups[0].index = 0;
 
-                        const serviceTab = this._lastResult.tabs.filter(tab => tab.name === attr.tabKey)[0];
+                        const serviceTab = this._lastResult.tabs.filter(tab => tab.key === attr.tabKey)[0];
                         attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tabKey, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
                         this.tabs.push(tab);
                         tabsAdded = true;
@@ -2120,7 +2124,11 @@ namespace Vidyano {
                 if (tabsAdded) {
                     const attrTabs = <PersistentObjectAttributeTab[]>this.tabs.filter(t => t instanceof PersistentObjectAttributeTab);
                     attrTabs.sort((t1, t2) => Enumerable.from(t1.groups).selectMany(g => g.attributes).min(a => a.offset) - Enumerable.from(t2.groups).selectMany(g => g.attributes).min(a => a.offset));
-                    this.tabs = attrTabs.concat.apply(attrTabs, this.tabs.filter(t => t instanceof PersistentObjectQueryTab));
+
+                    const queryTabs = <PersistentObjectQueryTab[]>this.tabs.filter(t => t instanceof PersistentObjectQueryTab);
+                    queryTabs.sort((q1, q2) => q1.query.offset - q2.query.offset);
+
+                    this.tabs = this.service.hooks.onSortPersistentObjectTabs(this, attrTabs, queryTabs);
                 }
                 else if (tabsRemoved)
                     this.tabs = this.tabs.slice();
