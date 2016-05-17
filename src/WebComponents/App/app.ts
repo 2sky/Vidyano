@@ -939,6 +939,9 @@ namespace Vidyano.WebComponents {
                         const cacheEntry = <QueryAppCacheEntry>this.app.cachePing(new QueryAppCacheEntry(refresh.queryId));
                         if (cacheEntry && cacheEntry.query)
                             cacheEntry.query.search(refresh.delay);
+
+                        const poCacheEntriesWithQueries = <PersistentObjectAppCacheEntry[]>this.app.cacheEntries.filter(e => e instanceof PersistentObjectAppCacheEntry && !!e.persistentObject && e.persistentObject.queries.length > 0);
+                        poCacheEntriesWithQueries.forEach(poEntry => poEntry.persistentObject.queries.filter(q => q.id === refresh.queryId).forEach(q => q.search(refresh.delay)));
                     }
                     else {
                         const refreshPersistentObject = () => {
