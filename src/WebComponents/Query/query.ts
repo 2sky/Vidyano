@@ -15,6 +15,11 @@
             label: {
                 type: String,
                 computed: "_computeLabel(query.labelWithTotalItems, query.filters.currentFilter)"
+            },
+            hideHeader: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeHideHeader(query, isAttached)"
             }
         },
         forwardObservers: [
@@ -51,6 +56,14 @@
 
         private _computeLabel(labelWithTotalItems: string, currentFilter: Vidyano.QueryFilter): string {
             return labelWithTotalItems + (currentFilter && currentFilter.name ? " — " + currentFilter.name : "");
+        }
+
+        private _computeHideHeader(query: Vidyano.Query, isAttached: boolean): boolean {
+            if (!query || !isAttached)
+                return false;
+
+            const config = this.app.configuration.getQueryConfig(query);
+            return !!config && config.hideHeader;
         }
     }
 }

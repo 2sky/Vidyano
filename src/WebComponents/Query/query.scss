@@ -27,4 +27,10 @@
             display: none !important;
         }
     }
+
+    &[hide-header] {
+        vi-query-items-presenter {
+            margin: 0;
+        }
+    }
 }

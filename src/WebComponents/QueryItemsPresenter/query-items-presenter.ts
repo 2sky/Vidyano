@@ -53,10 +53,11 @@ namespace Vidyano.WebComponents {
         private _setFileDrop: (fileDrop: boolean) => void;
 
         private _renderQuery(query: Vidyano.Query, currentChart: Vidyano.QueryChart, isAttached: boolean) {
-            if (!isAttached || this._renderedQuery === query)
+            if (!isAttached)
                 return;
 
             this.empty();
+            this._renderedQuery = null;
 
             if (!query) {
                 this._setFileDrop(false);
@@ -73,7 +74,11 @@ namespace Vidyano.WebComponents {
             this._setTemplated(!!config && config.hasTemplate);
 
             if (this.templated) {
-                Polymer.dom(this).appendChild(config.stamp(query, config.as || "query"));
+                if (this._renderedQuery !== query) {
+                    Polymer.dom(this).appendChild(config.stamp(query, config.as || "query"));
+                    this._renderedQuery = query;
+                }
+
                 this._setLoading(false);
             }
             else {
@@ -90,11 +95,11 @@ namespace Vidyano.WebComponents {
                     }
 
                     Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader.then(() => {
-                        if (query !== this.query || !!query.currentChart)
+                        if (query !== this.query || this._renderedQuery === query || !!query.currentChart)
                             return;
 
                         const grid = new Vidyano.WebComponents.QueryGrid();
-                        grid.query = this.query;
+                        this._renderedQuery = grid.query = this.query;
                         Polymer.dom(this).appendChild(grid);
 
                         this._setLoading(false);
@@ -119,8 +124,10 @@ namespace Vidyano.WebComponents {
                     }
 
                     Vidyano.WebComponents.QueryItemsPresenter._chartComponentLoader.then(() => {
-                        if (query !== this.query)
+                        if (query !== this.query || this._renderedQuery === query)
                             return;
+
+                        this._renderedQuery = query;
 
                         Polymer.dom(this).appendChild(chartConfig.stamp(currentChart, chartConfig.as || "chart"));
                         this._setLoading(false);

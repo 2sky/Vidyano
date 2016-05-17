@@ -18,6 +18,10 @@ namespace Vidyano.WebComponents {
             fileDropAttribute: {
                 type: String,
                 reflectToAttribute: true
+            },
+            hideHeader: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         }
     })
@@ -26,5 +30,6 @@ namespace Vidyano.WebComponents {
         id: string;
         defaultChart: string;
         fileDropAttribute: string;
+        hideHeader: boolean;
     }
 }
