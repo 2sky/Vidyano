@@ -88,9 +88,7 @@ $tabsBG: #f1f1f1;
 
     &[layout-full-page] {
         .master {
-            -ms-flex: 1;
-            -webkit-flex: 1;
-            flex: 1;
+            @include flex();
         }
 
         .detail {
