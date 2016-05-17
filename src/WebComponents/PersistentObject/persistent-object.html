@@ -18,9 +18,9 @@
         </div>
         <div class="horizontal layout tabs">
             <div class="master">
-                <vi-persistent-object-tab-bar tabs="{{masterTabs}}" selected-tab="{{selectedMasterTab}}"></vi-persistent-object-tab-bar>
+                <vi-persistent-object-tab-bar tabs="[[masterTabs]]" selected-tab="{{selectedMasterTab}}"></vi-persistent-object-tab-bar>
             </div>
-            <vi-persistent-object-details-header class="flex detail" tabs="{{detailTabs}}" tab="{{selectedDetailTab}}"></vi-persistent-object-details-header>
+            <vi-persistent-object-details-header class="flex detail" tabs="[[detailTabs]]" tab="{{selectedDetailTab}}"></vi-persistent-object-details-header>
         </div>
         <header>[[persistentObject.breadcrumb]]</header>
     </template>
@@ -58,7 +58,7 @@
                 --theme-color-semi-faint: var(--theme-accent-color-semi-faint);
             }
         </style>
-        <vi-persistent-object-tab-bar tabs="{{tabs}}" selected-tab="{{tab}}"></vi-persistent-object-tab-bar>
+        <vi-persistent-object-tab-bar tabs="[[tabs]]" selected-tab="{{tab}}"></vi-persistent-object-tab-bar>
     </template>
 </dom-module>
 
