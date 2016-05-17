@@ -111,7 +111,7 @@
 
         private _saveAs() {
             this.query.filters.createNew().then(newFilter => {
-                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, true)).then(po => {
+                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, { forwardSave: true })).then(po => {
                     if (!!po)
                         this.query.filters.save(newFilter);
                 });

@@ -154,6 +154,16 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _add(e: TapEvent) {
             this.newAction.execute({ throwExceptions: true, skipOpen: true }).then(po => {
+                return this.attribute.parent.stateBehavior.indexOf("OpenAsDialog") < 0 ?
+                    Promise.resolve(po) :
+                    this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, {
+                        saveLabel: this.app.service.actionDefinitions.get("AddReference").displayName,
+                        forwardSave: true
+                    }));
+            }).then(po => {
+                if (!po)
+                    return;
+
                 this.push("attribute.objects", po);
                 po.parent = this.attribute.parent;
 

@@ -1,6 +1,11 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
+    export interface IPersistentObjectDialogOptions {
+        saveLabel?: string;
+        forwardSave?: boolean;
+    }
+
     @Dialog.register({
         properties: {
             persistentObject: Object,
@@ -11,6 +16,10 @@
             readOnly: {
                 type: Boolean,
                 computed: "_computeReadOnly(tab)"
+            },
+            saveLabel: {
+                type: String,
+                computed: "_computeSaveLabel(isAttached)"
             }
         },
         hostAttributes: {
@@ -21,14 +30,14 @@
         private _saveHook: (po: Vidyano.PersistentObject) => Promise<any>;
         tab: Vidyano.PersistentObjectAttributeTab;
 
-        constructor(public persistentObject: Vidyano.PersistentObject, private _forwardSave: boolean = false) {
+        constructor(public persistentObject: Vidyano.PersistentObject, private _options: IPersistentObjectDialogOptions = {}) {
             super();
 
             persistentObject.beginEdit();
         }
 
         private _save() {
-            if (this._forwardSave)
+            if (this._options.forwardSave)
                 this.instance.resolve(this.persistentObject);
             else {
                 const wasNew = this.persistentObject.isNew;
@@ -56,6 +65,13 @@
                 this.persistentObject.cancelEdit();
                 this.cancel();
             }
+        }
+
+        private _computeSaveLabel(isAttached: boolean): string {
+            if (!isAttached)
+                return null;
+
+            return this._options.saveLabel || this.translations.Save;
         }
 
         private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {
