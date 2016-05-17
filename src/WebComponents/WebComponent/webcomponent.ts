@@ -297,6 +297,11 @@
         resolveUrl: (href: string) => string;
 
         /**
+         * Gets a path's value.
+         */
+        get: (path: string, root?: WebComponent) => any;
+
+        /**
          * Sets a path's value and notifies Polymer for a change for that path.
          */
         set: (path: string, value: any, root?: WebComponent) => void;
@@ -480,7 +485,8 @@
                         subDispose = this._forwardObservable(subSource, paths[1], pathToNotify, callback);
                         disposers.push(subDispose);
                     }
-                }
+                } else if (paths.length === 1 && source[paths[0]] !== undefined && this.get(`${pathPrefix}.${paths[0]}`) !== source[paths[0]])
+                    this.notifyPath(`${pathPrefix}.${paths[0]}`, source[paths[0]]);
             }
 
             return () => {
@@ -600,7 +606,7 @@
                                 do {
                                     value = value[valuePath.pop()];
                                 }
-                                while (value && valuePath.length > 0);
+                                while (value != null && valuePath.length > 0);
 
                                 observer(value);
                             }
