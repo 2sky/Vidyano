@@ -57,7 +57,7 @@
 
         private _editInputBlur() {
             if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)
-                this.attribute.setValue(this.value = this.attribute.value, true).catch(() => { });
+                this.attribute.setValue(this.value = this.attribute.value, true).catch(Vidyano.noop);
         }
 
         protected _valueChanged() {
@@ -65,12 +65,12 @@
             if (newValue === this.value)
                 super._valueChanged(newValue);
             else
-                this.attribute.setValue(newValue, false).catch(() => { });
+                this.attribute.setValue(newValue, false).catch(Vidyano.noop);
         }
 
         private _addSuggestion(e: TapEvent) {
             const suggestion = e.model.suggestion;
-            this.attribute.setValue(StringEx.isNullOrEmpty(this.value) ? suggestion : (this.value.endsWith(this._suggestionsSeparator) ? this.value + suggestion : this.value + this._suggestionsSeparator + suggestion)).catch(() => { });
+            this.attribute.setValue(StringEx.isNullOrEmpty(this.value) ? suggestion : (this.value.endsWith(this._suggestionsSeparator) ? this.value + suggestion : this.value + this._suggestionsSeparator + suggestion)).catch(Vidyano.noop);
         }
 
         private _computeFilteredSuggestions(suggestions: string[], value: string): string[] {

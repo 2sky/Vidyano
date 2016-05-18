@@ -43,7 +43,7 @@
                 if (this.attribute.value instanceof BigNumber && bigNumberValue != null && bigNumberValue.equals(this.attribute.value))
                     return;
 
-                this.attribute.setValue(bigNumberValue, false).catch(() => { });
+                this.attribute.setValue(bigNumberValue, false).catch(Vidyano.noop);
             }
         }
 

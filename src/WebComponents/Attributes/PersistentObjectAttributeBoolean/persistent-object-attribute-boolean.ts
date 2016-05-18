@@ -5,7 +5,7 @@ namespace Vidyano.WebComponents.Attributes {
     export class PersistentObjectAttributeBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
         protected _valueChanged(newValue: any) {
             if (this.attribute && newValue !== this.attribute.value)
-                this.attribute.setValue(newValue, true).catch(() => { });
+                this.attribute.setValue(newValue, true).catch(Vidyano.noop);
         }
     }
 
@@ -43,7 +43,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         protected _valueChanged(newValue: any) {
             if (this.attribute && newValue !== this.attribute.value)
-                this.attribute.setValue(newValue, true).catch(() => { });
+                this.attribute.setValue(newValue, true).catch(Vidyano.noop);
         }
 
         private _notNull(value: any): boolean {

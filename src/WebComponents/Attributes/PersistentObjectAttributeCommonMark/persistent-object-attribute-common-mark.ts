@@ -26,7 +26,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _editTextAreaBlur() {
             if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)
-                this.attribute.setValue(this.value = this.attribute.value, true).catch(() => { });
+                this.attribute.setValue(this.value = this.attribute.value, true).catch(Vidyano.noop);
         }
 
         private _computeNotEditing(markedElementLoaded: boolean, editing: boolean): boolean {

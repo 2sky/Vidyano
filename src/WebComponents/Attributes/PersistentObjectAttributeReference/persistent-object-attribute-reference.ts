@@ -68,7 +68,7 @@ namespace Vidyano.WebComponents.Attributes {
             this._update();
 
             if (this.attribute && newValue !== this.attribute.value) {
-                this.attribute.setValue(newValue, true).catch(() => { });
+                this.attribute.setValue(newValue, true).catch(Vidyano.noop);
             }
         }
 

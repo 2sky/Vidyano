@@ -35,7 +35,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         protected _valueChanged(newValue: any) {
             if (this.attribute && newValue !== this.attribute.value)
-                this.attribute.setValue(newValue, true).catch(() => { });
+                this.attribute.setValue(newValue, true).catch(Vidyano.noop);
         }
 
         protected _optionsChanged() {
