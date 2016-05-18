@@ -63,7 +63,7 @@
                 return false;
 
             const config = this.app.configuration.getQueryConfig(query);
-            return !!config && config.hideHeader;
+            return !!config && !!config.hideHeader;
         }
     }
 }
