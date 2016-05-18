@@ -121,10 +121,10 @@
                     if (this.selectedDate != null && (this.attribute.type === "Time" || this.attribute.type === "NullableTime")) {
                         const newTimeValue = StringEx.format("0:{0:D2}:{1:D2}:{2:D2}.{3:D3}0000", this.selectedDate.getHours(), this.selectedDate.getMinutes(), this.selectedDate.getSeconds(), this.selectedDate.getMilliseconds());
                         if (!this.value || (<string>this.value).substr(0, newTimeValue.length - 4) !== newTimeValue.substr(0, newTimeValue.length - 4))
-                            this.attribute.setValue(newTimeValue, true);
+                            this.attribute.setValue(newTimeValue, true).catch(() => { });
                     }
                     else
-                        this.attribute.setValue(this.selectedDate, true);
+                        this.attribute.setValue(this.selectedDate, true).catch(() => { });
                 }
             }
 
@@ -132,7 +132,7 @@
         }
 
         private _clear() {
-            this.attribute.setValue(null, true);
+            this.attribute.setValue(null, true).catch(() => { });
         }
 
         private _renderSelectedDate(forceDate?: boolean, forceTime?: boolean) {

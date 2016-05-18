@@ -67,7 +67,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         protected _valueChanged(newValue: any) {
             if (this.attribute && newValue !== this.attribute.value)
-                this.attribute.setValue(newValue, false);
+                this.attribute.setValue(newValue, false).catch(() => { });
         }
 
         private _computeHasError(validationError: string): boolean {

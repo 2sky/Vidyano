@@ -29,7 +29,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _editTextAreaBlur() {
             if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)
-                this.attribute.setValue(this.value = this.attribute.value, true);
+                this.attribute.setValue(this.value = this.attribute.value, true).catch(() => { });
         }
 
         private _computeCodeMirror(attribute: Vidyano.PersistentObjectAttribute): string {

@@ -1942,45 +1942,49 @@ namespace Vidyano {
         save(waitForOwnerQuery?: boolean): Promise<boolean> {
             return this.queueWork(() => new Promise<boolean>((resolve, reject) => {
                 if (this.isEditing) {
-                    this.service.executeAction("PersistentObject.Save", this, null, null, null).then(po => {
-                        if (po) {
-                            const wasNew = this.isNew;
-                            this.refreshFromResult(po);
+                    this.attributes.filter(attr => attr.shouldRefresh).reduce((previous, current) => previous.then(() => current._triggerAttributeRefresh(true)), Promise.resolve(true)).then(() => {
+                        this.service.executeAction("PersistentObject.Save", this, null, null, null).then(po => {
+                            if (po) {
+                                const wasNew = this.isNew;
+                                this.refreshFromResult(po);
 
-                            if (StringEx.isNullOrWhiteSpace(this.notification) || this.notificationType !== NotificationType.Error) {
-                                this._setIsDirty(false);
+                                if (StringEx.isNullOrWhiteSpace(this.notification) || this.notificationType !== NotificationType.Error) {
+                                    this._setIsDirty(false);
 
-                                if (!wasNew) {
-                                    this.setIsEditing(false);
-                                    if (this.stateBehavior === "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
-                                        this.beginEdit();
-                                }
-
-                                if (this.ownerAttributeWithReference) {
-                                    if (this.ownerAttributeWithReference.objectId !== this.objectId) {
-                                        let parent = this.ownerAttributeWithReference.parent;
-                                        if (parent.ownerDetailAttribute != null)
-                                            parent = parent.ownerDetailAttribute.parent;
-                                        parent.beginEdit();
-
-                                        this.ownerAttributeWithReference.changeReference([po.objectId]);
+                                    if (!wasNew) {
+                                        this.setIsEditing(false);
+                                        if (this.stateBehavior === "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
+                                            this.beginEdit();
                                     }
-                                    else if ((<any>this.ownerAttributeWithReference).value !== this.breadcrumb)
-                                        (<any>this.ownerAttributeWithReference).value = this.breadcrumb;
-                                }
-                                else if (this.ownerQuery)
-                                    this.ownerQuery.search().then(() => {
-                                        resolve(true);
-                                    }, () => {
-                                        resolve(true);
-                                    });
 
-                                if (waitForOwnerQuery !== true || !this.ownerQuery)
-                                    resolve(true);
+                                    if (this.ownerAttributeWithReference) {
+                                        if (this.ownerAttributeWithReference.objectId !== this.objectId) {
+                                            let parent = this.ownerAttributeWithReference.parent;
+                                            if (parent.ownerDetailAttribute != null)
+                                                parent = parent.ownerDetailAttribute.parent;
+                                            parent.beginEdit();
+
+                                            this.ownerAttributeWithReference.changeReference([po.objectId]);
+                                        }
+                                        else if ((<any>this.ownerAttributeWithReference).value !== this.breadcrumb)
+                                            (<any>this.ownerAttributeWithReference).value = this.breadcrumb;
+                                    }
+                                    else if (this.ownerQuery)
+                                        this.ownerQuery.search().then(() => {
+                                            resolve(true);
+                                        }, () => {
+                                            resolve(true);
+                                        });
+
+                                    if (waitForOwnerQuery !== true || !this.ownerQuery)
+                                        resolve(true);
+                                }
+                                else if (!StringEx.isNullOrWhiteSpace(this.notification))
+                                    reject(this.notification);
                             }
-                            else if (!StringEx.isNullOrWhiteSpace(this.notification))
-                                reject(this.notification);
-                        }
+                        }, e => {
+                            reject(e);
+                        });
                     }, e => {
                         reject(e);
                     });
@@ -2169,8 +2173,8 @@ namespace Vidyano {
             this._setIsDirty(true);
         }
 
-        _triggerAttributeRefresh(attr: PersistentObjectAttribute): Promise<boolean> {
-            return this.queueWork(() => {
+        _triggerAttributeRefresh(attr: PersistentObjectAttribute, immediate?: boolean): Promise<boolean> {
+            const work = () => {
                 return new Promise<any>((resolve, reject) => {
                     const parameters = [{ RefreshedPersistentObjectAttributeId: attr.id }];
 
@@ -2180,11 +2184,16 @@ namespace Vidyano {
                             this.refreshFromResult(result);
 
                         resolve(true);
-                    }, e=> {
+                    }, e => {
                         reject(e);
                     });
                 });
-            });
+            };
+
+            if (!immediate)
+                return this.queueWork(work);
+            else
+                return work();
         }
 
         _prepareAttributesForRefresh(sender: PersistentObjectAttribute) {
@@ -2215,7 +2224,7 @@ namespace Vidyano {
         private _isReadOnly: boolean;
         private _isValueChanged: boolean;
 
-        protected _queueRefresh: boolean = false;
+        protected _shouldRefresh: boolean = false;
         private _refreshValue: string;
 
         id: string;
@@ -2381,6 +2390,10 @@ namespace Vidyano {
             return !StringEx.isNullOrEmpty(this._displayValue = value != null ? StringEx.format(format, value) : null) ? this._displayValue : "—";
         }
 
+        get shouldRefresh(): boolean {
+            return this._shouldRefresh;
+        }
+
         get value(): any {
             if (this._lastParsedValue !== this._serviceValue) {
                 this._lastParsedValue = this._serviceValue;
@@ -2395,7 +2408,7 @@ namespace Vidyano {
         }
 
         set value(val: any) {
-            this.setValue(val);
+            this.setValue(val).catch(() => { });
         }
 
         setValue(val: any, allowRefresh: boolean = true): Promise<any> {
@@ -2420,7 +2433,7 @@ namespace Vidyano {
 
                 // If value is equal
                 if (this._cachedValue === val || (this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || this._serviceValue === newServiceValue) {
-                    if (allowRefresh && this._queueRefresh)
+                    if (allowRefresh && this._shouldRefresh)
                         queuedTriggersRefresh = this._triggerAttributeRefresh();
                 }
                 else {
@@ -2437,7 +2450,7 @@ namespace Vidyano {
                         if (allowRefresh)
                             queuedTriggersRefresh = this._triggerAttributeRefresh();
                         else
-                            this._queueRefresh = true;
+                            this._shouldRefresh = true;
                     }
 
                     this.parent.triggerDirty();
@@ -2534,9 +2547,9 @@ namespace Vidyano {
             return visibilityChanged;
         }
 
-        protected _triggerAttributeRefresh(): Promise<any> {
-            this._queueRefresh = false;
-            return this.parent._triggerAttributeRefresh(this);
+        _triggerAttributeRefresh(immediate?: boolean): Promise<any> {
+            this._shouldRefresh = false;
+            return this.parent._triggerAttributeRefresh(this, immediate);
         }
 
         private _setOptions(options: string[]) {
@@ -2759,7 +2772,7 @@ namespace Vidyano {
                     if (allowRefresh)
                         return this._triggerAttributeRefresh();
                     else
-                        this._queueRefresh = true;
+                        this._shouldRefresh = true;
                 }
 
                 resolve(this.value);

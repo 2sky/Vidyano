@@ -12,7 +12,7 @@ namespace Vidyano.WebComponents.Attributes {
     export class PersistentObjectAttributeDropDown extends WebComponents.Attributes.PersistentObjectAttribute {
         protected _valueChanged(newValue: any) {
             if (this.attribute && newValue !== this.attribute.value)
-                this.attribute.setValue(newValue, true);
+                this.attribute.setValue(newValue, true).catch(() => { });
         }
 
         private _computeRadio(attribute: Vidyano.PersistentObjectAttribute): boolean {
@@ -30,7 +30,7 @@ namespace Vidyano.WebComponents.Attributes {
         private _radioChanged(e: CustomEvent) {
             e.stopPropagation();
 
-            this.attribute.setValue((<any>e).model.option, true);
+            this.attribute.setValue((<any>e).model.option, true).catch(() => { });
         }
     }
 }

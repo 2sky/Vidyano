@@ -27,7 +27,7 @@ namespace Vidyano.WebComponents.Attributes {
                         return;
 
                     this._setNewUser(result[0].id, result[0].getValue("FriendlyName") || result[0].breadcrumb);
-                }).catch();
+                }).catch(() => { });
             });
         }
 
