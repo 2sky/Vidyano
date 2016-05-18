@@ -381,41 +381,38 @@
 
     export abstract class WebComponent extends PolymerBase {
         private _appRequested: boolean;
-        protected translations: any;
+        private _app: Vidyano.WebComponents.App;
+        private  _translations: any;
 
         className: string;
         classList: DOMTokenList;
         tagName: string;
         style: CSSStyleDeclaration;
         isAttached: boolean;
-        app: Vidyano.WebComponents.App;
 
-        protected _setApp: (app: Vidyano.WebComponents.App) => void;
+        protected attached() { /* Noop */ }
 
-        attached() {
-            if (!this.app) {
+        protected detached() { /* Noop */ }
+
+        get app(): Vidyano.WebComponents.App {
+            if (!this._app) {
                 if (this instanceof Vidyano.WebComponents.App)
-                    this._setApp(<Vidyano.WebComponents.App><any>this);
+                    this._app = <Vidyano.WebComponents.App><any>this;
                 else {
-                    const component = <Vidyano.WebComponents.WebComponent>this.findParent(e => !!e && e instanceof Vidyano.WebComponents.App || (<any>e).app instanceof Vidyano.WebComponents.App);
+                    const component = <Vidyano.WebComponents.WebComponent>this.findParent(e => !!e && e instanceof Vidyano.WebComponents.App || (<any>e)._app instanceof Vidyano.WebComponents.App);
                     if (!!component)
-                        this._setApp(component instanceof Vidyano.WebComponents.App ? component : component.app);
+                        this._app = component instanceof Vidyano.WebComponents.App ? component : component._app;
                 }
             }
 
-            if (!this.translations && this.app && this.app.service && this.app.service.language)
-                this.translations = this.app.service.language.messages;
-
-            this._setIsAttached(true);
+            return this._app;
         }
 
-        detached() {
-            this._setIsAttached(false);
-        }
+        get translations(): any {
+            if (!this._translations && this.app && this.app.service && this.app.service.language)
+                this._translations = this.app.service.language.messages;
 
-        // Note: Keep this setter since isAttached isn't always defined as a readOnly Polymer property
-        private _setIsAttached(attached: boolean) {
-            this.isAttached = attached;
+            return this._translations;
         }
 
         empty(parent: Node = this, condition?: (e: Node) => boolean) {
@@ -523,11 +520,6 @@
                 wcPrototype.created = obj;
 
             info.properties = wcPrototype.properties || {};
-            info.properties["app"] = {
-                type: Object,
-                readOnly: true
-            };
-            info.properties["translations"] = Object;
 
             for (const prop in info.properties) {
                 if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed)) {
@@ -559,12 +551,10 @@
 
                 if (isAttached) {
                     info.properties["isAttached"] = {
-                        type: Boolean,
-                        readOnly: true
+                        type: Boolean
                     };
                 }
-            } else if (!info.properties["isAttached"]["readOnly"])
-                info.properties["isAttached"]["readOnly"] = true;
+            }
 
             if (info.forwardObservers) {
                 info.observers = info.observers || [];

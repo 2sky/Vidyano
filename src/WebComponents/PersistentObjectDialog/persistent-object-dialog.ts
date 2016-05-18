@@ -71,7 +71,7 @@
             if (!isAttached)
                 return null;
 
-            return this._options.saveLabel || this.translations.Save;
+            return this._options.saveLabel || this.translateMessage("Save");
         }
 
         private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {

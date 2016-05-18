@@ -53,7 +53,7 @@ namespace Vidyano.WebComponents {
                 return model;
             };
 
-            this._setApp(new Vidyano.WebComponents.App());
+            this["_app"] = new Vidyano.WebComponents.App();
             this.app.uri = this.serviceUri;
             this.app.noMenu = true;
             this.app.noHistory = true;

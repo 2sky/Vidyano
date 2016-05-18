@@ -114,7 +114,7 @@ interface PolymerGestures {
 }
 
 declare var Polymer: {
-    (polymer: any): void;
+    (polymer: any): any;
     dom(element: Node | Vidyano.WebComponents.WebComponent): PolymerDomApi;
     getRegisteredPrototype(tagName: string): any;
 
