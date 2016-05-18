@@ -22,7 +22,10 @@
             </div>
             <vi-persistent-object-details-header class="flex detail" tabs="[[detailTabs]]" tab="{{selectedDetailTab}}"></vi-persistent-object-details-header>
         </div>
-        <header>[[persistentObject.breadcrumb]]</header>
+        <header class="layout horizontal center">
+            <span class="flex">[[persistentObject.breadcrumb]]</span>
+            <vi-spinner block color="white" hidden="[[!isBusy]]"></vi-spinner>
+        </header>
     </template>
 </dom-module>
 

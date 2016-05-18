@@ -1,99 +1,69 @@
 @import "../_vars.scss";
 
+$animation-time: 1s;
+
 :host {
-    @include layout-horizontal();
-    @include layout-center-center();
-    overflow: visible !important;
-    z-index: 1000;
+    display: block;
+    position: relative;
+    width: var(--vi-spinner-width, --theme-h2);
+    height: var(--vi-spinner-height, --theme-h2);
 
-    div {
-        opacity: 0.8;
-        -moz-transition: opacity linear 0.5s;
-        -o-transition: opacity linear 0.5s;
-        -webkit-transition: opacity linear 0.5s;
-        transition: opacity linear 0.5s;
-        z-index: 1000;
+    &:not([block]) {
+        position: absolute;
+        left: calc(50% - var(--vi-spinner-width, --theme-h2) / 2);
+        top: calc(50% - var(--vi-spinner-height, --theme-h2) / 2);
+    }
 
-        &::after, &::before {
-            -moz-box-sizing: border-box;
-            -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-            position: absolute;
-            content: " ";
-            left: 50%;
-            top: 50%;
-            display: inline-block;
-            vertical-align: middle;
-            text-align: center;
-            background-color: transparent;
-            border: 0.25em solid transparent;
-            border-radius: 50%;
-            font-size: 24px;
-            z-index: 1000;
+    .box {
+        width: 45%;
+        height: 45%;
+        background: var(--vi-spinner-color, rgba(127, 127, 127, 1));
+        opacity: 0.1;
+        animation: loadAnimation $animation-time linear infinite;
+
+        &:nth-of-type(1) {
+          position: absolute;
+          top: 2.5%;
+          left: 2.5%;
         }
 
-        &::after {
-            margin: -0.25em 0 0 -0.25em;
-            padding: 0.25em;
-            -moz-animation: spinFast 1s ease-in-out infinite;
-            -o-animation: spinFast 1s ease-in-out infinite;
-            -webkit-animation: spinFast 1s ease-in-out infinite;
-            animation: spinFast 1s ease-in-out infinite;
-            border-top-color: #666;
-            border-bottom-color: #666;
+        &:nth-of-type(2) {
+          position: absolute;
+          top: 2.5%;
+          right: 2.5%;
+          animation-delay: -($animation-time / 4);
         }
 
-        &::before {
-            margin: -0.75em 0 0 -0.75em;
-            padding: 0.75em;
-            -moz-animation: spin 1s ease-in-out infinite;
-            -o-animation: spin 1s ease-in-out infinite;
-            -webkit-animation: spin 1s ease-in-out infinite;
-            animation: spin 1s ease-in-out infinite;
-            border-top-color: #333;
-            border-bottom-color: #333;
+        &:nth-of-type(3) {
+          position: absolute;
+          bottom: 2.5%;
+          right: 2.5%;
+          animation-delay: -($animation-time / 4 ) * 2;
+        }
+
+        &:nth-of-type(4) {
+          position: absolute;
+          bottom: 2.5%;
+          left: 2.5%;
+          animation-delay: -($animation-time / 4 ) * 3;
         }
     }
 }
 
-@-webkit-keyframes spin {
+@keyframes loadAnimation {
     0% {
-        -webkit-transform: rotateZ(0deg);
+        opacity: 0.1;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 0.1;
     }
 
     100% {
-        -webkit-transform: rotateZ(360deg);
-    }
-}
-
-
-@keyframes spin {
-    0% {
-        transform: rotateZ(0deg);
-    }
-
-    100% {
-        transform: rotateZ(360deg);
-    }
-}
-
-@-webkit-keyframes spinFast {
-    0% {
-        -webkit-transform: rotateZ(0deg);
-    }
-
-    100% {
-        -webkit-transform: rotateZ(720deg);
-    }
-}
-
-
-@keyframes spinFast {
-    0% {
-        transform: rotateZ(0deg);
-    }
-
-    100% {
-        transform: rotateZ(720deg);
+        opacity: 0.1;
     }
 }

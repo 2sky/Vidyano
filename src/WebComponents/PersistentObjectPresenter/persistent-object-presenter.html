@@ -1,9 +1,6 @@
 <dom-module id="vi-persistent-object-presenter">
     <template>
         <link rel="stylesheet" href="persistent-object-presenter.css" />
-        <template is="dom-if" if="[[loading]]">
-            <vi-spinner></vi-spinner>
-        </template>
         <template is="dom-if" if="[[hasError]]" restamp>
             <div id="error">
                 <vi-icon source="Notification_Error"></vi-icon>
@@ -11,6 +8,9 @@
             </div>
         </template>
         <content></content>
+        <template is="dom-if" if="[[loading]]">
+            <vi-spinner></vi-spinner>
+        </template>
     </template>
 </dom-module>
 

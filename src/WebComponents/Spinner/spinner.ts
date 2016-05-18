@@ -1,7 +1,24 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    @WebComponent.register
+    @WebComponent.register({
+        properties: {
+            color: {
+                type: String,
+                reflectToAttribute: true
+            }
+        },
+        observers: [
+            "_updateColor(color, isAttached)"
+        ]
+    })
     export class Spinner extends WebComponent {
+        private _updateColor(color: string, isAttached: boolean) {
+            if (!isAttached)
+                return;
+
+            this.customStyle["--vi-spinner-color"] = color;
+            this.updateStyles();
+        }
     }
 }

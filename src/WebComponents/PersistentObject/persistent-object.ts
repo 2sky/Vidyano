@@ -78,6 +78,10 @@
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "_computeLayoutDetailTabs(persistentObject, detailTabs)"
+            },
+            isBusy: {
+                type: Boolean,
+                computed: "persistentObject.isBusy"
             }
         },
         observers: [
@@ -87,7 +91,8 @@
         forwardObservers: [
             "persistentObject.tabs.isVisible",
             "persistentObject.breadcrumb",
-            "persistentObject.notification"
+            "persistentObject.notification",
+            "persistentObject.isBusy"
         ],
         listeners: {
             "tabselect": "_tabselect"

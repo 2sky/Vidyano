@@ -13,6 +13,7 @@ $tabsBG: #f1f1f1;
 
     header {
         @include page-title();
+        padding-right: 4px;
     }
 
     .tabs {
