@@ -25,27 +25,27 @@ $animation-time: 1s;
           position: absolute;
           top: 2.5%;
           left: 2.5%;
+          animation-delay: -($animation-time / 4 ) * 3;
         }
 
         &:nth-of-type(2) {
           position: absolute;
           top: 2.5%;
           right: 2.5%;
-          animation-delay: -($animation-time / 4);
+          animation-delay: -($animation-time / 4 ) * 2;
         }
 
         &:nth-of-type(3) {
           position: absolute;
           bottom: 2.5%;
           right: 2.5%;
-          animation-delay: -($animation-time / 4 ) * 2;
+          animation-delay: -($animation-time / 4);
         }
 
         &:nth-of-type(4) {
           position: absolute;
           bottom: 2.5%;
           left: 2.5%;
-          animation-delay: -($animation-time / 4 ) * 3;
         }
     }
 }
