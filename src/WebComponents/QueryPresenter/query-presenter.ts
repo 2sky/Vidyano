@@ -28,7 +28,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_computeQuery(queryId, isAttached)",
+            "_computeQuery(queryId, app)",
             "_updateTitle(query.label)"
         ],
         listeners: {
@@ -73,10 +73,10 @@ namespace Vidyano.WebComponents {
             return !StringEx.isNullOrEmpty(error);
         }
 
-        private _computeQuery(queryId: string, isAttached: boolean) {
+        private _computeQuery(queryId: string, app: Vidyano.WebComponents.App) {
             this._setError(null);
 
-            if (!isAttached || (this.query && queryId && this.query.id.toUpperCase() === queryId.toUpperCase()))
+            if ((this.query && queryId && this.query.id.toUpperCase() === queryId.toUpperCase()))
                 return;
 
             if (!this._customTemplate)
@@ -87,7 +87,7 @@ namespace Vidyano.WebComponents {
                     this.query = null;
 
                 this._setLoading(true);
-                this.app.service.getQuery(this.queryId).then(query => {
+                app.service.getQuery(this.queryId).then(query => {
                     if (query.id.toUpperCase() === this.queryId.toUpperCase()) {
                         this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(query.id));
                         this.query = this._cacheEntry.query = query;

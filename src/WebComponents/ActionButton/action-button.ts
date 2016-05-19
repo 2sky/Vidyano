@@ -16,7 +16,7 @@ namespace Vidyano.WebComponents {
             },
             siblingIcon: {
                 type: Boolean,
-                readOnly: true
+                computed: "_computeSiblingIcon(overflow, isAttached)"
             },
             iconSpace: {
                 type: Boolean,
@@ -74,8 +74,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_observeAction(action.canExecute, action.isVisible, action.options, isAttached)",
-            "_computeSiblingIcon(overflow, isAttached)"
+            "_observeAction(action.canExecute, action.isVisible, action.options)"
         ],
         forwardObservers: [
             "action.isPinned",
@@ -161,7 +160,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _observeAction(canExecute: boolean, isVisible: boolean, options: boolean) {
-            if(!this.isAttached || this._skipObserver)
+            if(this._skipObserver)
                 return;
 
             this._setCanExecute(this.item ? this.action.definition.selectionRule(1) : this.action.canExecute);

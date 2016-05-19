@@ -139,7 +139,7 @@ namespace Vidyano.WebComponents.Attributes {
             if (usedWidth < width)
                 widths[0].width += width - usedWidth;
 
-            const style = <Style><any>this.$["style"];
+            const style = <Style>this.$["style"];
             style.setStyle("ColumnStyles", ...widths.map(w => `.column[data-column='${w.name}'] { width: ${w.width}px; }`));
 
             this._setInitializing(false);

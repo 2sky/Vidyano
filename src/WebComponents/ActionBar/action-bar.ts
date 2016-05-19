@@ -31,7 +31,7 @@
             }
         },
         observers: [
-            "_computeHasCharts(serviceObject.charts, isAttached)"
+            "_computeHasCharts(serviceObject.charts)"
         ],
         forwardObservers: [
             "serviceObject.charts"

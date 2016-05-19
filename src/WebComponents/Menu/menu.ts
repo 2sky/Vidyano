@@ -16,7 +16,7 @@ namespace Vidyano.WebComponents {
             },
             hasGlobalSearch: {
                 type: Boolean,
-                computed: "_computeHasGlobalSearch(isAttached)"
+                computed: "_computeHasGlobalSearch(app)"
             },
             filter: {
                 type: String,
@@ -201,12 +201,12 @@ namespace Vidyano.WebComponents {
             },
             href: {
                 type: String,
-                computed: "_computedHref(item, isAttached)"
+                computed: "_computedHref(item, app)"
             }
         },
         observers: [
             "_updateItemTitle(item, filter, filtering, collapsed)",
-            "_updateIndentVariable(level, isAttached)"
+            "_updateIndentVariable(level)"
         ],
         listeners: {
             "tap": "_tap"
@@ -224,10 +224,7 @@ namespace Vidyano.WebComponents {
 
         private _setExpand: (val: boolean) => void;
 
-        private _updateIndentVariable(level: number, isAttached: boolean) {
-            if (!isAttached)
-                return;
-
+        private _updateIndentVariable(level: number) {
             this.customStyle["--vi-menu-item-indent-level"] = level.toString();
             this.updateStyles();
         }
@@ -330,14 +327,14 @@ namespace Vidyano.WebComponents {
             return item instanceof Vidyano.ProgramUnit || item instanceof Vidyano.ProgramUnitItemGroup;
         }
 
-        private _computedHref(item: Vidyano.ProgramUnitItem): string {
-            if (!item || !this.isAttached)
+        private _computedHref(item: Vidyano.ProgramUnitItem, app: Vidyano.WebComponents.App): string {
+            if (!item || !app)
                 return undefined;
 
             if (item instanceof Vidyano.ProgramUnitItemUrl)
                 return item.path;
 
-            return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? this.app.noHistory ? "#" : hashBang + this.item.path : undefined;
+            return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? app.noHistory ? "#" : hashBang + this.item.path : undefined;
         }
 
         private _titleMouseenter() {

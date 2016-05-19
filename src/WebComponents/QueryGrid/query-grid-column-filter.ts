@@ -98,7 +98,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_update(queryColumn.selectedDistincts, queryColumn.selectedDistinctsInversed, isAttached)"
+            "_update(queryColumn.selectedDistincts, queryColumn.selectedDistinctsInversed)"
         ],
         forwardObservers: [
             "queryColumn.selectedDistincts",

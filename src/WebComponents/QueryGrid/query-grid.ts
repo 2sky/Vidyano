@@ -107,7 +107,7 @@
             }
         },
         observers: [
-            "_updateTables(_items, _columns, canReorder, isAttached)",
+            "_updateTables(_items, _columns, canReorder)",
             "_updateVerticalSpacer(query.totalItems, rowHeight)",
         ],
         forwardObservers: [
@@ -402,10 +402,7 @@
             return !!totalItem && items && items.length > 0 && columnWidthsUpdated;
         }
 
-        private _updateTables(items: Vidyano.QueryResultItem[], columns: QueryGridColumn[], canReorder: boolean, isAttached: boolean) {
-            if (!isAttached)
-                return;
-
+        private _updateTables(items: Vidyano.QueryResultItem[], columns: QueryGridColumn[], canReorder: boolean) {
             const _tablesUpdatingTimestamp = this._tablesUpdatingTimestamp = new Date();
 
             const tablesUpdating = this._tablesUpdating = (this._tablesUpdating || Promise.resolve()).then(() => new Promise(resolve => {

@@ -382,37 +382,35 @@
     export abstract class WebComponent extends PolymerBase {
         private _appRequested: boolean;
         private _app: Vidyano.WebComponents.App;
-        private  _translations: any;
+        private _appInitializedListener: EventListener;
 
         className: string;
         classList: DOMTokenList;
         tagName: string;
         style: CSSStyleDeclaration;
         isAttached: boolean;
+        app: Vidyano.WebComponents.App;
+        translations: any;
 
-        protected attached() { /* Noop */ }
+        private _setTranslations: (translations: any) => void;
 
-        protected detached() { /* Noop */ }
+        protected attached() {
+            if (!this.app.initializing)
+                this._setTranslations(this.app.service.language.messages);
+            else
+                this.app.addEventListener("initialized", this._appInitializedListener = () => {
+                    this.app.removeEventListener("initialized", this._appInitializedListener);
+                    this._appInitializedListener = null;
 
-        get app(): Vidyano.WebComponents.App {
-            if (!this._app) {
-                if (this instanceof Vidyano.WebComponents.App)
-                    this._app = <Vidyano.WebComponents.App><any>this;
-                else {
-                    const component = <Vidyano.WebComponents.WebComponent>this.findParent(e => !!e && e instanceof Vidyano.WebComponents.App || (<any>e)._app instanceof Vidyano.WebComponents.App);
-                    if (!!component)
-                        this._app = component instanceof Vidyano.WebComponents.App ? component : component._app;
-                }
-            }
-
-            return this._app;
+                    this._setTranslations(this.app.service.language.messages);
+                });
         }
 
-        get translations(): any {
-            if (!this._translations && this.app && this.app.service && this.app.service.language)
-                this._translations = this.app.service.language.messages;
-
-            return this._translations;
+        protected detached() {
+            if (this._appInitializedListener) {
+                this.app.removeEventListener("initialized", this._appInitializedListener);
+                this._appInitializedListener = null;
+            }
         }
 
         empty(parent: Node = this, condition?: (e: Node) => boolean) {
@@ -492,6 +490,20 @@
             };
         }
 
+        private _computeApp(isAttached: boolean): Vidyano.WebComponents.App {
+            if (!isAttached)
+                return this._app;
+
+            if (this instanceof Vidyano.WebComponents.App)
+                return this._app = <Vidyano.WebComponents.App><any>this;
+
+            const component = <Vidyano.WebComponents.WebComponent>this.findParent(e => !!e && (<any>e)._app instanceof Vidyano.WebComponents.App || e instanceof Vidyano.WebComponents.App);
+            if (!!component)
+                return this._app = component instanceof Vidyano.WebComponents.App ? component : component._app;
+
+            return this._app = null;
+        }
+
         // This function simply returns the value. This can be used to reflect a property on an observable object as an attribute.
         private _forwardComputed(value: any): any {
             return value;
@@ -530,31 +542,15 @@
                 }
             }
 
-            if (!info.properties["isAttached"]) {
-                // forwardObservers and keybindings count on isAttached
-                let isAttached = (info.forwardObservers || info.keybindings) && !info.properties["isAttached"];
-
-                // Check computed properties
-                if (!isAttached) {
-                    for (const p in info.properties) {
-                        const propInfo = <any>info.properties[p];
-                        if (propInfo.computed && propInfo.computed.indexOf("isAttached") >= 0) {
-                            isAttached = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Check observers
-                if (!isAttached)
-                    isAttached = !!info.observers && info.observers.some(o => o.indexOf("isAttached") >= 0);
-
-                if (isAttached) {
-                    info.properties["isAttached"] = {
-                        type: Boolean
-                    };
-                }
-            }
+            info.properties["isAttached"] = Boolean;
+            info.properties["app"] = {
+                type: Object,
+                computed: "_computeApp(isAttached)"
+            };
+            info.properties["translations"] = {
+                type: Object,
+                readOnly: true
+            };
 
             if (info.forwardObservers) {
                 info.observers = info.observers || [];

@@ -13,7 +13,7 @@ namespace Vidyano.WebComponents.Attributes {
         properties: {
             options: {
                 type: Array,
-                computed: "_computeOptions(attribute, isAttached)"
+                computed: "_computeOptions(attribute, translations)"
             }
         }
     })

@@ -86,7 +86,7 @@
         },
         observers: [
             "_persistentObjectChanged(persistentObject, isAttached)",
-            "_persistentObjectNotificationChanged(persistentObject.notification, isAttached)"
+            "_persistentObjectNotificationChanged(persistentObject.notification)"
         ],
         forwardObservers: [
             "persistentObject.tabs.isVisible",

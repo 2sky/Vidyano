@@ -5,11 +5,11 @@ namespace Vidyano.WebComponents {
         properties: {
             session: {
                 type: Object,
-                computed: "_computeSession(application.session, isAttached)"
+                computed: "_computeSession(application.session)"
             },
             application: {
                 type: Object,
-                computed: "_computeApplication(isAttached)"
+                computed: "_computeApplication(app)"
             }
         },
         forwardObservers: [
@@ -19,8 +19,8 @@ namespace Vidyano.WebComponents {
     export class SessionPresenter extends WebComponent {
         private _customTemplate: PolymerTemplate;
 
-        private _computeApplication(isAttached: boolean): Vidyano.Application {
-            return isAttached ? this.app.service.application : null;
+        private _computeApplication(app: Vidyano.WebComponents.App): Vidyano.Application {
+            return app.service.application;
         }
 
         private _computeSession(session: Vidyano.PersistentObject): Vidyano.PersistentObject {
