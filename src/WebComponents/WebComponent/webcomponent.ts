@@ -397,13 +397,14 @@
         protected attached() {
             if (!this.app.initializing)
                 this._setTranslations(this.app.service.language.messages);
-            else
+            else {
                 this.app.addEventListener("initialized", this._appInitializedListener = () => {
                     this.app.removeEventListener("initialized", this._appInitializedListener);
                     this._appInitializedListener = null;
 
                     this._setTranslations(this.app.service.language.messages);
                 });
+            }
         }
 
         protected detached() {
