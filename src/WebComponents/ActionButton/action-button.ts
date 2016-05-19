@@ -16,7 +16,7 @@ namespace Vidyano.WebComponents {
             },
             siblingIcon: {
                 type: Boolean,
-                computed: "_computeSiblingIcon(overflow, isAttached)"
+                readOnly: true
             },
             iconSpace: {
                 type: Boolean,
@@ -74,7 +74,8 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_observeAction(action.canExecute, action.isVisible, action.options)"
+            "_observeAction(action.canExecute, action.isVisible, action.options)",
+            "_computeSiblingIcon(overflow, isAttached)"
         ],
         forwardObservers: [
             "action.isPinned",
