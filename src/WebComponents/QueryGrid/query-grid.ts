@@ -411,8 +411,9 @@
                     return resolve(null);
 
                 this._requestAnimationFrame(() => {
+                    let start;
                     if (Vidyano.WebComponents.QueryGrid.profile)
-                        var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                        start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                     if (!this._tableHeader)
                         Polymer.dom(this.$["dataHeaderHost"]).appendChild((this._tableHeader = new Vidyano.WebComponents.QueryGridTableHeader(this)).host);
@@ -479,8 +480,9 @@
             const virtualTableStartIndex = this._virtualTableStartIndex;
 
             return new Promise(resolve => {
+                let start;
                 if (Vidyano.WebComponents.QueryGrid.profile)
-                    var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                    start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                 const rowCount = this._tableData && this._tableData.rows && this._tableData.rows.length > 0 ? this._tableData.rows.length : 0;
                 const virtualTableOffset = this._virtualTableOffset;
@@ -530,8 +532,9 @@
                     cancelAnimationFrame(this._updateTableDataPendingUpdatesRAF);
 
                 this._updateTableDataPendingUpdatesRAF = this._requestAnimationFrame(() => {
+                    let start;
                     if (Vidyano.WebComponents.QueryGrid.profile)
-                        var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                        start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                     let hasPendingUpdates = false;
                     Enumerable.from((<QueryGridTableDataRow[]>this._tableData.rows)).forEach(row => {
@@ -562,8 +565,9 @@
                 this._tableData.host.style.minWidth = null;
 
             return new Promise(resolve => {
+                let start;
                 if (Vidyano.WebComponents.QueryGrid.profile)
-                    var start = Vidyano.WebComponents.QueryGrid.perf.now();
+                    start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                 const tryCompute = () => {
                     this._requestAnimationFrame(() => {
