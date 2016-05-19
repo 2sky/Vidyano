@@ -7,6 +7,8 @@
         }
     })
     export class Style extends Vidyano.WebComponents.WebComponent {
+        static profile: boolean;
+
         private _uniqueId: string = Unique.get();
         private _styleElement: HTMLStyleElement;
         private _styles: { [key: string]: { node: Text; text: string; } } = {};
@@ -39,7 +41,8 @@
                 cssBody += this.key + "[style-scope-id=\"" + this._uniqueId + "\"] " + c + (css.length > 0 ? "\n" : "");
             });
 
-            console.warn("Writing global style: " + name);
+            if (Vidyano.WebComponents.Style.profile)
+                console.warn("Writing global style: " + name);
 
             if (!this._styleElement)
                 this._styleElement = <HTMLStyleElement>document.head.appendChild(document.createElement("style"));
