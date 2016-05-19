@@ -173,8 +173,8 @@
 
                         groupX += item.width;
                         if (groupX >= this.columns) {
-                            if (rows[groupY].cells.some(cell => cell.rowSpan === 0)) {
-                                const totalRowHeight = Enumerable.from(rows[groupY].cells).max(cell => cell.rowSpan);
+                            if (rows[groupY].cells.some(cell => cell && cell.rowSpan === 0)) {
+                                const totalRowHeight = Enumerable.from(rows[groupY].cells.filter(c => !!c)).max(cell => cell.rowSpan);
                                 rows[groupY].cells.forEach(cell => {
                                     if (!cell.rowSpan)
                                         cell.rowSpan = totalRowHeight;
@@ -212,8 +212,10 @@
             rows.forEach(r => {
                 for (let i = columns - 1; i >= 0; i--) {
                     if (!r.cells[i])
-                        r.host.appendChild(document.createElement("td"));
+                        r.cells[i] = document.createElement("td");
                 }
+
+                r.cells.filter(c => !c.parentElement || c.parentElement === r.host).forEach(c => r.host.appendChild(c));
             });
 
             if (this._layout)
