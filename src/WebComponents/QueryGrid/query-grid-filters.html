@@ -8,15 +8,15 @@
                 <vi-icon source="Filter_Menu"></vi-icon>
             </button>
             <template is="dom-if" if="[[canReset]]">
-                <vi-popup-menu-item icon="Filter_Reset" label="[[translateMessage('Reset', isAttached)]]" on-tap="_reset"></vi-popup-menu-item>
+                <vi-popup-menu-item icon="Filter_Reset" label="[[translations.Reset]]" on-tap="_reset"></vi-popup-menu-item>
             </template>
             <template is="dom-if" if="[[canSave]]">
                 <vi-popup-menu-item icon="Filter_Save" label="[[_computeCurrentFilterSaveLabel(currentFilter)]]" on-tap="_save"></vi-popup-menu-item>
-                <vi-popup-menu-item icon-space label="[[translateMessage('SaveAs', isAttached)]]" on-tap="_saveAs"></vi-popup-menu-item>
+                <vi-popup-menu-item icon-space label="[[translations.SaveAs]]" on-tap="_saveAs"></vi-popup-menu-item>
                 <vi-popup-menu-item-separator hidden$="[[!hasFilters]]"></vi-popup-menu-item-separator>
             </template>
             <template is="dom-if" if="[[canSaveAs]]">
-                <vi-popup-menu-item icon="Filter_Save" label="[[translateMessage('SaveAs', isAttached)]]" on-tap="_saveAs"></vi-popup-menu-item>
+                <vi-popup-menu-item icon="Filter_Save" label="[[translations.SaveAs]]" on-tap="_saveAs"></vi-popup-menu-item>
                 <vi-popup-menu-item-separator hidden$="[[!hasFilters]]"></vi-popup-menu-item-separator>
             </template>
             <template is="dom-repeat" items="[[filters]]" as="filter">
