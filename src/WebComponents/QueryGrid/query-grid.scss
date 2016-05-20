@@ -441,6 +441,10 @@
         z-index: 2;
     }
 
+    vi-spinner {
+        z-index: 3;
+    }
+
     &:not(.initializing) {
         #initializingOverlay {
             display: none;
