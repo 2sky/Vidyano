@@ -131,7 +131,7 @@
         private _edit(e: TapEvent) {
             e.stopPropagation();
 
-            var filter = <Vidyano.QueryFilter>e.model.filter;
+            const filter = <Vidyano.QueryFilter>e.model.filter;
             this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(filter.persistentObject, {
                 save: (po, close) => {
                     return this.query.filters.save(filter).then(close).catch(Vidyano.noop);
