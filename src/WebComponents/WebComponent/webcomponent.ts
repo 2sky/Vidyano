@@ -395,6 +395,9 @@
         private _setTranslations: (translations: any) => void;
 
         protected attached() {
+            if (!this.app)
+                return;
+
             if (!this.app.initializing)
                 this._setTranslations(this.app.service.language.messages);
             else {
