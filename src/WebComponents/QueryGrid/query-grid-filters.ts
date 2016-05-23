@@ -111,14 +111,19 @@
 
         private _saveAs() {
             this.query.filters.createNew().then(newFilter => {
-                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, {
+                let dialog: Vidyano.WebComponents.PersistentObjectDialog;
+                this.app.showDialog(dialog = new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, {
                     save: (po, close) => {
                         this.query.filters.save(newFilter).then(newFilter => {
                             this.currentFilter = newFilter;
                             close();
                         }).catch(err => {
-                            newFilter.persistentObject.setNotification(err);
+                            dialog.persistentObject = newFilter.persistentObject = Enumerable.from(this.query.filters.detailsAttribute.objects).last(po => po.isNew);
                         });
+                    },
+                    cancel: close => {
+                        this.query.filters.delete(newFilter);
+                        close();
                     }
                 }));
             });

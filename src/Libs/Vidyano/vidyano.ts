@@ -4022,6 +4022,10 @@ namespace Vidyano {
             this.notifyPropertyChanged("filters", this._filters = filters, oldFilters);
         }
 
+        get detailsAttribute(): PersistentObjectAttributeAsDetail {
+            return this._filtersAsDetail;
+        }
+
         get currentFilter(): QueryFilter {
             return this._currentFilter;
         }
@@ -4125,46 +4129,49 @@ namespace Vidyano {
             });
         }
 
-        delete(name: string): Promise<any> {
-            const filter = this.getFilter(name);
+        delete(name: string | QueryFilter): Promise<any> {
+            const filter = typeof name === "string" ? this.getFilter(name) : name;
             if (!filter)
                 return Promise.reject(`No filter found with name '${name}'.`);
 
             if (filter.isLocked)
                 return Promise.reject("Filter is locked.");
 
-            filter.persistentObject.isDeleted = true;
+            if (!filter.persistentObject.isNew) {
+                filter.persistentObject.isDeleted = true;
 
-            return this._query.queueWork(() => {
-                this._filtersPO.beginEdit();
+                return this._query.queueWork(() => {
+                    this._filtersPO.beginEdit();
 
-                return this._filtersPO.save().then(result => {
-                    this._computeFilters();
-                    return null;
+                    return this._filtersPO.save().then(result => {
+                        this._computeFilters();
+                        return null;
+                    });
                 });
-            });
+            }
+
+            this._filtersAsDetail.objects.remove(filter.persistentObject);
+            this._computeFilters();
+
+            return Promise.resolve(null);
         }
     }
 
     export class QueryFilter extends Vidyano.Common.Observable<QueryFilter> {
-        constructor(private _po: PersistentObject) {
+        constructor(public persistentObject: PersistentObject) {
             super();
         }
 
         get name(): string {
-            return this._po.getAttributeValue("Name");
+            return this.persistentObject.getAttributeValue("Name");
         }
 
         get isLocked(): boolean {
-            return this._po.getAttributeValue("IsLocked");
+            return this.persistentObject.getAttributeValue("IsLocked");
         }
 
         get isDefault(): boolean {
-            return this._po.getAttributeValue("IsDefault");
-        }
-
-        get persistentObject(): PersistentObject {
-            return this._po;
+            return this.persistentObject.getAttributeValue("IsDefault");
         }
     }
 
