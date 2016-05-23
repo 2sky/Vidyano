@@ -45,7 +45,7 @@
             return actions.filter(a => a.isPinned === pinned);
         }
 
-        private _computeHasCharts(charts: linqjs.Enumerable<Vidyano.QueryChart>, app: Vidyano.WebComponents.App) {
+        private _computeHasCharts(charts: linqjs.Enumerable<Vidyano.QueryChart>, app: Vidyano.WebComponents.App): boolean {
             return !!charts && !!charts.firstOrDefault(c => !!this.app.configuration.getQueryChartConfig(c.type));
         }
 
