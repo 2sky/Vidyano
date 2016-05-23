@@ -107,6 +107,16 @@
             z-index: 1;
         }
     }
+
+    &[hide-header] ::content > * {
+        > header {
+            display: none;
+        }
+
+        > main {
+            margin-top: 0;
+        }
+    }
 }
 
 :host-context([is-phone]) ::content {

@@ -2,6 +2,7 @@ namespace Vidyano.WebComponents {
     "use strict";
 
     export interface IDialogOptions {
+        hideHeader?: boolean;
     }
 
     export class DialogInstance {
@@ -82,6 +83,11 @@ namespace Vidyano.WebComponents {
                 readOnly: true,
                 reflectToAttribute: true
             },
+            hideHeader: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
+            },
             _translate: {
                 type: Object,
                 readOnly: true,
@@ -92,8 +98,10 @@ namespace Vidyano.WebComponents {
     export class DialogHost extends WebComponent {
         private _translate: { x: number; y: number };
         shown: boolean;
+        hideHeader: boolean;
 
         private _setShown: (shown: boolean) => void;
+        private _setHideHeader: (hide: boolean) => void;
         private _set_translate: (translate: { x: number; y: number }) => void;
 
         constructor(private _dialog: Dialog) {
@@ -133,6 +141,8 @@ namespace Vidyano.WebComponents {
         }
 
         show(options: IDialogOptions = {}): Promise<any> {
+            this._setHideHeader(!!options.hideHeader);
+
             Polymer.dom(this).appendChild(this._dialog);
 
             const dialog = <WebComponent>Polymer.dom(this).querySelector("[dialog]");
@@ -140,7 +150,7 @@ namespace Vidyano.WebComponents {
             let trackHandler: Function;
             let header: HTMLElement;
 
-            if (dialog) {
+            if (dialog && !this.hideHeader) {
                 header = <HTMLElement>Polymer.dom(dialog.root).querySelector("header");
                 if (header) {
                     Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));

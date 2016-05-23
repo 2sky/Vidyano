@@ -125,7 +125,9 @@
                         this.query.filters.delete(newFilter);
                         close();
                     }
-                }));
+                }), {
+                    hideHeader: true
+                });
             });
         }
 
@@ -141,7 +143,9 @@
                 save: (po, close) => {
                     return this.query.filters.save(filter).then(close).catch(Vidyano.noop);
                 }
-            })).catch(Vidyano.noop);
+            }), {
+                hideHeader: true
+            }).catch(Vidyano.noop);
         }
 
         private _delete(e: TapEvent) {
