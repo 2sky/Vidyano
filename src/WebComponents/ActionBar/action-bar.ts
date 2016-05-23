@@ -4,10 +4,7 @@
     @WebComponent.register({
         properties:
         {
-            serviceObject: {
-                type: Object,
-                observer: "_serviceObjectChanged"
-            },
+            serviceObject: Object,
             pinnedActions: {
                 type: Array,
                 computed: "_computePinnedActions(serviceObject)"
@@ -18,7 +15,8 @@
             },
             hasCharts: {
                 type: Boolean,
-                readOnly: true
+                computed: "_computeHasCharts(serviceObject.charts, app)",
+                value: false
             },
             canSearch: {
                 type: Boolean,
@@ -30,9 +28,6 @@
                 computed: "_computeNoActions(pinnedActions, unpinnedActions)"
             }
         },
-        observers: [
-            "_computeHasCharts(serviceObject.charts)"
-        ],
         forwardObservers: [
             "serviceObject.charts"
         ]
@@ -50,18 +45,8 @@
             return actions.filter(a => a.isPinned === pinned);
         }
 
-        private _serviceObjectChanged(serviceObject: Vidyano.ServiceObject) {
-            if (!this.isAttached)
-                return;
-
-            if (serviceObject instanceof Vidyano.Query)
-                this._computeHasCharts(serviceObject.charts, this.isAttached);
-            else
-                this._setHasCharts(false);
-        }
-
-        private _computeHasCharts(charts: linqjs.Enumerable<Vidyano.QueryChart>, isAttached: boolean) {
-            this._setHasCharts(isAttached && !!charts && !!charts.firstOrDefault(c => !!this.app.configuration.getQueryChartConfig(c.type)));
+        private _computeHasCharts(charts: linqjs.Enumerable<Vidyano.QueryChart>, app: Vidyano.WebComponents.App) {
+            return !!charts && !!charts.firstOrDefault(c => !!this.app.configuration.getQueryChartConfig(c.type));
         }
 
         private _search() {

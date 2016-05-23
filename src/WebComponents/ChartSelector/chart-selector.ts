@@ -6,7 +6,7 @@ namespace Vidyano.WebComponents {
             query: Object,
             types: {
                 type: Array,
-                computed: "_computeTypes(query.charts, isAttached)"
+                computed: "_computeTypes(query.charts, app)"
             }
         },
         forwardObservers: [
