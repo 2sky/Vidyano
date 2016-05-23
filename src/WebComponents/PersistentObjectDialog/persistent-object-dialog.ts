@@ -4,6 +4,7 @@
     export interface IPersistentObjectDialogOptions {
         saveLabel?: string;
         save?: (po: Vidyano.PersistentObject, close: () => void) => void;
+        cancel?: (close: () => void) => void;
     }
 
     @Dialog.register({
@@ -61,7 +62,9 @@
         }
 
         private _cancel() {
-            if (this.persistentObject) {
+            if (this._options.cancel)
+                this._options.cancel(() => this.cancel());
+            else if (this.persistentObject) {
                 this.persistentObject.cancelEdit();
                 this.cancel();
             }
