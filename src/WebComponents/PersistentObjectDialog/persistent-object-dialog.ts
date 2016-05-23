@@ -3,7 +3,7 @@
 
     export interface IPersistentObjectDialogOptions {
         saveLabel?: string;
-        forwardSave?: boolean;
+        save?: (po: Vidyano.PersistentObject, close: () => void) => void;
     }
 
     @Dialog.register({
@@ -37,8 +37,8 @@
         }
 
         private _save() {
-            if (this._options.forwardSave)
-                this.instance.resolve(this.persistentObject);
+            if (this._options.save)
+                this._options.save(this.persistentObject, () => this.instance.resolve(this.persistentObject));
             else {
                 const wasNew = this.persistentObject.isNew;
                 this.persistentObject.save().then(() => {
@@ -71,7 +71,7 @@
             if (!isAttached)
                 return null;
 
-            return this._options.saveLabel || this.translations.Save;
+            return this._options.saveLabel || this.translateMessage("Save");
         }
 
         private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {

@@ -139,7 +139,7 @@ namespace Vidyano.WebComponents.Attributes {
             if (usedWidth < width)
                 widths[0].width += width - usedWidth;
 
-            const style = <Style><any>this.$["style"];
+            const style = <Style>this.$["style"];
             style.setStyle("ColumnStyles", ...widths.map(w => `.column[data-column='${w.name}'] { width: ${w.width}px; }`));
 
             this._setInitializing(false);
@@ -153,17 +153,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _add(e: TapEvent) {
-            this.newAction.execute({ throwExceptions: true, skipOpen: true }).then(po => {
-                return this.attribute.parent.stateBehavior.indexOf("OpenAsDialog") < 0 ?
-                    Promise.resolve(po) :
-                    this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, {
-                        saveLabel: this.app.service.actionDefinitions.get("AddReference").displayName,
-                        forwardSave: true
-                    }));
-            }).then(po => {
-                if (!po)
-                    return;
-
+            const postAdd = (po: Vidyano.PersistentObject) => {
                 this.push("attribute.objects", po);
                 po.parent = this.attribute.parent;
 
@@ -183,9 +173,19 @@ namespace Vidyano.WebComponents.Attributes {
 
                 this.attribute.isValueChanged = true;
                 this.attribute.parent.triggerDirty();
-            }, e => {
-                this.attribute.parent.setNotification(e);
-            });
+            };
+
+            this.newAction.execute({ throwExceptions: true, skipOpen: true }).then(po => {
+                return po.stateBehavior.indexOf("OpenAsDialog") < 0 ?
+                    Promise.resolve(po).then(po => postAdd(po)) :
+                    this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, {
+                        saveLabel: this.app.service.actionDefinitions.get("AddReference").displayName,
+                        save: (po, close) => {
+                            postAdd(po);
+                            close();
+                        }
+                    }));
+            }).catch(e => this.attribute.parent.setNotification(e));
         }
 
         private _delete(e: TapEvent) {

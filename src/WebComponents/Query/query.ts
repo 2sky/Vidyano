@@ -19,7 +19,7 @@
             hideHeader: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeHideHeader(query, isAttached)"
+                computed: "_computeHideHeader(query, app)"
             }
         },
         forwardObservers: [
@@ -58,11 +58,11 @@
             return labelWithTotalItems + (currentFilter && currentFilter.name ? " — " + currentFilter.name : "");
         }
 
-        private _computeHideHeader(query: Vidyano.Query, isAttached: boolean): boolean {
-            if (!query || !isAttached)
+        private _computeHideHeader(query: Vidyano.Query, app: Vidyano.WebComponents.App): boolean {
+            if (!query || !app)
                 return false;
 
-            const config = this.app.configuration.getQueryConfig(query);
+            const config = app.configuration.getQueryConfig(query);
             return !!config && !!config.hideHeader;
         }
     }

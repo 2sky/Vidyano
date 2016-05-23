@@ -130,7 +130,7 @@ namespace Vidyano.WebComponents {
             return !!request;
         }
 
-        private _onMousewheel(e: MouseWheelEvent) {
+        private _onMousewheel(e: any) {
             const scroller = <Scroller>this.$["timelineScroller"];
 
             const rect = scroller.getBoundingClientRect();

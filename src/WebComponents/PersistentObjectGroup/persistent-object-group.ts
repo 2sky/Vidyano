@@ -23,7 +23,7 @@
             columns: Number,
             label: {
                 type: String,
-                computed: "_computeLabel(group, groupIndex, isAttached)"
+                computed: "_computeLabel(group, groupIndex, translations)"
             },
             loading: {
                 type: Boolean,
@@ -54,17 +54,14 @@
 
         private _setLoading: (loading: boolean) => void;
 
-        private _computeLabel(group: Vidyano.PersistentObjectAttributeGroup, groupIndex: number, isAttached: boolean): string {
-            if (!isAttached)
-                return;
-
+        private _computeLabel(group: Vidyano.PersistentObjectAttributeGroup, groupIndex: number, translations: any): string {
             if (group.label && groupIndex === 0) {
                 const firstAttribute = group.attributes[0];
                 if (firstAttribute && firstAttribute.tab.label === group.label)
                     return "";
             }
             else if (!group.label && groupIndex > 0)
-                return this.app.translateMessage("DefaultAttributesGroup");
+                return this.translations["DefaultAttributesGroup"];
 
             return group.label;
         }

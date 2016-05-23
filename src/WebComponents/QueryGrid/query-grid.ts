@@ -107,7 +107,7 @@
             }
         },
         observers: [
-            "_updateTables(_items, _columns, canReorder, isAttached)",
+            "_updateTables(_items, _columns, canReorder)",
             "_updateVerticalSpacer(query.totalItems, rowHeight)",
         ],
         forwardObservers: [
@@ -142,6 +142,7 @@
     export class QueryGrid extends WebComponent {
         private static tableCache: { header: QueryGridTableHeader; footer: QueryGridTableFooter, data: QueryGridTableData }[] = [];
         private static perf = performance;
+        static profile: boolean;
 
         private _tableData: QueryGridTableData;
         private _tableHeader: QueryGridTableHeader;
@@ -280,12 +281,12 @@
         private _viewportSizeChanged(viewportSize: ISize) {
             this._setRowHeight(parseInt(getComputedStyle(this).lineHeight));
 
-            if (!this._hasPendingUpdates) {
+            if (this._hasPendingUpdates)
                 this._updateTableDataPendingUpdates();
-                if (!this._remainderWidth || this._remainderWidth < viewportSize.width) {
-                    this._style.setStyle("Remainder", `td[is="vi-query-grid-table-column-remainder"] { width: ${viewportSize.width}px; }`);
-                    this._remainderWidth = viewportSize.width * 2;
-                }
+
+            if (!this._remainderWidth || this._remainderWidth < viewportSize.width) {
+                this._style.setStyle("Remainder", `td[is="vi-query-grid-table-column-remainder"] { width: ${viewportSize.width}px; }`);
+                this._remainderWidth = viewportSize.width * 2;
             }
         }
 
@@ -402,10 +403,7 @@
             return !!totalItem && items && items.length > 0 && columnWidthsUpdated;
         }
 
-        private _updateTables(items: Vidyano.QueryResultItem[], columns: QueryGridColumn[], canReorder: boolean, isAttached: boolean) {
-            if (!isAttached)
-                return;
-
+        private _updateTables(items: Vidyano.QueryResultItem[], columns: QueryGridColumn[], canReorder: boolean) {
             const _tablesUpdatingTimestamp = this._tablesUpdatingTimestamp = new Date();
 
             const tablesUpdating = this._tablesUpdating = (this._tablesUpdating || Promise.resolve()).then(() => new Promise(resolve => {
@@ -413,7 +411,9 @@
                     return resolve(null);
 
                 this._requestAnimationFrame(() => {
-                    const start = Vidyano.WebComponents.QueryGrid.perf.now();
+                    let start;
+                    if (Vidyano.WebComponents.QueryGrid.profile)
+                        start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                     if (!this._tableHeader)
                         Polymer.dom(this.$["dataHeaderHost"]).appendChild((this._tableHeader = new Vidyano.WebComponents.QueryGridTableHeader(this)).host);
@@ -427,8 +427,10 @@
                     Promise.all([this._tableHeader.update(columns.length), this._tableFooter.update(columns.length), this._tableData.update(items.length, columns.length)]).then(() => {
                         (<QueryGridTableDataBody><any>this._tableData.section).enabled = canReorder;
 
-                        const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
-                        console.info(`Tables Updated: ${Math.round(timeTaken) }ms`);
+                        if (Vidyano.WebComponents.QueryGrid.profile) {
+                            const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                            console.info(`Tables Updated: ${Math.round(timeTaken)}ms`);
+                        }
 
                         this._updateTableHeadersAndFooters(columns).then(cont => {
                             if (!cont)
@@ -478,7 +480,9 @@
             const virtualTableStartIndex = this._virtualTableStartIndex;
 
             return new Promise(resolve => {
-                const start = Vidyano.WebComponents.QueryGrid.perf.now();
+                let start;
+                if (Vidyano.WebComponents.QueryGrid.profile)
+                    start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                 const rowCount = this._tableData && this._tableData.rows && this._tableData.rows.length > 0 ? this._tableData.rows.length : 0;
                 const virtualTableOffset = this._virtualTableOffset;
@@ -506,8 +510,10 @@
                     if (this._virtualTableOffsetCurrent !== this._virtualTableOffset && this._virtualTableOffset === virtualTableOffset)
                         this.translate3d("0", `${this._virtualTableOffsetCurrent = this._virtualTableOffset}px`, "0", this.$["dataHost"]);
 
-                    const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
-                    console.info(`Data Updated: ${timeTaken }ms`);
+                    if (Vidyano.WebComponents.QueryGrid.profile) {
+                        const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                        console.info(`Data Updated: ${timeTaken}ms`);
+                    }
 
                     this._updateColumnWidths().then(() => {
                         resolve(true);
@@ -526,15 +532,19 @@
                     cancelAnimationFrame(this._updateTableDataPendingUpdatesRAF);
 
                 this._updateTableDataPendingUpdatesRAF = this._requestAnimationFrame(() => {
-                    const start = Vidyano.WebComponents.QueryGrid.perf.now();
+                    let start;
+                    if (Vidyano.WebComponents.QueryGrid.profile)
+                        start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                     let hasPendingUpdates = false;
                     Enumerable.from((<QueryGridTableDataRow[]>this._tableData.rows)).forEach(row => {
                         hasPendingUpdates = row.updatePendingCellUpdates() || hasPendingUpdates;
                     });
 
-                    const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
-                    console.info(`Pending Data Updated: ${timeTaken }ms`);
+                    if (Vidyano.WebComponents.QueryGrid.profile) {
+                        const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                        console.info(`Pending Data Updated: ${timeTaken}ms`);
+                    }
 
                     resolve(this._hasPendingUpdates = hasPendingUpdates);
                 });
@@ -555,7 +565,9 @@
                 this._tableData.host.style.minWidth = null;
 
             return new Promise(resolve => {
-                const start = Vidyano.WebComponents.QueryGrid.perf.now();
+                let start;
+                if (Vidyano.WebComponents.QueryGrid.profile)
+                    start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                 const tryCompute = () => {
                     this._requestAnimationFrame(() => {
@@ -613,8 +625,10 @@
                         }
 
                         if (!layoutUpdating) {
-                            const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
-                            console.info(`Column Widths Updated: ${timeTaken}ms`);
+                            if (Vidyano.WebComponents.QueryGrid.profile) {
+                                const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
+                                console.info(`Column Widths Updated: ${timeTaken}ms`);
+                            }
 
                             this._setInitializing(false);
 

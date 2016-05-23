@@ -111,15 +111,32 @@
 
         private _saveAs() {
             this.query.filters.createNew().then(newFilter => {
-                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, { forwardSave: true })).then(po => {
-                    if (!!po)
-                        this.query.filters.save(newFilter);
-                });
+                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, {
+                    save: (po, close) => {
+                        this.query.filters.save(newFilter).then(newFilter => {
+                            this.currentFilter = newFilter;
+                            close();
+                        }).catch(err => {
+                            newFilter.persistentObject.setNotification(err);
+                        });
+                    }
+                }));
             });
         }
 
         private _save() {
             this.query.filters.save();
+        }
+
+        private _edit(e: TapEvent) {
+            e.stopPropagation();
+
+            const filter = <Vidyano.QueryFilter>e.model.filter;
+            this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(filter.persistentObject, {
+                save: (po, close) => {
+                    return this.query.filters.save(filter).then(close).catch(Vidyano.noop);
+                }
+            })).catch(Vidyano.noop);
         }
 
         private _delete(e: TapEvent) {

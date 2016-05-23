@@ -22,7 +22,8 @@
             <template is="dom-repeat" items="[[filters]]" as="filter">
                 <vi-popup-menu-item icon-space split="{{!filter.isLocked}}" label="[[filter.name]]" data-filter$="[[filter.name]]" on-tap="_load">
                     <template is="dom-if" if="[[!filter.isLocked]]">
-                        <vi-popup-menu-item icon="Action_Delete" label="[[translations.Delete]]" data-filter$="[[filter.name]]" on-tap="_delete"></vi-popup-menu-item>
+                        <vi-popup-menu-item icon="Action_Edit" label="[[translations.Action_Edit]]" data-filter$="[[filter.name]]" on-tap="_edit"></vi-popup-menu-item>
+                        <vi-popup-menu-item icon="Action_Delete" label="[[translations.Action_Delete]]" data-filter$="[[filter.name]]" on-tap="_delete"></vi-popup-menu-item>
                     </template>
                 </vi-popup-menu-item>
             </template>

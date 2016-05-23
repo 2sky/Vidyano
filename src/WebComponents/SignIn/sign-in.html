@@ -9,7 +9,6 @@
         <div id="side">
             <header>
                 <content select="[label='sign-in']"></content><h1>[[label]]</h1>
-                <h2>[[translations.SignInDescription]]</h2>
             </header>
             <ul>
                 <content></content>
@@ -26,15 +25,15 @@
         <template is="dom-if" if="[[isVidyano]]">
             <ul id="vidyano">
                 <li class="vertical layout">
-                    <label>[[translations.UserName]]</label>
+                    <label>[[translateMessage('UserName', isAttached)]]</label>
                     <input value="{{userName::input}}" id="user" type="text" disabled$="[[signingIn]]" on-keydown="_keydown" />
                 </li>
                 <li class="vertical layout">
-                    <label>[[translations.Password]]</label>
+                    <label>[[translateMessage('Password', isAttached)]]</label>
                     <input value="{{password::input}}" id="pass" type="password" disabled$="[[signingIn]]" on-keydown="_keydown" />
                 </li>
                 <li>
-                    <vi-checkbox label="[[translations.StaySignedIn]]" disabled$="[[signingIn]]" checked="{{staySignedIn}}"></vi-checkbox>
+                    <vi-checkbox label="[[translateMessage('StaySignedIn', isAttached)]]" disabled$="[[signingIn]]" checked="{{staySignedIn}}"></vi-checkbox>
                     <div>
                         <button is="vi-button" id="signIn" on-tap="_signIn" disabled$="[[signingIn]]" label="[[signInLabel]]"></button>
                     </div>

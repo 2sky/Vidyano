@@ -98,10 +98,6 @@ namespace Vidyano.WebComponents.Attributes {
             return (obj: Function) => {
                 info.properties = info.properties || {};
 
-                info.properties["isAttached"] = {
-                    type: Boolean,
-                    readOnly: true
-                };
                 info.properties["attribute"] = {
                     type: Object,
                     observer: "_attributeChanged"

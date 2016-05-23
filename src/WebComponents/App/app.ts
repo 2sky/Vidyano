@@ -143,7 +143,8 @@ namespace Vidyano.WebComponents {
             initializing: {
                 type: Boolean,
                 reflectToAttribute: true,
-                readOnly: true
+                readOnly: true,
+                value: true
             },
             label: {
                 type: String,
@@ -177,7 +178,7 @@ namespace Vidyano.WebComponents {
             signInImage: String,
             showMenu: {
                 type: Boolean,
-                computed: "_computeShowMenu(service.isSignedIn, noMenu, isAttached)"
+                computed: "_computeShowMenu(service.isSignedIn, noMenu)"
             },
             isDesktop: {
                 type: Boolean,
@@ -448,6 +449,7 @@ namespace Vidyano.WebComponents {
                 this.changePath(this.path);
 
             this._setInitializing(false);
+            this.fire("initialized", undefined);
         }
 
         private _computeTrialMessage(isTrial: boolean): string {

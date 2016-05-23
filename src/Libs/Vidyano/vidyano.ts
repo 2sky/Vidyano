@@ -144,7 +144,7 @@ namespace Vidyano {
         if (hasStorage && !options.force) {
             key = cookiePrefix + key;
 
-            let item = window.sessionStorage.getItem(key) || window.localStorage.getItem(key);
+            let item = <any>window.sessionStorage.getItem(key) || window.localStorage.getItem(key);
             if (item != null) {
                 item = JSON.parse(item);
                 if (item.exp && new Date(item.exp) < now) {
@@ -877,7 +877,7 @@ namespace Vidyano {
                     });
                 }
                 else
-                    document.location.assign(requestUri);
+                    document.location.href = requestUri;
             }
         }
 
@@ -955,6 +955,8 @@ namespace Vidyano {
                     const clientMessagesQuery = this.application.getQuery("ClientMessages");
                     if (clientMessagesQuery)
                         clientMessagesQuery.items.forEach(msg => this.language.messages[msg.getValue("Key")] = msg.getValue("Value"));
+
+                    this.actionDefinitions.toEnumerable().forEach(kvp => this.language.messages[`Action_${kvp.key}`] = kvp.value.displayName);
 
                     CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
 
@@ -4643,7 +4645,7 @@ namespace Vidyano {
                             helpWindow.close();
                             this.service._getStream(po);
                         } else {
-                            helpWindow.location = po.getAttributeValue("Document");
+                            helpWindow.location.href = po.getAttributeValue("Document");
                             helpWindow.focus();
                         }
                     }

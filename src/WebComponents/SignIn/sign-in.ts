@@ -48,7 +48,7 @@
             this.empty(undefined, c => c instanceof Vidyano.WebComponents.SignInProvider);
 
             for (const name in route.app.service.providers) {
-                const provider = new WebComponents.SignInProvider();
+                const provider = new WebComponents.SignInProvider(name === "Vidyano");
                 provider.name = name;
 
                 Polymer.dom(this).appendChild(provider);
@@ -81,15 +81,16 @@
         properties: {
             label: {
                 type: String,
-                computed: "_computeLabel(isAttached)",
+                computed: "_computeLabel(translations)",
             },
             description: {
                 type: String,
-                computed: "_computeDescription(isAttached)",
+                computed: "_computeDescription(translations)",
             },
             isVidyano: {
                 type: Boolean,
-                computed: "_computeIsVidyano(isAttached)",
+                readOnly: true,
+                value: false,
                 reflectToAttribute: true
             },
             userName: {
@@ -120,7 +121,7 @@
             },
             signInLabel: {
                 type: String,
-                computed: "_computeSigninButtonLabel(signingIn, signingInCounter, isAttached)"
+                computed: "_computeSigninButtonLabel(signingIn, signingInCounter, app)"
             }
         },
         listeners: {
@@ -140,8 +141,15 @@
         signingIn: boolean;
         signingInCounter: number;
 
+        private _setIsVidyano: (val: boolean) => void;
         private _setExpand: (val: boolean) => void;
         private _setSigningIn: (val: boolean) => void;
+
+        constructor(isVidyano?: boolean) {
+            super();
+
+            this._setIsVidyano(isVidyano);
+        }
 
         private _vidyanoSignInAttached() {
             this.userName = this.app.service.userName !== this.app.service.defaultUserName ? this.app.service.userName : "";
@@ -164,10 +172,6 @@
 
         private _computeDescription(): string {
             return this.app.service.providers[this.name].description || "";
-        }
-
-        private _computeIsVidyano(): boolean {
-            return this.name === "Vidyano";
         }
 
         private _tap() {
@@ -220,9 +224,9 @@
                 });
         }
 
-        private _computeSigninButtonLabel(signingIn: boolean, signingInCounter: number): string {
+        private _computeSigninButtonLabel(signingIn: boolean, signingInCounter: number, app: Vidyano.WebComponents.App): string {
             if (!signingIn)
-                return this.app.service.getTranslatedMessage("SignIn");
+                return app.service.getTranslatedMessage("SignIn");
 
             const button = this._signInButton || (this._signInButton = <HTMLButtonElement><any>this.$$("button#signIn"));
             if (!this._signingInMessage) {

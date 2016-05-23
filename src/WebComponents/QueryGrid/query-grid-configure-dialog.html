@@ -12,10 +12,10 @@
             </vi-scroller>
         </main>
         <footer class="horizontal layout justified">
-            <button is="vi-button" inverse class="self-end" on-tap="_reset" action-type="Default" label="[[translations.Reset]]"></button>
+            <button is="vi-button" inverse class="self-end" on-tap="_reset" action-type="Default" label="[[translateMessage('Reset', isAttached)]]"></button>
             <div class="buttons horizontal layout">
-                <button is="vi-button" on-tap="_save" action-type="Default" label="[[translations.Save]]"></button>
-                <button is="vi-button" inverse on-tap="cancel" label="[[translations.Cancel]]"></button>
+                <button is="vi-button" on-tap="_save" action-type="Default" label="[[translateMessage('Save', isAttached)]]"></button>
+                <button is="vi-button" inverse on-tap="cancel" label="[[translateMessage('Cancel', isAttached)]]"></button>
             </div>
         </footer>
     </template>

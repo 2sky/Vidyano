@@ -53,7 +53,10 @@ namespace Vidyano.WebComponents {
                 return model;
             };
 
-            this._setApp(new Vidyano.WebComponents.App());
+            // NOTE: Hack to initialize app under website
+            this["_app"] = new Vidyano.WebComponents.App();
+            this.isAttached = !(this.isAttached = !this.isAttached);
+
             this.app.uri = this.serviceUri;
             this.app.noMenu = true;
             this.app.noHistory = true;
