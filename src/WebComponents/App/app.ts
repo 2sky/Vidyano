@@ -821,7 +821,7 @@ namespace Vidyano.WebComponents {
             });
         }
 
-        onAction(args: ExecuteActionArgs): Promise<any> {
+        onAction(args: ExecuteActionArgs): Promise<Vidyano.PersistentObject> {
             if (args.action === "AddReference") {
                 return new Promise((resolve, reject) => {
                     args.isHandled = true;
@@ -853,6 +853,8 @@ namespace Vidyano.WebComponents {
                     return args.executeServiceRequest().then(po => {
                         if (po && po.getAttributeValue("IsActivated"))
                             location.reload();
+
+                        return null;
                     });
                 });
             }

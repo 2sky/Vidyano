@@ -1530,7 +1530,7 @@ namespace Vidyano {
             return Promise.resolve(true);
         }
 
-        onAction(args: ExecuteActionArgs): Promise<any> {
+        onAction(args: ExecuteActionArgs): Promise<PersistentObject> {
             return Promise.resolve(null);
         }
 
@@ -1632,6 +1632,10 @@ namespace Vidyano {
         }
 
         onSelectedItemsActions(query: Query, selectedItems: QueryResultItem[], action: ISelectedItemsActionArgs) {
+            // Noop
+        }
+
+        onRefreshFromResult(po: PersistentObject) {
             // Noop
         }
     }
@@ -1853,6 +1857,7 @@ namespace Vidyano {
                 this.beginEdit();
 
             this._initializeActions();
+            this.service.hooks.onRefreshFromResult(this);
         }
 
         private _createPersistentObjectAttribute(attr: PersistentObjectAttribute): PersistentObjectAttribute {
@@ -2018,6 +2023,8 @@ namespace Vidyano {
                                 else if (!StringEx.isNullOrWhiteSpace(this.notification))
                                     reject(this.notification);
                             }
+                            else
+                                resolve(false);
                         }, e => {
                             reject(e);
                         });
@@ -2203,6 +2210,8 @@ namespace Vidyano {
                     }
                 });
             }
+
+            this.service.hooks.onRefreshFromResult(this);
         }
 
         triggerDirty() {
