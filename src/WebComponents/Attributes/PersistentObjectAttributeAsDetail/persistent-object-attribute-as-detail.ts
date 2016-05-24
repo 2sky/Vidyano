@@ -175,7 +175,7 @@ namespace Vidyano.WebComponents.Attributes {
                 this.attribute.parent.triggerDirty();
             };
 
-            this.newAction.execute({ throwExceptions: true, skipOpen: true }).then(po => {
+            this.attribute.newObject().then(po => {
                 return po.stateBehavior.indexOf("OpenAsDialog") < 0 ?
                     Promise.resolve(po).then(po => postAdd(po)) :
                     this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, {
