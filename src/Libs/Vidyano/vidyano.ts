@@ -55,6 +55,15 @@ namespace Vidyano {
         queries: { [type: string]: string};
     }
 
+    export interface IReportOptions {
+        filter?: string;
+        orderBy?: string;
+        top?: number;
+        skip?: number;
+        hideIds?: boolean;
+        hideType?: boolean;
+    }
+
     const hasStorage = (function () {
         const vi = "Vidyano";
         try {
@@ -1233,6 +1242,23 @@ namespace Vidyano {
                     reject(e);
                 });
             });
+        }
+
+        getReport(token: string, { filter = "", orderBy, top, skip, hideIds, hideType = true }: IReportOptions = {}): Promise<any[]> {
+            let uri = this._createUri(`GetReport/${token}?format=json&$filter=${encodeURIComponent(filter)}`);
+
+            if (orderBy)
+                uri = `${uri}&$orderBy=${orderBy}`;
+            if (top)
+                uri = `${uri}&$top=${top}`;
+            if (skip)
+                uri = `${uri}&$skip=${skip}`;
+            if (hideIds)
+                uri = `${uri}&hideIds=true`;
+            if (hideType)
+                uri = `${uri}&hideType=true`;
+
+            return this._getJSON(uri).then(data => data.d);
         }
 
         static getDate = function (yearString: string, monthString: string, dayString: string, hourString: string, minuteString: string, secondString: string, msString: string) {
