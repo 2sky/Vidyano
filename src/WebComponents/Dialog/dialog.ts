@@ -46,7 +46,7 @@ namespace Vidyano.WebComponents {
             this._instance.reject(result);
         }
 
-        static register(info: IWebComponentRegistrationInfo = {}): any {
+        static register(info: IWebComponentRegistrationInfo = {}, prefix?: string): any {
             if (typeof info === "function")
                 return Dialog.register({})(info);
 
@@ -71,7 +71,7 @@ namespace Vidyano.WebComponents {
                     };
                 }
 
-                return WebComponent.register(obj, info);
+                return WebComponent.register(obj, info, prefix);
             };
         }
     }
