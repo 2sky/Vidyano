@@ -1227,10 +1227,7 @@ namespace Vidyano {
                                     iframe.src = "javascript:false;";
                                     document.body.removeChild(iframe);
 
-                                    if (!result.retry)
-                                        resolve(result.result ? service.hooks.onConstructPersistentObject(service, result.result) : null);
-                                    else
-                                        executeThen(result);
+                                    executeThen(result);
                                 }
                                 else
                                     reject(result.exception);
