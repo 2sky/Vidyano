@@ -1255,6 +1255,9 @@ namespace Vidyano {
                             result.retry.persistentObject = this.hooks.onConstructPersistentObject(this, result.retry.persistentObject);
 
                         this.hooks.onRetryAction(result.retry).then(option => {
+                            if (result.retry.persistentObject instanceof Vidyano.PersistentObject)
+                                data.retryPersistentObject = result.retry.persistentObject.toServiceObject();
+
                             data.parameters.RetryActionOption = option;
                             execute().then(result => executeThen(result)).catch(e => executeCatch(e));
                         });
