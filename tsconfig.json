@@ -104,6 +104,7 @@
     "src/WebComponents/QueryItemsPresenter/query-items-presenter.ts",
     "src/WebComponents/QueryPresenter/query-presenter.ts",
     "src/WebComponents/Resource/resource.ts",
+    "src/WebComponents/RetryActionDialog/retry-action-dialog.ts",
     "src/WebComponents/Scroller/scroller.ts",
     "src/WebComponents/Select/select.ts",
     "src/WebComponents/SelectReferenceDialog/select-reference-dialog.ts",

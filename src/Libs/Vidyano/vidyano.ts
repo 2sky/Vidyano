@@ -64,6 +64,13 @@ namespace Vidyano {
         hideType?: boolean;
     }
 
+    export interface IRetryAction {
+        title: string;
+        message: string;
+        options: string[];
+        persistentObject?: PersistentObject;
+    }
+
     const hasStorage = (function () {
         const vi = "Vidyano";
         try {
@@ -1098,7 +1105,7 @@ namespace Vidyano {
                 if (parent != null) {
                     const inputs = parent.getRegisteredInputs();
                     if (inputs.count() > 0) {
-                        const origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port: "");
+                        const origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : "");
                         if (this.serviceUri.startsWith("http") && !this.serviceUri.startsWith(origin) + "/") {
                             Promise.all(inputs.select(input => {
                                 return new Promise((resolve, reject) => {
@@ -1231,16 +1238,30 @@ namespace Vidyano {
                     }
                 }
 
-                this._postJSON(this._createUri("ExecuteAction"), data).then(result => {
-                    resolve(result.result ? this.hooks.onConstructPersistentObject(this, result.result) : null);
-                }, e => {
+                const execute = () => this._postJSON(this._createUri("ExecuteAction"), data);
+                const executeCatch = e => {
                     if (isObjectAction)
                         parent.setNotification(e);
                     else
                         query.setNotification(e);
 
                     reject(e);
-                });
+                };
+                const executeThen = result => {
+                    if (!result.retry)
+                        resolve(result.result ? this.hooks.onConstructPersistentObject(this, result.result) : null);
+                    else {
+                        if (result.retry.persistentObject)
+                            result.retry.persistentObject = this.hooks.onConstructPersistentObject(this, result.retry.persistentObject);
+
+                        this.hooks.onRetryAction(result.retry).then(option => {
+                            data.parameters.RetryActionOption = option;
+                            execute().then(result => executeThen(result)).catch(e => executeCatch(e));
+                        });
+                    }
+                };
+
+                execute().then(result => executeThen(result)).catch(e => executeCatch(e));
             });
         }
 
@@ -1637,6 +1658,13 @@ namespace Vidyano {
 
         onRefreshFromResult(po: PersistentObject) {
             // Noop
+        }
+
+        onRetryAction(retry: IRetryAction): Promise<string> {
+            if (!retry.persistentObject)
+                return this.onMessageDialog(retry.title, retry.message, false, ...retry.options).then(result => result >= 0 ? retry.options[result] : -1);
+
+            return Promise.reject("RetryAction with Persistent Object is not supported.");
         }
     }
 

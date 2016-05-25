@@ -993,5 +993,12 @@ namespace Vidyano.WebComponents {
                 });
             });
         }
+
+        onRetryAction(retry: IRetryAction): Promise<string> {
+            if (retry.persistentObject)
+                return this.app.showDialog(new Vidyano.WebComponents.RetryActionDialog(retry));
+
+            return super.onRetryAction(retry);
+        }
     }
 }

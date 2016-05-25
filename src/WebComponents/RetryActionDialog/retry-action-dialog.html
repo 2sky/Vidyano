@@ -1,0 +1,22 @@
+<link rel="import" href="../PersistentObjectTabPresenter/persistent-object-tab-presenter.html" />
+
+<dom-module id="vi-retry-action-dialog">
+    <template>
+        <link rel="stylesheet" href="retry-action-dialog.css" />
+        <header class="horizontal layout">
+            <h4 class="flex">[[retry.title]]</h4>
+        </header>
+        <main>
+            <h4 hidden$="[[!retry.message]]">[[retry.message]]</h4>
+            <vi-notification service-object="[[retry.persistentObject]]"></vi-notification>
+            <vi-persistent-object-tab-presenter tab="[[tab]]"></vi-persistent-object-tab-presenter>
+        </main>
+        <footer class="horizontal layout end-justified">
+            <template is="dom-repeat" items="[[retry.options]]" as="option">
+                <button is="vi-button" on-tap="_onSelectOption" inverse="[[!_isFirst(index)]]" label="[[option]]"></button>
+            </template>
+        </footer>
+    </template>
+</dom-module>
+
+<script src="retry-action-dialog.js"></script>
