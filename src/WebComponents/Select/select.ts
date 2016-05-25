@@ -156,6 +156,10 @@ namespace Vidyano.WebComponents {
                 this._setFiltering(true);
         }
 
+        private _blur() {
+            this._selectedItemChanged();
+        }
+
         private _openPopup() {
             if (!this.popup.open)
                 this.popup.popup();
