@@ -1102,9 +1102,37 @@ namespace Vidyano {
                 if (parameters != null)
                     data.parameters = parameters;
 
+                const execute = () => this._postJSON(this._createUri("ExecuteAction"), data);
+                const executeCatch = e => {
+                    if (isObjectAction)
+                        parent.setNotification(e);
+                    else
+                        query.setNotification(e);
+
+                    reject(e);
+                };
+                const executeThen = result => {
+                    if (!result.retry)
+                        resolve(result.result ? this.hooks.onConstructPersistentObject(this, result.result) : null);
+                    else {
+                        if (result.retry.persistentObject)
+                            result.retry.persistentObject = this.hooks.onConstructPersistentObject(this, result.retry.persistentObject);
+
+                        this.hooks.onRetryAction(result.retry).then(option => {
+                            if (result.retry.persistentObject instanceof Vidyano.PersistentObject)
+                                data.retryPersistentObject = result.retry.persistentObject.toServiceObject();
+
+                            (data.parameters || (data.parameters = {})).RetryActionOption = option;
+                            execute().then(result => executeThen(result)).catch(e => executeCatch(e));
+                        });
+                    }
+                };
+
                 if (parent != null) {
                     const inputs = parent.getRegisteredInputs();
-                    if (inputs.count() > 0) {
+                    if (inputs.count() === 0)
+                        execute().then(result => executeThen(result)).catch(e => executeCatch(e));
+                    else {
                         const origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : "");
                         if (this.serviceUri.startsWith("http") && !this.serviceUri.startsWith(origin) + "/") {
                             Promise.all(inputs.select(input => {
@@ -1134,12 +1162,7 @@ namespace Vidyano {
                                 });
                             }).toArray()).then(() => {
                                 data.parent = parent.toServiceObject();
-                                return this._postJSON(this._createUri("ExecuteAction"), data).then(result => {
-                                    if (result.exception == null)
-                                        resolve(result.result ? this.hooks.onConstructPersistentObject(this, result.result) : null);
-                                    else
-                                        reject(result.exception);
-                                });
+                                execute().then(result => executeThen(result)).catch(e => executeCatch(e));
                             });
 
                             return;
@@ -1204,7 +1227,10 @@ namespace Vidyano {
                                     iframe.src = "javascript:false;";
                                     document.body.removeChild(iframe);
 
-                                    resolve(result.result ? service.hooks.onConstructPersistentObject(service, result.result) : null);
+                                    if (!result.retry)
+                                        resolve(result.result ? service.hooks.onConstructPersistentObject(service, result.result) : null);
+                                    else
+                                        executeThen(result);
                                 }
                                 else
                                     reject(result.exception);
@@ -1233,38 +1259,10 @@ namespace Vidyano {
 
                         document.body.appendChild(clonedForm);
                         document.body.appendChild(iframe);
-
-                        return;
                     }
                 }
-
-                const execute = () => this._postJSON(this._createUri("ExecuteAction"), data);
-                const executeCatch = e => {
-                    if (isObjectAction)
-                        parent.setNotification(e);
-                    else
-                        query.setNotification(e);
-
-                    reject(e);
-                };
-                const executeThen = result => {
-                    if (!result.retry)
-                        resolve(result.result ? this.hooks.onConstructPersistentObject(this, result.result) : null);
-                    else {
-                        if (result.retry.persistentObject)
-                            result.retry.persistentObject = this.hooks.onConstructPersistentObject(this, result.retry.persistentObject);
-
-                        this.hooks.onRetryAction(result.retry).then(option => {
-                            if (result.retry.persistentObject instanceof Vidyano.PersistentObject)
-                                data.retryPersistentObject = result.retry.persistentObject.toServiceObject();
-
-                            data.parameters.RetryActionOption = option;
-                            execute().then(result => executeThen(result)).catch(e => executeCatch(e));
-                        });
-                    }
-                };
-
-                execute().then(result => executeThen(result)).catch(e => executeCatch(e));
+                else
+                    execute().then(result => executeThen(result)).catch(e => executeCatch(e));
             });
         }
 
