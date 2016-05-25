@@ -457,6 +457,14 @@
         }
     }
 
+    &[is-busy] {
+        pointer-events: none;
+
+        #dataHost {
+            opacity: 0.5;
+        }
+    }
+
     #verticalSpacer {
     }
 
