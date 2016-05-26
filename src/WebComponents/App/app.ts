@@ -420,7 +420,7 @@ namespace Vidyano.WebComponents {
             const service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
             this._setInitializing(true);
 
-            Promise.all([service.initialize(document.location.hash && App.stripHashBang(document.location.hash).startsWith("SignIn"))]).then(() => {
+            service.initialize(document.location.hash && App.stripHashBang(document.location.hash).startsWith("SignIn")).then(() => {
                 if (this.service === service) {
                     this._initializationError = null;
                     this._onInitialized();

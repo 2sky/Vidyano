@@ -822,9 +822,7 @@ namespace Vidyano {
         }
 
         initialize(skipDefaultCredentialLogin: boolean = false): Promise<Application> {
-            return this._getJSON(this._createUri("GetClientData?v=2")).then((clientData: IServiceClientData) => {
-                this.hooks.onInitialize(clientData);
-
+            return this._getJSON(this._createUri("GetClientData?v=2")).then((clientData: IServiceClientData) => this.hooks.onInitialize(clientData)).then((clientData: IServiceClientData) => {
                 this._clientData = clientData;
 
                 if (clientData.exception)
@@ -1537,8 +1535,8 @@ namespace Vidyano {
             // Noop
         }
 
-        onInitialize(clientData: IServiceClientData) {
-            // Noop
+        onInitialize(clientData: IServiceClientData): Promise<IServiceClientData> {
+            return Promise.resolve(clientData);
         }
 
         onSessionExpired() {
