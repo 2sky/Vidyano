@@ -24,6 +24,10 @@
         }
     }
 
+    &[initialization-error] #side {
+        display: none;
+    }
+
     #side {
         padding: var(--theme-h3);
 
