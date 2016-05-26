@@ -3121,7 +3121,7 @@ namespace Vidyano {
 
             this._updateColumns(query.columns);
             this._initializeActions();
-            this.selectAll = new QuerySelectAllImpl(this, !!query.isSystem && !query.maxSelectedItems && this.actions.some(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue), this._selectAllPropertyChanged.bind(this));
+            this.selectAll = new QuerySelectAllImpl(this, (!!query.isSystem || !!query.enableSelectAll) && !query.maxSelectedItems && this.actions.some(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue), this._selectAllPropertyChanged.bind(this));
 
             this._setTotalItems(query.totalItems);
             this._setSortOptionsFromService(query.sortOptions);
