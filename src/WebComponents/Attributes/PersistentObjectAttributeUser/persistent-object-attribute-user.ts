@@ -26,7 +26,7 @@ namespace Vidyano.WebComponents.Attributes {
 
             this._browsing = true;
 
-            this.attribute.parent.queueWork(() => this.app.service.getQuery(this.attribute.getTypeHint("IncludeGroups") === "True" ? "98b12f32-3f2d-4f54-b963-cb9206f74355" : "273a8302-ddc8-43db-a7f6-c3c28fc8f593"), undefined, true).then(query => {
+            this.attribute.parent.queueWork(() => this.app.service.getQuery(this.attribute.getTypeHint("IncludeGroups") === "True" ? "98b12f32-3f2d-4f54-b963-cb9206f74355" : "273a8302-ddc8-43db-a7f6-c3c28fc8f593")).then(query => {
                 query.maxSelectedItems = 1;
 
                 return this.app.showDialog(new SelectReferenceDialog(query)).then((result: QueryResultItem[]) => {
