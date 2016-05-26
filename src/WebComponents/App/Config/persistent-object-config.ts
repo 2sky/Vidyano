@@ -7,6 +7,10 @@ namespace Vidyano.WebComponents {
                 type: String,
                 reflectToAttribute: true
             },
+            type: {
+                type: String,
+                reflectToAttribute: true
+            },
             objectId: {
                 type: String,
                 reflectToAttribute: true
@@ -15,6 +19,7 @@ namespace Vidyano.WebComponents {
     })
     export class PersistentObjectConfig extends TemplateConfig<Vidyano.PersistentObject> {
         id: string;
+        type: string;
         objectId: string;
     }
 }
