@@ -1945,6 +1945,9 @@ namespace Vidyano {
         }
 
         private _setIsDirty(value: boolean) {
+            if (value && !this.isEditing)
+                throw "Cannot flag persistent object as dirty when not in edit mode.";
+
             this._isDirty = value;
             this.actions.forEach(action => action._onParentIsDirtyChanged(value));
 
