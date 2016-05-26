@@ -764,35 +764,39 @@ namespace Vidyano.WebComponents {
             _gaq.push(["_trackPageview", path]);
         }
 
-        getPersistentObjectConfig(persistentObject: Vidyano.PersistentObject, persistentObjectConfigs: linqjs.Enumerable<PersistentObjectConfig>): PersistentObjectConfig {
-            return persistentObjectConfigs.firstOrDefault(c => c.id === persistentObject.id && c.objectId === persistentObject.objectId) ||
-                persistentObjectConfigs.firstOrDefault(c => c.id === persistentObject.id);
+        getPersistentObjectConfig(persistentObject: Vidyano.PersistentObject, persistentObjectConfigs: PersistentObjectConfig[]): PersistentObjectConfig {
+            const persistentObjectConfigsEnum = Enumerable.from(persistentObjectConfigs);
+            return persistentObjectConfigsEnum.firstOrDefault(c => c.id === persistentObject.id && c.objectId === persistentObject.objectId) ||
+                persistentObjectConfigsEnum.firstOrDefault(c => c.id === persistentObject.id);
         }
 
-        getAttributeConfig(attribute: Vidyano.PersistentObjectAttribute, attributeConfigs: linqjs.Enumerable<PersistentObjectAttributeConfig>): PersistentObjectAttributeConfig {
-            return attributeConfigs.firstOrDefault(c => c.parentObjectId === attribute.parent.objectId && c.parentId === attribute.parent.id && (c.name === attribute.name || c.type === attribute.type)) ||
-                attributeConfigs.firstOrDefault(c => c.parentId === attribute.parent.id && (c.name === attribute.name || c.type === attribute.type)) ||
-                attributeConfigs.firstOrDefault(c => c.name === attribute.name && c.type === attribute.type) ||
-                attributeConfigs.firstOrDefault(c => c.name === attribute.name) ||
-                attributeConfigs.firstOrDefault(c => c.type === attribute.type);
+        getAttributeConfig(attribute: Vidyano.PersistentObjectAttribute, attributeConfigs: PersistentObjectAttributeConfig[]): PersistentObjectAttributeConfig {
+            const attributeConfigsEnum = Enumerable.from(attributeConfigs);
+            return attributeConfigsEnum.firstOrDefault(c => c.parentObjectId === attribute.parent.objectId && c.parentId === attribute.parent.id && (c.name === attribute.name || c.type === attribute.type)) ||
+                attributeConfigsEnum.firstOrDefault(c => c.parentId === attribute.parent.id && (c.name === attribute.name || c.type === attribute.type)) ||
+                attributeConfigsEnum.firstOrDefault(c => c.name === attribute.name && c.type === attribute.type) ||
+                attributeConfigsEnum.firstOrDefault(c => c.name === attribute.name) ||
+                attributeConfigsEnum.firstOrDefault(c => c.type === attribute.type);
         }
 
-        getTabConfig(tab: Vidyano.PersistentObjectTab, tabConfigs: linqjs.Enumerable<PersistentObjectTabConfig>): PersistentObjectTabConfig {
-            return tabConfigs.firstOrDefault(c => c.name === tab.name && (c.type === tab.parent.type || c.type === tab.parent.fullTypeName || c.id === tab.parent.id) && c.objectId === tab.parent.objectId) ||
-                tabConfigs.firstOrDefault(c => c.name === tab.name && (c.type === tab.parent.type || c.type === tab.parent.fullTypeName || c.id === tab.parent.id));
+        getTabConfig(tab: Vidyano.PersistentObjectTab, tabConfigs: PersistentObjectTabConfig[]): PersistentObjectTabConfig {
+            const tabConfigsEnum = Enumerable.from(tabConfigs);
+            return tabConfigsEnum.firstOrDefault(c => c.name === tab.name && (c.type === tab.parent.type || c.type === tab.parent.fullTypeName || c.id === tab.parent.id) && c.objectId === tab.parent.objectId) ||
+                tabConfigsEnum.firstOrDefault(c => c.name === tab.name && (c.type === tab.parent.type || c.type === tab.parent.fullTypeName || c.id === tab.parent.id));
         }
 
-        getProgramUnitConfig(name: string, programUnitConfigs: linqjs.Enumerable<ProgramUnitConfig>): ProgramUnitConfig {
-            return programUnitConfigs.firstOrDefault(c => c.name === name);
+        getProgramUnitConfig(name: string, programUnitConfigs: ProgramUnitConfig[]): ProgramUnitConfig {
+            return Enumerable.from(programUnitConfigs).firstOrDefault(c => c.name === name);
         }
 
-        getQueryConfig(query: Vidyano.Query, queryConfigs: linqjs.Enumerable<QueryConfig>): QueryConfig {
-            return queryConfigs.firstOrDefault(c => (query.id && c.id === query.id) || (query.name && c.name === query.name)) ||
-                queryConfigs.firstOrDefault(c => !c.id && !c.name);
+        getQueryConfig(query: Vidyano.Query, queryConfigs: QueryConfig[]): QueryConfig {
+            const queryConfigsEnum = Enumerable.from(queryConfigs);
+            return queryConfigsEnum.firstOrDefault(c => (query.id && c.id === query.id) || (query.name && c.name === query.name)) ||
+                queryConfigsEnum.firstOrDefault(c => !c.id && !c.name);
         }
 
-        getQueryChartConfig(type: string, queryChartConfigs: linqjs.Enumerable<QueryChartConfig>): QueryChartConfig {
-            return queryChartConfigs.firstOrDefault(c => c.type === type);
+        getQueryChartConfig(type: string, queryChartConfigs: QueryChartConfig[]): QueryChartConfig {
+            return Enumerable.from(queryChartConfigs).firstOrDefault(c => c.type === type);
         }
 
         onConstructQuery(service: Service, query: any, parent?: Vidyano.PersistentObject, asLookup: boolean = false, maxSelectedItems?: number): Vidyano.Query {

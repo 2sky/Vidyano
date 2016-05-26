@@ -14,6 +14,8 @@ namespace Vidyano.WebComponents {
 
             this._template = <PolymerTemplate>Polymer.dom(this).querySelector("template[is='dom-template']");
             this._setHasTemplate(!!this._template);
+
+            this.fire("config-attached", null);
         }
 
         stamp(obj: T, as: string = this.as, asModel: (model: T) => any = this.asModel): DocumentFragment {

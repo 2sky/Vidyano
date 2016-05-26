@@ -1,20 +1,54 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    @WebComponent.register
+    @WebComponent.register({
+        listeners: {
+            "config-attached": "_configAttached"
+        }
+    })
     export class AppConfig extends WebComponent {
         private _defaultAttributeConfig: PersistentObjectAttributeConfig;
-        private _persistentObjectConfigs: linqjs.Enumerable<PersistentObjectConfig>;
-        private _attributeConfigs: linqjs.Enumerable<PersistentObjectAttributeConfig>;
-        private _tabConfigs: linqjs.Enumerable<PersistentObjectTabConfig>;
-        private _programUnitConfigs: linqjs.Enumerable<ProgramUnitConfig>;
-        private _queryConfigs: linqjs.Enumerable<QueryConfig>;
-        private _queryChartConfigs: linqjs.Enumerable<QueryChartConfig>;
+        private _persistentObjectConfigs: PersistentObjectConfig[] = [];
+        private _attributeConfigs: PersistentObjectAttributeConfig[] = [];
+        private _tabConfigs: PersistentObjectTabConfig[] = [];
+        private _programUnitConfigs: ProgramUnitConfig[] = [];
+        private _queryConfigs: QueryConfig[] = [];
+        private _queryChartConfigs: QueryChartConfig[] = [];
 
         attached() {
             super.attached();
 
             this.fire("app-config-attached", this);
+        }
+
+        private _configAttached(e: CustomEvent) {
+            e.stopPropagation();
+
+            switch (e.srcElement["is"]) {
+                case "vi-persistent-object-attribute-config":
+                    this._attributeConfigs.push(<PersistentObjectAttributeConfig>e.srcElement);
+                    break;
+
+                case "vi-persistent-object-config":
+                    this._persistentObjectConfigs.push(<PersistentObjectConfig>e.srcElement);
+                    break;
+
+                case "vi-persistent-object-tab-config":
+                    this._tabConfigs.push(<PersistentObjectTabConfig>e.srcElement);
+                    break;
+
+                case "vi-program-unit-config":
+                    this._programUnitConfigs.push(<ProgramUnitConfig>e.srcElement);
+                    break;
+
+                case "vi-query-config":
+                    this._queryConfigs.push(<QueryConfig>e.srcElement);
+                    break;
+
+                case "vi-query-chart-config":
+                    this._queryChartConfigs.push(<QueryChartConfig>e.srcElement);
+                    break;
+            }
         }
 
         getSetting(key: string, defaultValue?: string): string {
@@ -23,16 +57,10 @@
         }
 
         getPersistentObjectConfig(persistentObject: Vidyano.PersistentObject): PersistentObjectConfig {
-            if (!this._persistentObjectConfigs)
-                this._persistentObjectConfigs = this._getConfigs<PersistentObjectConfig>(Vidyano.WebComponents.PersistentObjectConfig);
-
             return (<AppServiceHooks>this.app.service.hooks).getPersistentObjectConfig(persistentObject, this._persistentObjectConfigs);
         }
 
         getAttributeConfig(attribute: Vidyano.PersistentObjectAttribute): PersistentObjectAttributeConfig {
-            if (!this._attributeConfigs)
-                this._attributeConfigs = this._getConfigs<PersistentObjectAttributeConfig>(Vidyano.WebComponents.PersistentObjectAttributeConfig);
-
             let config = (<AppServiceHooks>this.app.service.hooks).getAttributeConfig(attribute, this._attributeConfigs);
             if (!config) {
                 if (!this._defaultAttributeConfig)
@@ -45,30 +73,18 @@
         }
 
         getTabConfig(tab: Vidyano.PersistentObjectTab): PersistentObjectTabConfig {
-            if (!this._tabConfigs)
-                this._tabConfigs = this._getConfigs<PersistentObjectTabConfig>(Vidyano.WebComponents.PersistentObjectTabConfig);
-
             return (<AppServiceHooks>this.app.service.hooks).getTabConfig(tab, this._tabConfigs);
         }
 
         getProgramUnitConfig(name: string): ProgramUnitConfig {
-            if (!this._programUnitConfigs)
-                this._programUnitConfigs = this._getConfigs<ProgramUnitConfig>(Vidyano.WebComponents.ProgramUnitConfig);
-
             return (<AppServiceHooks>this.app.service.hooks).getProgramUnitConfig(name, this._programUnitConfigs);
         }
 
         getQueryConfig(query: Vidyano.Query): QueryConfig {
-            if (!this._queryConfigs)
-                this._queryConfigs = this._getConfigs<QueryConfig>(Vidyano.WebComponents.QueryConfig);
-
             return (<AppServiceHooks>this.app.service.hooks).getQueryConfig(query, this._queryConfigs);
         }
 
         getQueryChartConfig(type: string): QueryChartConfig {
-            if (!this._queryChartConfigs)
-                this._queryChartConfigs = this._getConfigs<QueryChartConfig>(Vidyano.WebComponents.QueryChartConfig);
-
             return (<AppServiceHooks>this.app.service.hooks).getQueryChartConfig(type, this._queryChartConfigs);
         }
 
