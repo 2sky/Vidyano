@@ -546,7 +546,7 @@ namespace Vidyano {
 
                     resolve(JSON.parse(r.responseText));
                 };
-                r.onerror = () => { reject(r.statusText); };
+                r.onerror = () => { reject(r.statusText || (Vidyano.NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || Vidyano.NoInternetMessage.messages.get("en")).message); };
 
                 r.send();
             });

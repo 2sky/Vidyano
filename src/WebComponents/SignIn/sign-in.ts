@@ -55,10 +55,12 @@
             }
 
             if (this.app.initializationError) {
+                const noInternet = Vidyano.NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || Vidyano.NoInternetMessage.messages.get("en");
+
                 this.app.showMessageDialog({
-                    title: this.app.label || document.title,
+                    title: this.app.initializationError === noInternet.message ? noInternet.title : this.app.label || document.title,
                     message: this.app.initializationError,
-                    actions: [ (Vidyano.NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || Vidyano.NoInternetMessage.messages.get("en")).tryAgain ],
+                    actions: [ noInternet.tryAgain ],
                     actionTypes: ["Danger"],
                     noClose: true
                 }).then(() => {
