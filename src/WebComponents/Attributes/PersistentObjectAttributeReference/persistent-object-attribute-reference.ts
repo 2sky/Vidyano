@@ -44,6 +44,7 @@ namespace Vidyano.WebComponents.Attributes {
         ]
     })
     export class PersistentObjectAttributeReference extends WebComponents.Attributes.PersistentObjectAttribute {
+        private _browsing: boolean;
         objectId: string;
         attribute: Vidyano.PersistentObjectAttributeWithReference;
         href: string;
@@ -116,6 +117,8 @@ namespace Vidyano.WebComponents.Attributes {
             this.attribute.lookup.selectedItems = [];
 
             return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup, forceSearch)).then(result => {
+                this._browseReferenceDone();
+
                 if (!result) {
                     if (throwExceptions === true)
                         return Promise.reject("Nothing selected");
@@ -126,7 +129,11 @@ namespace Vidyano.WebComponents.Attributes {
                 return this.attribute.changeReference(result).then(() => {
                     this._update();
                 });
-            });
+            }).catch(this._browseReferenceDone);
+        }
+
+        private _browseReferenceDone() {
+            this._browsing = false;
         }
 
         private _addNewReference(e: Event) {

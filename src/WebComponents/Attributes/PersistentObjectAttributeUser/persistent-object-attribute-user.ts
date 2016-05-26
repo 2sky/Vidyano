@@ -18,17 +18,30 @@ namespace Vidyano.WebComponents.Attributes {
         }
     })
     export class PersistentObjectAttributeUser extends WebComponents.Attributes.PersistentObjectAttribute {
+        private _browsing: boolean;
+
         private _browseReference() {
-            this.app.service.getQuery(this.attribute.getTypeHint("IncludeGroups") === "True" ? "98b12f32-3f2d-4f54-b963-cb9206f74355" : "273a8302-ddc8-43db-a7f6-c3c28fc8f593").then(query => {
+            if (this._browsing)
+                return;
+
+            this._browsing = true;
+
+            this.attribute.parent.queueWork(() => this.app.service.getQuery(this.attribute.getTypeHint("IncludeGroups") === "True" ? "98b12f32-3f2d-4f54-b963-cb9206f74355" : "273a8302-ddc8-43db-a7f6-c3c28fc8f593"), undefined, true).then(query => {
                 query.maxSelectedItems = 1;
 
-                this.app.showDialog(new SelectReferenceDialog(query)).then((result: QueryResultItem[]) => {
+                return this.app.showDialog(new SelectReferenceDialog(query)).then((result: QueryResultItem[]) => {
+                    this._browseReferenceDone();
+
                     if (!result)
                         return;
 
                     this._setNewUser(result[0].id, result[0].getValue("FriendlyName") || result[0].breadcrumb);
-                }).catch(Vidyano.noop);
-            });
+                });
+            }).catch(this._browseReferenceDone);
+        }
+
+        private _browseReferenceDone() {
+            this._browsing = false;
         }
 
         private _clearReference() {
