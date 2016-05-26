@@ -15,6 +15,10 @@
         }
     }
 
+    &:not([sorting]) > div:first-child {
+        padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
+    }
+
     > div:first-child {
         height: var(--vi-query-grid-header-height, --theme-h2);
         padding: 0 var(--theme-h3) 0 var(--vi-query-grid-cell-padding, --theme-h5);

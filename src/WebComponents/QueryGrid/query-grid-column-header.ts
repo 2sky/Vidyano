@@ -10,6 +10,7 @@
             },
             sorting: {
                 type: String,
+                reflectToAttribute: true,
                 readOnly: true,
                 value: null
             }
