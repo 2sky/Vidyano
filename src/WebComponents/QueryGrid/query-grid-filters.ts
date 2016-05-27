@@ -115,7 +115,7 @@
                 this.app.showDialog(dialog = new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, {
                     save: (po, close) => {
                         this.query.filters.save(newFilter).then(newFilter => {
-                            this.currentFilter = newFilter;
+                            this.query.filters.currentFilter = newFilter;
                             close();
                         }).catch(err => {
                             dialog.persistentObject = newFilter.persistentObject = Enumerable.from(this.query.filters.detailsAttribute.objects).last(po => po.isNew);
