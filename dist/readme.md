@@ -7,6 +7,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<title>Your project name</title>
 
 	<script src="web2/Libs/webcomponentsjs/webcomponents-lite.js"></script>
