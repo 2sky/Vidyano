@@ -2649,7 +2649,7 @@ namespace Vidyano {
 
             this._serviceOptions = <any[]>options.slice(0);
             const addEmptyOption = !this.isRequired && !options.some(o => o == null || o.startsWith("=")) && ["KeyValueList", "DropDown", "ComboBox"].indexOf(this.type) !== -1;
-            const keyValuePairOptionType = ["FlagsEnum", "KeyValueList", "Reference"].indexOf(this.type) !== -1;
+            const keyValuePairOptionType = ["FlagsEnum", "KeyValueList"].indexOf(this.type) !== -1 || (this.type === "Reference" && (<PersistentObjectAttributeWithReference><any>this).selectInPlace);
 
             if (!keyValuePairOptionType) {
                 if (addEmptyOption)
