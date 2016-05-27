@@ -37,7 +37,7 @@ namespace Vidyano.WebComponents.Attributes {
 
                     this._setNewUser(result[0].id, result[0].getValue("FriendlyName") || result[0].breadcrumb);
                 });
-            }).catch(this._browseReferenceDone);
+            }).catch(() => this._browseReferenceDone());
         }
 
         private _browseReferenceDone() {

@@ -129,7 +129,7 @@ namespace Vidyano.WebComponents.Attributes {
                 return this.attribute.changeReference(result).then(() => {
                     this._update();
                 });
-            }).catch(this._browseReferenceDone);
+            }).catch(() => this._browseReferenceDone());
         }
 
         private _browseReferenceDone() {
