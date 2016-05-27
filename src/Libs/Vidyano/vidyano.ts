@@ -1795,6 +1795,7 @@ namespace Vidyano {
     export class PersistentObject extends ServiceObjectWithActions {
         private _isSystem: boolean;
         private _lastResult: any;
+        private _lastUpdated: Date;
         private _lastResultBackup: any;
         private securityToken: string;
         private _isEditing: boolean = false;
@@ -1885,6 +1886,7 @@ namespace Vidyano {
 
             this._initializeActions();
             this.service.hooks.onRefreshFromResult(this);
+            this._setLastUpdated(new Date());
         }
 
         private _createPersistentObjectAttribute(attr: PersistentObjectAttribute): PersistentObjectAttribute {
@@ -1980,6 +1982,15 @@ namespace Vidyano {
                 return Promise.reject("Attribute does not exist.");
 
             return attr.setValue(value, allowRefresh);
+        }
+
+        get lastUpdated(): Date {
+            return this._lastUpdated;
+        }
+
+        private _setLastUpdated(lastUpdated: Date) {
+            const oldLastUpdated = this._lastUpdated;
+            this.notifyPropertyChanged("lastUpdated", this._lastUpdated = lastUpdated, oldLastUpdated);
         }
 
         getQuery(name: string): Query {
@@ -2242,6 +2253,7 @@ namespace Vidyano {
             }
 
             this.service.hooks.onRefreshFromResult(this);
+            this._setLastUpdated(new Date());
         }
 
         triggerDirty() {
