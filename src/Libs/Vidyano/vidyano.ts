@@ -1946,8 +1946,8 @@ namespace Vidyano {
             return this._isDirty;
         }
 
-        private _setIsDirty(value: boolean) {
-            if (value && !this.isEditing)
+        private _setIsDirty(value: boolean, force?: boolean) {
+            if (value && (!this.isEditing || force))
                 throw "Cannot flag persistent object as dirty when not in edit mode.";
 
             this._isDirty = value;
@@ -2232,7 +2232,7 @@ namespace Vidyano {
             }
 
             this.setNotification(result.notification, result.notificationType);
-            this._setIsDirty(isDirty);
+            this._setIsDirty(isDirty, true);
 
             if (this.isNew) {
                 this.objectId = result.objectId;
@@ -2256,8 +2256,11 @@ namespace Vidyano {
             this._setLastUpdated(new Date());
         }
 
-        triggerDirty() {
-            this._setIsDirty(true);
+        triggerDirty(): boolean {
+            if (this.isEditing)
+                this._setIsDirty(true);
+
+            return this.isDirty;
         }
 
         _triggerAttributeRefresh(attr: PersistentObjectAttribute, immediate?: boolean): Promise<boolean> {
