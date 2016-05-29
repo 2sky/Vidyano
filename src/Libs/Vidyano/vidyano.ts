@@ -2360,7 +2360,9 @@ namespace Vidyano {
             this.triggersRefresh = !!attr.triggersRefresh;
             this.column = attr.column;
             this.columnSpan = attr.columnSpan || 0;
-            this._setOptions(attr.options);
+
+            if (this.type !== "Reference")
+                this._setOptions(attr.options);
         }
 
         get groupKey(): string {
@@ -2642,7 +2644,7 @@ namespace Vidyano {
             return this.parent._triggerAttributeRefresh(this, immediate);
         }
 
-        private _setOptions(options: string[]) {
+        protected _setOptions(options: string[]) {
             const oldOptions = this.options ? this.options.slice() : undefined;
 
             if (!options || options.length === 0) {
@@ -2693,6 +2695,8 @@ namespace Vidyano {
             this.displayAttribute = attr.displayAttribute;
             this.canAddNewReference = !!attr.canAddNewReference;
             this.selectInPlace = !!attr.selectInPlace;
+
+            this._setOptions(attr.options);
         }
 
         addNewReference() {
