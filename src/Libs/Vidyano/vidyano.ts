@@ -1744,7 +1744,7 @@ namespace Vidyano {
         }
 
         setNotification(notification: string = null, type: NotificationType = NotificationType.Error) {
-            if (typeof notification === "object")
+            if (notification != null && typeof notification === "object")
                 notification = notification["message"];
 
             const oldNotificationType = this.notificationType;
