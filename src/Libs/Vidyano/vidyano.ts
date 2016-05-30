@@ -1744,6 +1744,9 @@ namespace Vidyano {
         }
 
         setNotification(notification: string = null, type: NotificationType = NotificationType.Error) {
+            if (typeof notification === "object")
+                notification = notification["message"];
+
             const oldNotificationType = this.notificationType;
             this.notifyPropertyChanged("notificationType", this.notificationType = type, oldNotificationType);
 
@@ -2823,6 +2826,8 @@ namespace Vidyano {
             return this.details.actions["New"].execute({ throwExceptions: true, skipOpen: true }).then(po => {
                 po.ownerQuery = null;
                 po.ownerDetailAttribute = this;
+
+                return po;
             });
         }
 
