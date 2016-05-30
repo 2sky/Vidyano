@@ -6,10 +6,9 @@
     @include relative();
 
     --vi-scroller-thumb-color: #797979;
-    --vi-scroller-bar-size: calc(var(--theme-h5) * 1.5);
-    --vi-scroller-bar-hover-size: calc(var(--theme-h4) + 2px);
-    --vi-scroller-bar-transition-delay: 0.5s;
-
+    --vi-scroller-thumb-size: calc(var(--theme-h5) * 1.5);
+    --vi-scroller-thumb-gutter-size: 2.5px;
+    --vi-scroller-thumb-capture-size: calc(var(--theme-h5) * 1.5 + 2 * var(--vi-scroller-thumb-gutter-size));
 
     #wrapper {
         @include flex();
@@ -84,81 +83,72 @@
         -o-transition: all 0.2s ease-in-out;
         -webkit-transition: all 0.2s ease-in-out;
         transition: all 0.2s ease-in-out;
-        transition-delay: var(--vi-scroller-bar-transition-delay);
 
         .scrollbar {
             position: absolute;
-            background-color: var(--vi-scroller-thumb-color);
             opacity: 1;
-            border-radius: var(--theme-h5);
             -moz-transition-timing-function: ease-in-out;
             -o-transition-timing-function: ease-in-out;
             -webkit-transition-timing-function: ease-in-out;
             transition-timing-function: ease-in-out;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+
+            &:after {
+                content: " ";
+                position: absolute;
+                background-color: var(--vi-scroller-thumb-color);
+                border-radius: var(--theme-h5);
+            }
+
+            &#vertical {
+                top: 0;
+                right: 0;
+                width: var(--vi-scroller-thumb-capture-size);
+
+                &:after {
+                    left: var(--vi-scroller-thumb-gutter-size);
+                    right: var(--vi-scroller-thumb-gutter-size);
+                    top: 0;
+                    bottom: 0;
+                    width: var(--vi-scroller-thumb-size);
+                }
+            }
+
+            &#horizontal {
+                left: 0;
+                bottom: 0;
+                height: var(--vi-scroller-thumb-size);
+
+                &:after {
+                    top: var(--vi-scroller-thumb-gutter-size);
+                    bottom: var(--vi-scroller-thumb-gutter-size);
+                    left: 0;
+                    right: 0;
+                    height: var(--vi-scroller-thumb-size);
+                }
+            }
         }
 
         &.horizontal {
+            height: var(--vi-scroller-thumb-capture-size);
             left: 0;
             right: 0;
             bottom: 0;
-            height: var(--vi-scroller-bar-size);
-
-            .scrollbar {
-                -moz-transition: opacity 0.2s, height 0.2s;
-                -o-transition: opacity 0.2s, height 0.2s;
-                -webkit-transition: opacity 0.2s, height 0.2s;
-                transition: opacity 0.2s, height 0.2s;
-                transition-delay: var(--vi-scroller-bar-transition-delay);
-            }
         }
 
         &.vertical {
+            width: var(--vi-scroller-thumb-capture-size);
             top: 0;
-            right: 0;
             bottom: 0;
-            width: var(--vi-scroller-bar-size);
-
-            .scrollbar {
-                -moz-transition: opacity 0.2s, width 0.2s;
-                -o-transition: opacity 0.2s, width 0.2s;
-                -webkit-transition: opacity 0.2s, width 0.2s;
-                transition: opacity 0.2s, width 0.2s;
-                transition-delay: var(--vi-scroller-bar-transition-delay);
-            }
-        }
-
-        #vertical {
-            top: 0;
             right: 0;
-            width: var(--vi-scroller-bar-size);
-        }
-
-        #horizontal {
-            left: 0;
-            bottom: 0;
-            height: var(--vi-scroller-bar-size);
         }
     }
 
-    &[vertical] {
-        .scrollbar-parent.vertical {
-            display: block;
-
-            &:hover {
-                background-color: rgba(0,0,0,0.2);
-            }
-        }
-    }
-
-    &[horizontal] {
-        .scrollbar-parent.horizontal
-        {
-            display: block;
-
-            &:hover {
-                background-color: rgba(0,0,0,0.2);
-            }
-        }
+    &[horizontal] .scrollbar-parent.horizontal, &[vertical] .scrollbar-parent.vertical {
+        display: block;
     }
 
     &[align-vertical-scrollbar="left"] {
@@ -174,26 +164,9 @@
         }
     }
 
-    &[vertical][scrolling="vertical"] .scrollbar-parent.vertical, .scrollbar-parent.vertical:hover {
-        transition-delay: 0s;
-        width: var(--vi-scroller-bar-hover-size) !important;
-        background-color: rgba(0,0,0,0.2);
-
-        #vertical {
-            transition-delay: 0s;
-            width: var(--vi-scroller-bar-hover-size) !important;
-        }
-    }
-
+    &[vertical][scrolling="vertical"] .scrollbar-parent.vertical, .scrollbar-parent.vertical:hover,
     &[horizontal][scrolling="horizontal"] .scrollbar-parent.horizontal, .scrollbar-parent.horizontal:hover {
-        transition-delay: 0s;
-        height: var(--vi-scroller-bar-hover-size) !important;
-        background-color: rgba(0,0,0,0.2);
-
-        #horizontal {
-            transition-delay: 0s;
-            height: var(--vi-scroller-bar-hover-size) !important;
-        }
+        background-color: rgba(0, 0, 0, 0.15);
     }
 
     &:not([horizontal]) .bottom-margin {
@@ -201,7 +174,7 @@
     }
 
     &[horizontal] .bottom-margin {
-        height: var(--vi-scroller-bar-size);
+        height: var(--vi-scroller-thumb-capture-size);
         width: 100%;
     }
 
