@@ -458,7 +458,9 @@
     }
 
     &[is-busy] {
-        pointer-events: none;
+        header, footer, #verticalSpacer {
+            pointer-events: none;
+        }
 
         #dataHost {
             opacity: 0.5;
