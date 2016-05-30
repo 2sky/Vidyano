@@ -19,7 +19,7 @@
                 reflectToAttribute: true
             },
             scrolling: {
-                type: Boolean,
+                type: String,
                 readOnly: true,
                 reflectToAttribute: true
             },
@@ -125,7 +125,7 @@
     export class Scroller extends WebComponent {
         private static _minBarSize: number = 20;
         private _setHovering: (hovering: boolean) => void;
-        private _setScrolling: (scrolling: boolean) => void;
+        private _setScrolling: (scrolling: string) => void;
         private _verticalScrollHeight: number;
         private _verticalScrollTop: number;
         private _verticalScrollSpace: number;
@@ -268,7 +268,7 @@
 
             if (detail.state === "start") {
                 this.app.isTracking = true;
-                this._setScrolling(true);
+                this._setScrolling("vertical");
                 this._trackStart = this._verticalScrollTop;
             }
             else if (detail.state === "track") {
@@ -276,7 +276,7 @@
                 wrapper.scrollTop = newVerticalScrollTop === 0 ? 0 : (this.innerHeight - this.outerHeight) * ((1 / this._verticalScrollSpace) * newVerticalScrollTop);
             }
             else if (detail.state === "end") {
-                this._setScrolling(false);
+                this._setScrolling(null);
                 this._trackStart = undefined;
                 this.app.isTracking = false;
             }
@@ -292,7 +292,7 @@
 
             if (detail.state === "start") {
                 this.app.isTracking = true;
-                this._setScrolling(true);
+                this._setScrolling("horizontal");
                 this._trackStart = this._horizontalScrollLeft;
             }
             else if (detail.state === "track") {
@@ -300,7 +300,7 @@
                 wrapper.scrollLeft = newHorizontalScrollLeft === 0 ? 0 : (this.innerWidth - this.outerWidth) * ((1 / this._horizontalScrollSpace) * newHorizontalScrollLeft);
             }
             else if (detail.state === "end") {
-                this._setScrolling(false);
+                this._setScrolling(null);
                 this._trackStart = undefined;
                 this.app.isTracking = false;
             }
