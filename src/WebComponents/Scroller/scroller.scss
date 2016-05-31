@@ -10,7 +10,7 @@
     --vi-scroller-thumb-gutter-size: 2.5px;
     --vi-scroller-thumb-capture-size: calc(var(--theme-h5) * 1.5 + 2 * var(--vi-scroller-thumb-gutter-size));
 
-    #wrapper {
+    > #wrapper {
         @include flex();
         @include relative();
         overflow: scroll;
@@ -20,17 +20,17 @@
     }
 
     &[no-horizontal]:not([no-vertical]) {
-        #wrapper {
+        > #wrapper {
             @include layout-vertical();
 
-            #content {
+            > #content {
                 min-height: auto;
             }
         }
     }
 
     &[no-vertical]:not([no-horizontal]) {
-        #wrapper {
+        > #wrapper {
             @include layout-horizontal();
             margin-right: 0;
             overflow-y: hidden;
@@ -38,12 +38,12 @@
     }
 
     &[no-vertical][no-horizontal] {
-        #wrapper {
+        > #wrapper {
             @include layout-horizontal();
             overflow: hidden;
             margin: 0 !important;
 
-            #content {
+            > #content {
                 @include flex();
                 @include layout-horizontal();
                 min-height: initial;
@@ -57,8 +57,8 @@
     }
 
     &:not([no-vertical]):not([no-horizontal]) {
-        #wrapper {
-            #content {
+        > #wrapper {
+            > #content {
                 display: inline-block;
                 min-width: 100%;
             }
@@ -75,7 +75,7 @@
         }
     }
 
-    .scrollbar-parent {
+    > .scrollbar-parent {
         position: absolute;
         background-color: transparent;
         display: none;
@@ -147,38 +147,38 @@
         }
     }
 
-    &[horizontal] .scrollbar-parent.horizontal, &[vertical] .scrollbar-parent.vertical {
+    &[horizontal] > .scrollbar-parent.horizontal, &[vertical] > .scrollbar-parent.vertical {
         display: block;
     }
 
     &[align-vertical-scrollbar="left"] {
-        .vertical {
+        > .vertical {
             right: auto;
             left: 0;
         }
     }
 
     &[scrolling] {
-        #wrapper {
+        > #wrapper {
             pointer-events: none;
         }
     }
 
-    &[vertical][scrolling="vertical"] .scrollbar-parent.vertical, .scrollbar-parent.vertical:hover,
-    &[horizontal][scrolling="horizontal"] .scrollbar-parent.horizontal, .scrollbar-parent.horizontal:hover {
+    &[vertical][scrolling="vertical"] > .scrollbar-parent.vertical, > .scrollbar-parent.vertical:hover,
+    &[horizontal][scrolling="horizontal"] > .scrollbar-parent.horizontal, > .scrollbar-parent.horizontal:hover {
         background-color: rgba(0, 0, 0, 0.15);
     }
 
-    &:not([horizontal]) .bottom-margin {
+    &:not([horizontal]) > #wrapper > #content > .bottom-margin {
         display: none;
     }
 
-    &[horizontal] .bottom-margin {
+    &[horizontal] > #wrapper > #content > .bottom-margin {
         height: var(--vi-scroller-thumb-capture-size);
         width: 100%;
     }
 
-    .scroll-shadow {
+    > .scroll-shadow {
         display: none;
         position: absolute;
         -webkit-box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
