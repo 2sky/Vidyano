@@ -281,12 +281,14 @@ namespace Vidyano.WebComponents {
             this._setFiltering(false);
 
             if (this.selectedItem) {
-                this._setSelectedOption(Enumerable.from(<any[]>this.options).firstOrDefault(o => o === this.selectedItem.option));
-
-                if (!this.selectedItem.option || typeof this.selectedItem.option === "string")
+                if (!this.selectedItem.option || typeof this.selectedItem.option === "string") {
+                    this._setSelectedOption(Enumerable.from(<string[]>this.options).firstOrDefault(o => o === this.selectedItem.option));
                     this._inputValue = <string>this.selectedItem.option;
-                else
+                }
+                else {
+                    this._setSelectedOption(Enumerable.from(<Common.IKeyValuePair[]>this.options).firstOrDefault(o => o.key === (<Common.IKeyValuePair>this.selectedItem.option).key));
                     this._inputValue = (<Common.IKeyValuePair>this.selectedItem.option).value;
+                }
 
                 this._lastMatchedInputValue = this._inputValue;
                 this._setSuggestion(this.selectedItem);
