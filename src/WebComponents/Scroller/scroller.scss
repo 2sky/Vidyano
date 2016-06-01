@@ -10,6 +10,7 @@
     --vi-scroller-thumb-size: var(--theme-h5);
     --vi-scroller-thumb-hover-size: calc(var(--theme-h5) + 2px);
     --vi-scroller-thumb-capture-size: calc(var(--theme-h4) + 2px);
+    --vi-scroller-thumb-parent-hover-size: calc(var(--theme-h5) + 6px);
 
     > #wrapper {
         @include flex();
@@ -80,7 +81,27 @@
         position: absolute;
         background-color: transparent;
         display: none;
-        transition: all 0.2s ease-in-out;
+
+        &:before {
+            position: absolute;
+            content: " ";
+            background-color: transparent;
+            transition: all 0.2s ease-in-out;
+        }
+
+        &.vertical:before {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: var(--vi-scroller-thumb-parent-hover-size);
+        }
+
+        &.horizontal:before {
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: var(--vi-scroller-thumb-parent-hover-size);
+        }
 
         .scrollbar {
             position: absolute;
@@ -100,7 +121,7 @@
                 width: var(--vi-scroller-thumb-capture-size);
 
                 &:after {
-                    right: 1px;
+                    right: 2px;
                     top: 0;
                     bottom: 0;
                     width: var(--vi-scroller-thumb-size);
@@ -114,7 +135,7 @@
                 height: var(--vi-scroller-thumb-capture-size);
 
                 &:after {
-                    bottom: 1px;
+                    bottom: 2px;
                     left: 0;
                     right: 0;
                     height: var(--vi-scroller-thumb-size);
@@ -157,7 +178,9 @@
 
     &[vertical][scrolling="vertical"] > .scrollbar-parent.vertical, > .scrollbar-parent.vertical:hover,
     &[horizontal][scrolling="horizontal"] > .scrollbar-parent.horizontal, > .scrollbar-parent.horizontal:hover {
-        // background-color: rgba(0, 0, 0, 0.1);
+        &:before {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
 
         .scrollbar:after {
             background-color: var(--vi-scroller-thumb-hover-color);
