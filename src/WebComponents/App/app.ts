@@ -791,8 +791,9 @@ namespace Vidyano.WebComponents {
 
         getQueryConfig(query: Vidyano.Query, queryConfigs: QueryConfig[]): QueryConfig {
             const queryConfigsEnum = Enumerable.from(queryConfigs);
-            return queryConfigsEnum.firstOrDefault(c => (query.id && c.id === query.id) || (query.name && c.name === query.name)) ||
-                queryConfigsEnum.firstOrDefault(c => !c.id && !c.name);
+            return queryConfigsEnum.firstOrDefault(c => c.id === query.id || c.name === query.name) ||
+                queryConfigsEnum.firstOrDefault(c => c.type === query.persistentObject.type) ||
+                queryConfigsEnum.firstOrDefault(c => !c.id && !c.name && !c.type);
         }
 
         getQueryChartConfig(type: string, queryChartConfigs: QueryChartConfig[]): QueryChartConfig {

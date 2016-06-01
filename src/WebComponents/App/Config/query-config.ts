@@ -11,6 +11,10 @@ namespace Vidyano.WebComponents {
                 type: String,
                 reflectToAttribute: true
             },
+            type: {
+                type: String,
+                reflectToAttribute: true
+            },
             defaultChart: {
                 type: String,
                 reflectToAttribute: true
@@ -28,6 +32,7 @@ namespace Vidyano.WebComponents {
     export class QueryConfig extends TemplateConfig<Vidyano.Query> {
         name: string;
         id: string;
+        type: string;
         defaultChart: string;
         fileDropAttribute: string;
         hideHeader: boolean;
