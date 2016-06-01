@@ -123,7 +123,7 @@
         }
     })
     export class Scroller extends WebComponent {
-        private static _minBarSize: number = 20;
+        private static _minBarSize: number = 40;
         private _setHovering: (hovering: boolean) => void;
         private _setScrolling: (scrolling: string) => void;
         private _verticalScrollHeight: number;

@@ -2,7 +2,7 @@
 
 :host {
     display: block;
-    padding: 0 calc(var(--theme-h5) / 2);
+    padding: 0 calc(var(--theme-h4) / 2);
 
     &[loading] {
         visibility: hidden;
@@ -28,11 +28,12 @@
     table {
         width: 100%;
         table-layout: fixed;
+        border-collapse: collapse;
 
         tr {
             td {
                 vertical-align: top;
-                padding: 0 calc(var(--theme-h5) / 2);
+                padding: 0 calc(var(--theme-h4) / 2);
             }
         }
     }
