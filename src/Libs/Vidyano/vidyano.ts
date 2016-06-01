@@ -103,6 +103,29 @@ namespace Vidyano {
         return target;
     }
 
+    export function splitWithTail(value: string, separator: string | RegExp, limit?: number): string[] {
+        var pattern, startIndex, m, parts = [];
+
+        if (!limit)
+            return value.split(<string>separator);
+
+        if (separator instanceof RegExp)
+            pattern = new RegExp(separator.source, 'g' + (separator.ignoreCase ? 'i' : '') + (separator.multiline ? 'm' : ''));
+        else
+            pattern = new RegExp(separator.replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1'), 'g');
+
+        do {
+            startIndex = pattern.lastIndex;
+            if (m = pattern.exec(value)) {
+                parts.push(value.substr(startIndex, m.index - startIndex));
+            }
+        } while (m && parts.length < limit - 1);
+
+        parts.push(value.substr(pattern.lastIndex));
+
+        return parts;
+    }
+
     export function cookie(key: string, value?: any, options?: { force?: boolean; raw?: boolean; path?: string; domain?: string; secure?: boolean; expires?: number | Date; }) {
         const now = new Date();
 
@@ -2667,7 +2690,7 @@ namespace Vidyano {
             }
             else {
                 this.options = (addEmptyOption ? [{ key: null, value: "" }] : []).concat(options.map(o => {
-                    const optionSplit = o.split("=", 2);
+                    const optionSplit = splitWithTail(o, "=", 2);
                     return {
                         key: optionSplit[0],
                         value: optionSplit[1]
@@ -3363,7 +3386,7 @@ namespace Vidyano {
                 if (!StringEx.isNullOrEmpty(options)) {
                     newSortOptions = [];
                     options.split(";").map(option => option.trim()).forEach(option => {
-                        const optionParts = option.split(" ", 2).map(option => option.trim());
+                        const optionParts = splitWithTail(option, " ", 2).map(option => option.trim());
                         const col = this.getColumn(optionParts[0]);
                         if (col) {
                             newSortOptions.push({

@@ -447,7 +447,7 @@
         }
 
         protected _forwardObservable(source: Vidyano.Common.Observable<any> | Array<any>, path: string, pathPrefix: string, callback?: (path: string) => void): IObserveChainDisposer {
-            const paths = path.split(".", 2);
+            const paths = splitWithTail(path, ".", 2);
             const pathToNotify = pathPrefix ? pathPrefix + "." + paths[0] : paths[0];
             const disposers: IObserveChainDisposer[] = [];
             let subDispose = null;
