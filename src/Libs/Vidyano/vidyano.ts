@@ -104,15 +104,15 @@ namespace Vidyano {
     }
 
     export function splitWithTail(value: string, separator: string | RegExp, limit?: number): string[] {
-        var pattern, startIndex, m, parts = [];
+        let pattern, startIndex, m, parts = [];
 
         if (!limit)
             return value.split(<string>separator);
 
         if (separator instanceof RegExp)
-            pattern = new RegExp(separator.source, 'g' + (separator.ignoreCase ? 'i' : '') + (separator.multiline ? 'm' : ''));
+            pattern = new RegExp(separator.source, "g" + (separator.ignoreCase ? "i" : "") + (separator.multiline ? "m" : ""));
         else
-            pattern = new RegExp(separator.replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1'), 'g');
+            pattern = new RegExp(separator.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1"), "g");
 
         do {
             startIndex = pattern.lastIndex;
