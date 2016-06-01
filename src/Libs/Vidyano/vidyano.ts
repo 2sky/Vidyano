@@ -3111,6 +3111,8 @@ namespace Vidyano {
         private _lastUpdated: Date;
         private _totalItem: QueryResultItem;
         private _isSystem: boolean;
+        private _isFiltering: boolean;
+        private _columnObservers: Common.ISubjectDisposer[];
 
         persistentObject: PersistentObject;
         columns: QueryColumn[];
@@ -3415,6 +3417,19 @@ namespace Vidyano {
             this.notifyPropertyChanged("labelWithTotalItems", this._labelWithTotalItems, oldLabelWithTotalItems);
         }
 
+        get isFiltering(): boolean {
+            return this._isFiltering;
+        }
+
+        private _updateIsFiltering() {
+            let isFiltering = !!Enumerable.from(this.columns).firstOrDefault(c => !!c.selectedDistincts && !!c.selectedDistincts.firstOrDefault());
+            if (isFiltering === this._isFiltering)
+                return;
+
+            const oldIsFiltering = this._isFiltering;
+            this.notifyPropertyChanged("isFiltering", this._isFiltering = isFiltering, oldIsFiltering);
+        }
+
         _toServiceObject() {
             const result = this.copyProperties(["id", "isSystem", "name", "label", "pageSize", "skip", "top", "textSearch"]);
             if (this.selectAll.allSelected) {
@@ -3665,9 +3680,19 @@ namespace Vidyano {
                     this.columns = columns;
 
                 this.notifyPropertyChanged("columns", this.columns, oldColumns);
+                if (this._columnObservers)
+                    this._columnObservers.forEach(c => c());
+
+                this._columnObservers = this.columns.map(c => c.propertyChanged.attach(this._queryColumnPropertyChanged.bind(this)));
+                this._updateIsFiltering();
             }
 
             this._setCanFilter(this.actions.some(a => a.name === "Filter") && this.columns.some(c => c.canFilter));
+        }
+
+        private _queryColumnPropertyChanged(sender: Vidyano.QueryColumn, args: Vidyano.Common.PropertyChangedArgs) {
+            if (args.propertyName === "selectedDistincts")
+                this._updateIsFiltering();
         }
 
         private _updateItems(items: QueryResultItem[], reset: boolean = false) {

@@ -81,6 +81,11 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: false
             },
+            queryFiltering: {
+                type: Boolean,
+                computed: "queryColumn.query.isFiltering",
+                reflectToAttribute: true
+            },
             inversed: {
                 type: Boolean,
                 computed: "queryColumn.selectedDistinctsInversed"
@@ -103,6 +108,7 @@ namespace Vidyano.WebComponents {
         forwardObservers: [
             "queryColumn.selectedDistincts",
             "queryColumn.selectedDistinctsInversed",
+            "queryColumn.query.isFiltering"
         ],
         listeners: {
             "tap": "_upgrade"
@@ -135,6 +141,11 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: false
             },
+            queryFiltering: {
+                type: Boolean,
+                computed: "queryColumn.query.isFiltering",
+                reflectToAttribute: true
+            },
             inversed: {
                 type: Boolean,
                 computed: "queryColumn.selectedDistinctsInversed"
@@ -158,7 +169,8 @@ namespace Vidyano.WebComponents {
         forwardObservers: [
             "queryColumn.selectedDistincts",
             "queryColumn.selectedDistinctsInversed",
-            "queryColumn.distincts"
+            "queryColumn.distincts",
+            "queryColumn.query.isFiltering"
         ]
     })
     export class QueryGridColumnFilter extends Vidyano.WebComponents.QueryGridColumnFilterProxyBase {

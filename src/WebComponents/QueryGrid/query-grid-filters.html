@@ -4,7 +4,7 @@
     <template>
         <link rel="stylesheet" href="query-grid-filters.css" />
         <vi-popup-menu disabled="[[disabled]]">
-            <button header is="vi-button" inverse disabled="[[disabled]]">
+            <button header is="vi-button" inverse$="[[!isFiltering]]" disabled="[[disabled]]">
                 <vi-icon source="Filter_Menu"></vi-icon>
             </button>
             <template is="dom-if" if="[[canReset]]">

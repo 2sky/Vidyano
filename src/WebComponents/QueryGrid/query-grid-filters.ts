@@ -25,6 +25,11 @@
                 type: Object,
                 computed: "query.filters.currentFilter"
             },
+            isFiltering: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "query.isFiltering"
+            },
             disabled: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -48,6 +53,7 @@
             }
         },
         forwardObservers: [
+            "query.isFiltering",
             "query.filters",
             "query.filters.filters",
             "query.filters.currentFilter"

@@ -16,13 +16,10 @@
             z-index: 1;
             text-align: center;
             line-height: var(--theme-h2);
-            height: var(--theme-h2);
+            height: calc(var(--theme-h2) - 1px);
             width: var(--theme-h2);
             padding: 0;
-
-            > vi-icon {
-                height: var(--theme-h2);
-            }
+            margin-bottom: 1px;
         }
     }
 

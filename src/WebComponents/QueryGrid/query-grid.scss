@@ -384,7 +384,6 @@
 
     &:not([can-select-all])[can-filter][can-select][inline-actions] {
         vi-query-grid-filters {
-            padding-left: var(--theme-h2);
             width: calc(var(--theme-h2) * 2);
         }
     }
