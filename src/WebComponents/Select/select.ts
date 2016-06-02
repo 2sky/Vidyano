@@ -4,6 +4,11 @@ namespace Vidyano.WebComponents {
     @WebComponent.register({
         properties: {
             options: Array,
+            keepUnmatched: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
             selectedOption: {
                 type: Object,
                 observer: "_selectedOptionChanged",
@@ -71,6 +76,7 @@ namespace Vidyano.WebComponents {
         private _pendingSelectedOption: string;
         options: string[] | Common.IKeyValuePair[];
         selectedOption: string;
+        keepUnmatched: boolean;
         readonly: boolean;
 
         private _setSuggestion: (suggestion: ISelectItem) => void;
@@ -157,6 +163,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _blur() {
+            if (this.keepUnmatched)
+                return;
+
             if (!this.popup.open)
                 this._selectedItemChanged();
         }
