@@ -2,6 +2,23 @@
 
 The Vidyano Web² client allows developers to override the DOM template for persistent objects, tabs, attributes and queries. Templates are matched to the Vidyano model via configuration elements on ```vi-app```. To override the entire DOM template, simply add a ```<template is="dom-template">``` child element.
 
+## Program Unit templates
+
+The ```vi-program-unit-presenter``` component checks for a ```vi-program-unit-config``` element on the the ```vi-app``` where the ```name``` attribute matches the name of the current program unit.
+
+```html
+<vi-program-unit-config name="Home">
+	<template is="dom-template">
+		<div>Your custom template</div>
+	</template>
+</vi-program-unit-config>
+```
+
+#### Bound properties
+| Property      | Description                       |
+| ------------- | --------------------------------- |
+| programUnit   | Represents the ProgramUnit object |
+
 ## Query templates
 
 The ```vi-query-items-presenter``` component checks for a ```vi-query-config``` element on the the ```vi-app``` that corresponds to the current query.
