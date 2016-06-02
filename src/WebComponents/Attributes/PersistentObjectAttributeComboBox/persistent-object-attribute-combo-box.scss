@@ -14,4 +14,16 @@
             color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
         }'};
     }
+
+    #add {
+        background-color: var(--theme-color);
+
+        vi-icon {
+            fill: white !important;
+        }
+
+        &:before {
+            border-left-color: var(--theme-color);
+        }
+    }
 }
