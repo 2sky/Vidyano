@@ -130,7 +130,7 @@ $grid-max-columns: $grid-desktop-columns !default;
 
         // Define order override classes.
         @for $i from 1 through $grid-max-columns {
-            &[order-phone-#{$i}] {
+            &[order-phone-#{$i}], &[order-phone="#{$i}"] {
                 order: $i;
             }
         }
@@ -142,19 +142,19 @@ $grid-max-columns: $grid-desktop-columns !default;
 
     // Define partial sizes for columnNumber < totalColumns.
     @for $i from 1 through ($grid-phone-columns - 1) {
-        *[columns-#{$i}], *[phone-#{$i}] {
+        *[columns-#{$i}], *[columns="#{$i}"], *[phone-#{$i}], *[phone="#{$i}"] {
             @include partial-size($i, $grid-phone-columns, $grid-phone-gutter);
         }
     }
     // Define 100% for everything else.
     @for $i from $grid-phone-columns through $grid-desktop-columns {
-        *[columns-#{$i}], *[phone-#{$i}] {
+        *[columns-#{$i}], *[columns="#{$i}"], *[phone-#{$i}], *[phone="#{$i}"] {
             @include full-size($grid-phone-gutter);
         }
     }
     // Define valid phone offsets.
     @for $i from 1 through ($grid-phone-columns - 1) {
-        *[offset-#{$i}], *[offset-phone-#{$i}] {
+        *[offset-#{$i}], *[offset="#{$i}"], *[offset-phone-#{$i}], *[offset-phone="#{$i}"] {
             @include offset-size($i, $grid-phone-columns, $grid-phone-gutter);
         }
     }
@@ -177,7 +177,7 @@ $grid-max-columns: $grid-desktop-columns !default;
 
         // Define order override classes.
         @for $i from 1 through $grid-max-columns {
-            &[order-tablet-#{$i}] {
+            &[order-tablet-#{$i}], &[order-tablet="#{$i}"] {
                 order: $i;
             }
         }
@@ -189,19 +189,19 @@ $grid-max-columns: $grid-desktop-columns !default;
 
     // Define partial sizes for columnNumber < totalColumns.
     @for $i from 1 through ($grid-tablet-columns - 1) {
-        *[columns-#{$i}], *[tablet-#{$i}] {
+        *[columns-#{$i}], *[tablet-#{$i}], *[columns="#{$i}"], *[tablet="#{$i}"] {
             @include partial-size($i, $grid-tablet-columns, $grid-tablet-gutter);
         }
     }
     // Define 100% for everything else.
     @for $i from $grid-tablet-columns through $grid-desktop-columns {
-        *[columns-#{$i}], *[tablet-#{$i}] {
+        *[columns-#{$i}], *[tablet-#{$i}], *[columns="#{$i}"], *[tablet="#{$i}"] {
             @include full-size($grid-tablet-gutter);
         }
     }
     // Define valid tablet offsets.
     @for $i from 1 through ($grid-tablet-columns - 1) {
-        *[offset-#{$i}], *[offset-tablet-#{$i}] {
+        *[offset-#{$i}], *[offset-tablet-#{$i}], *[offset="#{$i}"], *[offset-tablet="#{$i}"] {
             @include offset-size($i, $grid-tablet-columns, $grid-tablet-gutter);
         }
     }
@@ -224,7 +224,7 @@ $grid-max-columns: $grid-desktop-columns !default;
 
         // Define order override classes.
         @for $i from 1 through $grid-max-columns {
-            &[order-desktop-#{$i}] {
+            &[order-desktop-#{$i}], &[order-desktop="#{$i}"] {
                 order: $i;
             }
         }
@@ -232,14 +232,14 @@ $grid-max-columns: $grid-desktop-columns !default;
 
     // Define partial sizes for all numbers of columns.
     @for $i from 1 through $grid-desktop-columns {
-        *[columns-#{$i}], *[desktop-#{$i}] {
+        *[columns-#{$i}], *[desktop-#{$i}], *[columns="#{$i}"], *[desktop="#{$i}"] {
             @include partial-size($i, $grid-desktop-columns, $grid-desktop-gutter);
         }
     }
 
     // Define valid desktop offsets.
     @for $i from 1 through ($grid-desktop-columns - 1) {
-        *[offset-#{$i}], *[offset-desktop-#{$i}] {
+        *[offset-#{$i}], *[offset-desktop-#{$i}], *[offset="#{$i}"], *[offset-desktop="#{$i}"] {
             @include offset-size($i, $grid-desktop-columns, $grid-desktop-gutter);
         }
     }
