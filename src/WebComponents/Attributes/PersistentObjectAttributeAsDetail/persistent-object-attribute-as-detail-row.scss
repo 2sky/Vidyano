@@ -35,6 +35,6 @@
 
 :host-context(vi-persistent-object-attribute-as-detail:not([editing])) {
     .column:not(:last-of-type) {
-        border-right: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+        border-right: 1px solid var(--theme-light-border);
     }
 }

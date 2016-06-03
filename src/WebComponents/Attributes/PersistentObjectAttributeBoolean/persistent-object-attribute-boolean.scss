@@ -18,7 +18,7 @@
 
 
 :host-context(vi-persistent-object-attribute-as-detail) {
-    border: 1px solid #dddddd;
+    border: 1px solid var(--theme-light-border);
     margin: 0 1px;
     padding: 0 var(--theme-h5);
     line-height: var(--theme-h2);

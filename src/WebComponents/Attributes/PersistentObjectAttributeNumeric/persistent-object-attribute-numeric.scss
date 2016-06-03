@@ -24,12 +24,12 @@
 
         &.before:before {
 			right: 0;
-			border-right: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+			border-right: 1px solid var(--theme-light-border);
         }
 
 		&.after:after {
 			left: 0;
-			border-left: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+			border-left: 1px solid var(--theme-light-border);
         }
 
 		&:hover:before, &:hover:after {
