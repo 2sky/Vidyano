@@ -25,10 +25,16 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 computed: "_computeRequired(attribute, attribute.isRequired, attribute.value)"
             },
+            disabled: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false,
+                observer: "_disabledChanged"
+            },
             readOnly: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "attribute.isReadOnly"
+                computed: "_computeReadOnly(attribute.isReadOnly, disabled)"
             },
             bulkEdit: {
                 type: Boolean,
@@ -102,6 +108,7 @@ namespace Vidyano.WebComponents {
         nonEdit: boolean;
         height: number;
         loading: boolean;
+        disabled: boolean;
 
         private _setLoading: (loading: boolean) => void;
 
@@ -238,6 +245,7 @@ namespace Vidyano.WebComponents {
                             this._renderedAttributeElement.classList.add("attribute");
                             this._renderedAttributeElement.attribute = attribute;
                             this._renderedAttributeElement.nonEdit = this.nonEdit;
+                            this._renderedAttributeElement.disabled = this.disabled;
 
                             Polymer.dom(this.$["content"]).appendChild(this._renderedAttributeElement);
                         }
@@ -260,8 +268,19 @@ namespace Vidyano.WebComponents {
                 this._renderedAttributeElement.nonEdit = nonEdit;
         }
 
+        private _disabledChanged(disabled: boolean) {
+            if (!this._renderedAttributeElement)
+                return;
+
+            this._renderedAttributeElement.disabled = disabled;
+        }
+
         private _computeRequired(attribute: Vidyano.PersistentObjectAttribute, required: boolean, value: any): boolean {
             return required && (value == null || (attribute && attribute.rules && attribute.rules.contains("NotEmpty") && value === ""));
+        }
+
+        private _computeReadOnly(isReadOnly: boolean, disabled: boolean): boolean {
+            return isReadOnly || disabled;
         }
 
         private _computeHasError(validationError: string): boolean {

@@ -48,6 +48,7 @@ namespace Vidyano.WebComponents.Attributes {
         editing: boolean;
         nonEdit: boolean;
         readOnly: boolean;
+        disabled: boolean;
 
         protected _attributeValueChanged() {
             this.value = this.attribute.value !== undefined ? this.attribute.value : null;
@@ -76,6 +77,10 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _computeEditing(isEditing: boolean, nonEdit: boolean): boolean {
             return !nonEdit && isEditing;
+        }
+
+        private _computeIsReadOnly(isReadOnly: boolean, disabled: boolean): boolean {
+            return isReadOnly || disabled;
         }
 
         private _updateForegroundDataTypeHint(attribute: Vidyano.PersistentObjectAttribute, isEditing: boolean, isReadOnly: boolean) {
@@ -112,10 +117,15 @@ namespace Vidyano.WebComponents.Attributes {
                     reflectToAttribute: true,
                     value: false
                 };
+                info.properties["disabled"] = {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    value: false
+                };
                 info.properties["readOnly"] = {
                     type: Boolean,
                     reflectToAttribute: true,
-                    computed: "attribute.isReadOnly"
+                    computed: "_computeIsReadOnly(attribute.isReadOnly, disabled)"
                 };
                 info.properties["required"] = {
                     type: Boolean,
