@@ -122,6 +122,7 @@
 
     .buttons {
         @include layout-horizontal();
+        background-color: white;
 
         > ::content {
             > button, > .button, > [button], > vi-popup:not([content]) button[header] {
