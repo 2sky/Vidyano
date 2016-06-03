@@ -3,14 +3,15 @@
 
     @PersistentObjectAttribute.register({
         properties: {
-            unit: {
-                type: String,
-                reflectToAttribute: true
-            },
-            unitPosition: {
+            unitBefore: {
                 type: String,
                 reflectToAttribute: true,
-                value: "after"
+                value: null
+            },
+            unitAfter: {
+                type: String,
+                reflectToAttribute: true,
+                value: null
             },
             focused: {
                 type: Boolean,
@@ -24,8 +25,8 @@
         private _isNullable: boolean;
         private _decimalSeparator: string;
         private _dataType: string;
-        unit: string;
-        unitPosition: string;
+        unitBefore: string;
+        unitAfter: string;
 
         private static _decimalTypes = ["NullableDecimal", "Decimal", "NullableSingle", "Single", "NullableDouble", "Double"];
         private static _unsignedTypes = ["Byte", "NullableByte", "UInt16", "NullableUInt16", "UInt32", "NullableUInt32", "UInt64", "NullableUInt64"];
@@ -39,8 +40,13 @@
                 this._allowDecimal = PersistentObjectAttributeNumeric._decimalTypes.indexOf(this.attribute.type) >= 0;
                 this._isNullable = this.attribute.type.startsWith("Nullable") && !this.attribute.parent.isBulkEdit;
                 this._decimalSeparator = CultureInfo.currentCulture.numberFormat.numberDecimalSeparator;
-                this.unit = this.attribute.getTypeHint("unit", "", null, true);
-                this.unitPosition = this.attribute.getTypeHint("unitposition", "after", null, true);
+
+                const displayFormat = this.attribute.getTypeHint("displayformat", null, null, true);
+                if (displayFormat) {
+                    const groups = /^([^{]*)({.+?})(.*)$/.exec(displayFormat);
+                    this.unitBefore = groups[1];
+                    this.unitAfter = groups[3];
+                }
             }
         }
 
