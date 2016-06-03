@@ -6,7 +6,7 @@
     position: relative;
     overflow-x: hidden;
     font-family: 'Open Sans', Arial, Helvetica, sans-serif;
-    font-size: 15px;
+    font-size: 13px;
     color: var(--theme-foreground);
     fill: var(--theme-foreground);
     outline: none;
@@ -82,5 +82,11 @@
 
     &[is-tracking] {
         @include noSelection();
+    }
+
+    ::content {
+        input, textarea {
+            font-size: 13px;
+        }
     }
 }

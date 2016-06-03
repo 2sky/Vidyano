@@ -34,7 +34,6 @@ $border-color: #ddd;
 
                 span {
                     float: left;
-                    font-size: 13px;
 
                     &:first-child {
                         color: transparent;
@@ -54,7 +53,6 @@ $border-color: #ddd;
                 line-height: calc(var(--theme-h2) - 2px);
                 padding-left: var(--theme-h5);
                 background-color: transparent;
-                font-size: 13px;
                 @apply(--vi-select-input);
 
                 &[disabled] {

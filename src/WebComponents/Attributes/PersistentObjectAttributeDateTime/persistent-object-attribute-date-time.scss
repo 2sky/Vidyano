@@ -13,7 +13,6 @@
             border: none;
             height: calc(var(--theme-h2) - 2px);
             line-height: calc(var(--theme-h2) - 2px);
-            font-size: 13px;
             width: auto;
 
             &:not([hidden]) + input {
