@@ -6,4 +6,47 @@
 	span, input {
 		color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
 	}
+
+    vi-persistent-object-attribute-edit span {
+		position: relative;
+		width: calc(var(--theme-h2) - 2px);
+		text-align: center;
+		cursor: default;
+		@include noSelection();
+
+		&:before, &:after {
+			position: absolute;
+		    top: 4px;
+		    bottom: 4px;
+		    content: " ";
+		    transition: all 0.1s ease-in-out;
+		}
+
+        &.before:before {
+			right: 0;
+			border-right: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+        }
+
+		&.after:after {
+			left: 0;
+			border-left: 1px solid var(--vi-persistent-object-attribute-presenter-border-color);
+        }
+
+		&:hover:before, &:hover:after {
+			top: 0;
+			bottom: 0;
+		}
+
+		&:empty {
+			display: none;
+		}
+    }
+
+	&[focused] {
+		vi-persistent-object-attribute-edit span {
+			&:before, &:after {
+				border-color: var(--theme-color);
+			}
+		}
+	}
 }

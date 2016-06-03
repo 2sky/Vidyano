@@ -2,11 +2,15 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-numeric.css" />
         <template is="dom-if" if="[[!editing]]">
-            <span>[[attribute.displayValue]]</span>
+            <span>[[_computeDisplayValueWithUnit(attribute.value, attribute.displayValue, unit, unitPosition)]]</span>
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <input content id="input" value="{{value::input}}" type$="[[inputtype]]" on-keypress="_keypress" on-blur="_editInputBlur" readonly$="[[readOnly]]">
+                <div content class="layout horizontal">
+                    <span class="before">[[_computeBeforeUnit(unit, unitPosition)]]</span>
+                    <input id="input" class="flex" value="{{value::input}}" type$="[[inputtype]]" on-keypress="_keypress" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]">
+                    <span class="after">[[_computeAfterUnit(unit, unitPosition)]]</span>
+                </div>
             </vi-persistent-object-attribute-edit>
         </template>
     </template>

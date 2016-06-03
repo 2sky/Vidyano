@@ -1,15 +1,36 @@
 ﻿namespace Vidyano.WebComponents.Attributes {
     "use strict";
 
-    @PersistentObjectAttribute.register
+    @PersistentObjectAttribute.register({
+        properties: {
+            unit: {
+                type: String,
+                reflectToAttribute: true
+            },
+            unitPosition: {
+                type: String,
+                reflectToAttribute: true,
+                value: "after"
+            },
+            focused: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            }
+        }
+    })
     export class PersistentObjectAttributeNumeric extends WebComponents.Attributes.PersistentObjectAttribute {
         private _allowDecimal: boolean;
         private _isNullable: boolean;
         private _decimalSeparator: string;
         private _dataType: string;
+        unit: string;
+        unitPosition: string;
 
         private static _decimalTypes = ["NullableDecimal", "Decimal", "NullableSingle", "Single", "NullableDouble", "Double"];
         private static _unsignedTypes = ["Byte", "NullableByte", "UInt16", "NullableUInt16", "UInt32", "NullableUInt32", "UInt64", "NullableUInt64"];
+
+        private _setFocused: (val: boolean) => void;
 
         _attributeChanged() {
             super._attributeChanged();
@@ -18,6 +39,8 @@
                 this._allowDecimal = PersistentObjectAttributeNumeric._decimalTypes.indexOf(this.attribute.type) >= 0;
                 this._isNullable = this.attribute.type.startsWith("Nullable") && !this.attribute.parent.isBulkEdit;
                 this._decimalSeparator = CultureInfo.currentCulture.numberFormat.numberDecimalSeparator;
+                this.unit = this.attribute.getTypeHint("unit", "", null, true);
+                this.unitPosition = this.attribute.getTypeHint("unitposition", "after", null, true);
             }
         }
 
@@ -59,6 +82,12 @@
             const input = <HTMLInputElement>e.target;
             if (input.value === "" || input.value == null)
                 input.value = this.attribute.value;
+
+            this._setFocused(false);
+        }
+
+        private _editInputFocus(e: Event) {
+            this._setFocused(true);
         }
 
         private _canParse(value: string): boolean {
@@ -139,6 +168,32 @@
             }
             else if (!this._canParse(value.insert(String.fromCharCode(keyCode), carretIndex)))
                 e.preventDefault();
+        }
+
+        private _computeDisplayValueWithUnit(value: number, displayValue: string, unit: string, unitPosition: string): string {
+            let result = value != null && unit && unitPosition && unitPosition.toLowerCase() === "before" ? unit + " " : "";
+
+            result += displayValue;
+            result += value != null && unit && unitPosition && unitPosition.toLowerCase() === "after" ? " " + unit : "";
+
+            return result;
+        }
+
+        private _computeBeforeUnit(unit: string, position: string, value: number, hideOnNoValue?: boolean): string {
+            if (!unit || !position)
+                return unit;
+
+            if (hideOnNoValue && !value)
+                return "";
+
+            return position === "before" ? unit : "";
+        }
+
+        private _computeAfterUnit(unit: string, position: string): string {
+            if (!unit || !position)
+                return unit;
+
+            return position === "after" ? unit : "";
         }
     }
 }
