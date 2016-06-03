@@ -1,17 +1,12 @@
 <link rel="import" href="../Attributes/persistent-object-attribute.html" />
 <link rel="import" href="../Attributes/PersistentObjectAttributeString/persistent-object-attribute-string.html" />
+<link rel="import" href="../PersistentObjectAttributeLabel/persistent-object-attribute-label.html" />
 
 <dom-module id="vi-persistent-object-attribute-presenter">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-presenter.css" />
         <template is="dom-if" if="[[!noLabel]]">
-            <div class="label horizontal layout end">
-                <label>[[attribute.label]]</label>
-                <span class="required">[[translateMessage('Required', isAttached)]]</span>
-                <div class="locked">
-                    <vi-icon source="Lock"></vi-icon>
-                </div>
-            </div>
+            <vi-persistent-object-attribute-label non-edit="[[nonEdit]]" attribute="[[attribute]]"></vi-persistent-object-attribute-label>
         </template>
         <div id="content">
             <template is="dom-if" if="[[attribute.parent.isBulkEdit]]">

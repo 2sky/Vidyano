@@ -1,0 +1,80 @@
+﻿@import "../vars.scss";
+:host {
+    @include layout-horizontal()
+    @include layout-end();
+    height: var(--theme-h2);
+    padding-bottom: var(--theme-h5);
+    box-sizing: border-box;
+    overflow: hidden;
+
+    --vi-persistent-object-attribute-label-color: #888;
+
+    label {
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--vi-persistent-object-attribute-label-color);
+        letter-spacing: 0.5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        @apply(--vi-persistent-object-attribute-presenter-label);
+    }
+
+    .required {
+        display: none;
+        position: relative;
+        font-size: 10px;
+        color: white;
+        line-height: 13px;
+        height: 14px;
+        margin: 0 0 0 var(--theme-h4);
+        padding: 0 var(--theme-h5) 0 calc(var(--theme-h5) / 2);
+        background-color: var(--theme-color);
+        @apply(--vi-persistent-object-attribute-presenter-required);
+
+        &::before {
+            content: "";
+            position: absolute;
+            right: 100%;
+            width: 0;
+            height: 0;
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            border-right-color: var(--theme-color);
+            border-right-width: 7px;
+            border-right-style: solid;
+        }
+    }
+
+    .locked {
+        fill: #666;
+        display: none;
+        padding-bottom: calc(var(--theme-h5) / 2);
+        margin: 0 0 0 calc(var(--theme-h5) / 2);
+
+        > vi-icon {
+            --vi-icon-width: 10px;
+            --vi-icon-height: 10px;
+            fill: var(--vi-persistent-object-attribute-label-color);
+        }
+
+        @apply(--vi--attribute-locked);
+    }
+
+    &[has-error] {
+        .label .required {
+            background-color: var(--theme-color-error) !important;
+
+            &::before {
+                border-right-color: var(--theme-color-error) !important;
+            }
+        }
+    }
+
+    &[editing][required]:not([bulk-edit]):not([read-only]) .required {
+        display: inline-block;
+    }
+
+    &[editing][read-only] .locked {
+        display: inline-block;
+    }
+}

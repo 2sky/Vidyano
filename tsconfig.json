@@ -81,6 +81,7 @@
     "src/WebComponents/Notification/notification.ts",
     "src/WebComponents/Overflow/overflow.ts",
     "src/WebComponents/PersistentObject/persistent-object.ts",
+    "src/WebComponents/PersistentObjectAttributeLabel/persistent-object-attribute-label.ts",
     "src/WebComponents/PersistentObjectAttributePresenter/persistent-object-attribute-presenter.ts",
     "src/WebComponents/PersistentObjectDialog/persistent-object-dialog.ts",
     "src/WebComponents/PersistentObjectGroup/persistent-object-group.ts",
