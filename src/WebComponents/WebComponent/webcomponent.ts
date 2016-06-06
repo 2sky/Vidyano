@@ -452,9 +452,9 @@
             const disposers: IObserveChainDisposer[] = [];
             let subDispose = null;
 
-            if (Array.isArray(source)) {
+            if (Array.isArray(source) && paths[0] === "*") {
                 (<any>source).forEach((item, idx) => {
-                    disposers.push(this._forwardObservable(item, path, pathPrefix + "." + idx, callback));
+                    disposers.push(this._forwardObservable(item, paths[1], pathPrefix + "." + idx, callback));
                 });
             }
             else if ((<Vidyano.Common.Observable<any>>source).propertyChanged) {
@@ -486,6 +486,13 @@
                     }
                 } else if (paths.length === 1 && source[paths[0]] !== undefined && this.get(`${pathPrefix}.${paths[0]}`) !== source[paths[0]])
                     this.notifyPath(`${pathPrefix}.${paths[0]}`, source[paths[0]]);
+            }
+            else if (paths.length === 2) {
+                const subSource = source[paths[0]];
+                if (subSource) {
+                    subDispose = this._forwardObservable(subSource, paths[1], pathToNotify, callback);
+                    disposers.push(subDispose);
+                }
             }
 
             return () => {

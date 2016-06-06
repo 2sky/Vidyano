@@ -89,7 +89,7 @@
             "_persistentObjectNotificationChanged(persistentObject.notification)"
         ],
         forwardObservers: [
-            "persistentObject.tabs.isVisible",
+            "persistentObject.tabs.*.isVisible",
             "persistentObject.breadcrumb",
             "persistentObject.notification",
             "persistentObject.isBusy"

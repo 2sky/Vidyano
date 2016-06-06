@@ -41,7 +41,7 @@ namespace Vidyano.WebComponents.Attributes {
             "_updateActions(attribute.details.actions, editing, readOnly)"
         ],
         forwardObservers: [
-            "attribute.objects.isDeleted"
+            "attribute.objects.*.isDeleted"
         ]
     })
     export class PersistentObjectAttributeAsDetail extends WebComponents.Attributes.PersistentObjectAttribute {
