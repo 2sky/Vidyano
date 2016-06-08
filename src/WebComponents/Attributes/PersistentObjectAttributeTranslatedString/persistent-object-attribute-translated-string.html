@@ -6,16 +6,20 @@
                 <span>[[attribute.displayValue]]</span>
             </template>
             <template is="dom-if" if="[[multiline]]">
-                <pre>[[attribute.displayValue]]</pre>
+                <vi-scroller>
+                    <pre>[[attribute.displayValue]]</pre>
+                </vi-scroller>
             </template>
         </template>
         <template is="dom-if" if="[[editing]]">
-            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+            <vi-persistent-object-attribute-edit attribute="[[attribute]]" reverse-content$="[[multiline]]">
                 <template is="dom-if" if="[[!multiline]]">
                     <input content class="flex" value="{{value::input}}" type="text" on-blur="_editInputBlur" readonly$="[[readOnly]]">
                 </template>
                 <template is="dom-if" if="[[multiline]]">
-                    <textarea content class="flex" value="{{value::input}}" on-blur="_editInputBlur" readonly$="[[readOnly]]"></textarea>
+                    <vi-scroller content class="fit">
+                        <pre id="multiline">[[attribute.displayValue]]</pre>
+                    </vi-scroller>
                 </template>
                 <template is="dom-if" if="[[canShowDialog]]">
                     <button on-tap="_showLanguagesDialog" tabindex="-1">
@@ -42,7 +46,7 @@
                             <input value="{{string.value::input}}" type="text" readonly$="[[readonly]]">
                         </template>
                         <template is="dom-if" if="[[multiline]]">
-                            <textarea rows="3" value="{{string.value::input}}"></textarea>
+                            <textarea rows="5" value="{{string.value::input}}"></textarea>
                         </template>
                     </li>
                 </template>
