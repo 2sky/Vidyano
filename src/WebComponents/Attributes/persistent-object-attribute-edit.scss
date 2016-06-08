@@ -18,14 +18,14 @@
         -o-transition: border-color 0.2s ease-in-out;
         -webkit-transition: border-color 0.2s ease-in-out;
         transition: border-color 0.2s ease-in-out;
-        @apply(--vi--attribute-edit-box);
+        @apply(--vi-persistent-object-attribute-edit-box);
 
         .buttons {
-            @apply(--vi--attribute-edit-buttons);
+            @apply(--vi-persistent-object-attribute-edit-buttons);
         }
     }
 
-    &.reverse-content {
+    &[reverse-content] {
         .box {
             @include layout-horizontal-reverse();
         }

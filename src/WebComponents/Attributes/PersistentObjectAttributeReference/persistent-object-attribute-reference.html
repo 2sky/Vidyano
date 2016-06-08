@@ -16,7 +16,7 @@
         <template is="dom-if" if="[[editing]]">
             <template is="dom-if" if="[[attribute.selectInPlace]]">
                 <template is="dom-if" if="[[!selectInPlaceAsRadio]]">
-                    <vi-persistent-object-attribute-edit attribute="[[attribute]]" class="reverse-content">
+                    <vi-persistent-object-attribute-edit attribute="[[attribute]]" reverse-content>
                         <vi-select id="selectInPlace" content class="flex" options="[[attribute.options]]" selected-option="{{objectId}}" readonly$="[[attribute.isReadOnly]]"></vi-select>
                         <button on-tap="_openSelect" hidden$="[[attribute.isReadOnly]]">
                             <vi-icon source="CaretDown"></vi-icon>

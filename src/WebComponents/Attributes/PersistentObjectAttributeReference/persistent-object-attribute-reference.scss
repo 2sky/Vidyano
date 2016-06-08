@@ -79,8 +79,8 @@
         }
     }
 
-    vi-persistent-object-attribute-edit.reverse-content {
-        --vi--attribute-edit-buttons: #{'{
+    vi-persistent-object-attribute-edit[reverse-content] {
+        --vi-persistent-object-attribute-edit-buttons: #{'{
             z-index: 2;
         }'};
     }
