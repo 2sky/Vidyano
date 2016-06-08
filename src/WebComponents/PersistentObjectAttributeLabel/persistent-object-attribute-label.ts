@@ -14,6 +14,10 @@
                 reflectToAttribute: true,
                 value: false
             },
+            hasToolTip: {
+                type: Boolean,
+                computed: "_computeHasToolTip(attribute.toolTip)"
+            },
             required: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -50,6 +54,8 @@
         ]
     })
     export class PersistentObjectAttributeLabel extends WebComponent {
+        attribute: Vidyano.PersistentObjectAttribute;
+
         private _computeRequired(attribute: Vidyano.PersistentObjectAttribute, required: boolean, value: any): boolean {
             return required && (value == null || (attribute && attribute.rules && attribute.rules.contains("NotEmpty") && value === ""));
         }
@@ -64,6 +70,19 @@
 
         private _computeHasError(validationError: string): boolean {
             return !StringEx.isNullOrEmpty(validationError);
+        }
+
+        private _computeHasToolTip(toolTip: string): boolean {
+            return !!toolTip;
+        }
+
+        private _showTooltip(e: TapEvent) {
+            this.app.showMessageDialog({
+                title: this.attribute.label,
+                titleIcon: "Info",
+                message: this.attribute.toolTip,
+                actions: [this.translateMessage("OK")]
+            });
         }
     }
 }

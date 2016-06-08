@@ -3,7 +3,6 @@
     @include layout-horizontal()
     @include layout-end();
     height: var(--theme-h2);
-    padding-bottom: var(--theme-h5);
     box-sizing: border-box;
     overflow: hidden;
 
@@ -14,6 +13,7 @@
         letter-spacing: 0.5px;
         overflow: hidden;
         text-overflow: ellipsis;
+        padding-bottom: var(--theme-h5);
         @apply(--vi-persistent-object-attribute-presenter-label);
     }
 
@@ -22,10 +22,10 @@
         position: relative;
         font-size: 10px;
         color: white;
-        line-height: 13px;
+        line-height: 1.5em;
         height: 14px;
-        margin: 0 0 0 var(--theme-h4);
-        padding: 0 var(--theme-h5) 0 calc(var(--theme-h5) / 2);
+        margin: 0 0 var(--theme-h5) var(--theme-h5);
+        padding: 0 var(--theme-h5) 2px calc(var(--theme-h5) / 2);
         background-color: var(--theme-color);
         @apply(--vi-persistent-object-attribute-presenter-required);
 
@@ -35,8 +35,8 @@
             right: 100%;
             width: 0;
             height: 0;
-            border-top: 7px solid transparent;
-            border-bottom: 7px solid transparent;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
             border-right-color: var(--theme-color);
             border-right-width: 7px;
             border-right-style: solid;
@@ -46,16 +46,28 @@
     .locked {
         fill: #666;
         display: none;
-        padding-bottom: calc(var(--theme-h5) / 2);
-        margin: 0 0 0 calc(var(--theme-h5) / 2);
+        margin-bottom: 2px;
 
         > vi-icon {
+            height: var(--theme-h3);
             --vi-icon-width: 10px;
             --vi-icon-height: 10px;
-            fill: var(--vi-persistent-object-attribute-label-color);
+            fill: var(--vi-persistent-object-attribute-label-color, #888);
         }
 
         @apply(--vi--attribute-locked);
+    }
+
+    .info {
+        width: var(--theme-h3);
+        height: var(--theme-h3);
+        margin-bottom: 2px;
+
+        vi-icon {
+            --vi-icon-width: 12px;
+            --vi-icon-height: 12px;
+            fill: var(--theme-lighter)
+        }
     }
 
     &[has-error] {
