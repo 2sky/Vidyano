@@ -19,7 +19,7 @@
                 padding-left: 0;
             }
 
-            &:last-of-type:not([hidden]) {
+            &:last-of-type:not([hidden]), &[flex] {
                 @include flex();
             }
         }
