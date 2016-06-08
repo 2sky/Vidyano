@@ -1533,6 +1533,8 @@
         private _textNode: Text;
         private _textNodeValue: string;
         private _customCellTemplate: PolymerTemplate;
+        private _customCellTemplateInstance: TemplateInstance;
+        private _customCellTemplateType: string;
         private _hasCustomCellTemplate: boolean;
         private _lastColumnType: string;
 
@@ -1684,8 +1686,16 @@
                     Polymer.dom(this.cell).appendChild(this._textNode = document.createTextNode(this._textNodeValue = <string>value));
             }
             else if (this._customCellTemplate) {
-                Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
-                Polymer.dom(this.cell).appendChild(this._customCellTemplate.stamp({ value: itemValue }).root);
+                if (!this._customCellTemplateInstance || this._customCellTemplateType !== this.column.type) {
+                    Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
+                    this._customCellTemplateInstance = this._customCellTemplate.stamp({ value: itemValue });
+                    this._customCellTemplateType = this.column.type;
+
+                    Polymer.dom(this.cell).appendChild(this._customCellTemplateInstance.root);
+                }
+                else
+                    (<any>this._customCellTemplateInstance).value = itemValue;
+
                 this._hasCustomCellTemplate = true;
             }
 
