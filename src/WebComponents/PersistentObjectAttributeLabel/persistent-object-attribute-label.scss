@@ -46,7 +46,7 @@
     .locked {
         fill: #666;
         display: none;
-        margin-bottom: 2px;
+        margin: 0 0 2px var(--theme-h5);
 
         > vi-icon {
             height: var(--theme-h3);
@@ -62,11 +62,12 @@
         width: var(--theme-h3);
         height: var(--theme-h3);
         margin-bottom: 2px;
+        margin-left: 2px;
 
         vi-icon {
             --vi-icon-width: 12px;
             --vi-icon-height: 12px;
-            fill: var(--theme-lighter)
+            fill: var(--theme-color);
         }
     }
 
