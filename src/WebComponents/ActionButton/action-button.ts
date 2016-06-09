@@ -56,7 +56,8 @@ namespace Vidyano.WebComponents {
             hidden: {
                 type: Boolean,
                 reflectToAttribute: true,
-                readOnly: true
+                readOnly: true,
+                observer: "_hiddenChanged"
             },
             options: {
                 type: Array,
@@ -211,6 +212,10 @@ namespace Vidyano.WebComponents {
 
         private _computeOpenOnHover(overflow: boolean, openOnHover: boolean): boolean {
             return overflow || openOnHover;
+        }
+
+        private _hiddenChanged() {
+            this.fire("sizechanged", null);
         }
     }
 }

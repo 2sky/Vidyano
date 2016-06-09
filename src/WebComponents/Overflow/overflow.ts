@@ -8,6 +8,9 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 readOnly: true
             }
+        },
+        listeners: {
+            "sizechanged": "_childSizechanged"
         }
     })
     export class Overflow extends WebComponent {
@@ -16,6 +19,14 @@ namespace Vidyano.WebComponents {
         hasOverflow: boolean;
 
         private _setHasOverflow: (val: boolean) => void;
+
+        private _visibleContainerSizeChanged(e: Event, detail: { width: number; height: number }) {
+            this.$["visible"].style.maxWidth = `${detail.width}px`;
+        }
+
+        private _childSizechanged() {
+            this._setHasOverflow(false);
+        }
 
         private _visibleSizeChanged(e: Event, detail: { width: number; height: number }) {
             const popup = <WebComponents.Popup><any>this.$["overflowPopup"];
