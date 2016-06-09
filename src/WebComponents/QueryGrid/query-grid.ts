@@ -11,6 +11,7 @@
                 type: Boolean,
                 readOnly: true,
                 value: true,
+                notify: true,
                 observer: "_initializingChanged"
             },
             isBusy: {

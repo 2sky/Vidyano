@@ -8,11 +8,11 @@
         <link rel="stylesheet" href="select-reference-dialog.css" />
         <header class="horizontal layout center">
             <h4 class="flex">[[query.label]]</h4>
-            <vi-input-search value="{{query.textSearch}}" on-search="_search" autofocus></vi-input-search>
+            <vi-input-search id="search" value="{{query.textSearch}}" on-search="_search" hidden$="[[initializing]]" autofocus></vi-input-search>
         </header>
         <main class="vertical layout">
             <vi-notification service-object="[[query]]"></vi-notification>
-            <vi-query-grid class="flex" query="[[query]]" on-item-tap="_selectReference" as-lookup></vi-query-grid>
+            <vi-query-grid class="flex" query="[[query]]" on-item-tap="_selectReference" as-lookup initializing="{{initializing}}"></vi-query-grid>
         </main>
         <footer class="horizontal layout end-justified">
             <button is="vi-button" on-tap="_select" disabled$="[[!canSelect]]" label="[[translateMessage('OK', isAttached)]]"></button>

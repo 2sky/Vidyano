@@ -21,6 +21,14 @@ namespace Vidyano.WebComponents {
     export class InputSearch extends WebComponent {
         value: string;
         focused: boolean;
+        autofocus: boolean;
+
+        attached() {
+            super.attached();
+
+            if (this.autofocus)
+                this.focus();
+        }
 
         private _searchKeypressed(e: KeyboardEvent) {
             if (e.keyCode === 13)
@@ -48,11 +56,7 @@ namespace Vidyano.WebComponents {
         }
 
         focus() {
-            setTimeout(() => {
-                const input = (<HTMLInputElement>this.$$("#input"));
-                if (input)
-                    input.focus();
-            }, 100);
+            this.$["input"].focus();
         }
     }
 }

@@ -4,7 +4,11 @@
     @Dialog.register({
         properties: {
             query: Object,
-            canSelect: Boolean
+            canSelect: Boolean,
+            initializing: {
+                type: Boolean,
+                observer: "_initializingChanged"
+            }
         },
         forwardObservers: [
             "_selectedItemsChanged(query.selectedItems)"
@@ -30,6 +34,11 @@
 
             if (search)
                 query.search();
+        }
+
+        private _initializingChanged(value: boolean) {
+            if (!value)
+                (<InputSearch>this.$["search"]).focus();
         }
 
         private _selectedItemsChanged() {
