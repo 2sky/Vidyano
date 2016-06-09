@@ -826,9 +826,6 @@
         }
 
         private _contextmenuColumn(e: MouseEvent): boolean {
-            if (!this.query || this.query.asLookup || this.asLookup)
-                return true;
-
             let src: HTMLElement | QueryGridColumnHeader = <HTMLElement>e.target;
             while (src && src.tagName !== "VI-QUERY-GRID-COLUMN-HEADER")
                 src = src.parentElement;
