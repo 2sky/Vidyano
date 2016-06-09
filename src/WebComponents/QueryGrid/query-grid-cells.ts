@@ -65,7 +65,10 @@
         private _icon: HTMLElement;
         private _textNode: Text;
 
-        private _valueChanged(value: QueryResultItemValue) {
+        private _valueChanged(value: QueryResultItemValue, oldValue: QueryResultItemValue) {
+            if (!!value && !!oldValue && value.getValue() === oldValue.getValue())
+                return;
+
             if (!value) {
                 if (this._icon)
                     this._icon.setAttribute("hidden", "");
