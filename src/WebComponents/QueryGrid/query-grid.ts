@@ -1533,7 +1533,6 @@
         private _customCellTemplate: PolymerTemplate;
         private _customCellTemplateInstance: TemplateInstance;
         private _customCellTemplateType: string;
-        private _hasCustomCellTemplate: boolean;
         private _lastColumnType: string;
 
         constructor(private _row: QueryGridTableDataRow) {
@@ -1565,9 +1564,9 @@
         private _render(): boolean {
             if (this.column) {
                 if (this._lastColumnType !== this.column.type) {
-                    if (this._hasCustomCellTemplate) {
+                    if (this._customCellTemplateInstance) {
                         Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
-                        this._hasCustomCellTemplate = false;
+                        this._customCellTemplateInstance = this._customCellTemplateType = null;
                     }
 
                     if (this._customCellTemplate = QueryGridCellTemplate.Load(this.column.type)) {
@@ -1591,9 +1590,9 @@
                         if (this._textNodeValue !== "")
                             this._textNode.nodeValue = this._textNodeValue = "";
                     }
-                    else if (this._hasCustomCellTemplate) {
+                    else if (this._customCellTemplateInstance) {
                         Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
-                        this._hasCustomCellTemplate = false;
+                        this._customCellTemplateInstance = this._customCellTemplateType = null;
                     }
 
                     this._setHasContent(false);
@@ -1693,8 +1692,6 @@
                 }
                 else
                     (<any>this._customCellTemplateInstance).value = itemValue;
-
-                this._hasCustomCellTemplate = true;
             }
 
             this._setHasContent(!!value);
