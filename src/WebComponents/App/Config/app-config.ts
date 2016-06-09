@@ -24,29 +24,30 @@
         private _configAttached(e: CustomEvent) {
             e.stopPropagation();
 
-            switch (e.srcElement["is"]) {
+            const element = e.srcElement || e.target;
+            switch (element["is"]) {
                 case "vi-persistent-object-attribute-config":
-                    this._attributeConfigs.push(<PersistentObjectAttributeConfig>e.srcElement);
+                    this._attributeConfigs.push(<PersistentObjectAttributeConfig>element);
                     break;
 
                 case "vi-persistent-object-config":
-                    this._persistentObjectConfigs.push(<PersistentObjectConfig>e.srcElement);
+                    this._persistentObjectConfigs.push(<PersistentObjectConfig>element);
                     break;
 
                 case "vi-persistent-object-tab-config":
-                    this._tabConfigs.push(<PersistentObjectTabConfig>e.srcElement);
+                    this._tabConfigs.push(<PersistentObjectTabConfig>element);
                     break;
 
                 case "vi-program-unit-config":
-                    this._programUnitConfigs.push(<ProgramUnitConfig>e.srcElement);
+                    this._programUnitConfigs.push(<ProgramUnitConfig>element);
                     break;
 
                 case "vi-query-config":
-                    this._queryConfigs.push(<QueryConfig>e.srcElement);
+                    this._queryConfigs.push(<QueryConfig>element);
                     break;
 
                 case "vi-query-chart-config":
-                    this._queryChartConfigs.push(<QueryChartConfig>e.srcElement);
+                    this._queryChartConfigs.push(<QueryChartConfig>element);
                     break;
             }
         }

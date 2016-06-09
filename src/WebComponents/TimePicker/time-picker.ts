@@ -46,13 +46,15 @@
 
         private _tap(e: Event, detail: any, sender: HTMLElement) {
             let source: HTMLElement;
-            if (e.srcElement.tagName === "SPAN") {
-                const parent = <HTMLElement>e.srcElement.parentNode;
+            let tapSource = e.srcElement || <HTMLElement>e.target;
+
+            if (tapSource.tagName === "SPAN") {
+                const parent = <HTMLElement>tapSource.parentNode;
                 if (parent.classList && parent.classList.contains("item"))
                     source = parent;
             }
             else {
-                const parent = <HTMLElement>e.srcElement;
+                const parent = <HTMLElement>tapSource;
                 if (parent.classList && parent.classList.contains("item"))
                     source = parent;
             }

@@ -123,7 +123,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _titleChanged(e: CustomEvent, detail: { title: string; }) {
-            if (this.app.noHistory || e.defaultPrevented || Polymer.dom(e.srcElement).parentNode !== this)
+            if (this.app.noHistory || e.defaultPrevented || Polymer.dom(e.srcElement || <Node>e.target).parentNode !== this)
                 return;
 
             if (this._documentTitleBackup !== detail.title && !!detail.title)
