@@ -271,6 +271,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _renderDistincts() {
+            if (!this.queryColumn)
+                return;
+
             const distinctType = !this.inversed ? "include" : "exclude";
             const distinctsEnum = this.queryColumn.selectedDistincts.select(v => {
                 return {
