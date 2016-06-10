@@ -8,8 +8,8 @@ namespace Vidyano.Web2
     {
         private static class Vulcanizer
         {
-            private static readonly Regex scriptRe = new Regex("<script src=\"(.+?)\".*?</script>");
-            private static readonly Regex linkRe = new Regex("<link.*?href=\"(.+?.css)\".*?>");
+            private static readonly Regex scriptRe = new Regex("<script src=[\"'](.+?)[\"'].*?</script>");
+            private static readonly Regex linkRe = new Regex("<link.*?href=[\"'](.+?.css)[\"'].*?>");
 
             private static readonly string[] polymerDependencies = {
                 "iron-a11y-keys",
