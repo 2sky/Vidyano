@@ -143,7 +143,7 @@ namespace Vidyano.WebComponents {
             if (persistentObjectId != null) {
                 this._setLoading(true);
                 this.app.service.getPersistentObject(null, persistentObjectId, persistentObjectObjectId).then(po => {
-                    const cacheEntry = <PersistentObjectAppCacheEntry>this.app.cache(new PersistentObjectAppCacheEntry(po.id, po.objectId));
+                    const cacheEntry = <PersistentObjectAppCacheEntry>this.app.cache(new PersistentObjectAppCacheEntry(persistentObjectId, persistentObjectObjectId));
                     cacheEntry.persistentObject = po;
 
                     if (persistentObjectId === this.persistentObjectId && persistentObjectObjectId === this.persistentObjectObjectId) {
