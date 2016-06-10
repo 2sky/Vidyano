@@ -46,7 +46,6 @@ namespace Vidyano.WebComponents {
         ]
     })
     export class CodeMirror extends WebComponents.WebComponent {
-        private static _styleSheetAttached = false;
         private _codeMirror: CM;
         private _codeMirrorValueChangedHandler: (codeMirror: CM) => void;
         initialized: boolean;
@@ -61,15 +60,6 @@ namespace Vidyano.WebComponents {
                 }
 
                 return false;
-            }
-
-            if (!CodeMirror._styleSheetAttached) {
-                const link = document.createElement("link");
-                link.setAttribute("rel", "stylesheet");
-                link.setAttribute("href", this.resolveUrl("../../Libs/codemirror/lib/codemirror.css"));
-
-                document.body.appendChild(link);
-                CodeMirror._styleSheetAttached = true;
             }
 
             if (!this._codeMirror) {
