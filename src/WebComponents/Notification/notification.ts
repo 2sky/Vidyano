@@ -81,7 +81,7 @@
                     title: header,
                     titleIcon: "Notification_" + headerIcon,
                     message: this.text.replace(findNewLine, "<br />").replace(/class="style-scope vi-notification"/g, "class=\"style-scope vi-message-dialog\""),
-                    html: true,
+                    rich: true,
                     actions: [this.translations.OK]
                 });
             }

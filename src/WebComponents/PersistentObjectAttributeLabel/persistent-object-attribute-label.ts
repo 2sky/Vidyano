@@ -80,6 +80,7 @@
             this.app.showMessageDialog({
                 title: this.attribute.label,
                 titleIcon: "Info",
+                rich: true,
                 message: this.attribute.toolTip,
                 actions: [this.translateMessage("OK")]
             });

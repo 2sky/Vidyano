@@ -323,9 +323,9 @@ namespace Vidyano {
             window.open(url, "_blank");
         }
 
-        export function showMessageBox(hooks: ServiceHooks, title: string, message: string, html: boolean = false, delay: number = 0): void {
+        export function showMessageBox(hooks: ServiceHooks, title: string, message: string, rich: boolean = false, delay: number = 0): void {
             setTimeout(function () {
-                hooks.onMessageDialog(title, message, html, hooks.service.getTranslatedMessage("OK"));
+                hooks.onMessageDialog(title, message, rich, hooks.service.getTranslatedMessage("OK"));
             }, delay);
         }
     }
@@ -1637,7 +1637,7 @@ namespace Vidyano {
             return (<PersistentObjectTab[]>attributeTabs).concat(queryTabs);
         }
 
-        onMessageDialog(title: string, message: string, html: boolean, ...actions: string[]): Promise<number> {
+        onMessageDialog(title: string, message: string, rich: boolean, ...actions: string[]): Promise<number> {
             return Promise.resolve(-1);
         }
 

@@ -911,8 +911,8 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        onMessageDialog(title: string, message: string, html: boolean, ...actions: string[]): Promise<number> {
-            return this.app.showMessageDialog({ title: title, message: message, html: html, actions: actions });
+        onMessageDialog(title: string, message: string, rich: boolean, ...actions: string[]): Promise<number> {
+            return this.app.showMessageDialog({ title: title, message: message, rich: rich, actions: actions });
         }
 
         onSelectReference(query: Vidyano.Query): Promise<QueryResultItem[]> {

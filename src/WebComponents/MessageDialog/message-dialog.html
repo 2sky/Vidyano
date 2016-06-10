@@ -1,4 +1,6 @@
-﻿<dom-module id="vi-message-dialog">
+﻿<link rel="import" href="../../Libs/marked-element/marked-element.html" />
+
+<dom-module id="vi-message-dialog">
     <template>
         <link rel="stylesheet" href="message-dialog.css" />
         <header class="horizontal layout">
@@ -11,7 +13,12 @@
             </template>
         </header>
         <main>
-            <pre id="pre"></pre>
+            <template is="dom-if" if="[[options.rich]]">
+                <marked-element markdown="[[options.message]]"></marked-element>
+            </template>
+            <template is="dom-if" if="[[!options.rich]]">
+                <pre>[[options.message]]</pre>
+            </template>
         </main>
         <footer class="horizontal layout end-justified">
             <template is="dom-repeat" items="[[options.actions]]" as="action">

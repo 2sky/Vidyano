@@ -9,7 +9,7 @@
         actionTypes?: string[];
         message: string;
         extraClasses?: string[];
-        html?: boolean;
+        rich?: boolean;
     }
 
     @Dialog.register({
@@ -33,11 +33,6 @@
 
         protected show(options: IMessageDialogOptions) {
             this._setOptions(options);
-
-            if (options.html)
-                this.$["pre"].innerHTML = options.message;
-            else
-                this.$["pre"].textContent = options.message;
         }
 
         private _hasHeaderIcon(options: IMessageDialogOptions): boolean {

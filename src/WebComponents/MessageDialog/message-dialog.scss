@@ -1,6 +1,8 @@
 @import "../vars.scss";
 
 :host {
+    min-width: 17em;
+
     main {
         padding: var(--theme-h4);
         @include layout-horizontal();
@@ -11,6 +13,12 @@
 
             a {
                 color: inherit;
+            }
+        }
+
+        marked-element ::content {
+            p {
+                margin: 0.5em 0;
             }
         }
     }
