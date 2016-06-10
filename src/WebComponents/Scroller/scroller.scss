@@ -19,6 +19,7 @@
         margin-right: -var(--theme-scrollbar-width);
         margin-bottom: -var(--theme-scrollbar-width);
         outline: none !important;
+        z-index: 0;
     }
 
     &[no-horizontal]:not([no-vertical]) {
