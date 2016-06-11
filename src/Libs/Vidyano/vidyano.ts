@@ -2646,7 +2646,10 @@ namespace Vidyano {
                 this._setIsVisible(this.visibility = resultAttr.visibility);
                 visibilityChanged = true;
             }
-            if ((!this.isReadOnly && this._refreshValue !== undefined ? this._refreshValue : this.value) !== resultAttr.value) {
+
+            if (this.value !== resultAttr.value && (this.isReadOnly || this._refreshValue !== resultAttr.value)) {
+                this.isValueChanged = resultAttr.isValueChanged;
+
                 const oldDisplayValue = this.displayValue;
                 const oldValue = this.value;
 
@@ -2659,7 +2662,6 @@ namespace Vidyano {
 
             this._refreshValue = undefined;
             this.triggersRefresh = resultAttr.triggersRefresh;
-            this.isValueChanged = resultAttr.isValueChanged;
             this.validationError = resultAttr.validationError;
 
             return visibilityChanged;
