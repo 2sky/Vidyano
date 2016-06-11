@@ -19,7 +19,6 @@
         margin-right: -var(--theme-scrollbar-width);
         margin-bottom: -var(--theme-scrollbar-width);
         outline: none !important;
-        z-index: 0;
     }
 
     &[no-horizontal]:not([no-vertical]) {
@@ -82,6 +81,7 @@
         position: absolute;
         background-color: transparent;
         display: none;
+        z-index: 1;
 
         &:before {
             position: absolute;
