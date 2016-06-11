@@ -347,8 +347,8 @@
             if (!rowHeight || !viewportSize.height)
                 return [];
 
-            if (verticalScrollOffset > 0 && (!items || items.length === 0)) {
-                this._verticalScrollOffset = 0;
+            if (verticalScrollOffset > 0 && (!items || items.length === 0) && this.offsetParent != null) {
+                (<Scroller>this.$["scroller"]).scrollToTop();
                 return undefined;
             }
 
