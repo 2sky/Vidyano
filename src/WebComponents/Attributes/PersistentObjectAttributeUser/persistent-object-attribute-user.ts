@@ -50,7 +50,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _setNewUser(id: string, name: string) {
             this.value = id;
-            this.notifyPath("attribute.options", this.attribute.options[0] = name);
+            this.notifyPath("attribute.options", this.attribute.options = [name]);
         }
 
         private _computeFriendlyName(options: string[]): string {
