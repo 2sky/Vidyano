@@ -46,7 +46,7 @@ namespace Vidyano.Web2
                     html = scriptRe.Replace(html, match =>
                     {
                         var src = match.Groups[1].Value;
-                        if (scriptDependencies.Any(dep => src.EndsWith(dep)))
+                        if (scriptDependencies.Contains(Path.GetFileName(src)))
                             return string.Empty;
 
                         if (useLocalFileSystem)
@@ -64,7 +64,7 @@ namespace Vidyano.Web2
                     html = scriptRe.Replace(html, match =>
                     {
                         var src = match.Groups[1].Value;
-                        if (scriptDependencies.Any(dep => src.EndsWith(dep)))
+                        if (scriptDependencies.Contains(Path.GetFileName(src)))
                             return string.Empty;
 
                         return match.Value;
