@@ -39,6 +39,15 @@ namespace Vidyano.Web2
                         var dep = match.Groups[1].Value;
                         return "<link rel=\"import\" href=\"" + string.Join(string.Empty, Enumerable.Range(0, depth).Select(_ => "../")) + "Libs/" + dep + "/" + dep + ".html\">";
                     });
+
+                    html = scriptRe.Replace(html, match =>
+                    {
+                        var src = match.Groups[1].Value;
+                        if (scriptDependencies.Contains(Path.GetFileName(src)))
+                            return string.Empty;
+
+                        return match.Value;
+                    });
                 }
 
                 if (!UseWeb2Home)
@@ -46,9 +55,6 @@ namespace Vidyano.Web2
                     html = scriptRe.Replace(html, match =>
                     {
                         var src = match.Groups[1].Value;
-                        if (scriptDependencies.Contains(Path.GetFileName(src)))
-                            return string.Empty;
-
                         if (useLocalFileSystem)
                         {
                             var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), directory + src);
@@ -57,17 +63,6 @@ namespace Vidyano.Web2
 
                         var script = GetEmbeddedResource(directory + src);
                         return "<script>" + script + "</script>";
-                    });
-                }
-                else
-                {
-                    html = scriptRe.Replace(html, match =>
-                    {
-                        var src = match.Groups[1].Value;
-                        if (scriptDependencies.Contains(Path.GetFileName(src)))
-                            return string.Empty;
-
-                        return match.Value;
                     });
                 }
 
