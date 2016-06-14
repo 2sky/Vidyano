@@ -10,7 +10,9 @@ namespace Vidyano.Web2
         {
             private static readonly Regex scriptRe = new Regex("<script src=[\"'](.+?)[\"'].*?</script>");
             private static readonly Regex linkRe = new Regex("<link.*?href=[\"'](.+?.css)[\"'].*?>");
-
+            private static readonly string[] scriptDependencies = {
+                "d3.min.js"
+            };
             private static readonly string[] polymerDependencies = {
                 "iron-a11y-keys",
                 "iron-a11y-keys-behavior",
@@ -19,7 +21,7 @@ namespace Vidyano.Web2
                 "iron-resizable-behavior",
                 "iron-scroll-target-behavior",
                 "polymer",
-                "paper-ripple",
+                "paper-ripple"
             };
             private static readonly Regex linkPolymerRe = new Regex("<link.*?href=\".+?(" + string.Join("|", polymerDependencies) + ")\\.html\".*?>");
 
@@ -44,6 +46,8 @@ namespace Vidyano.Web2
                     html = scriptRe.Replace(html, match =>
                     {
                         var src = match.Groups[1].Value;
+                        if (scriptDependencies.Any(dep => src.EndsWith(dep)))
+                            return string.Empty;
 
                         if (useLocalFileSystem)
                         {
@@ -53,6 +57,17 @@ namespace Vidyano.Web2
 
                         var script = GetEmbeddedResource(directory + src);
                         return "<script>" + script + "</script>";
+                    });
+                }
+                else
+                {
+                    html = scriptRe.Replace(html, match =>
+                    {
+                        var src = match.Groups[1].Value;
+                        if (scriptDependencies.Any(dep => src.EndsWith(dep)))
+                            return string.Empty;
+
+                        return match.Value;
                     });
                 }
 
