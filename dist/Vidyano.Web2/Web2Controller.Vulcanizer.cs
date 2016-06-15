@@ -33,13 +33,7 @@ namespace Vidyano.Web2
 
                 if (stripPolymerLinks)
                 {
-                    var depth = directory.Split('/').Length;
-                    html = linkPolymerRe.Replace(html, match =>
-                    {
-                        var dep = match.Groups[1].Value;
-                        return "<link rel=\"import\" href=\"" + string.Join(string.Empty, Enumerable.Range(0, depth).Select(_ => "../")) + "Libs/" + dep + "/" + dep + ".html\">";
-                    });
-
+                    html = linkPolymerRe.Replace(html, string.Empty);
                     html = scriptRe.Replace(html, match =>
                     {
                         var src = match.Groups[1].Value;
