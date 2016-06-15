@@ -2936,6 +2936,10 @@ namespace Vidyano {
             super(service, name, StringEx.isNullOrEmpty(key) ? po.label : key, po, po, isVisible);
             this.tabGroupIndex = 0;
 
+            // Note: Backward compatibility check for older backend versions
+            if (typeof columnCount === "string")
+                this.columnCount = parseInt(<any>columnCount);
+
             this._attributes = this._updateAttributes();
         }
 
