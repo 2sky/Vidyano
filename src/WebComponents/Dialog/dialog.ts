@@ -11,8 +11,6 @@ namespace Vidyano.WebComponents {
         noHeader: boolean;
 
         attached() {
-            this.style.position = "relative";
-
             if (!this._sizeTracker) {
                 Polymer.dom(this.root).appendChild(this._sizeTracker = new Vidyano.WebComponents.SizeTracker());
                 this._sizeTracker.bubbles = true;
