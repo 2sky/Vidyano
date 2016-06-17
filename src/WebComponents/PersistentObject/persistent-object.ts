@@ -311,11 +311,23 @@
 
             e.stopPropagation();
         }
+
+        private _hideActionBar(tab: Vidyano.PersistentObjectAttributeTab): boolean {
+            if (!tab)
+                return false;
+
+            const config = this.app.configuration.getTabConfig(tab);
+            if (!config)
+                return false;
+
+            return !!config.hideActionBar;
+        }
     }
 
     @WebComponent.register({
         properties: {
-            tab: Object
+            tab: Object,
+            hideActionBar: Boolean
         }
     })
     export class PersistentObjectDetailsContent extends WebComponent {

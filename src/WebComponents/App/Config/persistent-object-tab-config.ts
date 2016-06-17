@@ -6,7 +6,11 @@
             id: String,
             name: String,
             type: String,
-            objectId: String
+            objectId: String,
+            hideActionBar: {
+                type: Boolean,
+                reflectToAttribute: true
+            }
         }
     })
     export class PersistentObjectTabConfig extends TemplateConfig<Vidyano.PersistentObjectTab> {
@@ -14,5 +18,6 @@
         name: string;
         type: string;
         objectId: string;
+        hideActionBar: boolean;
     }
 }
