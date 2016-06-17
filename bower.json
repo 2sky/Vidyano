@@ -41,6 +41,9 @@
     "d3": {
       "": "d3.min.js"
     },
+    "iron-overlay-behavior": {
+        "": [ "iron-overlay-behavior.html", "iron-overlay-manager.html", "iron-overlay-backdrop.html" ]
+    },
     "codemirror": {
         "lib": "lib/*.*",
         "mode/css": "mode/css/*.*",
@@ -59,6 +62,7 @@
     "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.2",
     "iron-list": "polymerelements/iron-list#^1.2.6",
     "iron-media-query": "polymerelements/iron-media-query#^1.0.8",
+    "iron-overlay-behavior": "polymerelements/iron-overlay-behavior#^1.8.0",
     "bignumber.js": "^2.0.7",
     "moment": "^2.10.6",
     "sortable": "RubaXa/sortable#^1.2.1",

@@ -27,19 +27,24 @@
             triggerZero: {
                 type: Boolean,
                 reflectToAttribute: true
+            },
+            bubbles: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         }
     })
     export class SizeTracker extends WebComponent {
         private _resizeTimer: number;
         private _resizeTimerQueuedElements: HTMLElement[] = [];
-        private _resizeLast: { width: number; height: number };
+        private _resizeLast: ISize;
         private _resizeRAF: Function;
         private _scrollListener: EventListener;
         deferred: boolean;
         triggerZero: boolean;
+        bubbles: boolean;
 
-        private _setSize: (size: Vidyano.WebComponents.ISize) => void;
+        private _setSize: (size: ISize) => void;
 
         attached() {
             if (this.deferred)
@@ -89,7 +94,7 @@
                     return;
 
                 this._setSize(this._resizeLast);
-                this.fire("sizechanged", this._resizeLast, { onNode: this, bubbles: false });
+                this.fire("sizechanged", this._resizeLast, { onNode: this, bubbles: !!this.bubbles });
             }
         }
 

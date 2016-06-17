@@ -1,7 +1,7 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    export interface IMessageDialogOptions extends Vidyano.WebComponents.IDialogOptions {
+    export interface IMessageDialogOptions {
         noClose?: boolean;
         title?: string;
         titleIcon?: string;
@@ -27,12 +27,8 @@
         }
     })
     export class MessageDialog extends Dialog {
-        options: IMessageDialogOptions;
-
-        private _setOptions: (options: IMessageDialogOptions) => void;
-
-        protected show(options: IMessageDialogOptions) {
-            this._setOptions(options);
+        constructor(public options: IMessageDialogOptions) {
+            super();
         }
 
         private _hasHeaderIcon(options: IMessageDialogOptions): boolean {
@@ -47,7 +43,7 @@
         }
 
         private _onSelectAction(e: TapEvent) {
-            this.instance.resolve(e.model.index);
+            this.resolve(e.model.index);
 
             e.stopPropagation();
         }

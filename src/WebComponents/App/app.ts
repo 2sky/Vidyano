@@ -378,23 +378,22 @@ namespace Vidyano.WebComponents {
             this.changePath("Error/" + encodeURIComponent(message), replaceCurrent);
         }
 
-        showDialog(dialog: Dialog, options?: Vidyano.WebComponents.IDialogOptions): Promise<any> {
-            const dialogHost = new Vidyano.WebComponents.DialogHost(dialog);
-            Polymer.dom(this.root).appendChild(dialogHost);
+        showDialog(dialog: Dialog): Promise<any> {
+            Polymer.dom(this.root).appendChild(dialog);
 
-            return dialogHost.show(options).then(result => {
-                Polymer.dom(this.root).removeChild(dialogHost);
+            return dialog.show().then(result => {
+                Polymer.dom(this.root).removeChild(dialog);
 
                 return result;
             }).catch(e => {
-                Polymer.dom(this.root).removeChild(dialogHost);
+                Polymer.dom(this.root).removeChild(dialog);
                 if(e)
                     throw e;
             });
         }
 
         showMessageDialog(options: Vidyano.WebComponents.IMessageDialogOptions): Promise<any> {
-            return this.showDialog(new Vidyano.WebComponents.MessageDialog(), options);
+            return this.showDialog(new Vidyano.WebComponents.MessageDialog(options));
         }
 
         private _computeIsProfiling(isSignedIn: boolean, profile: boolean, profilerLoaded: boolean): boolean {
