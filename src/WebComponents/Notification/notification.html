@@ -8,7 +8,7 @@
             <template is="dom-if" if="[[shown]]">
                 <vi-size-tracker on-sizechanged="_trackerSizeChanged"></vi-size-tracker>
             </template>
-            <span id="text"></span>
+            <span id="text" inner-h-t-m-l="[[text]]"></span>
         </div>
         <button is="vi-button" id="close" on-tap="_close">
             <vi-icon source="Notification_Close"></vi-icon>
