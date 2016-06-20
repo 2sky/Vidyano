@@ -27,8 +27,14 @@
         }
     })
     export class MessageDialog extends Dialog {
-        constructor(public options: IMessageDialogOptions) {
+        options: IMessageDialogOptions;
+
+        private _setOptions: (options: IMessageDialogOptions) => void;
+
+        constructor(options: IMessageDialogOptions) {
             super();
+
+            this._setOptions(options);
         }
 
         private _hasHeaderIcon(options: IMessageDialogOptions): boolean {
@@ -43,7 +49,7 @@
         }
 
         private _onSelectAction(e: TapEvent) {
-            this.resolve(e.model.index);
+            this.close(e.model.index);
 
             e.stopPropagation();
         }
