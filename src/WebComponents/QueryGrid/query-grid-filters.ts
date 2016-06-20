@@ -60,7 +60,6 @@
         ]
     })
     export class QueryGridFilters extends Vidyano.WebComponents.WebComponent {
-        private _dialog: WebComponents.DialogInstance;
         private _preventColumnFilterChangedListener: boolean;
         query: Vidyano.Query;
         queryFilters: Vidyano.QueryFilters;
@@ -130,10 +129,9 @@
                     cancel: close => {
                         this.query.filters.delete(newFilter);
                         close();
-                    }
-                }), {
-                    hideHeader: true
-                });
+                    },
+                    noHeader: true
+                }));
             });
         }
 
@@ -148,10 +146,9 @@
             this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(filter.persistentObject, {
                 save: (po, close) => {
                     return this.query.filters.save(filter).then(close).catch(Vidyano.noop);
-                }
-            }), {
-                hideHeader: true
-            }).catch(Vidyano.noop);
+                },
+                noHeader: true
+            })).catch(Vidyano.noop);
         }
 
         private _delete(e: TapEvent) {

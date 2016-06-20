@@ -105,6 +105,17 @@
             cursor: move !important;
         }
 
+        &[no-header] ::content {
+            > header {
+                display: none;
+            }
+
+            > main {
+                padding-top: var(--theme-h4);
+                margin-top: 0;
+            }
+        }
+
         ::content {
             > header, > footer {
                 background-color: #FAFAFA;

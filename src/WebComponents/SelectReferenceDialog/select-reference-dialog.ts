@@ -61,7 +61,7 @@
             if (!this.canSelect)
                 return;
 
-            this.instance.resolve(this.query.selectedItems);
+            this.close(this.query.selectedItems);
         }
 
         private _search(e: CustomEvent, detail: string) {
@@ -77,7 +77,7 @@
 
             const detail = <IQueryGridItemTapEventArgs>e.detail;
             if (this.query.maxSelectedItems === 1)
-                this.instance.resolve([detail.item]);
+                this.close([detail.item]);
             else
                 detail.item.isSelected = !detail.item.isSelected;
         }

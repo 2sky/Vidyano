@@ -1,7 +1,7 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    export interface IPersistentObjectDialogOptions {
+    export interface IPersistentObjectDialogOptions extends IDialogOptions {
         saveLabel?: string;
         save?: (po: Vidyano.PersistentObject, close: () => void) => void;
         cancel?: (close: () => void) => void;
@@ -29,17 +29,18 @@
     })
     export class PersistentObjectDialog extends Dialog {
         private _saveHook: (po: Vidyano.PersistentObject) => Promise<any>;
+        options: IPersistentObjectDialogOptions;
         tab: Vidyano.PersistentObjectAttributeTab;
 
-        constructor(public persistentObject: Vidyano.PersistentObject, private _options: IPersistentObjectDialogOptions = {}) {
-            super();
+        constructor(public persistentObject: Vidyano.PersistentObject, options: IPersistentObjectDialogOptions = {}) {
+            super(options);
 
             persistentObject.beginEdit();
         }
 
         private _save() {
-            if (this._options.save)
-                this._options.save(this.persistentObject, () => this.resolve(this.persistentObject));
+            if (this.options.save)
+                this.options.save(this.persistentObject, () => this.close(this.persistentObject));
             else {
                 const wasNew = this.persistentObject.isNew;
                 this.persistentObject.save().then(() => {
@@ -47,23 +48,23 @@
                         if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") !== -1)
                             this.app.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId).then(po2 => {
                                 this.app.service.hooks.onOpen(po2, true);
-                                this.resolve(this.persistentObject);
+                                this.close(this.persistentObject);
                             }, e => {
-                                this.resolve(this.persistentObject);
+                                this.close(this.persistentObject);
                                 const owner: ServiceObjectWithActions = this.persistentObject.ownerQuery || this.persistentObject.parent;
                                 if (!!owner)
                                     owner.setNotification(e);
                             });
                         else
-                            this.resolve(this.persistentObject);
+                            this.close(this.persistentObject);
                     }
                 });
             }
         }
 
         private _cancel() {
-            if (this._options.cancel)
-                this._options.cancel(() => this.cancel());
+            if (this.options.cancel)
+                this.options.cancel(() => this.cancel());
             else if (this.persistentObject) {
                 this.persistentObject.cancelEdit();
                 this.cancel();
@@ -74,7 +75,7 @@
             if (!isAttached)
                 return null;
 
-            return this._options.saveLabel || this.translateMessage("Save");
+            return this.options.saveLabel || this.translateMessage("Save");
         }
 
         private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {
@@ -93,12 +94,6 @@
 
         private _computeReadOnly(tab: Vidyano.PersistentObjectAttributeTab): boolean {
             return !!tab && !tab.attributes.some(attribute => !attribute.isReadOnly && attribute.isVisible);
-        }
-
-        private _onSelectAction(e: Event) {
-            this.resolve(parseInt((<HTMLElement>e.target).getAttribute("data-action-index"), 10));
-
-            e.stopPropagation();
         }
     }
 }
