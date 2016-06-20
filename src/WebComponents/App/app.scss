@@ -84,6 +84,10 @@
         @include noSelection();
     }
 
+    vi-app-config {
+        display: none;
+    }
+
     ::content {
         input, textarea {
             font-size: 13px;
