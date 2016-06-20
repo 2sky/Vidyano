@@ -381,7 +381,7 @@ namespace Vidyano.WebComponents {
         showDialog(dialog: Dialog): Promise<any> {
             Polymer.dom(this.root).appendChild(dialog);
 
-            return dialog.show().then(result => {
+            return dialog.open().then(result => {
                 Polymer.dom(this.root).removeChild(dialog);
 
                 return result;

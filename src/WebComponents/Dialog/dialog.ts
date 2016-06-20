@@ -4,11 +4,15 @@ namespace Vidyano.WebComponents {
     export abstract class Dialog extends WebComponent {
         private _sizeTracker: Vidyano.WebComponents.SizeTracker;
         private _translatePosition: IPosition;
-        protected resolve: Function;
-        protected reject: Function;
+        private _resolve: Function;
+        private _reject: Function;
+        private canceled: boolean;
+        private opened: boolean;
         noCancelOnOutsideClick: boolean;
         noCancelOnEscKey: boolean;
         noHeader: boolean;
+
+        protected cancel: () => void;
 
         attached() {
             if (!this._sizeTracker) {
@@ -19,27 +23,17 @@ namespace Vidyano.WebComponents {
             super.attached();
         }
 
-        /**
-         * Open the overlay.
-         */
-        private open: () => void;
-
-        /**
-         * Close the overlay.
-         */
-        private close: () => void;
-
-        show(): Promise<any> {
+        open(): Promise<any> {
             let trackHandler: Function;
             const header = <HTMLElement>Polymer.dom(this.root).querySelector("header");
             if (header)
                 Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));
 
             return new Promise((resolve, reject) => {
-                this.resolve = resolve;
-                this.reject = reject;
+                this._resolve = resolve;
+                this._reject = reject;
 
-                this.open();
+                Polymer["IronOverlayBehaviorImpl"].open.apply(this);
             }).then(result => {
                 if (trackHandler)
                     Polymer.Gestures.remove(header, "track", trackHandler);
@@ -47,6 +41,16 @@ namespace Vidyano.WebComponents {
                 this.close();
                 return result;
             });
+        }
+
+        close(result?: any) {
+            this._resolve(result);
+            Polymer["IronOverlayBehaviorImpl"].close.apply(this);
+        }
+
+        private _onClosed(canceled: boolean) {
+            if (canceled)
+                this._reject();
         }
 
         private _dialogSizeChanged(e: CustomEvent, details: ISize) {
@@ -103,6 +107,7 @@ namespace Vidyano.WebComponents {
 
                 info.listeners = info.listeners || {};
                 info.listeners["sizechanged"] = "_dialogSizeChanged";
+                info.listeners["iron-overlay-closed"] = "_onClosed";
 
                 info.behaviors = info.behaviors || [];
                 info.behaviors.push(Polymer["IronOverlayBehavior"]);
