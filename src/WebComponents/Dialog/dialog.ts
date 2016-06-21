@@ -20,6 +20,18 @@ namespace Vidyano.WebComponents {
                 this._sizeTracker.bubbles = true;
             }
 
+            // NOTE: Fix for https://github.com/PolymerElements/iron-overlay-behavior/issues/124
+            (<any>this)._manager._overlayWithBackdrop = function () {
+                for (var i = this._overlays.length - 1; i >= 0; i--) {
+                    if (this._overlays[i].withBackdrop) {
+                        return this._overlays[i];
+                    }
+                }
+            };
+
+            // By default, don't cancel dialog on outside click.
+            this.noCancelOnOutsideClick = true;
+
             super.attached();
         }
 
