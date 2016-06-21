@@ -59,7 +59,7 @@
             <vi-icon source="[[icon]]"></vi-icon>
             <span class="flex" id="title" on-mouseenter="_titleMouseenter"></span>
         </a>
-        <iron-collapse id="subItems" class="subItems" hidden$="[[!hasItems]]">
+        <iron-collapse id="subItems" class="subItems" hidden$="[[!hasItems]]" no-animation>
             <template is="dom-repeat" items="[[items]]" as="subItem">
                 <vi-menu-item item="[[subItem]]" items="[[subItem.items]]" level="[[subLevel]]" filter="[[filter]]" filter-parent="[[item]]"></vi-menu-item>
             </template>
