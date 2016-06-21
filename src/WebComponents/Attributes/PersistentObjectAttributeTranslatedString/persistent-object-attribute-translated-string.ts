@@ -118,7 +118,7 @@
         }
 
         private _ok() {
-            this.instance.resolve(this.strings);
+            this.close(this.strings);
         }
     }
 }

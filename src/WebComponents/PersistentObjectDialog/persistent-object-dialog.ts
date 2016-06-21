@@ -2,6 +2,7 @@
     "use strict";
 
     export interface IPersistentObjectDialogOptions {
+        noHeader?: boolean;
         saveLabel?: string;
         save?: (po: Vidyano.PersistentObject, close: () => void) => void;
         cancel?: (close: () => void) => void;
@@ -34,12 +35,13 @@
         constructor(public persistentObject: Vidyano.PersistentObject, private _options: IPersistentObjectDialogOptions = {}) {
             super();
 
+            this.noHeader = _options.noHeader;
             persistentObject.beginEdit();
         }
 
         private _save() {
             if (this._options.save)
-                this._options.save(this.persistentObject, () => this.instance.resolve(this.persistentObject));
+                this._options.save(this.persistentObject, () => this.close(this.persistentObject));
             else {
                 const wasNew = this.persistentObject.isNew;
                 this.persistentObject.save().then(() => {
@@ -47,15 +49,15 @@
                         if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") !== -1)
                             this.app.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId).then(po2 => {
                                 this.app.service.hooks.onOpen(po2, true);
-                                this.instance.resolve(this.persistentObject);
+                                this.close(this.persistentObject);
                             }, e => {
-                                this.instance.resolve(this.persistentObject);
+                                this.close(this.persistentObject);
                                 const owner: ServiceObjectWithActions = this.persistentObject.ownerQuery || this.persistentObject.parent;
                                 if (!!owner)
                                     owner.setNotification(e);
                             });
                         else
-                            this.instance.resolve(this.persistentObject);
+                            this.close(this.persistentObject);
                     }
                 });
             }
@@ -93,12 +95,6 @@
 
         private _computeReadOnly(tab: Vidyano.PersistentObjectAttributeTab): boolean {
             return !!tab && !tab.attributes.some(attribute => !attribute.isReadOnly && attribute.isVisible);
-        }
-
-        private _onSelectAction(e: Event) {
-            this.instance.resolve(parseInt((<HTMLElement>e.target).getAttribute("data-action-index"), 10));
-
-            e.stopPropagation();
         }
     }
 }

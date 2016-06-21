@@ -33,7 +33,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _onSelectOption(e: TapEvent) {
-            this.instance.resolve(e.model.option);
+            this.close(e.model.option);
 
             e.stopPropagation();
         }

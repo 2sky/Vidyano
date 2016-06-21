@@ -178,6 +178,7 @@
         listeners?: { [eventName: string]: string };
         observers?: string[];
         extends?: string;
+        behaviors?: any[];
 
         // Non-default Polymer registration info
 

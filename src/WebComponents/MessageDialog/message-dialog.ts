@@ -1,7 +1,7 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    export interface IMessageDialogOptions extends Vidyano.WebComponents.IDialogOptions {
+    export interface IMessageDialogOptions {
         noClose?: boolean;
         title?: string;
         titleIcon?: string;
@@ -18,25 +18,19 @@
                 type: Object,
                 readOnly: true
             }
-        },
-        keybindings: {
-            "esc": {
-                listener: "cancel",
-                priority: Number.MAX_VALUE
-            }
         }
     })
     export class MessageDialog extends Dialog {
-        options: IMessageDialogOptions;
-
         private _setOptions: (options: IMessageDialogOptions) => void;
 
-        protected show(options: IMessageDialogOptions) {
+        constructor(options: IMessageDialogOptions) {
+            super();
+
             this._setOptions(options);
         }
 
         private _hasHeaderIcon(options: IMessageDialogOptions): boolean {
-            return this.options && typeof this.options.titleIcon === "string";
+            return options && typeof options.titleIcon === "string";
         }
 
         private _getActionType(options: IMessageDialogOptions, index: number): string {
@@ -47,7 +41,7 @@
         }
 
         private _onSelectAction(e: TapEvent) {
-            this.instance.resolve(e.model.index);
+            this.close(e.model.index);
 
             e.stopPropagation();
         }
