@@ -96,6 +96,7 @@
 
     [dialog] {
         @include layout-vertical();
+        @apply(--theme-shadow);
         background-color: white;
         max-height: 90vh;
         max-width: 90vw;
