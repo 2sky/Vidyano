@@ -22,7 +22,7 @@ namespace Vidyano.WebComponents {
 
             // NOTE: Fix for https://github.com/PolymerElements/iron-overlay-behavior/issues/124
             (<any>this)._manager._overlayWithBackdrop = function () {
-                for (var i = this._overlays.length - 1; i >= 0; i--) {
+                for (let i = this._overlays.length - 1; i >= 0; i--) {
                     if (this._overlays[i].withBackdrop) {
                         return this._overlays[i];
                     }
