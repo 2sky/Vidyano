@@ -16,12 +16,16 @@ namespace Vidyano.WebComponents {
     export class Overflow extends WebComponent {
         private _overflownChildren: linqjs.Enumerable<HTMLElement>;
         private _visibibleSizeChangedSkip: { width: number; height: number };
+        private _previousHeight: number;
         hasOverflow: boolean;
 
         private _setHasOverflow: (val: boolean) => void;
 
         private _visibleContainerSizeChanged(e: Event, detail: { width: number; height: number }) {
             this.$["visible"].style.maxWidth = `${detail.width}px`;
+
+            if (this._previousHeight !== detail.height)
+                this.$["first"].style.height = `${this._previousHeight = detail.height}px`;
         }
 
         private _childSizechanged() {

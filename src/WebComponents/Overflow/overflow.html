@@ -3,6 +3,7 @@
         <link rel="stylesheet" href="overflow.css" />
         <div class="flex relative" id="visibleContainer">
             <div id="visible" class="horizontal layout wrap relative">
+                <div id="first"></div>
                 <content select=":not([overflow])"></content>
                 <vi-size-tracker on-sizechanged="_visibleSizeChanged"></vi-size-tracker>
             </div>

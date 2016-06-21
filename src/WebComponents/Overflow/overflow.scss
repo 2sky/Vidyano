@@ -18,6 +18,11 @@
         vi-size-tracker {
             z-index: -1;
         }
+
+        > div#first {
+            width: 0;
+            opacity: 0;
+        }
     }
 
     #overflowPopup {
