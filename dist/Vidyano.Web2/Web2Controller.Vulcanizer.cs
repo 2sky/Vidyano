@@ -16,6 +16,7 @@ namespace Vidyano.Web2
             private static readonly string[] polymerDependencies = {
                 "iron-a11y-keys",
                 "iron-a11y-keys-behavior",
+                "iron-collapse",
                 "iron-list",
                 "iron-media-query",
                 "iron-overlay-behavior",

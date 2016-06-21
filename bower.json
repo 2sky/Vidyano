@@ -57,9 +57,10 @@
   "dependencies": {
     "es6-promise": "^3.0.2",
     "polymer": "polymer/polymer#1.5.0",
-    "paper-ripple": "polymerelements/paper-ripple#^1.0.5",
+    "paper-ripple": "polymerelements/paper-ripple#^1.0.6",
     "marked-element": "polymerelements/marked-element#^1.0.2",
-    "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.2",
+    "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.5",
+    "iron-collapse": "polymerelements/iron-collapse#^1.1.0",
     "iron-list": "polymerelements/iron-list#^1.2.6",
     "iron-media-query": "polymerelements/iron-media-query#^1.0.8",
     "iron-overlay-behavior": "polymerelements/iron-overlay-behavior#^1.8.0",

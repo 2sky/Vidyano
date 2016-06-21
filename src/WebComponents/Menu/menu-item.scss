@@ -58,10 +58,6 @@
         }
 	}
 
-    > .subItems {
-        display: none;
-    }
-
     &[expand], &[filtering] {
         > .title {
             > vi-icon[source="ProgramUnitGroup"] {
@@ -71,10 +67,6 @@
     			-webkit-transform: rotate(90deg);
     			transform: rotate(90deg);
             }
-        }
-
-        > .subItems {
-            display: block;
         }
     }
 

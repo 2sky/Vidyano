@@ -182,7 +182,8 @@ namespace Vidyano.WebComponents {
             expand: {
                 type: Boolean,
                 readOnly: true,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                observer: "_expandChanged"
             },
             filtering: {
                 type: Boolean,
@@ -258,6 +259,10 @@ namespace Vidyano.WebComponents {
             }
 
             e.stopPropagation();
+        }
+
+        private _expandChanged(expand: boolean) {
+            (<any>this.$["subItems"]).opened = expand;
         }
 
         private _filterChanged() {
