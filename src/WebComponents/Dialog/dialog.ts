@@ -1,10 +1,6 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
-    export interface IDialogOptions {
-        noHeader?: boolean;
-    }
-
     export abstract class Dialog extends WebComponent {
         private _sizeTracker: Vidyano.WebComponents.SizeTracker;
         private _translatePosition: IPosition;
@@ -14,18 +10,9 @@ namespace Vidyano.WebComponents {
         private opened: boolean;
         noCancelOnOutsideClick: boolean;
         noCancelOnEscKey: boolean;
-        options: IDialogOptions;
+        noHeader: boolean;
 
         protected cancel: () => void;
-
-        private _setOptions: (options: IDialogOptions) => void;
-
-        constructor(options?: IDialogOptions) {
-            super();
-
-            this._setOptions(options);
-            this.toggleAttribute("no-header", options && options.noHeader);
-        }
 
         attached() {
             if (!this._sizeTracker) {
@@ -105,10 +92,6 @@ namespace Vidyano.WebComponents {
             this.style.webkitTransform = this.style.transform = `translate(${position.x}px, ${position.y}px)`;
         }
 
-        private _computeNoHeader(options: IDialogOptions): boolean {
-            return options && options.noHeader;
-        }
-
         static register(info: IWebComponentRegistrationInfo = {}, prefix?: string): any {
             if (typeof info === "function")
                 return Dialog.register({})(info);
@@ -116,9 +99,9 @@ namespace Vidyano.WebComponents {
             return (obj: Function) => {
                 info.properties = info.properties || {};
 
-                info.properties["options"] = {
-                    type: Object,
-                    readOnly: true
+                info.properties["noHeader"] = {
+                    type: Boolean,
+                    reflectToAttribute: true
                 };
 
                 info.listeners = info.listeners || {};

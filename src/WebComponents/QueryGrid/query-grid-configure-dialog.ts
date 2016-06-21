@@ -64,7 +64,7 @@
                 }
             });
 
-            this.instance.resolve(true);
+            this.close(true);
         }
 
         private _reset() {

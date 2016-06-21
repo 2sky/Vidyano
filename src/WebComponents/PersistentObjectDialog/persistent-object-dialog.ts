@@ -1,7 +1,8 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    export interface IPersistentObjectDialogOptions extends IDialogOptions {
+    export interface IPersistentObjectDialogOptions {
+        noHeader?: boolean;
         saveLabel?: string;
         save?: (po: Vidyano.PersistentObject, close: () => void) => void;
         cancel?: (close: () => void) => void;
@@ -29,18 +30,18 @@
     })
     export class PersistentObjectDialog extends Dialog {
         private _saveHook: (po: Vidyano.PersistentObject) => Promise<any>;
-        options: IPersistentObjectDialogOptions;
         tab: Vidyano.PersistentObjectAttributeTab;
 
-        constructor(public persistentObject: Vidyano.PersistentObject, options: IPersistentObjectDialogOptions = {}) {
-            super(options);
+        constructor(public persistentObject: Vidyano.PersistentObject, private _options: IPersistentObjectDialogOptions = {}) {
+            super();
 
+            this.noHeader = _options.noHeader;
             persistentObject.beginEdit();
         }
 
         private _save() {
-            if (this.options.save)
-                this.options.save(this.persistentObject, () => this.close(this.persistentObject));
+            if (this._options.save)
+                this._options.save(this.persistentObject, () => this.close(this.persistentObject));
             else {
                 const wasNew = this.persistentObject.isNew;
                 this.persistentObject.save().then(() => {
@@ -63,8 +64,8 @@
         }
 
         private _cancel() {
-            if (this.options.cancel)
-                this.options.cancel(() => this.cancel());
+            if (this._options.cancel)
+                this._options.cancel(() => this.cancel());
             else if (this.persistentObject) {
                 this.persistentObject.cancelEdit();
                 this.cancel();
@@ -75,7 +76,7 @@
             if (!isAttached)
                 return null;
 
-            return this.options.saveLabel || this.translateMessage("Save");
+            return this._options.saveLabel || this.translateMessage("Save");
         }
 
         private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {
