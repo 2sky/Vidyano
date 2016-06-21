@@ -12,11 +12,11 @@
         </main>
         <footer class="horizontal layout end-justified">
             <template is="dom-if" if="[[!readOnly]]">
-                <button is="vi-button" on-tap="_save" action-type="Default" label="[[saveLabel]]"></button>
-                <button is="vi-button" inverse on-tap="_cancel" label="[[translateMessage('Cancel', isAttached)]]"></button>
+                <button is="vi-button" on-tap="_save" action-type="Default" label="[[saveLabel]]" disabled$="[[persistentObject.isBusy]]"></button>
+                <button is="vi-button" inverse on-tap="_cancel" label="[[translateMessage('Cancel', isAttached)]]" disabled$="[[persistentObject.isBusy]]"></button>
             </template>
             <template is="dom-if" if="[[readOnly]]">
-                <button is="vi-button" on-tap="_cancel" action-type="Default" label="[[translateMessage('Close', isAttached)]]"></button>
+                <button is="vi-button" on-tap="_cancel" action-type="Default" label="[[translateMessage('Close', isAttached)]]" disabled$="[[persistentObject.isBusy]]"></button>
             </template>
         </footer>
     </template>

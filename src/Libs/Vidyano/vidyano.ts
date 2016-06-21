@@ -4736,7 +4736,7 @@ namespace Vidyano {
                     this.parent.save().then(() => {
                         if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
                             if (wasNew && this.parent.ownerAttributeWithReference == null && this.parent.stateBehavior.indexOf("OpenAfterNew") !== -1)
-                                this.service.getPersistentObject(this.parent.parent, this.parent.id, this.parent.objectId).then(po2 => {
+                                this.parent.queueWork(() => this.service.getPersistentObject(this.parent.parent, this.parent.id, this.parent.objectId)).then(po2 => {
                                     this.service.hooks.onOpen(po2, true);
                                     resolve(this.parent);
                                 }, reject);

@@ -24,6 +24,9 @@
                 computed: "_computeSaveLabel(isAttached)"
             }
         },
+        forwardObservers: [
+            "persistentObject.isBusy"
+        ],
         hostAttributes: {
             "dialog": ""
         }
@@ -46,8 +49,8 @@
                 const wasNew = this.persistentObject.isNew;
                 this.persistentObject.save().then(() => {
                     if (StringEx.isNullOrWhiteSpace(this.persistentObject.notification) || this.persistentObject.notificationType !== NotificationType.Error) {
-                        if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") !== -1)
-                            this.app.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId).then(po2 => {
+                        if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") !== -1) {
+                            this.persistentObject.queueWork(() => this.app.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId)).then(po2 => {
                                 this.app.service.hooks.onOpen(po2, true);
                                 this.close(this.persistentObject);
                             }, e => {
@@ -56,10 +59,11 @@
                                 if (!!owner)
                                     owner.setNotification(e);
                             });
+                        }
                         else
                             this.close(this.persistentObject);
                     }
-                });
+                }).catch(Vidyano.noop);
             }
         }
 
