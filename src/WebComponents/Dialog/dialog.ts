@@ -73,12 +73,6 @@ namespace Vidyano.WebComponents {
 
         private _track(e: PolymerTrackEvent) {
             const detail = <PolymerTrackDetail>e.detail;
-            if (!e.detail.sourceEvent.srcElement.tagName.startsWith("H")) {
-                e.stopPropagation();
-                e.preventDefault();
-
-                return;
-            }
 
             if (detail.state === "track") {
                 this._translate({
@@ -87,6 +81,13 @@ namespace Vidyano.WebComponents {
                 });
             }
             else if (detail.state === "start") {
+                if (!e.detail.sourceEvent.srcElement.tagName.startsWith("H")) {
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    return;
+                }
+
                 this.app.isTracking = true;
                 if (!this._translatePosition)
                     this._translate({ x: 0, y: 0 });
