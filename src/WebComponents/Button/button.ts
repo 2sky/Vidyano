@@ -19,15 +19,27 @@
             },
             icon: String,
             label: String
+        },
+        listeners: {
+            "tap": "_tap"
         }
     })
     export class Button extends WebComponents.WebComponent {
+        disabled: boolean;
+
         private _setCustomLayout: (custom: boolean) => void;
 
         attached() {
             super.attached();
 
             this._setCustomLayout(Polymer.dom(this).children.length > 0);
+        }
+
+        private _tap(e: TapEvent) {
+            if (this.disabled) {
+                e.stopImmediatePropagation();
+                e.preventDefault();
+            }
         }
     }
 }
