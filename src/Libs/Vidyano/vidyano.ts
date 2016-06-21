@@ -2677,6 +2677,9 @@ namespace Vidyano {
 
             if (!options || options.length === 0) {
                 this.options = this._serviceOptions = options;
+                if (oldOptions && oldOptions.length > 0)
+                    this.notifyPropertyChanged("options", this.options, oldOptions);
+
                 return;
             }
 
