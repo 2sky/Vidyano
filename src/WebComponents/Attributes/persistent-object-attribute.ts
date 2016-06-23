@@ -169,7 +169,7 @@ namespace Vidyano.WebComponents.Attributes {
                 info.observers.push("_updateForegroundDataTypeHint(attribute, editing, readOnly)");
 
                 info.listeners = info.listeners || {};
-                info.listeners["focus"] = "_onFocus"
+                info.listeners["focus"] = "_onFocus";
 
                 info.hostAttributes = info.hostAttributes || {};
                 info.hostAttributes["tabindex"] = "-1";
