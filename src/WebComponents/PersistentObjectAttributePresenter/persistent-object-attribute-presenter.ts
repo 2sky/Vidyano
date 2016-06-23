@@ -64,7 +64,7 @@ namespace Vidyano.WebComponents {
             }
         },
         hostAttributes: {
-            "tabindex": -1
+            "tabindex": "-1"
         },
         listeners: {
             "focus": "_onFocus"

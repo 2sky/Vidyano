@@ -25,7 +25,7 @@
             }
         },
         hostAttributes: {
-            "tabindex": 0
+            "tabindex": "0"
         },
         listeners: {
             "tap": "toggle"
