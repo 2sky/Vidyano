@@ -42,4 +42,8 @@
     input, textarea {
         background-color: white;
     }
+
+    &:focus {
+        outline: 0;
+    }
 }

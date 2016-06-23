@@ -268,8 +268,8 @@ namespace Vidyano.WebComponents {
                 suggestionRemainder = suggestion.displayValue.substr(inputValue.length);
             }
 
-            this.$["match"].innerHTML = this.escapeHTML(suggestionMatch).replace(" ", "&nbsp;");
-            this.$["remainder"].innerHTML = this.escapeHTML(suggestionRemainder).replace(" ", "&nbsp;");
+            this.$["match"].innerHTML = this._escapeHTML(suggestionMatch).replace(" ", "&nbsp;");
+            this.$["remainder"].innerHTML = this._escapeHTML(suggestionRemainder).replace(" ", "&nbsp;");
         }
 
         private _setSelectedOption(option: string | Common.IKeyValuePair, force?: boolean) {

@@ -96,6 +96,14 @@ namespace Vidyano.WebComponents.Attributes {
             }
         }
 
+        protected _onFocus(e: FocusEvent) {
+            const target = <HTMLElement>this._getFocusableElement(this.root);
+            if (!target)
+                return;
+
+            target.focus();
+        }
+
         static register(info: IWebComponentRegistrationInfo = {}): any {
             if (typeof info === "function")
                 return PersistentObjectAttribute.register({})(info);
@@ -147,6 +155,11 @@ namespace Vidyano.WebComponents.Attributes {
                     reflectToAttribute: true,
                     computed: "_computeHasError(attribute.validationError)"
                 };
+                info.properties["tabindex"] = {
+                    type: Number,
+                    reflectToAttribute: true,
+                    value: -1
+                };
 
                 info.forwardObservers = info.forwardObservers || [];
                 info.forwardObservers.push("attribute.displayValue");
@@ -159,6 +172,9 @@ namespace Vidyano.WebComponents.Attributes {
 
                 info.observers = info.observers || [];
                 info.observers.push("_updateForegroundDataTypeHint(attribute, editing, readOnly)");
+
+                info.listeners = info.listeners || {};
+                info.listeners["focus"] = "_onFocus"
 
                 const ctor = WebComponent.register(obj, info);
 

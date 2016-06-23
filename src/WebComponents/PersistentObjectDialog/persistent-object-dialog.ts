@@ -24,6 +24,9 @@
                 computed: "_computeSaveLabel(isAttached)"
             }
         },
+        listeners: {
+            "attribute-loaded": "_attributeLoaded"
+        },
         forwardObservers: [
             "persistentObject.isBusy"
         ],
@@ -33,6 +36,7 @@
     })
     export class PersistentObjectDialog extends Dialog {
         private _saveHook: (po: Vidyano.PersistentObject) => Promise<any>;
+        private _tabAttributePresenters: Vidyano.WebComponents.PersistentObjectAttributePresenter[];
         tab: Vidyano.PersistentObjectAttributeTab;
 
         constructor(public persistentObject: Vidyano.PersistentObject, private _options: IPersistentObjectDialogOptions = {}) {
@@ -99,6 +103,28 @@
 
         private _computeReadOnly(tab: Vidyano.PersistentObjectAttributeTab): boolean {
             return !!tab && !tab.attributes.some(attribute => !attribute.isReadOnly && attribute.isVisible);
+        }
+
+        private _attributeLoaded(e: CustomEvent, detail: { attribute: Vidyano.PersistentObjectAttribute }) {
+            if (!this._tabAttributePresenters)
+                this._tabAttributePresenters = [];
+
+            const presenter = <Vidyano.WebComponents.PersistentObjectAttributePresenter>e.target;
+            this._tabAttributePresenters.push(presenter);
+
+            if (this._tabAttributePresenters.length < this.tab.attributes.length)
+                return;
+
+            this._tabAttributePresenters = this._tabAttributePresenters.sort((attr1, attr2) => attr1.attribute.offset - attr2.attribute.offset);
+            const target = Enumerable.from(this._tabAttributePresenters).firstOrDefault(a => !a.hidden && !a.disabled && !a.readOnly);
+            if (!target)
+                return;
+
+            target.focus();
+        }
+
+        private _onCaptureTab() {
+            // Skip default tab navigation behavior
         }
     }
 }

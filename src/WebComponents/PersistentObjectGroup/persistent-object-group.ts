@@ -37,7 +37,8 @@
         ],
         listeners: {
             "attribute-loading": "_onAttributeLoading",
-            "attribute-loaded": "_onAttributeLoaded"
+            "attribute-loaded": "_onAttributeLoaded",
+            "focus": "_focus"
         },
         forwardObservers: [
             "group.attributes"

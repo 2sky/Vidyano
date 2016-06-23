@@ -24,8 +24,15 @@
                 value: false
             }
         },
+        hostAttributes: {
+            "tabindex": 0
+        },
         listeners: {
             "tap": "toggle"
+        },
+        keybindings: {
+            "space": "toggle",
+            "enter": "toggle"
         }
     })
     export class Checkbox extends WebComponents.WebComponent {

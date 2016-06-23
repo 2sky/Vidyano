@@ -39,7 +39,6 @@
         ]
     })
     export class Notification extends WebComponent {
-        private static _testElement: HTMLDivElement;
         serviceObject: Vidyano.ServiceObjectWithActions;
         isOverflowing: boolean;
         type: string;
@@ -107,11 +106,7 @@
 
         private _computeText(notification: string): string {
             if (notification) {
-                if (!Vidyano.WebComponents.Notification._testElement)
-                    Vidyano.WebComponents.Notification._testElement = document.createElement("div");
-
-                Vidyano.WebComponents.Notification._testElement.textContent = notification;
-                notification = Vidyano.WebComponents.Notification._testElement.innerHTML;
+                notification = this._escapeHTML(notification);
 
                 const html2 = notification.replace(findUriLabel, "<a class=\"style-scope vi-notification\" href=\"$2\" title=\"\">$1</a>");
                 if (notification === html2)

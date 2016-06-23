@@ -11,14 +11,22 @@
 
     div {
         > span {
-            padding-left: 2px;
+            padding: 0 1px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
         > vi-icon:not([hidden]) + span {
-            padding-left: var(--theme-h5);
+            margin-left: calc(var(--theme-h5) - 1px);
+        }
+    }
+
+    &:focus {
+        outline: 0;
+
+        div > span {
+            outline: 1px dotted var(--theme-color-light);
         }
     }
 }

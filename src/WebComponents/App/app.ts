@@ -210,7 +210,7 @@ namespace Vidyano.WebComponents {
         ],
         hostAttributes: {
             "theme-color-1": true,
-            "tabindex": 0
+            "tabindex": -1
         },
         listeners: {
             "app-config-attached": "_configurationAttached",

@@ -440,7 +440,25 @@
             return this.app.service.getTranslatedMessage.apply(this.app.service, [key].concat(params));
         }
 
-        protected escapeHTML(val: string): string {
+        protected _getFocusableElement(source: Node = this): HTMLElement {
+            // Copyright (c) 2014 The Polymer Authors. All rights reserved.
+            // https://github.com/PolymerElements/iron-overlay-behavior/blob/2aea7b4945e0b10ce77e1a15ba0ef5a02cdc7984/iron-overlay-behavior.html
+
+            // Elements that can be focused even if they have [disabled] attribute.
+            const FOCUSABLE_WITH_DISABLED = ['a[href]', 'area[href]', 'iframe', '[tabindex]', '[contentEditable=true]'];
+            // Elements that cannot be focused if they have [disabled] attribute.
+            const FOCUSABLE_WITHOUT_DISABLED = ['input', 'select', 'textarea', 'button'];
+
+            // Discard elements with tabindex=-1 (makes them not focusable).
+            const selector = FOCUSABLE_WITH_DISABLED.join(':not([tabindex="-1"]),') +
+                ':not([tabindex="-1"]),' +
+                FOCUSABLE_WITHOUT_DISABLED.join(':not([disabled]):not([tabindex="-1"]),') +
+                ':not([disabled]):not([tabindex="-1"])';
+
+            return <HTMLElement>Polymer.dom(source).querySelector(selector);
+        }
+
+        protected _escapeHTML(val: string): string {
             const span = document.createElement("span");
             span.innerText = val;
 

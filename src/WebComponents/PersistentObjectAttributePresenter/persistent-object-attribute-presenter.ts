@@ -63,6 +63,12 @@ namespace Vidyano.WebComponents {
                 computed: "_computeHasError(attribute.validationError)"
             }
         },
+        hostAttributes: {
+            "tabindex": -1
+        },
+        listeners: {
+            "focus": "_onFocus"
+        },
         observers: [
             "_attributeChanged(attribute, isAttached)"
         ],
@@ -109,6 +115,7 @@ namespace Vidyano.WebComponents {
         height: number;
         loading: boolean;
         disabled: boolean;
+        readOnly: boolean;
 
         private _setLoading: (loading: boolean) => void;
 
@@ -291,11 +298,21 @@ namespace Vidyano.WebComponents {
             return !isVisible;
         }
 
+        private _onFocus() {
+            const target = <HTMLElement>this._renderedAttributeElement || this._getFocusableElement();
+            if (!target)
+                return;
+
+            target.focus();
+        }
+
         private _loadingChanged(loading: boolean) {
             if (loading)
                 this.fire("attribute-loading", { attribute: this.attribute }, { bubbles: true });
-            else
+            else {
+                Polymer.dom(this).flush();
                 this.fire("attribute-loaded", { attribute: this.attribute }, { bubbles: true });
+            }
         }
     }
 }
