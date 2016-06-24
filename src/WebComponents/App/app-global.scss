@@ -1,0 +1,72 @@
+﻿@import "../vars.scss";
+
+button,
+input,
+optgroup,
+select,
+textarea {
+    margin: 0;
+    font-family: inherit;
+}
+
+pre {
+    border: none;
+    font-size: 1em;
+    display: block;
+    height: auto;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+}
+
+button {
+    border: none;
+    outline: none;
+}
+
+a:focus, a:active,
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+select::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+    border: 0;
+    outline: 0;
+}
+
+.vertical.layout .flex {
+    flex-basis: 0.000000001px;
+}
+
+iron-a11y-keys {
+    display: none;
+}
+
+template {
+    display: none;
+}
+
+.alertify-log {
+    text-shadow: none;
+    border-radius: 0;
+
+    &.alertify-log-success {
+        background-color: var(--theme-color-ok);
+    }
+
+    &.alertify-log-error {
+        background-color: var(--theme-color-error);
+    }
+
+    &.alertify-log-notice {
+        background-color: var(--theme-color-notice);
+    }
+
+    &.alertify-log-warning {
+        background-color: var(--theme-color-warning);
+    }
+}
