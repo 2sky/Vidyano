@@ -55,18 +55,18 @@ template {
     border-radius: 0;
 
     &.alertify-log-success {
-        background-color: var(--theme-color-ok);
+        background-color: $notification-ok;
     }
 
     &.alertify-log-error {
-        background-color: var(--theme-color-error);
+        background-color: $notification-error;
     }
 
     &.alertify-log-notice {
-        background-color: var(--theme-color-notice);
+        background-color: $notification-notice;
     }
 
     &.alertify-log-warning {
-        background-color: var(--theme-color-warning);
+        background-color: $notification-warning;
     }
 }
