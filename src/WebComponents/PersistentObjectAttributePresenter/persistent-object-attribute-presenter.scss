@@ -27,6 +27,7 @@
 
         .attribute {
             @include flex();
+            outline: 0;
         }
     }
 
