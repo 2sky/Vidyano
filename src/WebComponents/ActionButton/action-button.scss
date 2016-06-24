@@ -36,6 +36,22 @@
         }
     }
 
+    &[disabled] {
+        button {
+            --vi-button-disabled: #{'{
+                opacity: 1;
+            }'};
+
+            span {
+                opacity: 0.5;
+            }
+
+            vi-icon ::content svg {
+                opacity: 0.4;
+            }
+        }
+    }
+
     &[overflow] {
         button {
             padding: 0 !important;
