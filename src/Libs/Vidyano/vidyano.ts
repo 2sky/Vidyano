@@ -1070,11 +1070,11 @@ namespace Vidyano {
                     return result.result;
                 }
                 else {
-                    query.setNotification(result.exception, NotificationType.Error);
+                    query.setNotification(result.exception);
                     throw result.exception;
                 }
             }, e => {
-                query.setNotification(e, NotificationType.Error);
+                query.setNotification(e);
                 throw e;
             });
         }
@@ -1084,12 +1084,12 @@ namespace Vidyano {
             return new Promise<PersistentObject>((resolve, reject) => {
                 if (!skipHooks) {
                     if (!isObjectAction) {
-                        query.setNotification(null);
+                        query.setNotification();
                         if (query.selectAll.allSelected && !query.selectAll.inverse)
                             selectedItems = [];
                     }
                     else if (parent)
-                        parent.setNotification(null);
+                        parent.setNotification();
 
                     this.hooks.trackEvent(action, parameters ? parameters.MenuLabel || parameters.MenuOption : null, query || parent);
 
@@ -1553,10 +1553,6 @@ namespace Vidyano {
             // Noop
         }
 
-        setNotification(notification: string, type: NotificationType) {
-            // Noop
-        }
-
         trackEvent(name: string, option: string, owner: ServiceObjectWithActions) {
             // Noop
         }
@@ -1639,6 +1635,10 @@ namespace Vidyano {
 
         onMessageDialog(title: string, message: string, rich: boolean, ...actions: string[]): Promise<number> {
             return Promise.resolve(-1);
+        }
+
+        onShowNotification(notification: string, type: NotificationType, duration: number) {
+            // Noop
         }
 
         onSelectReference(query: Vidyano.Query): Promise<QueryResultItem[]> {
@@ -1746,6 +1746,7 @@ namespace Vidyano {
         private _isBusy: boolean = false;
         notification: string;
         notificationType: NotificationType;
+        notificationDuration: number;
         actions: Action[] = [];
 
         constructor(service: Service, private _actionNames: string[] = []) {
@@ -1766,15 +1767,24 @@ namespace Vidyano {
             this.notifyPropertyChanged("isBusy", this._isBusy = val, oldIsBusy);
         }
 
-        setNotification(notification: string = null, type: NotificationType = NotificationType.Error) {
+        setNotification(notification: string = null, type: NotificationType = NotificationType.Error, duration: number = 0) {
             if (notification != null && typeof notification === "object")
                 notification = notification["message"];
 
+            const oldNotificationDuration = this.notificationDuration;
+            if (oldNotificationDuration !== duration)
+                this.notifyPropertyChanged("notificationDuration", this.notificationDuration = duration, oldNotificationDuration);
+
             const oldNotificationType = this.notificationType;
-            this.notifyPropertyChanged("notificationType", this.notificationType = type, oldNotificationType);
+            if (oldNotificationType !== type)
+                this.notifyPropertyChanged("notificationType", this.notificationType = type, oldNotificationType);
 
             const oldNotification = this.notification;
-            this.notifyPropertyChanged("notification", this.notification = notification, oldNotification);
+            if (oldNotification !== notification)
+                this.notifyPropertyChanged("notification", this.notification = notification, oldNotification);
+
+            if (this.notificationDuration)
+                this.service.hooks.onShowNotification(notification, type, duration);
         }
 
         queueWork<T>(work: () => Promise<T>, blockActions: boolean = true): Promise<T> {
@@ -1866,6 +1876,7 @@ namespace Vidyano {
             this._breadcrumb = po.breadcrumb;
             this.notification = po.notification;
             this.notificationType = typeof (po.notificationType) === "number" ? po.notificationType : NotificationType[<string>po.notificationType];
+            this.notificationDuration = po.notificationDuration;
             this.isNew = !!po.isNew;
             this.newOptions = po.newOptions;
             this.isReadOnly = !!po.isReadOnly;
@@ -2257,7 +2268,7 @@ namespace Vidyano {
                 }
             }
 
-            this.setNotification(result.notification, result.notificationType);
+            this.setNotification(result.notification, result.notificationType, result.notificationDuration);
             this._setIsDirty(isDirty, true);
 
             if (this.isNew) {
@@ -2742,7 +2753,7 @@ namespace Vidyano {
                     this.service.hooks.onOpen(po, false, true);
                 },
                 error => {
-                    this.parent.setNotification(error, NotificationType.Error);
+                    this.parent.setNotification(error);
                 });
         }
 
@@ -3167,6 +3178,7 @@ namespace Vidyano {
             this.label = query.label;
             this.notification = query.notification;
             this.notificationType = typeof (query.notificationType) === "number" ? query.notificationType : NotificationType[<string>query.notificationType];
+            this.notificationDuration = query.notificationDuration;
             this.offset = query.offset || 0;
             this.textSearch = query.textSearch || "";
             this.pageSize = query.pageSize;
@@ -3485,7 +3497,7 @@ namespace Vidyano {
 
             this._setTotalItem(result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null);
 
-            this.setNotification(result.notification, result.notificationType);
+            this.setNotification(result.notification, result.notificationType, result.notificationDuration);
 
             if ((this._charts && this._charts.count() > 0) || (result.charts && result.charts.length > 0))
                 this._setCharts(Enumerable.from(result.charts).select(c => new QueryChart(this, c.label, c.name, c.options, c.type)).memoize());
@@ -3599,7 +3611,7 @@ namespace Vidyano {
 
                         return Promise.resolve(this.items.slice(start, start + length));
                     }, e => {
-                        this.setNotification(e, NotificationType.Error);
+                        this.setNotification(e);
                         return Promise.reject(e);
                     });
                 };
@@ -4546,7 +4558,7 @@ namespace Vidyano {
                                             if (this.query && this.definition.refreshQueryOnCompleted)
                                                 /* tslint:disable:no-var */ var notificationPO = po; /* tslint:enable:no-var */
                                             else
-                                                this._setNotification(po.notification, po.notificationType);
+                                                this._setNotification(po.notification, po.notificationType, po.notificationDuration);
                                         }
                                     } else if (po.fullTypeName === "Vidyano.RegisteredStream") {
                                         this.service._getStream(po);
@@ -4561,12 +4573,11 @@ namespace Vidyano {
                                             this.service.executeAction("Query.AddReference", this.parent, query, selectedItems, { AddAction: this.name }, true).then(() => {
                                                 this.query.search();
                                             }).catch(e => {
-                                                this.query.setNotification(e, NotificationType.Error);
+                                                this.query.setNotification(e);
                                             });
                                         });
                                     } else if (this.parent != null && (po.fullTypeName === this.parent.fullTypeName || po.isNew === this.parent.isNew) && po.id === this.parent.id && po.objectId === this.parent.objectId) {
                                         this.parent.refreshFromResult(po);
-                                        this.parent.setNotification(po.notification, po.notificationType);
                                     } else {
                                         po.ownerQuery = this.query;
                                         po.ownerPersistentObject = this.parent;
@@ -4579,7 +4590,7 @@ namespace Vidyano {
                                 if (this.query != null && this.definition.refreshQueryOnCompleted) {
                                     this.query.search().then(_ => {
                                         if (notificationPO && !this.query.notification)
-                                            this._setNotification(po.notification, po.notificationType);
+                                            this._setNotification(po.notification, po.notificationType, po.notificationDuration);
                                     });
                                 }
 
@@ -4617,11 +4628,8 @@ namespace Vidyano {
             // Noop
         }
 
-        private _setNotification(notification: string = null, notificationType: NotificationType = NotificationType.Error) {
-            if (this.query != null)
-                this.query.setNotification(notification, notificationType);
-            else
-                this.parent.setNotification(notification, notificationType);
+        private _setNotification(notification: string = null, notificationType: NotificationType = NotificationType.Error, notificationDuration?: number) {
+            (this.query || this.parent).setNotification(notification, notificationType, notificationDuration);
         }
 
         static get(service: Service, name: string, owner: ServiceObjectWithActions): Action {

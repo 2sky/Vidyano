@@ -203,6 +203,8 @@ ModelManifest.xml
 /src/WebComponents/**/*.css
 /src/Libs/Vidyano/vidyano.js
 /src/Libs/Vidyano/vidyano.cultures.js
+/src/Libs/Alertify.js/*.js
+/src/Libs/Alertify.js/*.css
 /src/Libs/bignumber.js/
 /src/Libs/codemirror/
 /src/Libs/d3/

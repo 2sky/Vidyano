@@ -44,10 +44,12 @@
   <ItemGroup>
     <TypeScriptCompile Include="src\**\*.ts" />
     <Content Include="src\*.html" />
+    <Content Include="src\Libs\alertify.js\alertify.html" />
     <Content Include="src\WebComponents\**\*.html" />
     <Content Include="src\WebComponents\**\*.scss" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="bower.json" />
     <None Include="packages.config" />
     <None Include="tsconfig.json" />
     <None Include="tslint.json" />

@@ -17,12 +17,14 @@
                 type: String,
                 notify: true,
                 observer: "_textChanged",
-                computed: "_computeText(serviceObject.notification)"
+                computed: "_computeText(serviceObject.notification)",
+                value: null
             },
-            shown: {
+            hidden: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeShown(text)"
+                computed: "_computeHidden(text, serviceObject.notificationDuration)",
+                value: true
             },
             icon: {
                 type: String,
@@ -35,7 +37,8 @@
         },
         forwardObservers: [
             "serviceObject.notification",
-            "serviceObject.notificationType"
+            "serviceObject.notificationType",
+            "serviceObject.notificationDuration"
         ]
     })
     export class Notification extends WebComponent {
@@ -118,8 +121,8 @@
             return notification;
         }
 
-        private _computeShown(text: string): boolean {
-            return text ? true : false;
+        private _computeHidden(text: string, duration: number): boolean {
+            return text == null || duration > 0;
         }
 
         private _getIconType(type: NotificationType | string): NotificationType {

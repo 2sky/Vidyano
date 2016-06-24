@@ -1,5 +1,6 @@
 ﻿<link rel="import" href="../../Libs/iron-a11y-keys/iron-a11y-keys.html" />
 <link rel="import" href="../../Libs/iron-media-query/iron-media-query.html" />
+<link rel="import" href="../../Libs/alertify.js/alertify.html" />
 <link rel="import" href="../WebComponent/webcomponent.html" />
 <link rel="import" href="../Spinner/spinner.html" />
 <link rel="import" href="../AppRoute/app-route.html" />
@@ -148,6 +149,27 @@
 
     template {
         display: none;
+    }
+
+    .alertify-log-success {
+        background-color: #339f7b;
+    }
+
+    .alertify-log-error {
+        background-color: #a80511;
+    }
+
+    .alertify-log-notice {
+        background-color: #48545e;
+    }
+
+    .alertify-log-warning {
+        background-color: #e5a300;
+    }
+
+    .alertify-log {
+        text-shadow: none;
+        border-radius: 0;
     }
 </style>
 

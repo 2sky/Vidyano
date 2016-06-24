@@ -42,16 +42,19 @@
       "": "d3.min.js"
     },
     "iron-overlay-behavior": {
-        "": [ "iron-overlay-behavior.html", "iron-overlay-manager.html", "iron-overlay-backdrop.html" ]
+      "": [ "iron-overlay-behavior.html", "iron-overlay-manager.html", "iron-overlay-backdrop.html" ]
     },
     "codemirror": {
-        "lib": "lib/*.*",
-        "mode/css": "mode/css/*.*",
-        "mode/htmlmixed": "mode/htmlmixed/*.*",
-        "mode/javascript": "mode/javascript/*.*",
-        "mode/markdown": "mode/markdown/*.*",
-        "mode/sass": "mode/sass/*.*",
-        "mode/xml": "mode/xml/*.*"
+      "lib": "lib/*.*",
+      "mode/css": "mode/css/*.*",
+      "mode/htmlmixed": "mode/htmlmixed/*.*",
+      "mode/javascript": "mode/javascript/*.*",
+      "mode/markdown": "mode/markdown/*.*",
+      "mode/sass": "mode/sass/*.*",
+      "mode/xml": "mode/xml/*.*"
+    },
+    "alertify.js": {
+      "": [ "lib/alertify.min.js", "themes/alertify.core.css", "themes/alertify.default.css" ]
     }
   },
   "dependencies": {
@@ -69,6 +72,7 @@
     "sortable": "RubaXa/sortable#^1.2.1",
     "d3": "^3.5.6",
     "codemirror": "^5.13.2",
+    "alertify.js": "^0.3.11",
     "linqjs": "2sky/linqjs#3.0.3-Beta4",
     "pathjs": "2sky/pathjs#master",
     "layout": "2sky/layout#master"

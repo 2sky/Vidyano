@@ -14,10 +14,6 @@
     border-bottom-width: 2px;
     border-bottom-style: solid;
 
-    &:not([shown]) {
-        display: none !important;
-    }
-
     #icon {
         width: var(--theme-h1);
         line-height: var(--theme-h1);

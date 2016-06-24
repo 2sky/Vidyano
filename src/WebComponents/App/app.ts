@@ -914,6 +914,32 @@ namespace Vidyano.WebComponents {
             return this.app.showMessageDialog({ title: title, message: message, rich: rich, actions: actions });
         }
 
+        onShowNotification(notification: string, type: NotificationType, duration: number) {
+            if (!duration || !notification)
+                return;
+
+            if (typeof notification === "object")
+                notification = notification["message"];
+
+            switch (type) {
+                case NotificationType.Error:
+                    alertify.log(notification, "error", duration);
+                    break;
+
+                case NotificationType.OK:
+                    alertify.log(notification, "success", duration);
+                    break;
+
+                case NotificationType.Warning:
+                    alertify.log(notification, "warning", duration);
+                    break;
+
+                case NotificationType.Notice:
+                    alertify.log(notification, "notice", duration);
+                    break;
+            }
+        }
+
         onSelectReference(query: Vidyano.Query): Promise<QueryResultItem[]> {
             if (!query.hasSearched)
                 query.search();
