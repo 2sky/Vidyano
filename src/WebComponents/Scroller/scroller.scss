@@ -217,15 +217,16 @@
         right: -var(--theme-h2);
         pointer-events: none;
         transform: translateY(0);
+        will-change: transform;
 
         &.top {
-            transition: transform 0.2s ease-out;
+            transition: transform 0.3s ease-out;
             top: 0;
             transform: translateY(calc(var(--theme-h2) * -1.5));
         }
 
         &.bottom {
-            transition: transform 0.2s ease-out;
+            transition: transform 0.3s ease-out;
             bottom: 0;
             transform: translateY(calc(var(--theme-h2) * 1.5));
         }
