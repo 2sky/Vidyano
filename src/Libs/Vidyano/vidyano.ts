@@ -2047,7 +2047,7 @@ namespace Vidyano {
                 this.setIsEditing(false);
                 this._setIsDirty(false);
 
-                this.refreshFromResult(this._lastResultBackup);
+                this.refreshFromResult(this._lastResultBackup, true);
                 this._lastResultBackup = null;
 
                 if (!!this.notification)
@@ -2145,7 +2145,7 @@ namespace Vidyano {
             return result;
         }
 
-        refreshFromResult(result: PersistentObject) {
+        refreshFromResult(result: PersistentObject, resultWins: boolean = false) {
             this._lastResult = result;
 
             const changedAttributes: PersistentObjectAttribute[] = [];
@@ -2168,7 +2168,7 @@ namespace Vidyano {
                     if (!(serviceAttr instanceof PersistentObjectAttribute))
                         serviceAttr = this._createPersistentObjectAttribute(serviceAttr);
 
-                    if (attr._refreshFromResult(serviceAttr))
+                    if (attr._refreshFromResult(serviceAttr, resultWins))
                         changedAttributes.push(attr);
                 }
 
@@ -2647,7 +2647,7 @@ namespace Vidyano {
             return result;
         }
 
-        _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean {
+        _refreshFromResult(resultAttr: PersistentObjectAttribute, resultWins: boolean): boolean {
             let visibilityChanged = false;
 
             this._setOptions(resultAttr._serviceOptions);
@@ -2658,7 +2658,7 @@ namespace Vidyano {
                 visibilityChanged = true;
             }
 
-            if (this.value !== resultAttr.value && (this.isReadOnly || this._refreshValue !== resultAttr.value)) {
+            if (resultWins || (this.value !== resultAttr.value && (this.isReadOnly || this._refreshValue !== resultAttr.value))) {
                 this.isValueChanged = resultAttr.isValueChanged;
 
                 const oldDisplayValue = this.displayValue;
@@ -2787,11 +2787,11 @@ namespace Vidyano {
             return this.parent.queueWork(() => this.service.getPersistentObject(this.parent, this.lookup.persistentObject.id, this.objectId));
         }
 
-        _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean {
+        _refreshFromResult(resultAttr: PersistentObjectAttribute, resultWins: boolean): boolean {
             const resultAttrWithRef = <PersistentObjectAttributeWithReference>resultAttr;
             this.objectId = resultAttrWithRef.objectId;
 
-            const visibilityChanged = super._refreshFromResult(resultAttr);
+            const visibilityChanged = super._refreshFromResult(resultAttr, resultWins);
 
             this.displayAttribute = resultAttrWithRef.displayAttribute;
             this.canAddNewReference = resultAttrWithRef.canAddNewReference;
@@ -2870,10 +2870,10 @@ namespace Vidyano {
             });
         }
 
-        _refreshFromResult(resultAttr: PersistentObjectAttribute): boolean {
+        _refreshFromResult(resultAttr: PersistentObjectAttribute, resultWins: boolean): boolean {
             const asDetailAttr = <PersistentObjectAttributeAsDetail>resultAttr;
 
-            const visibilityChanged = super._refreshFromResult(resultAttr);
+            const visibilityChanged = super._refreshFromResult(resultAttr, resultWins);
 
             if (this.objects != null && asDetailAttr.objects != null) {
                 const isEditing = this.parent.isEditing;
