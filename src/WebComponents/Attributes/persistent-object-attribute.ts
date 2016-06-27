@@ -97,6 +97,8 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         protected _onFocus(e: FocusEvent) {
+            Polymer.dom(this).flush();
+
             const target = <HTMLElement>this._getFocusableElement(this.root);
             if (!target)
                 return;
