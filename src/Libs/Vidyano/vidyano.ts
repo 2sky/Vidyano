@@ -1865,7 +1865,7 @@ namespace Vidyano {
             this._breadcrumb = po.breadcrumb;
             this.notification = po.notification;
             this.notificationType = typeof (po.notificationType) === "number" ? po.notificationType : NotificationType[<string>po.notificationType];
-            this.notificationDuration = po.notificationDuration;
+            this.notificationDuration = po.notificationDuration || 0;
             this.isNew = !!po.isNew;
             this.newOptions = po.newOptions;
             this.isReadOnly = !!po.isReadOnly;
@@ -3167,7 +3167,7 @@ namespace Vidyano {
             this.label = query.label;
             this.notification = query.notification;
             this.notificationType = typeof (query.notificationType) === "number" ? query.notificationType : NotificationType[<string>query.notificationType];
-            this.notificationDuration = query.notificationDuration;
+            this.notificationDuration = query.notificationDuration || 0;
             this.offset = query.offset || 0;
             this.textSearch = query.textSearch || "";
             this.pageSize = query.pageSize;
@@ -3486,7 +3486,7 @@ namespace Vidyano {
 
             this._setTotalItem(result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null);
 
-            this.setNotification(result.notification, result.notificationType, result.notificationDuration);
+            this.setNotification(result.notification, result.notificationType, result.notificationDuration || 0);
 
             if ((this._charts && this._charts.count() > 0) || (result.charts && result.charts.length > 0))
                 this._setCharts(Enumerable.from(result.charts).select(c => new QueryChart(this, c.label, c.name, c.options, c.type)).memoize());
