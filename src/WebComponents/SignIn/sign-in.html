@@ -6,39 +6,41 @@
         <div id="image">
             <span class="flex">No image found</span>
         </div>
-        <div id="side">
-            <header>
-                <content select="[label='sign-in']"></content><h1>[[label]]</h1>
-            </header>
-            <ul>
-                <content></content>
-            </ul>
-        </div>
+        <vi-scroller class="flex" no-horizontal>
+            <div id="side">
+                <header>
+                    <content select="[label='sign-in']"></content><h1>[[label]]</h1>
+                </header>
+                <main>
+                    <content></content>
+                </main>
+            </div>
+        </vi-scroller>
     </template>
 </dom-module>
 
-<dom-module id="vi-sign-in-provider" extends="li">
+<dom-module id="vi-sign-in-provider">
     <template>
         <link rel="stylesheet" href="sign-in-provider.css" />
         <h3>[[label]]</h3>
         <h4>[[description]]</h4>
         <template is="dom-if" if="[[isVidyano]]">
-            <ul id="vidyano">
-                <li class="vertical layout">
+            <iron-collapse id="vidyano">
+                <div>
                     <label>[[translateMessage('UserName', isAttached)]]</label>
                     <input value="{{userName::input}}" id="user" type="text" disabled$="[[signingIn]]" on-keydown="_keydown" />
-                </li>
-                <li class="vertical layout">
+                </div>
+                <div>
                     <label>[[translateMessage('Password', isAttached)]]</label>
                     <input value="{{password::input}}" id="pass" type="password" disabled$="[[signingIn]]" on-keydown="_keydown" />
-                </li>
-                <li>
+                </div>
+                <div>
                     <vi-checkbox label="[[translateMessage('StaySignedIn', isAttached)]]" disabled$="[[signingIn]]" checked="{{staySignedIn}}"></vi-checkbox>
                     <div>
                         <button is="vi-button" id="signIn" on-tap="_signIn" disabled$="[[signingIn]]" label="[[signInLabel]]"></button>
                     </div>
-                </li>
-            </ul>
+                </div>
+            </iron-collapse>
             <vi-attached-notifier on-attached="_vidyanoSignInAttached"></vi-attached-notifier>
         </template>
     </template>

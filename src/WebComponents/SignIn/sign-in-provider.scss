@@ -19,17 +19,10 @@
     }
 
     &[is-vidyano] {
-        ul#vidyano {
-            list-style: none;
+        #vidyano {
             padding-left: var(--theme-h1);
-            max-height: 0;
-            overflow: hidden;
-            -moz-transition: max-height 0.3s ease-out;
-            -o-transition: max-height 0.3s ease-out;
-            -webkit-transition: max-height 0.3s ease-out;
-            transition: max-height 0.3s ease-out;
 
-            li {
+            > div {
                 &:first-child {
                     margin-bottom: var(--theme-h4);
                     margin-top: var(--theme-h3);
@@ -52,6 +45,7 @@
                     padding: var(--theme-h5);
                     border: 1px solid #ddd;
                     outline: none;
+                    width: 100%;
 
                     &:focus {
                         border-color: var(--theme-color-light);
@@ -95,14 +89,8 @@
                 display: none;
             }
 
-            ul#vidyano {
+            #vidyano {
                 padding-left: 0;
-                max-height: 200px;
-            }
-        }
-
-        &[expand] {
-            ul#vidyano {
                 max-height: 200px;
             }
         }

@@ -54,12 +54,13 @@
 
             this.empty(undefined, c => c instanceof Vidyano.WebComponents.SignInProvider);
 
-            for (const name in route.app.service.providers) {
-                const provider = new WebComponents.SignInProvider(name === "Vidyano");
+            const providers = Object.keys(route.app.service.providers);
+            providers.forEach(name => {
+                const provider = new WebComponents.SignInProvider(name === "Vidyano", providers.length === 1);
                 provider.name = name;
 
                 Polymer.dom(this).appendChild(provider);
-            }
+            });
 
             if (this.app.initializationError) {
                 this._setInitializationError(true);
@@ -88,7 +89,6 @@
     }
 
     @WebComponent.register({
-        extends: "li",
         properties: {
             label: {
                 type: String,
@@ -148,18 +148,28 @@
         password: string;
         staySignedIn: boolean;
         isVidyano: boolean;
-        expand: boolean;
         signingIn: boolean;
         signingInCounter: number;
 
         private _setIsVidyano: (val: boolean) => void;
-        private _setExpand: (val: boolean) => void;
         private _setSigningIn: (val: boolean) => void;
 
-        constructor(isVidyano?: boolean) {
+        constructor(isVidyano: boolean, private _isOnlyProvider: boolean) {
             super();
 
             this._setIsVidyano(isVidyano);
+        }
+
+        attached() {
+            super.attached();
+
+            if (this.isVidyano && this._isOnlyProvider) {
+                Polymer.dom(this.root).querySelector("template")["render"]();
+                const collapse = this.$$("#vidyano");
+                collapse["noAnimation"] = true;
+                collapse["opened"] = true;
+                setTimeout(() => this._autoFocus(), 300);
+            }
         }
 
         private _vidyanoSignInAttached() {
@@ -188,9 +198,9 @@
         private _tap() {
             if (!this.isVidyano)
                 this.app.service.signInExternal(this.name);
-            else if (!this.expand) {
-                this._setExpand(true);
-                this._autoFocus();
+            else if (!this._isOnlyProvider) {
+                this.$$("#vidyano")["toggle"]();
+                setTimeout(() => this._autoFocus(), 300);
             }
         }
 
