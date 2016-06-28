@@ -53,6 +53,9 @@ template {
 .alertify-log {
     text-shadow: none;
     border-radius: 0;
+    -webkit-box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8);
+    -moz-box-shadow:    0 0 8px 0 rgba(0, 0, 0, 0.8);
+    box-shadow:         0 0 8px 0 rgba(0, 0, 0, 0.8);
 
     &.alertify-log-success {
         background-color: $notification-ok;
