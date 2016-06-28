@@ -11,3 +11,10 @@
         }
     }
 }
+
+:host-context(.initializing) {
+    // Filters shouldn't take part in the column width calculation, so hide it until the query grid is done initializing.
+    #label {
+        display: none !important;
+    }
+}
