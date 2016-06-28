@@ -160,11 +160,6 @@ namespace Vidyano.WebComponents {
                 readOnly: true,
                 value: 0
             },
-            isTrial: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "service.isTrial"
-            },
             profilerLoaded: {
                 type: Boolean,
                 readOnly: true,
@@ -218,7 +213,6 @@ namespace Vidyano.WebComponents {
         },
         forwardObservers: [
             "service.isSignedIn",
-            "service.isTrial",
             "service.profile",
             "service.application"
         ]
@@ -449,17 +443,6 @@ namespace Vidyano.WebComponents {
 
             this._setInitializing(false);
             this.fire("initialized", undefined);
-        }
-
-        private _computeTrialMessage(isTrial: boolean): string {
-            if (!isTrial)
-                return "";
-
-            let msg = this.translateMessage("InTrial");
-            if (this.service.application.hasManagement)
-                msg = `<span>${msg} (</span><a href='#!/PersistentObject.842cbc87-e2e3-40f1-a3aa-1c869ad27414'>${this.service.actionDefinitions.get("ActivateLicense").displayName}</a><span>)</span>`;
-
-            return msg;
         }
 
         private _convertPath(application: Vidyano.Application, path: string) : string {
