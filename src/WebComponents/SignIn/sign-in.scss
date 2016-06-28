@@ -65,7 +65,7 @@
             display: none;
         }
 
-        #side {
+        vi-scroller {
             @include fit();
         }
     }
@@ -74,7 +74,7 @@
 /* Small devices (tablets, 768px and up) */
 @media (min-width: 768px) {
     :host {
-        #side {
+        vi-scroller {
             width: 400px;
         }
     }
