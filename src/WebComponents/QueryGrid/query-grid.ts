@@ -1000,6 +1000,7 @@
         private _virtualTableOffset: number;
         private _virtualTableOffsetCurrent: number;
         private _virtualTableStartIndex: number;
+        private _verticalSpacerCorrection: number = 1;
         private _verticalScrollOffset: number;
         private _horizontalScrollOffset: number;
         private _horizontalScrollOffsetCurrent: number;
@@ -1199,6 +1200,8 @@
                 return undefined;
             }
 
+            verticalScrollOffset *= this._verticalSpacerCorrection;
+
             if (this._actionMenu.open)
                 this._actionMenu.close();
 
@@ -1215,14 +1218,14 @@
                 newVirtualTableStartIndex = viewportEndRowIndex - maxTableRowCount;
 
             if (newVirtualTableStartIndex !== undefined) {
-                if (newVirtualTableStartIndex % 2 !== 0)
+                if (newVirtualTableStartIndex % 2 !== 0 && this._verticalSpacerCorrection === 1)
                     newVirtualTableStartIndex--;
 
                 if (newVirtualTableStartIndex < 0)
                     newVirtualTableStartIndex = 0;
 
                 this._virtualTableStartIndex = newVirtualTableStartIndex;
-                this._virtualTableOffset = this._virtualTableStartIndex * rowHeight;
+                this._virtualTableOffset = (this._virtualTableStartIndex * rowHeight) / this._verticalSpacerCorrection;
             }
 
             const newItems = items.slice(this._virtualTableStartIndex, this._virtualTableStartIndex + maxTableRowCount).filter(item => !!item);
@@ -1304,6 +1307,8 @@
             this._requestAnimationFrame(() => {
                 const newHeight = totalItems * rowHeight;
                 this.$["verticalSpacer"].style.height = `${newHeight}px`;
+
+                this._verticalSpacerCorrection = (newHeight - this.viewportSize.height) / (this.$["verticalSpacer"].clientHeight - this.viewportSize.height);
             });
         }
 
@@ -1356,7 +1361,7 @@
                     this._hasPendingUpdates = hasPendingUpdates;
 
                     if (this._virtualTableOffsetCurrent !== this._virtualTableOffset && this._virtualTableOffset === virtualTableOffset)
-                        this.translate3d("0", `${this._virtualTableOffsetCurrent = this._virtualTableOffset}px`, "0", this.$["dataHost"]);
+                        this.translate3d("0", `${Math.round(this._virtualTableOffsetCurrent = this._virtualTableOffset)}px`, "0", this.$["dataHost"]);
 
                     if (Vidyano.WebComponents.QueryGrid.profile) {
                         const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
