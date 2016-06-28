@@ -7,7 +7,6 @@
         @include flex();
         overflow: hidden;
         white-space: nowrap;
-        line-height: var(--theme-h2);
     }
 
     span, input {

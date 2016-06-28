@@ -54,7 +54,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _computeFriendlyName(options: string[]): string {
-            return options && options.length > 0 ? options[0] : "";
+            return options && options.length > 0 ? options[0] || "—" : "—";
         }
 
         private _computeCanClear(isRequired: boolean, value: string): boolean {

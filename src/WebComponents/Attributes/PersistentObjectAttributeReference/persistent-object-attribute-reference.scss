@@ -27,6 +27,10 @@
             overflow: hidden;
             text-overflow: ellipsis;
 
+            &:focus {
+                outline: 0;
+            }
+
             &:visited {
                 color: var(--vi-persistent-object-attribute-foreground, --theme-color);
                 fill: var(--vi-persistent-object-attribute-foreground, --theme-color);
