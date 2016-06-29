@@ -125,7 +125,7 @@ $border-color: #eee;
 				}
 			}
 
-			&[type$="month"] {
+			&[type$="month"], &[type$="year"] {
 				flex-basis: calc(100% / 3);
 			}
 		}

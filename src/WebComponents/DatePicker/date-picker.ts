@@ -41,7 +41,7 @@
             },
             header: {
                 type: String,
-                computed: "_computeHeader(zoom, currentDate)"
+                readOnly: true
             }
         },
         observers: [
@@ -58,7 +58,6 @@
         private _monthsAndYearsCells: HTMLDivElement[];
         private _minYears: number;
         private _scopedClassName: string;
-        header: string;
         zoom: string;
         selectedDate: Date;
         monthMode: boolean;
@@ -68,6 +67,7 @@
         private _setCells: (cells: IDatePickerCell[]) => void;
         private _setCurrentDate: (date: moment.Moment) => void;
         private _setToday: (date: moment.Moment) => void;
+        private _setHeader: (header: string) => void;
 
         attached() {
             super.attached();
@@ -96,19 +96,20 @@
 
                 this._setCells(cells);
             }
-            else if (zoom === "months") {
+            else {
                 this._setCells(Enumerable.range(1, 12).select(d => {
-                    return { type: "month" };
+                    return { type: zoom.substr(0, zoom.length - 1) };
                 }).toArray());
             }
         }
 
         private _render(cells: IDatePickerCell[], currentDate: Date) {
+            const currentDateMoment = moment(currentDate);
+
             if (this.zoom === "days") {
                 if (cells.length !== 42 + 7)
                     return;
 
-                const currentDateMoment = moment(currentDate);
                 const loop = currentDateMoment.clone().startOf("month").startOf(Vidyano.CultureInfo.currentCulture.dateFormat.firstDayOfWeek > 0 ? "isoWeek" : "week");
                 const end = loop.clone().add(6, "weeks");
 
@@ -122,9 +123,10 @@
                     loop.add(1, "days");
                 }
                 while (loop.isBefore(end));
+
+                this._setHeader(`${CultureInfo.currentCulture.dateFormat.monthNames[currentDateMoment.month()]} ${currentDateMoment.year()}`);
             }
             else if (this.zoom === "months") {
-                const currentDateMoment = moment(currentDate);
                 const loop = currentDateMoment.clone().startOf("year");
                 const end = loop.clone().add(12, "months");
 
@@ -137,6 +139,24 @@
                     loop.add(1, "months");
                 }
                 while (loop.isBefore(end));
+
+                this._setHeader(`${currentDateMoment.year()}`);
+            }
+            else if (this.zoom === "years") {
+                const loop = currentDateMoment.clone().startOf("year").subtract(6, "years");
+                const end = loop.clone().add(12, "years");
+
+                let index = 0;
+                do {
+                    this.set(`cells.${index}.date`, loop.clone());
+                    this.set(`cells.${index}.content`, loop.year());
+
+                    index++;
+                    loop.add(1, "years");
+                }
+                while (loop.isBefore(end));
+
+                this._setHeader(`${cells[0].date.year()} - ${cells[cells.length - 1].date.year()}`);
             }
         }
 
@@ -154,15 +174,6 @@
 
         private _computeMoment(date: Date): moment.Moment {
             return moment(date);
-        }
-
-        private _computeHeader(zoom: string, currentDate: moment.Moment): string {
-            if (zoom === "days")
-                return `${CultureInfo.currentCulture.dateFormat.monthNames[currentDate.month()]} ${currentDate.year()}`;
-            else if (zoom === "months")
-                return `${currentDate.year()}`;
-
-            return null;
         }
 
         private _slow(e: Event) {
@@ -210,6 +221,10 @@
             else if (this.zoom === "months") {
                 this._setCurrentDate(this.currentDate.month(cell.date.month()).clone());
                 this.zoom = "days";
+            }
+            else if (this.zoom === "years") {
+                this._setCurrentDate(this.currentDate.year(cell.date.year()).clone());
+                this.zoom = "months";
             }
 
             e.stopPropagation();
