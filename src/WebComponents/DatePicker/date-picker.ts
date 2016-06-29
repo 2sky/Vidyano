@@ -217,10 +217,22 @@
                 newSelectedDate.year(cell.date.year());
 
                 this.selectedDate = newSelectedDate.clone().toDate();
+
+                if (cell.monthOffset !== 0)
+                    this._setCurrentDate(this.currentDate.add(cell.monthOffset, "months").clone());
             }
             else if (this.zoom === "months") {
                 this._setCurrentDate(this.currentDate.month(cell.date.month()).clone());
-                this.zoom = "days";
+
+                if (!this.monthMode)
+                    this.zoom = "days";
+                else {
+                    const newSelectedDate = moment(this.selectedDate);
+                    newSelectedDate.month(cell.date.month());
+                    newSelectedDate.year(cell.date.year());
+
+                    this.selectedDate = newSelectedDate.clone().toDate();
+                }
             }
             else if (this.zoom === "years") {
                 this._setCurrentDate(this.currentDate.year(cell.date.year()).clone());
