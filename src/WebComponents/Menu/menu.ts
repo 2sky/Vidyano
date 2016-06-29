@@ -207,7 +207,8 @@ namespace Vidyano.WebComponents {
         },
         observers: [
             "_updateItemTitle(item, filter, filtering, collapsed)",
-            "_updateIndentVariable(level)"
+            "_updateIndentVariable(level)",
+            "_updateOpened(filtering, item)"
         ],
         listeners: {
             "tap": "_tap"
@@ -268,6 +269,10 @@ namespace Vidyano.WebComponents {
         private _filterChanged() {
             this.filtering = !StringEx.isNullOrEmpty(this.filter);
             this.hidden = this.filtering && !this._hasMatch(<ProgramUnitItem><any>this.item, this.filter.toUpperCase());
+        }
+
+        private _updateOpened(filtering: boolean, item: Vidyano.ProgramUnitItem) {
+            (<any>this.$["subItems"]).opened = filtering || item === this.programUnit;
         }
 
         private _hasMatch(item: ProgramUnitItem, search: string): boolean {
