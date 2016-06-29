@@ -27,7 +27,7 @@ namespace Vidyano.WebComponents {
         keybindings: {
             "f5 ctrl+r": "_refresh",
             "ctrl+n": "_new",
-            "del": "_delete",
+            "delete": "_delete",
             "f2": "_bulkEdit"
         },
         observers: [
@@ -158,8 +158,8 @@ namespace Vidyano.WebComponents {
         }
 
         private _delete() {
-            if (!this.query)
-                return;
+            if (!this.query || !this.query.selectedItems || this.query.selectedItems.length == 0)
+                return true;
 
             const action = <Vidyano.Action>this.query.actions["Delete"];
             if (action)

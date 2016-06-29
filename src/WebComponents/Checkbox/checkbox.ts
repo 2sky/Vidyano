@@ -31,8 +31,8 @@
             "tap": "toggle"
         },
         keybindings: {
-            "space": "toggle",
-            "enter": "toggle"
+            "space": "_keyToggle",
+            "enter": "_keyToggle"
         }
     })
     export class Checkbox extends WebComponents.WebComponent {
@@ -49,6 +49,13 @@
                 this.checked = !this.checked;
             else
                 this.fire("changed", null);
+        }
+
+        private _keyToggle(e: KeyboardEvent) {
+            if (document.activeElement !== this)
+                return true;
+
+            this.toggle();
         }
 
         private _computeIsNull(checked: boolean): boolean {
