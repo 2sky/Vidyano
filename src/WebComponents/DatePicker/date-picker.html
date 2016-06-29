@@ -5,18 +5,17 @@
 	<template>
 		<link rel="stylesheet" href="date-picker.css" />
 		<header class="horizontal layout">
-			<button is="vi-button" id="fback" on-tap="_fastBackward"><vi-icon source="FastBackward"></vi-icon></button>
-			<button is="vi-button" id="back" on-tap="_backward"><vi-icon source="Backward"></vi-icon></button>
+			<button is="vi-button" n="-1" on-tap="_fast"><vi-icon source="FastBackward"></vi-icon></button>
+			<button is="vi-button" n="-1" on-tap="_slow"><vi-icon source="Backward"></vi-icon></button>
 			<button is="vi-button" class="flex" on-tap="_zoomOut" label="[[header]]"></button>
-			<button is="vi-button" id="forward" on-tap="_forward"><vi-icon source="Forward"></vi-icon></button>
-			<button is="vi-button" id="fforward" on-tap="_fastForward"><vi-icon source="FastForward"></vi-icon></button>
+			<button is="vi-button" n="1" on-tap="_slow"><vi-icon source="Forward"></vi-icon></button>
+			<button is="vi-button" n="1" on-tap="_fast"><vi-icon source="FastForward"></vi-icon></button>
 		</header>
-		<div on-tap="_select">
-			<table id="days" cellpadding="0" cellspacing="0">
-				<thead></thead>
-			</table>
-			<div id="monthsAndYears" class="vertical layout"></div>
-		</div>
+		<main class="layout horizontal wrap" zoom$="[[zoom]]">
+            <template is="dom-repeat" items="[[cells]]" as="cell">
+                <div class="cell" type$="[[cell.type]]" is-selected$="[[_isSelected(cell.date, selectedDateMoment)]]" is-today$="[[_isToday(cell.date, today)]]" is-other$="[[_isOther(cell.monthOffset)]]" break$="[[cell.break]]" on-tap="_select">[[cell.content]]</div>
+            </template>
+		</main>
 	</template>
 </dom-module>
 

@@ -6,7 +6,7 @@ $border-color: #eee;
 	display: block;
 	@include noSelection();
 
-	header {
+	> header {
 		color: white;
 		fill: white;
 		background-color: var(--theme-color);
@@ -24,6 +24,109 @@ $border-color: #eee;
 
 			&:hover {
 				background-color: var(--theme-color-light);
+			}
+		}
+	}
+
+	main {
+		width: calc(var(--theme-h2) * 7);
+		height: calc(var(--theme-h2) * 7);
+
+		.cell {
+			border-style: solid;
+			border-width: 0 0 1px 1px;
+			border-color: var(--theme-color-faint);
+			box-sizing: border-box;
+			cursor: pointer;
+
+			&[type$="day"] {
+				position: relative;
+				min-width: var(--theme-h2);
+				height: var(--theme-h2);
+				line-height: var(--theme-h2);
+				text-align: center;
+			}
+
+			&[type="day"] {
+				&:not([is-other]):not([is-other]) {
+					color: var(--theme-color);
+
+					&:hover {
+						background-color: var(--theme-color-faint);
+					}
+
+					&[is-today] {
+						color: white !important;
+						background-color: var(--theme-color-dark);
+
+						&:hover {
+							background-color: var(--theme-color-darker);
+						}
+					}
+				}
+
+				&[is-other] {
+					color: #AAA;
+
+					&:hover {
+						background-color: #eee;
+					}
+
+					&[is-today] {
+						color: white !important;
+						background-color: #aaa;
+
+						&:hover {
+							background-color: #888;
+						}
+					}
+				}
+			}
+
+			&[type="weekday"] {
+				font-weight: bold;
+				color: #333;
+				cursor: default;
+			}
+
+			&[is-selected] {
+				&::before, &::after {
+					position: absolute;
+					right: 0;
+					top: 0;
+					content: "";
+				}
+
+				&::before {
+					z-index: 2;
+					bottom: 0;
+					left: 0;
+					border: 1px solid var(--theme-color);
+				}
+
+				&[is-other]::before  {
+					border-color: #777 !important;
+				}
+
+				&[is-other]::after  {
+					border-top-color: #777 !important;
+				}
+
+				&::after {
+					z-index: 1;
+					border-left: var(--theme-h4) solid transparent;
+					border-top-color: var(--theme-color);
+					border-top-width: var(--theme-h4);
+					border-top-style: solid;
+				}
+
+				&[is-today]::after {
+					border-top-color: white !important;
+				}
+			}
+
+			&[type$="month"] {
+				flex-basis: calc(100% / 3);
 			}
 		}
 	}
