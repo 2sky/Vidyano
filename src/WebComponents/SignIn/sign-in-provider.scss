@@ -1,6 +1,7 @@
 @import "../_vars.scss";
 
 :host {
+    display: block;
     margin-bottom: var(--theme-h2);
     cursor: pointer;
 
