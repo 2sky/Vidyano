@@ -158,7 +158,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _delete() {
-            if (!this.query || !this.query.selectedItems || this.query.selectedItems.length == 0)
+            if (!this.query || !this.query.selectedItems || this.query.selectedItems.length === 0)
                 return true;
 
             const action = <Vidyano.Action>this.query.actions["Delete"];
