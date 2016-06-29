@@ -390,6 +390,26 @@ namespace Vidyano.WebComponents {
             return this.showDialog(new Vidyano.WebComponents.MessageDialog(options));
         }
 
+        showAlert(notification: string, type: Vidyano.NotificationType = Vidyano.NotificationType.Notice, duration: number = 3000) {
+            switch (type) {
+                case NotificationType.Error:
+                    alertify.log(notification, "error", duration);
+                    break;
+
+                case NotificationType.OK:
+                    alertify.log(notification, "success", duration);
+                    break;
+
+                case NotificationType.Warning:
+                    alertify.log(notification, "warning", duration);
+                    break;
+
+                case NotificationType.Notice:
+                    alertify.log(notification, "notice", duration);
+                    break;
+            }
+        }
+
         private _computeIsProfiling(isSignedIn: boolean, profile: boolean, profilerLoaded: boolean): boolean {
             const isProfiling = isSignedIn && profile;
             if (isProfiling && !Polymer.isInstance(this.$["profiler"])) {
@@ -904,23 +924,7 @@ namespace Vidyano.WebComponents {
             if (typeof notification === "object")
                 notification = notification["message"];
 
-            switch (type) {
-                case NotificationType.Error:
-                    alertify.log(notification, "error", duration);
-                    break;
-
-                case NotificationType.OK:
-                    alertify.log(notification, "success", duration);
-                    break;
-
-                case NotificationType.Warning:
-                    alertify.log(notification, "warning", duration);
-                    break;
-
-                case NotificationType.Notice:
-                    alertify.log(notification, "notice", duration);
-                    break;
-            }
+            this.app.showAlert(notification, type, duration);
         }
 
         onSelectReference(query: Vidyano.Query): Promise<QueryResultItem[]> {
