@@ -66,6 +66,9 @@ namespace Vidyano.WebComponents {
             if (!this.autofocus || !this._autofocusTarget)
                 return;
 
+            if (document.activeElement && document.activeElement.tagName === "INPUT")
+                return;
+
             this._autofocusTarget.focus();
         }
     }
