@@ -33,6 +33,7 @@
             },
             monthMode: {
                 type: Boolean,
+                reflectToAttribute: true,
                 value: false
             },
             cells: {
@@ -160,12 +161,22 @@
             }
         }
 
-        private _isSelected(date: moment.Moment, selectedDate: moment.Moment): boolean {
-            return date.isSame(selectedDate, "day");
+        private _isSelected(zoom: string, date: moment.Moment, selectedDate: moment.Moment): boolean {
+            if (zoom === "days")
+                return date.isSame(selectedDate, "day");
+            else if (zoom === "months" && this.monthMode)
+                return date.isSame(selectedDate, "month");
+
+            return false;
         }
 
-        private _isToday(date: moment.Moment, today: moment.Moment): boolean {
-            return date.isSame(today, "day");
+        private _isToday(zoom: string, date: moment.Moment, today: moment.Moment): boolean {
+            if (zoom === "days")
+                return date.isSame(today, "day");
+            else if (zoom === "months")
+                return date.isSame(today, "month");
+
+            return date.isSame(today, "year");
         }
 
         private _isOther(monthOffset: number): boolean {
@@ -228,6 +239,7 @@
                     this.zoom = "days";
                 else {
                     const newSelectedDate = moment(this.selectedDate);
+                    newSelectedDate.date(1);
                     newSelectedDate.month(cell.date.month());
                     newSelectedDate.year(cell.date.year());
 
