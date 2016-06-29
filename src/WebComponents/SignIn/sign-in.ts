@@ -52,6 +52,24 @@
                 return;
             }
 
+            if (this.app.initializationError) {
+                this._setInitializationError(true);
+
+                const noInternet = Vidyano.NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || Vidyano.NoInternetMessage.messages.get("en");
+
+                this.app.showMessageDialog({
+                    title: this.app.initializationError === noInternet.message ? noInternet.title : this.app.label || document.title,
+                    message: this.app.initializationError,
+                    actions: [noInternet.tryAgain],
+                    actionTypes: ["Danger"],
+                    noClose: true
+                }).then(() => {
+                    document.location.reload();
+                });
+
+                return;
+            }
+
             this.empty(undefined, c => c instanceof Vidyano.WebComponents.SignInProvider);
 
             const providers = Object.keys(route.app.service.providers);
@@ -61,22 +79,6 @@
 
                 Polymer.dom(this).appendChild(provider);
             });
-
-            if (this.app.initializationError) {
-                this._setInitializationError(true);
-
-                const noInternet = Vidyano.NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || Vidyano.NoInternetMessage.messages.get("en");
-
-                this.app.showMessageDialog({
-                    title: this.app.initializationError === noInternet.message ? noInternet.title : this.app.label || document.title,
-                    message: this.app.initializationError,
-                    actions: [ noInternet.tryAgain ],
-                    actionTypes: ["Danger"],
-                    noClose: true
-                }).then(() => {
-                    document.location.reload();
-                });
-            }
         }
 
         private _imageChanged() {
