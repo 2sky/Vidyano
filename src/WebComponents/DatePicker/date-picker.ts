@@ -1,7 +1,7 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    interface IDatePickerCell {
+    export interface IDatePickerCell {
         type: string;
         content?: string;
         date?: moment.Moment;
