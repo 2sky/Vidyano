@@ -23,7 +23,7 @@
             }
         },
         listeners: {
-            "click": "_catchClick"
+            "tap": "_catchTap"
         }
     })
     export class TimePicker extends WebComponent {
@@ -114,7 +114,7 @@
             }]);
         }
 
-        private _catchClick(e: Event) {
+        private _catchTap(e: Event) {
             e.stopPropagation();
         }
 
