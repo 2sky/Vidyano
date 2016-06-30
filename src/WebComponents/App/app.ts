@@ -855,15 +855,22 @@ namespace Vidyano.WebComponents {
                     });
                 });
             }
-            else if (args.action === "ActivateLicense") {
-                return super.onAction(args).then(() => {
-                    return args.executeServiceRequest().then(po => {
-                        if (po && po.getAttributeValue("IsActivated"))
-                            location.reload();
+            else if (args.action === "ShowHelp") {
+                // Only pass selected tab for actions on persistent objects
+                if (!args.query) {
+                    let cacheEntry = new PersistentObjectAppCacheEntry(args.persistentObject);
+                    cacheEntry = <PersistentObjectAppCacheEntry>Enumerable.from(this.app.cacheEntries).firstOrDefault(ce => ce.isMatch(cacheEntry));
 
-                        return null;
-                    });
-                });
+                    if (cacheEntry && cacheEntry.selectedMasterTab) {
+                        if (!args.parameters)
+                            args.parameters = {};
+
+                        args.parameters["selectedMasterTab"] = cacheEntry.selectedMasterTab.name;
+                    } else if (args.parameters && args.parameters["selectedMasterTab"])
+                        args.parameters["selectedMasterTab"] = undefined;
+                }
+
+                return super.onAction(args);
             }
 
             return super.onAction(args);
