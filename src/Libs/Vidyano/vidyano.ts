@@ -1087,7 +1087,7 @@ namespace Vidyano {
                         if (args.isHandled)
                             resolve(args.result);
                         else
-                            this.executeAction(action, parent, query, selectedItems, parameters, true).then(po => {
+                            this.executeAction(action, parent, query, selectedItems, args.parameters, true).then(po => {
                                 resolve(po);
                             }, e => {
                                 reject(e);
