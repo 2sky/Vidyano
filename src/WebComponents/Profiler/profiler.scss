@@ -192,10 +192,16 @@
                                         fill: #7e007e;
                                     }
 
-                                    &.has-n-plus-one, &.has-exception {
+                                    &.has-n-plus-one {
                                         rect {
                                             fill: #a00;
                                         }
+                                    }
+                                }
+
+                                &.has-exception {
+                                    rect {
+                                        fill: #a00;
                                     }
                                 }
 
