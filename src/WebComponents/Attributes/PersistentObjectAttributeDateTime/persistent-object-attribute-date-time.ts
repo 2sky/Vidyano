@@ -61,6 +61,7 @@
         private _lastRenderedSelectedDate: any;
         private _isDateFilled: boolean;
         private _isTimeFilled: boolean;
+        private _skipBlurRefreshUpdate: boolean;
         hasTimeComponent: boolean;
         hasInvalidTime: boolean;
         hasDateComponent: boolean;
@@ -128,11 +129,16 @@
                             this.attribute.setValue(newTimeValue, true).catch(Vidyano.noop);
                     }
                     else
-                        this.attribute.setValue(this.selectedDate, true).catch(Vidyano.noop);
+                        this.attribute.setValue(this.selectedDate, false).catch(Vidyano.noop);
                 }
             }
 
             this._renderSelectedDate();
+        }
+
+        private _inputBlur() {
+            if (!this._skipBlurRefreshUpdate && this.attribute.isValueChanged && document.activeElement !== this._dateInput && document.activeElement !== this._timeInput)
+                this.attribute.setValue(this.selectedDate, true).catch(Vidyano.noop);
         }
 
         private _clear() {
@@ -187,7 +193,13 @@
 
         private _dateFilled(e: Event, detail: any) {
             if (this.hasTimeComponent && this.dateInput.selectionStart === this.dateInput.value.length) {
-                this.timeInput.focus();
+                try {
+                    this._skipBlurRefreshUpdate = true;
+                    this.timeInput.focus();
+                }
+                finally {
+                    this._skipBlurRefreshUpdate = false;
+                }
                 this.timeInput.selectionStart = 0;
             }
 
