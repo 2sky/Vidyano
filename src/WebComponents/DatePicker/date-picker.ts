@@ -49,7 +49,7 @@
             "_render(cells, currentDate)"
         ],
         listeners: {
-            "click": "_catchClick"
+            "tap": "_catchTap"
         }
     })
     export class DatePicker extends WebComponent {
@@ -220,9 +220,11 @@
 
         private _select(e: TapEvent) {
             const cell = <IDatePickerCell>e.model.cell;
+            if (!cell || !cell.date)
+                return;
 
             if (this.zoom === "days") {
-                const newSelectedDate = moment(this.selectedDate);
+                const newSelectedDate = moment(this.selectedDate || new Date());
                 newSelectedDate.date(cell.date.date());
                 newSelectedDate.month(cell.date.month());
                 newSelectedDate.year(cell.date.year());
@@ -238,7 +240,7 @@
                 if (!this.monthMode)
                     this.zoom = "days";
                 else {
-                    const newSelectedDate = moment(this.selectedDate);
+                    const newSelectedDate = moment(this.selectedDate || new Date());
                     newSelectedDate.date(1);
                     newSelectedDate.month(cell.date.month());
                     newSelectedDate.year(cell.date.year());
@@ -254,7 +256,7 @@
             e.stopPropagation();
         }
 
-        private _catchClick(e: MouseEvent) {
+        private _catchTap(e: MouseEvent) {
             e.stopPropagation();
         }
     }
