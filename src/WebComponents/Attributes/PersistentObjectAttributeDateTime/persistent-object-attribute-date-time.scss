@@ -40,4 +40,8 @@
     span, input {
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
     }
+
+    span#monthMode {
+        padding: 0 var(--theme-h5);
+    }
 }

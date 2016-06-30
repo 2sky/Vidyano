@@ -47,6 +47,10 @@
             canClear: {
                 type: Boolean,
                 computed: "_computeCanClear(attribute.value, attribute.isRequired)"
+            },
+            monthMode: {
+                type: Boolean,
+                computed: "_computeMonthMode(attribute.typeHints.displayformat)"
             }
         }
     })
@@ -256,6 +260,13 @@
 
         private _computeCanClear(value: Date, required: boolean): boolean {
             return value != null && !required;
+        }
+
+        private _computeMonthMode(displayFormat: string): boolean {
+            if (!displayFormat)
+                return false;
+
+            return displayFormat === "{0:y}";
         }
     }
 }
