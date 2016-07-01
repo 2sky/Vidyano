@@ -108,17 +108,14 @@
         }
 
         private _computeText(notification: string): string {
-            if (notification) {
-                notification = this._escapeHTML(notification);
+            if (!notification)
+                return null;
 
-                const html2 = notification.replace(findUriLabel, "<a class=\"style-scope vi-notification\" href=\"$2\" title=\"\">$1</a>");
-                if (notification === html2)
-                    notification = notification.replace(findUri, "<a class=\"style-scope vi-notification\" href=\"$1\" title=\"\">$1</a>");
-                else
-                    notification = html2;
-            }
+            const html = this._escapeHTML(notification).replace(findUriLabel, "<a class=\"style-scope vi-notification\" href=\"$2\" title=\"\">$1</a>");
+            if (notification === html)
+                return notification.replace(findUri, "<a class=\"style-scope vi-notification\" href=\"$1\" title=\"\">$1</a>");
 
-            return notification;
+            return html;
         }
 
         private _computeHidden(text: string, duration: number): boolean {
