@@ -22,21 +22,21 @@
     }'};
 }
 
-:host-context([is-phone]) {
+:host-context(vi-app[is-phone]) {
     main {
         width: 85vw;
         height: 75vh;
     }
 }
 
-:host-context([is-tablet]) {
+:host-context(vi-app[is-tablet]) {
     main {
         height: 60vh;
         width: 90vw;
     }
 }
 
-:host-context([is-desktop]) {
+:host-context(vi-app[is-desktop]) {
     main {
         height: 60vh;
         width: 90vw;

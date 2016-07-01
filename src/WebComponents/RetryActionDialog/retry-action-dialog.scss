@@ -28,11 +28,11 @@ $min-main-width: 400px;
     }
 }
 
-:host-context([is-phone]) main {
+:host-context(vi-app[is-phone]) main {
     width: 85vw;
 }
 
-:host-context([is-tablet]), :host-context([is-desktop]) {
+:host-context(vi-app[is-tablet]), :host-context(vi-app[is-desktop]) {
     main {
         min-width: $min-main-width;
         max-width: var(--vi-persistent-object-dialog-computed-width);
