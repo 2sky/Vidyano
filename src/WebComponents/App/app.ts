@@ -988,7 +988,7 @@ namespace Vidyano.WebComponents {
                                 return;
 
                             this.app.service.getPersistentObject(cacheEntry.persistentObject.parent, cacheEntry.persistentObject.id, cacheEntry.persistentObject.objectId).then(po => {
-                                cacheEntry.persistentObject.refreshFromResult(po);
+                                cacheEntry.persistentObject.refreshFromResult(po, true);
                             }, e => {
                                 cacheEntry.persistentObject.setNotification(e);
                             });
