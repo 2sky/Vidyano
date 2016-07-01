@@ -15,9 +15,7 @@
     > #wrapper {
         @include flex();
         @include relative();
-        overflow: scroll;
-        margin-right: -var(--theme-scrollbar-width);
-        margin-bottom: -var(--theme-scrollbar-width);
+        overflow: auto;
         outline: none !important;
     }
 
@@ -213,8 +211,8 @@
         height: var(--theme-h2);
         -moz-border-radius: 100%;
         border-radius: 100%;
-        left: -var(--theme-h2);
-        right: -var(--theme-h2);
+        left: calc(var(--theme-h2) * -1);
+        right: calc(var(--theme-h2) * -1);
         pointer-events: none;
         transform: translateY(0);
         will-change: transform;
@@ -233,10 +231,30 @@
     }
 
     &[scroll-top-shadow] > .scroll-shadow.top {
-        transform: translateY(-var(--theme-h2));
+        transform: translateY(calc(var(--theme-h2) * -1));
     }
 
     &[scroll-bottom-shadow] > .scroll-shadow.bottom {
         transform: translateY(var(--theme-h2));
+    }
+}
+
+:host-context([is-web-kit]) {
+    > #wrapper::-webkit-scrollbar {
+        display: none;
+    }
+
+    // Edge also reports being webkit
+    > #wrapper {
+        -ms-overflow-style: none;
+    }
+}
+
+:host(:not([is-web-kit])) {
+    > #wrapper {
+        margin-right: calc(var(--theme-scrollbar-width) * -1);
+        margin-bottom: calc(var(--theme-scrollbar-width) * -1);
+        padding-right: var(--theme-scrollbar-width);
+        padding-bottom: var(--theme-scrollbar-width);
     }
 }

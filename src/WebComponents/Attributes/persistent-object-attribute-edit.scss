@@ -82,11 +82,8 @@
                 }
 
                 &.bottom {
-                    -moz-transform: translateY(-var(--theme-h4));
-                    -ms-transform: translateY(-var(--theme-h4));
-                    -o-transform: translateY(-var(--theme-h4));
-                    -webkit-transform: translateY(-var(--theme-h4));
-                    transform: translateY(-var(--theme-h4));
+                    -webkit-transform: translateY(calc(var(--theme-h4) * -1));
+                    transform: translateY(calc(var(--theme-h4) * -1));
                 }
             }
         }
