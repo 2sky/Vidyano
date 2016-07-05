@@ -62,6 +62,7 @@
         }
     })
     export class QueryGridCellBoolean extends WebComponent {
+        private _isHidden: boolean;
         private _icon: HTMLElement;
         private _textNode: Text;
 
@@ -70,20 +71,29 @@
                 return;
 
             if (!value) {
-                if (this._icon)
+                if (this._icon) {
                     this._icon.setAttribute("hidden", "");
+                    this._isHidden = true;
+                }
 
                 if (this._textNode && this._textNode.nodeValue)
                     this._textNode.nodeValue = "";
             } else if (value == null) {
-                if (this._icon)
+                if (this._icon) {
                     this._icon.setAttribute("hidden", "");
+                    this._isHidden = true;
+                }
 
                 if (!this._textNode)
                     this._textNode = <Text>Polymer.dom(this.root).appendChild(document.createTextNode("—"));
                 else
                     this._textNode.nodeValue = "—";
             } else {
+                if (this._isHidden) {
+                    this._icon.removeAttribute("hidden");
+                    this._isHidden = false;
+                }
+
                 if (this._textNode && this._textNode.nodeValue)
                     this._textNode.nodeValue = "";
 
