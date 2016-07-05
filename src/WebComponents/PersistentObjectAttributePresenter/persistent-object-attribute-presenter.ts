@@ -148,14 +148,14 @@ namespace Vidyano.WebComponents {
                 else
                     attributeType = attribute.type;
 
-                if (Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type] !== undefined) {
+                if (Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] !== undefined) {
                     this._renderAttribute(attribute, attributeType);
                     return;
                 }
 
                 const typeImport = this._getAttributeTypeImportInfo(attributeType);
                 if (!typeImport) {
-                    Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type] = Promise.resolve(false);
+                    Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = Promise.resolve(false);
                     this._renderAttribute(attribute, attributeType);
                     return;
                 }
@@ -166,7 +166,7 @@ namespace Vidyano.WebComponents {
                     typeImport.synonyms.forEach(s => Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[s] = new Promise(resolve => { synonymResolvers.push(resolve); }));
                 }
 
-                Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type] = new Promise(resolve => {
+                Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = new Promise(resolve => {
                     this.importHref(this.resolveUrl("../Attributes/" + typeImport.filename), e => {
                         resolve(true);
                         if (synonymResolvers)
@@ -176,7 +176,7 @@ namespace Vidyano.WebComponents {
                     }, err => {
                             console.error(err);
 
-                            Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type] = Promise.resolve(false);
+                            Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = Promise.resolve(false);
                             this._setLoading(false);
                         });
                 });
@@ -236,7 +236,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _renderAttribute(attribute: Vidyano.PersistentObjectAttribute, attributeType: string) {
-            Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attribute.type].then(() => {
+            Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType].then(() => {
                 if (!this.isAttached || attribute !== this.attribute || this._renderedAttribute === attribute)
                     return;
 
