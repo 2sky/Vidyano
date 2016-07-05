@@ -201,8 +201,11 @@
             if (!this.isVidyano)
                 this.app.service.signInExternal(this.name);
             else if (!this._isOnlyProvider) {
-                this.$$("#vidyano")["toggle"]();
-                setTimeout(() => this._autoFocus(), 300);
+                const vidyanoProvider = this.$$("#vidyano");
+                if (!vidyanoProvider["opened"]) {
+                    vidyanoProvider["toggle"]();
+                    setTimeout(() => this._autoFocus(), 300);
+                }
             }
         }
 
@@ -257,7 +260,7 @@
                 const span = document.createElement("span");
                 span.textContent = this._signingInMessage + "...";
                 button.appendChild(span);
-                button.style.width = span.offsetWidth + "px";
+                button.style.width = `${span.offsetWidth + 6}px`;
                 button.removeChild(span);
             }
 

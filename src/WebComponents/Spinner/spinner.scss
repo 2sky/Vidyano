@@ -5,13 +5,14 @@ $animation-time: 1s;
 :host {
     display: block;
     position: relative;
-    width: var(--vi-spinner-width, --theme-h2);
-    height: var(--vi-spinner-height, --theme-h2);
+    width: var(--vi-spinner-width, var(--theme-h2));
+    height: var(--vi-spinner-height, var(--theme-h2));
 
     &:not([block]) {
         position: absolute;
-        left: calc(50% - var(--vi-spinner-width, --theme-h2) / 2);
-        top: calc(50% - var(--vi-spinner-height, --theme-h2) / 2);
+        left: 50%;
+        top: 50%;
+        transform: translate(calc(var(--vi-spinner-width, var(--theme-h2)) / -2), calc(var(--vi-spinner-height, var(--theme-h2)) / -2));
     }
 
     .box {

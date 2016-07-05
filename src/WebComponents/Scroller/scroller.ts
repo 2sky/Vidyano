@@ -195,7 +195,7 @@
         }
 
         private _outerSizeChanged(e: Event, detail: { width: number; height: number }) {
-            this._setHiddenScrollbars(!parseInt(this.getComputedStyleValue("--theme-scrollbar-width")));
+            this._setHiddenScrollbars(!this.app.isWebKit && !parseInt(this.getComputedStyleValue("--theme-scrollbar-width")));
 
             this._setOuterWidth(detail.width);
             this._setOuterHeight(detail.height);
