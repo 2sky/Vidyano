@@ -34,8 +34,8 @@
                     <label>[[translateMessage('Password', isAttached)]]</label>
                     <input value="{{password::input}}" id="pass" type="password" disabled$="[[signingIn]]" on-keydown="_keydown" />
                 </div>
-                <div>
-                    <vi-checkbox label="[[translateMessage('StaySignedIn', isAttached)]]" disabled$="[[signingIn]]" checked="{{staySignedIn}}"></vi-checkbox>
+                <div class="layout horizontal">
+                    <vi-checkbox class="flex" label="[[translateMessage('StaySignedIn', isAttached)]]" disabled$="[[signingIn]]" checked="{{staySignedIn}}"></vi-checkbox>
                     <div>
                         <button is="vi-button" id="signIn" on-tap="_signIn" disabled$="[[signingIn]]" label="[[signInLabel]]"></button>
                     </div>

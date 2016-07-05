@@ -68,16 +68,12 @@
                         color: #666;
                     }
 
-                    div {
-                        @include layout-horizontal-reverse();
-                        @include flex();
-
-                        button {
-                            cursor: pointer;
-                            padding: 0 var(--theme-h4);
-                            box-sizing: content-box;
-                            @include theme-color-button();
-                        }
+                    button {
+                        cursor: pointer;
+                        padding: 0 var(--theme-h4);
+                        box-sizing: content-box;
+                        height: var(--theme-h2);
+                        @include theme-color-button();
                     }
                 }
             }
