@@ -193,7 +193,7 @@
                 &:hover {
                     background-color: var(--theme-color-faint) !important;
 
-                    vi-icon {
+                    > vi-icon {
                         fill: var(--theme-color) !important;
                     }
                 }

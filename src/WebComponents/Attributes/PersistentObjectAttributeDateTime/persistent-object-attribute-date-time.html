@@ -21,24 +21,10 @@
                 </div>
                 <template is="dom-if" if="[[!readOnly]]">
                     <template is="dom-if" if="[[hasTimeComponent]]">
-                        <vi-popup content-align="right">
-                            <button header tabindex="-1">
-                                <vi-icon source="Clock"></vi-icon>
-                            </button>
-                            <div class="clock" content>
-                                <vi-time-picker time="{{selectedDate}}"></vi-time-picker>
-                            </div>
-                        </vi-popup>
+                        <vi-time-picker class="button" time="{{selectedDate}}"></vi-time-picker>
                     </template>
                     <template is="dom-if" if="[[hasDateComponent]]">
-                        <vi-popup content-align="right">
-                            <button header tabindex="-1">
-                                <vi-icon source="Calendar"></vi-icon>
-                            </button>
-                            <div class="calendar" content>
-                                <vi-date-picker selected-date="{{selectedDate}}" month-mode="[[monthMode]]"></vi-date-picker>
-                            </div>
-                        </vi-popup>
+                        <vi-date-picker class="button" selected-date="{{selectedDate}}" month-mode="[[monthMode]]"></vi-date-picker>
                     </template>
                     <template is="dom-if" if="[[canClear]]">
                         <button on-tap="_clear" tabindex="-1">

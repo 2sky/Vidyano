@@ -256,6 +256,11 @@
             e.stopPropagation();
         }
 
+        private _opening() {
+            this._setCurrentDate(this.selectedDate ? moment(this.selectedDate) : moment(new Date()));
+            this.zoom = this.monthMode ? "months" : "days";
+        }
+
         private _catchTap(e: MouseEvent) {
             e.stopPropagation();
         }

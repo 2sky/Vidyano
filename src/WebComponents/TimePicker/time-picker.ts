@@ -21,9 +21,6 @@
                 type: Number,
                 readOnly: true
             }
-        },
-        listeners: {
-            "tap": "_catchTap"
         }
     })
     export class TimePicker extends WebComponent {

@@ -7,7 +7,6 @@ $discSpacing: 20px;
 :host {
 	display: block;
 	position: relative;
-	padding: calc(var(--theme-h4) * 2);
 	@include noSelection();
 
 	@mixin numbers($n, $offset, $size) {
@@ -52,6 +51,14 @@ $discSpacing: 20px;
 		}
 
 		@include numbers(12, $offset / 2, $discSpacing);
+	}
+
+	.clock {
+		padding: calc(var(--theme-h4) * 2);
+	}
+
+	&:active .clock {
+		color: var(--theme-color) !important;
 	}
 
 	#clockHost {
