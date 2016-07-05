@@ -1443,7 +1443,8 @@
                                     let width = parseInt(cell.column.width);
                                     if (isNaN(width)) {
                                         width = cell.cell.offsetWidth;
-                                        if (width === 0 && getComputedStyle(cell.cell).display === "none")
+                                        /* If grid is not visible, don't calculate the width */
+                                        if (this.offsetParent === null /* Visibility check */ || (width === 0 && getComputedStyle(cell.cell).display === "none"))
                                             return layoutUpdating = true; // Layout is still updating
                                     }
 
