@@ -321,7 +321,7 @@ namespace Vidyano.WebComponents {
                 this._renderDistincts();
                 this._updateFilters();
                 this._updateDistincts();
-            });
+            }).catch(Vidyano.noop);
         }
 
         private _inverse(e: Event) {
