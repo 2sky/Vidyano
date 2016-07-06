@@ -167,18 +167,20 @@ namespace Vidyano.WebComponents {
                 }
 
                 Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = new Promise(resolve => {
-                    this.importHref(this.resolveUrl("../Attributes/" + typeImport.filename), e => {
-                        resolve(true);
-                        if (synonymResolvers)
-                            synonymResolvers.forEach(resolver => resolver(true));
+                    this.async(() => {
+                        this.importHref(this.resolveUrl("../Attributes/" + typeImport.filename), e => {
+                            resolve(true);
+                            if (synonymResolvers)
+                                synonymResolvers.forEach(resolver => resolver(true));
 
-                        this._renderAttribute(attribute, attributeType);
-                    }, err => {
+                            this._renderAttribute(attribute, attributeType);
+                        }, err => {
                             console.error(err);
 
                             Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = Promise.resolve(false);
                             this._setLoading(false);
                         });
+                    });
                 });
             }
         }
