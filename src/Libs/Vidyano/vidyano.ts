@@ -1675,7 +1675,7 @@ namespace Vidyano {
             if (!retry.persistentObject)
                 return this.onMessageDialog(retry.title, retry.message, false, ...retry.options).then(result => result >= 0 ? retry.options[result] : -1);
 
-            return Promise.reject("RetryAction with Persistent Object is not supported.");
+            return Promise.reject<string>("RetryAction with Persistent Object is not supported.");
         }
     }
 
@@ -1793,7 +1793,7 @@ namespace Vidyano {
                     this._setIsBusy(this._queue.getQueueLength() > 0);
                     this._blockActions(false);
 
-                    return Promise.reject(e);
+                    return Promise.reject<T>(e);
                 });
             });
         }
@@ -3384,7 +3384,7 @@ namespace Vidyano {
 
         reorder(before: QueryResultItem, item: QueryResultItem, after: QueryResultItem): Promise<QueryResultItem[]> {
             if (!this.canReorder)
-                return Promise.reject("Unable to reorder, canReorder is set to false.");
+                return Promise.reject<QueryResultItem[]>("Unable to reorder, canReorder is set to false.");
 
             this.queueWork(() => this.service.executeAction("QueryOrder.Reorder", this.parent, this, [before, item, after]).then(po => {
                 this._setResult(po.queries[0]._lastResult);
@@ -3601,7 +3601,7 @@ namespace Vidyano {
                         return Promise.resolve(this.items.slice(start, start + length));
                     }, e => {
                         this.setNotification(e);
-                        return Promise.reject(e);
+                        return Promise.reject<QueryResultItem[]>(e);
                     });
                 };
 
@@ -4267,7 +4267,7 @@ namespace Vidyano {
             if (!filter)
                 return;
             else if (filter.isLocked)
-                return Promise.reject("Filter is locked.");
+                return Promise.reject<QueryFilter>("Filter is locked.");
 
             this._filtersPO.beginEdit();
 
