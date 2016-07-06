@@ -43,6 +43,11 @@
             header: {
                 type: String,
                 readOnly: true
+            },
+            deferredCellsUpdate: {
+                type: Boolean,
+                readOnly: true,
+                value: true
             }
         },
         observers: [
@@ -69,6 +74,7 @@
         private _setCurrentDate: (date: moment.Moment) => void;
         private _setToday: (date: moment.Moment) => void;
         private _setHeader: (header: string) => void;
+        private _setDeferredCellsUpdate: (defer: boolean) => void;
 
         attached() {
             super.attached();
@@ -102,6 +108,10 @@
                     return { type: zoom.substr(0, zoom.length - 1) };
                 }).toArray());
             }
+        }
+
+        private _computeCells(cells: IDatePickerCell[], deferred: boolean): IDatePickerCell[] {
+            return !deferred ? cells : null;
         }
 
         private _render(cells: IDatePickerCell[], currentDate: Date) {
@@ -259,6 +269,8 @@
         private _opening() {
             this._setCurrentDate(this.selectedDate ? moment(this.selectedDate) : moment(new Date()));
             this.zoom = this.monthMode ? "months" : "days";
+
+            this._setDeferredCellsUpdate(false);
         }
 
         private _catchTap(e: MouseEvent) {
