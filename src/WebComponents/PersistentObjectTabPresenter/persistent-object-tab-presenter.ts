@@ -92,6 +92,9 @@ namespace Vidyano.WebComponents {
                         attributeTab.tab = <Vidyano.PersistentObjectAttributeTab>tab;
 
                         Polymer.dom(this).appendChild(attributeTab);
+
+                        if (this._tabAttributes.length === 0)
+                            this._setLoading(false);
                     });
                 }
             }
