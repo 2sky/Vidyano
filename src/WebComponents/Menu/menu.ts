@@ -16,7 +16,7 @@ namespace Vidyano.WebComponents {
             },
             hasGlobalSearch: {
                 type: Boolean,
-                computed: "_computeHasGlobalSearch(app)"
+                computed: "_computeHasGlobalSearch(app.service.application.globalSearchId)"
             },
             filter: {
                 type: String,
@@ -91,11 +91,8 @@ namespace Vidyano.WebComponents {
             this.filter = "";
         }
 
-        private _computeHasGlobalSearch(isAttached: boolean): boolean {
-            if (!isAttached)
-                return false;
-
-            return this.app.service.application.globalSearchId !== "00000000-0000-0000-0000-000000000000";
+        private _computeHasGlobalSearch(globalSearchId: string): boolean {
+            return globalSearchId !== "00000000-0000-0000-0000-000000000000";
         }
 
         private _computeCollapsedWithGlobalSearch(collapsed: boolean, hasGlobalSearch: boolean): boolean {
