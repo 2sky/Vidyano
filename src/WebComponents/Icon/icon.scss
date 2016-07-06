@@ -16,24 +16,29 @@
         height: var(--vi-icon-height, 16px);
     }
 
-    &[small] ::content svg {
-        -ms-transform: translateY(1px);
-        -webkit-transform: translateY(1px);
-        -moz-transform: translateY(1px);
-        -o-transform: translateY(1px);
-        transform: translateY(1px);
-        width: 12px;
-        height: 12px;
+    &.size-h1 svg {
+        width: var(--theme-h1);
+        height: var(--theme-h1);
     }
 
-    &[extrasmall] ::content svg {
-        -ms-transform: translateY(0);
-        -webkit-transform: translateY(0);
-        -moz-transform: translateY(0);
-        -o-transform: translateY(0);
-        transform: translateY(0);
-        width: 10px;
-        height: 10px;
+    &.size-h2 svg {
+        width: var(--theme-h2);
+        height: var(--theme-h2);
+    }
+
+    &.size-h3 svg {
+        width: var(--theme-h3);
+        height: var(--theme-h3);
+    }
+
+    &.size-h4 svg {
+        width: var(--theme-h4);
+        height: var(--theme-h4);
+    }
+
+    &.size-h5 svg {
+        width: var(--theme-h5);
+        height: var(--theme-h5);
     }
 
     &[source="Selected"] {
