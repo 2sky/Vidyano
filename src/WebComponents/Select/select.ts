@@ -104,11 +104,11 @@ namespace Vidyano.WebComponents {
                 if (e.which === WebComponents.Keyboard.KeyCodes.downarrow) {
                     this.popup.popup();
 
-                    if (currentIndex + 1 < this.items.length) {
+                    if (currentIndex + 1 < this.filteredItems.length) {
                         if (this.filtering)
-                            this._setSuggestion(this.filteredItems[Math.min(currentIndex + 1, this.filteredItems.length - 1)]);
+                            this._setSuggestion(this.filteredItems[currentIndex + 1]);
                         else
-                            this._setSelectedItem(this.filteredItems[Math.min(currentIndex + 1, this.filteredItems.length - 1)]);
+                            this._setSelectedItem(this.filteredItems[currentIndex + 1]);
                     }
 
                     e.stopPropagation();
@@ -119,9 +119,9 @@ namespace Vidyano.WebComponents {
 
                     if (currentIndex > 0) {
                         if (this.filtering)
-                            this._setSuggestion(this.filteredItems[Math.max(currentIndex - 1, 0)]);
+                            this._setSuggestion(this.filteredItems[currentIndex - 1]);
                         else
-                            this._setSelectedItem(this.filteredItems[Math.max(currentIndex - 1, 0)]);
+                            this._setSelectedItem(this.filteredItems[currentIndex - 1]);
                     }
 
                     e.stopPropagation();
