@@ -170,5 +170,13 @@
                 }
             });
         }
+
+        private _userFilters(filters: Vidyano.QueryFilter[]): Vidyano.QueryFilter[] {
+            return filters ? filters.filter(f => !f.isLocked) : null;
+        }
+
+        private _lockedFilters(filters: Vidyano.QueryFilter[]): Vidyano.QueryFilter[] {
+            return filters ? filters.filter(f => f.isLocked) : null;
+        }
     }
 }

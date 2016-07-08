@@ -48,17 +48,6 @@ namespace Vidyano.WebComponents {
             return (<Popup>this.$["popup"]).popup();
         }
 
-        private _popupOpening() {
-            const children = Enumerable.from((<HTMLElement>Polymer.dom(this.$["popup"]).querySelector("[content]")).children).where((c: HTMLElement) => c.tagName === "VI-POPUP-MENU-ITEM" && c.style.display !== "none").toArray();
-            const hasIcons = children.filter(c => c.hasAttribute("icon")).length > 0;
-            const hasSplits = children.filter(c => c.hasAttribute("split")).length > 0;
-
-            children.forEach((c: PopupMenuItem) => {
-                c.toggleAttribute("icon-space", hasIcons && (!c.icon || !Icon.Exists(c.icon)));
-                c.toggleAttribute("split-space", hasSplits && !c.split);
-            });
-        }
-
         private _hookContextMenu(isAttached: boolean, contextMenu: boolean) {
             if (isAttached && contextMenu)
                 this.parentElement.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
@@ -113,18 +102,95 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: false
             },
-            split: {
+            hasChildren: {
                 type: Boolean,
                 reflectToAttribute: true,
-                value: false
+                value: false,
+                readOnly: true
             }
+        },
+        listeners: {
+            "tap": "_onTap"
         }
     })
     export class PopupMenuItem extends WebComponent {
-        label: string;
-        icon: string;
+        private _observer: PolymerDomChangeObserver;
         checked: boolean;
-        split: boolean;
+
+        private _setHasChildren: (hasChildren: boolean) => void;
+
+        constructor(public label?: string, public icon?: string, private _action?: () => void) {
+            super();
+        }
+
+        attached() {
+            this._observer = Polymer.dom(this.$["subItems"]).observeNodes(info => {
+                this._setHasChildren(Polymer.dom(info.target).getDistributedNodes().length > 0);
+            });
+
+            super.attached();
+        }
+
+        detached() {
+            Polymer.dom(this.$["subItems"]).unobserveNodes(this._observer);
+
+            super.detached();
+        }
+
+        private _onTap() {
+            if (this._action)
+                this._action();
+        }
+    }
+
+    @WebComponent.register({
+        properties: {
+            label: String,
+            icon: String,
+            checked: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
+            hasChildren: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false,
+                readOnly: true
+            }
+        },
+        listeners: {
+            "tap": "_onTap"
+        }
+    })
+    export class PopupMenuItemSplit extends WebComponent {
+        private _observer: PolymerDomChangeObserver;
+        checked: boolean;
+
+        private _setHasChildren: (hasChildren: boolean) => void;
+
+        constructor(public label?: string, public icon?: string, private _action?: () => void) {
+            super();
+        }
+
+        attached() {
+            this._observer = Polymer.dom(this.$["subItems"]).observeNodes(info => {
+                this._setHasChildren(Polymer.dom(info.target).getDistributedNodes().length > 0);
+            });
+
+            super.attached();
+        }
+
+        detached() {
+            Polymer.dom(this.$["subItems"]).unobserveNodes(this._observer);
+
+            super.detached();
+        }
+
+        private _onTap() {
+            if (this._action)
+                this._action();
+        }
 
         private _splitTap(e: Event) {
             e.stopPropagation();

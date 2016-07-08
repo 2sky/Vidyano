@@ -51,8 +51,9 @@ interface PolymerDomApi {
 }
 
 interface PolymerDomChangedInfo {
-    addedNodes: Node;
-    removedNodes: Node;
+    addedNodes: Node[];
+    removedNodes: Node[];
+    target: Element;
 }
 
 interface PolymerDomChangeObserver {

@@ -1,0 +1,12 @@
+@import "popup-menu-item.scss";
+
+:host {
+    @include layout-horizontal();
+
+    #split {
+        height: var(--vi-popup-menu-item-height, var(--theme-h1));
+        width: var(--vi-popup-menu-item-icon-width, var(--theme-h2));
+
+        border-left: 1px solid var(--theme-light-border);
+    }
+}
