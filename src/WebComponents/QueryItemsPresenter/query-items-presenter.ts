@@ -40,7 +40,7 @@ namespace Vidyano.WebComponents {
             "file-dropped": "_onFileDropped"
         }
     })
-    export class QueryItemsPresenter extends WebComponent {
+    export class QueryItemsPresenter extends WebComponent implements IConfigurable {
         private static _queryGridComponentLoader: Promise<any>;
         private static _chartComponentLoader: Promise<any>;
         private _renderedQuery: Vidyano.Query;
@@ -173,6 +173,26 @@ namespace Vidyano.WebComponents {
             const action = <Vidyano.Action>this.query.actions["BulkEdit"];
             if (action)
                 action.execute();
+        }
+
+        _viConfigure(actions: IConfigurableAction[]) {
+            if (this.query.isSystem)
+                return;
+
+            actions.push({
+                label: `Query: ${this.query.label}`,
+                icon: "viConfigure",
+                action: () => {
+                    this.app.changePath(`Management/PersistentObject.b9d2604d-2233-4df2-887a-709d93502843/${this.query.id}`);
+                },
+                subActions: [{
+                    label: `Persistent Object: ${this.query.persistentObject.type}`,
+                    icon: "viConfigure",
+                    action: () => {
+                        this.app.changePath(`Management/PersistentObject.316b2486-df38-43e3-bee2-2f7059334992/${this.query.persistentObject.id}`);
+                    }
+                }]
+            });
         }
     }
 }

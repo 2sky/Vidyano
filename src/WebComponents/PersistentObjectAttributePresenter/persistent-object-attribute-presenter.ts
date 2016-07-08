@@ -83,7 +83,7 @@ namespace Vidyano.WebComponents {
             "attribute.parent.isBulkEdit"
         ]
     })
-    export class PersistentObjectAttributePresenter extends WebComponent {
+    export class PersistentObjectAttributePresenter extends WebComponent implements IConfigurable {
         private static _attributeImports: {
             [key: string]: Promise<boolean>;
         } = {
@@ -315,6 +315,19 @@ namespace Vidyano.WebComponents {
                 Polymer.dom(this).flush();
                 this.fire("attribute-loaded", { attribute: this.attribute }, { bubbles: true });
             }
+        }
+
+        _viConfigure(actions: IConfigurableAction[]) {
+            if (this.attribute.parent.isSystem)
+                return;
+
+            actions.push({
+                label: `Attribute: ${this.attribute.name}`,
+                icon: "viConfigure",
+                action: () => {
+                    this.app.changePath(`Management/PersistentObject.1456569d-e02b-44b3-9d1a-a1e417061c77/${this.attribute.id}`);
+                }
+            });
         }
     }
 }

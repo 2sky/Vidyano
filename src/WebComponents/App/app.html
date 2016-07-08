@@ -26,6 +26,7 @@
 <link rel="import" href="../RetryActionDialog/retry-action-dialog.html" />
 <link rel="import" href="../QueryPresenter/query-presenter.html" />
 <link rel="import" href="../QueryItemsPresenter/query-items-presenter.html" />
+<link rel="import" href="../SelectReferenceDialog/select-reference-dialog.html" />
 <link rel="import" href="../SignIn/sign-in.html" />
 <link rel="import" href="../SignOut/sign-out.html" />
 
@@ -110,6 +111,9 @@
             <vi-persistent-object-attribute-config parent-id="d2662fbc-5bfc-44c0-9ba1-1e84058c2dc2" name="Message" height="0"></vi-persistent-object-attribute-config>
             <content select="vi-app-setting, vi-persistent-object-config, vi-persistent-object-attribute-config, vi-persistent-object-tab-config, vi-program-unit-config, vi-query-config, vi-query-chart-config"></content>
         </vi-app-config>
+        <template is="dom-if" if="[[service.application.hasManagement]]">
+            <vi-popup-menu id="viConfigure" ctrl-key context-menu-only></vi-popup-menu>
+        </template>
     </template>
 </dom-module>
 

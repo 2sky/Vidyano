@@ -26,7 +26,7 @@ namespace Vidyano.WebComponents {
             "tab.groups"
         ]
     })
-    export class PersistentObjectTab extends WebComponent {
+    export class PersistentObjectTab extends WebComponent implements IConfigurable {
         private _attributePresenters: Vidyano.WebComponents.PersistentObjectAttributePresenter[];
         private _autofocusTarget: Vidyano.WebComponents.PersistentObjectAttributePresenter;
         tab: Vidyano.PersistentObjectAttributeTab;
@@ -70,6 +70,20 @@ namespace Vidyano.WebComponents {
                 return;
 
             this._autofocusTarget.focus();
+        }
+
+        _viConfigure(actions: IConfigurableAction[]) {
+            if (this.tab.target instanceof Vidyano.PersistentObject) {
+                if ((<Vidyano.PersistentObject>this.tab.target).isSystem)
+                    return;
+            }
+
+            const tab = <Vidyano.PersistentObjectAttributeTab>this.tab;
+            actions.push({
+                label: `Attribute tab: ${tab.label}`,
+                icon: "viConfigure",
+                action: () => this.app.changePath(`Management/PersistentObject.9b7a3b94-cf71-4284-bac3-de4d2790c868/${tab.id}`)
+            });
         }
     }
 }

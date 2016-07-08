@@ -52,7 +52,7 @@ namespace Vidyano.WebComponents {
             "esc": "_cancelSave"
         }
     })
-    export class PersistentObjectPresenter extends WebComponent {
+    export class PersistentObjectPresenter extends WebComponent implements IConfigurable {
         private static _persistentObjectComponentLoader: Promise<any>;
         private _cacheEntry: PersistentObjectAppCacheEntry;
         persistentObjectId: string;
@@ -234,6 +234,19 @@ namespace Vidyano.WebComponents {
             const action = <Vidyano.Action>(this.persistentObject.actions["CancelEdit"] || this.persistentObject.actions["CancelSave"]);
             if (action)
                 action.execute();
+        }
+
+        _viConfigure(actions: IConfigurableAction[]) {
+            if (this.persistentObject.isSystem)
+                return;
+
+            actions.push({
+                label: `Persistent Object: ${this.persistentObject.type}`,
+                icon: "viConfigure",
+                action: () => {
+                    this.app.changePath(`Management/PersistentObject.316b2486-df38-43e3-bee2-2f7059334992/${this.persistentObject.id}`);
+                }
+            });
         }
     }
 }

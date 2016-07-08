@@ -61,7 +61,7 @@ namespace Vidyano.WebComponents {
             if (!this.contextMenuOnly)
                 return true;
 
-            if (e.which === 3 && (!this.shiftKey || e.shiftKey) && (!this.ctrlKey || e.ctrlKey)) {
+            if (e.which === 3 && !!this.shiftKey === !!e.shiftKey && !!this.ctrlKey === !!e.ctrlKey) {
                 const popup = <Popup><any>this.$["popup"];
 
                 popup.style.left = e.pageX + "px";
@@ -137,9 +137,14 @@ namespace Vidyano.WebComponents {
             super.detached();
         }
 
-        private _onTap() {
-            if (this._action)
+        private _onTap(e: TapEvent) {
+            if (this._action) {
                 this._action();
+                Vidyano.WebComponents.Popup.closeAll();
+
+                e.stopPropagation();
+                e.preventDefault();
+            }
         }
     }
 
@@ -187,9 +192,14 @@ namespace Vidyano.WebComponents {
             super.detached();
         }
 
-        private _onTap() {
-            if (this._action)
+        private _onTap(e: TapEvent) {
+            if (this._action) {
                 this._action();
+                Vidyano.WebComponents.Popup.closeAll();
+
+                e.stopPropagation();
+                e.preventDefault();
+            }
         }
 
         private _splitTap(e: Event) {

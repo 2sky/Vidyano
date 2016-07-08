@@ -347,5 +347,46 @@ namespace Vidyano.WebComponents {
         private _titleMouseenter() {
             this.$["title"].setAttribute("title", this.$["title"].offsetWidth < this.$["title"].scrollWidth ? this.item.title : "");
         }
+
+        _viConfigure(actions: IConfigurableAction[]) {
+            if (!this.item.path || this.item.path.startsWith("Management/"))
+                return;
+
+            if (this.item instanceof Vidyano.ProgramUnit) {
+                actions.push({
+                    label: `Program unit: ${this.item.name}`,
+                    icon: "viConfigure",
+                    action: () => this.app.changePath(`Management/PersistentObject.b53ec1cd-e0b3-480f-b16d-bf33b133c05c/${this.item.name}`),
+                    subActions: [
+                        {
+                            label: "Add Query",
+                            icon: "Add",
+                            action: () => {
+                                this.app.service.getQuery("5a4ed5c7-b843-4a1b-88f7-14bd1747458b").then(query => {
+                                    const dialog = new Vidyano.WebComponents.SelectReferenceDialog(query);
+                                    this.app.showDialog(dialog).then(() => {
+                                        if (!query.selectedItems || query.selectedItems.length === 0)
+                                            return;
+
+                                        this.app.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: this.item.id }).then(() => {
+                                            document.location.reload();
+                                        });
+                                    });
+                                });
+                            }
+                        }
+                    ]
+                });
+
+                actions.push();
+            }
+            else if (this.item instanceof Vidyano.ProgramUnitItem) {
+                actions.push({
+                    label: `Program unit item: ${this.item.name}`,
+                    icon: "viConfigure",
+                    action: () => this.app.changePath(`Management/PersistentObject.68f7b99e-ce10-4d43-80fb-191b6742d53c/${this.item.name}`)
+                });
+            }
+        }
     }
 }

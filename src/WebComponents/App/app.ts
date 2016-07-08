@@ -214,7 +214,8 @@ namespace Vidyano.WebComponents {
         },
         listeners: {
             "app-config-attached": "_configurationAttached",
-            "app-route-add": "_appRouteAdded"
+            "app-route-add": "_appRouteAdded",
+            "contextmenu": "_configureContextmenu"
         },
         forwardObservers: [
             "service.isSignedIn",
@@ -701,6 +702,52 @@ namespace Vidyano.WebComponents {
 
         private _computeIsWebKit(): boolean {
             return "WebkitAppearance" in document.documentElement.style;
+        }
+
+        private _configureContextmenu(e: MouseEvent) {
+            let configurableParent: IConfigurable;
+
+            if (!this.service.application.hasManagement || window.getSelection().toString()) {
+                e.stopImmediatePropagation();
+                return;
+            }
+
+            const configureItems: WebComponent[] = [];
+
+            let element = <Node>e.target;
+            while (!!element && element !== this) {
+                if (!!(<IConfigurable>element)._viConfigure) {
+                    const actions: IConfigurableAction[] = [];
+                    (<IConfigurable>element)._viConfigure(actions);
+
+                    if (actions.length > 0) {
+                        actions.forEach(action => {
+                            let item: WebComponent;
+
+                            if (!action.subActions)
+                                item = new Vidyano.WebComponents.PopupMenuItem(action.label, action.icon, action.action);
+                            else {
+                                item = new Vidyano.WebComponents.PopupMenuItemSplit(action.label, action.icon, action.action);
+                                action.subActions.forEach(subA => Polymer.dom(item).appendChild(new Vidyano.WebComponents.PopupMenuItem(subA.label, subA.icon, subA.action)));
+                            }
+
+                            configureItems.push(item);
+                        });
+                    }
+                }
+
+                element = element.parentNode || (<any>element).host;
+            }
+
+            if (configureItems.length === 0) {
+                e.stopImmediatePropagation();
+                return;
+            }
+
+            const popupMenuItem = <PopupMenuItem>this.$$("#viConfigure");
+            this.empty(popupMenuItem);
+
+            configureItems.forEach(item => Polymer.dom(popupMenuItem).appendChild(item));
         }
 
         static stripHashBang(path: string = ""): string {

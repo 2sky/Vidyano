@@ -217,5 +217,18 @@ namespace Vidyano.WebComponents {
         private _hiddenChanged() {
             this.fire("sizechanged", null);
         }
+
+        _viConfigure(actions: IConfigurableAction[]) {
+            if ((this.action.parent && this.action.parent.isSystem) || (this.action.query && this.action.query.isSystem))
+                return;
+
+            actions.push({
+                label: `Action: ${this.action.name}`,
+                icon: "viConfigure",
+                action: () => {
+                    this.app.changePath(`Management/PersistentObject.1bf5e50c-ee7d-4205-8ccf-46ab68e25d63/${this.action.name}`);
+                }
+            });
+        }
     }
 }

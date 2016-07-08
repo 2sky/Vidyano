@@ -125,5 +125,42 @@ namespace Vidyano.WebComponents {
         private _computeQueryLabel(label: string, currentFilter: Vidyano.QueryFilter): string {
             return label + (currentFilter && currentFilter.name ? " — " + currentFilter.name : "");
         }
+
+        _viConfigure(actions: IConfigurableAction[]) {
+            if (this.tab.target instanceof Vidyano.PersistentObject) {
+                if ((<Vidyano.PersistentObject>this.tab.target).isSystem)
+                    return;
+            }
+            else if (this.tab.target instanceof Vidyano.Query) {
+                if ((<Vidyano.Query>this.tab.target).isSystem)
+                    return;
+            }
+            else
+                return;
+
+            if (this.tab.target instanceof Vidyano.PersistentObject) {
+                const tab = <Vidyano.PersistentObjectAttributeTab>this.tab;
+                actions.push({
+                    label: `Attribute tab: ${tab.label}`,
+                    icon: "viConfigure",
+                    action: () => this.app.changePath(`Management/PersistentObject.9b7a3b94-cf71-4284-bac3-de4d2790c868/${tab.id}`)
+                });
+            }
+            else if (this.tab.target instanceof Vidyano.Query) {
+                const query = <Vidyano.Query>this.tab.target;
+                actions.push({
+                    label: `Query tab: ${query.label}`,
+                    icon: "viConfigure",
+                    action: () => this.app.changePath(`Management/PersistentObject.b9d2604d-2233-4df2-887a-709d93502843/${query.id}`),
+                    subActions: [{
+                        label: `Persistent Object: ${query.persistentObject.type}`,
+                        icon: "viConfigure",
+                        action: () => {
+                            this.app.changePath(`Management/PersistentObject.316b2486-df38-43e3-bee2-2f7059334992/${query.persistentObject.id}`);
+                        }
+                    }]
+                });
+            }
+        }
     }
 }

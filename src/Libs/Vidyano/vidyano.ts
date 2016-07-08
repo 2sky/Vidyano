@@ -3803,6 +3803,7 @@ namespace Vidyano {
 
     export class QueryColumn extends ServiceObject {
         private displayAttribute: string;
+        private _id: string;
         private _sortDirection: SortDirection;
         private _canSort: boolean;
         private _canFilter: boolean;
@@ -3824,6 +3825,7 @@ namespace Vidyano {
         constructor(service: Service, col: any, public query: Query) {
             super(service);
 
+            this._id = col.id;
             this.displayAttribute = col.displayAttribute;
             this._canSort = !!col.canSort;
             this._canFilter = !!col.canFilter;
@@ -3847,6 +3849,10 @@ namespace Vidyano {
             this._sortDirection = SortDirection.None;
 
             query.propertyChanged.attach(this._queryPropertyChanged.bind(this));
+        }
+
+        get id(): string {
+            return this._id;
         }
 
         get name(): string {
@@ -4829,6 +4835,22 @@ namespace Vidyano {
 
                 if (this.parent != null && this.parent.fullTypeName === "Vidyano.Search")
                     this._isPinned = false;
+            }
+        }
+
+        export class viConfigurePO extends Action {
+            constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions) {
+                super(service, definition, owner);
+
+                this.isVisible = false;
+            }
+        }
+
+        export class viConfigureQuery extends Action {
+            constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions) {
+                super(service, definition, owner);
+
+                this.isVisible = false;
             }
         }
         /* tslint:enable:class-name */

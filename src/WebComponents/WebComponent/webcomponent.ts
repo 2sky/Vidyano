@@ -380,6 +380,21 @@
     eval("PolymerBase = (function (_super) { function PolymerBase() { } return PolymerBase; })(HTMLElement); WebComponents.PolymerBase = PolymerBase;");
     /* tslint:enable:no-eval */
 
+    export interface IConfigurable extends PolymerBase {
+        /**
+         * Will be called when the context menu is openend on the element.
+         */
+        _viConfigure(actions: IConfigurableAction[]);
+    }
+
+    export interface IConfigurableAction {
+        icon: string;
+        label: string;
+        action: () => void;
+
+        subActions?: IConfigurableAction[];
+    }
+
     export abstract class WebComponent extends PolymerBase {
         private _appRequested: boolean;
         private _app: Vidyano.WebComponents.App;

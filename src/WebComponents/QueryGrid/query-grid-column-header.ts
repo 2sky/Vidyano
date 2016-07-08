@@ -19,7 +19,7 @@
             "upgrade-filter-proxy": "_onUpgradeFilterProxy"
         }
     })
-    export class QueryGridColumnHeader extends WebComponent {
+    export class QueryGridColumnHeader extends WebComponent implements IConfigurable {
         private _resizingRAF: number;
         private _column: QueryGridColumn;
         private _columnObserver: Vidyano.Common.ISubjectDisposer;
@@ -146,6 +146,19 @@
                 this.fire("column-widths-updated", { column: this.column, columnWidth: this.column.calculatedWidth, save: true });
                 this.app.isTracking = false;
             }
+        }
+
+        _viConfigure(actions: IConfigurableAction[]) {
+            if (this.column.query.isSystem)
+                return;
+
+            actions.push({
+                label: `Attribute: ${this.column.column.query.persistentObject.type}.${this.column.name}`,
+                icon: "viConfigure",
+                action: () => {
+                    this.app.changePath(`Management/PersistentObject.1456569d-e02b-44b3-9d1a-a1e417061c77/${this.column.column.id}`);
+                }
+            });
         }
     }
 }
