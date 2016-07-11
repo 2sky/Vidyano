@@ -58,6 +58,13 @@
         display: none;
     }
 
+    #viConfigure {
+        vi-popup-menu-item, vi-popup-menu-item-split {
+            --vi-popup-menu-item-height: var(--theme-h2);
+            --vi-popup-menu-item-icon-width: var(--theme-h2);
+        }
+    }
+
     ::content {
         input, textarea {
             font-size: 13px;
