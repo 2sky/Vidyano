@@ -209,7 +209,6 @@ namespace Vidyano.WebComponents {
             "_cleanUpOnSignOut(service.isSignedIn)"
         ],
         hostAttributes: {
-            "theme-color-1": true,
             "tabindex": "-1"
         },
         listeners: {
