@@ -140,6 +140,11 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: false
             },
+            barebone: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
             initializing: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -173,7 +178,7 @@ namespace Vidyano.WebComponents {
             signInImage: String,
             showMenu: {
                 type: Boolean,
-                computed: "_computeShowMenu(service.isSignedIn, noMenu)"
+                computed: "_computeShowMenu(service.isSignedIn, noMenu, barebone)"
             },
             isDesktop: {
                 type: Boolean,
@@ -241,6 +246,7 @@ namespace Vidyano.WebComponents {
         path: string;
         cacheSize: number;
         noMenu: boolean;
+        barebone: boolean;
         label: string;
         keys: string;
         isTracking: boolean;
@@ -579,14 +585,14 @@ namespace Vidyano.WebComponents {
             return null;
         }
 
-        private _computeShowMenu(isSignedIn: boolean, noMenu: boolean): boolean {
-            return isSignedIn && !noMenu;
+        private _computeShowMenu(isSignedIn: boolean, noMenu: boolean, barebone: boolean): boolean {
+            return !barebone && isSignedIn && !noMenu;
         }
 
         private _start(initializing: boolean, path: string, currentRoute: Vidyano.WebComponents.AppRoute) {
             if (initializing)
                 return;
-
+            
             path = App.stripHashBang(path);
             if (path && currentRoute && currentRoute.allowSignedOut)
                 return;
