@@ -1,3 +1,11 @@
+var marked;
+var _marked = marked;
+marked = function marked(markdown, opts) {
+    opts.breaks = true;
+
+    return _marked(markdown, opts);
+};
+
 namespace Vidyano.WebComponents.Attributes {
     "use strict";
 
