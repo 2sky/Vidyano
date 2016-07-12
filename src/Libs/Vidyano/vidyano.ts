@@ -4875,6 +4875,7 @@ namespace Vidyano {
             this._confirmation = item.getValue("Confirmation");
             this._selectionRule = ExpressionParser.get(item.getValue("SelectionRule"));
             this._refreshQueryOnCompleted = item.getValue("RefreshQueryOnCompleted");
+            this._offset = item.getValue("Offset");
 
             const icon = item.getFullValue("Icon");
 
