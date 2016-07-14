@@ -592,7 +592,7 @@ namespace Vidyano.WebComponents {
         private _start(initializing: boolean, path: string, currentRoute: Vidyano.WebComponents.AppRoute) {
             if (initializing)
                 return;
-            
+
             path = App.stripHashBang(path);
             if (path && currentRoute && currentRoute.allowSignedOut)
                 return;

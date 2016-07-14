@@ -1,3 +1,5 @@
+/* tslint:disable:no-var-keyword */
+/* tslint:disable:no-use-before-declare */
 if (!_markedWithoutSoftbreaks) {
     var marked;
     var _markedWithoutSoftbreaks = marked;
@@ -7,6 +9,8 @@ if (!_markedWithoutSoftbreaks) {
         return _markedWithoutSoftbreaks(markdown, opts);
     };
 }
+/* tslint:enable:no-var-keyword */
+/* tslint:enable:no-use-before-declare */
 
 namespace Vidyano.WebComponents.Attributes {
     "use strict";
