@@ -1,10 +1,12 @@
-var marked;
-var _marked = marked;
-marked = function marked(markdown, opts) {
-    opts.breaks = true;
+if (!_markedWithoutSoftbreaks) {
+    var marked;
+    var _markedWithoutSoftbreaks = marked;
+    marked = function marked(markdown, opts) {
+        opts.breaks = true;
 
-    return _marked(markdown, opts);
-};
+        return _markedWithoutSoftbreaks(markdown, opts);
+    };
+}
 
 namespace Vidyano.WebComponents.Attributes {
     "use strict";
