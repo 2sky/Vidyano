@@ -178,16 +178,8 @@ namespace Vidyano.WebComponents {
                     this._setLoading(false);
                 }
                 else {
-                    if (!Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader) {
-                        Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader = new Promise(resolve => {
-                            this.importHref(this.resolveUrl("../PersistentObject/persistent-object.html"), e => {
-                                resolve(true);
-                            }, err => {
-                                    console.error(err);
-                                    resolve(false);
-                                });
-                        });
-                    }
+                    if (!Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader)
+                        Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader = this.app.importComponent("PersistentObject");
 
                     this._renderPersistentObject(persistentObject);
                 }

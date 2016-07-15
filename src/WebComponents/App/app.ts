@@ -211,7 +211,8 @@ namespace Vidyano.WebComponents {
             "_start(initializing, path, currentRoute)",
             "_updateRoute(path, initializing, routeMapVersion)",
             "_hookWindowBeforeUnload(noHistory, isAttached)",
-            "_cleanUpOnSignOut(service.isSignedIn)"
+            "_cleanUpOnSignOut(service.isSignedIn)",
+            "_resolveDependencies(service.application.hasManagement)"
         ],
         hostAttributes: {
             "tabindex": "-1"
@@ -401,7 +402,9 @@ namespace Vidyano.WebComponents {
         }
 
         showMessageDialog(options: Vidyano.WebComponents.IMessageDialogOptions): Promise<any> {
-            return this.showDialog(new Vidyano.WebComponents.MessageDialog(options));
+            return this.app.importComponent("MessageDialog").then(() => {
+                return this.showDialog(new Vidyano.WebComponents.MessageDialog(options));
+            });
         }
 
         showAlert(notification: string, type: Vidyano.NotificationType = Vidyano.NotificationType.Notice, duration: number = 3000) {
@@ -424,13 +427,22 @@ namespace Vidyano.WebComponents {
             }
         }
 
+        importComponent(component: string): Promise<any> {
+            const vidyanoComponentFolder = component.replace(".", "/");
+            const vidyanoComponent = vidyanoComponentFolder.split("/").reverse()[0].replace(/([A-Z])/g, m => "-" + m[0].toLowerCase()).substr(1);
+
+            return new Promise((resolve, reject) => {
+                const href = this.resolveUrl(`../${vidyanoComponentFolder}/${vidyanoComponent}.html`);
+                this.importHref(href, _ => resolve(null), e => {
+                    console.error(`Unable to load component ${component} via import ${href}`);
+                });
+            })
+        }
+
         private _computeIsProfiling(isSignedIn: boolean, profile: boolean, profilerLoaded: boolean): boolean {
             const isProfiling = isSignedIn && profile;
-            if (isProfiling && !Polymer.isInstance(this.$["profiler"])) {
-                this.importHref(this.resolveUrl("../Profiler/profiler.html"), () => {
-                    this._setProfilerLoaded(true);
-                });
-            }
+            if (isProfiling && !Polymer.isInstance(this.$["profiler"]))
+                this.importComponent("Profiler").then(() => this._setProfilerLoaded(true));
 
             return isProfiling && profilerLoaded;
         }
@@ -586,7 +598,11 @@ namespace Vidyano.WebComponents {
         }
 
         private _computeShowMenu(isSignedIn: boolean, noMenu: boolean, barebone: boolean): boolean {
-            return !barebone && isSignedIn && !noMenu;
+            const showMenu = !barebone && isSignedIn && !noMenu;
+            if (showMenu)
+                this.importComponent("Menu");
+
+            return showMenu;
         }
 
         private _start(initializing: boolean, path: string, currentRoute: Vidyano.WebComponents.AppRoute) {
@@ -707,6 +723,10 @@ namespace Vidyano.WebComponents {
 
         private _computeIsWebKit(): boolean {
             return "WebkitAppearance" in document.documentElement.style;
+        }
+
+        private _resolveDependencies(hasManagement: boolean) {
+            this.importComponent("PopupMenu");
         }
 
         private _configureContextmenu(e: MouseEvent) {
@@ -897,10 +917,10 @@ namespace Vidyano.WebComponents {
                 return new Promise((resolve, reject) => {
                     args.isHandled = true;
 
-                    this.app.importHref(this.app.resolveUrl("../SelectReferenceDialog/select-reference-dialog.html"), () => {
-                        const query = args.query.clone(true);
-                        query.search();
+                    const query = args.query.clone(true);
+                    query.search();
 
+                    this.app.importComponent("SelectReferenceDialog").then(() => {
                         this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then((result: QueryResultItem[]) => {
                             if (result && result.length > 0) {
                                 args.selectedItems = result;
@@ -945,7 +965,10 @@ namespace Vidyano.WebComponents {
                 const po = <Vidyano.PersistentObject>obj;
 
                 if (po.stateBehavior.indexOf("OpenAsDialog") >= 0) {
-                    this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po));
+                    this.app.importComponent("PersistentObjectDialog").then(() => {
+                        this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po));
+                    });
+
                     return;
                 }
 
@@ -1003,12 +1026,14 @@ namespace Vidyano.WebComponents {
                 query.search();
 
             return new Promise((resolve, reject) => {
-                this.app.importHref(this.app.resolveUrl("../SelectReferenceDialog/select-reference-dialog.html"), () => {
+                this.app.importComponent("SelectReferenceDialog").then(() => {
                     this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then(items => {
                         resolve(items);
                     }).catch(e => {
                         reject(e);
                     });
+                }).catch(e => {
+                    reject(e);
                 });
             });
         }
@@ -1081,8 +1106,11 @@ namespace Vidyano.WebComponents {
         }
 
         onRetryAction(retry: IRetryAction): Promise<string> {
-            if (retry.persistentObject)
-                return this.app.showDialog(new Vidyano.WebComponents.RetryActionDialog(retry));
+            if (retry.persistentObject) {
+                this.app.importComponent("RetryActionDialog").then(() => {
+                    return this.app.showDialog(new Vidyano.WebComponents.RetryActionDialog(retry));
+                });
+            }
 
             return super.onRetryAction(retry);
         }

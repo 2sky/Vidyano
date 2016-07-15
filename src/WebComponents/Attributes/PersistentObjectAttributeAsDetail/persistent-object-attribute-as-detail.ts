@@ -178,13 +178,15 @@ namespace Vidyano.WebComponents.Attributes {
             this.attribute.newObject().then(po => {
                 return po.stateBehavior.indexOf("OpenAsDialog") < 0 ?
                     Promise.resolve(po).then(po => postAdd(po)) :
-                    this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, {
-                        saveLabel: this.app.service.actionDefinitions.get("AddReference").displayName,
-                        save: (po, close) => {
-                            postAdd(po);
-                            close();
-                        }
-                    }));
+                    this.app.importComponent("PersistentObjectDialog").then(() => {
+                        this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, {
+                            saveLabel: this.app.service.actionDefinitions.get("AddReference").displayName,
+                            save: (po, close) => {
+                                postAdd(po);
+                                close();
+                            }
+                        }));
+                    });
             }).catch(e => this.attribute.parent.setNotification(e));
         }
 
