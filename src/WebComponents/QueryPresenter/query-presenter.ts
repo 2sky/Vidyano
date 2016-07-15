@@ -112,16 +112,8 @@ namespace Vidyano.WebComponents {
                     this.queryId = query.id;
 
                 if (!this._customTemplate) {
-                    if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader) {
-                        Vidyano.WebComponents.QueryPresenter._queryComponentLoader = new Promise(resolve => {
-                            this.importHref(this.resolveUrl("../Query/query.html"), e => {
-                                resolve(true);
-                            }, err => {
-                                console.error(err);
-                                resolve(false);
-                            });
-                        });
-                    }
+                    if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader)
+                        Vidyano.WebComponents.QueryPresenter._queryComponentLoader = this.app.importComponent("Query");
 
                     this._renderQuery(query);
                 }

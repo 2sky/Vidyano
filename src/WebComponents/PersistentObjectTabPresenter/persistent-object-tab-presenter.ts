@@ -59,27 +59,21 @@ namespace Vidyano.WebComponents {
             }
             else {
                 if (tab instanceof Vidyano.PersistentObjectQueryTab) {
-                    const itemPresenter = new QueryItemsPresenter();
-                    itemPresenter.className = childClassName;
-                    itemPresenter.query = (<Vidyano.PersistentObjectQueryTab>tab).query;
-                    if (itemPresenter.query.autoQuery && !itemPresenter.query.hasSearched)
-                        itemPresenter.query.search();
+                    this.app.importComponent("QueryItemsPresenter").then(() => {
+                        const itemPresenter = new QueryItemsPresenter();
+                        itemPresenter.className = childClassName;
+                        itemPresenter.query = (<Vidyano.PersistentObjectQueryTab>tab).query;
+                        if (itemPresenter.query.autoQuery && !itemPresenter.query.hasSearched)
+                            itemPresenter.query.search();
 
-                    Polymer.dom(this).appendChild(itemPresenter);
+                        Polymer.dom(this).appendChild(itemPresenter);
 
-                    this._setLoading(false);
+                        this._setLoading(false);
+                    });
                 }
                 else if (tab instanceof Vidyano.PersistentObjectAttributeTab) {
-                    if (!Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader) {
-                        Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader = new Promise(resolve => {
-                            this.importHref(this.resolveUrl("../PersistentObjectTab/persistent-object-tab.html"), e => {
-                                resolve(true);
-                            }, err => {
-                                    console.error(err);
-                                    resolve(false);
-                                });
-                        });
-                    }
+                    if (!Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader)
+                        Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader = this.app.importComponent("PersistentObjectTab");
 
                     Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader.then(() => {
                         if (tab !== this.tab)

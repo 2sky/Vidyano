@@ -83,16 +83,8 @@ namespace Vidyano.WebComponents {
             }
             else {
                 if (!currentChart) {
-                    if (!Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader) {
-                        Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader = new Promise(resolve => {
-                            this.importHref(this.resolveUrl("../QueryGrid/query-grid.html"), e => {
-                                resolve(true);
-                            }, err => {
-                                    console.error(err);
-                                    resolve(false);
-                                });
-                        });
-                    }
+                    if (!Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader)
+                        Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader = this.app.importComponent("QueryGrid");
 
                     Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader.then(() => {
                         if (query !== this.query || this._renderedQuery === query || !!query.currentChart)

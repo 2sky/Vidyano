@@ -3,7 +3,7 @@ namespace Vidyano.WebComponents {
 
     @WebComponent.register({
         properties: {
-            menuTitle: String,
+            label: String,
             activeProgramUnit: Object,
             programUnits: Array,
             collapsed: {
@@ -362,7 +362,11 @@ namespace Vidyano.WebComponents {
                             label: "Add Query",
                             icon: "Add",
                             action: () => {
-                                this.app.service.getQuery("5a4ed5c7-b843-4a1b-88f7-14bd1747458b").then(query => {
+                                let query: Vidyano.Query;
+                                Promise.all([this.app.service.getQuery("5a4ed5c7-b843-4a1b-88f7-14bd1747458b").then(q => query = q), this.app.importComponent("SelectReferenceDialog")]).then(() => {
+                                    if (!query)
+                                        return;
+
                                     const dialog = new Vidyano.WebComponents.SelectReferenceDialog(query);
                                     this.app.showDialog(dialog).then(() => {
                                         if (!query.selectedItems || query.selectedItems.length === 0)

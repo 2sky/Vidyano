@@ -13,8 +13,7 @@ namespace Vidyano.WebComponents {
             },
             component: {
                 type: String,
-                reflectToAttribute: true,
-                observer: "_componentChanged"
+                reflectToAttribute: true
             },
             active: {
                 type: Boolean,
@@ -33,7 +32,9 @@ namespace Vidyano.WebComponents {
     })
     export class AppRoute extends WebComponent {
         private _constructor: IAppRouteComponentConstructor;
+        private _constructorComponent: string;
         private _constructorChanged: boolean;
+        private _clearChildren: boolean;
         private _parameters: { [key: string]: string } = {};
         private _documentTitleBackup: string;
         allowSignedOut: boolean;
@@ -59,31 +60,76 @@ namespace Vidyano.WebComponents {
                 return;
 
             this._documentTitleBackup = document.title;
-
-            let component = <WebComponent>Polymer.dom(this).children[0];
-            if (!component || this._constructorChanged) {
-                this._constructorChanged = false;
-                component = <WebComponent><any>new this._constructor(this.app);
-
-                this.empty();
-                Polymer.dom(this).appendChild(component);
-                Polymer.dom(this).flush();
-            }
-            else if (component.tagName === "TEMPLATE" && component.getAttribute("is") === "dom-template") {
-                const template = <PolymerTemplate><any>component;
-
-                this.empty();
-                Polymer.dom(this).appendChild(template.stamp({ app: this.app }).root);
-                Polymer.dom(this).flush();
-            }
-
             this._parameters = parameters;
-            if (!component.fire || !component.fire("app-route-activate", null, { bubbles: false, cancelable: true }).defaultPrevented) {
-                this._setActive(true);
-                this._setPath(this.app.path);
 
-                (<AppServiceHooks>this.app.service.hooks).trackPageView(this.app.path);
+            if (this._clearChildren) {
+                Polymer.dom(this).children.forEach(node => Polymer.dom(this).removeChild(node));
+                this._clearChildren = false;
             }
+
+            if (this.component) {
+                if (this._constructorComponent !== this.component) {
+                    this._constructor = this._constructorFromComponent(this.component);
+                    if (!this._constructor) {
+                        if (!this._constructor && this.component.startsWith("Vidyano.WebComponents.")) {
+                            const component = this.component;
+
+                            this.app.importComponent(this.component.replace(/^(Vidyano.WebComponents.)/, "")).then(_ => {
+                                if (this.component === component) {
+                                    this._constructor = this._constructorFromComponent(this.component);
+                                    if (this._constructor) {
+                                        this._constructorComponent = this.component;
+                                        this._distributeNewComponent();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        this._constructorComponent = this.component;
+                        this._distributeNewComponent();
+                    }
+                }
+                else
+                    this._distributeNewComponent();
+            }
+            else {
+                const template = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
+                if (template) {
+                    Polymer.dom(this).appendChild(template.stamp({ app: this.app }).root);
+                    Polymer.dom(this).flush();
+
+                    this._clearChildren = true;
+                }
+                else {
+                    const firstChild = <WebComponent>Polymer.dom(this).children[0];
+                    if (firstChild && firstChild.fire)
+                        firstChild.fire("app-route-activate", null, { bubbles: false });
+                }
+            }
+
+            this._setActive(true);
+            this._setPath(this.app.path);
+
+            (<AppServiceHooks>this.app.service.hooks).trackPageView(this.app.path);
+        }
+
+        private _constructorFromComponent(component: string): IAppRouteComponentConstructor {
+            return <IAppRouteComponentConstructor><any>this.component.split(".").reduce((obj: any, path: string) => obj[path], window);
+        }
+
+        private _distributeNewComponent() {
+            if (!this._constructor || this._constructorComponent !== this.component)
+                return;
+
+            const componentInstance = <WebComponent><any>new this._constructor(this.app);
+            Polymer.dom(this).appendChild(componentInstance);
+            Polymer.dom(this).flush();
+
+            this._clearChildren = true;
+
+            if (componentInstance.fire)
+                componentInstance.fire("app-route-activate", null, { bubbles: false });
         }
 
         deactivate(): Promise<boolean> {
@@ -132,11 +178,6 @@ namespace Vidyano.WebComponents {
                 document.title = this._documentTitleBackup;
 
             e.stopPropagation();
-        }
-
-        private _componentChanged() {
-            this._constructor = <IAppRouteComponentConstructor><any>this.component.split(".").reduce((obj: any, path: string) => obj[path], window);
-            this._constructorChanged = true;
         }
     }
 }
