@@ -38,7 +38,7 @@
                 e.preventDefault();
                 return;
             }
-            
+
             if (route.app.service.windowsAuthentication) {
                 route.app.service.signInUsingCredentials("", "").then(() => route.app.changePath(returnUrl));
 

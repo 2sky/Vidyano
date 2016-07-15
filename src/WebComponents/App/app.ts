@@ -432,7 +432,7 @@ namespace Vidyano.WebComponents {
                 this.importHref(href, _ => resolve(null), e => {
                     console.error(`Unable to load component ${component} via import ${href}`);
                 });
-            })
+            });
         }
 
         private _computeIsProfiling(isSignedIn: boolean, profile: boolean, profilerLoaded: boolean): boolean {
