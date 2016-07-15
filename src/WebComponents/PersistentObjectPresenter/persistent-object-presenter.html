@@ -1,13 +1,11 @@
 <link rel="import" href="../PersistentObjectAttributePresenter/persistent-object-attribute-presenter.html" />
+<link rel="import" href="../Error/error.html" />
 
 <dom-module id="vi-persistent-object-presenter">
     <template>
         <link rel="stylesheet" href="persistent-object-presenter.css" />
-        <template is="dom-if" if="[[hasError]]" restamp>
-            <div id="error">
-                <vi-icon source="Notification_Error"></vi-icon>
-                <span>[[error]]</span>
-            </div>
+        <template is="dom-if" if="[[error]]" restamp>
+            <vi-error class="flex" message="[[error]]"></vi-error>
         </template>
         <content></content>
         <template is="dom-if" if="[[loading]]">

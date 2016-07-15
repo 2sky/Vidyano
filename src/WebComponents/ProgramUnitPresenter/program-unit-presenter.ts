@@ -7,6 +7,10 @@ namespace Vidyano.WebComponents {
                 type: Object,
                 readOnly: true,
                 observer: "_programUnitChanged"
+            },
+            error: {
+                type: String,
+                readOnly: true
             }
         },
         listeners: {
@@ -17,6 +21,7 @@ namespace Vidyano.WebComponents {
         programUnit: Vidyano.ProgramUnit;
 
         private _setProgramUnit: (programUnit: Vidyano.ProgramUnit) => void;
+        private _setError: (error: string) => void;
 
         private _activate(e: CustomEvent) {
             const route = <AppRoute>Polymer.dom(this).parentNode;
@@ -27,7 +32,7 @@ namespace Vidyano.WebComponents {
             if (!this.programUnit) {
                 e.preventDefault();
 
-                this.app.redirectToNotFound();
+                this._setError(this.translateMessage("NotFound"));
             }
         }
 

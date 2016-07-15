@@ -29,11 +29,6 @@ namespace Vidyano.WebComponents {
             error: {
                 type: String,
                 readOnly: true
-            },
-            hasError: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeHasError(error)"
             }
         },
         observers: [
@@ -75,7 +70,7 @@ namespace Vidyano.WebComponents {
                     this.persistentObject = null;
 
                     this._setLoading(false);
-                    this.app.redirectToNotFound();
+                    this._setError(this.translateMessage("NotFound"));
 
                     return;
                 }
@@ -157,10 +152,6 @@ namespace Vidyano.WebComponents {
             }
             else
                 this.persistentObject = null;
-        }
-
-        private _computeHasError(error: string): boolean {
-            return !StringEx.isNullOrEmpty(error);
         }
 
         private _persistentObjectChanged(persistentObject: Vidyano.PersistentObject, oldPersistentObject: Vidyano.PersistentObject) {

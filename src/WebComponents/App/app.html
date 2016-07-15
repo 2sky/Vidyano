@@ -27,7 +27,6 @@
                 <content select="[label]:not([label='sign-in'])"></content>
             </vi-menu>
         </template>
-        <vi-app-route route="Error/:message" component="Vidyano.WebComponents.AppRouteError"></vi-app-route>
         <template is="dom-if" if="[[!barebone]]">
             <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
             <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
@@ -43,6 +42,9 @@
             <vi-app-route route="SignOut(/)(:returnUrl)" allow-signed-out>
                 <vi-sign-out></vi-sign-out>
             </vi-app-route>
+        </template>
+        <template is="dom-if" if="[[routeNotFound]]">
+            <vi-error class="flex" message="[[translateMessage('NotFound', isAttached)]]"></vi-error>
         </template>
         <vi-app-config>
             <vi-persistent-object-attribute-config type="CommonMark" height="3"></vi-persistent-object-attribute-config>

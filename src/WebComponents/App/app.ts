@@ -165,6 +165,11 @@ namespace Vidyano.WebComponents {
                 readOnly: true,
                 value: 0
             },
+            routeNotFound: {
+                type: Boolean,
+                readOnly: true,
+                value: false
+            },
             profilerLoaded: {
                 type: Boolean,
                 readOnly: true,
@@ -260,6 +265,7 @@ namespace Vidyano.WebComponents {
         private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setCurrentRoute: (route: AppRoute) => void;
         private _setProfilerLoaded: (val: boolean) => void;
+        private _setRouteNotFound: (routeNotFound: boolean) => void;
 
         attached() {
             super.attached();
@@ -377,16 +383,6 @@ namespace Vidyano.WebComponents {
             this.changePath("SignOut" + (keepUrl && this.path ? "/" + encodeURIComponent(App.stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
         }
 
-        redirectToNotFound() {
-            this.async(() => {
-                this.redirectToError("NotFound", true);
-            });
-        }
-
-        redirectToError(message: string, replaceCurrent?: boolean) {
-            this.changePath("Error/" + encodeURIComponent(message), replaceCurrent);
-        }
-
         showDialog(dialog: Dialog): Promise<any> {
             Polymer.dom(this.root).appendChild(dialog);
 
@@ -396,7 +392,7 @@ namespace Vidyano.WebComponents {
                 return result;
             }).catch(e => {
                 Polymer.dom(this.root).removeChild(dialog);
-                if(e)
+                if (e)
                     throw e;
             });
         }
@@ -491,7 +487,7 @@ namespace Vidyano.WebComponents {
             this.fire("initialized", undefined);
         }
 
-        private _convertPath(application: Vidyano.Application, path: string) : string {
+        private _convertPath(application: Vidyano.Application, path: string): string {
             if (application) {
                 let match = application.poRe.exec(path);
                 if (match)
@@ -546,10 +542,7 @@ namespace Vidyano.WebComponents {
                 const mappedPathRoute = !!path ? Vidyano.Path.match(hashBangPath, true) : null;
                 const newRoute = mappedPathRoute ? this._routeMap[App.stripHashBang(mappedPathRoute.path)] : null;
 
-                if (!!path && !newRoute && this.service.isSignedIn) {
-                    this.redirectToNotFound();
-                    return;
-                }
+                this._setRouteNotFound(false);
 
                 if (this.currentRoute) {
                     return currentRoute.deactivate().then(proceed => {
@@ -559,6 +552,9 @@ namespace Vidyano.WebComponents {
                         if (!!newRoute) {
                             newRoute.activate(mappedPathRoute.params);
                             this._setCurrentRoute(newRoute);
+                        } else if (!!path && this.service.isSignedIn) {
+                            this._setRouteNotFound(true);
+                            return;
                         }
                     });
                 }
@@ -566,6 +562,8 @@ namespace Vidyano.WebComponents {
                     newRoute.activate(mappedPathRoute.params);
                     this._setCurrentRoute(newRoute);
                 }
+                else if (!!path && this.service.isSignedIn)
+                    this._setRouteNotFound(true);
                 else
                     this._setCurrentRoute(null);
             });
@@ -628,7 +626,7 @@ namespace Vidyano.WebComponents {
         private _cleanUpOnSignOut(isSignedIn: boolean) {
             if (!isSignedIn) {
                 this.cacheClear();
-                for(const route in this._routeMap)
+                for (const route in this._routeMap)
                     this._routeMap[route].reset();
             }
         }
