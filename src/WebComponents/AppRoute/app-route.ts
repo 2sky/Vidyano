@@ -63,7 +63,7 @@ namespace Vidyano.WebComponents {
             this._parameters = parameters;
 
             if (this._clearChildren) {
-                Polymer.dom(this).children.forEach(node => Polymer.dom(this).removeChild(node));
+                Polymer.dom(this).children.filter(c => c.tagName !== "TEMPLATE").forEach(c => Polymer.dom(this).removeChild(c));
                 this._clearChildren = false;
             }
 
