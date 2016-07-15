@@ -214,7 +214,7 @@ namespace Vidyano.WebComponents {
         },
         observers: [
             "_start(initializing, path, currentRoute)",
-            "_updateRoute(path, initializing, routeMapVersion)",
+            "_updateRoute(path, initializing, barebone, routeMapVersion)",
             "_hookWindowBeforeUnload(noHistory, isAttached)",
             "_cleanUpOnSignOut(service.isSignedIn)",
             "_resolveDependencies(service.application.hasManagement)"
@@ -502,7 +502,7 @@ namespace Vidyano.WebComponents {
             return path;
         }
 
-        private _updateRoute(path: string, initializing: boolean, routeMapVersion: number) {
+        private _updateRoute(path: string, initializing: boolean, barebone: boolean, routeMapVersion: number) {
             if (initializing || !routeMapVersion)
                 return;
 
@@ -539,7 +539,7 @@ namespace Vidyano.WebComponents {
                     }
                 }
 
-                const mappedPathRoute = !!path ? Vidyano.Path.match(hashBangPath, true) : null;
+                const mappedPathRoute = !!path || this.barebone ? Vidyano.Path.match(hashBangPath, true) : null;
                 const newRoute = mappedPathRoute ? this._routeMap[App.stripHashBang(mappedPathRoute.path)] : null;
 
                 this._setRouteNotFound(false);
