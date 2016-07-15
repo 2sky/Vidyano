@@ -32,11 +32,10 @@ namespace Vidyano.WebComponents {
             if (!session || !this._customTemplate)
                 return;
 
-            <HTMLElement>Polymer.dom(this).appendChild(this._customTemplate.stamp({ session: session }).root);
-            Polymer.dom(this).flush();
-
-            if (Polymer.dom(this).querySelectorAll("vi-persistent-object-attribute-presenter").length > 0)
-                this.app.importComponent("PersistentObjectAttributePresenter");
+            this.app.importComponent("PersistentObjectAttributePresenter").then(() => {
+                <HTMLElement>Polymer.dom(this).appendChild(this._customTemplate.stamp({ session: session }).root);
+                Polymer.dom(this).flush();
+            });
 
             return session;
         }
