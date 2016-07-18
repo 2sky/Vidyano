@@ -527,7 +527,7 @@ namespace Vidyano.WebComponents {
                     if (programUnit) {
                         if (programUnit.openFirst) {
                             const openFirstPath = programUnit.items[0].path;
-                            if (path !== openFirstPath) {
+                            if (path !== openFirstPath && openFirstPath != null) {
                                 this.async(() => this.changePath(openFirstPath));
                                 return;
                             }
