@@ -2757,7 +2757,7 @@ namespace Vidyano {
                         selectedItems = selectedObjectIds.map(id => this.service.hooks.onConstructQueryResultItem(this.service, { id: id }, null));
                     }
 
-                    this.service.executeAction("PersistentObject.SelectReference", this.parent, this.lookup, <QueryResultItem[]>selectedItems, [{ PersistentObjectAttributeId: this.id }]).then(result => {
+                    this.service.executeAction("PersistentObject.SelectReference", this.parent, this.lookup, <QueryResultItem[]>selectedItems, { PersistentObjectAttributeId: this.id }).then(result => {
                         if (result)
                             this.parent.refreshFromResult(result);
 
