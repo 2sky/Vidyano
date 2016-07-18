@@ -2292,10 +2292,8 @@ namespace Vidyano {
         _triggerAttributeRefresh(attr: PersistentObjectAttribute, immediate?: boolean): Promise<boolean> {
             const work = () => {
                 return new Promise<any>((resolve, reject) => {
-                    const parameters = [{ RefreshedPersistentObjectAttributeId: attr.id }];
-
                     this._prepareAttributesForRefresh(attr);
-                    this.service.executeAction("PersistentObject.Refresh", this, null, null, parameters).then((result) => {
+                    this.service.executeAction("PersistentObject.Refresh", this, null, null, { RefreshedPersistentObjectAttributeId: attr.id }).then((result) => {
                         if (this.isEditing)
                             this.refreshFromResult(result);
 
@@ -3955,7 +3953,7 @@ namespace Vidyano {
         }
 
         refreshDistincts(): Promise<IQueryColumnDistincts> {
-            return this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query, null, [{ ColumnName: this.name }]).then(result => {
+            return this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query, null, { ColumnName: this.name }).then(result => {
                 this.query.columns.filter(q => q !== this).forEach(col => {
                     if (col.distincts)
                         col.distincts.isDirty = true;
