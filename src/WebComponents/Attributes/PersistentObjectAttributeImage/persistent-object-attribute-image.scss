@@ -4,6 +4,7 @@
     @include layout-horizontal();
     @include relative();
     outline: none;
+    min-height: var(--theme-h2) !important;
 
     img {
         max-height: 100%;
