@@ -8,12 +8,14 @@
         <owners>2sky</owners>
         <projectUrl>http://www.vidyano.com/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>The Vidyano Web Client provides a modern out of the box scaffolded UI that connects to a Vidyano backend.</description>
-        <copyright>Copyright © 2015 2sky NV</copyright>
+        <description>The Vidyano Web² client provides a modern out of the box scaffolded UI that connects to a Vidyano backend.</description>
+        <copyright>Copyright © 2011-2016 2sky NV</copyright>
         <tags>vidyano web2</tags>
+		<dependencies>
+            <dependency id="Vidyano.Web2.Definition" version="[$version$]" />
+		</dependencies>
     </metadata>
     <files>
-        <file src="vidyano.d.ts" target="content\Scripts\typings\vidyano\vidyano.d.ts" />
         <file src="bin\Release\Vidyano.Web2.dll" target="lib\net45\Vidyano.Web2.dll" />
 		<file src="Install.ps1" target="tools\Install.ps1" />
     </files>

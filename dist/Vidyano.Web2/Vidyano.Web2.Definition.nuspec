@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+    <metadata minClientVersion="2.8">
+        <id>Vidyano.Web2.Definition</id>
+        <version>$version$</version>
+        <title>Vidyano Web2 Definition</title>
+        <authors>2sky</authors>
+        <owners>2sky</owners>
+        <projectUrl>http://www.vidyano.com/</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Typescript definition file for the Vidyano Web² Client.</description>
+        <copyright>Copyright © 2011-2016 2sky NV</copyright>
+        <tags>vidyano web2 ts typed</tags>
+    </metadata>
+    <files>
+        <file src="vidyano.d.ts" target="content\Scripts\typings\vidyano\vidyano.d.ts" />
+    </files>
+</package>
