@@ -861,9 +861,9 @@ namespace Vidyano.WebComponents {
             const attributeConfigsEnum = Enumerable.from(attributeConfigs);
             return attributeConfigsEnum.firstOrDefault(c => c.parentObjectId === attribute.parent.objectId && c.parentId === attribute.parent.id && (c.name === attribute.name || c.type === attribute.type)) ||
                 attributeConfigsEnum.firstOrDefault(c => c.parentId === attribute.parent.id && (c.name === attribute.name || c.type === attribute.type)) ||
-                attributeConfigsEnum.firstOrDefault(c => c.name === attribute.name && c.type === attribute.type) ||
-                attributeConfigsEnum.firstOrDefault(c => c.name === attribute.name) ||
-                attributeConfigsEnum.firstOrDefault(c => c.type === attribute.type);
+                attributeConfigsEnum.firstOrDefault(c => c.name === attribute.name && c.type === attribute.type && !c.parentId) ||
+                attributeConfigsEnum.firstOrDefault(c => c.name === attribute.name && !c.parentId && !c.type) ||
+                attributeConfigsEnum.firstOrDefault(c => c.type === attribute.type && !c.parentId && !c.name);
         }
 
         getTabConfig(tab: Vidyano.PersistentObjectTab, tabConfigs: PersistentObjectTabConfig[]): PersistentObjectTabConfig {
