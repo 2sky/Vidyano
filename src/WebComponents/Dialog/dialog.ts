@@ -129,6 +129,11 @@ namespace Vidyano.WebComponents {
                 info.hostAttributes["dialog"] = "";
                 info.hostAttributes["with-backdrop"] = "";
 
+                info.keybindings = info.keybindings || {};
+                info.keybindings["esc"] = {
+                    listener: "close"
+                };
+
                 return WebComponent.register(obj, info, prefix);
             };
         }
