@@ -1,0 +1,27 @@
+<link rel="import" href="../Button/button.html" />
+<link rel="import" href="../Dialog/dialog.html" />
+<link rel="import" href="../PersistentObjectTabPresenter/persistent-object-tab-presenter.html" />
+
+<dom-module id="vi-persistent-object-wizard-dialog">
+    <template>
+        <link rel="stylesheet" href="persistent-object-wizard-dialog.css" />
+        <header class="horizontal layout">
+            <h4 class="flex">[[currentTab.label]]</h4>
+        </header>
+        <main>
+            <vi-notification service-object="[[persistentObject]]"></vi-notification>
+            <vi-persistent-object-tab-presenter tab="[[currentTab]]"></vi-persistent-object-tab-presenter>
+        </main>
+        <footer class="horizontal layout justified">
+            <div>
+                <button is="vi-button" inverse on-tap="_previous" label="[[translateMessage('Previous', isAttached)]]" disabled$="[[persistentObject.isBusy]]" hidden$="[[!canPrevious]]"></button>
+            </div>
+            <div>
+                <button is="vi-button" on-tap="_next" action-type="Default" label="[[translateMessage('Next', isAttached)]]" disabled$="[[!canNext]]" hidden$="[[canFinish]]"></button>
+                <button is="vi-button" on-tap="_finish" action-type="Default" label="[[translateMessage('Finish', isAttached)]]" disabled$="[[persistentObject.isBusy]]" hidden$="[[!canFinish]]"></button>
+            </div>
+        </footer>
+    </template>
+</dom-module>
+
+<script src="persistent-object-wizard-dialog.js"></script>

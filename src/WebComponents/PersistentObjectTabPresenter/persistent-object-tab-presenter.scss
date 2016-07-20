@@ -4,11 +4,9 @@
     @include layout-horizontal();
     @include relative();
 
-    &:not(.vi-persistent-object-dialog):not([class^="vi-retry-action-dialog"]):not(.vi-retry-action-dialog) {
-        ::content {
-            > vi-persistent-object-tab, > vi-query-items-presenter {
-                @include fit();
-            }
+    ::content {
+        > vi-persistent-object-tab, > vi-query-items-presenter {
+            @include fit();
         }
     }
 }

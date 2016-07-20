@@ -90,6 +90,7 @@
     "src/WebComponents/PersistentObjectTab/persistent-object-tab.ts",
     "src/WebComponents/PersistentObjectTabBar/persistent-object-tab-bar.ts",
     "src/WebComponents/PersistentObjectTabPresenter/persistent-object-tab-presenter.ts",
+    "src/WebComponents/PersistentObjectWizardDialog/persistent-object-wizard-dialog.ts",
     "src/WebComponents/Popup/popup.ts",
     "src/WebComponents/PopupMenu/popup-menu.ts",
     "src/WebComponents/Profiler/profiler.ts",

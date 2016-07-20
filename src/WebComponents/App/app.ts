@@ -965,7 +965,14 @@ namespace Vidyano.WebComponents {
             if (obj instanceof Vidyano.PersistentObject) {
                 const po = <Vidyano.PersistentObject>obj;
 
-                if (po.stateBehavior.indexOf("OpenAsDialog") >= 0) {
+                if (po.stateBehavior.indexOf("AsWizard") >= 0) {
+                    this.app.importComponent("PersistentObjectWizardDialog").then(() => {
+                        this.app.showDialog(new Vidyano.WebComponents.PersistentObjectWizardDialog(po));
+                    });
+
+                    return;
+                }
+                else if (po.stateBehavior.indexOf("OpenAsDialog") >= 0) {
                     this.app.importComponent("PersistentObjectDialog").then(() => {
                         this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po));
                     });
