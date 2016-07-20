@@ -18,6 +18,8 @@ interface Date {
 
     netOffset(value: string);
     netOffset(): string;
+
+    format(format: string): string;
 }
 
 interface Number {

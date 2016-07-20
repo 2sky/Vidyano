@@ -1432,6 +1432,16 @@ namespace Vidyano {
 
                 case "Date":
                 case "NullableDate":
+                    if (!StringEx.isNullOrEmpty(value)) {
+                        let date: Date = value;
+                        if (typeof (date) === "string")
+                            date = new Date(value);
+
+                        return `${date.format("dd-MM-yyyy")} 00:00:00`;
+                    }
+
+                    break;
+
                 case "DateTime":
                 case "NullableDateTime":
                     if (!StringEx.isNullOrEmpty(value)) {
