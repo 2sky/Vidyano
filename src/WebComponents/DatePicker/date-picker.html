@@ -9,11 +9,11 @@
             <vi-icon header source="Calendar"></vi-icon>
             <div class="calendar" content>
                 <header class="horizontal layout">
-                    <button is="vi-button" n="-1" on-tap="_fast"><vi-icon source="FastBackward"></vi-icon></button>
+                    <button is="vi-button" n="-1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastBackward"></vi-icon></button>
                     <button is="vi-button" n="-1" on-tap="_slow"><vi-icon source="Backward"></vi-icon></button>
                     <button is="vi-button" class="flex" on-tap="_zoomOut" label="[[header]]"></button>
                     <button is="vi-button" n="1" on-tap="_slow"><vi-icon source="Forward"></vi-icon></button>
-                    <button is="vi-button" n="1" on-tap="_fast"><vi-icon source="FastForward"></vi-icon></button>
+                    <button is="vi-button" n="1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastForward"></vi-icon></button>
                 </header>
                 <main class="layout horizontal wrap" zoom$="[[zoom]]">
                     <template is="dom-if" if="[[!deferredCellsUpdate]]">

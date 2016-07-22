@@ -15,6 +15,10 @@
                 reflectToAttribute: true,
                 observer: "_zoomChanged"
             },
+            canFast: {
+                type: Boolean,
+                readOnly: true
+            },
             currentDate: {
                 type: Object,
                 readOnly: true
@@ -71,6 +75,7 @@
         cells: IDatePickerCell[];
 
         private _setCells: (cells: IDatePickerCell[]) => void;
+        private _setCanFast: (canFast: boolean) => void;
         private _setCurrentDate: (date: moment.Moment) => void;
         private _setToday: (date: moment.Moment) => void;
         private _setHeader: (header: string) => void;
@@ -102,11 +107,13 @@
                 }).toArray());
 
                 this._setCells(cells);
+                this._setCanFast(true);
             }
             else {
                 this._setCells(Enumerable.range(1, 12).select(d => {
                     return { type: zoom.substr(0, zoom.length - 1) };
                 }).toArray());
+                this._setCanFast(false);
             }
         }
 
@@ -135,7 +142,7 @@
             else if (this.zoom === "months") {
                 const loop = currentDateMoment.startOf("year");
                 const end = loop.clone().add(12, "months");
-                
+
                 let index = 0;
                 do {
                     this.set(`cells.${index}.date`, loop.clone());
@@ -201,7 +208,7 @@
                 this.currentDate.add(amount, "years");
             else
                 this.currentDate.add(amount * 12, "years");
-            
+
             this._setCurrentDate(this.currentDate.clone());
 
             e.stopPropagation();
@@ -209,7 +216,6 @@
 
         private _fast(e: Event) {
             const amount = parseInt((<Vidyano.WebComponents.Button>e.currentTarget).getAttribute("n"));
-
             this._setCurrentDate(this.currentDate.add(amount, "years").clone());
 
             e.stopPropagation();
