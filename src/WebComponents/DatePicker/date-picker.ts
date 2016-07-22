@@ -110,25 +110,20 @@
             }
         }
 
-        private _computeCells(cells: IDatePickerCell[], deferred: boolean): IDatePickerCell[] {
-            return !deferred ? cells : null;
-        }
-
-        private _render(cells: IDatePickerCell[], currentDate: Date) {
-            const currentDateMoment = moment(currentDate);
+        private _render(cells: IDatePickerCell[], currentDate: moment.Moment) {
+            const currentDateMoment = currentDate.clone();
 
             if (this.zoom === "days") {
                 if (cells.length !== 42 + 7)
                     return;
 
-                const loop = currentDateMoment.clone().startOf("month").startOf(Vidyano.CultureInfo.currentCulture.dateFormat.firstDayOfWeek > 0 ? "isoWeek" : "week");
+                const loop = currentDateMoment.startOf("month").startOf(Vidyano.CultureInfo.currentCulture.dateFormat.firstDayOfWeek > 0 ? "isoWeek" : "week");
                 const end = loop.clone().add(6, "weeks");
-
                 let index = 7; // Skip weekday cells
                 do {
                     this.set(`cells.${index}.date`, loop.clone());
                     this.set(`cells.${index}.content`, loop.format("D"));
-                    this.set(`cells.${index}.monthOffset`, loop.isSame(currentDateMoment, "month") ? 0 : (loop.isBefore(currentDateMoment) ? -1 : 1));
+                    this.set(`cells.${index}.monthOffset`, loop.isSame(currentDate, "month") ? 0 : (loop.isBefore(currentDate) ? -1 : 1));
 
                     index++;
                     loop.add(1, "days");
@@ -138,9 +133,9 @@
                 this._setHeader(`${CultureInfo.currentCulture.dateFormat.monthNames[currentDateMoment.month()]} ${currentDateMoment.year()}`);
             }
             else if (this.zoom === "months") {
-                const loop = currentDateMoment.clone().startOf("year");
+                const loop = currentDateMoment.startOf("year");
                 const end = loop.clone().add(12, "months");
-
+                
                 let index = 0;
                 do {
                     this.set(`cells.${index}.date`, loop.clone());
@@ -154,7 +149,7 @@
                 this._setHeader(`${currentDateMoment.year()}`);
             }
             else if (this.zoom === "years") {
-                const loop = currentDateMoment.clone().startOf("year").subtract(6, "years");
+                const loop = currentDateMoment.startOf("year").subtract(6, "years");
                 const end = loop.clone().add(12, "years");
 
                 let index = 0;
@@ -206,7 +201,7 @@
                 this.currentDate.add(amount, "years");
             else
                 this.currentDate.add(amount * 12, "years");
-
+            
             this._setCurrentDate(this.currentDate.clone());
 
             e.stopPropagation();
@@ -214,6 +209,7 @@
 
         private _fast(e: Event) {
             const amount = parseInt((<Vidyano.WebComponents.Button>e.currentTarget).getAttribute("n"));
+
             this._setCurrentDate(this.currentDate.add(amount, "years").clone());
 
             e.stopPropagation();

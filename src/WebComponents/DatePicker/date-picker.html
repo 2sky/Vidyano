@@ -16,8 +16,10 @@
                     <button is="vi-button" n="1" on-tap="_fast"><vi-icon source="FastForward"></vi-icon></button>
                 </header>
                 <main class="layout horizontal wrap" zoom$="[[zoom]]">
-                    <template is="dom-repeat" items="[[_computeCells(cells, deferredCellsUpdate)]]" as="cell">
-                        <div class="cell layout horizontal center-center" type$="[[cell.type]]" is-selected$="[[_isSelected(zoom, cell.date, selectedDateMoment)]]" is-today$="[[_isToday(zoom, cell.date, today)]]" is-other$="[[_isOther(cell.monthOffset)]]" break$="[[cell.break]]" on-tap="_select">[[cell.content]]</div>
+                    <template is="dom-if" if="[[!deferredCellsUpdate]]">
+                        <template is="dom-repeat" items="[[cells]]" as="cell">
+                            <div class="cell layout horizontal center-center" type$="[[cell.type]]" is-selected$="[[_isSelected(zoom, cell.date, selectedDateMoment)]]" is-today$="[[_isToday(zoom, cell.date, today)]]" is-other$="[[_isOther(cell.monthOffset)]]" break$="[[cell.break]]" on-tap="_select">[[cell.content]]</div>
+                        </template>
                     </template>
                 </main>
             </div>
