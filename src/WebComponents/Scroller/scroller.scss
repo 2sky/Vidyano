@@ -233,24 +233,24 @@
     &[scroll-bottom-shadow] > .scroll-shadow.bottom {
         transform: translateY(var(--theme-h2));
     }
-}
 
-:host-context(vi-app[is-web-kit]) {
-    > #wrapper::-webkit-scrollbar {
-        display: none;
+    &[is-web-kit] {
+        > #wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        // Edge also reports being webkit
+        > #wrapper {
+            -ms-overflow-style: none;
+        }
     }
 
-    // Edge also reports being webkit
-    > #wrapper {
-        -ms-overflow-style: none;
-    }
-}
-
-:host-context(vi-app:not([is-web-kit])) {
-    > #wrapper {
-        margin-right: calc(var(--theme-scrollbar-width) * -1);
-        margin-bottom: calc(var(--theme-scrollbar-width) * -1);
-        padding-right: var(--theme-scrollbar-width);
-        padding-bottom: var(--theme-scrollbar-width);
+    &not([is-web-kit]) {
+        > #wrapper {
+            margin-right: calc(var(--theme-scrollbar-width) * -1);
+            margin-bottom: calc(var(--theme-scrollbar-width) * -1);
+            padding-right: var(--theme-scrollbar-width);
+            padding-bottom: var(--theme-scrollbar-width);
+        }
     }
 }

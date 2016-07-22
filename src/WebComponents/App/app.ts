@@ -205,11 +205,6 @@ namespace Vidyano.WebComponents {
                 type: String,
                 reflectToAttribute: true,
                 observer: "_cookiePrefixChanged"
-            },
-            isWebKit: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeIsWebKit(isAttached)"
             }
         },
         observers: [
@@ -256,7 +251,6 @@ namespace Vidyano.WebComponents {
         label: string;
         keys: string;
         isTracking: boolean;
-        isWebKit: boolean;
 
         private _setConfiguration: (config: AppConfig) => void;
         private _setInitializing: (init: boolean) => void;
@@ -269,11 +263,6 @@ namespace Vidyano.WebComponents {
 
         attached() {
             super.attached();
-
-            if (!this.isWebKit) {
-                this.customStyle["--theme-scrollbar-width"] = `${scrollbarWidth()}px`;
-                this.updateStyles();
-            }
 
             if (!this.label)
                 this.label = this.title;
@@ -720,10 +709,6 @@ namespace Vidyano.WebComponents {
             regs.forEach(reg => {
                 reg.listener(e);
             });
-        }
-
-        private _computeIsWebKit(): boolean {
-            return "WebkitAppearance" in document.documentElement.style;
         }
 
         private _resolveDependencies(hasManagement: boolean) {

@@ -107,6 +107,11 @@
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true
+            },
+            isWebKit: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeIsWebKit(isAttached)"
             }
         },
         forwardObservers: [
@@ -146,6 +151,7 @@
         verticalScrollOffset: number;
         forceScrollbars: boolean;
         noScrollShadow: boolean;
+        isWebKit: boolean;
 
         private _setAtTop: (atTop: boolean) => void;
         private _setOuterWidth: (width: number) => void;
@@ -157,6 +163,15 @@
         private _setScrollTopShadow: (val: boolean) => void;
         private _setScrollBottomShadow: (val: boolean) => void;
         private _setHiddenScrollbars: (val: boolean) => void;
+
+        attached() {
+            super.attached();
+
+            if (!this.isWebKit) {
+                this.customStyle["--theme-scrollbar-width"] = `${scrollbarWidth()}px`;
+                this.updateStyles();
+            }
+        }
 
         get scroller(): HTMLElement {
             // NOTE: This property is used by other components to determine the scrolling parent.
@@ -195,7 +210,7 @@
         }
 
         private _outerSizeChanged(e: Event, detail: { width: number; height: number }) {
-            this._setHiddenScrollbars(!this.app.isWebKit && !parseInt(this.getComputedStyleValue("--theme-scrollbar-width")));
+            this._setHiddenScrollbars(!this.isWebKit && !parseInt(this.getComputedStyleValue("--theme-scrollbar-width")));
 
             this._setOuterWidth(detail.width);
             this._setOuterHeight(detail.height);
@@ -378,6 +393,10 @@
 
                 e.stopPropagation();
             }
+        }
+
+        private _computeIsWebKit(): boolean {
+            return "WebkitAppearance" in document.documentElement.style;
         }
     }
 }
