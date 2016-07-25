@@ -31,7 +31,7 @@
                 <content select="[label]:not([label='sign-in'])"></content>
             </vi-menu>
         </template>
-        <template is="dom-if" if="[[!barebone]]">
+        <template is="dom-if" if="[[!barebone]]" restamp>
             <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
             <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
             <vi-app-route route="PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>

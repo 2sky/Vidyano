@@ -276,6 +276,14 @@ namespace Vidyano.WebComponents {
             const keys = <any>this.$$("iron-a11y-keys");
             keys.target = document.body;
 
+            if (this.barebone) {
+                const template = <PolymerTemplate>Polymer.dom(this).querySelector("template[is='dom-template']");
+                if (template) {
+                    Polymer.dom(this.root).appendChild(template.stamp({ app: this }).root);
+                    return;
+                }
+            }
+
             Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => {
                 Polymer.dom(this.root).appendChild(route);
             });

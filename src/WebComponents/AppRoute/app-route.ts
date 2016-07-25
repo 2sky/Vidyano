@@ -166,6 +166,11 @@ namespace Vidyano.WebComponents {
 
         private _activeChanged() {
             this.toggleClass("active", this.active);
+
+            if (this.activate)
+                this.fire("app-route-activated", null);
+            else
+                this.fire("app-route-deactivated", null);
         }
 
         private _titleChanged(e: CustomEvent, detail: { title: string; }) {
