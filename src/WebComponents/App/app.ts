@@ -3,6 +3,8 @@ var _gaq: any[];
 /* tslint:enable:no-var-keyword */
 
 namespace Vidyano {
+    "use strict";
+
     export function debug(debug: boolean = true) {
         document.cookie = `useweb2home=${debug};path=/`;
     }
