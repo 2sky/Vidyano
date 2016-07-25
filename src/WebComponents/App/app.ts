@@ -2,6 +2,12 @@
 var _gaq: any[];
 /* tslint:enable:no-var-keyword */
 
+namespace Vidyano {
+    export function debug(debug: boolean = true) {
+        document.cookie = `useweb2home=${debug};path=/`;
+    }
+}
+
 namespace Vidyano.WebComponents {
     "use strict";
 
