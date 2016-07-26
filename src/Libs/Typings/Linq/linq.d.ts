@@ -158,8 +158,8 @@ declare module linqjs {
 
     interface OrderedEnumerable<T> extends Enumerable<T> {
         createOrderedEnumerable(keySelector: (element: T) => T, descending: Boolean): OrderedEnumerable<T>;
-        thenBy(keySelector: (element: T) => T): OrderedEnumerable<T>;
-        thenByDescending(keySelector: (element: T) => T): OrderedEnumerable<T>;
+        thenBy<TKey>(keySelector: (element: T) => TKey): OrderedEnumerable<T>;
+        thenByDescending<TKey>(keySelector: (element: T) => TKey): OrderedEnumerable<T>;
     }
 
     interface DisposableEnumerable<T> extends Enumerable<T> {
