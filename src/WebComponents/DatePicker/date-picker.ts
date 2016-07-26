@@ -247,7 +247,7 @@
                     this._setCurrentDate(this.currentDate.add(cell.monthOffset, "months").clone());
             }
             else if (this.zoom === "months") {
-                this._setCurrentDate(this.currentDate.month(cell.date.month()).clone());
+                this._setCurrentDate(this.currentDate.month(cell.date.month() - 1).clone());
 
                 if (!this.monthMode)
                     this.zoom = "days";
