@@ -279,7 +279,7 @@ namespace Vidyano.WebComponents {
             keys.target = document.body;
 
             if (this.barebone) {
-                const template = <PolymerTemplate>Polymer.dom(this).querySelector("template[is='dom-template']");
+                const template = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0];
                 if (template) {
                     Polymer.dom(this.root).appendChild(template.stamp({ app: this }).root);
                     return;
