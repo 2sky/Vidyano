@@ -97,6 +97,7 @@
         @include noSelection();
         @include relative();
         white-space: nowrap;
+        will-change: transform;
 
         table {
             display: inline-table;
