@@ -55,6 +55,10 @@ namespace Vidyano.WebComponents {
             });
         }
 
+        private _close(e: KeyboardEvent) {
+            this.close();
+        }
+
         close(result?: any) {
             this._resolve(result);
             Polymer["IronOverlayBehaviorImpl"].close.apply(this);
@@ -131,7 +135,7 @@ namespace Vidyano.WebComponents {
 
                 info.keybindings = info.keybindings || {};
                 info.keybindings["esc"] = {
-                    listener: "close"
+                    listener: "_close"
                 };
 
                 return WebComponent.register(obj, info, prefix);
