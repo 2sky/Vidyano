@@ -115,7 +115,7 @@
         }
 
         private _saveAs() {
-            this.query.filters.createNew().then(newFilter => {
+            this.app.importComponent("PersistentObjectDialog").then(() => this.query.filters.createNew()).then(newFilter => {
                 let dialog: Vidyano.WebComponents.PersistentObjectDialog;
                 this.app.showDialog(dialog = new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, {
                     save: (po, close) => {
