@@ -55,7 +55,7 @@ namespace Vidyano.WebComponents {
             });
         }
 
-        private _close(e: KeyboardEvent) {
+        private _esc(e: KeyboardEvent) {
             this.close();
         }
 
@@ -135,7 +135,7 @@ namespace Vidyano.WebComponents {
 
                 info.keybindings = info.keybindings || {};
                 info.keybindings["esc"] = {
-                    listener: "_close"
+                    listener: "_esc"
                 };
 
                 return WebComponent.register(obj, info, prefix);
