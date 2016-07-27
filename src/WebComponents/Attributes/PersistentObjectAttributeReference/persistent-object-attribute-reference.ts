@@ -87,16 +87,17 @@ namespace Vidyano.WebComponents.Attributes {
                 this.attribute.lookup.search().then(result => {
                     this.attribute.lookup.textSearch = null;
 
-                    if (result.length === 0)
-                        this.filter = this.attribute.value;
-                    else if (result.length === 1)
+                    if (result.length === 1)
                         this.attribute.changeReference([result[0]]).then(() => this._update());
                     else {
-                        this.attribute.lookup.textSearch = this.filter;
-
-                        this._browseReference(true, true).catch(() => {
+                        if (result.length === 0) {
                             this.filter = this.attribute.value;
-                        });
+                            this.attribute.lookup.textSearch = "";
+                        }
+                        else
+                            this.attribute.lookup.textSearch = this.filter;
+
+                        this._browseReference(true, true);
                     }
                 });
             }
@@ -129,7 +130,10 @@ namespace Vidyano.WebComponents.Attributes {
                 return this.attribute.changeReference(result).then(() => {
                     this._update();
                 });
-            }).catch(() => this._browseReferenceDone());
+            }).catch(() => {
+                this.filter = this.attribute.value;
+                this._browseReferenceDone();
+            });
         }
 
         private _browseReferenceDone() {
