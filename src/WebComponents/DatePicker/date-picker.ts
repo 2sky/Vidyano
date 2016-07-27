@@ -124,8 +124,11 @@
                 if (cells.length !== 42 + 7)
                     return;
 
+                this._setHeader(`${CultureInfo.currentCulture.dateFormat.monthNames[currentDateMoment.month()]} ${currentDateMoment.year()}`);
+
                 const loop = currentDateMoment.startOf("month").startOf(Vidyano.CultureInfo.currentCulture.dateFormat.firstDayOfWeek > 0 ? "isoWeek" : "week");
                 const end = loop.clone().add(6, "weeks");
+
                 let index = 7; // Skip weekday cells
                 do {
                     this.set(`cells.${index}.date`, loop.clone());
@@ -136,10 +139,10 @@
                     loop.add(1, "days");
                 }
                 while (loop.isBefore(end));
-
-                this._setHeader(`${CultureInfo.currentCulture.dateFormat.monthNames[currentDateMoment.month()]} ${currentDateMoment.year()}`);
             }
             else if (this.zoom === "months") {
+                this._setHeader(`${currentDateMoment.year()}`);
+
                 const loop = currentDateMoment.startOf("year");
                 const end = loop.clone().add(12, "months");
 
@@ -152,8 +155,6 @@
                     loop.add(1, "months");
                 }
                 while (loop.isBefore(end));
-
-                this._setHeader(`${currentDateMoment.year()}`);
             }
             else if (this.zoom === "years") {
                 const loop = currentDateMoment.startOf("year").subtract(6, "years");
@@ -247,7 +248,7 @@
                     this._setCurrentDate(this.currentDate.add(cell.monthOffset, "months").clone());
             }
             else if (this.zoom === "months") {
-                this._setCurrentDate(this.currentDate.month(cell.date.month() - 1).clone());
+                this._setCurrentDate(this.currentDate.clone().month(cell.date.month()));
 
                 if (!this.monthMode)
                     this.zoom = "days";
