@@ -37,6 +37,12 @@
                     <label>[[translateMessage('Password', isAttached)]]</label>
                     <input value="{{password::input}}" id="pass" type="password" disabled$="[[signingIn]]" on-keydown="_keydown" />
                 </div>
+                <template is="dom-if" if="[[twoFactorAuthentication]]">
+                    <div>
+                        <label>[[translateMessage('TwoFactorCode', isAttached)]]</label>
+                        <input value="{{twoFactorCode::input}}" id="twofactor" type="number" disabled$="[[signingIn]]" on-keydown="_keydown" />
+                    </div>
+                </template>
                 <div class="layout horizontal">
                     <vi-checkbox class="flex" label="[[translateMessage('StaySignedIn', isAttached)]]" disabled$="[[signingIn]]" checked="{{staySignedIn}}"></vi-checkbox>
                     <div>

@@ -486,8 +486,8 @@ namespace Vidyano {
                         this.authToken = null;
                         delete data.authToken;
 
-                        if (this.isUsingDefaultCredentials) {
-                            data.userName = this._clientData.defaultUser;
+                        if (this.defaultUserName) {
+                            data.userName = this.defaultUserName;
                             delete data.password;
                             this._postJSON(url, data).then(resolve, reject);
                         } else {
@@ -915,12 +915,15 @@ namespace Vidyano {
             }
         }
 
-        signInUsingCredentials(userName: string, password: string): Promise<Application> {
+        signInUsingCredentials(userName: string, password: string, code?: string): Promise<Application> {
             this._setUserName(userName);
 
             const data = this._createData("getApplication");
             data.userName = userName;
             data.password = password;
+
+            if (code)
+                data.code = code;
 
             return this._getApplication(data);
         }

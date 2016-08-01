@@ -24,7 +24,7 @@
             padding-left: var(--theme-h1);
 
             > div {
-                &:first-child {
+                &:not(:last-child) {
                     margin-bottom: var(--theme-h4);
                     margin-top: var(--theme-h3);
                 }

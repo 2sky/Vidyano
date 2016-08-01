@@ -135,6 +135,15 @@
             signInLabel: {
                 type: String,
                 computed: "_computeSigninButtonLabel(signingIn, signingInCounter, app)"
+            },
+            twoFactorAuthentication: {
+                type: Boolean,
+                readOnly: true,
+                value: false
+            },
+            twoFactorCode: {
+                type: String,
+                notify: true
             }
         },
         listeners: {
@@ -152,9 +161,12 @@
         isVidyano: boolean;
         signingIn: boolean;
         signingInCounter: number;
+        twoFactorAuthentication: boolean;
+        twoFactorCode: string;
 
         private _setIsVidyano: (val: boolean) => void;
         private _setSigningIn: (val: boolean) => void;
+        private _setTwoFactorAuthentication: (val: boolean) => void;
 
         constructor(isVidyano: boolean, private _isOnlyProvider: boolean) {
             super();
@@ -223,31 +235,50 @@
         private _signIn() {
             this._setSigningIn(true);
 
-            const password = this.password;
-            this.password = "";
-
             const currentRoute = this.app.currentRoute;
             this.app.service.staySignedIn = this.staySignedIn;
-            this.app.service.signInUsingCredentials(this.userName, password).then(() => {
+            this.app.service.signInUsingCredentials(this.userName, this.password, this.twoFactorAuthentication ? this.twoFactorCode : undefined).then(() => {
+                this._setTwoFactorAuthentication(false);
                 this._setSigningIn(false);
+
+                this.password = "";
+                this.twoFactorCode = "";
 
                 if (currentRoute === this.app.currentRoute) {
                     const route = this.findParent<AppRoute>(e => e instanceof Vidyano.WebComponents.AppRoute);
                     this.app.changePath(decodeURIComponent(route.parameters.returnUrl || ""));
                 }
             }, e => {
-                    this._setSigningIn(false);
+                this._setSigningIn(false);
 
-                    const pass = <HTMLInputElement><any>this.$$("input#pass");
-                    pass.focus();
+                if (e === "Two-factor authentication enabled for user." || e === "Invalid code.") {
+                    if (e === "Invalid code.")
+                        this.app.showAlert(e, NotificationType.Error, 3000);
 
-                    this.app.showMessageDialog({
-                        title: this.app.label || document.title,
-                        message: e,
-                        actions: [ this.translateMessage("OK") ],
-                        actionTypes: ["Danger"]
-                    });
+                    this._setTwoFactorAuthentication(true);
+
+                    Polymer.dom(this).flush();
+
+                    const input = <HTMLInputElement>Polymer.dom(this.root).querySelector("#twofactor");
+                    input.value = "";
+                    input.focus();
+
+                    return;
+                }
+
+                this.password = "";
+                this.twoFactorCode = "";
+
+                const pass = <HTMLInputElement><any>this.$$("input#pass");
+                pass.focus();
+
+                this.app.showMessageDialog({
+                    title: this.app.label || document.title,
+                    message: e,
+                    actions: [this.translateMessage("OK")],
+                    actionTypes: ["Danger"]
                 });
+            });
         }
 
         private _computeSigninButtonLabel(signingIn: boolean, signingInCounter: number, app: Vidyano.WebComponents.App): string {
