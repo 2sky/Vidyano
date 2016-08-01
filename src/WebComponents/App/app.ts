@@ -238,6 +238,7 @@ namespace Vidyano.WebComponents {
     })
     export class App extends WebComponent {
         private _cache: AppCacheEntry[] = [];
+        private _initialize: Promise<Vidyano.Application>;
         private _initializationError: string;
         private _routeMap: { [key: string]: AppRoute } = {};
         private _routeUpdater: Promise<any> = Promise.resolve();
@@ -289,6 +290,10 @@ namespace Vidyano.WebComponents {
             Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => {
                 Polymer.dom(this.root).appendChild(route);
             });
+        }
+
+        get initialize(): Promise<Vidyano.Application> {
+            return this._initialize;
         }
 
         get initializationError(): string {
@@ -463,16 +468,20 @@ namespace Vidyano.WebComponents {
             const service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
             this._setInitializing(true);
 
-            service.initialize(document.location.hash && App.stripHashBang(document.location.hash).startsWith("SignIn")).then(() => {
+            this._initialize = service.initialize(document.location.hash && App.stripHashBang(document.location.hash).startsWith("SignIn")).then(() => {
                 if (this.service === service) {
                     this._initializationError = null;
                     this._onInitialized();
+
+                    return this.service.application;
                 }
             }, e => {
                 if (this.service === service) {
                     this._initializationError = e !== "Session expired" ? e : null;
                     this._onInitialized();
                 }
+
+                return null;
             });
 
             return service;
