@@ -23,7 +23,7 @@
     "src/Libs/Typings/Moment/moment.d.ts",
     "src/Libs/Typings/Path/path.d.ts",
     "src/Libs/Typings/Polymer/polymer.d.ts",
-    "src/Libs/Typings/PromiseQueue/promise-queue.ts",
+    "src/Libs/Typings/PromiseQueue/promise-queue.d.ts",
     "src/Libs/Typings/QUnit/qunit.d.ts",
     "src/Libs/Typings/Sortable/sortable.d.ts",
     "src/Libs/Typings/Vidyano.Common/vidyano.common.d.ts",
