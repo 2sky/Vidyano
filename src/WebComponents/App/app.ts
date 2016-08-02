@@ -311,8 +311,11 @@ namespace Vidyano.WebComponents {
                 else
                     Vidyano.Path.history.replaceState(null, null, path);
             }
-            else
+            else {
                 this.path = path;
+                if (replaceCurrent)
+                    history.pushState("", document.title, window.location.pathname);
+            }
         }
 
         getUrlForPersistentObject(id: string, objectId: string, pu: ProgramUnit = this.programUnit) {
@@ -624,11 +627,10 @@ namespace Vidyano.WebComponents {
             if (initializing)
                 return;
 
-            path = App.stripHashBang(path);
-            if (path && currentRoute && currentRoute.allowSignedOut)
+            if (currentRoute && currentRoute.allowSignedOut)
                 return;
 
-            if (!this.service.isSignedIn && !path.startsWith("SignIn")) {
+            if (!this.service.isSignedIn && !App.stripHashBang(path).startsWith("SignIn")) {
                 if (this.service.defaultUserName) {
                     this._setInitializing(true);
                     this.service.signInUsingDefaultCredentials().then(() => {

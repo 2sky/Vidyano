@@ -866,10 +866,10 @@ namespace Vidyano {
                     const returnUrl = Vidyano.cookie("returnUrl", { force: true });
                     if (returnUrl) {
                         Vidyano.cookie("returnUrl", null, { force: true });
-                        document.location.hash = "!/" + returnUrl;
+                        this.hooks.onNavigate("#!/" + returnUrl, true);
                     }
                     else
-                        document.location.hash = "!/";
+                        this.hooks.onNavigate("#!/", true);
 
                     return this._getApplication();
                 }
