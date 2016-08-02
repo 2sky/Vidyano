@@ -273,6 +273,16 @@ namespace Vidyano.WebComponents {
         attached() {
             super.attached();
 
+            Vidyano.Path.rescue(() => {
+                this.path = App.stripHashBang(Vidyano.Path.routes.current);
+            });
+
+            if (!this.noHistory) {
+                Vidyano.Path.root(hashBang);
+                Vidyano.Path.history.listen();
+                Vidyano.Path.listen();
+            }
+
             if (!this.label)
                 this.label = this.title;
 
@@ -491,16 +501,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _onInitialized() {
-            Vidyano.Path.rescue(() => {
-                this.path = App.stripHashBang(Vidyano.Path.routes.current);
-            });
-
-            if (!this.noHistory) {
-                Vidyano.Path.root(hashBang + App.stripHashBang(this.path));
-                Vidyano.Path.history.listen();
-                Vidyano.Path.listen();
-            }
-            else
+            if (this.noHistory)
                 this.changePath(this.path);
 
             this._setInitializing(false);
