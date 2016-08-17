@@ -54,40 +54,41 @@
         }
 
         private _moreInfo(e: Event) {
-            if (this.isOverflowing) {
-                let header: string;
-                let headerIcon: string;
-                switch (this._getIconType(this.type)) {
-                    case NotificationType.Error: {
-                        header = this.app.translateMessage(NotificationType[NotificationType.Error]);
-                        headerIcon = NotificationType[NotificationType.Error];
-                        break;
-                    }
-                    case NotificationType.Notice: {
-                        header = this.app.translateMessage(NotificationType[NotificationType.Notice]);
-                        headerIcon = NotificationType[NotificationType.Notice];
-                        break;
-                    }
-                    case NotificationType.OK: {
-                        header = this.app.translateMessage(NotificationType[NotificationType.OK]);
-                        headerIcon = NotificationType[NotificationType.OK];
-                        break;
-                    }
-                    case NotificationType.Warning: {
-                        header = this.app.translateMessage(NotificationType[NotificationType.Warning]);
-                        headerIcon = NotificationType[NotificationType.Warning];
-                        break;
-                    }
-                }
+            if (!this.isOverflowing)
+                return;
 
-                this.app.showMessageDialog({
-                    title: header,
-                    titleIcon: "Notification_" + headerIcon,
-                    message: this.text.replace(findNewLine, "<br />").replace(/class="style-scope vi-notification"/g, "class=\"style-scope vi-message-dialog\""),
-                    rich: true,
-                    actions: [this.translations.OK]
-                });
+            let header: string;
+            let headerIcon: string;
+            switch (this._getIconType(this.type)) {
+                case NotificationType.Error: {
+                    header = this.app.translateMessage(NotificationType[NotificationType.Error]);
+                    headerIcon = NotificationType[NotificationType.Error];
+                    break;
+                }
+                case NotificationType.Notice: {
+                    header = this.app.translateMessage(NotificationType[NotificationType.Notice]);
+                    headerIcon = NotificationType[NotificationType.Notice];
+                    break;
+                }
+                case NotificationType.OK: {
+                    header = this.app.translateMessage(NotificationType[NotificationType.OK]);
+                    headerIcon = NotificationType[NotificationType.OK];
+                    break;
+                }
+                case NotificationType.Warning: {
+                    header = this.app.translateMessage(NotificationType[NotificationType.Warning]);
+                    headerIcon = NotificationType[NotificationType.Warning];
+                    break;
+                }
             }
+
+            this.app.showMessageDialog({
+                title: header,
+                titleIcon: "Notification_" + headerIcon,
+                message: this.text.replace(findNewLine, "<br />").replace(/class="style-scope vi-notification"/g, "class=\"style-scope vi-message-dialog\""),
+                rich: true,
+                actions: [this.translations.OK]
+            });
         }
 
         private _trackerSizeChanged(e: Event) {
@@ -101,9 +102,18 @@
         }
 
         private _setTextOverflow() {
+            if (!this.text)
+                return;
+
             const text = <HTMLSpanElement>this.$["text"];
-            text.innerHTML = this.text;
-            this._setIsOverflowing(text.offsetWidth < text.scrollWidth);
+
+            if (this.text.contains("<br>"))
+                this._setIsOverflowing(true);
+            else {
+                text.innerHTML = this.text;
+                this._setIsOverflowing(text.offsetWidth < text.scrollWidth);
+            }
+
             text.style.cursor = this.isOverflowing ? "pointer" : "auto";
         }
 
