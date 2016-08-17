@@ -31,6 +31,10 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 readOnly: true
+            },
+            hideSearch: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         listeners: {
@@ -45,11 +49,14 @@ namespace Vidyano.WebComponents {
         activeProgramUnit: ProgramUnit;
         collapsed: boolean;
         hasGlobalSearch: boolean;
+        hideSearch: boolean;
 
         private _setIsResizing: (val: boolean) => void;
 
         attached() {
             super.attached();
+
+            this.hideSearch = this.app.configuration.getSetting("vi-menu.hide-search", "false").toLowerCase() === "true";
 
             Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).forEach(element => Polymer.dom(this.$["footerElements"]).appendChild(element));
             Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).forEach(element => Polymer.dom(this.$["headerElements"]).appendChild(element));

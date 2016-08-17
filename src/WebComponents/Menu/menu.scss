@@ -147,6 +147,16 @@
         }'};
     }
 
+    &[hide-search] {
+        vi-input-search {
+            display: none !important;
+        }
+
+        vi-menu-item:first-of-type {
+            margin-top: var(--theme-h5);
+        }
+    }
+
     &[collapsed] {
         header {
             vi-icon[header] {
