@@ -542,7 +542,7 @@ namespace Vidyano.WebComponents {
                     if (!programUnit && this.service.application.programUnits.length > 0)
                         programUnit = this.service.application.programUnits[0];
 
-                    if (programUnit) {
+                    if (programUnit && !this.barebone) {
                         if (programUnit.openFirst) {
                             const openFirstPath = programUnit.items[0].path;
                             if (path !== openFirstPath && openFirstPath != null) {
