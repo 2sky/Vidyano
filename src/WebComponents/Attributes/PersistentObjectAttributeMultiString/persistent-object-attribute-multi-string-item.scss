@@ -7,17 +7,21 @@
     input {
         height: calc(var(--theme-h2) - 2px);
         line-height: calc(var(--theme-h2) - 2px);
-        border: 1px solid var(--theme-light-border);
         -moz-transition: border-color 0.2s ease-in-out;
         -o-transition: border-color 0.2s ease-in-out;
         -webkit-transition: border-color 0.2s ease-in-out;
         transition: border-color 0.2s ease-in-out;
+        border: 1px solid var(--theme-light-border);
         padding: 0 6px;
         box-sizing: border-box;
         outline: none;
 
         &:focus {
             border-color: var(--theme-color-lighter);
+        }
+
+        &:disabled {
+            background-color: #eee;
         }
     }
 

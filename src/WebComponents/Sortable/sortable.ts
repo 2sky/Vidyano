@@ -146,6 +146,7 @@
                 };
                 info.properties["enabled"] = { // Use enabled before disabled to prevent IE from blocking all events
                     type: Boolean,
+                    reflectToAttribute: true,
                     observer: "_enabledChanged"
                 };
 

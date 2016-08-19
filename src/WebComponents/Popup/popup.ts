@@ -96,12 +96,9 @@ namespace Vidyano.WebComponents {
         }
 
         protected _open(target: HTMLElement | WebComponent, content: HTMLElement = this) {
-            if (this.open || this.hasAttribute("disabled"))
-                return;
-
             this._currentOrientation = this.orientation.toUpperCase() === "AUTO" ? !this._findParentPopup() ? "vertical" : "horizontal" : this.orientation.toLowerCase();
 
-            if (this.fire("popup-opening", null, { bubbles: false, cancelable: true }).defaultPrevented)
+            if (this.open || this.hasAttribute("disabled") || this.fire("popup-opening", null, { bubbles: false, cancelable: true }).defaultPrevented)
                 return;
 
             // Close non-parent popups

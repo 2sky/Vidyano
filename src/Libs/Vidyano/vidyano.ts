@@ -1118,18 +1118,30 @@ namespace Vidyano {
                 if (parameters != null)
                     data.parameters = parameters;
 
+                const isFreezingAction = isObjectAction && action !== "PersistentObject.Refresh";
+                if (isFreezingAction)
+                    parent.freeze();
+
                 const execute = () => this._postJSON(this._createUri("ExecuteAction"), data);
                 const executeCatch = e => {
-                    if (isObjectAction)
+                    if (isObjectAction) {
                         parent.setNotification(e);
+
+                        if (isFreezingAction)
+                            parent.unfreeze();
+                    }
                     else
                         query.setNotification(e);
 
                     reject(e);
                 };
                 const executeThen = result => {
-                    if (!result.retry)
+                    if (!result.retry) {
                         resolve(result.result ? this.hooks.onConstructPersistentObject(this, result.result) : null);
+
+                        if (isFreezingAction)
+                            parent.unfreeze();
+                    }
                     else {
                         if (result.retry.persistentObject)
                             result.retry.persistentObject = this.hooks.onConstructPersistentObject(this, result.retry.persistentObject);
@@ -1844,6 +1856,7 @@ namespace Vidyano {
         private _breadcrumb: string;
         private _isDeleted: boolean;
         private _tabs: PersistentObjectTab[];
+        private _isFrozen: boolean = false;
 
         fullTypeName: string;
         label: string;
@@ -1966,6 +1979,7 @@ namespace Vidyano {
         get isEditing(): boolean {
             return this._isEditing;
         }
+
         private setIsEditing(value: boolean) {
             this._isEditing = value;
             this.actions.forEach(action => action._onParentIsEditingChanged(value));
@@ -2004,6 +2018,24 @@ namespace Vidyano {
             const oldIsDeleted = this._isDeleted;
             if (oldIsDeleted !== isDeleted)
                 this.notifyPropertyChanged("isDeleted", this._isDeleted = isDeleted, oldIsDeleted);
+        }
+
+        get isFrozen(): boolean {
+            return this._isFrozen;
+        }
+
+        freeze() {
+            if (this._isFrozen)
+                return;
+
+            this.notifyPropertyChanged("isFrozen", this._isFrozen = true, false);
+        }
+
+        unfreeze() {
+            if (!this._isFrozen)
+                return;
+
+            this.notifyPropertyChanged("isFrozen", this._isFrozen = false, true);
         }
 
         getAttribute(name: string): PersistentObjectAttribute {
@@ -2542,7 +2574,7 @@ namespace Vidyano {
 
         setValue(val: any, allowRefresh: boolean = true): Promise<any> {
             return new Promise<any>((resolve, reject) => {
-                if (!this.parent.isEditing || this.isReadOnly) {
+                if (!this.parent.isEditing || this.parent.isFrozen || this.isReadOnly) {
                     resolve(this.value);
                     return;
                 }
@@ -2832,6 +2864,12 @@ namespace Vidyano {
                         this.objects.forEach(o => o.beginEdit());
                     else
                         this.objects.forEach(o => o.cancelEdit());
+                }
+                else if (args.propertyName === "isFrozen") {
+                    if (args.newValue)
+                        this.objects.forEach(obj => obj.freeze());
+                    else
+                        this.objects.forEach(obj => obj.unfreeze());
                 }
             });
 

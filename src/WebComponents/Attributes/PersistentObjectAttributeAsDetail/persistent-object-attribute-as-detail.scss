@@ -133,6 +133,10 @@
                                     height: 12px;
                                 }
                             }
+
+                            &[disabled] {
+                                background-color: #eee !important;
+                            }
                         }
                     }
 

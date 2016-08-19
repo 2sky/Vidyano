@@ -52,6 +52,10 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: false
             },
+            disabled: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             disableFiltering: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -342,6 +346,10 @@ namespace Vidyano.WebComponents {
 
         private _isReadonlyInput(readonly: boolean, disableFiltering: boolean): boolean {
             return readonly || disableFiltering;
+        }
+
+        private _disablePopup(readonly: boolean, disabled: boolean): boolean {
+            return readonly || disabled;
         }
     }
 

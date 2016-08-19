@@ -104,5 +104,10 @@ $border-color: #ddd;
                 }
             }
         }
+
+        &[disabled] [header] vi-icon {
+            opacity: 0.25;
+            cursor: default;
+        }
     }
 }

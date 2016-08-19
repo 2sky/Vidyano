@@ -21,6 +21,10 @@ namespace Vidyano.WebComponents.Attributes {
 			isNew: {
 				type: Boolean,
 				reflectToAttribute: true
+			},
+			disabled: {
+				type: Boolean,
+				reflectToAttribute: true
 			}
 		}
     })

@@ -6,10 +6,13 @@
     @include relative();
     line-height: var(--theme-h2);
 
-    --theme-light-border: #ddd;
+    fieldset {
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
 
     .box {
-        position: relative;
         background-color: white;
         min-height: calc(var(--theme-h2) - 2px);
         line-height: calc(var(--theme-h2) - 2px);
@@ -84,6 +87,27 @@
                 &.bottom {
                     -webkit-transform: translateY(calc(var(--theme-h4) * -1));
                     transform: translateY(calc(var(--theme-h4) * -1));
+                }
+            }
+        }
+    }
+
+    fieldset[disabled] {
+        .box {
+            background-color: #eee;
+
+            .buttons {
+                background-color: #eee;
+                pointer-events: none;
+
+                > ::content {
+                    > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                        opacity: 0.25;
+
+                        &::before {
+                            border-left-color: var(--theme-light-border);
+                        }
+                    }
                 }
             }
         }

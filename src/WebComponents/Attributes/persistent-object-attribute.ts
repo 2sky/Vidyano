@@ -163,6 +163,7 @@ namespace Vidyano.WebComponents.Attributes {
                 info.forwardObservers.push("attribute.isRequired");
                 info.forwardObservers.push("attribute.isReadOnly");
                 info.forwardObservers.push("attribute.validationError");
+                info.forwardObservers.push("attribute.parent.isFrozen");
                 info.forwardObservers.push("_optionsChanged(attribute.options)");
                 info.forwardObservers.push("_editingChanged(attribute.parent.isEditing)");
                 info.forwardObservers.push("_attributeValueChanged(attribute.value)");

@@ -8,7 +8,7 @@
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <vi-select content options="[[options]]" selected-option="{{value}}" disable-filtering readonly="[[readOnly]]"></vi-select>
+                <vi-select content options="[[options]]" selected-option="{{value}}" disable-filtering readonly="[[readOnly]]" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-select>
             </vi-persistent-object-attribute-edit>
         </template>
     </template>
@@ -21,7 +21,7 @@
             <vi-checkbox checked="{{value}}" label="[[attribute.displayValue]]" disabled></vi-checkbox>
         </template>
         <template is="dom-if" if="[[editing]]">
-            <vi-checkbox checked="{{value}}" label="[[attribute.displayValue]]" disabled$="[[attribute.isReadOnly]]"></vi-checkbox>
+            <vi-checkbox checked="{{value}}" label="[[attribute.displayValue]]" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-checkbox>
         </template>
     </template>
 </dom-module>

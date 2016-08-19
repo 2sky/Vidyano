@@ -20,7 +20,8 @@ namespace Vidyano.WebComponents.Attributes {
             "focusout": "_blur",
         },
         forwardObservers: [
-            "attribute.validationError"
+            "attribute.validationError",
+            "attribute.parent.isFrozen"
         ]
     })
     export class PersistentObjectAttributeEdit extends WebComponent {

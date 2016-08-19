@@ -7,6 +7,10 @@ namespace Vidyano.WebComponents.Attributes {
             if (this.attribute && newValue !== this.attribute.value)
                 this.attribute.setValue(newValue, true).catch(Vidyano.noop);
         }
+
+        private _isDisabled(isReadOnly: boolean, isFrozen: boolean): boolean {
+            return isReadOnly || isFrozen;
+        }
     }
 
     @PersistentObjectAttribute.register({
@@ -48,6 +52,10 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _notNull(value: any): boolean {
             return value != null;
+        }
+
+        private _isDisabled(isReadOnly: boolean, isFrozen: boolean): boolean {
+            return isReadOnly || isFrozen;
         }
     }
 }

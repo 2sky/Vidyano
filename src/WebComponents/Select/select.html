@@ -3,7 +3,7 @@
 <dom-module id="vi-select">
     <template>
         <link rel="stylesheet" href="select.css" />
-        <vi-popup id="popup" on-tap="_openPopup" on-click="_openPopup" on-popup-opened="_popupOpened" on-popup-closed="_popupClosed" sticky auto-width disabled$="[[readonly]]">
+        <vi-popup id="popup" on-tap="_openPopup" on-click="_openPopup" on-popup-opened="_popupOpened" on-popup-closed="_popupClosed" sticky auto-width disabled$="[[_disablePopup(readonly, disabled)]]">
             <div header>
                 <content select="[left]"></content>
                 <div class="suggestions">

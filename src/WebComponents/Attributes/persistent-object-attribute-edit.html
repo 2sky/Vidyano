@@ -3,12 +3,14 @@
 <dom-module id="vi-persistent-object-attribute-edit">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-edit.css" />
-        <div class="box flex horizontal layout">
-            <content select="[content]"></content>
-            <div class="buttons">
-                <content select=".button, button, vi-popup:not([content])"></content>
+        <fieldset class="flex relative" disabled$="[[attribute.parent.isFrozen]]">
+            <div class="box layout horizontal fit">
+                <content select="[content]"></content>
+                <div class="buttons">
+                    <content select=".button, button, vi-popup:not([content])"></content>
+                </div>
             </div>
-        </div>
+        </fieldset>
         <button id="errorIndicator" on-tap="_showError">
             <vi-popup open-on-hover content-align="center">
                 <vi-icon header source="Notification_Error"></vi-icon>

@@ -36,4 +36,11 @@
         fill: var(--vi-select-icon-color, --theme-foreground);
         @apply(--vi-persistent-object-attribute-flags-enum-icon);
     }
+
+    vi-popup[disabled] {
+        vi-icon {
+            opacity: 0.25;
+            cursor: default;
+        }
+    }
 }
