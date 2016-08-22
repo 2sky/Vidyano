@@ -1119,10 +1119,14 @@ namespace Vidyano {
                     data.parameters = parameters;
 
                 const isFreezingAction = isObjectAction && action !== "PersistentObject.Refresh";
-                if (isFreezingAction)
-                    parent.freeze();
 
-                const execute = () => this._postJSON(this._createUri("ExecuteAction"), data);
+                const execute = () => {
+                    if (isFreezingAction)
+                        parent.freeze();
+
+                    return this._postJSON(this._createUri("ExecuteAction"), data);
+                };
+
                 const executeCatch = e => {
                     if (isObjectAction) {
                         parent.setNotification(e);
@@ -1195,6 +1199,9 @@ namespace Vidyano {
 
                             return;
                         }
+
+                        if (isFreezingAction)
+                            parent.freeze();
 
                         const iframeName = "iframe-" + new Date();
                         const iframe = document.createElement("iframe");
