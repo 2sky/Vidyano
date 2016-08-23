@@ -85,7 +85,7 @@ namespace Vidyano.WebComponents {
                 });
             }
             else if (detail.state === "start") {
-                if (!e.detail.sourceEvent.srcElement.tagName.startsWith("H")) {
+                if (!(<HTMLElement>(e.detail.sourceEvent.target)).tagName.startsWith("H")) {
                     e.stopPropagation();
                     e.preventDefault();
 
