@@ -15,14 +15,14 @@ namespace Vidyano.WebComponents.Attributes {
 
     @PersistentObjectAttribute.register({
         properties: {
-            options: {
+            booleanOptions: {
                 type: Array,
-                computed: "_computeOptions(attribute, translations)"
+                computed: "_computeBooleanOptions(attribute, translations)"
             }
         }
     })
     export class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
-        private _computeOptions(attribute: Vidyano.PersistentObjectAttribute): Common.IKeyValuePair[] {
+        private _computeBooleanOptions(attribute: Vidyano.PersistentObjectAttribute): Common.IKeyValuePair[] {
             if (!attribute)
                 return [];
 

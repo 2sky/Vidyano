@@ -2734,23 +2734,18 @@ namespace Vidyano {
             }
 
             this._serviceOptions = <any[]>options.slice(0);
-            const addEmptyOption = !this.isRequired && !options.some(o => o == null || o.startsWith("=")) && ["KeyValueList", "DropDown", "ComboBox"].indexOf(this.type) !== -1;
             const keyValuePairOptionType = ["FlagsEnum", "KeyValueList"].indexOf(this.type) !== -1 || (this.type === "Reference" && (<PersistentObjectAttributeWithReference><any>this).selectInPlace);
 
-            if (!keyValuePairOptionType) {
-                if (addEmptyOption)
-                    options.splice(0, 0, null);
-
+            if (!keyValuePairOptionType)
                 this.options = options;
-            }
             else {
-                this.options = (addEmptyOption ? [{ key: null, value: "" }] : []).concat(options.map(o => {
+                this.options = options.map(o => {
                     const optionSplit = splitWithTail(o, "=", 2);
                     return {
                         key: optionSplit[0],
                         value: optionSplit[1]
                     };
-                }));
+                });
             }
 
             this.notifyPropertyChanged("options", this.options, oldOptions);

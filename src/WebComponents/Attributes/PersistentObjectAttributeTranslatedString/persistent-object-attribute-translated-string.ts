@@ -31,8 +31,8 @@
 
         private _setStrings: (strings: ITranslatedString[]) => void;
 
-        protected _optionsChanged() {
-            super._optionsChanged();
+        protected _optionsChanged(options: string[] | Common.IKeyValuePair[]) {
+            super._optionsChanged(options);
 
             const strings: ITranslatedString[] = [];
             this._defaultLanguage = <string>this.attribute.options[1];

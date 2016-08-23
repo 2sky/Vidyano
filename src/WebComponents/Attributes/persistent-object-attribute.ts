@@ -54,7 +54,7 @@ namespace Vidyano.WebComponents.Attributes {
             this.value = this.attribute.value !== undefined ? this.attribute.value : null;
         }
 
-        protected _optionsChanged() {
+        protected _optionsChanged(options: string[] | Common.IKeyValuePair[]) {
             // Noop
         }
 
@@ -81,6 +81,23 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _computeIsReadOnly(isReadOnly: boolean, disabled: boolean): boolean {
             return isReadOnly || disabled;
+        }
+
+        private _computeOptions(options: string[] | Common.IKeyValuePair[], isRequired: boolean, type: string): string[] | Common.IKeyValuePair[] {
+            if (!options || options.length === 0 || isRequired || ["KeyValueList", "DropDown", "ComboBox"].indexOf(type) === -1)
+                return options;
+
+            if (typeof options[0] === "string") {
+                if ((<string[]>options).some(o => o == null))
+                    return options;
+
+                return [null].concat(options);
+            }
+
+            if ((<Common.IKeyValuePair[]>options).some(o => o.key == null))
+                return options;
+
+            return [{ key: null, value: "" }].concat((<Common.IKeyValuePair[]>options));
         }
 
         private _updateForegroundDataTypeHint(attribute: Vidyano.PersistentObjectAttribute, isEditing: boolean, isReadOnly: boolean) {
@@ -157,14 +174,19 @@ namespace Vidyano.WebComponents.Attributes {
                     reflectToAttribute: true,
                     computed: "_computeHasError(attribute.validationError)"
                 };
+                info.properties["options"] = {
+                    type: Array,
+                    computed: "_computeOptions(attribute.options, attribute.isRequired, attribute.type)",
+                    observer: "_optionsChanged"
+                };
 
                 info.forwardObservers = info.forwardObservers || [];
                 info.forwardObservers.push("attribute.displayValue");
                 info.forwardObservers.push("attribute.isRequired");
                 info.forwardObservers.push("attribute.isReadOnly");
+                info.forwardObservers.push("attribute.options");
                 info.forwardObservers.push("attribute.validationError");
                 info.forwardObservers.push("attribute.parent.isFrozen");
-                info.forwardObservers.push("_optionsChanged(attribute.options)");
                 info.forwardObservers.push("_editingChanged(attribute.parent.isEditing)");
                 info.forwardObservers.push("_attributeValueChanged(attribute.value)");
 

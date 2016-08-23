@@ -10,12 +10,12 @@
         <template is="dom-if" if="[[editing]]">
             <template is="dom-if" if="[[!radio]]">
                 <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                    <vi-select content options="[[attribute.options]]" selected-option="{{value}}" readonly="[[readOnly]]" disabled="[[attribute.parent.isFrozen]]"></vi-select>
+                    <vi-select content options="[[options]]" selected-option="{{value}}" readonly="[[readOnly]]" disabled="[[attribute.parent.isFrozen]]"></vi-select>
                 </vi-persistent-object-attribute-edit>
             </template>
             <template is="dom-if" if="[[radio]]">
                 <div id="radiobuttons">
-                    <template is="dom-repeat" items="[[attribute.options]]" as="option">
+                    <template is="dom-repeat" items="[[options]]" as="option">
                         <vi-checkbox label="[[_radioLabel(option)]]" checked="[[_isRadioChecked(option, value)]]" on-changed="_radioChanged" radio></vi-checkbox>
                     </template>
                 </div>

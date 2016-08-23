@@ -8,7 +8,7 @@
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <vi-select content options="[[options]]" selected-option="{{value}}" disable-filtering readonly="[[readOnly]]" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-select>
+                <vi-select content options="[[booleanOptions]]" selected-option="{{value}}" disable-filtering readonly="[[readOnly]]" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-select>
             </vi-persistent-object-attribute-edit>
         </template>
     </template>

@@ -24,7 +24,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _radioLabel(option: Vidyano.Common.IKeyValuePair): string {
-            return option.value != null ? option.value : "—";
+            return !option.value ? "—" : option.value;
         }
 
         private _radioChanged(e: CustomEvent) {
