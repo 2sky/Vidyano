@@ -17,7 +17,7 @@
             <template is="dom-if" if="[[attribute.selectInPlace]]">
                 <template is="dom-if" if="[[!selectInPlaceAsRadio]]">
                     <vi-persistent-object-attribute-edit attribute="[[attribute]]" reverse-content>
-                        <vi-select id="selectInPlace" content class="flex" options="[[attribute.options]]" selected-option="{{objectId}}" readonly$="[[attribute.isReadOnly]]"></vi-select>
+                        <vi-select id="selectInPlace" content class="flex" options="[[options]]" selected-option="{{objectId}}" readonly$="[[attribute.isReadOnly]]"></vi-select>
                         <button on-tap="_openSelect" hidden$="[[attribute.isReadOnly]]">
                             <vi-icon source="CaretDown"></vi-icon>
                         </button>
@@ -38,7 +38,7 @@
                 </template>
                 <template is="dom-if" if="[[selectInPlaceAsRadio]]">
                     <div content>
-                        <template is="dom-repeat" items="[[attribute.options]]" as="option">
+                        <template is="dom-repeat" items="[[options]]" as="option">
                             <div id="radiobuttons">
                                 <vi-checkbox label="[[option.value]]" checked="[[_isRadioChecked(option.key, objectId)]]" on-changed="_radioChanged" radio></vi-checkbox>
                             </div>
