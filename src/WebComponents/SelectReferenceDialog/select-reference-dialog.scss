@@ -23,22 +23,22 @@
 }
 
 :host-context(vi-app[is-phone]) {
-    main {
+    main vi-query-grid {
         width: 85vw;
-        height: 75vh;
+        min-height: 75vh;
     }
 }
 
 :host-context(vi-app[is-tablet]) {
-    main {
-        height: 60vh;
+    main vi-query-grid {
+        min-height: 60vh;
         width: 90vw;
     }
 }
 
 :host-context(vi-app[is-desktop]) {
-    main {
-        height: 60vh;
+    main vi-query-grid {
+        min-height: 60vh;
         width: 90vw;
     }
 }
