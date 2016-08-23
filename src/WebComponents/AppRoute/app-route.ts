@@ -34,7 +34,7 @@ namespace Vidyano.WebComponents {
         private _constructor: IAppRouteComponentConstructor;
         private _constructorComponent: string;
         private _constructorChanged: boolean;
-        private _clearChildren: boolean;
+        private _hasChildren: boolean;
         private _parameters: { [key: string]: string } = {};
         private _documentTitleBackup: string;
         allowSignedOut: boolean;
@@ -62,10 +62,7 @@ namespace Vidyano.WebComponents {
             this._documentTitleBackup = document.title;
             this._parameters = parameters;
 
-            if (this._clearChildren) {
-                Polymer.dom(this).children.filter(c => c.tagName !== "TEMPLATE").forEach(c => Polymer.dom(this).removeChild(c));
-                this._clearChildren = false;
-            }
+            this._clearChildren();
 
             if (this.component) {
                 if (this._constructorComponent !== this.component) {
@@ -75,12 +72,13 @@ namespace Vidyano.WebComponents {
                             const component = this.component;
 
                             this.app.importComponent(this.component.replace(/^(Vidyano.WebComponents.)/, "")).then(_ => {
-                                if (this.component === component) {
-                                    this._constructor = this._constructorFromComponent(this.component);
-                                    if (this._constructor) {
-                                        this._constructorComponent = this.component;
-                                        this._distributeNewComponent();
-                                    }
+                                if ((this._parameters && JSON.stringify(this._parameters) !== JSON.stringify(parameters)) || this.component !== component)
+                                    return;
+
+                                this._constructor = this._constructorFromComponent(this.component);
+                                if (this._constructor) {
+                                    this._constructorComponent = this.component;
+                                    this._distributeNewComponent();
                                 }
                             });
                         }
@@ -99,7 +97,7 @@ namespace Vidyano.WebComponents {
                     Polymer.dom(this).appendChild(template.stamp({ app: this.app }).root);
                     Polymer.dom(this).flush();
 
-                    this._clearChildren = true;
+                    this._hasChildren = true;
                 }
                 else {
                     const firstChild = <WebComponent>Polymer.dom(this).children[0];
@@ -122,14 +120,24 @@ namespace Vidyano.WebComponents {
             if (!this._constructor || this._constructorComponent !== this.component)
                 return;
 
+            this._clearChildren();
+
             const componentInstance = <WebComponent><any>new this._constructor(this.app);
             Polymer.dom(this).appendChild(componentInstance);
             Polymer.dom(this).flush();
 
-            this._clearChildren = true;
+            this._hasChildren = true;
 
             if (componentInstance.fire)
                 componentInstance.fire("app-route-activate", null, { bubbles: false });
+        }
+
+        private _clearChildren() {
+            if (!this._hasChildren)
+                return;
+
+            Polymer.dom(this).children.filter(c => c.tagName !== "TEMPLATE").forEach(c => Polymer.dom(this).removeChild(c));
+            this._hasChildren = false;
         }
 
         deactivate(): Promise<boolean> {
@@ -153,11 +161,7 @@ namespace Vidyano.WebComponents {
             if (!this._constructor)
                 return;
 
-            const component = <WebComponent>Polymer.dom(this).children[0];
-            if (component) {
-                Polymer.dom(this).removeChild(component);
-                Polymer.dom(this).flush();
-            }
+            this._clearChildren();
         }
 
         get parameters(): any {
