@@ -120,5 +120,9 @@
         private _ok() {
             this.close(this.strings);
         }
+
+        private _onCaptureTab() {
+            // Skip default tab navigation behavior
+        }
     }
 }
