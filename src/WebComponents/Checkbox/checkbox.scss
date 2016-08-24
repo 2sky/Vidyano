@@ -25,8 +25,15 @@
     &:focus {
         outline: 0;
 
-        &:not([disabled]) div > span {
-            outline: 1px dotted var(--theme-color-light);
+        &:not([disabled]) vi-icon {
+            &[source="SelectedRadio"] ::content #box {
+                fill: var(--theme-color-light);
+                opacity: 0.75;
+            }
+
+            &[source="Selected"] + span {
+                outline: 1px dotted var(--theme-color-light); 
+            }
         }
     }
 }
