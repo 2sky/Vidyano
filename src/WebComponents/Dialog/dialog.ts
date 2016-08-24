@@ -78,7 +78,7 @@ namespace Vidyano.WebComponents {
         private _track(e: PolymerTrackEvent) {
             const detail = <PolymerTrackDetail>e.detail;
 
-            if (detail.state === "track") {
+            if (detail.state === "track" && this._translatePosition && this.app.isTracking) {
                 this._translate({
                     x: this._translatePosition.x + detail.ddx,
                     y: this._translatePosition.y + detail.ddy
