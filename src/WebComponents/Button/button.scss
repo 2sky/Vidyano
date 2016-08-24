@@ -95,7 +95,12 @@
             fill: var(--theme-color);
 
             &:not([disabled]):hover {
-                background-color: var(--theme-color-faint);
+                &::before {
+                    @include fit();
+                    content: " ";
+                    background-color: var(--theme-color);
+                    opacity: 0.1;
+                }
             }
 
             &[disabled] {
