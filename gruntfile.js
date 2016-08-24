@@ -137,6 +137,17 @@ module.exports = function(grunt) {
         "dtsGenerator"
     ]);
 
+    grunt.registerTask("cdn", [
+        "bower:install",
+        "sass",
+        "ts",
+        "clean",
+        "copy:dist",
+        "revision",
+        "replace:vidyanoVersion",
+        "replace:nugetVersion"
+    ]);
+
     grunt.registerTask("nugetrevert", [
         "replace:nugetVersionRevert",
     ]);
