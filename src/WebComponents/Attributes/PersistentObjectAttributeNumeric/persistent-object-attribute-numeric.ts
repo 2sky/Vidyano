@@ -74,8 +74,7 @@
                         return;
 
                     this.attribute.setValue(bigNumberValue, false).catch(Vidyano.noop);
-                }
-                catch (e) {
+                } catch (e) {
                     this.notifyPath("value", this.attribute.value);
                 }
             }
