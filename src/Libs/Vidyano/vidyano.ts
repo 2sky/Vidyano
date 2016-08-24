@@ -2262,13 +2262,18 @@ namespace Vidyano {
                             group.attributes.push(attr);
                             tabGroupAttributesChanged.add(group);
 
-                            group.attributes[attr.name] = attr;
+                            tab.attributes.push(attr);
+
+                            tab.attributes[attr.name] = group.attributes[attr.name] = attr;
                             group.attributes.sort((x, y) => x.offset - y.offset);
                         }
                     }
                     else if (group) {
                         group.attributes.remove(attr);
                         delete group.attributes[attr.name];
+
+                        tab.attributes.remove(attr);
+                        delete tab.attributes[attr.name];
 
                         if (group.attributes.length === 0) {
                             tab.groups.remove(group);
