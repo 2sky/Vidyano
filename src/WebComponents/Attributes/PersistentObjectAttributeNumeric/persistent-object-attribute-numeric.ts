@@ -68,11 +68,16 @@
                 newValue = newValue.replace(this._decimalSeparator, ".");
 
             if (this.attribute) {
-                const bigNumberValue = !StringEx.isNullOrEmpty(newValue) ? new BigNumber(newValue) : null;
-                if (this.attribute.value instanceof BigNumber && bigNumberValue != null && bigNumberValue.equals(this.attribute.value))
-                    return;
+                try {
+                    const bigNumberValue = !StringEx.isNullOrEmpty(newValue) ? new BigNumber(newValue) : null;
+                    if (this.attribute.value instanceof BigNumber && bigNumberValue != null && bigNumberValue.equals(this.attribute.value))
+                        return;
 
-                this.attribute.setValue(bigNumberValue, false).catch(Vidyano.noop);
+                    this.attribute.setValue(bigNumberValue, false).catch(Vidyano.noop);
+                }
+                catch (e) {
+                    this.notifyPath("value", this.attribute.value);
+                }
             }
         }
 
