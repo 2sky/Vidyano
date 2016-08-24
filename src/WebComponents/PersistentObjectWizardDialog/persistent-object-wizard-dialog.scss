@@ -5,6 +5,22 @@ $min-main-width: 400px;
 :host {
     --vi-persistent-object-dialog-base-width-base: $min-main-width;
 
+    header {
+        padding-right: var(--theme-h5) !important;
+
+        h4 {
+            color: var(--vi-persistent-object-dialog-header-color, #333);
+        }
+
+        h4 + button {
+            --vi-button-icon: #{'{
+                fill: var(--vi-persistent-object-dialog-header-color, #333);
+            }'};
+
+            margin-left: var(--theme-h5);
+        }
+    }
+
     main {
         @include layout-vertical();
         padding: 0;
