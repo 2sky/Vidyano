@@ -8,7 +8,10 @@
                 reflectToAttribute: true,
                 notify: true
             },
-            label: String,
+            label: {
+                type: String,
+                value: null
+            },
             isNull: {
                 type: Boolean,
                 value: true,
@@ -64,6 +67,10 @@
 
         private _computeIcon(radio: boolean): string {
             return !radio ? "Selected" : "SelectedRadio";
+        }
+
+        private _isEmpty(label: string): boolean {
+            return !label;
         }
     }
 }

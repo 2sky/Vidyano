@@ -31,8 +31,8 @@
                 opacity: 0.75;
             }
 
-            &[source="Selected"] + span {
-                outline: 1px dotted var(--theme-color-light); 
+            &[source="Selected"] + span:not([empty]) {
+                outline: 1px dotted var(--theme-color-light);
             }
         }
     }

@@ -3,7 +3,7 @@
         <link rel="stylesheet" href="checkbox.css" />
         <div class="layout horizontal center">
             <vi-icon hidden$="[[isNull]]" disabled$="[[disabled]]" source="[[_computeIcon(radio)]]" is-selected$="[[checked]]"></vi-icon>
-            <span>[[label]]</span>
+            <span empty$="[[_isEmpty(label)]]">[[label]]</span>
         </div>
     </template>
 </dom-module>
