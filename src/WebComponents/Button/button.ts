@@ -17,6 +17,10 @@
                 readOnly: true,
                 reflectToAttribute: true
             },
+            elevation: {
+                type: Number,
+                reflectToAttribute: true
+            },
             icon: String,
             label: String
         },
