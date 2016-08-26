@@ -1880,7 +1880,7 @@ namespace Vidyano {
         ownerAttributeWithReference: PersistentObjectAttributeWithReference;
         ownerPersistentObject: PersistentObject;
         ownerQuery: Query;
-        bulkObjectIds: string;
+        bulkObjectIds: string[];
         queriesToRefresh: Array<string> = [];
         attributes: PersistentObjectAttribute[];
         queries: Query[];

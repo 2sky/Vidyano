@@ -1007,6 +1007,20 @@ namespace Vidyano.WebComponents {
                 else {
                     const fromActionId = Unique.get();
                     path = this.app.getUrlForFromAction(fromActionId);
+
+                    if (!po.isNew && po.objectId) {
+                        const existingPoCacheEntry = this.app.cachePing(new PersistentObjectAppCacheEntry(po));
+                        if (existingPoCacheEntry)
+                            this.app.cacheRemove(existingPoCacheEntry);
+                    }
+                    else if (po.isBulkEdit) {
+                        po.bulkObjectIds.forEach(poId => {
+                            const existingPoCacheEntry = this.app.cachePing(new PersistentObjectAppCacheEntry(po.id, poId));
+                            if (existingPoCacheEntry)
+                                this.app.cacheRemove(existingPoCacheEntry);
+                        });
+                    }
+
                     this.app.cache(new PersistentObjectFromActionAppCacheEntry(po, fromActionId, this.app.path));
                 }
 
