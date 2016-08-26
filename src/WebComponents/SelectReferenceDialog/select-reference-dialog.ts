@@ -5,6 +5,7 @@
         properties: {
             query: Object,
             canSelect: Boolean,
+            canAddNewReference: Boolean,
             initializing: {
                 type: Boolean,
                 observer: "_initializingChanged"
@@ -17,7 +18,7 @@
     export class SelectReferenceDialog extends Dialog {
         canSelect: boolean;
 
-        constructor(public query: Vidyano.Query, forceSearch?: boolean) {
+        constructor(public query: Vidyano.Query, forceSearch?: boolean, public canAddNewReference?: boolean) {
             super();
 
             query["_query-grid-vertical-scroll-offset"] = undefined;
@@ -62,6 +63,10 @@
                 return;
 
             this.close(this.query.selectedItems);
+        }
+
+        private _addNew() {
+            this.close("AddNewReference");
         }
 
         private _search(e: CustomEvent, detail: string) {

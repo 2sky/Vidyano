@@ -49,6 +49,7 @@ namespace Vidyano.WebComponents.Attributes {
         attribute: Vidyano.PersistentObjectAttributeWithReference;
         href: string;
         filter: string;
+        canAddNewReference: boolean;
 
         private _setCanClear: (val: boolean) => void;
         private _setCanAddNewReference: (val: boolean) => void;
@@ -117,7 +118,7 @@ namespace Vidyano.WebComponents.Attributes {
         private _browseReference(throwExceptions?: boolean, forceSearch?: boolean): Promise<any> {
             this.attribute.lookup.selectedItems = [];
 
-            return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup, forceSearch)).then(result => {
+            return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup, forceSearch, this.canAddNewReference)).then(result => {
                 this._browseReferenceDone();
 
                 if (!result) {
@@ -127,9 +128,11 @@ namespace Vidyano.WebComponents.Attributes {
                     return Promise.resolve();
                 }
 
-                return this.attribute.changeReference(result).then(() => {
-                    this._update();
-                });
+                if (result instanceof Vidyano.QueryResultItem)
+                    return this.attribute.changeReference(result).then(() => this._update());
+
+                if (result === "AddNewReference")
+                    this._addNewReference();
             }).catch(() => {
                 this.filter = this.attribute.value;
                 this._browseReferenceDone();
@@ -140,7 +143,7 @@ namespace Vidyano.WebComponents.Attributes {
             this._browsing = false;
         }
 
-        private _addNewReference(e: Event) {
+        private _addNewReference(e?: Event) {
             this.attribute.addNewReference();
         }
 

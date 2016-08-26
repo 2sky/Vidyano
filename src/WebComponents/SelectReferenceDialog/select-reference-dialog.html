@@ -16,9 +16,12 @@
             <vi-notification service-object="[[query]]"></vi-notification>
             <vi-query-grid class="flex" query="[[query]]" on-item-tap="_selectReference" as-lookup initializing="{{initializing}}"></vi-query-grid>
         </main>
-        <footer class="horizontal layout end-justified">
-            <button is="vi-button" on-tap="_select" disabled$="[[!canSelect]]" label="[[translateMessage('OK', isAttached)]]"></button>
-            <button is="vi-button" inverse on-tap="cancel" label="[[translateMessage('Cancel', isAttached)]]"></button>
+        <footer class="horizontal-reverse layout justified">
+            <div class="horizontal layout end-justified">
+                <button is="vi-button" on-tap="_select" disabled$="[[!canSelect]]" label="[[translateMessage('OK', isAttached)]]"></button>
+                <button is="vi-button" inverse on-tap="cancel" label="[[translateMessage('Cancel', isAttached)]]"></button>
+            </div>
+            <button is="vi-button" on-tap="_addNew" hidden$="[[!canAddNewReference]]" label="[[translateMessage('NewReference', isAttached)]]"></button>
         </footer>
     </template>
 </dom-module>
