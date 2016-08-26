@@ -54,6 +54,9 @@ namespace Vidyano.Web2
                         if (useLocalFileSystem)
                         {
                             var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), directory + src);
+                            if (!File.Exists(filePath))
+                                return match.Value;
+
                             return "<script>" + File.ReadAllText(filePath) + "</script>";
                         }
 
