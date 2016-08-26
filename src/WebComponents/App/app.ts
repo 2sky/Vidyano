@@ -570,6 +570,8 @@ namespace Vidyano.WebComponents {
                         if (!proceed || currentRoute !== this.currentRoute)
                             return;
 
+                        Enumerable.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
+
                         if (!!newRoute) {
                             newRoute.activate(mappedPathRoute.params);
                             this._setCurrentRoute(newRoute);
