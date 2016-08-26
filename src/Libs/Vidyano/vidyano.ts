@@ -4101,7 +4101,7 @@ namespace Vidyano {
             this.typeHints = item.typeHints;
         }
 
-        get values(): any {
+        get values(): { [key: string]: any; } {
             if (!this._values) {
                 this._values = {};
                 this.rawValues.forEach(v => {
