@@ -77,14 +77,16 @@ namespace Vidyano.WebComponents {
         }
 
         private _next(e: TapEvent) {
-            this.persistentObject.service.executeAction("Wizard.NextStep", this.persistentObject, undefined, undefined, { CurrentTab: this.currentTab.key, Attributes: this.currentTab.attributes.map(a => a.name).join("\n") }).then(result => {
-                this.persistentObject.refreshFromResult(result);
+            this.persistentObject.queueWork(() => {
+                return this.persistentObject.service.executeAction("Wizard.NextStep", this.persistentObject, undefined, undefined, { CurrentTab: this.currentTab.key, Attributes: this.currentTab.attributes.map(a => a.name).join("\n") }).then(result => {
+                    this.persistentObject.refreshFromResult(result);
 
-                if (this.currentTab.attributes.some(attr => !!attr.validationError))
-                    return;
+                    if (this.currentTab.attributes.some(attr => !!attr.validationError))
+                        return;
 
-                this._setCurrentTab(this.currentTab.parent.tabs[this.currentTab.parent.tabs.indexOf(this.currentTab) + 1]);
-            }).catch(Vidyano.noop);
+                    this._setCurrentTab(this.currentTab.parent.tabs[this.currentTab.parent.tabs.indexOf(this.currentTab) + 1]);
+                }).catch(Vidyano.noop);
+            });
         }
 
         private _computeCanFinish(currentTab: Vidyano.PersistentObjectAttributeTab, canNext: boolean): boolean {
