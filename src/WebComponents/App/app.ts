@@ -213,6 +213,16 @@ namespace Vidyano.WebComponents {
                 type: String,
                 reflectToAttribute: true,
                 observer: "_cookiePrefixChanged"
+            },
+            themeColor: {
+                type: String,
+                reflectToAttribute: true,
+                value: "#4682B4"
+            },
+            themeAccentColor: {
+                type: String,
+                reflectToAttribute: true,
+                value: "#009688"
             }
         },
         observers: [
@@ -220,7 +230,9 @@ namespace Vidyano.WebComponents {
             "_updateRoute(path, initializing, barebone, routeMapVersion)",
             "_hookWindowBeforeUnload(noHistory, isAttached)",
             "_cleanUpOnSignOut(service.isSignedIn)",
-            "_resolveDependencies(service.application.hasManagement)"
+            "_resolveDependencies(service.application.hasManagement)",
+            "_computeThemeColorVariants(themeColor, 'color', isAttached)",
+            "_computeThemeColorVariants(themeAccentColor, 'accent-color', isAttached)"
         ],
         hostAttributes: {
             "tabindex": "-1"
@@ -789,6 +801,26 @@ namespace Vidyano.WebComponents {
             this.empty(popupMenuItem);
 
             configureItems.forEach(item => Polymer.dom(popupMenuItem).appendChild(item));
+        }
+
+        private _computeThemeColorVariants(base: string, target: string, isAttached: boolean) {
+            if (!isAttached || !base)
+                return;
+
+            if (!base.startsWith("#"))
+                base = `#${base}`;
+
+            const appColor = new AppColor(base);
+
+            this.customStyle[`--theme-${target}`] = base;
+            this.customStyle[`--theme-${target}-light`] = appColor.light;
+            this.customStyle[`--theme-${target}-lighter`] = appColor.lighter;
+            this.customStyle[`--theme-${target}-dark`] = appColor.dark;
+            this.customStyle[`--theme-${target}-darker`] = appColor.darker;
+            this.customStyle[`--theme-${target}-faint`] = appColor.faint;
+            this.customStyle[`--theme-${target}-semi-faint`] = appColor.semiFaint;
+
+            this.updateStyles();
         }
 
         static stripHashBang(path: string = ""): string {

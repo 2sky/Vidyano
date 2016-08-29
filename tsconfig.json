@@ -33,6 +33,7 @@
     "src/WebComponents/ActionBar/action-bar.ts",
     "src/WebComponents/ActionButton/action-button.ts",
     "src/WebComponents/App/app.ts",
+    "src/WebComponents/App/app-color.ts",
     "src/WebComponents/App/Config/app-config.ts",
     "src/WebComponents/App/Config/app-setting.ts",
     "src/WebComponents/App/Config/persistent-object-attribute-config.ts",

@@ -7,22 +7,6 @@ $notification-notice: #48545e;
 $notification-ok: #339f7b;
 
 @mixin default-variables() {
-    --theme-color: #4682B4;
-    --theme-color-light: #6a9bc3;
-    --theme-color-lighter: #90b4d2;
-    --theme-color-dark: #386890;
-    --theme-color-darker: #2a4e6c;
-    --theme-color-faint: #ecf2f7;
-    --theme-color-semi-faint: darken(#ecf2f7, 2%);
-
-    --theme-accent-color: #009688;
-    --theme-accent-color-light: #4db6ac;
-    --theme-accent-color-lighter: #b2dfdb;
-    --theme-accent-color-dark: #00796b;
-    --theme-accent-color-darker: #004d40;
-    --theme-accent-color-faint: #e0f2f1;
-    --theme-accent-color-semi-faint: darken(#e0f2f1, 2%);
-
     --theme-color-error: $notification-error;
     --theme-color-warning: $notification-warning;
     --theme-color-notice: $notification-notice;
