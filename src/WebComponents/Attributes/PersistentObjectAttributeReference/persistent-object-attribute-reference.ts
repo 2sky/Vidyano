@@ -128,7 +128,7 @@ namespace Vidyano.WebComponents.Attributes {
                     return Promise.resolve();
                 }
 
-                if (result instanceof Vidyano.QueryResultItem)
+                if (result instanceof Array && result.length > 0 && result[0] instanceof Vidyano.QueryResultItem)
                     return this.attribute.changeReference(result).then(() => this._update());
 
                 if (result === "AddNewReference")
