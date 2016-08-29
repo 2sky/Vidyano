@@ -17,6 +17,5 @@
     </metadata>
     <files>
         <file src="bin\Release\Vidyano.Web2.dll" target="lib\net45\Vidyano.Web2.dll" />
-		<file src="Install.ps1" target="tools\Install.ps1" />
     </files>
 </package>
