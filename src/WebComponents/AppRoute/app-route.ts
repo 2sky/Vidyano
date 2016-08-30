@@ -55,8 +55,12 @@ namespace Vidyano.WebComponents {
             this.fire("app-route-add", { route: this.route });
         }
 
+        matchesParameters(parameters: { [key: string]: string } = {}): boolean {
+            return this._parameters && JSON.stringify(this._parameters) === JSON.stringify(parameters);
+        }
+
         activate(parameters: { [key: string]: string } = {}) {
-            if (this.active && this._parameters && JSON.stringify(this._parameters) === JSON.stringify(parameters))
+            if (this.active && this.matchesParameters(parameters))
                 return;
 
             this._documentTitleBackup = document.title;
