@@ -577,7 +577,7 @@ namespace Vidyano.WebComponents {
 
                 this._setRouteNotFound(false);
 
-                if (newRoute === this.currentRoute && this.currentRoute.matchesParameters(mappedPathRoute.params))
+                if (!!this.currentRoute && newRoute === this.currentRoute && this.currentRoute.matchesParameters(mappedPathRoute.params))
                     return;
 
                 if (this.currentRoute) {
