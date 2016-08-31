@@ -16,7 +16,7 @@
             <template is="dom-if" if="[[radio]]">
                 <div id="radiobuttons">
                     <template is="dom-repeat" items="[[options]]" as="option">
-                        <vi-checkbox label="[[_radioLabel(option)]]" checked="[[_isRadioChecked(option, value)]]" on-changed="_radioChanged" radio></vi-checkbox>
+                        <vi-checkbox label="[[_radioLabel(option)]]" checked="[[_isRadioChecked(option, value)]]" on-changed="_radioChanged" radio disabled$="[[attribute.parent.isFrozen]]"></vi-checkbox>
                     </template>
                 </div>
             </template>
