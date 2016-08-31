@@ -30,16 +30,16 @@
         <template is="dom-if" if="[[isVidyano]]">
             <iron-collapse id="vidyano">
                 <div>
-                    <label>[[translateMessage('UserName', isAttached)]]</label>
+                    <label for="user">[[translateMessage('UserName', isAttached)]]</label>
                     <input value="{{userName::input}}" id="user" type="text" disabled$="[[signingIn]]" on-keydown="_keydown" />
                 </div>
                 <div>
-                    <label>[[translateMessage('Password', isAttached)]]</label>
+                    <label for="pass">[[translateMessage('Password', isAttached)]]</label>
                     <input value="{{password::input}}" id="pass" type="password" disabled$="[[signingIn]]" on-keydown="_keydown" />
                 </div>
                 <template is="dom-if" if="[[twoFactorAuthentication]]">
                     <div>
-                        <label>[[translateMessage('TwoFactorCode', isAttached)]]</label>
+                        <label for="twofactor">[[translateMessage('TwoFactorCode', isAttached)]]</label>
                         <input value="{{twoFactorCode::input}}" id="twofactor" type="number" disabled$="[[signingIn]]" on-keydown="_keydown" />
                     </div>
                 </template>
