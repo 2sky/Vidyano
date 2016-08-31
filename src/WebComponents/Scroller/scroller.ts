@@ -31,10 +31,12 @@
             },
             outerWidth: {
                 type: Number,
+                notify: true,
                 readOnly: true
             },
             outerHeight: {
                 type: Number,
+                notify: true,
                 readOnly: true
             },
             innerWidth: {
