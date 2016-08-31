@@ -105,8 +105,13 @@ namespace Vidyano.WebComponents {
                 }
                 else {
                     const firstChild = <WebComponent>Polymer.dom(this).children[0];
-                    if (firstChild && firstChild.fire)
-                        firstChild.fire("app-route-activate", null, { bubbles: false });
+                    if (firstChild) {
+                        if (firstChild.updateStyles)
+                            firstChild.updateStyles();
+
+                        if (firstChild.fire)
+                            firstChild.fire("app-route-activate", null, { bubbles: false });
+                    }
                 }
             }
 
