@@ -251,7 +251,7 @@ namespace Vidyano.WebComponents {
     export class App extends WebComponent {
         private _cache: AppCacheEntry[] = [];
         private _initialize: Promise<Vidyano.Application>;
-        private _template: PolymerTemplate;
+        private _bareboneTemplate: PolymerTemplate;
         private _initializationError: string;
         private _routeMap: { [key: string]: AppRoute } = {};
         private _routeUpdater: Promise<any> = Promise.resolve();
@@ -303,7 +303,7 @@ namespace Vidyano.WebComponents {
             keys.target = document.body;
 
             if (this.barebone) {
-                if (this._template = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0])
+                if (this._bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0])
                     return;
             }
 
@@ -511,8 +511,8 @@ namespace Vidyano.WebComponents {
         }
 
         private _onInitialized() {
-            if (this._template)
-                Polymer.dom(this.root).appendChild(this._template.stamp({ app: this }).root);
+            if (this._bareboneTemplate)
+                Polymer.dom(this.root).appendChild(this._bareboneTemplate.stamp({ app: this }).root);
 
             if (this.noHistory)
                 this.changePath(this.path);
