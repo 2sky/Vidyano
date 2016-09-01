@@ -48,11 +48,6 @@
 
     &:not([disabled])[query-filtering] {
         background-color: var(--theme-color-faint);
-
-        vi-icon {
-            fill: var(--theme-color);
-            opacity: 0.3;
-        }
     }
 
     button[header] {
