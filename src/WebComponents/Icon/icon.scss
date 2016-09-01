@@ -3,6 +3,7 @@
 :host {
     position: relative;
     display: block;
+    pointer-events: none;
 
     > div {
         @include layout-horizontal();

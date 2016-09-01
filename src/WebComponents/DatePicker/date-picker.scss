@@ -53,7 +53,7 @@ $border-color: #eee;
 				min-width: var(--theme-h1);
 				min-height: var(--theme-h1);
 				line-height: var(--theme-h2);
-				flex-basis: calc(100% / 7);
+				width: calc(100% / 7);
 			}
 
 			&[type="day"] {
@@ -139,7 +139,7 @@ $border-color: #eee;
 			}
 
 			&[type$="month"], &[type$="year"] {
-				flex-basis: calc(100% / 3);
+				width: calc(100% / 3);
 			}
 		}
 	}
