@@ -513,7 +513,7 @@ namespace Vidyano.WebComponents {
         private _onInitialized() {
             if (this._template)
                 Polymer.dom(this.root).appendChild(this._template.stamp({ app: this }).root);
-            
+
             if (this.noHistory)
                 this.changePath(this.path);
 
