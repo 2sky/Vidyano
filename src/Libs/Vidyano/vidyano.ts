@@ -2195,6 +2195,7 @@ namespace Vidyano {
             this.attributes.removeAll(attr => {
                 if (!result.attributes.some(a => a.id === attr.id)) {
                     delete this.attributes[attr.name];
+                    attr.parent = null;
                     changedAttributes.push(attr);
 
                     return true;
@@ -2259,7 +2260,7 @@ namespace Vidyano {
 
                         tabGroupsChanged.add(tab);
                     }
-                    else if (attr.isVisible) {
+                    else if (attr.isVisible && attr.parent) {
                         if (group.attributes.indexOf(attr) < 0) {
                             group.attributes.push(attr);
                             tabGroupAttributesChanged.add(group);

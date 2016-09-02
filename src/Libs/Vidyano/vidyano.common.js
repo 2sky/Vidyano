@@ -643,7 +643,7 @@ Object.defineProperty(Array.prototype, "removeAll", {
          /// <summary>Removes all instances that match function f from this instance.</summary>
 
          if (this.length > 0) {
-             for (var index = this.length - 1; index--;) {
+             for (var index = this.length; index--;) {
                  if (f.call(thisObject, this[index], index, this))
                      this.splice(index, 1);
              }
