@@ -35,13 +35,16 @@
 <dom-module id="vi-persistent-object-attribute-image-dialog">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-image-dialog.css" />
-        <header>
+        <header class="relative">
+            <vi-size-tracker size="{{headerSize}}"></vi-size-tracker>
             <h4 class="flex">[[label]]</h4>
         </header>
         <main>
-            <img src$="[[src]]" style="max-width: 100%; max-height: 100%;" />
+            <vi-spinner id="spinner"></vi-spinner>
+            <img id="img" hidden src$="[[src]]" />
         </main>
-        <footer class="horizontal layout end-justified">
+        <footer class="horizontal layout end-justified relative">
+            <vi-size-tracker size="{{footerSize}}"></vi-size-tracker>
             <button is="vi-button" on-tap="_close" action-type="Default" label="[[translateMessage('Close', isAttached)]]"></button>
         </footer>
     </template>

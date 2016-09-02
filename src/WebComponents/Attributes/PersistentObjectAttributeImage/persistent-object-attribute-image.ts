@@ -113,12 +113,32 @@ namespace Vidyano.WebComponents.Attributes {
     @Dialog.register({
         properties: {
             label: String,
-            src: String
-        }
+            src: String,
+            headerSize: Object,
+            footerSize: Object
+        },
+        observers: [
+            "_showImage(headerSize, footerSize)"
+        ]
     })
     export class PersistentObjectAttributeImageDialog extends WebComponents.Dialog {
+        private _updated: boolean;
+
         constructor(public label: string, public src: string) {
             super();
+        }
+
+        private _showImage(headerSize: Vidyano.WebComponents.ISize, footerSize: Vidyano.WebComponents.ISize) {
+            this.customStyle["--vi-persistent-object-attribute-image-dialog--max-height"] = `${headerSize.height + footerSize.height}px`;
+
+            this.updateStyles();
+
+            if (!this._updated) {
+                this.$["img"].removeAttribute("hidden");
+                this.$["spinner"].setAttribute("hidden", "");
+
+                this._updated = true;
+            }
         }
 
         private _close() {

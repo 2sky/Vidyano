@@ -1,5 +1,14 @@
 :host {
     main {
+        position: relative;
         padding: var(--theme-h4);
+        overflow: hidden;
+        min-width: var(--theme-h1);
+        min-height: var(--theme-h1);
+
+        img {
+            max-width: calc(90vw - var(--theme-h4) * 2);
+            max-height: calc(90vh - var(--vi-persistent-object-attribute-image-dialog--max-height) - var(--theme-h4) * 2);
+        }
     }
 }
