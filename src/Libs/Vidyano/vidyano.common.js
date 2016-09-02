@@ -150,14 +150,18 @@ String.prototype.trimEnd = function String$trimEnd(c) {
 };
 
 String.prototype.asDataUri = function String$asDataUri() {
-    if (this.startsWith("iVBOR"))
+    if (/^iVBOR/.test(this))
         return "data:image/png;base64," + this;
-    if (this.startsWith("/9j/"))
+    if (/^\/9j\//.test(this))
         return "data:image/jpeg;base64," + this;
-    if (this.startsWith("R0lGOD"))
+    if (/^R0lGOD/.test(this))
         return "data:image/gif;base64," + this;
+    if (/^Qk/.test(this))
+        return "data:image/bmp;base64," + this;
+    if (/^PD94/.test(this))
+        return "data:image/svg+xml;base64," + this;
 
-    return "data:application/octet+stream;base64," + this;
+    return "";
 };
 
 ///////////////////////////////////////////////////////////////
