@@ -94,7 +94,7 @@ namespace Vidyano.WebComponents.Attributes {
                 return [null].concat(options);
             }
 
-            if ((<Common.IKeyValuePair[]>options).some(o => o.key == null))
+            if ((<Common.IKeyValuePair[]>options).some(o => !o.key))
                 return options;
 
             return [{ key: null, value: "" }].concat((<Common.IKeyValuePair[]>options));
