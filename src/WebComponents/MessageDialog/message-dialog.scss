@@ -4,21 +4,31 @@
     min-width: 17em;
 
     main {
-        padding: var(--theme-h4);
         @include layout-horizontal();
 
-        pre {
-            @include flex();
-            white-space: pre-wrap;
+        &:not([rich]) {
+            padding: var(--theme-h4);
 
-            a {
-                color: inherit;
+            pre {
+                @include flex();
+                white-space: pre-wrap;
+
+                a {
+                    color: inherit;
+                }
             }
         }
 
-        marked-element ::content {
-            p {
-                margin: 0.5em 0;
+        &[rich] {
+            marked-element {
+                overflow: auto;
+                padding: var(--theme-h4);
+
+                ::content {
+                    p {
+                        margin: 0.5em 0;
+                    }
+                }
             }
         }
     }

@@ -14,7 +14,7 @@
                 <button class="close" on-tap="cancel"><vi-icon source="Remove"></vi-icon></button>
             </template>
         </header>
-        <main>
+        <main rich$="[[options.rich]]">
             <template is="dom-if" if="[[options.rich]]">
                 <marked-element markdown="[[options.message]]"></marked-element>
             </template>
