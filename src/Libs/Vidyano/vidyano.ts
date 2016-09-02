@@ -2220,6 +2220,8 @@ namespace Vidyano {
             result.attributes.forEach(attr => {
                 if (!this.attributes.some(a => a.id === attr.id)) {
                     this.attributes.push(attr);
+                    attr.parent = this;
+
                     changedAttributes.push(attr);
 
                     if (attr.isValueChanged)
