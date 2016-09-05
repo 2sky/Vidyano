@@ -36,4 +36,12 @@
             }
         }
     }
+
+    vi-icon {
+        @apply(--vi-checkbox--icon);
+
+        &[disabled] {
+            @apply(--vi-checkbox--icon-disabled);
+        }
+    }
 }
