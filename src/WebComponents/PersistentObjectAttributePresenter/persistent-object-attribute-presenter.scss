@@ -40,6 +40,12 @@
         }
     }
 
+    vi-checkbox {
+        --vi-checkbox--icon-disabled: #{'{
+            background-color: #eee;
+        }'};
+    }
+
     input, textarea {
         background-color: white;
     }

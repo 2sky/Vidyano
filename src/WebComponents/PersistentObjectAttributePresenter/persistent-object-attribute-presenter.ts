@@ -34,7 +34,7 @@ namespace Vidyano.WebComponents {
             readOnly: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeReadOnly(attribute.isReadOnly, disabled)"
+                computed: "_computeReadOnly(attribute.isReadOnly, attribute.parent.isFrozen, disabled)"
             },
             bulkEdit: {
                 type: Boolean,
@@ -74,6 +74,7 @@ namespace Vidyano.WebComponents {
         ],
         forwardObservers: [
             "attribute.parent.isEditing",
+            "attribute.parent.isFrozen",
             "attribute.isRequired",
             "attribute.isReadOnly",
             "attribute.isVisible",
@@ -288,8 +289,8 @@ namespace Vidyano.WebComponents {
             return required && (value == null || (attribute && attribute.rules && attribute.rules.contains("NotEmpty") && value === ""));
         }
 
-        private _computeReadOnly(isReadOnly: boolean, disabled: boolean): boolean {
-            return isReadOnly || disabled;
+        private _computeReadOnly(isReadOnly: boolean, isFrozen: boolean, disabled: boolean): boolean {
+            return isReadOnly || disabled || isFrozen;
         }
 
         private _computeHasError(validationError: string): boolean {
