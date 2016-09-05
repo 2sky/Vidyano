@@ -8,7 +8,7 @@
         <template is="dom-if" if="[[!noLabel]]">
             <vi-persistent-object-attribute-label non-edit="[[nonEdit]]" attribute="[[attribute]]"></vi-persistent-object-attribute-label>
         </template>
-        <div id="contentWrapper" class="layout horizontal">
+        <div id="contentWrapper" class="layout horizontal flex">
             <template is="dom-if" if="[[attribute.parent.isBulkEdit]]">
                 <vi-checkbox checked="{{attribute.isValueChanged}}" disabled="[[readOnly]]"></vi-checkbox>
             </template>
