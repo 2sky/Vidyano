@@ -124,7 +124,7 @@
                 if (cells.length !== 42 + 7)
                     return;
 
-                this._setHeader(`${CultureInfo.currentCulture.dateFormat.monthNames[currentDateMoment.month()]} ${currentDateMoment.year()}`);
+                this._setHeader(`${CultureInfo.currentCulture.dateFormat.shortMonthNames[currentDateMoment.month()]} ${currentDateMoment.year()}`);
 
                 const loop = currentDateMoment.startOf("month").startOf(Vidyano.CultureInfo.currentCulture.dateFormat.firstDayOfWeek > 0 ? "isoWeek" : "week");
                 const end = loop.clone().add(6, "weeks");
@@ -149,7 +149,7 @@
                 let index = 0;
                 do {
                     this.set(`cells.${index}.date`, loop.clone());
-                    this.set(`cells.${index}.content`, Vidyano.CultureInfo.currentCulture.dateFormat.monthNames[index]);
+                    this.set(`cells.${index}.content`, Vidyano.CultureInfo.currentCulture.dateFormat.shortMonthNames[index]);
 
                     index++;
                     loop.add(1, "months");
