@@ -29,6 +29,9 @@
         ],
         hostAttributes: {
             "dialog": ""
+        },
+        listeners: {
+            "vi-persistent-object-tab-inner-size-changed": "_tabInnerSizeChanged"
         }
     })
     export class PersistentObjectDialog extends Dialog {
@@ -103,6 +106,15 @@
 
         private _onCaptureTab() {
             // Skip default tab navigation behavior
+        }
+
+        private _tabInnerSizeChanged(e: CustomEvent, detail: { size: ISize; }) {
+            e.stopPropagation();
+
+            if (!detail.size.height)
+                return;
+
+            this.$["main"].style.height = `${detail.size.height}px`;
         }
     }
 }

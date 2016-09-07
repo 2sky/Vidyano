@@ -8,6 +8,8 @@ $min-main-width: 400px;
     main {
         @include layout-vertical();
         padding: 0;
+        max-height: calc(80vh - (var(--theme-h1) + var(--theme-h5) * 2) - (var(--theme-h2) + var(--theme-h4) * 2)); // 80vh - header height - footer height (both defined on vi-app)
+        min-height: calc(var(--theme-h2) * 3);
 
         > vi-persistent-object-tab-presenter {
             @include flex();
@@ -15,6 +17,7 @@ $min-main-width: 400px;
 
             > vi-persistent-object-tab {
                 position: static;
+                width: 100%;
             }
         }
     }

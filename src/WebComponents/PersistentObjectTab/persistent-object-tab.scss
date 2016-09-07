@@ -6,8 +6,9 @@
     > vi-scroller {
         @include flex();
 
-        vi-persistent-object-group:last-of-type {
-            margin-bottom: var(--theme-h4);
+        .groups {
+            display: block;
+            padding-bottom:  var(--theme-h4);
         }
     }
 }

@@ -35,6 +35,9 @@ namespace Vidyano.WebComponents {
         ],
         hostAttributes: {
             "dialog": ""
+        },
+        listeners: {
+            "vi-persistent-object-tab-inner-size-changed": "_tabInnerSizeChanged"
         }
     })
     export class PersistentObjectWizardDialog extends Dialog {
@@ -59,6 +62,15 @@ namespace Vidyano.WebComponents {
             const width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * (this.currentTab.columnCount || 1);
             this.customStyle["--vi-persistent-object-dialog-computed-width"] = `${width}px`;
             this.updateStyles();
+        }
+
+        private _tabInnerSizeChanged(e: CustomEvent, detail: { size: ISize; }) {
+            e.stopPropagation();
+
+            if (!detail.size.height)
+                return;
+
+            this.$["main"].style.height = `${detail.size.height}px`;
         }
 
         private _computeCanPrevious(currentTab: Vidyano.PersistentObjectAttributeTab): boolean {

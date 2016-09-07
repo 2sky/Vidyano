@@ -9,6 +9,10 @@ namespace Vidyano.WebComponents {
                 computed: "_computeColumns(size, tab.columnCount)"
             },
             size: Object,
+            innerSize: {
+                type: Object,
+                observer: "_innerSizeChanged"
+            },
             autofocus: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -70,6 +74,10 @@ namespace Vidyano.WebComponents {
                 return;
 
             this._autofocusTarget.focus();
+        }
+
+        private _innerSizeChanged(size: ISize) {
+            this.fire("vi-persistent-object-tab-inner-size-changed", { size: size }, { bubbles: true});
         }
 
         _viConfigure(actions: IConfigurableAction[]) {

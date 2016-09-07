@@ -194,13 +194,8 @@
         }
     }
 
-    &:not([horizontal]) > #wrapper > #content > .bottom-margin {
-        display: none;
-    }
-
-    &[horizontal] > #wrapper > #content > .bottom-margin {
-        height: var(--vi-scroller-thumb-capture-size);
-        width: 100%;
+    &[horizontal] > #wrapper > #content > div {
+        padding-bottom: var(--vi-scroller-thumb-capture-size);
     }
 
     > .scroll-shadow {

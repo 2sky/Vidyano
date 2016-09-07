@@ -7,9 +7,12 @@
         <link rel="stylesheet" href="persistent-object-tab.css" />
         <vi-size-tracker size="{{size}}"></vi-size-tracker>
         <vi-scroller no-horizontal>
-            <template is="dom-repeat" items="[[tab.groups]]" as="group">
-                <vi-persistent-object-group group="[[group]]" group-index="[[index]]" columns="[[columns]]"></vi-persistent-object-group>
-            </template>
+            <div class="groups relative">
+                <vi-size-tracker size="{{innerSize}}"></vi-size-tracker>
+                <template is="dom-repeat" items="[[tab.groups]]" as="group">
+                    <vi-persistent-object-group group="[[group]]" group-index="[[index]]" columns="[[columns]]"></vi-persistent-object-group>
+                </template>
+            </div>
         </vi-scroller>
     </template>
 </dom-module>
