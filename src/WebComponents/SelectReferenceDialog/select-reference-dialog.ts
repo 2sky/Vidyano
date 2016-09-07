@@ -18,7 +18,7 @@
     export class SelectReferenceDialog extends Dialog {
         canSelect: boolean;
 
-        constructor(public query: Vidyano.Query, forceSearch?: boolean, public canAddNewReference?: boolean) {
+        constructor(public query: Vidyano.Query, forceSearch?: boolean, public canAddNewReference: boolean = false) {
             super();
 
             query["_query-grid-vertical-scroll-offset"] = undefined;
