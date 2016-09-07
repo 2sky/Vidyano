@@ -44,7 +44,7 @@ $min-main-width: 400px;
 }
 
 :host-context(vi-app[is-tablet]), :host-context(vi-app[is-desktop]) {
-    main {
+    main, vi-notification {
         min-width: $min-main-width;
         max-width: var(--vi-persistent-object-dialog-computed-width);
     }

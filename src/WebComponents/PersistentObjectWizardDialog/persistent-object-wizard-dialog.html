@@ -10,8 +10,8 @@
             <h4 class="flex">[[currentTab.label]]</h4>
             <button is="vi-button" inverse on-tap="cancel" icon="Remove"></button>
         </header>
+        <vi-notification service-object="[[persistentObject]]"></vi-notification>
         <main id="main">
-            <vi-notification service-object="[[persistentObject]]"></vi-notification>
             <vi-persistent-object-tab-presenter tab="[[currentTab]]"></vi-persistent-object-tab-presenter>
         </main>
         <footer class="horizontal layout justified">
