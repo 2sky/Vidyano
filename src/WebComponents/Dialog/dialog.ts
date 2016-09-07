@@ -109,6 +109,14 @@ namespace Vidyano.WebComponents {
             this.style.webkitTransform = this.style.transform = `translate(${position.x}px, ${position.y}px)`;
         }
 
+        protected _translateReset() {
+            if (!this._translatePosition)
+                return;
+
+            this._translatePosition = null;
+            this.style.webkitTransform = this.style.transform = "";
+        }
+
         static register(info: IWebComponentRegistrationInfo = {}, prefix?: string): any {
             if (typeof info === "function")
                 return Dialog.register({})(info);

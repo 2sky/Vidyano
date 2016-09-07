@@ -71,6 +71,7 @@ namespace Vidyano.WebComponents {
                 return;
 
             this.$["main"].style.height = `${detail.size.height}px`;
+            this._translateReset();
         }
 
         private _computeCanPrevious(currentTab: Vidyano.PersistentObjectAttributeTab): boolean {

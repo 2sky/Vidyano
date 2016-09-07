@@ -115,6 +115,7 @@
                 return;
 
             this.$["main"].style.height = `${detail.size.height}px`;
+            this._translateReset(); 
         }
     }
 }
