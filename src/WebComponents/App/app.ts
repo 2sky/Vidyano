@@ -510,9 +510,17 @@ namespace Vidyano.WebComponents {
             return service;
         }
 
+        reinitialize() {
+            const uri = this.uri;
+            this.uri = undefined;
+            this.uri = uri;
+        }
+
         private _onInitialized() {
-            if (this._bareboneTemplate)
+            if (this._bareboneTemplate) {
                 Polymer.dom(this.root).appendChild(this._bareboneTemplate.stamp({ app: this }).root);
+                this._bareboneTemplate = null;
+            }
 
             if (this.noHistory)
                 this.changePath(this.path);
@@ -666,6 +674,8 @@ namespace Vidyano.WebComponents {
                 this.cacheClear();
                 for (const route in this._routeMap)
                     this._routeMap[route].reset();
+
+                this._setCurrentRoute(null);
             }
         }
 
@@ -1111,8 +1121,15 @@ namespace Vidyano.WebComponents {
             });
         }
 
-        onSessionExpired() {
-            this.app.redirectToSignIn();
+        onSessionExpired(): boolean {
+            if (!this.app.barebone) {
+                this.app.redirectToSignIn();
+                return false;
+            }
+
+            this.app.service.signOut(true).then(() => this.app.reinitialize());
+
+            return true;
         }
 
         onNavigate(path: string, replaceCurrent: boolean = false) {

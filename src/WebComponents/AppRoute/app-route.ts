@@ -171,6 +171,7 @@ namespace Vidyano.WebComponents {
                 return;
 
             this._clearChildren();
+            this._setActive(false);
         }
 
         get parameters(): any {

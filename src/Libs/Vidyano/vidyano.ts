@@ -486,14 +486,11 @@ namespace Vidyano {
                         this.authToken = null;
                         delete data.authToken;
 
-                        if (this.defaultUserName) {
-                            data.userName = this.defaultUserName;
+                        if (this.defaultUserName && this.defaultUserName === this.userName) {
                             delete data.password;
                             this._postJSON(url, data).then(resolve, reject);
-                        } else {
+                        } else if (!this.hooks.onSessionExpired())
                             reject(result.exception);
-                            this.hooks.onSessionExpired();
-                        }
 
                         return;
                     }
@@ -934,12 +931,12 @@ namespace Vidyano {
             return this._getApplication();
         }
 
-        signOut(): Promise<any> {
+        signOut(skipAcs?: boolean): Promise<any> {
             this._setUserName(null);
             this.authToken = null;
             this._setApplication(null);
 
-            if (this._providers["Acs"] && this._providers["Acs"].signOutUri) {
+            if (!skipAcs && this._providers["Acs"] && this._providers["Acs"].signOutUri) {
                 return new Promise(resolve => {
                     const iframe = document.createElement("iframe");
                     iframe.width = "0";
@@ -1582,8 +1579,8 @@ namespace Vidyano {
             return Promise.resolve(clientData);
         }
 
-        onSessionExpired() {
-            // Noop
+        onSessionExpired(): boolean {
+            return false;
         }
 
         onActionConfirmation(action: Action, option: number): Promise<boolean> {
