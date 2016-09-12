@@ -48,6 +48,7 @@
             else if (route.app.service.providers && Object.keys(route.app.service.providers).length === 1 && !route.app.service.providers["Vidyano"]) {
                 this.empty(this.root);
 
+                Vidyano.cookie("returnUrl", returnUrl, { expires: 1, force: true });
                 this.app.service.signInExternal(Object.keys(route.app.service.providers)[0]);
                 return;
             }
@@ -74,7 +75,7 @@
 
             const providers = Object.keys(route.app.service.providers);
             providers.forEach(name => {
-                const provider = new WebComponents.SignInProvider(name === "Vidyano", providers.length === 1);
+                const provider = new WebComponents.SignInProvider(name === "Vidyano", providers.length === 1, returnUrl);
                 provider.name = name;
 
                 Polymer.dom(this).appendChild(provider);
@@ -168,7 +169,7 @@
         private _setSigningIn: (val: boolean) => void;
         private _setTwoFactorAuthentication: (val: boolean) => void;
 
-        constructor(isVidyano: boolean, private _isOnlyProvider: boolean) {
+        constructor(isVidyano: boolean, private _isOnlyProvider: boolean, private _returnUrl: string) {
             super();
 
             this._setIsVidyano(isVidyano);
@@ -210,8 +211,10 @@
         }
 
         private _tap() {
-            if (!this.isVidyano)
+            if (!this.isVidyano) {
+                Vidyano.cookie("returnUrl", this._returnUrl, { expires: 1, force: true });
                 this.app.service.signInExternal(this.name);
+            }
             else if (!this._isOnlyProvider) {
                 const vidyanoProvider = this.$$("#vidyano");
                 if (!vidyanoProvider["opened"]) {
