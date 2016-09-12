@@ -21,7 +21,7 @@
             },
             saveLabel: {
                 type: String,
-                computed: "_computeSaveLabel(isAttached)"
+                computed: "_computeSaveLabel(app)"
             }
         },
         forwardObservers: [
@@ -79,8 +79,8 @@
             }
         }
 
-        private _computeSaveLabel(isAttached: boolean): string {
-            if (!isAttached)
+        private _computeSaveLabel(app: Vidyano.WebComponents.App): string {
+            if (!app)
                 return null;
 
             return this._options.saveLabel || this.translateMessage("Save");
