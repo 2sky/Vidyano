@@ -167,11 +167,12 @@ namespace Vidyano.WebComponents {
         }
 
         reset() {
+            this._setActive(false);
+
             if (!this._constructor)
                 return;
 
             this._clearChildren();
-            this._setActive(false);
         }
 
         get parameters(): any {
