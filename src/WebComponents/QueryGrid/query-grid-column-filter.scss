@@ -114,6 +114,7 @@
         }
 
         .menuItem {
+            position: relative;
             cursor: pointer;
             text-align: left;
             line-height: var(--theme-h2);
