@@ -867,7 +867,7 @@ namespace Vidyano {
                 }
                 this._windowsAuthentication = this._clientData.windowsAuthentication;
 
-                var path = document.location.pathname;
+                const path = document.location.pathname;
                 if (path.startsWith(Vidyano.Path.routes.rootPath + "SignInWithToken/")) {
                     const token = path.substr(Vidyano.Path.routes.rootPath.length + 16);
                     const tokenParts = token.split("/", 2);
