@@ -94,9 +94,9 @@ namespace Vidyano.WebComponents {
 
         private _deactivate(e: CustomEvent) {
             const route = <AppRoute>Polymer.dom(this).parentNode;
-            const newPath = App.stripHashBang(this.app.path);
+            const newPath = App.removeRootPath(this.app.path);
 
-            if (this.persistentObject && this.persistentObject.isDirty && this.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit" ) && App.stripHashBang(route.path) !== newPath) {
+            if (this.persistentObject && this.persistentObject.isDirty && this.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit" ) && App.removeRootPath(route.path) !== newPath) {
                 e.preventDefault();
 
                 this.app.showMessageDialog( {

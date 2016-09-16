@@ -345,7 +345,7 @@ namespace Vidyano.WebComponents {
             if (item instanceof Vidyano.ProgramUnitItemUrl)
                 return item.path;
 
-            return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? app.noHistory ? "#" : hashBang + this.item.path : undefined;
+            return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? app.noHistory ? "#" : Path.routes.rootPath + this.item.path : undefined;
         }
 
         private _titleMouseenter() {

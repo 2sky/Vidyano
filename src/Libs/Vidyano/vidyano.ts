@@ -23,7 +23,20 @@ namespace Vidyano {
     "use strict";
 
     export const version = "latest";
-    export var cookiePrefix = document.location.pathname;
+
+    export var cookiePrefix: string;
+    if (document.head) {
+        const base = document.head.querySelector("base") as HTMLBaseElement;
+        if (base) {
+            const parser = document.createElement("a");
+            parser.href = base.href;
+
+            cookiePrefix = parser.pathname;
+        }
+    }
+
+    if (!cookiePrefix)
+        cookiePrefix = document.location.pathname;
 
     export enum NotificationType {
         Error,

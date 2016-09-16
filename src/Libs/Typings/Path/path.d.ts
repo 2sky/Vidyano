@@ -21,6 +21,8 @@
         root(path: string): void;
         routes: {
             current: string;
+            root: string;
+            rootPath: string;
             defined: {
                 [key: string]: Route
             };

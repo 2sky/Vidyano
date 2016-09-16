@@ -13,8 +13,10 @@ namespace Vidyano {
 namespace Vidyano.WebComponents {
     "use strict";
 
-    export const hashBang: string = "#!/";
-    export const hashBangRe: RegExp = /^#!\/?/;
+    const base = document.head.querySelector("base") as HTMLBaseElement;
+    const parser = document.createElement("a");
+    parser.href = base.href;
+    Path.routes.rootPath = parser.pathname;
 
     export class AppCacheEntry {
         constructor(public id: string) {
@@ -240,7 +242,8 @@ namespace Vidyano.WebComponents {
         listeners: {
             "app-config-attached": "_configurationAttached",
             "app-route-add": "_appRouteAdded",
-            "contextmenu": "_configureContextmenu"
+            "contextmenu": "_configureContextmenu",
+            "click": "_anchorClickHandler"
         },
         forwardObservers: [
             "service.isSignedIn",
@@ -287,13 +290,14 @@ namespace Vidyano.WebComponents {
             super.attached();
 
             Vidyano.Path.rescue(() => {
-                this.path = App.stripHashBang(Vidyano.Path.routes.current);
+                this.path = App.removeRootPath(Vidyano.Path.routes.current);
             });
 
             if (!this.noHistory) {
-                Vidyano.Path.root(hashBang);
+                Vidyano.Path.root(base.href);
                 Vidyano.Path.history.listen();
-                Vidyano.Path.listen();
+
+                Vidyano.Path["dispatch"](document.location.toString().substr(base.href.length));
             }
 
             if (!this.label)
@@ -321,15 +325,15 @@ namespace Vidyano.WebComponents {
         }
 
         changePath(path: string, replaceCurrent: boolean = false) {
-            path = hashBang + App.stripHashBang(path);
+            path = path.trimStart("/");
             if (this.path === path)
                 return;
 
             if (!this.noHistory) {
                 if (!replaceCurrent)
-                    Vidyano.Path.history.pushState(null, null, path);
+                    Vidyano.Path.history.pushState(null, null, Path.routes.rootPath + path);
                 else
-                    Vidyano.Path.history.replaceState(null, null, path);
+                    Vidyano.Path.history.replaceState(null, null, Path.routes.rootPath + path);
             }
             else {
                 this.path = path;
@@ -409,11 +413,11 @@ namespace Vidyano.WebComponents {
         }
 
         redirectToSignIn(keepUrl: boolean = true) {
-            this.changePath("SignIn" + (keepUrl && this.path ? "/" + encodeURIComponent(App.stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
+            this.changePath("SignIn" + (keepUrl && this.path ? "/" + encodeURIComponent(App.removeRootPath(this.path)).replace(/\./g, "%2E") : ""), true);
         }
 
         redirectToSignOut(keepUrl: boolean = true) {
-            this.changePath("SignOut" + (keepUrl && this.path ? "/" + encodeURIComponent(App.stripHashBang(this.path)).replace(/\./g, "%2E") : ""), true);
+            this.changePath("SignOut" + (keepUrl && this.path ? "/" + encodeURIComponent(App.removeRootPath(this.path)).replace(/\./g, "%2E") : ""), true);
         }
 
         showDialog(dialog: Dialog): Promise<any> {
@@ -491,7 +495,7 @@ namespace Vidyano.WebComponents {
             const service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
             this._setInitializing(true);
 
-            this._initialize = service.initialize(document.location.hash && App.stripHashBang(document.location.hash).startsWith("SignIn")).then(() => {
+            this._initialize = service.initialize(!!document.location.hash && App.removeRootPath(document.location.hash).startsWith("SignIn")).then(() => {
                 if (this.service === service) {
                     this._initializationError = null;
                     this._onInitialized();
@@ -529,6 +533,14 @@ namespace Vidyano.WebComponents {
             this.fire("initialized", undefined);
         }
 
+        private _anchorClickHandler(e: TapEvent, data: any) {
+            const anchorParent = this.findParent((e: HTMLElement) => e.tagName === "A" && !!(<HTMLAnchorElement>e).href, e.target as HTMLElement) as HTMLAnchorElement;
+            if (anchorParent && anchorParent.href.startsWith(Vidyano.Path.routes.root)) {
+                this.changePath(App.removeRootPath(anchorParent.pathname));
+                return event.preventDefault();
+            }
+        }
+
         private _convertPath(application: Vidyano.Application, path: string): string {
             if (application) {
                 let match = application.poRe.exec(path);
@@ -555,8 +567,7 @@ namespace Vidyano.WebComponents {
                 if (this.path !== path || this.currentRoute !== currentRoute)
                     return;
 
-                path = Vidyano.WebComponents.App.stripHashBang(this._convertPath(this.service.application, path));
-                const hashBangPath = hashBang + path;
+                path = Vidyano.WebComponents.App.removeRootPath(this._convertPath(this.service.application, path));
 
                 if (this.service && this.service.isSignedIn && path === "") {
                     let programUnit = this.programUnit;
@@ -581,8 +592,8 @@ namespace Vidyano.WebComponents {
                     }
                 }
 
-                const mappedPathRoute = !!path || this.barebone ? Vidyano.Path.match(hashBangPath, true) : null;
-                const newRoute = mappedPathRoute ? this._routeMap[App.stripHashBang(mappedPathRoute.path)] : null;
+                const mappedPathRoute = !!path || this.barebone ? Vidyano.Path.match(Path.routes.rootPath + path, true) : null;
+                const newRoute = mappedPathRoute ? this._routeMap[App.removeRootPath(mappedPathRoute.path)] : null;
 
                 this._setRouteNotFound(false);
 
@@ -617,10 +628,10 @@ namespace Vidyano.WebComponents {
         }
 
         private _appRouteAdded(e: Event, detail: { route: string; }) {
-            const route = App.stripHashBang(detail.route);
+            const route = App.removeRootPath(detail.route);
 
             if (!this._routeMap[route]) {
-                Vidyano.Path.map(hashBang + route).to(() => this.path = Vidyano.Path.routes.current);
+                Vidyano.Path.map(Path.routes.rootPath + route).to(() => this.path = Vidyano.Path.routes.current);
                 this._routeMap[route] = <AppRoute>e.target;
             }
 
@@ -630,7 +641,7 @@ namespace Vidyano.WebComponents {
         private _computeProgramUnit(application: Vidyano.Application, path: string): ProgramUnit {
             path = this._convertPath(application, path);
 
-            const mappedPathRoute = Vidyano.Path.match(hashBang + App.stripHashBang(path), true);
+            const mappedPathRoute = Vidyano.Path.match(Path.routes.rootPath + App.removeRootPath(path), true);
 
             if (mappedPathRoute && application) {
                 if (mappedPathRoute.params && mappedPathRoute.params.programUnitName)
@@ -657,7 +668,7 @@ namespace Vidyano.WebComponents {
             if (currentRoute && currentRoute.allowSignedOut)
                 return;
 
-            if (!this.service.isSignedIn && !App.stripHashBang(path).startsWith("SignIn")) {
+            if (!this.service.isSignedIn && !App.removeRootPath(path).startsWith("SignIn")) {
                 if (this.service.defaultUserName) {
                     this._setInitializing(true);
                     this.service.signInUsingDefaultCredentials().then(() => {
@@ -837,11 +848,11 @@ namespace Vidyano.WebComponents {
             this.updateStyles();
         }
 
-        static stripHashBang(path: string = ""): string {
-            if (!path.startsWith("#"))
-                return path;
+        static removeRootPath(path: string = ""): string {
+            if (path.startsWith(Path.routes.rootPath))
+                return path.substr(Path.routes.rootPath.length);
 
-            return path.replace(hashBangRe, "");
+            return path;
         }
     }
 
@@ -902,7 +913,7 @@ namespace Vidyano.WebComponents {
             if (!this.app || !this.app.service || !this.app.service.application || !this.app.service.application.analyticsKey)
                 return;
 
-            path = Vidyano.WebComponents.App.stripHashBang(path);
+            path = Vidyano.WebComponents.App.removeRootPath(path);
             if (!path || path.startsWith("FromAction"))
                 return;
 
@@ -1080,7 +1091,7 @@ namespace Vidyano.WebComponents {
             if (parent instanceof Vidyano.PersistentObject) {
                 const cacheEntry = <PersistentObjectFromActionAppCacheEntry>this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(parent));
                 if (cacheEntry instanceof PersistentObjectFromActionAppCacheEntry && cacheEntry.fromActionIdReturnPath) {
-                    if (App.stripHashBang(this.app.getUrlForFromAction(cacheEntry.fromActionId)) === App.stripHashBang(this.app.path)) {
+                    if (App.removeRootPath(this.app.getUrlForFromAction(cacheEntry.fromActionId)) === App.removeRootPath(this.app.path)) {
                         if (this.app.noHistory)
                             this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
                         else
