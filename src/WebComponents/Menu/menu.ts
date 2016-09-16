@@ -187,7 +187,8 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true,
-                observer: "_expandChanged"
+                observer: "_expandChanged",
+                value: false
             },
             filtering: {
                 type: Boolean,
@@ -212,7 +213,7 @@ namespace Vidyano.WebComponents {
         observers: [
             "_updateItemTitle(item, filter, filtering, collapsed)",
             "_updateIndentVariable(level)",
-            "_updateOpened(filtering, item)"
+            "_updateOpened(filtering, item, expand)"
         ],
         listeners: {
             "tap": "_tap"
@@ -275,23 +276,19 @@ namespace Vidyano.WebComponents {
             this.hidden = this.filtering && !this._hasMatch(<ProgramUnitItem><any>this.item, this.filter.toUpperCase());
         }
 
-        private _updateOpened(filtering: boolean, item: Vidyano.ProgramUnitItem) {
-            (<any>this.$["subItems"]).opened = filtering || item === this.programUnit;
+        private _updateOpened(filtering: boolean, item: Vidyano.ProgramUnitItem, expand: boolean) {
+            (<any>this.$["subItems"]).opened = filtering || item === this.programUnit || expand;
         }
 
         private _hasMatch(item: ProgramUnitItem, search: string): boolean {
-            const matchOnItem = item.title.toUpperCase().contains(search);
+            if (item.title.toUpperCase().contains(search))
+                return true;
+
             const items = (<any>item).items;
-            const matchOnSubItems = (items != null && items.filter(i => this._hasMatch(i, search)).length > 0);
+            if (items != null && items.filter(i => this._hasMatch(i, search)).length > 0)
+                return true;
 
-            let hasMatch = matchOnItem || matchOnSubItems;
-            if (!hasMatch && this.filterParent instanceof Vidyano.ProgramUnitItemGroup && this.filterParent.title.toUpperCase().contains(search))
-                hasMatch = true;
-
-            if (hasMatch && item instanceof ProgramUnit && !matchOnSubItems)
-                hasMatch = false;
-
-            return hasMatch;
+            return this.filterParent instanceof Vidyano.ProgramUnitItemGroup && this.filterParent.title.toUpperCase().contains(search);
         }
 
         private _programUnitChanged() {
