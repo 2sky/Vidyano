@@ -181,6 +181,8 @@ namespace Vidyano.WebComponents.Attributes {
             this.attribute.getPersistentObject().then(po => {
                 if (po)
                     this.attribute.service.hooks.onOpen(po, false, !!po.parent);
+            }).catch(e => {
+                this.attribute.parent.setNotification(e, Vidyano.NotificationType.Error);
             });
 
             e.preventDefault();
