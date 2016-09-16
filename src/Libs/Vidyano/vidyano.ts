@@ -867,8 +867,9 @@ namespace Vidyano {
                 }
                 this._windowsAuthentication = this._clientData.windowsAuthentication;
 
-                if (!StringEx.isNullOrEmpty(document.location.hash) && document.location.hash.startsWith("#!/SignInWithToken/")) {
-                    const token = document.location.hash.substr(19);
+                var path = document.location.pathname;
+                if (path.startsWith(Vidyano.Path.routes.rootPath + "SignInWithToken/")) {
+                    const token = path.substr(Vidyano.Path.routes.rootPath.length + 16);
                     const tokenParts = token.split("/", 2);
                     this._setUserName(Service._decodeBase64(tokenParts[0]));
                     this.authToken = tokenParts[1].replace("_", "/");
@@ -876,10 +877,10 @@ namespace Vidyano {
                     const returnUrl = Vidyano.cookie("returnUrl", { force: true });
                     if (returnUrl) {
                         Vidyano.cookie("returnUrl", null, { force: true });
-                        this.hooks.onNavigate("#!/" + returnUrl, true);
+                        this.hooks.onNavigate(Vidyano.Path.routes.rootPath + returnUrl, true);
                     }
                     else
-                        this.hooks.onNavigate("#!/", true);
+                        this.hooks.onNavigate(Vidyano.Path.routes.rootPath, true);
 
                     return this._getApplication();
                 }

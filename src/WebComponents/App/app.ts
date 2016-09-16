@@ -18,6 +18,9 @@ namespace Vidyano.WebComponents {
     parser.href = base.href;
     Path.routes.rootPath = parser.pathname;
 
+    if (!!document.location.hash && document.location.hash.startsWith("#!/"))
+        history.replaceState(null, null, document.location.href.replace("/#!/", "/"));
+
     export class AppCacheEntry {
         constructor(public id: string) {
         }
