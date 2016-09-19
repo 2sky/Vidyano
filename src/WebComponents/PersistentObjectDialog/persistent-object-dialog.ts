@@ -112,6 +112,14 @@
             return persistentObject.actions.filter(a => a.definition.showedOn.some(s => s === "Dialog"));
         }
 
+        private _executeExtraAction(e: TapEvent) {
+            const action = e.model.action as Vidyano.Action;
+            if (!action.canExecute)
+                return;
+
+            action.execute();
+        }
+
         private _onCaptureTab() {
             // Skip default tab navigation behavior
         }

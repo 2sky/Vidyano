@@ -12,10 +12,10 @@
         <main id="main">
             <vi-persistent-object-tab-presenter tab="[[tab]]"></vi-persistent-object-tab-presenter>
         </main>
-        <footer class="horizontal layout end-justified">
+        <footer class="horizontal layout">
             <div class="layout horizontal flex extra-actions">
                 <template is="dom-repeat" items="[[dialogActions]]" as="action">
-                    <button is="vi-button" label="[[action.definition.displayName]]"></button>
+                    <button is="vi-button" label="[[action.definition.displayName]]" on-tap="_executeExtraAction" disabled$="[[persistentObject.isBusy]]"></button>
                 </template>
             </div>
             <div class="layout horizontal default-actions">
