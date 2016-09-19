@@ -4923,6 +4923,7 @@ namespace Vidyano {
         private _confirmation: string;
         private _options: Array<string> = [];
         private _selectionRule: (count: number) => boolean;
+        private _showedOn: string[];
 
         constructor(service: Service, item: QueryResultItem) {
             this._name = item.getValue("Name");
@@ -4932,6 +4933,7 @@ namespace Vidyano {
             this._selectionRule = ExpressionParser.get(item.getValue("SelectionRule"));
             this._refreshQueryOnCompleted = item.getValue("RefreshQueryOnCompleted");
             this._offset = item.getValue("Offset");
+            this._showedOn = (<string>item.getValue("ShowedOn") || "").split(",").map(v => v.trim());
 
             const icon = item.getFullValue("Icon");
 
@@ -5011,6 +5013,10 @@ namespace Vidyano {
 
         get selectionRule(): (count: number) => boolean {
             return this._selectionRule;
+        }
+
+        get showedOn(): string[] {
+            return this._showedOn;
         }
     }
 
