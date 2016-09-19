@@ -21,6 +21,12 @@ $min-main-width: 400px;
             }
         }
     }
+
+    footer {
+        .extra-actions {
+            padding-right: var(--theme-h5);
+        }
+    }
 }
 
 :host-context(vi-app[is-phone]) main {

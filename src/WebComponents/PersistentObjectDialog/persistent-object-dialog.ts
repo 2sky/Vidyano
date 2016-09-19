@@ -22,6 +22,10 @@
             saveLabel: {
                 type: String,
                 computed: "_computeSaveLabel(app)"
+            },
+            dialogActions: {
+                type: Array,
+                computed: "_computeDialogActions(persistentObject, app)"
             }
         },
         forwardObservers: [
@@ -102,6 +106,10 @@
 
         private _computeReadOnly(tab: Vidyano.PersistentObjectAttributeTab): boolean {
             return !!tab && !tab.attributes.some(attribute => !attribute.isReadOnly && attribute.isVisible);
+        }
+
+        private _computeDialogActions(persistentObject: Vidyano.PersistentObject): Vidyano.Action[] {
+            return persistentObject.actions.filter(a => a.definition.showedOn.some(s => s === "Dialog"));
         }
 
         private _onCaptureTab() {
