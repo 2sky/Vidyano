@@ -142,13 +142,15 @@
         private _edit(e: TapEvent) {
             e.stopPropagation();
 
-            const filter = <Vidyano.QueryFilter>e.model.filter;
-            this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(filter.persistentObject, {
-                save: (po, close) => {
-                    return this.query.filters.save(filter).then(close).catch(Vidyano.noop);
-                },
-                noHeader: true
-            })).catch(Vidyano.noop);
+            this.app.importComponent("PersistentObjectDialog").then(() => {
+                const filter = <Vidyano.QueryFilter>e.model.filter;
+                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(filter.persistentObject, {
+                    save: (po, close) => {
+                        return this.query.filters.save(filter).then(close).catch(Vidyano.noop);
+                    },
+                    noHeader: true
+                })).catch(Vidyano.noop);
+            });
         }
 
         private _delete(e: TapEvent) {
