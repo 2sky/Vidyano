@@ -1,12 +1,9 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    @WebComponent.register({
-        listeners: {
-            "config-attached": "_configAttached"
-        }
-    })
+    @WebComponent.register
     export class AppConfig extends WebComponent {
+        private _nodeObserver: PolymerDomChangeObserver;
         private _defaultAttributeConfig: PersistentObjectAttributeConfig;
         private _persistentObjectConfigs: PersistentObjectConfig[] = [];
         private _attributeConfigs: PersistentObjectAttributeConfig[] = [];
@@ -18,36 +15,48 @@
         attached() {
             super.attached();
 
-            this.fire("app-config-attached", this);
+            this._nodeObserver = Polymer.dom(this.root).observeNodes(this._nodesChanged.bind(this));
         }
 
-        private _configAttached(e: CustomEvent) {
-            e.stopPropagation();
+        detached() {
+            super.detached();
 
-            const element = e.srcElement || e.target;
-            switch (element["is"]) {
-                case "vi-persistent-object-attribute-config":
-                    this._attributeConfigs.push(<PersistentObjectAttributeConfig>element);
+            Polymer.dom(this.root).unobserveNodes(this._nodeObserver);
+        }
+
+        private _nodesChanged(info: PolymerDomChangedInfo) {
+            info.addedNodes.forEach(node => this._handleNode(node as WebComponent, true));
+            info.removedNodes.forEach(node => this._handleNode(node as WebComponent, false));
+        }
+
+        private _handleNode(node: WebComponent, added: boolean) {
+            if (node.nodeType !== Node.ELEMENT_NODE)
+                return;
+
+            const operation = added ? "push" : "remove";
+            switch (node.tagName.toUpperCase()) {
+                case "VI-PERSISTENT-OBJECT-ATTRIBUTE-CONFIG":
+                    this._attributeConfigs[operation](node);
                     break;
 
-                case "vi-persistent-object-config":
-                    this._persistentObjectConfigs.push(<PersistentObjectConfig>element);
+                case "VI-PERSISTENT-OBJECT-CONFIG":
+                    this._persistentObjectConfigs[operation](node);
                     break;
 
-                case "vi-persistent-object-tab-config":
-                    this._tabConfigs.push(<PersistentObjectTabConfig>element);
+                case "VI-PERSISTENT-OBJECT-TAB-CONFIG":
+                    this._tabConfigs[operation](node);
                     break;
 
-                case "vi-program-unit-config":
-                    this._programUnitConfigs.push(<ProgramUnitConfig>element);
+                case "VI-PROGRAM-UNIT-CONFIG":
+                    this._programUnitConfigs[operation](node);
                     break;
 
-                case "vi-query-config":
-                    this._queryConfigs.push(<QueryConfig>element);
+                case "VI-QUERY-CONFIG":
+                    this._queryConfigs[operation](node);
                     break;
 
-                case "vi-query-chart-config":
-                    this._queryChartConfigs.push(<QueryChartConfig>element);
+                case "VI-QUERY-CHART-CONFIG":
+                    this._queryChartConfigs[operation](node);
                     break;
             }
         }

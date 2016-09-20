@@ -128,7 +128,7 @@ namespace Vidyano.WebComponents {
             },
             configuration: {
                 type: Object,
-                readOnly: true
+                computed: "_computeConfiguration(isAttached)"
             },
             user: {
                 type: String,
@@ -237,7 +237,6 @@ namespace Vidyano.WebComponents {
             "tabindex": "-1"
         },
         listeners: {
-            "app-config-attached": "_configurationAttached",
             "contextmenu": "_configureContextmenu",
             "click": "_anchorClickHandler"
         },
@@ -273,7 +272,6 @@ namespace Vidyano.WebComponents {
         keys: string;
         isTracking: boolean;
 
-        private _setConfiguration: (config: AppConfig) => void;
         private _setInitializing: (init: boolean) => void;
         private _setKeys: (keys: string) => void;
         private _setProgramUnit: (pu: ProgramUnit) => void;
@@ -285,7 +283,7 @@ namespace Vidyano.WebComponents {
             super.attached();
 
             Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this.root).appendChild(route));
-            const _nodeObserver = Polymer.dom(this.root).observeNodes(this._nodesChanged.bind(this));
+            this._nodeObserver = Polymer.dom(this.root).observeNodes(this._nodesChanged.bind(this));
 
             Vidyano.Path.rescue(() => {
                 this.path = App.removeRootPath(Vidyano.Path.routes.current);
@@ -492,12 +490,15 @@ namespace Vidyano.WebComponents {
             return isProfiling && profilerLoaded;
         }
 
-        private _configurationAttached(e: Event, configuration: AppConfig) {
-            this._setConfiguration(configuration);
-        }
-
         private _cookiePrefixChanged(cookiePrefix: string) {
             Vidyano.cookiePrefix = cookiePrefix;
+        }
+
+        private _computeConfiguration(isAttached: boolean): AppConfig {
+            if (!isAttached)
+                return;
+
+            return this.$$("vi-app-config") as AppConfig;
         }
 
         private _computeService(uri: string, user: string): Vidyano.Service {
