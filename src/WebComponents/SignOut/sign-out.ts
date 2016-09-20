@@ -8,9 +8,13 @@ namespace Vidyano.WebComponents {
     })
     export class SignOut extends WebComponent {
         private _activate(e: CustomEvent) {
-            const returnUrl = !this.app.service.defaultUserName || this.app.service.isUsingDefaultCredentials ? decodeURIComponent((<AppRoute>Polymer.dom(this).parentNode).parameters.returnUrl || "SignIn") : "";
+            const signInUsingDefaultCredentials = !this.app.service.isUsingDefaultCredentials && !!this.app.service.defaultUserName;
+            this.app.service.signOut().then(() => {
+                if (signInUsingDefaultCredentials)
+                    return this.app.service.signInUsingDefaultCredentials().then(() => "");
 
-            this.app.service.signOut().then(() => this.app.changePath(returnUrl, true));
+                return Promise.resolve(decodeURIComponent((<AppRoute>Polymer.dom(this).parentNode).parameters.returnUrl || "SignIn"));
+            }).then(path => this.app.changePath(path, true));
 
             e.preventDefault();
         }

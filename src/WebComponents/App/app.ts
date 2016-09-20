@@ -146,7 +146,7 @@ namespace Vidyano.WebComponents {
             application: Object,
             programUnit: {
                 type: Object,
-                computed: "_computeProgramUnit(service.application, path, routeMapVersion)"
+                computed: "_computeProgramUnit(service.application, path)"
             },
             noMenu: {
                 type: Boolean,
@@ -172,11 +172,6 @@ namespace Vidyano.WebComponents {
                 type: Number,
                 value: 25,
                 reflectToAttribute: true
-            },
-            routeMapVersion: {
-                type: Number,
-                readOnly: true,
-                value: 0
             },
             routeNotFound: {
                 type: Boolean,
@@ -231,8 +226,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_start(initializing, path, currentRoute)",
-            "_updateRoute(path, initializing, barebone, routeMapVersion)",
+            "_updateRoute(path, initializing)",
             "_hookWindowBeforeUnload(noHistory, isAttached)",
             "_cleanUpOnSignOut(service.isSignedIn)",
             "_resolveDependencies(service.application.hasManagement)",
@@ -244,7 +238,6 @@ namespace Vidyano.WebComponents {
         },
         listeners: {
             "app-config-attached": "_configurationAttached",
-            "app-route-add": "_appRouteAdded",
             "contextmenu": "_configureContextmenu",
             "click": "_anchorClickHandler"
         },
@@ -262,8 +255,8 @@ namespace Vidyano.WebComponents {
         private _routeMap: { [key: string]: AppRoute } = {};
         private _routeUpdater: Promise<any> = Promise.resolve();
         private _keybindingRegistrations: { [key: string]: Keyboard.IKeybindingRegistration[]; } = {};
-        private routeMapVersion: number;
         private _beforeUnloadEventHandler: EventListener;
+        private _nodeObserver: PolymerDomChangeObserver;
         configuration: AppConfig;
         service: Vidyano.Service;
         programUnit: ProgramUnit;
@@ -282,7 +275,6 @@ namespace Vidyano.WebComponents {
 
         private _setConfiguration: (config: AppConfig) => void;
         private _setInitializing: (init: boolean) => void;
-        private _setRouteMapVersion: (version: number) => void;
         private _setKeys: (keys: string) => void;
         private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setCurrentRoute: (route: AppRoute) => void;
@@ -291,6 +283,9 @@ namespace Vidyano.WebComponents {
 
         attached() {
             super.attached();
+
+            Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this.root).appendChild(route));
+            const _nodeObserver = Polymer.dom(this.root).observeNodes(this._nodesChanged.bind(this));
 
             Vidyano.Path.rescue(() => {
                 this.path = App.removeRootPath(Vidyano.Path.routes.current);
@@ -309,14 +304,14 @@ namespace Vidyano.WebComponents {
             const keys = <any>this.$$("iron-a11y-keys");
             keys.target = document.body;
 
-            if (this.barebone) {
-                if (this._bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0])
-                    return;
-            }
+            if (this.barebone && !!(this._bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0]))
+                return;
+        }
 
-            Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => {
-                Polymer.dom(this.root).appendChild(route);
-            });
+        detached() {
+            super.detached();
+
+            Polymer.dom(this.root).unobserveNodes(this._nodeObserver);
         }
 
         get initialize(): Promise<Vidyano.Application> {
@@ -478,6 +473,17 @@ namespace Vidyano.WebComponents {
             });
         }
 
+        private _nodesChanged(info: PolymerDomChangedInfo) {
+            info.addedNodes.filter(node => node instanceof Vidyano.WebComponents.AppRoute).forEach((appRoute: Vidyano.WebComponents.AppRoute) => {
+                const route = App.removeRootPath(appRoute.route);
+
+                if (!this._routeMap[route]) {
+                    this._routeMap[route] = appRoute;
+                    Vidyano.Path.map(Path.routes.rootPath + route).to(() => this.path = Vidyano.Path.routes.current);
+                }
+            });
+        }
+
         private _computeIsProfiling(isSignedIn: boolean, profile: boolean, profilerLoaded: boolean): boolean {
             const isProfiling = isSignedIn && profile;
             if (isProfiling && !Polymer.isInstance(this.$["profiler"]))
@@ -559,11 +565,9 @@ namespace Vidyano.WebComponents {
             return path;
         }
 
-        private _updateRoute(path: string, initializing: boolean, barebone: boolean, routeMapVersion: number) {
-            if (initializing || !routeMapVersion)
+        private _updateRoute(path: string, initializing: boolean) {
+            if (initializing)
                 return;
-
-            Polymer.dom(this).flush(); // Make sure all known routes and configs are added
 
             let currentRoute = this.currentRoute;
             this._routeUpdater = this._routeUpdater.then(() => {
@@ -630,17 +634,6 @@ namespace Vidyano.WebComponents {
             });
         }
 
-        private _appRouteAdded(e: Event, detail: { route: string; }) {
-            const route = App.removeRootPath(detail.route);
-
-            if (!this._routeMap[route]) {
-                Vidyano.Path.map(Path.routes.rootPath + route).to(() => this.path = Vidyano.Path.routes.current);
-                this._routeMap[route] = <AppRoute>e.target;
-            }
-
-            this._setRouteMapVersion(this.routeMapVersion + 1);
-        }
-
         private _computeProgramUnit(application: Vidyano.Application, path: string): ProgramUnit {
             path = this._convertPath(application, path);
 
@@ -662,25 +655,6 @@ namespace Vidyano.WebComponents {
                 this.importComponent("Menu");
 
             return showMenu;
-        }
-
-        private _start(initializing: boolean, path: string, currentRoute: Vidyano.WebComponents.AppRoute) {
-            if (initializing)
-                return;
-
-            if (currentRoute && currentRoute.allowSignedOut)
-                return;
-
-            if (!this.service.isSignedIn && !App.removeRootPath(path).startsWith("SignIn")) {
-                if (this.service.defaultUserName) {
-                    this._setInitializing(true);
-                    this.service.signInUsingDefaultCredentials().then(() => {
-                        this._setInitializing(false);
-                    });
-                }
-                else
-                    this.redirectToSignIn();
-            }
         }
 
         private _cleanUpOnSignOut(isSignedIn: boolean) {

@@ -49,12 +49,6 @@ namespace Vidyano.WebComponents {
             super();
         }
 
-        attached() {
-            super.attached();
-
-            this.fire("app-route-add", { route: this.route });
-        }
-
         matchesParameters(parameters: { [key: string]: string } = {}): boolean {
             return this._parameters && JSON.stringify(this._parameters) === JSON.stringify(parameters);
         }
