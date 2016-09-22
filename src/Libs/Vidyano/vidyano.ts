@@ -2331,10 +2331,9 @@ namespace Vidyano {
             this.setNotification(result.notification, result.notificationType, result.notificationDuration);
             this._setIsDirty(isDirty, true);
 
-            if (this.isNew) {
-                this.objectId = result.objectId;
+            this.objectId = result.objectId;
+            if (this.isNew)
                 this.isNew = result.isNew;
-            }
 
             this.securityToken = result.securityToken;
             if (result.breadcrumb)
