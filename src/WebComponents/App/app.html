@@ -9,6 +9,7 @@
 <link rel="import" href="../AppRoute/app-route.html" />
 <link rel="import" href="../Button/button.html" />
 <link rel="import" href="../Dialog/dialog.html" />
+<link rel="import" href="../Error/error.html" />
 <link rel="import" href="../Grid/grid.html" />
 <link rel="import" href="../Icon/icon.html" />
 <link rel="import" href="../Popup/popup.html" />
@@ -51,7 +52,7 @@
             </vi-app-route>
         </template>
         <template is="dom-if" if="[[routeNotFound]]">
-            <vi-error class="flex" message="[[translateMessage('NotFound', isAttached)]]"></vi-error>
+            <vi-error class="flex" message="[[translateMessage('NotFound', service.isSignedIn)]]"></vi-error>
         </template>
         <vi-app-config>
             <vi-persistent-object-attribute-config type="CommonMark" height="3"></vi-persistent-object-attribute-config>
