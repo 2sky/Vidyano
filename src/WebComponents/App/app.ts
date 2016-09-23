@@ -249,7 +249,6 @@ namespace Vidyano.WebComponents {
     export class App extends WebComponent {
         private _cache: AppCacheEntry[] = [];
         private _initialize: Promise<Vidyano.Application>;
-        private _bareboneTemplate: PolymerTemplate;
         private _initializationError: string;
         private _routeMap: { [key: string]: AppRoute } = {};
         private _routeUpdater: Promise<any> = Promise.resolve();
@@ -301,9 +300,6 @@ namespace Vidyano.WebComponents {
 
             const keys = <any>this.$$("iron-a11y-keys");
             keys.target = document.body;
-
-            if (this.barebone && !!(this._bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0]))
-                return;
         }
 
         detached() {
@@ -505,7 +501,10 @@ namespace Vidyano.WebComponents {
             const service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
             this._setInitializing(true);
 
-            this._initialize = service.initialize(!!document.location.hash && App.removeRootPath(document.location.hash).startsWith("SignIn")).then(() => {
+            const path = this.noHistory ? this.path : App.removeRootPath(document.location.pathname);
+            const skipDefaultCredentialLogin = path.startsWith("SignIn");
+
+            this._initialize = service.initialize(skipDefaultCredentialLogin).then(() => {
                 if (this.service === service) {
                     this._initializationError = null;
                     this._onInitialized();
@@ -531,9 +530,10 @@ namespace Vidyano.WebComponents {
         }
 
         private _onInitialized() {
-            if (this._bareboneTemplate) {
-                Polymer.dom(this.root).appendChild(this._bareboneTemplate.stamp({ app: this }).root);
-                this._bareboneTemplate = null;
+            if (this.barebone) {
+                const bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0];
+                if (!!bareboneTemplate)
+                    Polymer.dom(this.root).appendChild(bareboneTemplate.stamp({ app: this }).root);
             }
 
             if (this.noHistory)
@@ -602,6 +602,11 @@ namespace Vidyano.WebComponents {
 
                 const mappedPathRoute = !!path || this.barebone ? Vidyano.Path.match(Path.routes.rootPath + path, true) : null;
                 const newRoute = mappedPathRoute ? this._routeMap[App.removeRootPath(mappedPathRoute.path)] : null;
+
+                if (!newRoute && path === "" && !this.barebone) {
+                    this.redirectToSignIn();
+                    return;
+                }
 
                 this._setRouteNotFound(false);
 
