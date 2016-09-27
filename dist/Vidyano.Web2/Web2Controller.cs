@@ -59,12 +59,15 @@ namespace Vidyano.Web2
 
             if (UseWeb2Home)
             {
+                if (id.ToLower() == "webcomponents-lite.js" || id.ToLower() == "webcomponents-lite.min.js")
+                    id = "Libs/webcomponentsjs/" + id;
+
                 // NOTE: In development we serve the files directly from disk
                 var filePath = Path.Combine(Web2Home, id);
                 switch (extension)
                 {
                     case ".html":
-                        var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), false, false);
+                        var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), true, false);
                         return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[extension]) };
 
                     case ".css":
@@ -133,9 +136,27 @@ namespace Vidyano.Web2
         [AcceptVerbs("GET")]
         public HttpResponseMessage Vulcanize(string id)
         {
-            var filePath = Path.Combine(HostingEnvironment.MapPath("~"), id);
-            var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), true);
-            return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[".html"]) };
+            var rootPath = HostingEnvironment.MapPath("~");
+            var filePath = Path.Combine(rootPath, id);
+            if (!File.Exists(filePath))
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
+
+            var mimeType = System.Web.MimeMapping.GetMimeMapping(id);
+            if (mimeType == "text/html")
+            {
+                var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), true);
+                return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mimeType) };
+            }
+
+            if (id.StartsWith("WebComponents", StringComparison.OrdinalIgnoreCase))
+            {
+                var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(new FileStream(filePath, FileMode.Open)) };
+                result.Content.Headers.ContentType = new MediaTypeHeaderValue(mimeType);
+
+                return result;
+            }
+
+            return new HttpResponseMessage(HttpStatusCode.NotFound);
         }
 
         private string GetCookie(string name)

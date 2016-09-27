@@ -46,24 +46,25 @@ namespace Vidyano.Web2
                     });
                 }
 
-                if (!UseWeb2Home)
+                html = scriptRe.Replace(html, match =>
                 {
-                    html = scriptRe.Replace(html, match =>
+                    var src = match.Groups[1].Value;
+                    if (useLocalFileSystem)
                     {
-                        var src = match.Groups[1].Value;
-                        if (useLocalFileSystem)
+                        var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), directory + src);
+                        if (!File.Exists(filePath))
                         {
-                            var filePath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), directory + src);
+                            filePath = Path.Combine(Web2Home, directory + src);
                             if (!File.Exists(filePath))
                                 return match.Value;
-
-                            return "<script>" + File.ReadAllText(filePath) + "</script>";
                         }
 
-                        var script = GetEmbeddedResource(directory + src);
-                        return "<script>" + script + "</script>";
-                    });
-                }
+                        return "<script>" + File.ReadAllText(filePath) + "</script>";
+                    }
+
+                    var script = GetEmbeddedResource(directory + src);
+                    return "<script>" + script + "</script>";
+                });
 
                 html = linkRe.Replace(html, match =>
                 {
