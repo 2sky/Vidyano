@@ -424,6 +424,10 @@
             }
         }
 
+        computePath(relativePath: string): string {
+            return Vidyano.Path.routes.rootPath + relativePath;
+        }
+
         empty(parent: Node = this, condition?: (e: Node) => boolean) {
             Polymer.dom(parent).getEffectiveChildNodes().forEach(c => {
                 if (!condition || condition(c))
