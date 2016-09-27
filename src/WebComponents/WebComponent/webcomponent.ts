@@ -414,16 +414,7 @@
             if (!this.app)
                 return;
 
-            if (!this.app.initializing)
-                this._setTranslations(!!this.app.service && !!this.app.service.language ? this.app.service.language.messages : []);
-            else {
-                this.app.addEventListener("initialized", this._appInitializedListener = () => {
-                    this.app.removeEventListener("initialized", this._appInitializedListener);
-                    this._appInitializedListener = null;
-
-                    this._setTranslations(!!this.app.service && !!this.app.service.language ? this.app.service.language.messages : []);
-                });
-            }
+            this.app.initialize.then(() => this._setTranslations(!!this.app.service && !!this.app.service.language ? this.app.service.language.messages : []));
         }
 
         protected detached() {

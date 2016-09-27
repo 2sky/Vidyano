@@ -6,6 +6,7 @@
 <link rel="import" href="../../Libs/paper-ripple/paper-ripple.html" />
 <link rel="import" href="../WebComponent/webcomponent.html" />
 <link rel="import" href="../Spinner/spinner.html" />
+<link rel="import" href="../AppRoutePresenter/app-route-presenter.html" />
 <link rel="import" href="../AppRoute/app-route.html" />
 <link rel="import" href="../Button/button.html" />
 <link rel="import" href="../Dialog/dialog.html" />
@@ -50,6 +51,7 @@
             <vi-app-route route="SignOut(/)(:returnUrl)" allow-signed-out>
                 <vi-sign-out></vi-sign-out>
             </vi-app-route>
+            <vi-app-route-presenter></vi-app-route-presenter>
         </template>
         <template is="dom-if" if="[[routeNotFound]]">
             <vi-error class="flex" message="[[translateMessage('NotFound', service.isSignedIn)]]"></vi-error>

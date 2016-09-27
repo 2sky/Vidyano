@@ -16,7 +16,7 @@ namespace Vidyano.WebComponents {
     const base = document.head.querySelector("base") as HTMLBaseElement;
     const parser = document.createElement("a");
     parser.href = base.href;
-    Path.routes.rootPath = parser.pathname;
+    Path.routes.rootPath = parser.pathname[0] === "/" ? parser.pathname : `/${parser.pathname}`; // IE Bug: https://connect.microsoft.com/IE/Feedback/Details/1002846
 
     if (!!document.location.hash && document.location.hash.startsWith("#!/"))
         history.replaceState(null, null, document.location.href.replace("/#!/", "/"));
@@ -124,11 +124,7 @@ namespace Vidyano.WebComponents {
             },
             service: {
                 type: Object,
-                computed: "_computeService(uri, user, hooks, configuration)"
-            },
-            configuration: {
-                type: Object,
-                computed: "_computeConfiguration(isAttached)"
+                computed: "_computeService(uri, user, hooks)"
             },
             user: {
                 type: String,
@@ -155,8 +151,7 @@ namespace Vidyano.WebComponents {
             },
             barebone: {
                 type: Boolean,
-                reflectToAttribute: true,
-                value: false
+                readOnly: true
             },
             initializing: {
                 type: Boolean,
@@ -226,12 +221,13 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
+            "_updateInitialize(serviceInitializer, appRoutesInitializer)",
             "_updateRoute(path, initializing)",
             "_hookWindowBeforeUnload(noHistory, isAttached)",
             "_cleanUpOnSignOut(service.isSignedIn)",
             "_resolveDependencies(service.application.hasManagement)",
             "_computeThemeColorVariants(themeColor, 'color', isAttached)",
-            "_computeThemeColorVariants(themeAccentColor, 'accent-color', isAttached)"
+            "_computeThemeColorVariants(themeAccentColor, 'accent-color', isAttached)",
         ],
         hostAttributes: {
             "tabindex": "-1"
@@ -248,18 +244,19 @@ namespace Vidyano.WebComponents {
     })
     export class App extends WebComponent {
         private _cache: AppCacheEntry[] = [];
-        private _initialize: Promise<Vidyano.Application>;
+        private _nodeObserver: PolymerDomChangeObserver;
+        private _appRouteTarget: Node;
+        private _initializeResolve: (app: Vidyano.Application) => void;
+        private _initializeReject: (e: any) => void;
+        private _initialize: Promise<Vidyano.Application> = new Promise((resolve, reject) => { this._initializeResolve = resolve; this._initializeReject = reject; });
         private _initializationError: string;
         private _routeMap: { [key: string]: AppRoute } = {};
         private _routeUpdater: Promise<any> = Promise.resolve();
         private _keybindingRegistrations: { [key: string]: Keyboard.IKeybindingRegistration[]; } = {};
         private _beforeUnloadEventHandler: EventListener;
-        private _nodeObserver: PolymerDomChangeObserver;
-        configuration: AppConfig;
         service: Vidyano.Service;
         programUnit: ProgramUnit;
         currentRoute: AppRoute;
-        initializing: boolean;
         uri: string;
         hooks: string;
         noHistory: boolean;
@@ -275,14 +272,35 @@ namespace Vidyano.WebComponents {
         private _setKeys: (keys: string) => void;
         private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setCurrentRoute: (route: AppRoute) => void;
+        private _setBarebone: (barebone: boolean) => void;
         private _setProfilerLoaded: (val: boolean) => void;
         private _setRouteNotFound: (routeNotFound: boolean) => void;
 
         attached() {
             super.attached();
 
-            Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this.root).appendChild(route));
-            this._nodeObserver = Polymer.dom(this.root).observeNodes(this._nodesChanged.bind(this));
+            this.set("appRoutesInitializer", new Promise(resolve => {
+                const bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0];
+                this._setBarebone(!!bareboneTemplate);
+                if (this.barebone) {
+                    const appRouteTargetSetter = (e: CustomEvent) => {
+                        this._appRouteTarget = e.target as Node;
+                        this._distributeAppRoutes();
+
+                        this.removeEventListener("app-route-presenter-attached", appRouteTargetSetter);
+                        resolve(this._appRouteTarget);
+                    };
+
+                    this.addEventListener("app-route-presenter-attached", appRouteTargetSetter.bind(this));
+
+                    Polymer.dom(this.root).appendChild(bareboneTemplate.stamp({ app: this }).root);
+                } else {
+                    this._appRouteTarget = this.root;
+                    this._distributeAppRoutes();
+
+                    resolve(this._appRouteTarget);
+                }
+            }));
 
             Vidyano.Path.rescue(() => {
                 this.path = App.removeRootPath(Vidyano.Path.routes.current);
@@ -305,7 +323,14 @@ namespace Vidyano.WebComponents {
         detached() {
             super.detached();
 
-            Polymer.dom(this.root).unobserveNodes(this._nodeObserver);
+            if (this._nodeObserver) {
+                Polymer.dom(this._appRouteTarget).unobserveNodes(this._nodeObserver);
+                this._nodeObserver = null;
+            }
+        }
+
+        get configuration(): AppConfig {
+            return this.$$("vi-app-config") as AppConfig;
         }
 
         get initialize(): Promise<Vidyano.Application> {
@@ -467,6 +492,14 @@ namespace Vidyano.WebComponents {
             });
         }
 
+        private _distributeAppRoutes() {
+            this._nodeObserver = Polymer.dom(this._appRouteTarget).observeNodes(this._nodesChanged.bind(this));
+            Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this._appRouteTarget).appendChild(route));
+
+            if (this.noHistory)
+                this.changePath(this.path);
+        }
+
         private _nodesChanged(info: PolymerDomChangedInfo) {
             info.addedNodes.filter(node => node instanceof Vidyano.WebComponents.AppRoute).forEach((appRoute: Vidyano.WebComponents.AppRoute) => {
                 const route = App.removeRootPath(appRoute.route);
@@ -490,35 +523,50 @@ namespace Vidyano.WebComponents {
             Vidyano.cookiePrefix = cookiePrefix;
         }
 
-        private _computeConfiguration(isAttached: boolean): AppConfig {
-            if (!isAttached)
-                return;
-
-            return this.$$("vi-app-config") as AppConfig;
+        private _updateInitialize(...promises: Promise<any>[]) {
+            if (this._initializeResolve) {
+                Promise.all(promises).then((results: any[]) => {
+                    this._setInitializing(false);
+                    this._initializeResolve(results[0]);
+                    this._initializeResolve = null;
+                    this._initializeReject = null;
+                }, e => {
+                    this._setInitializing(false);
+                    this._initializeReject(e);
+                    this._initializeResolve = null;
+                    this._initializeReject = null;
+                });
+            }
+            else {
+                this._initialize = Promise.all(promises).then((results: any[]) => {
+                    this._setInitializing(false);
+                    return results[0];
+                }, e => {
+                    this._setInitializing(false);
+                    throw e;
+                });
+            }
         }
 
-        private _computeService(uri: string, user: string): Vidyano.Service {
+        private _computeService(uri: string, user: string, hooks: ServiceHooks): Vidyano.Service {
             const service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
-            this._setInitializing(true);
 
             const path = this.noHistory ? this.path : App.removeRootPath(document.location.pathname);
             const skipDefaultCredentialLogin = path.startsWith("SignIn");
 
-            this._initialize = service.initialize(skipDefaultCredentialLogin).then(() => {
+            this._setInitializing(true);
+            this.set("serviceInitializer", service.initialize(skipDefaultCredentialLogin).then(() => {
                 if (this.service === service) {
                     this._initializationError = null;
-                    this._onInitialized();
 
                     return this.service.application;
                 }
             }, e => {
-                if (this.service === service) {
+                if (this.service === service)
                     this._initializationError = e !== "Session expired" ? e : null;
-                    this._onInitialized();
-                }
 
                 return null;
-            });
+            }));
 
             return service;
         }
@@ -527,20 +575,6 @@ namespace Vidyano.WebComponents {
             const uri = this.uri;
             this.uri = undefined;
             this.uri = uri;
-        }
-
-        private _onInitialized() {
-            if (this.barebone) {
-                const bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0];
-                if (!!bareboneTemplate)
-                    Polymer.dom(this.root).appendChild(bareboneTemplate.stamp({ app: this }).root);
-            }
-
-            if (this.noHistory)
-                this.changePath(this.path);
-
-            this._setInitializing(false);
-            this.fire("initialized", undefined);
         }
 
         private _anchorClickHandler(e: TapEvent, data: any) {
@@ -603,7 +637,7 @@ namespace Vidyano.WebComponents {
                 const mappedPathRoute = !!path || this.barebone ? Vidyano.Path.match(Path.routes.rootPath + path, true) : null;
                 const newRoute = mappedPathRoute ? this._routeMap[App.removeRootPath(mappedPathRoute.path)] : null;
 
-                if (!newRoute && path === "" && !this.barebone) {
+                if (!newRoute && !this.barebone) {
                     this.redirectToSignIn();
                     return;
                 }
