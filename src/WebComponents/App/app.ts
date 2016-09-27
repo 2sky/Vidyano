@@ -124,7 +124,7 @@ namespace Vidyano.WebComponents {
             },
             service: {
                 type: Object,
-                computed: "_computeService(uri, user, hooks)"
+                computed: "_computeService(uri, user, hooks, isAttached)"
             },
             user: {
                 type: String,
