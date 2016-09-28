@@ -2716,8 +2716,6 @@ namespace Vidyano {
             }
 
             if (resultWins || (this.value !== resultAttr.value && (this.isReadOnly || this._refreshValue !== resultAttr.value))) {
-                this.isValueChanged = resultAttr.isValueChanged;
-
                 const oldDisplayValue = this.displayValue;
                 const oldValue = this.value;
 
@@ -2729,6 +2727,7 @@ namespace Vidyano {
             }
 
             this._refreshValue = undefined;
+            this.isValueChanged = resultAttr.isValueChanged;
             this.triggersRefresh = resultAttr.triggersRefresh;
             this.validationError = resultAttr.validationError;
 
