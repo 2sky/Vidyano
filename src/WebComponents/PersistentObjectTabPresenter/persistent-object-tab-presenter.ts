@@ -29,7 +29,6 @@ namespace Vidyano.WebComponents {
         private _tabAttributes: Vidyano.PersistentObjectAttribute[];
         tab: Vidyano.PersistentObjectTab;
         templated: boolean;
-        scroll: boolean;
 
         private _setLoading: (loading: boolean) => void;
         private _setTemplated: (templated: boolean) => void;
