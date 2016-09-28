@@ -637,7 +637,7 @@ namespace Vidyano.WebComponents {
                 const mappedPathRoute = !!path || this.barebone ? Vidyano.Path.match(Path.routes.rootPath + path, true) : null;
                 const newRoute = mappedPathRoute ? this._routeMap[App.removeRootPath(mappedPathRoute.path)] : null;
 
-                if (!newRoute && !this.barebone) {
+                if (!newRoute && !this.barebone && !this.service.isSignedIn) {
                     this.redirectToSignIn();
                     return;
                 }
@@ -678,9 +678,8 @@ namespace Vidyano.WebComponents {
             path = this._convertPath(application, path);
 
             const mappedPathRoute = Vidyano.Path.match(Path.routes.rootPath + App.removeRootPath(path), true);
-
-            if (mappedPathRoute && application) {
-                if (mappedPathRoute.params && mappedPathRoute.params.programUnitName)
+            if (application) {
+                if (mappedPathRoute && mappedPathRoute.params && mappedPathRoute.params.programUnitName)
                     return Enumerable.from(application.programUnits).firstOrDefault(pu => pu.name === mappedPathRoute.params.programUnitName);
                 else if (application.programUnits.length > 0)
                     return application.programUnits[0];
