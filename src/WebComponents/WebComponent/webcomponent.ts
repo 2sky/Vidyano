@@ -107,7 +107,7 @@
             listener: (e: IKeysEvent) => void;
             nonExclusive: boolean;
             priority?: number;
-            appRoute?: Vidyano.WebComponents.AppRoute;
+            scope?: Vidyano.WebComponents.AppRoute | Vidyano.WebComponents.Dialog;
         }
     }
 
