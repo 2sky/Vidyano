@@ -258,6 +258,7 @@ namespace Vidyano.WebComponents {
         private _keybindingRegistrations: { [key: string]: Keyboard.IKeybindingRegistration[]; } = {};
         private routeMapVersion: number;
         private _beforeUnloadEventHandler: EventListener;
+        private _activeDialogs: Dialog[] = [];
         configuration: AppConfig;
         service: Vidyano.Service;
         programUnit: ProgramUnit;
@@ -418,13 +419,17 @@ namespace Vidyano.WebComponents {
 
         showDialog(dialog: Dialog): Promise<any> {
             Polymer.dom(this.root).appendChild(dialog);
+            this._activeDialogs.push(dialog);
 
             return dialog.open().then(result => {
                 Polymer.dom(this.root).removeChild(dialog);
+                this._activeDialogs.pop();
 
                 return result;
             }).catch(e => {
                 Polymer.dom(this.root).removeChild(dialog);
+                this._activeDialogs.pop();
+
                 if (e)
                     throw e;
             });
@@ -701,19 +706,10 @@ namespace Vidyano.WebComponents {
         private _registerKeybindings(registration: Keyboard.IKeybindingRegistration) {
             const currentKeys = this.keys ? this.keys.split(" ") : [];
             registration.keys.forEach(key => {
+                registration.scope = <any>this.findParent(e => e instanceof AppRoute || e instanceof Dialog, registration.element);
+
                 const registrations = this._keybindingRegistrations[key] || (this._keybindingRegistrations[key] = []);
                 registrations.push(registration);
-
-                let e = registration.element;
-                do {
-                    if (e instanceof Vidyano.WebComponents.AppRoute) {
-                        registration.appRoute = <Vidyano.WebComponents.AppRoute><any>e;
-                        break;
-                    }
-
-                    e = e.parentElement;
-                }
-                while (e != null);
 
                 currentKeys.push(key);
             });
@@ -749,12 +745,17 @@ namespace Vidyano.WebComponents {
             if (e.detail.keyboardEvent.altKey && combo.indexOf("alt") < 0)
                 combo = "alt+" + combo;
 
-            const registrations = this._keybindingRegistrations[combo];
+            let registrations = this._keybindingRegistrations[combo];
             if (!registrations)
                 return;
 
-            const activeRegs = registrations.filter(reg => !reg.appRoute || reg.appRoute.active);
-            const highestPriorityRegs = Enumerable.from(activeRegs).groupBy(r => r.priority, r => r).orderByDescending(kvp => kvp.key()).firstOrDefault();
+            if (this._activeDialogs.length > 0) {
+                const activeDialog = this._activeDialogs[this._activeDialogs.length - 1];
+                registrations = registrations.filter(r => r.scope === activeDialog);
+            }
+
+            registrations = registrations.filter(reg => !reg.scope || (reg.scope instanceof AppRoute && (<AppRoute>reg.scope).active));
+            const highestPriorityRegs = Enumerable.from(registrations).groupBy(r => r.priority, r => r).orderByDescending(kvp => kvp.key()).firstOrDefault();
             if (!highestPriorityRegs || highestPriorityRegs.isEmpty())
                 return;
 
