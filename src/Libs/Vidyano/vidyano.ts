@@ -874,13 +874,11 @@ namespace Vidyano {
                     this._setUserName(Service._decodeBase64(tokenParts[0]));
                     this.authToken = tokenParts[1].replace("_", "/");
 
-                    const returnUrl = Vidyano.cookie("returnUrl", { force: true });
-                    if (returnUrl) {
+                    const returnUrl = Vidyano.cookie("returnUrl", { force: true }) || "";
+                    if (returnUrl)
                         Vidyano.cookie("returnUrl", null, { force: true });
-                        this.hooks.onNavigate(Vidyano.Path.routes.rootPath + returnUrl, true);
-                    }
-                    else
-                        this.hooks.onNavigate(Vidyano.Path.routes.rootPath, true);
+
+                    this.hooks.onNavigate(returnUrl, true);
 
                     return this._getApplication();
                 }
