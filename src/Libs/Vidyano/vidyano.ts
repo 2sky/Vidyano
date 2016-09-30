@@ -1613,6 +1613,14 @@ namespace Vidyano {
             // Noop
         }
 
+        onRedirectToSignIn(keepUrl: boolean = true) {
+            // Noop
+        }
+
+        onRedirectToSignOut(keepUrl: boolean = true) {
+            // Noop
+        }
+
         onConstructPersistentObject(service: Service, po: any): PersistentObject {
             return new PersistentObject(service, po);
         }

@@ -430,11 +430,11 @@ namespace Vidyano.WebComponents {
         }
 
         redirectToSignIn(keepUrl: boolean = true) {
-            this.changePath("SignIn" + (keepUrl && this.path ? "/" + encodeURIComponent(App.removeRootPath(this.path)).replace(/\./g, "%2E") : ""), true);
+            this.app.service.hooks.onRedirectToSignIn(keepUrl);
         }
 
         redirectToSignOut(keepUrl: boolean = true) {
-            this.changePath("SignOut" + (keepUrl && this.path ? "/" + encodeURIComponent(App.removeRootPath(this.path)).replace(/\./g, "%2E") : ""), true);
+            this.app.service.hooks.onRedirectToSignOut(keepUrl);
         }
 
         showDialog(dialog: Dialog): Promise<any> {
@@ -1115,6 +1115,14 @@ namespace Vidyano.WebComponents {
                     }
                 }
             }
+        }
+
+        onRedirectToSignIn(keepUrl: boolean) {
+            this.app.changePath("SignIn" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path)).replace(/\./g, "%2E") : ""), true);
+        }
+
+        onRedirectToSignOut(keepUrl: boolean) {
+            this.app.changePath("SignOut" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path)).replace(/\./g, "%2E") : ""), true);
         }
 
         onMessageDialog(title: string, message: string, rich: boolean, ...actions: string[]): Promise<number> {
