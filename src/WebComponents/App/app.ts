@@ -637,7 +637,7 @@ namespace Vidyano.WebComponents {
                 const mappedPathRoute = !!path || this.barebone ? Vidyano.Path.match(Path.routes.rootPath + path, true) : null;
                 const newRoute = mappedPathRoute ? this._routeMap[App.removeRootPath(mappedPathRoute.path)] : null;
 
-                if (!newRoute && !this.barebone && !this.service.isSignedIn) {
+                if (!this.service.isSignedIn && !this.barebone && (!newRoute || !newRoute.allowSignedOut)) {
                     this.redirectToSignIn();
                     return;
                 }
