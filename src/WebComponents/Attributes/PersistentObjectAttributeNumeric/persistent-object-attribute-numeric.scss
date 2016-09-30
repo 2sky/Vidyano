@@ -45,7 +45,7 @@
 	&[focused] {
 		vi-persistent-object-attribute-edit span {
 			&:before, &:after {
-				border-color: var(--theme-color);
+				border-color: var(--theme-color-lighter);
 			}
 		}
 	}
