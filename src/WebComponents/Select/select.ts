@@ -54,7 +54,8 @@ namespace Vidyano.WebComponents {
             },
             disabled: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: false
             },
             disableFiltering: {
                 type: Boolean,
