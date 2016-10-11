@@ -227,7 +227,7 @@ namespace Vidyano.WebComponents {
             const contentChild = <HTMLElement>Polymer.dom(this).querySelector("[content]");
             if (contentChild) {
                 const definedMaxHeight = parseInt(getComputedStyle(contentChild).maxHeight);
-                if (definedMaxHeight > parseInt(maxContentHeight))
+                if (isNaN(definedMaxHeight) || definedMaxHeight > parseInt(maxContentHeight))
                     contentChild.style.maxHeight = maxContentHeight;
             }
 

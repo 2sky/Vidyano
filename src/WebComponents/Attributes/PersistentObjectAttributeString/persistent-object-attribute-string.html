@@ -12,11 +12,13 @@
                 <template is="dom-if" if="[[hasSuggestions]]">
                     <vi-popup id="suggestions" class="button" content-align="right">
                         <vi-icon source="Add" header></vi-icon>
-                        <ul content>
-                            <template is="dom-repeat" items="[[filteredSuggestions]]" as="suggestion">
-                                <li on-tap="_addSuggestion">[[suggestion]]</li>
-                            </template>
-                        </ul>
+                        <vi-scroller content>
+                            <ul>
+                                <template is="dom-repeat" items="[[filteredSuggestions]]" as="suggestion">
+                                    <li on-tap="_addSuggestion">[[suggestion]]</li>
+                                </template>
+                            </ul>
+                        </vi-scroller>
                     </vi-popup>
                 </template>
             </vi-persistent-object-attribute-edit>
