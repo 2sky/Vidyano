@@ -1172,7 +1172,7 @@ namespace Vidyano.WebComponents {
         }
 
         onNavigate(path: string, replaceCurrent: boolean = false) {
-            this.app.changePath(path, replaceCurrent);
+            this.app.changePath(Vidyano.WebComponents.App.removeRootPath(path), replaceCurrent);
         }
 
         onClientOperation(operation: ClientOperations.IClientOperation) {
