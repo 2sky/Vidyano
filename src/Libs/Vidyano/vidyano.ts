@@ -956,6 +956,7 @@ namespace Vidyano {
             if (!skipAcs && this._providers["Acs"] && this._providers["Acs"].signOutUri) {
                 return new Promise(resolve => {
                     const iframe = document.createElement("iframe");
+                    iframe.setAttribute("hidden", "");
                     iframe.width = "0";
                     iframe.height = "0";
                     iframe.src = this._providers["Acs"].signOutUri;

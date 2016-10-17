@@ -194,7 +194,7 @@ namespace Vidyano.WebComponents {
             signInImage: String,
             showMenu: {
                 type: Boolean,
-                computed: "_computeShowMenu(service.isSignedIn, noMenu, barebone)"
+                computed: "_computeShowMenu(service.application, noMenu, barebone)"
             },
             isDesktop: {
                 type: Boolean,
@@ -705,8 +705,8 @@ namespace Vidyano.WebComponents {
             return null;
         }
 
-        private _computeShowMenu(isSignedIn: boolean, noMenu: boolean, barebone: boolean): boolean {
-            const showMenu = !barebone && isSignedIn && !noMenu;
+        private _computeShowMenu(application: Vidyano.Application, noMenu: boolean, barebone: boolean): boolean {
+            const showMenu = application && !barebone && !noMenu;
             if (showMenu)
                 this.importComponent("Menu");
 
