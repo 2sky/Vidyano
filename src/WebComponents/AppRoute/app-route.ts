@@ -49,12 +49,6 @@ namespace Vidyano.WebComponents {
             super();
         }
 
-        attached() {
-            super.attached();
-
-            this.fire("app-route-add", { route: this.route });
-        }
-
         matchesParameters(parameters: { [key: string]: string } = {}): boolean {
             return this._parameters && JSON.stringify(this._parameters) === JSON.stringify(parameters);
         }
@@ -145,7 +139,7 @@ namespace Vidyano.WebComponents {
             if (!this._hasChildren)
                 return;
 
-            Polymer.dom(this).children.filter(c => c.tagName !== "TEMPLATE").forEach(c => Polymer.dom(this).removeChild(c));
+            Polymer.dom(this).children.forEach(c => Polymer.dom(this).removeChild(c));
             this._hasChildren = false;
         }
 

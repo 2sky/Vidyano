@@ -23,7 +23,20 @@ namespace Vidyano {
     "use strict";
 
     export const version = "latest";
-    export var cookiePrefix = document.location.pathname;
+
+    export var cookiePrefix: string;
+    if (document.head) {
+        const base = document.head.querySelector("base") as HTMLBaseElement;
+        if (base) {
+            const parser = document.createElement("a");
+            parser.href = base.href;
+
+            cookiePrefix = parser.pathname;
+        }
+    }
+
+    if (!cookiePrefix)
+        cookiePrefix = document.location.pathname;
 
     export enum NotificationType {
         Error,
@@ -387,6 +400,7 @@ namespace Vidyano {
     export class Service extends Vidyano.Common.Observable<Service> {
         private static _getMs = window.performance && window.performance.now ? () => window.performance.now() : () => new Date().getTime();
         private static _base64KeyStr: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        private static _token: string;
         private _lastAuthTokenUpdate: Date = new Date();
         private _isUsingDefaultCredentials: boolean;
         private _clientData: any;
@@ -410,6 +424,10 @@ namespace Vidyano {
 
             (<any>this.hooks)._service = this;
             this.staySignedIn = cookie("staySignedIn", undefined, { force: true });
+        }
+
+        static set token(token: string) {
+            Service._token = token;
         }
 
         private _createUri(method: string) {
@@ -854,19 +872,18 @@ namespace Vidyano {
                 }
                 this._windowsAuthentication = this._clientData.windowsAuthentication;
 
-                if (!StringEx.isNullOrEmpty(document.location.hash) && document.location.hash.startsWith("#!/SignInWithToken/")) {
-                    const token = document.location.hash.substr(19);
-                    const tokenParts = token.split("/", 2);
+                if (Service._token) {
+                    const tokenParts = Service._token.split("/", 2);
+                    Service._token = undefined;
+
                     this._setUserName(Service._decodeBase64(tokenParts[0]));
                     this.authToken = tokenParts[1].replace("_", "/");
 
-                    const returnUrl = Vidyano.cookie("returnUrl", { force: true });
-                    if (returnUrl) {
+                    const returnUrl = Vidyano.cookie("returnUrl", { force: true }) || "";
+                    if (returnUrl)
                         Vidyano.cookie("returnUrl", null, { force: true });
-                        this.hooks.onNavigate("#!/" + returnUrl, true);
-                    }
-                    else
-                        this.hooks.onNavigate("#!/", true);
+
+                    this.hooks.onNavigate(returnUrl, true);
 
                     return this._getApplication();
                 }
@@ -939,6 +956,7 @@ namespace Vidyano {
             if (!skipAcs && this._providers["Acs"] && this._providers["Acs"].signOutUri) {
                 return new Promise(resolve => {
                     const iframe = document.createElement("iframe");
+                    iframe.setAttribute("hidden", "");
                     iframe.width = "0";
                     iframe.height = "0";
                     iframe.src = this._providers["Acs"].signOutUri;
@@ -1596,6 +1614,14 @@ namespace Vidyano {
         }
 
         onClose(obj: ServiceObject) {
+            // Noop
+        }
+
+        onRedirectToSignIn(keepUrl: boolean = true) {
+            // Noop
+        }
+
+        onRedirectToSignOut(keepUrl: boolean = true) {
             // Noop
         }
 
@@ -2317,10 +2343,9 @@ namespace Vidyano {
             this.setNotification(result.notification, result.notificationType, result.notificationDuration);
             this._setIsDirty(isDirty, true);
 
-            if (this.isNew) {
-                this.objectId = result.objectId;
+            this.objectId = result.objectId;
+            if (this.isNew)
                 this.isNew = result.isNew;
-            }
 
             this.securityToken = result.securityToken;
             if (result.breadcrumb)

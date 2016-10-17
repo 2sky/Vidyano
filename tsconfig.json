@@ -44,6 +44,7 @@
     "src/WebComponents/App/Config/query-config.ts",
     "src/WebComponents/App/Config/template-config.ts",
     "src/WebComponents/AppRoute/app-route.ts",
+    "src/WebComponents/AppRoutePresenter/app-route-presenter.ts",
     "src/WebComponents/AttachedNotifier/attached-notifier.ts",
     "src/WebComponents/Attributes/persistent-object-attribute-edit.ts",
     "src/WebComponents/Attributes/persistent-object-attribute.ts",

@@ -2,7 +2,6 @@
   "name": "Vidyano",
   "private": true,
   "devDependencies": {
-    "grunt": "1.0.1",
     "grunt-bower-task": "0.4.0",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
