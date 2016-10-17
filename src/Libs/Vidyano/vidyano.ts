@@ -400,6 +400,7 @@ namespace Vidyano {
     export class Service extends Vidyano.Common.Observable<Service> {
         private static _getMs = window.performance && window.performance.now ? () => window.performance.now() : () => new Date().getTime();
         private static _base64KeyStr: string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        private static _token: string;
         private _lastAuthTokenUpdate: Date = new Date();
         private _isUsingDefaultCredentials: boolean;
         private _clientData: any;
@@ -423,6 +424,10 @@ namespace Vidyano {
 
             (<any>this.hooks)._service = this;
             this.staySignedIn = cookie("staySignedIn", undefined, { force: true });
+        }
+
+        static set token(token: string) {
+            Service._token = token;
         }
 
         private _createUri(method: string) {
@@ -867,10 +872,10 @@ namespace Vidyano {
                 }
                 this._windowsAuthentication = this._clientData.windowsAuthentication;
 
-                const path = document.location.pathname;
-                if (path.startsWith(Vidyano.Path.routes.rootPath + "SignInWithToken/")) {
-                    const token = path.substr(Vidyano.Path.routes.rootPath.length + 16);
-                    const tokenParts = token.split("/", 2);
+                if (Service._token) {
+                    const tokenParts = Service._token.split("/", 2);
+                    Service._token = undefined;
+
                     this._setUserName(Service._decodeBase64(tokenParts[0]));
                     this.authToken = tokenParts[1].replace("_", "/");
 

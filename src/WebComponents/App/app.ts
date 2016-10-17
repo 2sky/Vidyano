@@ -18,8 +18,16 @@ namespace Vidyano.WebComponents {
     parser.href = base.href;
     Path.routes.rootPath = parser.pathname[0] === "/" ? parser.pathname : `/${parser.pathname}`; // IE Bug: https://connect.microsoft.com/IE/Feedback/Details/1002846
 
-    if (!!document.location.hash && document.location.hash.startsWith("#!/"))
-        history.replaceState(null, null, document.location.href.replace("/#!/", "/"));
+    const hashBangRe = /(.+)#!\/(.*)/;
+    if (hashBangRe.test(document.location.href)) {
+        const hashBangParts = hashBangRe.exec(document.location.href);
+        if (hashBangParts[2].startsWith("SignInWithToken/")) {
+            history.replaceState(null, null, hashBangParts[1]);
+            Service.token = hashBangParts[2].substr(16);
+        }
+        else
+            history.replaceState(null, null, `${hashBangParts[1]}${hashBangParts[2]}`);
+    }
 
     export class AppCacheEntry {
         constructor(public id: string) {
