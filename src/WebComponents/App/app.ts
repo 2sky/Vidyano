@@ -597,7 +597,8 @@ namespace Vidyano.WebComponents {
             const anchorParent = this.findParent((e: HTMLElement) => e.tagName === "A" && !!(<HTMLAnchorElement>e).href, e.target as HTMLElement) as HTMLAnchorElement;
             if (anchorParent && anchorParent.href.startsWith(Vidyano.Path.routes.root)) {
                 this.changePath(App.removeRootPath(anchorParent.pathname));
-                return event.preventDefault();
+                e.stopPropagation();
+                e.preventDefault();
             }
         }
 
