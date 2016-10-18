@@ -179,6 +179,9 @@
                     &[is="vi-query-grid-table-data-column-actions"] {
                         > vi-icon {
                             fill: #444;
+                            opacity: 1;
+                            transition: opacity 0.1s ease-out;
+                            will-change: opacity;
                         }
 
                         > paper-ripple {
@@ -333,6 +336,26 @@
             & > vi-popup-menu {
                 button[is="vi-button"] > vi-icon[source="Down"] {
                     transform: rotate(-90deg);
+                }
+            }
+        }
+    }
+
+    &[has-selected-items] {
+        td[is="vi-query-grid-table-data-column-actions"] {
+            cursor: default !important;
+
+            > vi-icon {
+                opacity: 0.2 !important;
+            }
+
+            > paper-ripple {
+                display: none;
+            }
+
+            &:hover, &[hover] {
+                > vi-icon {
+                    background-color: transparent !important;
                 }
             }
         }

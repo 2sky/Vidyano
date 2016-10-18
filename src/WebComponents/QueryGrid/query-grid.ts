@@ -843,12 +843,12 @@
         }
 
         private _tap(e: TapEvent) {
-            if (!this.item)
+            e.stopPropagation();
+
+            if (!this.item || (this.item.query.selectedItems && this.item.query.selectedItems.length > 0))
                 return;
 
             this._row.table.grid.fire("item-actions", { row: this._row, host: this.host }, { bubbles: false });
-
-            e.stopPropagation();
         }
     }
 
@@ -916,6 +916,11 @@
                 reflectToAttribute: true,
                 computed: "query.selectAll.allSelected"
             },
+            hasSelectedItems: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeHasSelectedItems(query.selectedItems)"
+            },
             noInlineActions: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -968,6 +973,7 @@
             "query.totalItem",
             "query.selectAll.isAvailable",
             "query.selectAll.allSelected",
+            "query.selectedItems",
             "_settings.columns"
         ],
         listeners: {
@@ -1244,6 +1250,10 @@
 
         private _computeCanSelectAll(canSelect: boolean, isAvailable: boolean): boolean {
             return canSelect && isAvailable;
+        }
+
+        private _computeHasSelectedItems(selectedItems: Vidyano.QueryResultItem[]): boolean {
+            return selectedItems && selectedItems.length > 0;
         }
 
         private _computeInlineActions(query: Vidyano.Query, noInlineActions: boolean): boolean {
@@ -1603,7 +1613,12 @@
             if (detail.row.item.getTypeHint("extraclass", "").split(" ").map(c => c.toUpperCase()).some(c => c === "DISABLED" || c === "READONLY"))
                 return;
 
-            const actions = (detail.row.item.query.actions || []).filter(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue && a.definition.selectionRule(1));
+            if (this.query.selectedItems.length > 0 && this.query.selectedItems.indexOf(detail.row.item) < 0) {
+                this.query.selectAll.allSelected = this.query.selectAll.inverse = false;
+                this.query.selectedItems = [detail.row.item];
+            }
+
+            const actions = (detail.row.item.query.actions || []).filter(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue && a.selectionRule(Math.max(1, this.query.selectedItems.length)));
             if (actions.length === 0)
                 return;
 
@@ -1625,7 +1640,7 @@
             }
 
             actions.forEach(action => {
-                const button = new Vidyano.WebComponents.ActionButton(detail.row.item, action);
+                const button = new Vidyano.WebComponents.ActionButton(this.query.selectedItems.length === 0 ? detail.row.item : null, action);
                 button.forceLabel = true;
                 button.openOnHover = true;
                 button.setAttribute("overflow", "");
