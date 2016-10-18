@@ -178,9 +178,9 @@
 
                     &[is="vi-query-grid-table-data-column-actions"] {
                         > vi-icon {
-                            fill: var(--theme-color-dark);
+                            fill: #5a5a5a;
                             opacity: 1;
-                            transition: opacity 0.1s ease-out;
+                            transition: opacity 0.1s;
                             will-change: opacity;
                         }
 
