@@ -261,8 +261,10 @@
                     visibility: hidden;
                 }
 
-                &:hover, &[hover], &:hover td.pinned, &[hover] td.pinned {
-                    background-color: var(--theme-color-faint);
+                &:not([is-selected]) {
+                    &:hover, &[hover], &:hover td.pinned, &[hover] td.pinned {
+                        background-color: var(--theme-color-faint);
+                    }
                 }
 
                 &.disabled {
