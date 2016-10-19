@@ -39,8 +39,11 @@
                             </template>
                         </div>
                         <template is="dom-if" if="[[newAction]]">
-                            <div class="row add inline" hidden$="[[newActionPinned]]">
+                            <div class="row add inline layout horizontal" hidden$="[[newActionPinned]]">
                                 <button is="vi-button" inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add" disabled$="[[attribute.parent.isFrozen]]"></button>
+                                <template is="dom-if" if="[[!newActionPinned]]" restamp>
+                                    <content select="button"></content>
+                                </template>
                             </div>
                         </template>
                     </div>
@@ -60,8 +63,11 @@
                 </div>
             </vi-scroller>
             <template is="dom-if" if="[[newAction]]">
-                <div class="row add foot" hidden$="[[!newActionPinned]]">
+                <div class="row add foot layout horizontal" hidden$="[[!newActionPinned]]">
                     <button is="vi-button" inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add"></button>
+                    <template is="dom-if" if="[[newActionPinned]]" restamp>
+                        <content select="button"></content>
+                    </template>
                 </div>
             </template>
         </div>

@@ -7,7 +7,7 @@
         border: 1px solid var(--theme-light-border);
     }
 
-    button {
+    ::content > button {
         height: var(--theme-h2);
     }
 }
@@ -155,16 +155,16 @@
                     }
                 }
             }
+
+            .row.add {
+                @include addStyle();
+            }
         }
 
         &:not([can-delete]) {
             #table #head .column:last-of-type label {
                 border-right: 0;
             }
-        }
-
-        .add.vi-persistent-object-attribute-as-detail {
-            @include addStyle();
         }
     }
 
