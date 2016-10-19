@@ -981,9 +981,14 @@ namespace Vidyano {
 
         private _getApplication(data: any = this._createData("")): Promise<Application> {
             return new Promise<Application>((resolve, reject) => {
-                if (!(data.authToken || data.accessToken || data.password) && this.userName && this.userName !== this.defaultUserName && !this.hooks.onSessionExpired()) {
-                    reject("Session expired");
-                    return;
+                if (!(data.authToken || data.accessToken || data.password) && this.userName && this.userName !== this.defaultUserName) {
+                    this._setUserName(this.defaultUserName);
+                    if (!this.userName && !this.hooks.onSessionExpired()) {
+                        reject("Session expired");
+                        return;
+                    }
+
+                    data.userName = this.userName;
                 }
 
                 Vidyano.cookie("staySignedIn", this.staySignedIn ? "true" : null, { force: true, expires: 365 });
