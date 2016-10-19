@@ -12,7 +12,7 @@
     position: relative;
 
     @for $i from 1 through 10 {
-        &[height="#{$i}"] #content {
+        &[height="#{$i}"] > #contentWrapper > #content {
             height: calc(var(--theme-h2) * 2 * (#{$i} - 0.5));
         }
     }
