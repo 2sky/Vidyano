@@ -535,7 +535,7 @@
                 return this._app;
 
             if (this instanceof Vidyano.WebComponents.App)
-                return this._app = <Vidyano.WebComponents.App><any>this;
+                return (<Vidyano.WebComponents.WebComponent>this)._app = this;
 
             const component = <Vidyano.WebComponents.WebComponent>this.findParent(e => !!e && (<any>e)._app instanceof Vidyano.WebComponents.App || e instanceof Vidyano.WebComponents.App);
             if (!!component)

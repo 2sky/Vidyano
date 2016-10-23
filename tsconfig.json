@@ -7,11 +7,6 @@
     "emitDecoratorMetadata": false,
     "sourceMap": false
   },
-  "filesGlob": [
-    "src/Test/**/*.ts",
-    "src/Libs/**/*.ts",
-    "src/WebComponents/**/*.ts"
-  ],
   "files": [
     "src/Test/vidyano.ts",
     "src/Libs/Typings/Alertify.js/alertify.d.ts",
@@ -124,8 +119,5 @@
     "src/WebComponents/User/user.ts",
     "src/WebComponents/WebComponent/webcomponent.ts",
     "src/WebComponents/Website/website.ts"
-  ],
-  "atom": {
-    "rewriteTsconfig": true
-  }
+  ]
 }
