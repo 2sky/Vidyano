@@ -46,12 +46,12 @@
     },
     "codemirror": {
       "lib": "lib/*.*",
-      "mode/css": "mode/css/*.*",
-      "mode/htmlmixed": "mode/htmlmixed/*.*",
-      "mode/javascript": "mode/javascript/*.*",
-      "mode/markdown": "mode/markdown/*.*",
-      "mode/sass": "mode/sass/*.*",
-      "mode/xml": "mode/xml/*.*"
+      "mode/css": "mode/css/css.js",
+      "mode/htmlmixed": "mode/htmlmixed/htmlmixed.js",
+      "mode/javascript": "mode/javascript/javascript.js",
+      "mode/markdown": "mode/markdown/markdown.js",
+      "mode/sass": "mode/sass/sass.js",
+      "mode/xml": "mode/xml/xml.js"
     },
     "alertify.js": {
       "": [ "lib/alertify.min.js", "themes/alertify.core.css", "themes/alertify.default.css" ]
