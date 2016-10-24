@@ -85,6 +85,7 @@
 
         > vi-icon {
             display: inline-block;
+            height: 100%;
             @apply(--vi-button-icon);
 
             &:not([has-resource]) {
