@@ -104,6 +104,7 @@ interface TapEvent extends CustomEvent {
         x: number;
         y: number;
         sourceEvent: Event;
+        preventer?: Event;
     };
 
     model?: TemplateInstance | any;

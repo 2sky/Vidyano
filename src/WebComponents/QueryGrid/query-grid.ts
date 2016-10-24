@@ -486,8 +486,8 @@
         }
 
         private _updateIsSelected() {
-            if (this._isSelected !== (!!this.item && this.item.isSelected)) {
-                if (this._isSelected = !!this.item && this.item.isSelected) {
+            if (this._isSelected !== (!!this.item && !this.item.ignoreSelect && this.item.isSelected)) {
+                if (this._isSelected = !!this.item && !this.item.ignoreSelect && this.item.isSelected) {
                     this.host.setAttribute("is-selected", "");
                     this._selector.cell.setAttribute("is-selected", "");
                 }
@@ -813,11 +813,12 @@
 
         private _tap(e: TapEvent) {
             if (this._item) {
-                const sourceEvent = <MouseEvent>e.detail.sourceEvent;
+                const event = e.detail.preventer || e.detail.sourceEvent;
+
                 this._row.table.grid.fire("item-select", {
                     item: this.item,
-                    shift: !!sourceEvent && sourceEvent.shiftKey,
-                    ctrl: !!sourceEvent && sourceEvent.ctrlKey
+                    shift: !!event && event instanceof MouseEvent ? event.shiftKey : false,
+                    ctrl: !!event && event instanceof MouseEvent ? event.ctrlKey : true
                 }, { bubbles: false });
             }
 
@@ -1607,10 +1608,14 @@
                 }
             }
 
-            if (!detail.ctrl)
+            if (!detail.ctrl) {
+                if (this.query.selectAll.isAvailable && this.query.selectAll)
+                    this.query.selectAll.allSelected = this.query.selectAll.inverse = false;
+
                 this.query.selectedItems = this.query.selectedItems.length > 1 || !detail.item.isSelected ? [detail.item] : [];
+            }
             else
-                detail.item.isSelected = !detail.item.isSelected
+                detail.item.isSelected = !detail.item.isSelected;
 
             if (detail.item.isSelected)
                 this._lastSelectedItemIndex = indexOfItem;

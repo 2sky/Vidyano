@@ -3386,7 +3386,7 @@ namespace Vidyano {
         set selectedItems(items: QueryResultItem[]) {
             try {
                 this._isSelectionModifying = true;
-                items = items || [];
+                items = items.filter(i => !i.ignoreSelect) || [];
 
                 const selectedItems = this.selectedItems;
                 if (selectedItems && selectedItems.length > 0)
@@ -3831,14 +3831,10 @@ namespace Vidyano {
         private _updateSelectAll(item?: QueryResultItem, selectedItems: QueryResultItem[] = this.selectedItems) {
             if (this.selectAll.isAvailable) {
                 if (this.selectAll.allSelected) {
-                    if (!this.items.some(i => i.isSelected))
-                        this.selectAll.allSelected = false;
-                    else {
-                        if (item && !item.isSelected)
-                            this.selectAll.inverse = true;
-                        else if (!this.items.some(i => !i.isSelected))
-                            this.selectAll.inverse = false;
-                    }
+                    if (selectedItems.length > 0)
+                        this.selectAll.inverse = selectedItems.length !== this.items.filter(i => !i.ignoreSelect).length;
+                    else
+                        this.selectAll.allSelected = this.selectAll.inverse = false;
                 }
                 else if (selectedItems.length === this.totalItems)
                     this.selectAll.allSelected = true;
@@ -4114,6 +4110,7 @@ namespace Vidyano {
     }
 
     export class QueryResultItem extends ServiceObject {
+        private _ignoreSelect: boolean;
         id: string;
         breadcrumb: string;
         rawValues: linqjs.Enumerable<QueryResultItemValue>;
@@ -4151,17 +4148,27 @@ namespace Vidyano {
         }
 
         get isSelected(): boolean {
+            if (this._ignoreSelect)
+                return false;
+
             return this._isSelected;
         }
 
         set isSelected(val: boolean) {
-            if (this._isSelected === val)
+            if (val && this.ignoreSelect)
                 return;
 
             const oldIsSelected = this._isSelected;
             this.notifyPropertyChanged("isSelected", this._isSelected = val, oldIsSelected);
 
             (<any>this.query)._notifyItemSelectionChanged(this);
+        }
+
+        get ignoreSelect(): boolean {
+            if (typeof this._ignoreSelect === "undefined")
+                this._ignoreSelect = this.getTypeHint("extraclass", "").toUpperCase().split(" ").some(c => c === "DISABLED" || c === "READONLY");
+
+            return this._ignoreSelect;
         }
 
         getValue(key: string): any {
@@ -4630,6 +4637,8 @@ namespace Vidyano {
                                 }
                                 else
                                     selectedItems = this.query.selectedItems;
+
+                                selectedItems = selectedItems.filter(i => !i.ignoreSelect);
                             }
 
                             this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters).then(po => {
