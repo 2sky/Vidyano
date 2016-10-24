@@ -1,6 +1,8 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    let _persistentObjectTabComponentLoader: Promise<any>;
+
     @WebComponent.register({
         properties: {
             tab: Object,
@@ -24,7 +26,6 @@ namespace Vidyano.WebComponents {
         }
     })
     export class PersistentObjectTabPresenter extends WebComponent {
-        private static _persistentObjectTabComponentLoader: Promise<any>;
         private _renderedTab: Vidyano.PersistentObjectTab;
         private _tabAttributes: Vidyano.PersistentObjectAttribute[];
         tab: Vidyano.PersistentObjectTab;
@@ -71,10 +72,10 @@ namespace Vidyano.WebComponents {
                     });
                 }
                 else if (tab instanceof Vidyano.PersistentObjectAttributeTab) {
-                    if (!Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader)
-                        Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader = this.app.importComponent("PersistentObjectTab");
+                    if (!_persistentObjectTabComponentLoader)
+                        _persistentObjectTabComponentLoader = this.app.importComponent("PersistentObjectTab");
 
-                    Vidyano.WebComponents.PersistentObjectTabPresenter._persistentObjectTabComponentLoader.then(() => {
+                    _persistentObjectTabComponentLoader.then(() => {
                         if (tab !== this.tab)
                             return;
 

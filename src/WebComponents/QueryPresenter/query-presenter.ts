@@ -1,6 +1,8 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    let _queryComponentLoader: Promise<any>;
+
     @WebComponent.register({
         properties: {
             queryId: {
@@ -39,7 +41,6 @@ namespace Vidyano.WebComponents {
         ]
     })
     export class QueryPresenter extends WebComponent {
-        private static _queryComponentLoader: Promise<any>;
         private _customTemplate: PolymerTemplate;
         private _cacheEntry: QueryAppCacheEntry;
         queryId: string;
@@ -112,8 +113,8 @@ namespace Vidyano.WebComponents {
                     this.queryId = query.id;
 
                 if (!this._customTemplate) {
-                    if (!Vidyano.WebComponents.QueryPresenter._queryComponentLoader)
-                        Vidyano.WebComponents.QueryPresenter._queryComponentLoader = this.app.importComponent("Query");
+                    if (!_queryComponentLoader)
+                        _queryComponentLoader = this.app.importComponent("Query");
 
                     this._renderQuery(query);
                 }
@@ -125,7 +126,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _renderQuery(query: Vidyano.Query) {
-            Vidyano.WebComponents.QueryPresenter._queryComponentLoader.then(() => {
+            _queryComponentLoader.then(() => {
                 if (query !== this.query)
                     return;
 

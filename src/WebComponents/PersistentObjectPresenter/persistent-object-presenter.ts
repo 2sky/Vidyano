@@ -1,6 +1,8 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    let _persistentObjectComponentLoader: Promise<any>;
+
     @WebComponent.register({
         properties: {
             persistentObjectId: {
@@ -48,7 +50,6 @@ namespace Vidyano.WebComponents {
         }
     })
     export class PersistentObjectPresenter extends WebComponent implements IConfigurable {
-        private static _persistentObjectComponentLoader: Promise<any>;
         private _cacheEntry: PersistentObjectAppCacheEntry;
         persistentObjectId: string;
         persistentObjectObjectId: string;
@@ -169,8 +170,8 @@ namespace Vidyano.WebComponents {
                     this._setLoading(false);
                 }
                 else {
-                    if (!Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader)
-                        Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader = this.app.importComponent("PersistentObject");
+                    if (!_persistentObjectComponentLoader)
+                        _persistentObjectComponentLoader = this.app.importComponent("PersistentObject");
 
                     this._renderPersistentObject(persistentObject);
                 }
@@ -180,7 +181,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _renderPersistentObject(persistentObject: Vidyano.PersistentObject) {
-            Vidyano.WebComponents.PersistentObjectPresenter._persistentObjectComponentLoader.then(() => {
+            _persistentObjectComponentLoader.then(() => {
                 if (persistentObject !== this.persistentObject)
                     return;
 

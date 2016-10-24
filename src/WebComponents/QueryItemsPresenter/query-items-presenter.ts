@@ -1,6 +1,9 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    let _queryGridComponentLoader: Promise<any>;
+    let _chartComponentLoader: Promise<any>;
+
     @WebComponent.register({
         properties: {
             query: Object,
@@ -41,8 +44,6 @@ namespace Vidyano.WebComponents {
         }
     })
     export class QueryItemsPresenter extends WebComponent implements IConfigurable {
-        private static _queryGridComponentLoader: Promise<any>;
-        private static _chartComponentLoader: Promise<any>;
         private _renderedQuery: Vidyano.Query;
         query: Vidyano.Query;
         templated: boolean;
@@ -83,10 +84,10 @@ namespace Vidyano.WebComponents {
             }
             else {
                 if (!currentChart) {
-                    if (!Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader)
-                        Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader = this.app.importComponent("QueryGrid");
+                    if (!_queryGridComponentLoader)
+                        _queryGridComponentLoader = this.app.importComponent("QueryGrid");
 
-                    Vidyano.WebComponents.QueryItemsPresenter._queryGridComponentLoader.then(() => {
+                    _queryGridComponentLoader.then(() => {
                         if (query !== this.query || this._renderedQuery === query || !!query.currentChart)
                             return;
 
@@ -104,8 +105,8 @@ namespace Vidyano.WebComponents {
                         return;
                     }
 
-                    if (!Vidyano.WebComponents.QueryItemsPresenter._chartComponentLoader) {
-                        Vidyano.WebComponents.QueryItemsPresenter._chartComponentLoader = new Promise(resolve => {
+                    if (!_chartComponentLoader) {
+                        _chartComponentLoader = new Promise(resolve => {
                             this.importHref(this.resolveUrl("../Chart/chart-dependencies.html"), e => {
                                 resolve(true);
                             }, err => {
@@ -115,7 +116,7 @@ namespace Vidyano.WebComponents {
                         });
                     }
 
-                    Vidyano.WebComponents.QueryItemsPresenter._chartComponentLoader.then(() => {
+                    _chartComponentLoader.then(() => {
                         if (query !== this.query || this._renderedQuery === query)
                             return;
 
