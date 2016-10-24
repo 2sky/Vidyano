@@ -2043,11 +2043,14 @@ namespace Vidyano {
             if (value && (!this.isEditing && !force))
                 throw "Cannot flag persistent object as dirty when not in edit mode.";
 
-            this._isDirty = value;
-            this.actions.forEach(action => action._onParentIsDirtyChanged(value));
+            const oldIsDirty = this._isDirty;
+            if (oldIsDirty !== value) {
+                this.notifyPropertyChanged("isDirty", this._isDirty = value, oldIsDirty);
+                this.actions.forEach(action => action._onParentIsDirtyChanged(value));
 
-            if (this.ownerDetailAttribute && value)
-                this.ownerDetailAttribute.onChanged(false);
+                if (this.ownerDetailAttribute && value)
+                    this.ownerDetailAttribute.onChanged(false);
+            }
         }
 
         get isDeleted(): boolean {
