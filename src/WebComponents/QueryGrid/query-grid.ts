@@ -811,11 +811,13 @@
                 this._item = item;
         }
 
-        private _tap(e: CustomEvent) {
+        private _tap(e: TapEvent) {
             if (this._item) {
+                const sourceEvent = <MouseEvent>e.detail.sourceEvent;
                 this._row.table.grid.fire("item-select", {
                     item: this.item,
-                    rangeSelect: e.detail.sourceEvent && e.detail.sourceEvent.shiftKey
+                    shift: !!sourceEvent && sourceEvent.shiftKey,
+                    ctrl: !!sourceEvent && sourceEvent.ctrlKey
                 }, { bubbles: false });
             }
 
@@ -1593,19 +1595,24 @@
             this.query.reorder(before, item, after);
         }
 
-        private _itemSelect(e: CustomEvent, detail: { item: Vidyano.QueryResultItem; rangeSelect: boolean }) {
+        private _itemSelect(e: CustomEvent, detail: { item: Vidyano.QueryResultItem; shift: boolean; ctrl: boolean; }) {
             if (!detail.item)
                 return;
 
             const indexOfItem = this.query.items.indexOf(detail.item);
-            if (!detail.item.isSelected && this._lastSelectedItemIndex >= 0 && detail.rangeSelect) {
+            if (!detail.item.isSelected && this._lastSelectedItemIndex >= 0 && detail.shift) {
                 if (this.query.selectRange(Math.min(this._lastSelectedItemIndex, indexOfItem), Math.max(this._lastSelectedItemIndex, indexOfItem))) {
                     this._lastSelectedItemIndex = indexOfItem;
                     return;
                 }
             }
 
-            if (detail.item.isSelected = !detail.item.isSelected)
+            if (!detail.ctrl)
+                this.query.selectedItems = this.query.selectedItems.length > 1 || !detail.item.isSelected ? [detail.item] : [];
+            else
+                detail.item.isSelected = !detail.item.isSelected
+
+            if (detail.item.isSelected)
                 this._lastSelectedItemIndex = indexOfItem;
         }
 
