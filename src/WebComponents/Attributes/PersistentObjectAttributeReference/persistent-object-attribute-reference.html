@@ -17,7 +17,7 @@
             <template is="dom-if" if="[[attribute.selectInPlace]]">
                 <template is="dom-if" if="[[!selectInPlaceAsRadio]]">
                     <vi-persistent-object-attribute-edit attribute="[[attribute]]" reverse-content>
-                        <vi-select id="selectInPlace" content class="flex" options="[[options]]" selected-option="{{objectId}}" readonly$="[[attribute.isReadOnly]]" placeholder="[[placeholder]]"></vi-select>
+                        <vi-select id="selectInPlace" slot="content" class="flex" options="[[options]]" selected-option="{{objectId}}" readonly$="[[attribute.isReadOnly]]" placeholder="[[placeholder]]"></vi-select>
                         <button on-tap="_openSelect" hidden$="[[attribute.isReadOnly]]">
                             <vi-icon source="CaretDown"></vi-icon>
                         </button>
@@ -48,7 +48,7 @@
             </template>
             <template is="dom-if" if="[[!attribute.selectInPlace]]">
                 <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                    <input content value="{{filter::input}}" on-blur="_filterBlur" readonly$="[[attribute.isReadOnly]]" autocomplete="off" placeholder="[[placeholder]]">
+                    <input slot="content" value="{{filter::input}}" on-blur="_filterBlur" readonly$="[[attribute.isReadOnly]]" autocomplete="off" placeholder="[[placeholder]]">
                     <a class="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
                         <vi-icon source="ArrowUpRight"></vi-icon>
                     </a>

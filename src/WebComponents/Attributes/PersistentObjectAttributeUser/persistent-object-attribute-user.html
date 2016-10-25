@@ -9,7 +9,7 @@
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <input value="[[friendlyName]]" readonly content>
+                <input slot="content" value="[[friendlyName]]" readonly>
                 <template is="dom-if" if="[[canBrowseReference]]" restamp>
                     <button on-tap="_browseReference" tabindex="-1">
                         <vi-icon source="Ellipsis"></vi-icon>

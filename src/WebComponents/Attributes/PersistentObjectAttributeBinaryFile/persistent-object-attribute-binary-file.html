@@ -6,7 +6,7 @@
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <input content class="flex" value="{{fileName}}" type="text" readonly placeholder="[[placeholder]]">
+                <input slot="content" class="flex" value="{{fileName}}" type="text" readonly placeholder="[[placeholder]]">
                 <template is="dom-if" if="[[!readOnly]]">
                     <div class="button browse" on-change="_change">
                         <vi-icon source="FileUpload"></vi-icon>

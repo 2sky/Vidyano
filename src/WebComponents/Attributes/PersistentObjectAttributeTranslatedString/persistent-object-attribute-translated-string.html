@@ -18,10 +18,10 @@
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]" reverse-content$="[[multiline]]">
                 <template is="dom-if" if="[[!multiline]]">
-                    <input content class="flex" value="{{value::input}}" type="text" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off" placeholder="[[placeholder]]">
+                    <input slot="content" class="flex" value="{{value::input}}" type="text" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off" placeholder="[[placeholder]]">
                 </template>
                 <template is="dom-if" if="[[multiline]]">
-                    <vi-scroller content class="fit">
+                    <vi-scroller slot="content" class="fit">
                         <pre id="multiline">[[attribute.value]]</pre>
                     </vi-scroller>
                 </template>
