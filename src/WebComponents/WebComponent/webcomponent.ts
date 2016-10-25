@@ -40,7 +40,7 @@
             nine = 57
         };
 
-        export var KeyIdentifiers = {
+        export let KeyIdentifiers = {
             "tab": "U+0009",
             "esc": "U+001B",
             "space": "U+0020",
@@ -125,7 +125,7 @@
     // Get browser scrollbar width and height
     ////////////////////////////////////////////////////
 
-    export var scrollbarWidth = function (): number {
+    export let scrollbarWidth = function (): number {
         let width = <number>scrollbarWidth["cached"];
         if (width)
             return width;

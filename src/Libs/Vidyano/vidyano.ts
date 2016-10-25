@@ -24,7 +24,7 @@ namespace Vidyano {
 
     export const version = "latest";
 
-    export var cookiePrefix: string;
+    export let cookiePrefix: string;
     if (document.head) {
         const base = document.head.querySelector("base") as HTMLBaseElement;
         if (base) {
@@ -1270,7 +1270,7 @@ namespace Vidyano {
                         iframe.onload = function (e: Event) {
                             // NOTE: The second load event gets fired when the response to the form submission is received. The implementation detects whether the actual payload is embedded in a <textarea> element, and prepares the required conversions to be made in that case.
                             iframe.onload = function (e: Event) {
-                                const doc = this.contentWindow ? this.contentWindow.document : (this.contentDocument ? this.contentDocument : this.document),
+                                const doc = this.contentWindow ? this.contentWindow.document : (this.contentDocument ? this.contentDocument : this["document"]),
                                     root = doc.documentElement ? doc.documentElement : doc.body,
                                     textarea = root.getElementsByTagName("textarea")[0],
                                     type = textarea ? textarea.getAttribute("data-type") : null,
