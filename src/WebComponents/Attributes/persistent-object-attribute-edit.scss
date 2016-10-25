@@ -75,7 +75,7 @@
     }
 
     ::content {
-        [content] {
+        [slot="content"] {
             @include flex();
         }
 
