@@ -181,15 +181,10 @@ namespace Vidyano.WebComponents {
                 readOnly: true,
                 value: false
             },
-            profilerLoaded: {
-                type: Boolean,
-                readOnly: true,
-                value: false
-            },
             isProfiling: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeIsProfiling(service.isSignedIn, service.profile, profilerLoaded)"
+                computed: "_computeIsProfiling(service.isSignedIn, service.profile)"
             },
             signInImage: String,
             showMenu: {
@@ -235,7 +230,7 @@ namespace Vidyano.WebComponents {
             "_cleanUpOnSignOut(service.isSignedIn)",
             "_resolveDependencies(service.application.hasManagement)",
             "_computeThemeColorVariants(themeColor, 'color', isAttached)",
-            "_computeThemeColorVariants(themeAccentColor, 'accent-color', isAttached)",
+            "_computeThemeColorVariants(themeAccentColor, 'accent-color', isAttached)"
         ],
         hostAttributes: {
             "tabindex": "-1"
@@ -282,7 +277,6 @@ namespace Vidyano.WebComponents {
         private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setCurrentRoute: (route: AppRoute) => void;
         private _setBarebone: (barebone: boolean) => void;
-        private _setProfilerLoaded: (val: boolean) => void;
         private _setRouteNotFound: (routeNotFound: boolean) => void;
 
         attached() {
@@ -446,28 +440,22 @@ namespace Vidyano.WebComponents {
             this.app.service.hooks.onRedirectToSignOut(keepUrl);
         }
 
-        showDialog(dialog: Dialog): Promise<any> {
+        async showDialog(dialog: Dialog): Promise<any> {
             Polymer.dom(this.root).appendChild(dialog);
             this._activeDialogs.push(dialog);
 
-            return dialog.open().then(result => {
+            try {
+                return await dialog.open();
+            }
+            finally {
                 Polymer.dom(this.root).removeChild(dialog);
                 this._activeDialogs.pop();
-
-                return result;
-            }).catch(e => {
-                Polymer.dom(this.root).removeChild(dialog);
-                this._activeDialogs.pop();
-
-                if (e)
-                    throw e;
-            });
+            }
         }
 
-        showMessageDialog(options: Vidyano.WebComponents.IMessageDialogOptions): Promise<any> {
-            return this.app.importComponent("MessageDialog").then(() => {
-                return this.showDialog(new Vidyano.WebComponents.MessageDialog(options));
-            });
+        async showMessageDialog(options: Vidyano.WebComponents.IMessageDialogOptions): Promise<any> {
+            await this.app.importComponent("MessageDialog");
+            return this.showDialog(new Vidyano.WebComponents.MessageDialog(options));
         }
 
         showAlert(notification: string, type: Vidyano.NotificationType = Vidyano.NotificationType.Notice, duration: number = 3000) {
@@ -524,12 +512,12 @@ namespace Vidyano.WebComponents {
             });
         }
 
-        private _computeIsProfiling(isSignedIn: boolean, profile: boolean, profilerLoaded: boolean): boolean {
-            const isProfiling = isSignedIn && profile;
-            if (isProfiling && !Polymer.isInstance(this.$["profiler"]))
-                this.importComponent("Profiler").then(() => this._setProfilerLoaded(true));
+        private _computeIsProfiling(isSignedIn: boolean, profile: boolean): boolean {
+            if (!isSignedIn || !profile)
+                return false;
 
-            return isProfiling && profilerLoaded;
+            this.importComponent("Profiler");
+            return true;
         }
 
         private _cookiePrefixChanged(cookiePrefix: string) {
@@ -626,7 +614,7 @@ namespace Vidyano.WebComponents {
                 return;
 
             let currentRoute = this.currentRoute;
-            this._routeUpdater = this._routeUpdater.then(() => {
+            this._routeUpdater = this._routeUpdater.then(async () => {
                 if (this.path !== path || this.currentRoute !== currentRoute)
                     return;
 
@@ -669,23 +657,20 @@ namespace Vidyano.WebComponents {
                     return;
 
                 if (this.currentRoute) {
-                    return currentRoute.deactivate().then(proceed => {
-                        if (!proceed || currentRoute !== this.currentRoute)
-                            return;
+                    const proceed = await currentRoute.deactivate();
+                    if (!proceed || currentRoute !== this.currentRoute)
+                        return;
 
-                        Enumerable.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
+                    Enumerable.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
 
-                        if (!!newRoute) {
-                            newRoute.activate(mappedPathRoute.params);
-                            this._setCurrentRoute(newRoute);
-                        } else if (!!path && this.service.isSignedIn) {
-                            this._setRouteNotFound(true);
-                            return;
-                        }
-                    });
+                    if (!!newRoute) {
+                        await newRoute.activate(mappedPathRoute.params);
+                        this._setCurrentRoute(newRoute);
+                    } else if (!!path && this.service.isSignedIn)
+                        this._setRouteNotFound(true);
                 }
                 else if (!!newRoute) {
-                    newRoute.activate(mappedPathRoute.params);
+                    await newRoute.activate(mappedPathRoute.params);
                     this._setCurrentRoute(newRoute);
                 }
                 else if (!!path && this.service.isSignedIn)
@@ -1002,48 +987,34 @@ namespace Vidyano.WebComponents {
             return newQuery;
         }
 
-        onActionConfirmation(action: Action, option: number): Promise<boolean> {
-            return new Promise((resolve, reject) => {
-                this.app.showMessageDialog({
-                    title: action.displayName,
-                    titleIcon: "Action_" + action.name,
-                    message: this.service.getTranslatedMessage(action.definition.confirmation, option >= 0 ? action.options[option] : undefined),
-                    actions: [action.displayName, this.service.getTranslatedMessage("Cancel")],
-                    actionTypes: action.name === "Delete" ? ["Danger"] : []
-                }).then(result => {
-                    resolve(result === 0);
-                }).catch(e => {
-                    resolve(false);
-                });
+        async onActionConfirmation(action: Action, option: number): Promise<boolean> {
+            const result = await this.app.showMessageDialog({
+                title: action.displayName,
+                titleIcon: "Action_" + action.name,
+                message: this.service.getTranslatedMessage(action.definition.confirmation, option >= 0 ? action.options[option] : undefined),
+                actions: [action.displayName, this.service.getTranslatedMessage("Cancel")],
+                actionTypes: action.name === "Delete" ? ["Danger"] : []
             });
+
+            return result === 0;
         }
 
-        onAction(args: ExecuteActionArgs): Promise<Vidyano.PersistentObject> {
+        async onAction(args: ExecuteActionArgs): Promise<Vidyano.PersistentObject> {
             if (args.action === "AddReference") {
-                return new Promise((resolve, reject) => {
-                    args.isHandled = true;
+                args.isHandled = true;
 
-                    const query = args.query.clone(true);
-                    query.search();
+                const query = args.query.clone(true);
+                query.search();
 
-                    this.app.importComponent("SelectReferenceDialog").then(() => {
-                        this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then((result: QueryResultItem[]) => {
-                            if (result && result.length > 0) {
-                                args.selectedItems = result;
+                await this.app.importComponent("SelectReferenceDialog");
+                const result = await this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query));
+                if (result && result.length > 0) {
+                    args.selectedItems = result;
 
-                                args.executeServiceRequest().then(result => {
-                                    resolve(result);
-                                }, e => {
-                                    reject(e);
-                                });
-                            }
-                            else
-                                reject(null);
-                        }, e => {
-                            reject(e);
-                        });
-                    });
-                });
+                    return await args.executeServiceRequest();
+                }
+                else
+                    return null;
             }
             else if (args.action === "ShowHelp") {
                 // Only pass selected tab for actions on persistent objects
@@ -1066,21 +1037,19 @@ namespace Vidyano.WebComponents {
             return super.onAction(args);
         }
 
-        onOpen(obj: ServiceObject, replaceCurrent: boolean = false, fromAction: boolean = false) {
+        async onOpen(obj: ServiceObject, replaceCurrent: boolean = false, fromAction: boolean = false) {
             if (obj instanceof Vidyano.PersistentObject) {
                 const po = <Vidyano.PersistentObject>obj;
 
                 if (po.stateBehavior.indexOf("AsWizard") >= 0) {
-                    this.app.importComponent("PersistentObjectWizardDialog").then(() => {
-                        this.app.showDialog(new Vidyano.WebComponents.PersistentObjectWizardDialog(po));
-                    });
+                    await this.app.importComponent("PersistentObjectWizardDialog");
+                    await this.app.showDialog(new Vidyano.WebComponents.PersistentObjectWizardDialog(po));
 
                     return;
                 }
                 else if (po.stateBehavior.indexOf("OpenAsDialog") >= 0) {
-                    this.app.importComponent("PersistentObjectDialog").then(() => {
-                        this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po));
-                    });
+                    await this.app.importComponent("PersistentObjectDialog");
+                    await this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po));
 
                     return;
                 }
@@ -1156,21 +1125,12 @@ namespace Vidyano.WebComponents {
             this.app.showAlert(notification, type, duration);
         }
 
-        onSelectReference(query: Vidyano.Query): Promise<QueryResultItem[]> {
+        async onSelectReference(query: Vidyano.Query): Promise<QueryResultItem[]> {
             if (!query.hasSearched)
                 query.search();
 
-            return new Promise((resolve, reject) => {
-                this.app.importComponent("SelectReferenceDialog").then(() => {
-                    this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query)).then(items => {
-                        resolve(items);
-                    }).catch(e => {
-                        reject(e);
-                    });
-                }).catch(e => {
-                    reject(e);
-                });
-            });
+            await this.app.importComponent("SelectReferenceDialog");
+            return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query));
         }
 
         onSessionExpired(): boolean {
@@ -1201,16 +1161,18 @@ namespace Vidyano.WebComponents {
                         poCacheEntriesWithQueries.forEach(poEntry => poEntry.persistentObject.queries.filter(q => q.id === refresh.queryId).forEach(q => q.search(refresh.delay)));
                     }
                     else {
-                        const refreshPersistentObject = () => {
+                        const refreshPersistentObject = async () => {
                             const cacheEntry = <PersistentObjectAppCacheEntry>this.app.cachePing(new PersistentObjectAppCacheEntry(refresh.fullTypeName, refresh.objectId));
                             if (!cacheEntry || !cacheEntry.persistentObject)
                                 return;
 
-                            this.app.service.getPersistentObject(cacheEntry.persistentObject.parent, cacheEntry.persistentObject.id, cacheEntry.persistentObject.objectId).then(po => {
+                            try {
+                                const po = await this.app.service.getPersistentObject(cacheEntry.persistentObject.parent, cacheEntry.persistentObject.id, cacheEntry.persistentObject.objectId);
                                 cacheEntry.persistentObject.refreshFromResult(po, true);
-                            }, e => {
+                            }
+                            catch (e) {
                                 cacheEntry.persistentObject.setNotification(e);
-                            });
+                            }
                         };
 
                         if (refresh.delay)
@@ -1227,31 +1189,31 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        onQueryFileDrop(query: Vidyano.Query, name: string, contents: string): Promise<boolean> {
+        async onQueryFileDrop(query: Vidyano.Query, name: string, contents: string): Promise<boolean> {
             const config = this.app.configuration.getQueryConfig(query);
+            const newAction = <Vidyano.Action>query.actions["New"];
 
-            return new Promise((resolve, reject) => {
-                const newAction = <Vidyano.Action>query.actions["New"];
-                return newAction.execute({ skipOpen: true }).then(po => {
-                    return query.queueWork(() => {
-                        const fileDropAttribute = po.getAttribute(config.fileDropAttribute);
-                        if (!fileDropAttribute)
-                            return Promise.resolve(false);
+            const po = await newAction.execute({ skipOpen: true });
+            return query.queueWork(async () => {
+                const fileDropAttribute = po.getAttribute(config.fileDropAttribute);
+                if (!fileDropAttribute)
+                    return false;
 
-                        return fileDropAttribute.setValue(`${name}|${contents}`).then(() => Promise.resolve(po.save().catch(e => {
-                            query.setNotification(e);
-                            return Promise.resolve(false);
-                        })));
-                    }, true);
-                });
-            });
+                try {
+                    await fileDropAttribute.setValue(`${name}|${contents}`);
+                    return await po.save();
+                }
+                catch (e) {
+                    query.setNotification(e);
+                    return false;
+                }
+            }, true);
         }
 
-        onRetryAction(retry: IRetryAction): Promise<string> {
+        async onRetryAction(retry: IRetryAction): Promise<string> {
             if (retry.persistentObject) {
-                this.app.importComponent("RetryActionDialog").then(() => {
-                    return this.app.showDialog(new Vidyano.WebComponents.RetryActionDialog(retry));
-                });
+                await this.app.importComponent("RetryActionDialog");
+                return this.app.showDialog(new Vidyano.WebComponents.RetryActionDialog(retry));
             }
 
             return super.onRetryAction(retry);

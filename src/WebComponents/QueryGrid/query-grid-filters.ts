@@ -114,63 +114,66 @@
             this.queryFilters.currentFilter = this.queryFilters.getFilter(name);
         }
 
-        private _saveAs() {
-            this.app.importComponent("PersistentObjectDialog").then(() => this.query.filters.createNew()).then(newFilter => {
-                let dialog: Vidyano.WebComponents.PersistentObjectDialog;
-                this.app.showDialog(dialog = new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, {
-                    save: (po, close) => {
-                        this.query.filters.save(newFilter).then(newFilter => {
-                            this.query.filters.currentFilter = newFilter;
-                            close();
-                        }).catch(err => {
-                            dialog.persistentObject = newFilter.persistentObject = Enumerable.from(this.query.filters.detailsAttribute.objects).last(po => po.isNew);
-                        });
-                    },
-                    cancel: close => {
-                        this.query.filters.delete(newFilter);
+        private async _saveAs() {
+            await this.app.importComponent("PersistentObjectDialog");
+            const newFilter = await this.query.filters.createNew();
+
+            let dialog: Vidyano.WebComponents.PersistentObjectDialog;
+            this.app.showDialog(dialog = new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, {
+                save: async (po, close) => {
+                    try {
+                        await this.query.filters.save(newFilter);
+                        this.query.filters.currentFilter = newFilter;
                         close();
-                    },
-                    noHeader: true
-                }));
-            });
+                    }
+                    catch (e) {
+                        dialog.persistentObject = newFilter.persistentObject = Enumerable.from(this.query.filters.detailsAttribute.objects).last(po => po.isNew);
+                    }
+                },
+                cancel: async close => {
+                    await this.query.filters.delete(newFilter);
+                    close();
+                },
+                noHeader: true
+            }));
         }
 
         private _save() {
             this.query.filters.save();
         }
 
-        private _edit(e: TapEvent) {
+        private async _edit(e: TapEvent) {
             e.stopPropagation();
 
-            this.app.importComponent("PersistentObjectDialog").then(() => {
-                const filter = <Vidyano.QueryFilter>e.model.filter;
-                this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(filter.persistentObject, {
-                    save: (po, close) => {
-                        return this.query.filters.save(filter).then(close).catch(Vidyano.noop);
-                    },
-                    noHeader: true
-                })).catch(Vidyano.noop);
-            });
+            await this.app.importComponent("PersistentObjectDialog");
+
+            const filter = <Vidyano.QueryFilter>e.model.filter;
+            this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(filter.persistentObject, {
+                save: async (po, close) => {
+                    await this.query.filters.save(filter);
+                    close();
+                },
+                noHeader: true
+            }));
         }
 
-        private _delete(e: TapEvent) {
+        private async _delete(e: TapEvent) {
             e.stopPropagation();
 
             const name = (<HTMLElement>e.currentTarget).getAttribute("data-filter");
             if (!name)
                 return;
 
-            this.app.showMessageDialog({
+            const result = await this.app.showMessageDialog({
                 title: name,
                 titleIcon: "Action_Delete",
                 message: this.translateMessage("AskForDeleteFilter", name),
                 actions: [this.translateMessage("Delete"), this.translateMessage("Cancel")],
                 actionTypes: ["Danger"]
-            }).then(result => {
-                if (result === 0) {
-                    this.query.filters.delete(name);
-                }
             });
+
+            if (result === 0)
+                await this.query.filters.delete(name);
         }
 
         private _userFilters(filters: Vidyano.QueryFilter[]): Vidyano.QueryFilter[] {

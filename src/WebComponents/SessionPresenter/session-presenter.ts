@@ -18,6 +18,7 @@ namespace Vidyano.WebComponents {
     })
     export class SessionPresenter extends WebComponent {
         private _customTemplate: PolymerTemplate;
+        session: Vidyano.PersistentObject;
 
         private _computeApplication(app: Vidyano.WebComponents.App): Vidyano.Application {
             return app.service.application;
@@ -32,12 +33,19 @@ namespace Vidyano.WebComponents {
             if (!session || !this._customTemplate)
                 return;
 
-            this.app.importComponent("PersistentObjectAttributePresenter").then(() => {
-                <HTMLElement>Polymer.dom(this).appendChild(this._customTemplate.stamp({ session: session }).root);
-                Polymer.dom(this).flush();
-            });
+            this._renderSession(session);
 
             return session;
+        }
+
+        private async _renderSession(session: Vidyano.PersistentObject) {
+            await this.app.importComponent("PersistentObjectAttributePresenter");
+
+            if (session !== this.session)
+                return;
+
+            <HTMLElement>Polymer.dom(this).appendChild(this._customTemplate.stamp({ session: session }).root);
+            Polymer.dom(this).flush();
         }
     }
 }

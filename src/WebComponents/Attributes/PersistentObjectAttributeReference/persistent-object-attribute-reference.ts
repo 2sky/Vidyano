@@ -44,7 +44,6 @@ namespace Vidyano.WebComponents.Attributes {
         ]
     })
     export class PersistentObjectAttributeReference extends WebComponents.Attributes.PersistentObjectAttribute {
-        private _browsing: boolean;
         objectId: string;
         attribute: Vidyano.PersistentObjectAttributeWithReference;
         href: string;
@@ -79,28 +78,29 @@ namespace Vidyano.WebComponents.Attributes {
                 this.attribute.changeReference(this.objectId ? [this.objectId] : []);
         }
 
-        private _filterBlur() {
+        private async _filterBlur() {
             if (!this.attribute)
                 return;
 
             if (!StringEx.isNullOrEmpty(this.filter) && this.filter !== this.attribute.value) {
                 this.attribute.lookup.textSearch = "vi-breadcrumb:\"" + this.filter + "\"";
-                this.attribute.lookup.search().then(result => {
-                    this.attribute.lookup.textSearch = null;
+                const result = await this.attribute.lookup.search();
+                this.attribute.lookup.textSearch = null;
 
-                    if (result.length === 1)
-                        this.attribute.changeReference([result[0]]).then(() => this._update());
-                    else {
-                        if (result.length === 0) {
-                            this.filter = this.attribute.value;
-                            this.attribute.lookup.textSearch = "";
-                        }
-                        else
-                            this.attribute.lookup.textSearch = this.filter;
-
-                        this._browseReference(true, true);
+                if (result.length === 1) {
+                    await this.attribute.changeReference([result[0]]);
+                    this._update();
+                }
+                else {
+                    if (result.length === 0) {
+                        this.filter = this.attribute.value;
+                        this.attribute.lookup.textSearch = "";
                     }
-                });
+                    else
+                        this.attribute.lookup.textSearch = this.filter;
+
+                    await this._browseReference(true, true);
+                }
             }
             else
                 this.filter = this.attribute.value;
@@ -115,40 +115,34 @@ namespace Vidyano.WebComponents.Attributes {
             this._browseReference(false, true);
         }
 
-        private _browseReference(throwExceptions?: boolean, forceSearch?: boolean): Promise<any> {
+        private async _browseReference(throwExceptions?: boolean, forceSearch?: boolean): Promise<any> {
             this.attribute.lookup.selectedItems = [];
 
-            return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup, forceSearch, this.canAddNewReference)).then(result => {
-                this._browseReferenceDone();
+            try {
+                const result = await this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(this.attribute.lookup, forceSearch, this.canAddNewReference));
+                if (!result)
+                    return;
 
-                if (!result) {
-                    if (throwExceptions === true)
-                        return Promise.reject("Nothing selected");
-
-                    return Promise.resolve();
+                if (result instanceof Array && result.length > 0 && result[0] instanceof Vidyano.QueryResultItem) {
+                    await this.attribute.changeReference(result);
+                    this._update();
                 }
-
-                if (result instanceof Array && result.length > 0 && result[0] instanceof Vidyano.QueryResultItem)
-                    return this.attribute.changeReference(result).then(() => this._update());
 
                 if (result === "AddNewReference")
                     this._addNewReference();
-            }).catch(() => {
+            }
+            finally {
                 this.filter = this.attribute.value;
-                this._browseReferenceDone();
-            });
-        }
-
-        private _browseReferenceDone() {
-            this._browsing = false;
+            }
         }
 
         private _addNewReference(e?: Event) {
             this.attribute.addNewReference();
         }
 
-        private _clearReference(e: Event) {
-            this.attribute.changeReference([]).then(() => this._update());
+        private async _clearReference(e: Event) {
+            await this.attribute.changeReference([]);
+            this._update();
         }
 
         private _update() {
@@ -174,18 +168,20 @@ namespace Vidyano.WebComponents.Attributes {
             selectInPlace.open();
         }
 
-        private _open(e: Event) {
+        private async _open(e: Event) {
             if (this.attribute.parent.isNew || !this.attribute.lookup.canRead)
                 return;
 
-            this.attribute.getPersistentObject().then(po => {
+            e.preventDefault();
+
+            try {
+                const po = await this.attribute.getPersistentObject();
                 if (po)
                     this.attribute.service.hooks.onOpen(po, false, !!po.parent);
-            }).catch(e => {
+            }
+            catch (e) {
                 this.attribute.parent.setNotification(e, Vidyano.NotificationType.Error);
-            });
-
-            e.preventDefault();
+            }
         }
 
         private _computeTarget(attribute: Vidyano.PersistentObjectAttribute, href: string): string {

@@ -76,7 +76,9 @@ namespace Vidyano.WebComponents {
             this._setHasOverflow(this._overflownChildren.toArray().some(child => child.offsetTop > 0));
         }
 
-        private _popup(e: Event) {
+        private async _popup(e: Event) {
+            e.stopPropagation();
+
             const children = this._getChildren();
             children.forEach(child => {
                 if (child.offsetTop > 0)
@@ -86,16 +88,14 @@ namespace Vidyano.WebComponents {
             Polymer.dom(this).flush();
 
             const popup = <WebComponents.Popup><any>this.$["overflowPopup"];
-            popup.popup().then(() => {
-                children.forEach(child => {
-                    Polymer.dom(child).removeAttribute("overflow");
-                });
+            await popup.popup();
 
-                Polymer.dom(this).flush();
-                this._setHasOverflow(children.toArray().some(child => child.offsetTop > 0));
+            children.forEach(child => {
+                Polymer.dom(child).removeAttribute("overflow");
             });
 
-            e.stopPropagation();
+            Polymer.dom(this).flush();
+            this._setHasOverflow(children.toArray().some(child => child.offsetTop > 0));
         }
     }
 }

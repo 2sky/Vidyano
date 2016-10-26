@@ -152,42 +152,45 @@ namespace Vidyano.WebComponents.Attributes {
             });
         }
 
-        private _add(e: TapEvent) {
-            const postAdd = (po: Vidyano.PersistentObject) => {
-                this.push("attribute.objects", po);
-                po.parent = this.attribute.parent;
-
-                if (this.attribute.lookupAttribute && po.attributes[this.attribute.lookupAttribute]) {
-                    const lookupAttribute = <Vidyano.PersistentObjectAttributeWithReference>po.attributes[this.attribute.lookupAttribute];
-                    lookupAttribute.lookup.search();
-
-                    this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(lookupAttribute.lookup)).then(result => {
-                        if (!result) {
-                            this.pop("attribute.objects");
-                            return;
+        private async _add(e: TapEvent) {
+            try {
+                const po = await this.attribute.newObject();
+                if (po.stateBehavior.indexOf("OpenAsDialog") < 0)
+                    await this.__add(po);
+                else {
+                    await this.app.importComponent("PersistentObjectDialog");
+                    this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, {
+                        saveLabel: this.app.service.actionDefinitions.get("AddReference").displayName,
+                        save: (po, close) => {
+                            this.__add(po);
+                            close();
                         }
-
-                        return lookupAttribute.changeReference(result).then();
-                    });
+                    }));
                 }
+            }
+            catch (e) {
+                this.attribute.parent.setNotification(e);
+            }
+        }
 
+        private async __add(po: Vidyano.PersistentObject) {
+            this.push("attribute.objects", po);
+            po.parent = this.attribute.parent;
+
+            if (this.attribute.lookupAttribute && po.attributes[this.attribute.lookupAttribute]) {
+                const lookupAttribute = <Vidyano.PersistentObjectAttributeWithReference>po.attributes[this.attribute.lookupAttribute];
+                lookupAttribute.lookup.search();
+
+                const result = await this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(lookupAttribute.lookup));
+                if (result)
+                    await lookupAttribute.changeReference(result);
+                else
+                    this.pop("attribute.objects");
+            }
+            else {
                 this.attribute.isValueChanged = true;
                 this.attribute.parent.triggerDirty();
-            };
-
-            this.attribute.newObject().then(po => {
-                return po.stateBehavior.indexOf("OpenAsDialog") < 0 ?
-                    Promise.resolve(po).then(po => postAdd(po)) :
-                    this.app.importComponent("PersistentObjectDialog").then(() => {
-                        this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, {
-                            saveLabel: this.app.service.actionDefinitions.get("AddReference").displayName,
-                            save: (po, close) => {
-                                postAdd(po);
-                                close();
-                            }
-                        }));
-                    });
-            }).catch(e => this.attribute.parent.setNotification(e));
+            }
         }
 
         private _delete(e: TapEvent) {

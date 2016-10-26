@@ -1,8 +1,6 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
-    let _persistentObjectTabComponentLoader: Promise<any>;
-
     @WebComponent.register({
         properties: {
             tab: Object,
@@ -34,7 +32,7 @@ namespace Vidyano.WebComponents {
         private _setLoading: (loading: boolean) => void;
         private _setTemplated: (templated: boolean) => void;
 
-        private _renderTab(tab: Vidyano.PersistentObjectTab, isAttached: boolean) {
+        private async _renderTab(tab: Vidyano.PersistentObjectTab, isAttached: boolean) {
             if (!isAttached || this._renderedTab === tab)
                 return;
 
@@ -59,37 +57,33 @@ namespace Vidyano.WebComponents {
             }
             else {
                 if (tab instanceof Vidyano.PersistentObjectQueryTab) {
-                    this.app.importComponent("QueryItemsPresenter").then(() => {
-                        const itemPresenter = new QueryItemsPresenter();
-                        itemPresenter.className = childClassName;
-                        itemPresenter.query = (<Vidyano.PersistentObjectQueryTab>tab).query;
-                        if (itemPresenter.query.autoQuery && !itemPresenter.query.hasSearched)
-                            itemPresenter.query.search();
+                    await this.app.importComponent("QueryItemsPresenter");
+                    const itemPresenter = new QueryItemsPresenter();
+                    itemPresenter.className = childClassName;
+                    itemPresenter.query = (<Vidyano.PersistentObjectQueryTab>tab).query;
+                    if (itemPresenter.query.autoQuery && !itemPresenter.query.hasSearched)
+                        itemPresenter.query.search();
 
-                        Polymer.dom(this).appendChild(itemPresenter);
+                    Polymer.dom(this).appendChild(itemPresenter);
 
-                        this._setLoading(false);
-                    });
+                    this._setLoading(false);
                 }
                 else if (tab instanceof Vidyano.PersistentObjectAttributeTab) {
-                    if (!_persistentObjectTabComponentLoader)
-                        _persistentObjectTabComponentLoader = this.app.importComponent("PersistentObjectTab");
+                    await this.app.importComponent("PersistentObjectTab");
 
-                    _persistentObjectTabComponentLoader.then(() => {
-                        if (tab !== this.tab)
-                            return;
+                    if (tab !== this.tab)
+                        return;
 
-                        this._tabAttributes = (<Vidyano.PersistentObjectAttributeTab>tab).attributes.slice(0).filter(a => a.isVisible);
+                    this._tabAttributes = (<Vidyano.PersistentObjectAttributeTab>tab).attributes.slice(0).filter(a => a.isVisible);
 
-                        const attributeTab = new WebComponents.PersistentObjectTab();
-                        attributeTab.className = childClassName;
-                        attributeTab.tab = <Vidyano.PersistentObjectAttributeTab>tab;
+                    const attributeTab = new WebComponents.PersistentObjectTab();
+                    attributeTab.className = childClassName;
+                    attributeTab.tab = <Vidyano.PersistentObjectAttributeTab>tab;
 
-                        Polymer.dom(this).appendChild(attributeTab);
+                    Polymer.dom(this).appendChild(attributeTab);
 
-                        if (this._tabAttributes.length === 0)
-                            this._setLoading(false);
-                    });
+                    if (this._tabAttributes.length === 0)
+                        this._setLoading(false);
                 }
             }
         }

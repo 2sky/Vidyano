@@ -90,15 +90,14 @@ namespace Vidyano.WebComponents {
         }
 
         private _next(e: TapEvent) {
-            this.persistentObject.queueWork(() => {
-                return this.persistentObject.service.executeAction("Wizard.NextStep", this.persistentObject, undefined, undefined, { CurrentTab: this.currentTab.key, Attributes: this.currentTab.attributes.map(a => a.name).join("\n") }).then(result => {
-                    this.persistentObject.refreshFromResult(result);
+            this.persistentObject.queueWork(async () => {
+                const result = await this.persistentObject.service.executeAction("Wizard.NextStep", this.persistentObject, undefined, undefined, { CurrentTab: this.currentTab.key, Attributes: this.currentTab.attributes.map(a => a.name).join("\n") });
+                this.persistentObject.refreshFromResult(result);
 
-                    if (this.currentTab.attributes.some(attr => !!attr.validationError))
-                        return;
+                if (this.currentTab.attributes.some(attr => !!attr.validationError))
+                    return;
 
-                    this._setCurrentTab(this.currentTab.parent.tabs[this.currentTab.parent.tabs.indexOf(this.currentTab) + 1]);
-                }).catch(Vidyano.noop);
+                this._setCurrentTab(this.currentTab.parent.tabs[this.currentTab.parent.tabs.indexOf(this.currentTab) + 1]);
             });
         }
 
@@ -113,11 +112,9 @@ namespace Vidyano.WebComponents {
             return attributes && attributes.some(attr => attr.isRequired && (attr.value == null || (attr.rules && attr.rules.contains("NotEmpty") && attr.value === "")));
         }
 
-        private _finish() {
-            this.persistentObject.save().then(success => {
-                if (success)
-                    this.close(this.persistentObject);
-            }).catch(Vidyano.noop);
+        private async _finish() {
+            if (await this.persistentObject.save())
+                this.close(this.persistentObject);
         }
 
         private _onCaptureTab() {

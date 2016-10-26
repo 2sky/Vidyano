@@ -49,28 +49,30 @@
             persistentObject.beginEdit();
         }
 
-        private _save() {
+        private async _save() {
             if (this._options.save)
                 this._options.save(this.persistentObject, () => this.close(this.persistentObject));
             else {
                 const wasNew = this.persistentObject.isNew;
-                this.persistentObject.save().then(() => {
-                    if (StringEx.isNullOrWhiteSpace(this.persistentObject.notification) || this.persistentObject.notificationType !== NotificationType.Error) {
-                        if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") !== -1) {
-                            this.persistentObject.queueWork(() => this.app.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId)).then(po2 => {
-                                this.app.service.hooks.onOpen(po2, true);
-                                this.close(this.persistentObject);
-                            }, e => {
-                                this.close(this.persistentObject);
-                                const owner: ServiceObjectWithActions = this.persistentObject.ownerQuery || this.persistentObject.parent;
-                                if (!!owner)
-                                    owner.setNotification(e);
-                            });
-                        }
-                        else
+                await this.persistentObject.save();
+
+                if (StringEx.isNullOrWhiteSpace(this.persistentObject.notification) || this.persistentObject.notificationType !== NotificationType.Error) {
+                    if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") !== -1) {
+                        try {
+                            const po2 = await this.persistentObject.queueWork(() => this.app.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId));
+                            this.app.service.hooks.onOpen(po2, true);
                             this.close(this.persistentObject);
+                        }
+                        catch (e) {
+                            this.close(this.persistentObject);
+                            const owner: ServiceObjectWithActions = this.persistentObject.ownerQuery || this.persistentObject.parent;
+                            if (!!owner)
+                                owner.setNotification(e);
+                        }
                     }
-                }).catch(Vidyano.noop);
+                    else
+                        this.close(this.persistentObject);
+                }
             }
         }
 

@@ -5,8 +5,6 @@ namespace Vidyano.WebComponents {
         private _sizeTracker: Vidyano.WebComponents.SizeTracker;
         private _translatePosition: IPosition;
         private _resolve: Function;
-        private _reject: Function;
-        private canceled: boolean;
         private opened: boolean;
         noCancelOnOutsideClick: boolean;
         noCancelOnEscKey: boolean;
@@ -41,9 +39,8 @@ namespace Vidyano.WebComponents {
             if (header)
                 Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));
 
-            return new Promise((resolve, reject) => {
+            return new Promise(resolve => {
                 this._resolve = resolve;
-                this._reject = reject;
 
                 Polymer["IronOverlayBehaviorImpl"].open.apply(this);
             }).then(result => {
@@ -64,9 +61,8 @@ namespace Vidyano.WebComponents {
             Polymer["IronOverlayBehaviorImpl"].close.apply(this);
         }
 
-        private _onClosed(canceled: boolean) {
-            if (canceled)
-                this._reject();
+        private _onClosed() {
+            this._resolve();
         }
 
         private _dialogSizeChanged(e: CustomEvent, details: ISize) {

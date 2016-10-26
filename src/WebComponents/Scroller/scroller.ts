@@ -180,32 +180,27 @@
             return this.$["wrapper"];
         }
 
-        private _initializeZenscroll(): Promise<any> {
+        private async _initializeZenscroll(): Promise<any> {
             if (!this._zenscroll) {
-                return new Promise(resolve => this.importHref(this.resolveUrl("zenscroller.html"), () => {
+                await new Promise(resolve => this.importHref(this.resolveUrl("zenscroller.html"), () => {
                     this._zenscroll = zenscroll.createScroller(this.$["wrapper"], 500, 0);
-                    resolve(true);
                 }));
             }
-
-            return Promise.resolve(true);
         }
 
-        scrollToTop(animated?: boolean) {
+        async scrollToTop(animated?: boolean) {
             if (animated) {
-                this._initializeZenscroll().then(() => {
-                    this._zenscroll.toY(0);
-                });
+                await this._initializeZenscroll();
+                this._zenscroll.toY(0);
             }
             else
                 this.$["wrapper"].scrollTop = 0;
         }
 
-        scrollToBottom(animated?: boolean) {
+        async scrollToBottom(animated?: boolean) {
             if (animated) {
-                this._initializeZenscroll().then(() => {
-                    this._zenscroll.toY(this.innerHeight);
-                });
+                await this._initializeZenscroll();
+                this._zenscroll.toY(this.innerHeight);
             }
             else
                 this.$["wrapper"].scrollTop = this.innerHeight;

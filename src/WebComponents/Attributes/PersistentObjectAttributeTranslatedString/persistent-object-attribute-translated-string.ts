@@ -79,25 +79,27 @@
             return strings.length > 1;
         }
 
-        private _showLanguagesDialog() {
-            this.app.showDialog(new Vidyano.WebComponents.Attributes.PersistentObjectAttributeTranslatedStringDialog(this.attribute.label, this.strings.slice(), this.multiline, this.readOnly)).then(result => {
-                if (!result || this.readOnly)
-                    return;
+        private async _showLanguagesDialog() {
+            if (this.readOnly)
+                return;
 
-                const newData = {};
-                result.forEach(s => {
-                    newData[s.key] = this.strings[s.key] = s.value;
-                    if (s.key === this._defaultLanguage)
-                        this.attribute.value = s.value;
-                });
+            const result = await this.app.showDialog(new Vidyano.WebComponents.Attributes.PersistentObjectAttributeTranslatedStringDialog(this.attribute.label, this.strings.slice(), this.multiline, this.readOnly));
+            if (!result)
+                return;
 
-                this.attribute.options[0] = JSON.stringify(newData);
-
-                this.attribute.isValueChanged = true;
-                this.attribute.parent.triggerDirty();
-
-                this.attribute.setValue(this.value = this.attribute.value, true).catch(Vidyano.noop);
+            const newData = {};
+            result.forEach(s => {
+                newData[s.key] = this.strings[s.key] = s.value;
+                if (s.key === this._defaultLanguage)
+                    this.attribute.value = s.value;
             });
+
+            this.attribute.options[0] = JSON.stringify(newData);
+
+            this.attribute.isValueChanged = true;
+            this.attribute.parent.triggerDirty();
+
+            await this.attribute.setValue(this.value = this.attribute.value, true);
         }
     }
 
