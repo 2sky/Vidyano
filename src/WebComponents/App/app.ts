@@ -780,6 +780,9 @@ namespace Vidyano.WebComponents {
             if (!this._keybindingRegistrations[e.detail.combo])
                 return;
 
+            if (document.activeElement instanceof HTMLInputElement && !(e.detail.keyboardEvent.ctrlKey || e.detail.keyboardEvent.shiftKey || e.detail.keyboardEvent.altKey) && e.detail.key !== "esc")
+                return;
+
             let combo = e.detail.combo;
             if (e.detail.keyboardEvent.ctrlKey && combo.indexOf("ctrl") < 0)
                 combo = "ctrl+" + combo;
