@@ -24,6 +24,18 @@
         vi-scroller[vertical][hovering] + #resizer {
             width: calc(var(--theme-h5) / 2);
         }
+
+        #add {
+            height: var(--theme-h2);
+            line-height: var(--theme-h2);
+            padding-left: calc(var(--theme-h4) * 2);
+            cursor: pointer;
+            font-style: italic;
+
+            &:hover {
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+        }
     }
 
     &[collapsed] {

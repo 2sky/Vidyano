@@ -151,6 +151,45 @@ namespace Vidyano.WebComponents {
                 this.app.isTracking = false;
             }
         }
+
+        private _computeIsFirstRunProgramUnit(application: Vidyano.Application, programUnit: Vidyano.ProgramUnit): boolean {
+            if (application && application.programUnits.length === 2) {
+                if (application.programUnits[0] === programUnit && programUnit.name === "Home" && programUnit.items.length === 0)
+                    return application.programUnits[1].path.contains("e683de37-2b39-45e9-9522-ef69c3f0287f");
+            }
+
+            return false;
+        }
+
+        private _add(e: TapEvent) {
+            const routes = JSON.parse(this.app.service.application.getAttributeValue("Routes"));
+            if (Object.keys(routes.persistentObjects).length === 0) {
+                this.app.showMessageDialog({
+                    title: "Add menu item",
+                    message: "Your application contains no persistent objects.\n\nFor more information [Getting Started](https://vidyano.com/gettingstarted)",
+                    actions: [this.translateMessage("OK")],
+                    actionTypes: ["Danger"],
+                    rich: true
+                });
+            }
+            else {
+                let query: Vidyano.Query;
+                Promise.all([this.app.service.getQuery("5a4ed5c7-b843-4a1b-88f7-14bd1747458b").then(q => query = q), this.app.importComponent("SelectReferenceDialog")]).then(() => {
+                    if (!query)
+                        return;
+
+                    const dialog = new Vidyano.WebComponents.SelectReferenceDialog(query);
+                    this.app.showDialog(dialog).then(() => {
+                        if (!query.selectedItems || query.selectedItems.length === 0)
+                            return;
+
+                        this.app.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: e.model.programUnit.id }).then(() => {
+                            document.location.reload();
+                        });
+                    });
+                });
+            }
+        }
     }
 
     @WebComponent.register({

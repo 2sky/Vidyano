@@ -28,6 +28,9 @@
                 <vi-scroller class="flex programUnits" no-horizontal>
                     <template is="dom-repeat" items="[[programUnits]]" as="programUnit">
                         <vi-menu-item class="program-unit" item="[[programUnit]]" filter="[[filter]]" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]" items="[[programUnit.items]]"></vi-menu-item>
+                        <template is="dom-if" if="[[_computeIsFirstRunProgramUnit(app.service.application, programUnit)]]">
+                            <div id="add" on-tap="_add">+ Add menu item</div>
+                        </template>
                     </template>
                 </vi-scroller>
             </div>
