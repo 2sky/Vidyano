@@ -183,7 +183,7 @@ namespace Vidyano.WebComponents {
                         if (!query.selectedItems || query.selectedItems.length === 0)
                             return;
 
-                        this.app.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: e.model.programUnit.id }).then(() => {
+                        this.app.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: this.app.service.application.programUnits[0].id }).then(() => {
                             document.location.reload();
                         });
                     });
