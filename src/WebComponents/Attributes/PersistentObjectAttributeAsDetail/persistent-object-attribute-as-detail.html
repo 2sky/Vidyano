@@ -9,7 +9,14 @@
         <template is="dom-repeat" items="[[columns]]" as="column" filter="_isColumnVisible">
             <div class="column" data-column$="[[column.name]]">
                 <template is="dom-if" if="[[editing]]">
-                    <vi-persistent-object-attribute-presenter no-label attribute="[[_getAttributeForColumn(serviceObject, column)]]"></vi-persistent-object-attribute-presenter>
+                    <template is="dom-if" if="[[_isPresenterAvailable(fullEdit, softEdit)]]">
+                        <vi-persistent-object-attribute-presenter no-label attribute="[[_getAttributeForColumn(serviceObject, column)]]" soft-edit-only$="[[_isSoftEditOnly(fullEdit, softEdit)]]"></vi-persistent-object-attribute-presenter>
+                    </template>
+                    <template is="dom-if" if="[[!fullEdit]]">
+                        <div pre-edit on-tap="_setFullEdit">
+                            <span>[[_getDisplayValue(serviceObject, column)]]</span>
+                        </div>
+                    </template>
                 </template>
                 <template is="dom-if" if="[[!editing]]">
                     <span>[[_getDisplayValue(serviceObject, column)]]</span>
@@ -35,7 +42,7 @@
                         <vi-size-tracker trigger-zero size="{{size}}"></vi-size-tracker>
                         <div id="rows">
                             <template is="dom-repeat" items="[[attribute.objects]]" as="obj">
-                                <vi-persistent-object-attribute-as-detail-row class="row" service-object="[[obj]]" columns="[[attribute.details.columns]]" editing="[[editing]]" hidden$="[[obj.isDeleted]]"></vi-persistent-object-attribute-as-detail-row>
+                                <vi-persistent-object-attribute-as-detail-row class="row" service-object="[[obj]]" columns="[[attribute.details.columns]]" editing="[[editing]]" hidden$="[[obj.isDeleted]]" full-edit="[[_isActiveObject(activeObject, obj)]]" on-full-edit="_setActiveObject"></vi-persistent-object-attribute-as-detail-row>
                             </template>
                         </div>
                         <template is="dom-if" if="[[newAction]]">

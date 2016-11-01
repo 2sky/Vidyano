@@ -20,16 +20,31 @@
         > vi-persistent-object-attribute-presenter {
             height: var(--theme-h2);
             line-height: var(--theme-h2);
+
+            &[soft-edit-only] {
+                display: none !important;
+            }
         }
 
-        > span {
+        > [pre-edit] {
+            height: var(--theme-h2);
+            line-height: calc(var(--theme-h2) - 2px);
+            border: 1px solid var(--theme-light-border);
+            box-sizing: border-box;
+        }
+
+        span {
             display: block;
-            margin: 0 4px;
+            margin: 0 var(--theme-h5);
             overflow: hidden;
             -ms-text-overflow: ellipsis;
             -o-text-overflow: ellipsis;
             text-overflow: ellipsis;
         }
+    }
+
+    &:not([full-edit]) {
+        cursor: pointer;
     }
 }
 
