@@ -43,7 +43,7 @@
         }
     }
 
-    &:not([full-edit]) {
+    &:not([full-edit]):not([read-only]) {
         cursor: pointer;
     }
 }
