@@ -14,7 +14,7 @@
                     </template>
                     <template is="dom-if" if="[[!fullEdit]]">
                         <div pre-edit on-tap="_setFullEdit">
-                            <span>[[_getDisplayValue(serviceObject, column)]]</span>
+                            <span>[[_getDisplayValue(serviceObject, column, fullEdit)]]</span>
                         </div>
                     </template>
                 </template>

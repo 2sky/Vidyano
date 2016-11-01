@@ -160,6 +160,7 @@ namespace Vidyano.WebComponents.Attributes {
         private _add(e: TapEvent) {
             const postAdd = (po: Vidyano.PersistentObject) => {
                 this.push("attribute.objects", po);
+                this.set("activeObject", po);
                 po.parent = this.attribute.parent;
 
                 if (this.attribute.lookupAttribute && po.attributes[this.attribute.lookupAttribute]) {
@@ -236,6 +237,9 @@ namespace Vidyano.WebComponents.Attributes {
         },
         observers: [
             "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached)"
+        ],
+        forwardObservers: [
+            "serviceObject.attributes.*.displayValue"
         ]
     })
     export class PersistentObjectAttributeAsDetailRow extends WebComponents.WebComponent {
