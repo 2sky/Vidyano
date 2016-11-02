@@ -55,7 +55,7 @@
             }
         },
         observers: [
-            "_render(cells, currentDate)"
+            "_render(cells, currentDate, deferredCellsUpdate)"
         ],
         listeners: {
             "tap": "_catchTap"
@@ -117,7 +117,10 @@
             }
         }
 
-        private _render(cells: IDatePickerCell[], currentDate: moment.Moment) {
+        private _render(cells: IDatePickerCell[], currentDate: moment.Moment, deferredCellsUpdate: boolean) {
+            if (deferredCellsUpdate)
+                return;
+
             const currentDateMoment = currentDate.clone();
 
             if (this.zoom === "days") {
