@@ -42,7 +42,7 @@
                         <vi-size-tracker trigger-zero size="{{size}}"></vi-size-tracker>
                         <div id="rows">
                             <template is="dom-repeat" items="[[attribute.objects]]" as="obj">
-                                <vi-persistent-object-attribute-as-detail-row class="row" service-object="[[obj]]" columns="[[attribute.details.columns]]" editing="[[editing]]" hidden$="[[obj.isDeleted]]" full-edit="[[_isActiveObject(activeObject, obj)]]" on-full-edit="_setActiveObject" read-only$="[[readOnly]]"></vi-persistent-object-attribute-as-detail-row>
+                                <vi-persistent-object-attribute-as-detail-row class="row" service-object="[[obj]]" columns="[[attribute.details.columns]]" editing="[[editing]]" hidden$="[[obj.isDeleted]]" full-edit="[[_isActiveObject(activeObject, obj)]]" on-full-edit="_setActiveObject" read-only$="[[readOnly]]" frozen$="[[attribute.parent.isFrozen]]"></vi-persistent-object-attribute-as-detail-row>
                             </template>
                         </div>
                         <template is="dom-if" if="[[newAction]]">
