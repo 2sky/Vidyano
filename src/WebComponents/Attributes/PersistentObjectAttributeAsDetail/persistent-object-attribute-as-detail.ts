@@ -34,6 +34,10 @@ namespace Vidyano.WebComponents.Attributes {
                 reflectToAttribute: true,
                 value: true,
                 readOnly: true
+            },
+            activeObject: {
+                type: Object,
+                value: null
             }
         },
         observers: [
@@ -47,6 +51,7 @@ namespace Vidyano.WebComponents.Attributes {
     export class PersistentObjectAttributeAsDetail extends WebComponents.Attributes.PersistentObjectAttribute {
         private _inlineAddHeight: number;
         private _lastComputedWidths: number;
+        private _initialActiveObjectSet: boolean;
         attribute: Vidyano.PersistentObjectAttributeAsDetail;
         newAction: Vidyano.Action;
         newActionPinned: boolean;
@@ -175,6 +180,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         private async __add(po: Vidyano.PersistentObject) {
             this.push("attribute.objects", po);
+            this.set("activeObject", po);
             po.parent = this.attribute.parent;
 
             if (this.attribute.lookupAttribute && po.attributes[this.attribute.lookupAttribute]) {
@@ -203,19 +209,46 @@ namespace Vidyano.WebComponents.Attributes {
             this.attribute.isValueChanged = true;
             this.attribute.parent.triggerDirty();
         }
+
+        private _isActiveObject(activeObject: Vidyano.PersistentObject, obj: Vidyano.PersistentObject): boolean {
+            return activeObject === obj;
+        }
+
+        private _setActiveObject(e: TapEvent) {
+            if (!this.readOnly)
+                this.set("activeObject", e.model.obj);
+
+            e.stopPropagation();
+        }
     }
 
     @WebComponent.register({
         properties: {
             serviceObject: Object,
             columns: Array,
-            editing: Boolean
+            editing: Boolean,
+            fullEdit: {
+                type: Boolean,
+                value: false,
+                reflectToAttribute: true
+            },
+            softEdit: {
+                type: Boolean,
+                computed: "_computeSoftEdit(serviceObject)",
+                value: false
+            }
         },
         observers: [
             "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached)"
+        ],
+        forwardObservers: [
+            "serviceObject.attributes.*.displayValue"
         ]
     })
     export class PersistentObjectAttributeAsDetailRow extends WebComponents.WebComponent {
+        private fullEdit: boolean;
+        serviceObject: Vidyano.PersistentObject;
+
         private _isColumnVisible(column: QueryColumn) {
             return !column.isHidden && column.width !== "0";
         }
@@ -232,6 +265,31 @@ namespace Vidyano.WebComponents.Attributes {
         private _scrollNewDetailRowIntoView(serviceObject: Vidyano.PersistentObject, columns: Vidyano.QueryColumn[], editing: boolean, isAttached: boolean) {
             if (editing && isAttached && !!serviceObject && serviceObject.isNew && !!columns)
                 this.scrollIntoView(false);
+        }
+
+        private _computeSoftEdit(serviceObject: Vidyano.PersistentObject): boolean {
+            return serviceObject && serviceObject.ownerDetailAttribute.objects[0] === serviceObject;
+        }
+
+        private _isPresenterAvailable(fullEdit: boolean, softEdit: boolean): boolean {
+            return fullEdit || softEdit;
+        }
+
+        private _isSoftEditOnly(fullEdit: boolean, softEdit: boolean): boolean {
+            return !fullEdit && softEdit;
+        }
+
+        private _setFullEdit(e: TapEvent) {
+            this.fire("full-edit", null);
+            Polymer.dom(this).flush();
+
+            const attribute = this._getAttributeForColumn(this.serviceObject, e.model.column);
+            const presenters = Enumerable.from(Polymer.dom(this.root).querySelectorAll("vi-persistent-object-attribute-presenter"));
+            const presenter = <PersistentObjectAttributePresenter>presenters.firstOrDefault((p: PersistentObjectAttributePresenter) => p.attribute === attribute);
+            if (!presenter)
+                return;
+
+            presenter.queueFocus();
         }
     }
 }

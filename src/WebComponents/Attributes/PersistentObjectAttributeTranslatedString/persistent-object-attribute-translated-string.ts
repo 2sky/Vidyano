@@ -20,7 +20,7 @@
             },
             canShowDialog: {
                 type: Boolean,
-                computed: "_computeCanShowDialog(strings)"
+                computed: "_computeCanShowDialog(strings, multiline)"
             }
         }
     })
@@ -75,8 +75,8 @@
             return attribute && attribute.getTypeHint("MultiLine") === "True";
         }
 
-        private _computeCanShowDialog(strings: ITranslatedString[]) {
-            return strings.length > 1;
+        private _computeCanShowDialog(strings: ITranslatedString[], multiline: boolean): boolean {
+            return strings.length > 1 || multiline;
         }
 
         private async _showLanguagesDialog() {

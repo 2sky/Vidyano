@@ -765,6 +765,9 @@ namespace Vidyano.WebComponents {
             if (!this._keybindingRegistrations[e.detail.combo])
                 return;
 
+            if (document.activeElement instanceof HTMLInputElement && !(e.detail.keyboardEvent.ctrlKey || e.detail.keyboardEvent.shiftKey || e.detail.keyboardEvent.altKey) && e.detail.key !== "esc")
+                return;
+
             let combo = e.detail.combo;
             if (e.detail.keyboardEvent.ctrlKey && combo.indexOf("ctrl") < 0)
                 combo = "ctrl+" + combo;
@@ -1104,11 +1107,11 @@ namespace Vidyano.WebComponents {
         }
 
         onRedirectToSignIn(keepUrl: boolean) {
-            this.app.changePath("SignIn" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path)).replace(/\./g, "%2E") : ""), true);
+            this.app.changePath("SignIn" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path)).replace(/\./g, "%2E").replace("SignIn", "") : ""), true);
         }
 
         onRedirectToSignOut(keepUrl: boolean) {
-            this.app.changePath("SignOut" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path)).replace(/\./g, "%2E") : ""), true);
+            this.app.changePath("SignOut" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path)).replace(/\./g, "%2E").replace("SignIn", "") : ""), true);
         }
 
         onMessageDialog(title: string, message: string, rich: boolean, ...actions: string[]): Promise<number> {

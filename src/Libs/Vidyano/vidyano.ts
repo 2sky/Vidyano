@@ -5064,9 +5064,12 @@ namespace Vidyano {
             this._globalSearchId = this.getAttributeValue("GlobalSearchId");
             this._analyticsKey = this.getAttributeValue("AnalyticsKey");
             this._routes = JSON.parse(this.getAttributeValue("Routes"));
+
             const puRoutes = "^((" + Object.keys(this._routes.programUnits).join("|") + ")/)?";
-            this._poRe = new RegExp(puRoutes + "(" + Object.keys(this._routes.persistentObjects).join("|") + ")(/.+)?$");
-            this._queryRe = new RegExp(puRoutes + "(" + Object.keys(this._routes.queries).join("|") + ")$");
+            const poTypes = Object.keys(this._routes.persistentObjects);
+            this._poRe = poTypes.length === 0 ? /$ ^/ : new RegExp(puRoutes + "(" + poTypes.join("|") + ")(/.+)?$");
+            const queryNames = Object.keys(this._routes.queries);
+            this._queryRe = queryNames.length === 0 ? /$ ^/ : new RegExp(puRoutes + "(" + queryNames.join("|") + ")$");
 
             const userSettings = this.getAttributeValue("UserSettings");
             this._userSettings = JSON.parse(StringEx.isNullOrEmpty(userSettings) ? (localStorage["UserSettings"] || "{}") : userSettings);
