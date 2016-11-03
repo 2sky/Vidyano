@@ -48,7 +48,6 @@
 
     &[has-error] {
         .box {
-            @include relative();
             border-color: var(--theme-color-error) !important;
             overflow: hidden;
 
