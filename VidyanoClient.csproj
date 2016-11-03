@@ -10,6 +10,7 @@
     <RootNamespace>VidyanoClient</RootNamespace>
     <AssemblyName>VidyanoClient</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TypeScriptExperimentalDecorators>true</TypeScriptExperimentalDecorators>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -51,6 +52,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bower.json" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="tsconfig.json" />
     <None Include="tslint.json" />
