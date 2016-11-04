@@ -5,6 +5,7 @@
         properties: {
             type: String,
             name: String,
+            noLabel: Boolean,
             parentId: String,
             parentObjectId: String,
             height: {
@@ -24,6 +25,7 @@
         private width: string;
         type: string;
         name: string;
+        noLabel: boolean;
         parentId: string;
         parentObjectId: string;
         component: string;
