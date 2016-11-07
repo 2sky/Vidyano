@@ -1,0 +1,9 @@
+﻿@import "../vars.scss";
+
+:host {
+    @include layout-horizontal();
+
+    vi-error {
+        margin: calc(var(--theme-h1) * 2) 0;
+    }
+}

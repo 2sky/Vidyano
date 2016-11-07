@@ -20,6 +20,10 @@
     "inputFile": "src/WebComponents/AppRoute/app-route.scss"
   },
   {
+    "outputFile": "src/WebComponents/AppRoutePresenter/app-route-presenter.css",
+    "inputFile": "src/WebComponents/AppRoutePresenter/app-route-presenter.scss"
+  },
+  {
     "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeAsDetail/persistent-object-attribute-as-detail-row.css",
     "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeAsDetail/persistent-object-attribute-as-detail-row.scss"
   },

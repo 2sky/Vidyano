@@ -37,24 +37,22 @@
         </template>
         <template is="dom-if" if="[[!barebone]]" restamp>
             <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
-            <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
-            <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
-            <vi-app-route route="PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
-            <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
-            <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
-            <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
-            <vi-app-route class="fit" route="SignIn(/)(:returnUrl)" allow-signed-out>
-                <vi-sign-in label="[[label]]" image="[[signInImage]]">
-                    <content select="[label='sign-in']"></content>
-                </vi-sign-in>
-            </vi-app-route>
-            <vi-app-route route="SignOut(/)(:returnUrl)" allow-signed-out>
-                <vi-sign-out></vi-sign-out>
-            </vi-app-route>
-            <vi-app-route-presenter></vi-app-route-presenter>
-        </template>
-        <template is="dom-if" if="[[routeNotFound]]">
-            <vi-error class="flex" message="[[translateMessage('NotFound', service.isSignedIn)]]"></vi-error>
+            <vi-app-route-presenter class="flex">
+                <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
+                <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
+                <vi-app-route route="PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
+                <vi-app-route class="fit" route="SignIn(/)(:returnUrl)" allow-signed-out>
+                    <vi-sign-in label="[[label]]" image="[[signInImage]]">
+                        <content select="[label='sign-in']"></content>
+                    </vi-sign-in>
+                </vi-app-route>
+                <vi-app-route route="SignOut(/)(:returnUrl)" allow-signed-out>
+                    <vi-sign-out></vi-sign-out>
+                </vi-app-route>
+            </vi-app-route-presenter>
         </template>
         <vi-app-config>
             <vi-persistent-object-attribute-config type="CommonMark" height="3"></vi-persistent-object-attribute-config>
