@@ -1126,7 +1126,7 @@ namespace Vidyano.WebComponents {
         }
 
         onRedirectToSignOut(keepUrl: boolean) {
-            this.app.changePath("SignOut" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path)).replace(/\./g, "%2E").replace("SignIn", "") : ""), true);
+            this.app.changePath("SignOut" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(decodeURIComponent(this.app.path))).replace(/\./g, "%2E").replace("SignIn", "") : ""), true);
         }
 
         onMessageDialog(title: string, message: string, rich: boolean, ...actions: string[]): Promise<number> {
