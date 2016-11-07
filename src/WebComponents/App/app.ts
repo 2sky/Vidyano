@@ -591,7 +591,7 @@ namespace Vidyano.WebComponents {
                 return;
 
             const anchorParent = this.findParent((e: HTMLElement) => e.tagName === "A" && !!(<HTMLAnchorElement>e).href, e.target as HTMLElement) as HTMLAnchorElement;
-            if (anchorParent && anchorParent.href.startsWith(Vidyano.Path.routes.root)) {
+            if (anchorParent && anchorParent.href.startsWith(Vidyano.Path.routes.root) && !anchorParent.hasAttribute("download")) {
                 if (anchorParent.hash && anchorParent.hash.startsWith("#!/"))
                     this.changePath(anchorParent.hash.substr(2));
                 else
