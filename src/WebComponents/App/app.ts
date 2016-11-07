@@ -674,7 +674,7 @@ namespace Vidyano.WebComponents {
                     } else
                         this._setCurrentRoute(null);
 
-                    this._appRoutePresenter.notFound = !this.currentRoute;
+                    this._appRoutePresenter.notFound = !!path && !this.currentRoute;
                 });
             });
         }
