@@ -1,19 +1,18 @@
 @import "../vars.scss";
 
+$color: #FAFAFA;
+$backgroundColor: $blue-grey-900;
+
 :host {
     @include layout-vertical();
     @include relative();
     @include noSelection();
-
-    --vi-menu--expand-width: 17em;
-    --vi-menu-color: #FAFAFA;
-    --vi-menu-background: $blue-grey-900;
-
-    color: var(--vi-menu-color);
-    background-color: var(--vi-menu-background);
+    color: var(--vi-menu-color, $color);
+    background-color: var(--vi-menu-background, $backgroundColor);
+    @apply(--vi-menu);
 
     &:not([collapsed]) {
-        width: var(--vi-menu--expand-width);
+        width: var(--vi-menu--expand-width, 17em);
 
         header {
             #toggleCollapse {
@@ -91,7 +90,7 @@
 
         vi-popup {
             [content] {
-                background-color: var(--vi-menu-background);
+                background-color: var(--vi-menu-background, $backgroundColor);
             }
         }
     }
@@ -114,6 +113,7 @@
             background-color: var(--theme-color-dark);
             white-space: nowrap;
             overflow: hidden;
+            @apply(--vi-menu--label);
         }
 
         #toggleCollapse {
@@ -123,6 +123,7 @@
             height: var(--theme-h1);
             width: var(--theme-h1);
             fill: rgba(255, 255, 255, 0.5);
+            @apply(--vi-menu--toggle-collapse);
 
             > vi-icon {
                 -moz-transition: transform 0.3s ease-in-out;
@@ -138,6 +139,7 @@
 
     footer {
         overflow: hidden;
+        @apply(--vi-menu--footer);
     }
 
     vi-input-search:not([collapsed]) {
