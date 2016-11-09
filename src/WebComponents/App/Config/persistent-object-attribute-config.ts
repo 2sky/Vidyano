@@ -28,7 +28,6 @@
         noLabel: boolean;
         parentId: string;
         parentObjectId: string;
-        component: string;
 
         calculateHeight(attr: Vidyano.PersistentObjectAttribute): number {
             if (!this._calculateHeight) {
