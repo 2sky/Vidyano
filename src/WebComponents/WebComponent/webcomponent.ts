@@ -396,9 +396,7 @@
     }
 
     export abstract class WebComponent extends PolymerBase {
-        private _appRequested: boolean;
         private _app: Vidyano.WebComponents.App;
-        private _appInitializedListener: EventListener;
 
         className: string;
         classList: DOMTokenList;
@@ -418,10 +416,7 @@
         }
 
         protected detached() {
-            if (this._appInitializedListener) {
-                this.app.removeEventListener("initialized", this._appInitializedListener);
-                this._appInitializedListener = null;
-            }
+            // Noop
         }
 
         computePath(relativePath: string): string {

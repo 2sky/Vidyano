@@ -1,5 +1,4 @@
 ﻿declare const unescape;
-declare const Windows;
 
 interface ISet<T> {
     add(value: T): ISet<T>;
@@ -898,32 +897,10 @@ namespace Vidyano {
         }
 
         signInExternal(providerName: string) {
-            const provider = this.providers[providerName];
-            if (provider != null) {
-                const requestUri = provider.requestUri;
-                if (typeof (Windows) !== "undefined") {
-                    const broker = Windows.Security.Authentication.Web.WebAuthenticationBroker;
-                    const redirectUri = provider.redirectUri;
-                    const authenticate = broker.authenticateAsync(Windows.Security.Authentication.Web.WebAuthenticationOptions.none, new Windows.Foundation.Uri(requestUri), new Windows.Foundation.Uri(redirectUri));
-                    authenticate.then(result => {
-                        if (result.responseStatus === Windows.Security.Authentication.Web.WebAuthenticationStatus.success) {
-                            const data = this._createData("getApplication");
-                            data.accessToken = result.responseData.split("#")[0].replace(redirectUri + "?code=", "");
-                            data.serviceProvider = "Yammer";
+            if (!this.providers[providerName] || !this.providers[providerName].requestUri)
+                throw "Provider not found or not flagged for external authentication.";
 
-                            this._getApplication(data).then(() => {
-                                if (document.location.hash !== "")
-                                    document.location.hash = "";
-                                document.location.reload();
-                            }, e => {
-                                // TODO: Toast notification!
-                            });
-                        }
-                    });
-                }
-                else
-                    document.location.href = requestUri;
-            }
+            document.location.href = this.providers[providerName].requestUri;
         }
 
         signInUsingCredentials(userName: string, password: string, code?: string): Promise<Application> {
