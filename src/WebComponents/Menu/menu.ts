@@ -179,13 +179,12 @@ namespace Vidyano.WebComponents {
                         return;
 
                     const dialog = new Vidyano.WebComponents.SelectReferenceDialog(query);
-                    this.app.showDialog(dialog).then(() => {
+                    this.app.showDialog(dialog).then(async () => {
                         if (!query.selectedItems || query.selectedItems.length === 0)
                             return;
 
-                        this.app.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: this.app.service.application.programUnits[0].id }).then(() => {
-                            document.location.reload();
-                        });
+                        await this.app.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: this.app.service.application.programUnits[0].id });
+                        document.location.reload();
                     });
                 });
             }
