@@ -6,7 +6,9 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": false,
     "inlineSourceMap": true,
-    "inlineSources": true
+    "inlineSources": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "files": [
     "src/Test/vidyano.ts",

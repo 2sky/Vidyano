@@ -16,7 +16,6 @@
     "interface-name": true,
     "jsdoc-format": true,
     "label-position": true,
-    "label-undefined": true,
     "max-line-length": [false, 140],
     "no-arg": true,
     "no-bitwise": false,
@@ -31,13 +30,11 @@
     "no-string-literal": false,
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
-    "no-unused-variable": false,
     "no-unreachable": true,
     "no-var-keyword": true,
     "no-use-before-declare": true,
     "one-line": [true,
         "check-open-brace",
-        "check-catch",
         "check-whitespace"
     ],
     "quotemark": [true, "double"],
@@ -54,10 +51,6 @@
         "catchClause": "noSpace",
         "indexSignature": "space"
       }
-    ],
-    "use-strict": [true,
-        "check-module",
-        "check-function"
     ],
     "variable-name": false,
     "whitespace": [false,
