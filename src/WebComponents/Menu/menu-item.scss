@@ -1,12 +1,15 @@
 @import "../vars.scss";
 
+$color: #FAFAFA;
+$backgroundColor: $blue-grey-900;
+
 :host {
     @include relative();
     box-sizing: border-box;
 	display: block;
 	line-height: var(--theme-h2);
-    color: var(--vi-menu-color);
-    fill: var(--vi-menu-color);
+    color: var(--vi-menu-color, $color);
+    fill: var(--vi-menu-color, $color);
     cursor: pointer;
 
     span.match {
@@ -19,7 +22,7 @@
         @include relative();
         padding-right: var(--theme-h5);
         text-decoration: none;
-        color: var(--vi-menu-color);
+        color: var(--vi-menu-color, $color);
         white-space: nowrap;
         -ms-text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
@@ -37,7 +40,7 @@
             --vi-icon-width: 1em;
             --vi-icon-height: 1em;
             margin-left: calc(var(--theme-h3) * var(--vi-menu-item-indent-level, 0));
-            fill: var(--vi-menu-color);
+            fill: var(--vi-menu-color, $color);
     		-moz-transition: transform 0.2s ease;
     		-o-transition: transform 0.2s ease;
     		-webkit-transition: transform 0.2s ease;
@@ -75,7 +78,7 @@
 
         > .title {
             font-weight: 600;
-            color: var(--vi-menu-color);
+            color: var(--vi-menu-color, $color);
             text-transform: uppercase;
 
             > vi-icon {

@@ -176,7 +176,7 @@ namespace Vidyano.WebComponents {
                 value: 25,
                 reflectToAttribute: true
             },
-            routeNotFound: {
+            profilerLoaded: {
                 type: Boolean,
                 readOnly: true,
                 value: false
@@ -248,7 +248,7 @@ namespace Vidyano.WebComponents {
     export class App extends WebComponent {
         private _cache: AppCacheEntry[] = [];
         private _nodeObserver: PolymerDomChangeObserver;
-        private _appRouteTarget: Node;
+        private _appRoutePresenter: Vidyano.WebComponents.AppRoutePresenter;
         private _initializeResolve: (app: Vidyano.Application) => void;
         private _initializeReject: (e: any) => void;
         private _initialize: Promise<Vidyano.Application> = new Promise((resolve, reject) => { this._initializeResolve = resolve; this._initializeReject = reject; });
@@ -277,7 +277,7 @@ namespace Vidyano.WebComponents {
         private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setCurrentRoute: (route: AppRoute) => void;
         private _setBarebone: (barebone: boolean) => void;
-        private _setRouteNotFound: (routeNotFound: boolean) => void;
+        private _setProfilerLoaded: (val: boolean) => void;
 
         attached() {
             super.attached();
@@ -287,21 +287,23 @@ namespace Vidyano.WebComponents {
                 this._setBarebone(!!bareboneTemplate);
                 if (this.barebone) {
                     const appRouteTargetSetter = (e: CustomEvent) => {
-                        this._appRouteTarget = e.target as Node;
+                        this._appRoutePresenter = e.target as Vidyano.WebComponents.AppRoutePresenter;
                         this._distributeAppRoutes();
 
                         this.removeEventListener("app-route-presenter-attached", appRouteTargetSetter);
-                        resolve(this._appRouteTarget);
+                        resolve(this._appRoutePresenter);
                     };
 
                     this.addEventListener("app-route-presenter-attached", appRouteTargetSetter.bind(this));
 
                     Polymer.dom(this.root).appendChild(bareboneTemplate.stamp({ app: this }).root);
                 } else {
-                    this._appRouteTarget = this.root;
+                    Polymer.dom(this).flush();
+
+                    this._appRoutePresenter = Polymer.dom(this.root).querySelector("vi-app-route-presenter") as Vidyano.WebComponents.AppRoutePresenter;
                     this._distributeAppRoutes();
 
-                    resolve(this._appRouteTarget);
+                    resolve(this._appRoutePresenter);
                 }
             }));
 
@@ -327,7 +329,7 @@ namespace Vidyano.WebComponents {
             super.detached();
 
             if (this._nodeObserver) {
-                Polymer.dom(this._appRouteTarget).unobserveNodes(this._nodeObserver);
+                Polymer.dom(this._appRoutePresenter).unobserveNodes(this._nodeObserver);
                 this._nodeObserver = null;
             }
         }
@@ -494,8 +496,8 @@ namespace Vidyano.WebComponents {
         }
 
         private _distributeAppRoutes() {
-            this._nodeObserver = Polymer.dom(this._appRouteTarget).observeNodes(this._nodesChanged.bind(this));
-            Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this._appRouteTarget).appendChild(route));
+            this._nodeObserver = Polymer.dom(this._appRoutePresenter).observeNodes(this._nodesChanged.bind(this));
+            Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this._appRoutePresenter).appendChild(route));
 
             if (this.noHistory)
                 this.changePath(this.path);
@@ -583,7 +585,7 @@ namespace Vidyano.WebComponents {
                 return;
 
             const anchorParent = this.findParent((e: HTMLElement) => e.tagName === "A" && !!(<HTMLAnchorElement>e).href, e.target as HTMLElement) as HTMLAnchorElement;
-            if (anchorParent && anchorParent.href.startsWith(Vidyano.Path.routes.root)) {
+            if (anchorParent && anchorParent.href.startsWith(Vidyano.Path.routes.root) && !anchorParent.hasAttribute("download")) {
                 if (anchorParent.hash && anchorParent.hash.startsWith("#!/"))
                     this.changePath(anchorParent.hash.substr(2));
                 else
@@ -651,32 +653,23 @@ namespace Vidyano.WebComponents {
                     return;
                 }
 
-                this._setRouteNotFound(false);
-
                 if (!!this.currentRoute && newRoute === this.currentRoute && this.currentRoute.matchesParameters(mappedPathRoute.params))
                     return;
 
-                if (this.currentRoute) {
-                    const proceed = await currentRoute.deactivate();
+                return (this.currentRoute ? currentRoute.deactivate() : Promise.resolve(true)).then(proceed => {
                     if (!proceed || currentRoute !== this.currentRoute)
                         return;
 
                     Enumerable.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
 
                     if (!!newRoute) {
-                        await newRoute.activate(mappedPathRoute.params);
+                        newRoute.activate(mappedPathRoute.params);
                         this._setCurrentRoute(newRoute);
-                    } else if (!!path && this.service.isSignedIn)
-                        this._setRouteNotFound(true);
-                }
-                else if (!!newRoute) {
-                    await newRoute.activate(mappedPathRoute.params);
-                    this._setCurrentRoute(newRoute);
-                }
-                else if (!!path && this.service.isSignedIn)
-                    this._setRouteNotFound(true);
-                else
-                    this._setCurrentRoute(null);
+                    } else
+                        this._setCurrentRoute(null);
+
+                    this._appRoutePresenter.notFound = !!path && !this.currentRoute;
+                });
             });
         }
 
@@ -1111,7 +1104,7 @@ namespace Vidyano.WebComponents {
         }
 
         onRedirectToSignOut(keepUrl: boolean) {
-            this.app.changePath("SignOut" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path)).replace(/\./g, "%2E").replace("SignIn", "") : ""), true);
+            this.app.changePath("SignOut" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(decodeURIComponent(this.app.path))).replace(/\./g, "%2E").replace("SignIn", "") : ""), true);
         }
 
         onMessageDialog(title: string, message: string, rich: boolean, ...actions: string[]): Promise<number> {

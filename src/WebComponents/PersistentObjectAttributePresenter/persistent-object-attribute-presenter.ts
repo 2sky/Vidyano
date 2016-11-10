@@ -114,6 +114,7 @@ namespace Vidyano.WebComponents {
         private _focusQueued: boolean;
         attribute: Vidyano.PersistentObjectAttribute;
         nonEdit: boolean;
+        noLabel: boolean;
         height: number;
         loading: boolean;
         disabled: boolean;
@@ -257,9 +258,11 @@ namespace Vidyano.WebComponents {
                 if (this._customTemplate)
                     Polymer.dom(focusTarget = this.$["content"]).appendChild(this._customTemplate.stamp({ attribute: attribute }).root);
                 else {
-                    const config = this.app.configuration.getAttributeConfig(attribute);
+                    const config = <PersistentObjectAttributeConfig>this.app.configuration.getAttributeConfig(attribute);
+                    this.noLabel = this.noLabel || (config && !!config.noLabel);
+
                     if (!!config && config.hasTemplate)
-                        Polymer.dom(focusTarget = this.$["content"]).appendChild(config.stamp(attribute, config.as || "attribute"));
+                        Polymer.dom(this.$["content"]).appendChild(config.stamp(attribute, config.as || "attribute"));
                     else {
                         this._renderedAttributeElement = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
                         this._renderedAttributeElement.classList.add("attribute");

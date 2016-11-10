@@ -2,6 +2,12 @@
 
 :host {
 	@include layout-horizontal();
+	overflow: hidden;
+
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
     pre {
         padding-top: var(--theme-h5);

@@ -1,0 +1,362 @@
+﻿[
+  {
+    "outputFile": "src/WebComponents/ActionBar/action-bar.css",
+    "inputFile": "src/WebComponents/ActionBar/action-bar.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/ActionButton/action-button.css",
+    "inputFile": "src/WebComponents/ActionButton/action-button.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/App/app-global.css",
+    "inputFile": "src/WebComponents/App/app-global.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/App/app.css",
+    "inputFile": "src/WebComponents/App/app.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/AppRoute/app-route.css",
+    "inputFile": "src/WebComponents/AppRoute/app-route.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/AppRoutePresenter/app-route-presenter.css",
+    "inputFile": "src/WebComponents/AppRoutePresenter/app-route-presenter.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeAsDetail/persistent-object-attribute-as-detail-row.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeAsDetail/persistent-object-attribute-as-detail-row.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeAsDetail/persistent-object-attribute-as-detail.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeAsDetail/persistent-object-attribute-as-detail.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeBinaryFile/persistent-object-attribute-binary-file.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeBinaryFile/persistent-object-attribute-binary-file.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeBoolean/persistent-object-attribute-boolean.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeBoolean/persistent-object-attribute-boolean.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeBoolean/persistent-object-attribute-nullable-boolean.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeBoolean/persistent-object-attribute-nullable-boolean.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeComboBox/persistent-object-attribute-combo-box.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeComboBox/persistent-object-attribute-combo-box.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeCommonMark/persistent-object-attribute-common-mark.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeCommonMark/persistent-object-attribute-common-mark.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeDateTime/persistent-object-attribute-date-time.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeDateTime/persistent-object-attribute-date-time.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeDropDown/persistent-object-attribute-drop-down.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeDropDown/persistent-object-attribute-drop-down.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeFlagsEnum/persistent-object-attribute-flags-enum.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeFlagsEnum/persistent-object-attribute-flags-enum.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeImage/persistent-object-attribute-image-dialog.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeImage/persistent-object-attribute-image-dialog.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeImage/persistent-object-attribute-image.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeImage/persistent-object-attribute-image.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeKeyValueList/persistent-object-attribute-key-value-list.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeKeyValueList/persistent-object-attribute-key-value-list.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeMultiLineString/persistent-object-attribute-multi-line-string.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeMultiLineString/persistent-object-attribute-multi-line-string.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeMultiString/persistent-object-attribute-multi-string-item.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeMultiString/persistent-object-attribute-multi-string-item.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeMultiString/persistent-object-attribute-multi-string.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeMultiString/persistent-object-attribute-multi-string.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeNumeric/persistent-object-attribute-numeric.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeNumeric/persistent-object-attribute-numeric.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributePassword/persistent-object-attribute-password.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributePassword/persistent-object-attribute-password.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeReference/persistent-object-attribute-reference.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeReference/persistent-object-attribute-reference.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeString/persistent-object-attribute-string.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeString/persistent-object-attribute-string.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeTranslatedString/persistent-object-attribute-translated-string-dialog.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeTranslatedString/persistent-object-attribute-translated-string-dialog.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeTranslatedString/persistent-object-attribute-translated-string.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeTranslatedString/persistent-object-attribute-translated-string.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeUser/persistent-object-attribute-user.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeUser/persistent-object-attribute-user.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Attributes/persistent-object-attribute-edit.css",
+    "inputFile": "src/WebComponents/Attributes/persistent-object-attribute-edit.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Button/button.css",
+    "inputFile": "src/WebComponents/Button/button.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/ChartSelector/chart-selector.css",
+    "inputFile": "src/WebComponents/ChartSelector/chart-selector.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Checkbox/checkbox.css",
+    "inputFile": "src/WebComponents/Checkbox/checkbox.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/CodeMirror/code-mirror.css",
+    "inputFile": "src/WebComponents/CodeMirror/code-mirror.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/DatePicker/date-picker.css",
+    "inputFile": "src/WebComponents/DatePicker/date-picker.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Error/error.css",
+    "inputFile": "src/WebComponents/Error/error.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/FileDrop/file-drop.css",
+    "inputFile": "src/WebComponents/FileDrop/file-drop.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Grid/grid.css",
+    "inputFile": "src/WebComponents/Grid/grid.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Icon/icon.css",
+    "inputFile": "src/WebComponents/Icon/icon.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/InputSearch/input-search.css",
+    "inputFile": "src/WebComponents/InputSearch/input-search.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Menu/menu-item.css",
+    "inputFile": "src/WebComponents/Menu/menu-item.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Menu/menu.css",
+    "inputFile": "src/WebComponents/Menu/menu.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/MessageDialog/message-dialog.css",
+    "inputFile": "src/WebComponents/MessageDialog/message-dialog.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Notification/notification.css",
+    "inputFile": "src/WebComponents/Notification/notification.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Overflow/overflow.css",
+    "inputFile": "src/WebComponents/Overflow/overflow.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObject/persistent-object.css",
+    "inputFile": "src/WebComponents/PersistentObject/persistent-object.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectAttributeLabel/persistent-object-attribute-label.css",
+    "inputFile": "src/WebComponents/PersistentObjectAttributeLabel/persistent-object-attribute-label.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectAttributePresenter/persistent-object-attribute-presenter.css",
+    "inputFile": "src/WebComponents/PersistentObjectAttributePresenter/persistent-object-attribute-presenter.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectDialog/persistent-object-dialog.css",
+    "inputFile": "src/WebComponents/PersistentObjectDialog/persistent-object-dialog.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectGroup/persistent-object-group.css",
+    "inputFile": "src/WebComponents/PersistentObjectGroup/persistent-object-group.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectPresenter/persistent-object-presenter.css",
+    "inputFile": "src/WebComponents/PersistentObjectPresenter/persistent-object-presenter.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectTab/persistent-object-tab.css",
+    "inputFile": "src/WebComponents/PersistentObjectTab/persistent-object-tab.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectTabBar/persistent-object-tab-bar-item.css",
+    "inputFile": "src/WebComponents/PersistentObjectTabBar/persistent-object-tab-bar-item.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectTabBar/persistent-object-tab-bar.css",
+    "inputFile": "src/WebComponents/PersistentObjectTabBar/persistent-object-tab-bar.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectTabPresenter/persistent-object-tab-presenter.css",
+    "inputFile": "src/WebComponents/PersistentObjectTabPresenter/persistent-object-tab-presenter.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectWizardDialog/persistent-object-wizard-dialog.css",
+    "inputFile": "src/WebComponents/PersistentObjectWizardDialog/persistent-object-wizard-dialog.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Popup/popup-core.css",
+    "inputFile": "src/WebComponents/Popup/popup-core.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Popup/popup.css",
+    "inputFile": "src/WebComponents/Popup/popup.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PopupMenu/popup-menu-item-separator.css",
+    "inputFile": "src/WebComponents/PopupMenu/popup-menu-item-separator.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PopupMenu/popup-menu-item-split.css",
+    "inputFile": "src/WebComponents/PopupMenu/popup-menu-item-split.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PopupMenu/popup-menu-item.css",
+    "inputFile": "src/WebComponents/PopupMenu/popup-menu-item.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PopupMenu/popup-menu.css",
+    "inputFile": "src/WebComponents/PopupMenu/popup-menu.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Profiler/profiler.css",
+    "inputFile": "src/WebComponents/Profiler/profiler.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/ProgramUnitPresenter/program-unit-presenter.css",
+    "inputFile": "src/WebComponents/ProgramUnitPresenter/program-unit-presenter.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Query/query.css",
+    "inputFile": "src/WebComponents/Query/query.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-cell-boolean.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-cell-boolean.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-cell-image.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-cell-image.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-column-filter-proxy.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-column-filter-proxy.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-column-filter.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-column-filter.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-column-footer.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-column-footer.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-column-header.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-column-header.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-configure-dialog-column.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-configure-dialog-column.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-configure-dialog.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-configure-dialog.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-filters.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-filters.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-select-all.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-select-all.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryItemsPresenter/query-items-presenter.css",
+    "inputFile": "src/WebComponents/QueryItemsPresenter/query-items-presenter.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryPresenter/query-presenter.css",
+    "inputFile": "src/WebComponents/QueryPresenter/query-presenter.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/RetryActionDialog/retry-action-dialog.css",
+    "inputFile": "src/WebComponents/RetryActionDialog/retry-action-dialog.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Scroller/scroller.css",
+    "inputFile": "src/WebComponents/Scroller/scroller.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Select/select.css",
+    "inputFile": "src/WebComponents/Select/select.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/SelectReferenceDialog/select-reference-dialog.css",
+    "inputFile": "src/WebComponents/SelectReferenceDialog/select-reference-dialog.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/SessionPresenter/session-presenter.css",
+    "inputFile": "src/WebComponents/SessionPresenter/session-presenter.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/SignIn/sign-in-provider.css",
+    "inputFile": "src/WebComponents/SignIn/sign-in-provider.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/SignIn/sign-in.css",
+    "inputFile": "src/WebComponents/SignIn/sign-in.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/SizeTracker/size-tracker.css",
+    "inputFile": "src/WebComponents/SizeTracker/size-tracker.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Spinner/spinner.css",
+    "inputFile": "src/WebComponents/Spinner/spinner.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/TimePicker/time-picker.css",
+    "inputFile": "src/WebComponents/TimePicker/time-picker.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/User/user.css",
+    "inputFile": "src/WebComponents/User/user.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Website/website.css",
+    "inputFile": "src/WebComponents/Website/website.scss"
+  }
+]
