@@ -65,7 +65,7 @@ module.exports = function(grunt) {
                 out: 'dist/Vidyano.Web2/vidyano.d.ts'
             },
             default: {
-                src: ['src/**/*.ts']
+                src: ['src/**/*.ts', 'node_modules/typescript/lib/lib.d.ts']
             }
         },
         uglify: {
