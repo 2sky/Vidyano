@@ -1,8 +1,6 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
-    let _queryComponentLoader: Promise<any>;
-
     @WebComponent.register({
         properties: {
             queryId: {
@@ -30,7 +28,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_computeQuery(queryId, app)",
+            "_updateQuery(queryId, app)",
             "_updateTitle(query.label)"
         ],
         listeners: {
@@ -74,7 +72,7 @@ namespace Vidyano.WebComponents {
             return !StringEx.isNullOrEmpty(error);
         }
 
-        private _computeQuery(queryId: string, app: Vidyano.WebComponents.App) {
+        private async _updateQuery(queryId: string, app: Vidyano.WebComponents.App) {
             this._setError(null);
 
             if ((this.query && queryId && this.query.id.toUpperCase() === queryId.toUpperCase()))
@@ -87,24 +85,27 @@ namespace Vidyano.WebComponents {
                 if (this.query)
                     this.query = null;
 
-                this._setLoading(true);
-                app.service.getQuery(this.queryId).then(query => {
+                try {
+                    this._setLoading(true);
+
+                    const query = await app.service.getQuery(this.queryId);
                     if (query.id.toUpperCase() === this.queryId.toUpperCase()) {
                         this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(query.id));
                         this.query = this._cacheEntry.query = query;
                     }
-
-                    this._setLoading(false);
-                }, e => {
+                }
+                catch (e) {
                     this._setError(e);
+                }
+                finally {
                     this._setLoading(false);
-                });
+                }
             }
             else
                 this.query = null;
         }
 
-        private _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
+        private async _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
             if (this.isAttached && oldQuery)
                 this.empty();
 
@@ -113,9 +114,7 @@ namespace Vidyano.WebComponents {
                     this.queryId = query.id;
 
                 if (!this._customTemplate) {
-                    if (!_queryComponentLoader)
-                        _queryComponentLoader = this.app.importComponent("Query");
-
+                    await this.app.importComponent("Query");
                     this._renderQuery(query);
                 }
                 else
@@ -126,16 +125,14 @@ namespace Vidyano.WebComponents {
         }
 
         private _renderQuery(query: Vidyano.Query) {
-            _queryComponentLoader.then(() => {
-                if (query !== this.query)
-                    return;
+            if (query !== this.query)
+                return;
 
-                const queryComponent = new Vidyano.WebComponents.Query();
-                queryComponent.query = query;
-                Polymer.dom(this).appendChild(queryComponent);
+            const queryComponent = new Vidyano.WebComponents.Query();
+            queryComponent.query = query;
+            Polymer.dom(this).appendChild(queryComponent);
 
-                this._setLoading(false);
-            });
+            this._setLoading(false);
         }
 
         private _updateTitle(title: string) {

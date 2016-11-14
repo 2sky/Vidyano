@@ -7,16 +7,21 @@ namespace Vidyano.WebComponents {
         }
     })
     export class SignOut extends WebComponent {
-        private _activate(e: CustomEvent) {
-            const signInUsingDefaultCredentials = !this.app.service.isUsingDefaultCredentials && !!this.app.service.defaultUserName;
-            this.app.service.signOut().then(() => {
-                if (signInUsingDefaultCredentials)
-                    return this.app.service.signInUsingDefaultCredentials().then(() => "");
-
-                return Promise.resolve(decodeURIComponent((<AppRoute>Polymer.dom(this).parentNode).parameters.returnUrl || "SignIn"));
-            }).then(path => this.app.changePath(path, true));
-
+        private async _activate(e: CustomEvent) {
             e.preventDefault();
+
+            const signInUsingDefaultCredentials = !this.app.service.isUsingDefaultCredentials && !!this.app.service.defaultUserName;
+            await this.app.service.signOut();
+
+            let path: string;
+            if (!signInUsingDefaultCredentials)
+                path = decodeURIComponent((<AppRoute>Polymer.dom(this).parentNode).parameters.returnUrl || "SignIn");
+            else {
+                await this.app.service.signInUsingDefaultCredentials();
+                path = "";
+            }
+
+            this.app.changePath(path, true);
         }
     }
 }

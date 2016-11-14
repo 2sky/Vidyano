@@ -5,7 +5,9 @@
     "removeComments": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": false,
-    "sourceMap": false
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "noUnusedLocals": true
   },
   "files": [
     "src/Test/vidyano.ts",

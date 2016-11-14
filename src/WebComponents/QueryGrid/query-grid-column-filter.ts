@@ -204,7 +204,7 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _popupOpening(e: CustomEvent) {
+        private async _popupOpening(e: CustomEvent) {
             if (!this.column.canFilter)
                 return;
 
@@ -215,7 +215,8 @@ namespace Vidyano.WebComponents {
             if (this.column.canListDistincts && (!this.column.column.distincts || this.column.distincts.isDirty)) {
                 this._setLoading(true);
 
-                this.column.column.refreshDistincts().then(() => {
+                try {
+                    await this.column.column.refreshDistincts();
                     const distinctsList = <HTMLElement>this.$["distincts"];
                     distinctsList.style.minWidth = this.offsetWidth + "px";
 
@@ -223,9 +224,11 @@ namespace Vidyano.WebComponents {
 
                     const input = <InputSearch><any>this.$["search"];
                     input.focus();
-                }).catch(() => {
+                }
+                catch (e) {
                     this._setLoading(false);
-                });
+                    this.app.showAlert(e, Vidyano.NotificationType.Error);
+                }
             }
             else {
                 const distinctsList = <HTMLElement>this.$["distincts"];
@@ -248,26 +251,29 @@ namespace Vidyano.WebComponents {
             e.stopPropagation();
         }
 
-        private _updateFilters() {
+        private async _updateFilters() {
             if (!this.queryColumn.query.filters)
                 return;
 
             if (!this.queryColumn.selectedDistincts.isEmpty() && !this.queryColumn.query.filters.currentFilter) {
-                this.queryColumn.query.filters.createNew().then(filter => {
-                    this.queryColumn.query.filters.currentFilter = filter;
-                });
+                const filter = await this.queryColumn.query.filters.createNew();
+                this.queryColumn.query.filters.currentFilter = filter;
             }
         }
 
-        private _updateDistincts() {
+        private async _updateDistincts() {
             this._setLoading(true);
-            this.column.query.search().then(() => {
-                return this.column.column.refreshDistincts().then(distincts => {
-                    this._setLoading(false);
-                });
-            }).catch(() => {
+
+            try {
+                await this.column.query.search();
+                await this.column.column.refreshDistincts();
+            }
+            catch (e) {
+                this.app.showAlert(e, Vidyano.NotificationType.Error);
+            }
+            finally {
                 this._setLoading(false);
-            });
+            }
         }
 
         private _renderDistincts() {
@@ -309,7 +315,7 @@ namespace Vidyano.WebComponents {
             this.updateStyles();
         }
 
-        private _search() {
+        private async _search() {
             if (StringEx.isNullOrEmpty(this.searchText))
                 return;
 
@@ -317,11 +323,7 @@ namespace Vidyano.WebComponents {
             this.searchText = "";
 
             this._renderDistincts();
-            this.column.query.search().then(() => {
-                this._renderDistincts();
-                this._updateFilters();
-                this._updateDistincts();
-            }).catch(Vidyano.noop);
+            await this.column.query.search();
         }
 
         private _inverse(e: Event) {

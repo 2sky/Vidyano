@@ -53,7 +53,7 @@ namespace Vidyano.WebComponents {
             return this._parameters && JSON.stringify(this._parameters) === JSON.stringify(parameters);
         }
 
-        activate(parameters: { [key: string]: string } = {}) {
+        async activate(parameters: { [key: string]: string } = {}): Promise<any> {
             if (this.active && this.matchesParameters(parameters))
                 return;
 
@@ -69,16 +69,15 @@ namespace Vidyano.WebComponents {
                         if (!this._constructor && this.component.startsWith("Vidyano.WebComponents.")) {
                             const component = this.component;
 
-                            this.app.importComponent(this.component.replace(/^(Vidyano.WebComponents.)/, "")).then(_ => {
-                                if ((this._parameters && JSON.stringify(this._parameters) !== JSON.stringify(parameters)) || this.component !== component)
-                                    return;
+                            await this.app.importComponent(this.component.replace(/^(Vidyano.WebComponents.)/, ""));
+                            if (this.component !== component || (this._parameters && JSON.stringify(this._parameters) !== JSON.stringify(parameters)))
+                                return;
 
-                                this._constructor = this._constructorFromComponent(this.component);
-                                if (this._constructor) {
-                                    this._constructorComponent = this.component;
-                                    this._distributeNewComponent();
-                                }
-                            });
+                            this._constructor = this._constructorFromComponent(this.component);
+                            if (this._constructor) {
+                                this._constructorComponent = this.component;
+                                this._distributeNewComponent();
+                            }
                         }
                     }
                     else {

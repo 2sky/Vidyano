@@ -53,7 +53,7 @@ namespace Vidyano.WebComponents {
         private _setTemplated: (templated: boolean) => void;
         private _setFileDrop: (fileDrop: boolean) => void;
 
-        private _renderQuery(query: Vidyano.Query, currentChart: Vidyano.QueryChart, isAttached: boolean) {
+        private async _renderQuery(query: Vidyano.Query, currentChart: Vidyano.QueryChart, isAttached: boolean) {
             if (!isAttached)
                 return;
 
@@ -79,24 +79,16 @@ namespace Vidyano.WebComponents {
                     Polymer.dom(this).appendChild(config.stamp(query, config.as || "query"));
                     this._renderedQuery = query;
                 }
-
-                this._setLoading(false);
             }
             else {
                 if (!currentChart) {
-                    if (!_queryGridComponentLoader)
-                        _queryGridComponentLoader = this.app.importComponent("QueryGrid");
+                    await this.app.importComponent("QueryGrid");
+                    if (query !== this.query || this._renderedQuery === query || !!query.currentChart)
+                        return;
 
-                    _queryGridComponentLoader.then(() => {
-                        if (query !== this.query || this._renderedQuery === query || !!query.currentChart)
-                            return;
-
-                        const grid = new Vidyano.WebComponents.QueryGrid();
-                        this._renderedQuery = grid.query = this.query;
-                        Polymer.dom(this).appendChild(grid);
-
-                        this._setLoading(false);
-                    });
+                    const grid = new Vidyano.WebComponents.QueryGrid();
+                    this._renderedQuery = grid.query = this.query;
+                    Polymer.dom(this).appendChild(grid);
                 }
                 else {
                     const chartConfig = this.app.configuration.getQueryChartConfig(currentChart.type);
@@ -105,27 +97,24 @@ namespace Vidyano.WebComponents {
                         return;
                     }
 
-                    if (!_chartComponentLoader) {
-                        _chartComponentLoader = new Promise(resolve => {
-                            this.importHref(this.resolveUrl("../Chart/chart-dependencies.html"), e => {
-                                resolve(true);
-                            }, err => {
-                                    console.error(err);
-                                    resolve(false);
-                                });
+                    await new Promise(resolve => {
+                        this.importHref(this.resolveUrl("../Chart/chart-dependencies.html"), e => {
+                            resolve(true);
+                        }, err => {
+                            console.error(err);
+                            resolve(false);
                         });
-                    }
-
-                    _chartComponentLoader.then(() => {
-                        if (query !== this.query || this._renderedQuery === query)
-                            return;
-
-                        this._renderedQuery = query;
-
-                        Polymer.dom(this).appendChild(chartConfig.stamp(currentChart, chartConfig.as || "chart"));
-                        this._setLoading(false);
                     });
+
+                    if (query !== this.query || this._renderedQuery === query)
+                        return;
+
+                    this._renderedQuery = query;
+
+                    Polymer.dom(this).appendChild(chartConfig.stamp(currentChart, chartConfig.as || "chart"));
                 }
+
+                this._setLoading(false);
             }
         }
 

@@ -28,7 +28,7 @@
 
         private _setInitializationError: (val: boolean) => void;
 
-        private _activate(e: CustomEvent) {
+        private async _activate(e: CustomEvent) {
             const route = <AppRoute>Polymer.dom(this).parentNode;
             const returnUrl = decodeURIComponent(route.parameters.returnUrl || "");
 
@@ -40,9 +40,11 @@
             }
 
             if (route.app.service.windowsAuthentication) {
-                route.app.service.signInUsingCredentials("", "").then(() => route.app.changePath(returnUrl));
-
                 e.preventDefault();
+
+                await route.app.service.signInUsingCredentials("", "");
+                route.app.changePath(returnUrl);
+
                 return;
             }
             else if (route.app.service.providers && Object.keys(route.app.service.providers).length === 1 && !route.app.service.providers["Vidyano"]) {
@@ -58,17 +60,15 @@
 
                 const noInternet = Vidyano.NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || Vidyano.NoInternetMessage.messages.get("en");
 
-                this.app.showMessageDialog({
+                await this.app.showMessageDialog({
                     title: this.app.initializationError === noInternet.message ? noInternet.title : this.app.label || document.title,
                     message: this.app.initializationError,
                     actions: [noInternet.tryAgain],
                     actionTypes: ["Danger"],
                     noClose: true
-                }).then(() => {
-                    document.location.reload();
                 });
 
-                return;
+                document.location.reload();
             }
 
             this.empty(undefined, c => c instanceof Vidyano.WebComponents.SignInProvider);
@@ -235,12 +235,13 @@
             }
         }
 
-        private _signIn() {
+        private async _signIn() {
             this._setSigningIn(true);
 
             const currentRoute = this.app.currentRoute;
             this.app.service.staySignedIn = this.staySignedIn;
-            this.app.service.signInUsingCredentials(this.userName, this.password, this.twoFactorAuthentication ? this.twoFactorCode : undefined).then(() => {
+            try {
+                await this.app.service.signInUsingCredentials(this.userName, this.password, this.twoFactorAuthentication ? this.twoFactorCode : undefined);
                 this._setTwoFactorAuthentication(false);
                 this._setSigningIn(false);
 
@@ -251,7 +252,8 @@
                     const route = this.findParent<AppRoute>(e => e instanceof Vidyano.WebComponents.AppRoute);
                     this.app.changePath(decodeURIComponent(route.parameters.returnUrl || ""));
                 }
-            }, e => {
+            }
+            catch (e) {
                 this._setSigningIn(false);
 
                 if (e === "Two-factor authentication enabled for user." || e === "Invalid code.") {
@@ -281,7 +283,7 @@
                     actions: [this.translateMessage("OK")],
                     actionTypes: ["Danger"]
                 });
-            });
+            }
         }
 
         private _computeSigninButtonLabel(signingIn: boolean, signingInCounter: number, app: Vidyano.WebComponents.App): string {

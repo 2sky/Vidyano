@@ -119,7 +119,7 @@
             return this._columns;
         }
 
-        save(refreshOnComplete: boolean = true): Promise<any> {
+        async save(refreshOnComplete: boolean = true): Promise<any> {
             let queryData: { [key: string]: IQueryGridUserSettingsColumnData; };
             const columnData = (name: string) => (queryData || (queryData = {}))[name] || (queryData[name] = {});
 
@@ -142,10 +142,9 @@
             else if (this._query.service.application.userSettings["QueryGridSettings"][this._query.id])
                 delete this._query.service.application.userSettings["QueryGridSettings"][this._query.id];
 
-            return this._query.service.application.saveUserSettings().then(() => {
-                if (refreshOnComplete)
-                    this.notifyPropertyChanged("columns", this._columns = this.columns.slice());
-            });
+            await this._query.service.application.saveUserSettings();
+            if (refreshOnComplete)
+                this.notifyPropertyChanged("columns", this._columns = this.columns.slice());
         }
 
         static Load(query: Vidyano.Query): QueryGridUserSettings {
@@ -443,7 +442,7 @@
             return true;
         }
 
-        private _tap(e: TapEvent) {
+        private async _tap(e: TapEvent) {
             if (!this.item)
                 return;
 
@@ -460,16 +459,15 @@
                 }
 
                 this.table.grid["_itemOpening"] = this.item;
-                this.item.getPersistentObject().then(po => {
-                    if (!po)
-                        return;
+                const po = await this.item.getPersistentObject();
+                if (!po)
+                    return;
 
-                    if (this.table.grid["_itemOpening"] === this.item) {
-                        this.table.grid["_itemOpening"] = undefined;
+                if (this.table.grid["_itemOpening"] === this.item) {
+                    this.table.grid["_itemOpening"] = undefined;
 
-                        this.item.query.service.hooks.onOpen(po);
-                    }
-                });
+                    this.item.query.service.hooks.onOpen(po);
+                }
             }
             else
                 this.table.grid.fire("item-tap", { item: this.item }, { bubbles: false });
@@ -1621,7 +1619,7 @@
                 this._lastSelectedItemIndex = indexOfItem;
         }
 
-        private _itemActions(e: CustomEvent, detail: { row: QueryGridTableDataRow; host: HTMLElement; position: IPosition; }) {
+        private async _itemActions(e: CustomEvent, detail: { row: QueryGridTableDataRow; host: HTMLElement; position: IPosition; }) {
             if (detail.row.item.getTypeHint("extraclass", "").split(" ").map(c => c.toUpperCase()).some(c => c === "DISABLED" || c === "READONLY"))
                 return;
 
@@ -1663,13 +1661,12 @@
             Polymer.dom(this._actionMenu).flush();
 
             detail.row.host.setAttribute("hover", "");
-            this._actionMenu.popup(host).then(() => {
-                if (host !== detail.host)
-                    host.setAttribute("hidden", "");
+            await this._actionMenu.popup(host);
+            if (host !== detail.host)
+                host.setAttribute("hidden", "");
 
-                this._actionMenu.empty();
-                detail.row.host.removeAttribute("hover");
-            });
+            this._actionMenu.empty();
+            detail.row.host.removeAttribute("hover");
         }
 
         private _contextmenuData(e: MouseEvent): boolean {
@@ -1745,13 +1742,9 @@
             this._settings.save();
         }
 
-        private _configureColumns() {
-            this.app.showDialog(new Vidyano.WebComponents.QueryGridConfigureDialog(this, this._settings)).then(result => {
-                if (!result)
-                    return;
-
+        private async _configureColumns() {
+            if (await this.app.showDialog(new Vidyano.WebComponents.QueryGridConfigureDialog(this, this._settings)))
                 this._settings.save(true);
-            });
         }
 
         private _upArrow(e: Event) {

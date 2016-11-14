@@ -1,8 +1,6 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
-    let _persistentObjectComponentLoader: Promise<any>;
-
     @WebComponent.register({
         properties: {
             persistentObjectId: {
@@ -34,7 +32,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_computePersistentObject(persistentObjectId, persistentObjectObjectId, isAttached)"
+            "_updatePersistentObject(persistentObjectId, persistentObjectObjectId, isAttached)"
         ],
         listeners: {
             "app-route-activate": "_activate",
@@ -93,14 +91,14 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _deactivate(e: CustomEvent) {
+        private async _deactivate(e: CustomEvent) {
             const route = <AppRoute>Polymer.dom(this).parentNode;
             const newPath = App.removeRootPath(this.app.path);
 
             if (this.persistentObject && this.persistentObject.isDirty && this.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit" ) && App.removeRootPath(route.path) !== newPath) {
                 e.preventDefault();
 
-                this.app.showMessageDialog( {
+                const result = await this.app.showMessageDialog( {
                     title: this.app.service.getTranslatedMessage("PagesWithUnsavedChanges"),
                     noClose: true,
                     message: this.app.service.getTranslatedMessage("ConfirmLeavePage"),
@@ -108,29 +106,29 @@ namespace Vidyano.WebComponents {
                         this.app.service.getTranslatedMessage("StayOnThisPage"),
                         this.app.service.getTranslatedMessage("LeaveThisPage")
                     ]
-                }).then(result => {
-                    if (result === 1) {
-                        Enumerable.from(this.app.cacheEntries).toArray().forEach(entry => {
-                            if (entry instanceof Vidyano.WebComponents.PersistentObjectAppCacheEntry && !!entry.persistentObject && entry.persistentObject.isDirty && entry.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) {
-                                if (entry.persistentObject.isNew)
-                                    this.app.cacheRemove(entry);
-                                else
-                                    entry.persistentObject.cancelEdit();
-                            }
-                        });
-
-                        this.app.changePath(newPath);
-                        route.deactivator(true);
-                    }
-                    else {
-                        route.deactivator(false);
-                        this.app.changePath(route.path);
-                    }
                 });
+
+                if (result === 1) {
+                    Enumerable.from(this.app.cacheEntries).toArray().forEach(entry => {
+                        if (entry instanceof Vidyano.WebComponents.PersistentObjectAppCacheEntry && !!entry.persistentObject && entry.persistentObject.isDirty && entry.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) {
+                            if (entry.persistentObject.isNew)
+                                this.app.cacheRemove(entry);
+                            else
+                                entry.persistentObject.cancelEdit();
+                        }
+                    });
+
+                    this.app.changePath(newPath);
+                    route.deactivator(true);
+                }
+                else {
+                    route.deactivator(false);
+                    this.app.changePath(route.path);
+                }
             }
         }
 
-        private _computePersistentObject(persistentObjectId: string, persistentObjectObjectId: string, isAttached: boolean) {
+        private async _updatePersistentObject(persistentObjectId: string, persistentObjectObjectId: string, isAttached: boolean) {
             this._setError(null);
 
             if (!this.isAttached || (this.persistentObject && this.persistentObject.id === persistentObjectId && this.persistentObject.objectId === persistentObjectObjectId))
@@ -138,24 +136,28 @@ namespace Vidyano.WebComponents {
 
             if (persistentObjectId != null) {
                 this._setLoading(true);
-                this.app.service.getPersistentObject(null, persistentObjectId, persistentObjectObjectId).then(po => {
+
+                try {
+                    const po = await this.app.service.getPersistentObject(null, persistentObjectId, persistentObjectObjectId);
                     const cacheEntry = <PersistentObjectAppCacheEntry>this.app.cache(new PersistentObjectAppCacheEntry(persistentObjectId, persistentObjectObjectId));
+
                     cacheEntry.persistentObject = po;
 
                     if (persistentObjectId === this.persistentObjectId && persistentObjectObjectId === this.persistentObjectObjectId) {
                         this.persistentObject = po;
                         this._cacheEntry = cacheEntry;
                     }
-                }, e => {
-                        this._setError(e);
-                        this._setLoading(false);
-                    });
+                }
+                catch (e) {
+                    this._setError(e);
+                    this._setLoading(false);
+                }
             }
             else
                 this.persistentObject = null;
         }
 
-        private _persistentObjectChanged(persistentObject: Vidyano.PersistentObject, oldPersistentObject: Vidyano.PersistentObject) {
+        private async _persistentObjectChanged(persistentObject: Vidyano.PersistentObject, oldPersistentObject: Vidyano.PersistentObject) {
             this._setError(null);
 
             if (oldPersistentObject)
@@ -170,9 +172,7 @@ namespace Vidyano.WebComponents {
                     this._setLoading(false);
                 }
                 else {
-                    if (!_persistentObjectComponentLoader)
-                        _persistentObjectComponentLoader = this.app.importComponent("PersistentObject");
-
+                    await this.app.importComponent("PersistentObject");
                     this._renderPersistentObject(persistentObject);
                 }
             }
@@ -180,17 +180,15 @@ namespace Vidyano.WebComponents {
             this.fire("title-changed", { title: persistentObject ? persistentObject.breadcrumb : null }, { bubbles: true });
         }
 
-        private _renderPersistentObject(persistentObject: Vidyano.PersistentObject) {
-            _persistentObjectComponentLoader.then(() => {
-                if (persistentObject !== this.persistentObject)
-                    return;
+        private async _renderPersistentObject(persistentObject: Vidyano.PersistentObject) {
+            if (persistentObject !== this.persistentObject)
+                return;
 
-                const persistentObjectComponent = new Vidyano.WebComponents.PersistentObject();
-                persistentObjectComponent.persistentObject = persistentObject;
-                Polymer.dom(this).appendChild(persistentObjectComponent);
+            const persistentObjectComponent = new Vidyano.WebComponents.PersistentObject();
+            persistentObjectComponent.persistentObject = persistentObject;
+            Polymer.dom(this).appendChild(persistentObjectComponent);
 
-                this._setLoading(false);
-            });
+            this._setLoading(false);
         }
 
         private _edit() {

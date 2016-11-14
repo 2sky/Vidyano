@@ -248,55 +248,52 @@ namespace Vidyano.WebComponents {
             return null;
         }
 
-        private _renderAttribute(attribute: Vidyano.PersistentObjectAttribute, attributeType: string) {
-            Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType].then(() => {
-                if (!this.isAttached || attribute !== this.attribute || this._renderedAttribute === attribute)
-                    return;
+        private async _renderAttribute(attribute: Vidyano.PersistentObjectAttribute, attributeType: string) {
+            await Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType];
+            if (!this.isAttached || attribute !== this.attribute || this._renderedAttribute === attribute)
+                return;
 
-                let focusTarget: HTMLElement;
-                try {
-                    if (this._customTemplate) {
-                        Polymer.dom(this.$["content"]).appendChild(this._customTemplate.stamp({ attribute: attribute }).root);
-                        focusTarget = this.$["content"];
-                    }
+            let focusTarget: HTMLElement;
+            try {
+                if (this._customTemplate)
+                    Polymer.dom(focusTarget = this.$["content"]).appendChild(this._customTemplate.stamp({ attribute: attribute }).root);
+                else {
+                    const config = <PersistentObjectAttributeConfig>this.app.configuration.getAttributeConfig(attribute);
+                    this.noLabel = this.noLabel || (config && !!config.noLabel);
+
+                    if (!!config && config.hasTemplate)
+                        Polymer.dom(this.$["content"]).appendChild(config.stamp(attribute, config.as || "attribute"));
                     else {
-                        const config = <PersistentObjectAttributeConfig>this.app.configuration.getAttributeConfig(attribute);
-                        this.noLabel = this.noLabel || (config && !!config.noLabel);
+                        this._renderedAttributeElement = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
+                        this._renderedAttributeElement.classList.add("attribute");
+                        this._renderedAttributeElement.attribute = attribute;
+                        this._renderedAttributeElement.nonEdit = this.nonEdit;
+                        this._renderedAttributeElement.disabled = this.disabled;
 
-                        if (!!config && config.hasTemplate)
-                            Polymer.dom(this.$["content"]).appendChild(config.stamp(attribute, config.as || "attribute"));
-                        else {
-                            this._renderedAttributeElement = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
-                            this._renderedAttributeElement.classList.add("attribute");
-                            this._renderedAttributeElement.attribute = attribute;
-                            this._renderedAttributeElement.nonEdit = this.nonEdit;
-                            this._renderedAttributeElement.disabled = this.disabled;
-
-                            Polymer.dom(this.$["content"]).appendChild(focusTarget = this._renderedAttributeElement);
-                        }
-                    }
-
-                    this._renderedAttribute = attribute;
-                }
-                finally {
-                    this._setLoading(false);
-
-                    if (this._focusQueued) {
-                        Polymer.dom(focusTarget).flush();
-
-                        const activeElement = document.activeElement;
-                        let retry = 0;
-                        const interval = setInterval(() => {
-                            if (++retry > 20 || document.activeElement !== activeElement)
-                                return clearInterval(interval);
-
-                            focusTarget.focus();
-                        }, 25);
-
-                        this._focusQueued = false;
+                        Polymer.dom(this.$["content"]).appendChild(focusTarget = this._renderedAttributeElement);
                     }
                 }
-            });
+
+                this._renderedAttribute = attribute;
+            }
+            finally {
+                this._setLoading(false);
+
+                if (this._focusQueued) {
+                    Polymer.dom(focusTarget).flush();
+
+                    const activeElement = document.activeElement;
+                    let retry = 0;
+                    const interval = setInterval(() => {
+                        if (++retry > 20 || document.activeElement !== activeElement)
+                            return clearInterval(interval);
+
+                        focusTarget.focus();
+                    }, 25);
+
+                    this._focusQueued = false;
+                }
+            }
         }
 
         private _computeEditing(isEditing: boolean, nonEdit: boolean): boolean {

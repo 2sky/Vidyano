@@ -1,5 +1,4 @@
 ﻿declare const unescape;
-declare const Windows;
 
 interface ISet<T> {
     add(value: T): ISet<T>;
@@ -24,7 +23,7 @@ namespace Vidyano {
 
     export const version = "latest";
 
-    export var cookiePrefix: string;
+    export let cookiePrefix: string;
     if (document.head) {
         const base = document.head.querySelector("base") as HTMLBaseElement;
         if (base) {
@@ -63,9 +62,9 @@ namespace Vidyano {
     }
 
     export interface IRoutes {
-        programUnits: { [name: string]: string};
-        persistentObjects: { [type: string]: string};
-        queries: { [type: string]: string};
+        programUnits: { [name: string]: string };
+        persistentObjects: { [type: string]: string };
+        queries: { [type: string]: string };
     }
 
     export interface IReportOptions {
@@ -852,81 +851,56 @@ namespace Vidyano {
             return StringEx.format.apply(null, [this.language.messages[key] || key].concat(params));
         }
 
-        initialize(skipDefaultCredentialLogin: boolean = false): Promise<Application> {
-            return this._getJSON(this._createUri("GetClientData?v=2")).then((clientData: IServiceClientData) => this.hooks.onInitialize(clientData)).then((clientData: IServiceClientData) => {
-                this._clientData = clientData;
+        async initialize(skipDefaultCredentialLogin: boolean = false): Promise<Application> {
+            this._clientData = await this.hooks.onInitialize(await (this._getJSON(this._createUri("GetClientData?v=2"))));
 
-                if (clientData.exception)
-                    throw clientData.exception;
+            if (this._clientData.exception)
+                throw this._clientData.exception;
 
-                const languages: ILanguage[] = [];
-                for (const name in clientData.languages) {
-                    languages.push({ culture: name, name: clientData.languages[name].name, isDefault: clientData.languages[name].isDefault, messages: clientData.languages[name].messages });
-                }
-                this._languages = languages;
-                this.language = Enumerable.from(this._languages).firstOrDefault(l => l.isDefault) || this._languages[0];
+            const languages: ILanguage[] = [];
+            for (const name in this._clientData.languages) {
+                languages.push({ culture: name, name: this._clientData.languages[name].name, isDefault: this._clientData.languages[name].isDefault, messages: this._clientData.languages[name].messages });
+            }
+            this._languages = languages;
+            this.language = Enumerable.from(this._languages).firstOrDefault(l => l.isDefault) || this._languages[0];
 
-                this._providers = {};
-                for (const provider in clientData.providers) {
-                    this._providers[provider] = clientData.providers[provider].parameters;
-                }
-                this._windowsAuthentication = this._clientData.windowsAuthentication;
+            this._providers = {};
+            for (const provider in this._clientData.providers) {
+                this._providers[provider] = this._clientData.providers[provider].parameters;
+            }
+            this._windowsAuthentication = this._clientData.windowsAuthentication;
 
-                if (Service._token) {
-                    const tokenParts = Service._token.split("/", 2);
-                    Service._token = undefined;
+            if (Service._token) {
+                const tokenParts = Service._token.split("/", 2);
+                Service._token = undefined;
 
-                    this._setUserName(Service._decodeBase64(tokenParts[0]));
-                    this.authToken = tokenParts[1].replace("_", "/");
+                this._setUserName(Service._decodeBase64(tokenParts[0]));
+                this.authToken = tokenParts[1].replace("_", "/");
 
-                    const returnUrl = Vidyano.cookie("returnUrl", { force: true }) || "";
-                    if (returnUrl)
-                        Vidyano.cookie("returnUrl", null, { force: true });
+                const returnUrl = Vidyano.cookie("returnUrl", { force: true }) || "";
+                if (returnUrl)
+                    Vidyano.cookie("returnUrl", null, { force: true });
 
-                    this.hooks.onNavigate(returnUrl, true);
+                this.hooks.onNavigate(returnUrl, true);
 
-                    return this._getApplication();
-                }
-                else {
-                    this._setUserName(this.userName || this._clientData.defaultUser);
+                return this._getApplication();
+            }
 
-                    if (this._forceUser || !StringEx.isNullOrEmpty(this.authToken) || ((this._clientData.defaultUser || this.windowsAuthentication) && !skipDefaultCredentialLogin))
-                        return this._getApplication();
-                    else {
-                        this._setIsSignedIn(!!this.application);
-                        return Promise.resolve(this.application);
-                    }
-                }
-            });
+            this._setUserName(this.userName || this._clientData.defaultUser);
+
+            if (this._forceUser || !StringEx.isNullOrEmpty(this.authToken) || ((this._clientData.defaultUser || this.windowsAuthentication) && !skipDefaultCredentialLogin))
+                return this._getApplication();
+            else {
+                this._setIsSignedIn(!!this.application);
+                return this.application;
+            }
         }
 
         signInExternal(providerName: string) {
-            const provider = this.providers[providerName];
-            if (provider != null) {
-                const requestUri = provider.requestUri;
-                if (typeof (Windows) !== "undefined") {
-                    const broker = Windows.Security.Authentication.Web.WebAuthenticationBroker;
-                    const redirectUri = provider.redirectUri;
-                    const authenticate = broker.authenticateAsync(Windows.Security.Authentication.Web.WebAuthenticationOptions.none, new Windows.Foundation.Uri(requestUri), new Windows.Foundation.Uri(redirectUri));
-                    authenticate.then(result => {
-                        if (result.responseStatus === Windows.Security.Authentication.Web.WebAuthenticationStatus.success) {
-                            const data = this._createData("getApplication");
-                            data.accessToken = result.responseData.split("#")[0].replace(redirectUri + "?code=", "");
-                            data.serviceProvider = "Yammer";
+            if (!this.providers[providerName] || !this.providers[providerName].requestUri)
+                throw "Provider not found or not flagged for external authentication.";
 
-                            this._getApplication(data).then(() => {
-                                if (document.location.hash !== "")
-                                    document.location.hash = "";
-                                document.location.reload();
-                            }, e => {
-                                // TODO: Toast notification!
-                            });
-                        }
-                    });
-                }
-                else
-                    document.location.href = requestUri;
-            }
+            document.location.href = this.providers[providerName].requestUri;
         }
 
         signInUsingCredentials(userName: string, password: string, code?: string): Promise<Application> {
@@ -948,7 +922,7 @@ namespace Vidyano {
             return this._getApplication();
         }
 
-        signOut(skipAcs?: boolean): Promise<any> {
+        signOut(skipAcs?: boolean): Promise<boolean> {
             this._setUserName(null);
             this.authToken = null;
             this._setApplication(null);
@@ -979,101 +953,89 @@ namespace Vidyano {
             return Promise.resolve(true);
         }
 
-        private _getApplication(data: any = this._createData("")): Promise<Application> {
-            return new Promise<Application>((resolve, reject) => {
-                if (!(data.authToken || data.accessToken || data.password) && this.userName && this.userName !== this.defaultUserName) {
-                    this._setUserName(this.defaultUserName);
-                    if (!this.userName && !this.hooks.onSessionExpired()) {
-                        reject("Session expired");
-                        return;
-                    }
+        private async _getApplication(data: any = this._createData("")): Promise<Application> {
+            if (!(data.authToken || data.accessToken || data.password) && this.userName && this.userName !== this.defaultUserName) {
+                this._setUserName(this.defaultUserName);
+                if (!this.userName && !this.hooks.onSessionExpired())
+                    throw "Session expired";
 
-                    data.userName = this.userName;
-                }
+                data.userName = this.userName;
+            }
 
-                Vidyano.cookie("staySignedIn", this.staySignedIn ? "true" : null, { force: true, expires: 365 });
-                this._postJSON(this._createUri("GetApplication"), data).then(result => {
-                    if (!StringEx.isNullOrEmpty(result.exception)) {
-                        reject(result.exception);
-                        return;
-                    }
+            Vidyano.cookie("staySignedIn", this.staySignedIn ? "true" : null, { force: true, expires: 365 });
 
-                    if (result.application == null) {
-                        reject("Unknown error");
-                        return;
-                    }
+            try {
+                const result = await this._postJSON(this._createUri("GetApplication"), data);
 
-                    this._setApplication(new Application(this, result.application));
+                if (!StringEx.isNullOrEmpty(result.exception))
+                    throw result.exception;
 
-                    const resourcesQuery = this.application.getQuery("Resources");
-                    if (resourcesQuery)
-                        this.icons = Enumerable.from(resourcesQuery.items).where((i => i.getValue("Type") === "Icon")).toDictionary(i => <string>i.getValue("Key"), i => <string>i.getValue("Data"));
-                    else
-                        this.icons = Enumerable.empty<string>().toDictionary(i => i, i => i);
-                    this.actionDefinitions = Enumerable.from(this.application.getQuery("Actions").items).toDictionary(i => <string>i.getValue("Name"), i => new ActionDefinition(this, i));
+                if (result.application == null)
+                    throw "Unknown error";
 
-                    this.language = Enumerable.from(this._languages).firstOrDefault(l => l.culture === result.userLanguage) || Enumerable.from(this._languages).firstOrDefault(l => l.isDefault);
-                    const clientMessagesQuery = this.application.getQuery("ClientMessages");
-                    if (clientMessagesQuery)
-                        clientMessagesQuery.items.forEach(msg => this.language.messages[msg.getValue("Key")] = msg.getValue("Value"));
+                this._setApplication(new Application(this, result.application));
 
-                    this.actionDefinitions.toEnumerable().forEach(kvp => this.language.messages[`Action_${kvp.key}`] = kvp.value.displayName);
+                const resourcesQuery = this.application.getQuery("Resources");
+                if (resourcesQuery)
+                    this.icons = Enumerable.from(resourcesQuery.items).where((i => i.getValue("Type") === "Icon")).toDictionary(i => <string>i.getValue("Key"), i => <string>i.getValue("Data"));
+                else
+                    this.icons = Enumerable.empty<string>().toDictionary(i => i, i => i);
 
-                    CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
+                this.actionDefinitions = Enumerable.from(this.application.getQuery("Actions").items).toDictionary(i => <string>i.getValue("Name"), i => new ActionDefinition(this, i));
 
-                    this._setUserName(result.userName);
+                this.language = Enumerable.from(this._languages).firstOrDefault(l => l.culture === result.userLanguage) || Enumerable.from(this._languages).firstOrDefault(l => l.isDefault);
 
-                    if (result.session)
-                        this.application._updateSession(result.session);
+                const clientMessagesQuery = this.application.getQuery("ClientMessages");
+                if (clientMessagesQuery)
+                    clientMessagesQuery.items.forEach(msg => this.language.messages[msg.getValue("Key")] = msg.getValue("Value"));
 
-                    this._setIsSignedIn(true);
+                this.actionDefinitions.toEnumerable().forEach(kvp => this.language.messages[`Action_${kvp.key}`] = kvp.value.displayName);
 
-                    resolve(this.application);
-                }, e => {
-                    this._setApplication(null);
-                    this._setIsSignedIn(false);
+                CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
 
-                    reject(e);
-                });
-            });
+                this._setUserName(result.userName);
+
+                if (result.session)
+                    this.application._updateSession(result.session);
+
+                this._setIsSignedIn(true);
+
+                return this.application;
+            }
+            catch (e) {
+                this._setApplication(null);
+                this._setIsSignedIn(false);
+
+                throw e;
+            }
         }
 
-        getQuery(id: string, asLookup?: boolean): Promise<Query> {
+        async getQuery(id: string, asLookup?: boolean): Promise<Query> {
             const data = this._createData("getQuery");
             data.id = id;
 
-            return new Promise<Query>((resolve, reject) => {
-                this._postJSON(this._createUri("GetQuery"), data).then(result => {
-                    if (result.exception == null)
-                        resolve(this.hooks.onConstructQuery(this, result.query, null, asLookup));
-                    else
-                        reject(result.exception);
-                }, e => {
-                    reject(e);
-                });
-            });
+            const result = await this._postJSON(this._createUri("GetQuery"), data);
+            if (result.exception)
+                throw result.exception;
+
+            return this.hooks.onConstructQuery(this, result.query, null, asLookup);
         }
 
-        getPersistentObject(parent: PersistentObject, id: string, objectId?: string): Promise<PersistentObject> {
+        async getPersistentObject(parent: PersistentObject, id: string, objectId?: string): Promise<PersistentObject> {
             const data = this._createData("getPersistentObject");
             data.persistentObjectTypeId = id;
             data.objectId = objectId;
             if (parent != null)
                 data.parent = parent.toServiceObject();
 
-            return new Promise<PersistentObject>((resolve, reject) => {
-                this._postJSON(this._createUri("GetPersistentObject"), data).then(result => {
-                    if (result.exception || (result.result && result.result.notification && result.result.notificationType === "Error"))
-                        reject(result.exception || result.result.notification);
-                    else
-                        resolve(this.hooks.onConstructPersistentObject(this, result.result));
-                }, e => {
-                    reject(e);
-                });
-            });
+            const result = await this._postJSON(this._createUri("GetPersistentObject"), data);
+            if (result.exception || (result.result && result.result.notification && result.result.notificationType === "Error"))
+                throw result.exception || result.result.notification;
+
+            return this.hooks.onConstructPersistentObject(this, result.result);
         }
 
-        executeQuery(parent: PersistentObject, query: Query, asLookup: boolean = false): Promise<any> {
+        async executeQuery(parent: PersistentObject, query: Query, asLookup: boolean = false): Promise<any> {
             const data = this._createData("executeQuery");
             data.query = query._toServiceObject();
 
@@ -1082,248 +1044,235 @@ namespace Vidyano {
             if (asLookup)
                 data.asLookup = asLookup;
 
-            return this._postJSON(this._createUri("ExecuteQuery"), data).then(result => {
-                if (result.exception == null) {
-                    return result.result;
-                }
-                else {
-                    query.setNotification(result.exception);
+            try {
+                const result = await this._postJSON(this._createUri("ExecuteQuery"), data);
+                if (result.exception)
                     throw result.exception;
-                }
-            }, e => {
+
+                return result.result;
+            }
+            catch (e) {
                 query.setNotification(e);
                 throw e;
-            });
+            }
         }
 
-        executeAction(action: string, parent: PersistentObject, query: Query, selectedItems: Array<QueryResultItem>, parameters?: any, skipHooks: boolean = false): Promise<PersistentObject> {
+        async executeAction(action: string, parent: PersistentObject, query: Query, selectedItems: Array<QueryResultItem>, parameters?: any, skipHooks: boolean = false): Promise<PersistentObject> {
             const isObjectAction = action.startsWith("PersistentObject.") || query == null;
-            return new Promise<PersistentObject>((resolve, reject) => {
-                if (!skipHooks) {
-                    if (!isObjectAction) {
-                        query.setNotification();
-                        if (query.selectAll.allSelected && !query.selectAll.inverse)
-                            selectedItems = [];
-                    }
-                    else if (parent)
-                        parent.setNotification();
 
-                    this.hooks.trackEvent(action, parameters ? parameters.MenuLabel || parameters.MenuOption : null, query || parent);
-
-                    const args = new ExecuteActionArgs(this, action, parent, query, selectedItems, parameters);
-                    this.hooks.onAction(args).then(() => {
-                        if (args.isHandled)
-                            resolve(args.result);
-                        else
-                            this.executeAction(action, parent, query, selectedItems, args.parameters, true).then(po => {
-                                resolve(po);
-                            }, e => {
-                                reject(e);
-                            });
-                    }, e => {
-                        if (isObjectAction)
-                            parent.setNotification(e);
-                        else
-                            query.setNotification(e);
-
-                        reject(e);
-                    });
-
-                    return;
+            if (!skipHooks) {
+                if (!isObjectAction) {
+                    query.setNotification();
+                    if (query.selectAll.allSelected && !query.selectAll.inverse)
+                        selectedItems = [];
                 }
+                else if (parent)
+                    parent.setNotification();
 
-                const data = this._createData("executeAction");
-                data.action = action;
-                if (parent != null)
-                    data.parent = parent.toServiceObject();
-                if (query != null)
-                    data.query = query._toServiceObject();
-                if (selectedItems != null)
-                    data.selectedItems = selectedItems.map(item => item && item._toServiceObject());
-                if (parameters != null)
-                    data.parameters = parameters;
+                this.hooks.trackEvent(action, parameters ? parameters.MenuLabel || parameters.MenuOption : null, query || parent);
 
-                const isFreezingAction = isObjectAction && action !== "PersistentObject.Refresh";
+                const args = new ExecuteActionArgs(this, action, parent, query, selectedItems, parameters);
+                try {
+                    await this.hooks.onAction(args);
+                    if (args.isHandled)
+                        return args.result;
 
-                const execute = () => {
-                    if (isFreezingAction)
-                        parent.freeze();
-
-                    return this._postJSON(this._createUri("ExecuteAction"), data);
-                };
-
-                const executeCatch = e => {
-                    if (isObjectAction) {
+                    return await this.executeAction(action, parent, query, selectedItems, args.parameters, true);
+                }
+                catch (e) {
+                    if (isObjectAction)
                         parent.setNotification(e);
-
-                        if (isFreezingAction)
-                            parent.unfreeze();
-                    }
                     else
                         query.setNotification(e);
 
-                    reject(e);
+                    throw e;
+                }
+            }
+
+            const isFreezingAction = isObjectAction && action !== "PersistentObject.Refresh";
+            const data = this._createData("executeAction");
+            data.action = action;
+            if (parent != null)
+                data.parent = parent.toServiceObject();
+            if (query != null)
+                data.query = query._toServiceObject();
+            if (selectedItems != null)
+                data.selectedItems = selectedItems.map(item => item && item._toServiceObject());
+            if (parameters != null)
+                data.parameters = parameters;
+
+            try {
+                if (isFreezingAction)
+                    parent.freeze();
+
+                const executeThen: (QueryResultItem: any) => Promise<Vidyano.PersistentObject> = async result => {
+                    if (!result.retry)
+                        return result.result ? await this.hooks.onConstructPersistentObject(this, result.result) : null;
+
+                    if (result.retry.persistentObject)
+                        result.retry.persistentObject = this.hooks.onConstructPersistentObject(this, result.retry.persistentObject);
+
+                    const option = await this.hooks.onRetryAction(result.retry);
+                    (data.parameters || (data.parameters = {})).RetryActionOption = option;
+
+                    if (result.retry.persistentObject instanceof Vidyano.PersistentObject)
+                        data.retryPersistentObject = result.retry.persistentObject.toServiceObject();
+
+                    const retryResult = await this._postJSON(this._createUri("ExecuteAction"), data);
+                    return await executeThen(retryResult);
                 };
-                const executeThen = result => {
-                    if (!result.retry) {
-                        resolve(result.result ? this.hooks.onConstructPersistentObject(this, result.result) : null);
 
-                        if (isFreezingAction)
-                            parent.unfreeze();
-                    }
-                    else {
-                        if (result.retry.persistentObject)
-                            result.retry.persistentObject = this.hooks.onConstructPersistentObject(this, result.retry.persistentObject);
+                if (parent == null) {
+                    const result = await this._postJSON(this._createUri("ExecuteAction"), data);
+                    return await executeThen(result);
+                }
 
-                        this.hooks.onRetryAction(result.retry).then(option => {
-                            if (result.retry.persistentObject instanceof Vidyano.PersistentObject)
-                                data.retryPersistentObject = result.retry.persistentObject.toServiceObject();
+                const inputs = parent.getRegisteredInputs();
+                if (inputs.count() === 0) {
+                    const result = await this._postJSON(this._createUri("ExecuteAction"), data);
+                    return await executeThen(result);
+                }
 
-                            (data.parameters || (data.parameters = {})).RetryActionOption = option;
-                            execute().then(result => executeThen(result)).catch(e => executeCatch(e));
-                        });
-                    }
-                };
+                const origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : "");
+                if (this.serviceUri.startsWith("http") && !this.serviceUri.startsWith(origin) + "/") {
+                    const inputsEnum = inputs.getEnumerator();
+                    while (inputsEnum.moveNext()) {
+                        const input = inputsEnum.current().value;
+                        const attribute = parent.getAttribute(inputsEnum.current().key);
 
-                if (parent != null) {
-                    const inputs = parent.getRegisteredInputs();
-                    if (inputs.count() === 0)
-                        execute().then(result => executeThen(result)).catch(e => executeCatch(e));
-                    else {
-                        const origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : "");
-                        if (this.serviceUri.startsWith("http") && !this.serviceUri.startsWith(origin) + "/") {
-                            Promise.all(inputs.select(input => {
-                                return new Promise((resolve, reject) => {
-                                    const file = input.value.files[0];
-                                    if (!file) {
-                                        resolve(true);
-                                        return;
-                                    }
+                        await new Promise((resolve, reject) => {
+                            const file = input.files[0];
+                            if (!file) {
+                                resolve(true);
+                                return;
+                            }
 
-                                    const attribute = parent.getAttribute(input.key);
-                                    const reader = new FileReader();
+                            const reader = new FileReader();
 
-                                    reader.onload = event => {
-                                        const fileName = attribute.value;
-                                        attribute.value = (<any>event.target).result.match(/,(.*)$/)[1];
-                                        if (attribute.type === "BinaryFile")
-                                            attribute.value = fileName + "|" + attribute.value;
+                            reader.onload = event => {
+                                const fileName = attribute.value;
+                                attribute.value = (<any>event.target).result.match(/,(.*)$/)[1];
+                                if (attribute.type === "BinaryFile")
+                                    attribute.value = fileName + "|" + attribute.value;
 
-                                        resolve(true);
-                                    };
-                                    reader.onerror = function (e) {
-                                        reject(e);
-                                    };
-
-                                    reader.readAsDataURL(file);
-                                });
-                            }).toArray()).then(() => {
-                                data.parent = parent.toServiceObject();
-                                execute().then(result => executeThen(result)).catch(e => executeCatch(e));
-                            });
-
-                            return;
-                        }
-
-                        if (isFreezingAction)
-                            parent.freeze();
-
-                        const iframeName = "iframe-" + new Date();
-                        const iframe = document.createElement("iframe");
-                        iframe.src = "javascript:false;";
-                        iframe.name = iframeName;
-                        iframe.style.position = "absolute";
-                        iframe.style.top = "-1000px";
-                        iframe.style.left = "-1000px";
-
-                        const clonedForm = document.createElement("form");
-                        clonedForm.enctype = "multipart/form-data";
-                        clonedForm.encoding = "multipart/form-data";
-                        clonedForm.method = "post";
-                        clonedForm.action = this._createUri("ExecuteAction");
-                        clonedForm.target = iframeName;
-
-                        const input = document.createElement("input");
-                        input.type = "hidden";
-                        input.name = "data";
-                        input.value = JSON.stringify(data);
-
-                        clonedForm.appendChild(input);
-                        clonedForm.style.display = "none";
-
-                        inputs.where(item => item.value.value !== "").forEach(function (item) {
-                            const input = item.value;
-                            input.name = item.key;
-                            const replacement = document.createElement("input");
-                            replacement.type = "file";
-                            input.insertAdjacentElement("afterend", replacement);
-                            (<any>input).replacement = replacement;
-                            clonedForm.appendChild(input);
-                        });
-
-                        const createdRequest = new Date();
-                        if (this.profile)
-                            /* tslint:disable:no-var-keyword */ var requestStart = this._getMs(); /* tslint:enable:no-var-keyword*/
-
-                        const service = this;
-                        // NOTE: The first load event gets fired after the iframe has been injected into the DOM, and is used to prepare the actual submission.
-                        iframe.onload = function (e: Event) {
-                            // NOTE: The second load event gets fired when the response to the form submission is received. The implementation detects whether the actual payload is embedded in a <textarea> element, and prepares the required conversions to be made in that case.
-                            iframe.onload = function (e: Event) {
-                                const doc = this.contentDocument || this.contentWindow.document,
-                                    root = doc.documentElement ? doc.documentElement : doc.body,
-                                    textarea = root.getElementsByTagName("textarea")[0],
-                                    type = textarea ? textarea.getAttribute("data-type") : null,
-                                    content = {
-                                        html: root.innerHTML,
-                                        text: type ?
-                                            textarea.value :
-                                            root ? (root.textContent || root.innerText) : null
-                                    };
-
-                                const result = JSON.parse(content.text);
-
-                                if (result.exception == null) {
-                                    iframe.src = "javascript:false;";
-                                    document.body.removeChild(iframe);
-
-                                    executeThen(result);
-                                }
-                                else
-                                    reject(result.exception);
-
-                                service._postJSONProcess(data, result, "ExecuteAction", createdRequest, requestStart, (service._getMs() - requestStart).toString());
-
-                                document.body.removeChild(clonedForm);
+                                resolve(true);
+                            };
+                            reader.onerror = function (e) {
+                                reject(e);
                             };
 
-                            Array.prototype.forEach.call(clonedForm.querySelectorAll("input"), (input: HTMLInputElement) => { input.disabled = false; });
-                            clonedForm.submit();
-                            parent.clearRegisteredInputs();
-                            inputs.forEach(item => {
-                                const replacement: HTMLInputElement = (<any>item.value).replacement;
-                                if (replacement != null) {
-                                    const tempParent = document.createElement("div");
-                                    tempParent.innerHTML = item.value.outerHTML;
-                                    const newInput = <HTMLInputElement>tempParent.querySelector("input");
-                                    replacement.parentNode.replaceChild(newInput, replacement);
-                                    parent.registerInput(item.key, newInput);
-                                }
-                                else
-                                    parent.registerInput(item.key, item.value);
-                            });
+                            reader.readAsDataURL(file);
+                        });
+                    }
+
+                    data.parent = parent.toServiceObject();
+
+                    const result = await this._postJSON(this._createUri("ExecuteAction"), data);
+                    return await executeThen(result);
+                }
+
+                const iframeName = "iframe-" + new Date();
+                const iframe = document.createElement("iframe");
+                iframe.src = "javascript:false;";
+                iframe.name = iframeName;
+                iframe.style.position = "absolute";
+                iframe.style.top = "-1000px";
+                iframe.style.left = "-1000px";
+
+                const clonedForm = document.createElement("form");
+                clonedForm.enctype = "multipart/form-data";
+                clonedForm.encoding = "multipart/form-data";
+                clonedForm.method = "post";
+                clonedForm.action = this._createUri("ExecuteAction");
+                clonedForm.target = iframeName;
+
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "data";
+                input.value = JSON.stringify(data);
+
+                clonedForm.appendChild(input);
+                clonedForm.style.display = "none";
+
+                inputs.where(item => item.value.value !== "").forEach(function (item) {
+                    const input = item.value;
+                    input.name = item.key;
+                    const replacement = document.createElement("input");
+                    replacement.type = "file";
+                    input.insertAdjacentElement("afterend", replacement);
+                    (<any>input).replacement = replacement;
+                    clonedForm.appendChild(input);
+                });
+
+                const createdRequest = new Date();
+                if (this.profile)
+                    /* tslint:disable:no-var-keyword */ var requestStart = this._getMs(); /* tslint:enable:no-var-keyword*/
+
+                const service = this;
+                const result = await new Promise((resolve, reject) => {
+                    // NOTE: The first load event gets fired after the iframe has been injected into the DOM, and is used to prepare the actual submission.
+                    iframe.onload = function (e: Event) {
+                        // NOTE: The second load event gets fired when the response to the form submission is received. The implementation detects whether the actual payload is embedded in a <textarea> element, and prepares the required conversions to be made in that case.
+                        iframe.onload = function (e: Event) {
+                            const doc = this.contentDocument || this.contentWindow.document,
+                                root = doc.documentElement ? doc.documentElement : doc.body,
+                                textarea = root.getElementsByTagName("textarea")[0],
+                                type = textarea ? textarea.getAttribute("data-type") : null,
+                                content = {
+                                    html: root.innerHTML,
+                                    text: type ?
+                                        textarea.value :
+                                        root ? (root.textContent || root.innerText) : null
+                                };
+
+                            const result = JSON.parse(content.text);
+                            service._postJSONProcess(data, result, "ExecuteAction", createdRequest, requestStart, (service._getMs() - requestStart).toString());
+
+                            resolve(result);
                         };
 
-                        document.body.appendChild(clonedForm);
-                        document.body.appendChild(iframe);
+                        Array.prototype.forEach.call(clonedForm.querySelectorAll("input"), (input: HTMLInputElement) => { input.disabled = false; });
+                        clonedForm.submit();
+                    };
+
+                    document.body.appendChild(clonedForm);
+                    document.body.appendChild(iframe);
+                });
+
+                document.body.removeChild(clonedForm);
+                document.body.removeChild(iframe);
+
+                parent.clearRegisteredInputs();
+                inputs.forEach(item => {
+                    const replacement: HTMLInputElement = (<any>item.value).replacement;
+                    if (replacement != null) {
+                        const tempParent = document.createElement("div");
+                        tempParent.innerHTML = item.value.outerHTML;
+                        const newInput = <HTMLInputElement>tempParent.querySelector("input");
+                        replacement.parentNode.replaceChild(newInput, replacement);
+                        parent.registerInput(item.key, newInput);
                     }
-                }
+                    else
+                        parent.registerInput(item.key, item.value);
+                });
+
+                return await executeThen(result);
+            }
+            catch (e) {
+                if (isObjectAction)
+                    parent.setNotification(e);
                 else
-                    execute().then(result => executeThen(result)).catch(e => executeCatch(e));
-            });
+                    query.setNotification(e);
+
+                throw e;
+            }
+            finally {
+                if (isFreezingAction)
+                    parent.unfreeze();
+            }
         }
 
-        getReport(token: string, { filter = "", orderBy, top, skip, hideIds, hideType = true }: IReportOptions = {}): Promise<any[]> {
+        async getReport(token: string, { filter = "", orderBy, top, skip, hideIds, hideType = true }: IReportOptions = {}): Promise<any[]> {
             let uri = this._createUri(`GetReport/${token}?format=json&$filter=${encodeURIComponent(filter)}`);
 
             if (orderBy)
@@ -1337,7 +1286,8 @@ namespace Vidyano {
             if (hideType)
                 uri = `${uri}&hideType=true`;
 
-            return this._getJSON(uri).then(data => data.d);
+            const data = await this._getJSON(uri);
+            return data.d;
         }
 
         static getDate = function (yearString: string, monthString: string, dayString: string, hourString: string, minuteString: string, secondString: string, msString: string) {
@@ -1736,19 +1686,73 @@ namespace Vidyano {
             // Noop
         }
 
-        onRetryAction(retry: IRetryAction): Promise<string> {
+        async onRetryAction(retry: IRetryAction): Promise<string> {
             if (!retry.persistentObject)
-                return this.onMessageDialog(retry.title, retry.message, false, ...retry.options).then(result => result >= 0 ? retry.options[result] : -1);
+                return retry.options[await this.onMessageDialog(retry.title, retry.message, false, ...retry.options)];
 
-            return Promise.reject<string>("RetryAction with Persistent Object is not supported.");
+            throw "RetryAction with Persistent Object is not supported.";
         }
     }
 
+    export interface IServiceClientData {
+        defaultUser: string;
+        exception: string;
+        languages: { [code: string]: { name: string; isDefault: boolean; messages: { [key: string]: string; } } };
+        providers: { [name: string]: { parameters: IProviderParameters } };
+    }
+
+    export interface IServiceRequest {
+        when: Date;
+        profiler: IServiceRequestProfiler;
+        transport: number;
+        method: string;
+        request: any;
+        response: any;
+    }
+
+    export interface IServiceRequestProfiler {
+        taskId: number;
+        elapsedMilliseconds: number;
+        entries: IServiceRequestProfilerEntry[];
+        sql: IServiceRequestProfilerSQL[];
+        exceptions: {
+            id: string;
+            message: string;
+        }[];
+    }
+
+    export interface IServiceRequestProfilerEntry {
+        entries: IServiceRequestProfilerEntry[];
+        methodName: string;
+        sql: string[];
+        started: number;
+        elapsedMilliseconds: number;
+        hasNPlusOne?: boolean;
+        exception: string;
+        arguments: any[];
+    }
+
+    export interface IServiceRequestProfilerSQL {
+        commandId: string;
+        commandText: string;
+        elapsedMilliseconds: number;
+        recordsAffected: number;
+        taskId: number;
+        type: string;
+        parameters: IServiceRequestProfilerSQLParameter[];
+    }
+
+    export interface IServiceRequestProfilerSQLParameter {
+        name: string;
+        type: string;
+        value: string;
+    }
+
     export interface ISelectedItemsActionArgs {
-       name: string;
-       isVisible: boolean;
-       canExecute: boolean;
-       options: string[];
+        name: string;
+        isVisible: boolean;
+        canExecute: boolean;
+        options: string[];
     }
 
     export class ExecuteActionArgs {
@@ -1763,16 +1767,11 @@ namespace Vidyano {
             this.action = action.split(".")[1];
         }
 
-        executeServiceRequest(): Promise<PersistentObject> {
-            return new Promise<PersistentObject>((resolve, reject) => {
-                this.service.executeAction(this._action, this.persistentObject, this.query, this.selectedItems, this.parameters, true).then(result => {
-                    this.result = result;
-                    this.isHandled = true;
-                    resolve(result);
-                }, e => {
-                    reject(e);
-                });
-            });
+        async executeServiceRequest(): Promise<PersistentObject> {
+            this.result = await this.service.executeAction(this._action, this.persistentObject, this.query, this.selectedItems, this.parameters, true);
+            this.isHandled = true;
+
+            return this.result;
         }
     }
 
@@ -1844,22 +1843,24 @@ namespace Vidyano {
         queueWork<T>(work: () => Promise<T>, blockActions: boolean = true): Promise<T> {
             this._setIsBusy(true);
 
-            return this._queue.add(() => {
+            return this._queue.add(async () => {
                 if (blockActions)
                     this._blockActions(true);
 
-                return work().then(result => {
+                try {
+                    const result = await work();
                     this._setIsBusy(this._queue.getQueueLength() > 0);
                     if (blockActions)
                         this._blockActions(false);
 
                     return result;
-                }).catch(e => {
+                }
+                catch (e) {
                     this._setIsBusy(this._queue.getQueueLength() > 0);
                     this._blockActions(false);
 
-                    return Promise.reject<T>(e);
-                });
+                    throw e;
+                }
             });
         }
 
@@ -2136,60 +2137,49 @@ namespace Vidyano {
         }
 
         save(waitForOwnerQuery?: boolean): Promise<boolean> {
-            return this.queueWork(() => new Promise<boolean>((resolve, reject) => {
+            return this.queueWork(async () => {
                 if (this.isEditing) {
-                    this.attributes.filter(attr => attr.shouldRefresh).reduce((previous, current) => previous.then(() => current._triggerAttributeRefresh(true)), Promise.resolve(true)).then(() => {
-                        this.service.executeAction("PersistentObject.Save", this, null, null, null).then(po => {
-                            if (po) {
-                                const wasNew = this.isNew;
-                                this.refreshFromResult(po);
+                    const attributesToRefresh = this.attributes.filter(attr => attr.shouldRefresh);
+                    for (let i = 0; i < attributesToRefresh.length; i++)
+                        await attributesToRefresh[i]._triggerAttributeRefresh(true);
 
-                                if (StringEx.isNullOrWhiteSpace(this.notification) || this.notificationType !== NotificationType.Error) {
-                                    this._setIsDirty(false);
+                    const po = await this.service.executeAction("PersistentObject.Save", this, null, null, null);
+                    if (!po)
+                        return false;
 
-                                    if (!wasNew) {
-                                        this.setIsEditing(false);
-                                        if (this.stateBehavior === "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
-                                            this.beginEdit();
-                                    }
+                    const wasNew = this.isNew;
+                    this.refreshFromResult(po);
 
-                                    if (this.ownerAttributeWithReference) {
-                                        if (this.ownerAttributeWithReference.objectId !== this.objectId) {
-                                            let parent = this.ownerAttributeWithReference.parent;
-                                            if (parent.ownerDetailAttribute != null)
-                                                parent = parent.ownerDetailAttribute.parent;
-                                            parent.beginEdit();
+                    if (StringEx.isNullOrWhiteSpace(this.notification) || this.notificationType !== NotificationType.Error) {
+                        this._setIsDirty(false);
 
-                                            this.ownerAttributeWithReference.changeReference([po.objectId]);
-                                        }
-                                        else if ((<any>this.ownerAttributeWithReference).value !== this.breadcrumb)
-                                            (<any>this.ownerAttributeWithReference).value = this.breadcrumb;
-                                    }
-                                    else if (this.ownerQuery)
-                                        this.ownerQuery.search().then(() => {
-                                            resolve(true);
-                                        }, () => {
-                                            resolve(true);
-                                        });
+                        if (!wasNew) {
+                            this.setIsEditing(false);
+                            if (this.stateBehavior === "StayInEdit" || this.stateBehavior.indexOf("StayInEdit") >= 0)
+                                this.beginEdit();
+                        }
 
-                                    if (waitForOwnerQuery !== true || !this.ownerQuery)
-                                        resolve(true);
-                                }
-                                else if (!StringEx.isNullOrWhiteSpace(this.notification))
-                                    reject(this.notification);
+                        if (this.ownerAttributeWithReference) {
+                            if (this.ownerAttributeWithReference.objectId !== this.objectId) {
+                                let parent = this.ownerAttributeWithReference.parent;
+                                if (parent.ownerDetailAttribute != null)
+                                    parent = parent.ownerDetailAttribute.parent;
+
+                                parent.beginEdit();
+                                this.ownerAttributeWithReference.changeReference([po.objectId]);
                             }
-                            else
-                                resolve(false);
-                        }, e => {
-                            reject(e);
-                        });
-                    }, e => {
-                        reject(e);
-                    });
+                            else if (this.ownerAttributeWithReference.value !== this.breadcrumb)
+                                this.ownerAttributeWithReference.value = this.breadcrumb;
+                        }
+                        else if (this.ownerQuery)
+                            await this.ownerQuery.search();
+                    }
+                    else if (!StringEx.isNullOrWhiteSpace(this.notification))
+                        throw this.notification;
                 }
-                else
-                    resolve(true);
-            }));
+
+                return true;
+            });
         }
 
         getRegisteredInputs(): linqjs.Enumerable<linqjs.KeyValuePair<string, HTMLInputElement>> {
@@ -2385,18 +2375,13 @@ namespace Vidyano {
         }
 
         _triggerAttributeRefresh(attr: PersistentObjectAttribute, immediate?: boolean): Promise<boolean> {
-            const work = () => {
-                return new Promise<any>((resolve, reject) => {
-                    this._prepareAttributesForRefresh(attr);
-                    this.service.executeAction("PersistentObject.Refresh", this, null, null, { RefreshedPersistentObjectAttributeId: attr.id }).then((result) => {
-                        if (this.isEditing)
-                            this.refreshFromResult(result);
+            const work = async () => {
+                this._prepareAttributesForRefresh(attr);
+                const result = await this.service.executeAction("PersistentObject.Refresh", this, null, null, { RefreshedPersistentObjectAttributeId: attr.id });
+                if (this.isEditing)
+                    this.refreshFromResult(result);
 
-                        resolve(true);
-                    }, e => {
-                        reject(e);
-                    });
-                });
+                return true;
             };
 
             if (!immediate)
@@ -2622,56 +2607,49 @@ namespace Vidyano {
             this.setValue(val).catch(Vidyano.noop);
         }
 
-        setValue(val: any, allowRefresh: boolean = true): Promise<any> {
-            return new Promise<any>((resolve, reject) => {
-                if (!this.parent.isEditing || this.parent.isFrozen || this.isReadOnly) {
-                    resolve(this.value);
-                    return;
+        async setValue(val: any, allowRefresh: boolean = true): Promise<any> {
+            if (!this.parent.isEditing || this.parent.isFrozen || this.isReadOnly)
+                return this.value;
+
+            if (val && typeof val === "string") {
+                const charactercasing = this.getTypeHint("charactercasing", "", undefined, true);
+                if (charactercasing) {
+                    if (charactercasing.toUpperCase() === "LOWER")
+                        val = (<string>val).toLowerCase();
+                    else if (charactercasing.toUpperCase() === "UPPER")
+                        val = (<string>val).toUpperCase();
+                }
+            }
+
+            const newServiceValue = Service.toServiceString(val, this.type);
+            let queuedTriggersRefresh = null;
+
+            // If value is equal
+            if (this._cachedValue === val || (this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || this._serviceValue === newServiceValue) {
+                if (allowRefresh && this._shouldRefresh)
+                    queuedTriggersRefresh = await this._triggerAttributeRefresh();
+            }
+            else {
+                const oldDisplayValue = this.displayValue;
+                const oldServiceValue = this._serviceValue;
+                this.notifyPropertyChanged("value", this._serviceValue = newServiceValue, oldServiceValue);
+                this.isValueChanged = true;
+
+                const newDisplayValue = this.displayValue;
+                if (oldDisplayValue !== newDisplayValue)
+                    this.notifyPropertyChanged("displayValue", newDisplayValue, oldDisplayValue);
+
+                if (this.triggersRefresh) {
+                    if (allowRefresh)
+                        queuedTriggersRefresh = await this._triggerAttributeRefresh();
+                    else
+                        this._shouldRefresh = true;
                 }
 
-                if (val && typeof val === "string") {
-                    const charactercasing = this.getTypeHint("charactercasing", "", undefined, true);
-                    if (charactercasing) {
-                        if (charactercasing.toUpperCase() === "LOWER")
-                            val = (<string>val).toLowerCase();
-                        else if (charactercasing.toUpperCase() === "UPPER")
-                            val = (<string>val).toUpperCase();
-                    }
-                }
+                this.parent.triggerDirty();
+            }
 
-                const newServiceValue = Service.toServiceString(val, this.type);
-                let queuedTriggersRefresh = null;
-
-                // If value is equal
-                if (this._cachedValue === val || (this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || this._serviceValue === newServiceValue) {
-                    if (allowRefresh && this._shouldRefresh)
-                        queuedTriggersRefresh = this._triggerAttributeRefresh();
-                }
-                else {
-                    const oldDisplayValue = this.displayValue;
-                    const oldServiceValue = this._serviceValue;
-                    this.notifyPropertyChanged("value", this._serviceValue = newServiceValue, oldServiceValue);
-                    this.isValueChanged = true;
-
-                    const newDisplayValue = this.displayValue;
-                    if (oldDisplayValue !== newDisplayValue)
-                        this.notifyPropertyChanged("displayValue", newDisplayValue, oldDisplayValue);
-
-                    if (this.triggersRefresh) {
-                        if (allowRefresh)
-                            queuedTriggersRefresh = this._triggerAttributeRefresh();
-                        else
-                            this._shouldRefresh = true;
-                    }
-
-                    this.parent.triggerDirty();
-                }
-
-                if (queuedTriggersRefresh)
-                    queuedTriggersRefresh.then(resolve, reject);
-                else
-                    resolve(this.value);
-            });
+            return this.value;
         }
 
         get isValueChanged(): boolean {
@@ -2817,43 +2795,39 @@ namespace Vidyano {
             this._setOptions(attr.options);
         }
 
-        addNewReference() {
+        async addNewReference() {
             if (this.isReadOnly)
                 return;
 
-            this.service.executeAction("Query.New", this.parent, this.lookup, null, { PersistentObjectAttributeId: this.id }).then(
-                po => {
-                    po.ownerAttributeWithReference = this;
-                    po.stateBehavior = (po.stateBehavior || "") + " OpenAsDialog";
+            try {
+                const po = await this.service.executeAction("Query.New", this.parent, this.lookup, null, { PersistentObjectAttributeId: this.id });
+                po.ownerAttributeWithReference = this;
+                po.stateBehavior = (po.stateBehavior || "") + " OpenAsDialog";
 
-                    this.service.hooks.onOpen(po, false, true);
-                },
-                error => {
-                    this.parent.setNotification(error);
-                });
+                this.service.hooks.onOpen(po, false, true);
+            }
+            catch (e) {
+                this.parent.setNotification(e);
+            }
         }
 
         changeReference(selectedItems: QueryResultItem[] | string[]): Promise<boolean> {
-            return this.parent.queueWork(() => new Promise<boolean>((resolve, reject) => {
+            return this.parent.queueWork(async () => {
                 if (this.isReadOnly)
-                    reject("Attribute is read-only.");
-                else {
-                    this.parent._prepareAttributesForRefresh(this);
-                    if (selectedItems.length && selectedItems.length > 0 && typeof selectedItems[0] === "string") {
-                        const selectedObjectIds = <string[]>selectedItems;
-                        selectedItems = selectedObjectIds.map(id => this.service.hooks.onConstructQueryResultItem(this.service, { id: id }, null));
-                    }
+                    throw "Attribute is read-only.";
 
-                    this.service.executeAction("PersistentObject.SelectReference", this.parent, this.lookup, <QueryResultItem[]>selectedItems, { PersistentObjectAttributeId: this.id }).then(result => {
-                        if (result)
-                            this.parent.refreshFromResult(result);
-
-                        resolve(true);
-                    }, e => {
-                        reject(e);
-                    });
+                this.parent._prepareAttributesForRefresh(this);
+                if (selectedItems.length && selectedItems.length > 0 && typeof selectedItems[0] === "string") {
+                    const selectedObjectIds = <string[]>selectedItems;
+                    selectedItems = selectedObjectIds.map(id => this.service.hooks.onConstructQueryResultItem(this.service, { id: id }, null));
                 }
-            }));
+
+                const result = await this.service.executeAction("PersistentObject.SelectReference", this.parent, this.lookup, <QueryResultItem[]>selectedItems, { PersistentObjectAttributeId: this.id });
+                if (result)
+                    this.parent.refreshFromResult(result);
+
+                return true;
+            });
         }
 
         getPersistentObject(): Promise<Vidyano.PersistentObject> {
@@ -2943,13 +2917,12 @@ namespace Vidyano {
             this.notifyPropertyChanged("objects", this._objects = objects, oldObjects);
         }
 
-        newObject(): Promise<PersistentObject> {
-            return this.details.actions["New"].execute({ throwExceptions: true, skipOpen: true }).then(po => {
-                po.ownerQuery = null;
-                po.ownerDetailAttribute = this;
+        async newObject(): Promise<PersistentObject> {
+            const po = await this.details.actions["New"].execute({ throwExceptions: true, skipOpen: true });
+            po.ownerQuery = null;
+            po.ownerDetailAttribute = this;
 
-                return po;
-            });
+            return po;
         }
 
         _refreshFromResult(resultAttr: PersistentObjectAttribute, resultWins: boolean): boolean {
@@ -2987,23 +2960,19 @@ namespace Vidyano {
             return result;
         }
 
-        onChanged(allowRefresh: boolean): Promise<any> {
-            return new Promise<any>((resolve, reject) => {
-                if (!this.parent.isEditing || this.isReadOnly) {
-                    resolve(this.value);
-                    return;
-                }
+        async onChanged(allowRefresh: boolean): Promise<any> {
+            if (!this.parent.isEditing || this.isReadOnly)
+                return this.value;
 
-                this.parent.triggerDirty();
-                if (this.triggersRefresh) {
-                    if (allowRefresh)
-                        return this._triggerAttributeRefresh();
-                    else
-                        this._shouldRefresh = true;
-                }
+            this.parent.triggerDirty();
+            if (this.triggersRefresh) {
+                if (allowRefresh)
+                    await this._triggerAttributeRefresh();
+                else
+                    this._shouldRefresh = true;
+            }
 
-                resolve(this.value);
-            });
+            return this.value;
         }
     }
 
@@ -3064,10 +3033,9 @@ namespace Vidyano {
             this.notifyPropertyChanged("attributes", this._attributes = this._updateAttributes(), oldAttributes);
         }
 
-        saveLayout(layout: any): Promise<any> {
-            return this.service.executeAction("System.SaveTabLayout", null, null, null, { "Id": this.id, "Layout": layout ? JSON.stringify(layout) : "" }).then(_ => {
-                this._setLayout(layout);
-            });
+        async saveLayout(layout: any): Promise<any> {
+            await this.service.executeAction("System.SaveTabLayout", null, null, null, { "Id": this.id, "Layout": layout ? JSON.stringify(layout) : "" });
+            this._setLayout(layout);
         }
 
         private _updateAttributes(): Vidyano.PersistentObjectAttribute[] {
@@ -3475,14 +3443,16 @@ namespace Vidyano {
             this.notifyPropertyChanged("sortOptions", this._sortOptions = options, oldSortOptions);
         }
 
-        reorder(before: QueryResultItem, item: QueryResultItem, after: QueryResultItem): Promise<QueryResultItem[]> {
+        async reorder(before: QueryResultItem, item: QueryResultItem, after: QueryResultItem): Promise<QueryResultItem[]> {
             if (!this.canReorder)
-                return Promise.reject<QueryResultItem[]>("Unable to reorder, canReorder is set to false.");
+                throw "Unable to reorder, canReorder is set to false.";
 
-            this.queueWork(() => this.service.executeAction("QueryOrder.Reorder", this.parent, this, [before, item, after]).then(po => {
+            return await this.queueWork(async () => {
+                const po = await this.service.executeAction("QueryOrder.Reorder", this.parent, this, [before, item, after]);
                 this._setResult(po.queries[0]._lastResult);
+
                 return this.items;
-            }));
+            });
         }
 
         private _setSortOptionsFromService(options: string | ISortOption[]) {
@@ -3620,129 +3590,123 @@ namespace Vidyano {
             return null;
         }
 
-        getItems(start: number, length: number = this.pageSize, skipQueue: boolean = false): Promise<QueryResultItem[]> {
-            if (!this.hasSearched)
-                return this.search(0).then(() => this.getItems(start, length));
-            else {
-                if (this.totalItems >= 0) {
-                    if (start > this.totalItems)
-                        start = this.totalItems;
-
-                    if (start + length > this.totalItems)
-                        length = this.totalItems - start;
-                }
-
-                if (this.pageSize <= 0 || length === 0)
-                    return Promise.resolve(this.items.slice(start, start + length));
-
-                let startPage = Math.floor(start / this.pageSize);
-                let endPage = Math.floor((start + length - 1) / this.pageSize);
-
-                while (startPage < endPage && this._queriedPages.indexOf(startPage) >= 0)
-                    startPage++;
-                while (endPage > startPage && this._queriedPages.indexOf(endPage) >= 0)
-                    endPage--;
-
-                if (startPage === endPage && this._queriedPages.indexOf(startPage) >= 0)
-                    return Promise.resolve(this.items.slice(start, start + length));
-
-                const clonedQuery = this.clone(this._asLookup);
-                clonedQuery.skip = startPage * this.pageSize;
-                clonedQuery.top = (endPage - startPage + 1) * this.pageSize;
-
-                const work = () => {
-                    if (Enumerable.rangeTo(startPage, endPage).all(p => this._queriedPages.indexOf(p) >= 0))
-                        return Promise.resolve(this.items.slice(start, start + length));
-
-                    return this.service.executeQuery(this.parent, clonedQuery, this._asLookup).then(result => {
-                        for (let p = startPage; p <= endPage; p++)
-                            this._queriedPages.push(p);
-
-                        const isChanged = this.pageSize > 0 && result.totalItems !== this.totalItems;
-                        if (isChanged) {
-                            // NOTE: Query has changed (items added/deleted) so remove old data
-                            this._queriedPages = [];
-                            for (let i = startPage; i <= endPage; i++)
-                                this._queriedPages.push(i);
-
-                            if (!this.selectAll.allSelected) {
-                                /* tslint:disable:no-var */ var selectedItems = {}; /* tslint:enable:no-var */
-                                this.selectedItems.forEach(i => selectedItems[i.id] = i);
-                            }
-
-                            this.items = [];
-                            this._setTotalItems(result.totalItems);
-                        }
-
-                        for (let n = 0; n < clonedQuery.top && (clonedQuery.skip + n < clonedQuery.totalItems); n++) {
-                            if (this.items[clonedQuery.skip + n] == null) {
-                                const item = this.items[clonedQuery.skip + n] = this.service.hooks.onConstructQueryResultItem(this.service, result.items[n], this);
-                                if (this.selectAll.allSelected || (selectedItems && selectedItems[item.id]))
-                                    (<any>item)._isSelected = true;
-                            }
-                        }
-
-                        if (isChanged)
-                            return this.getItems(start, length, true).then(result => {
-                                this.notifyPropertyChanged("items", this.items);
-
-                                return result;
-                            });
-
-                        this._setLastUpdated();
-
-                        return Promise.resolve(this.items.slice(start, start + length));
-                    }, e => {
-                        this.setNotification(e);
-                        return Promise.reject<QueryResultItem[]>(e);
-                    });
-                };
-
-                if (!skipQueue)
-                    return this.queueWork(work, false);
-                else
-                    return work();
+        async getItems(start: number, length: number = this.pageSize, skipQueue: boolean = false): Promise<QueryResultItem[]> {
+            if (!this.hasSearched) {
+                await this.search(0);
+                return this.getItems(start, length);
             }
+
+            if (this.totalItems >= 0) {
+                if (start > this.totalItems)
+                    start = this.totalItems;
+
+                if (start + length > this.totalItems)
+                    length = this.totalItems - start;
+            }
+
+            if (this.pageSize <= 0 || length === 0)
+                return this.items.slice(start, start + length);
+
+            let startPage = Math.floor(start / this.pageSize);
+            let endPage = Math.floor((start + length - 1) / this.pageSize);
+
+            while (startPage < endPage && this._queriedPages.indexOf(startPage) >= 0)
+                startPage++;
+            while (endPage > startPage && this._queriedPages.indexOf(endPage) >= 0)
+                endPage--;
+
+            if (startPage === endPage && this._queriedPages.indexOf(startPage) >= 0)
+                return this.items.slice(start, start + length);
+
+            const clonedQuery = this.clone(this._asLookup);
+            clonedQuery.skip = startPage * this.pageSize;
+            clonedQuery.top = (endPage - startPage + 1) * this.pageSize;
+
+            const work = async () => {
+                if (Enumerable.rangeTo(startPage, endPage).all(p => this._queriedPages.indexOf(p) >= 0))
+                    return this.items.slice(start, start + length);
+
+                try {
+                    const result = await this.service.executeQuery(this.parent, clonedQuery, this._asLookup);
+
+                    for (let p = startPage; p <= endPage; p++)
+                        this._queriedPages.push(p);
+
+                    const isChanged = this.pageSize > 0 && result.totalItems !== this.totalItems;
+                    if (isChanged) {
+                        // NOTE: Query has changed (items added/deleted) so remove old data
+                        this._queriedPages = [];
+                        for (let i = startPage; i <= endPage; i++)
+                            this._queriedPages.push(i);
+
+                        if (!this.selectAll.allSelected) {
+                                /* tslint:disable:no-var */ var selectedItems = {}; /* tslint:enable:no-var */
+                            this.selectedItems.forEach(i => selectedItems[i.id] = i);
+                        }
+
+                        this.items = [];
+                        this._setTotalItems(result.totalItems);
+                    }
+
+                    for (let n = 0; n < clonedQuery.top && (clonedQuery.skip + n < clonedQuery.totalItems); n++) {
+                        if (this.items[clonedQuery.skip + n] == null) {
+                            const item = this.items[clonedQuery.skip + n] = this.service.hooks.onConstructQueryResultItem(this.service, result.items[n], this);
+                            if (this.selectAll.allSelected || (selectedItems && selectedItems[item.id]))
+                                (<any>item)._isSelected = true;
+                        }
+                    }
+
+                    if (isChanged) {
+                        const result = await this.getItems(start, length, true);
+                        this.notifyPropertyChanged("items", this.items);
+
+                        return result;
+                    }
+
+                    this._setLastUpdated();
+
+                    return this.items.slice(start, start + length);
+                }
+                catch (e) {
+                    this.setNotification(e);
+                    throw e;
+                }
+            };
+
+            return !skipQueue ? this.queueWork(work, false) : work();
         }
 
-        search(delay?: number): Promise<QueryResultItem[]> {
+        async search(delay?: number): Promise<QueryResultItem[]> {
             const search = () => {
                 this._queriedPages = [];
                 this._updateItems([], true);
 
                 const now = new Date();
-                return this.queueWork(() => {
+                return this.queueWork(async () => {
                     if (this._lastUpdated && this._lastUpdated > now)
-                        return Promise.resolve(this.items);
-
-                    return this.service.executeQuery(this.parent, this, this._asLookup).then(result => {
-                        if (!this._lastUpdated || this._lastUpdated <= now) {
-                            this.hasSearched = true;
-                            this._setResult(result);
-                        }
-
                         return this.items;
-                    });
+
+                    const result = await this.service.executeQuery(this.parent, this, this._asLookup);
+                    if (!this._lastUpdated || this._lastUpdated <= now) {
+                        this.hasSearched = true;
+                        this._setResult(result);
+                    }
+
+                    return this.items;
                 }, false);
             };
 
-            if (delay === 0)
-                return search();
-            else {
-                if (delay > 0) {
-                    const now = new Date();
-                    return new Promise((resolve, reject) => {
-                        setTimeout(() => {
-                            if (!this._lastUpdated || this._lastUpdated <= now)
-                                search().then(result => resolve(result), e => reject(e));
-                            else
-                                resolve(this.items);
-                        }, delay);
-                    });
-                }
-                else
+            if (delay > 0) {
+                const now = new Date();
+                await new Promise(resolve => setTimeout(resolve, delay));
+
+                if (!this._lastUpdated || this._lastUpdated <= now)
                     return search();
+                else
+                    return this.items;
             }
+
+            return search();
         }
 
         clone(asLookup: boolean = false): Query {
@@ -3811,7 +3775,7 @@ namespace Vidyano {
             this.selectedItems = this.selectedItems;
         }
 
-        private _notifyItemSelectionChanged(item: QueryResultItem) {
+        _notifyItemSelectionChanged(item: QueryResultItem) {
             if (this._isSelectionModifying)
                 return;
 
@@ -4043,28 +4007,27 @@ namespace Vidyano {
             return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);
         }
 
-        refreshDistincts(): Promise<IQueryColumnDistincts> {
-            return this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query, null, { ColumnName: this.name }).then(result => {
-                this.query.columns.filter(q => q !== this).forEach(col => {
-                    if (col.distincts)
-                        col.distincts.isDirty = true;
-                });
-
-                const matchingDistinctsAttr = result.attributes["MatchingDistincts"];
-                const remainingDistinctsAttr = result.attributes["RemainingDistincts"];
-
-                this.distincts = {
-                    matching: <string[]>matchingDistinctsAttr.options,
-                    remaining: <string[]>remainingDistinctsAttr.options,
-                    isDirty: false,
-                    hasMore: matchingDistinctsAttr.typeHints.hasmore || remainingDistinctsAttr.typeHints.hasmore
-                };
-
-                return this.distincts;
+        async refreshDistincts(): Promise<IQueryColumnDistincts> {
+            const result = await this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query, null, { ColumnName: this.name });
+            this.query.columns.filter(q => q !== this).forEach(col => {
+                if (col.distincts)
+                    col.distincts.isDirty = true;
             });
+
+            const matchingDistinctsAttr = result.attributes["MatchingDistincts"];
+            const remainingDistinctsAttr = result.attributes["RemainingDistincts"];
+
+            this.distincts = {
+                matching: <string[]>matchingDistinctsAttr.options,
+                remaining: <string[]>remainingDistinctsAttr.options,
+                isDirty: false,
+                hasMore: matchingDistinctsAttr.typeHints.hasmore || remainingDistinctsAttr.typeHints.hasmore
+            };
+
+            return this.distincts;
         }
 
-        sort(direction: SortDirection, multiSort?: boolean): Promise<QueryResultItem[]> {
+        async sort(direction: SortDirection, multiSort?: boolean): Promise<QueryResultItem[]> {
             if (!!multiSort) {
                 const sortOption = this.query.sortOptions.filter(option => option.column === this)[0];
                 if (sortOption && sortOption.direction === direction)
@@ -4085,15 +4048,14 @@ namespace Vidyano {
             } else
                 this.query.sortOptions = direction !== SortDirection.None ? [{ column: this, direction: direction }] : [];
 
-            return this.query.search().then(result => {
-                const querySettings = (this.service.application.userSettings["QuerySettings"] || (this.service.application.userSettings["QuerySettings"] = {}))[this.query.id] || {};
-                querySettings["sortOptions"] = this.query.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
+            const result = await this.query.search();
+            const querySettings = (this.service.application.userSettings["QuerySettings"] || (this.service.application.userSettings["QuerySettings"] = {}))[this.query.id] || {};
+            querySettings["sortOptions"] = this.query.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
 
-                this.service.application.userSettings["QuerySettings"][this.query.id] = querySettings;
-                return this.service.application.saveUserSettings().then(() => {
-                    return result;
-                });
-            });
+            this.service.application.userSettings["QuerySettings"][this.query.id] = querySettings;
+            await this.service.application.saveUserSettings();
+
+            return result;
         }
 
         private _queryPropertyChanged(sender: Vidyano.Query, args: Vidyano.Common.PropertyChangedArgs) {
@@ -4164,7 +4126,7 @@ namespace Vidyano {
             const oldIsSelected = this._isSelected;
             this.notifyPropertyChanged("isSelected", this._isSelected = val, oldIsSelected);
 
-            (<any>this.query)._notifyItemSelectionChanged(this);
+            this.query._notifyItemSelectionChanged(this);
         }
 
         get ignoreSelect(): boolean {
@@ -4194,15 +4156,17 @@ namespace Vidyano {
         }
 
         getPersistentObject(): Promise<PersistentObject> {
-            return this.query.queueWork(() => {
-                return this.service.getPersistentObject(this.query.parent, this.query.persistentObject.id, this.id).then(po => {
+            return this.query.queueWork(async () => {
+                try {
+                    const po = await this.service.getPersistentObject(this.query.parent, this.query.persistentObject.id, this.id);
                     po.ownerQuery = this.query;
 
                     return po;
-                }, e => {
+                }
+                catch (e) {
                     this.query.setNotification(e);
                     return null;
-                });
+                }
             }, false);
         }
 
@@ -4357,16 +4321,14 @@ namespace Vidyano {
             }));
         }
 
-        getFilter (name: string): QueryFilter {
+        getFilter(name: string): QueryFilter {
             return Enumerable.from(this.filters).first(f => f.name === name);
         }
 
         createNew(): Promise<QueryFilter> {
             const newAction = (<Action>this._filtersAsDetail.details.actions["New"]);
 
-            return this._query.queueWork(() => {
-                return newAction.execute({ skipOpen: true }).then(po => new QueryFilter(po));
-            });
+            return this._query.queueWork(async () => new QueryFilter(await newAction.execute({ skipOpen: true })));
         }
 
         save(filter: QueryFilter = this.currentFilter): Promise<QueryFilter> {
@@ -4385,11 +4347,11 @@ namespace Vidyano {
             if (filter.persistentObject.isNew)
                 this._filtersAsDetail.objects.push(filter.persistentObject);
 
-            return this._query.queueWork(() => {
-                return this._filtersPO.save().then(result => {
-                    this._computeFilters();
-                    return this.getFilter(filter.name);
-                });
+            return this._query.queueWork(async () => {
+                await this._filtersPO.save();
+                this._computeFilters();
+
+                return this.getFilter(filter.name);
             });
         }
 
@@ -4404,13 +4366,13 @@ namespace Vidyano {
             if (!filter.persistentObject.isNew) {
                 filter.persistentObject.isDeleted = true;
 
-                return this._query.queueWork(() => {
+                return this._query.queueWork(async () => {
                     this._filtersPO.beginEdit();
 
-                    return this._filtersPO.save().then(result => {
-                        this._computeFilters();
-                        return null;
-                    });
+                    await this._filtersPO.save();
+                    this._computeFilters();
+
+                    return null;
                 });
             }
 
@@ -4464,8 +4426,9 @@ namespace Vidyano {
             return this._type;
         }
 
-        execute(parameters: any = {}): Promise<any> {
-            return this._query.service.executeAction("QueryFilter.Chart", this._query.parent, this._query, null, Vidyano.extend(parameters, { name: this.name })).then(result => JSON.parse(result.getAttributeValue("Data")));
+        async execute(parameters: any = {}): Promise<any> {
+            const result = await this._query.service.executeAction("QueryFilter.Chart", this._query.parent, this._query, null, Vidyano.extend(parameters, { name: this.name }));
+            return JSON.parse(result.getAttributeValue("Data"));
         }
     }
 
@@ -4608,98 +4571,89 @@ namespace Vidyano {
             this.notifyPropertyChanged("options", this._options = options, oldOptions);
         }
 
-        execute(options: IActionExecuteOptions = {}): Promise<PersistentObject> {
-            return new Promise<PersistentObject>((resolve, reject) => {
-                if (this.canExecute || (options.selectedItems != null && this.selectionRule(options.selectedItems.length)))
-                    this._onExecute(options).then(po => {
-                        resolve(po);
-                    }, e => {
-                        if (options.throwExceptions)
-                            reject(e);
-                        else
-                            this.owner.setNotification(e);
-                    });
-            });
+        async execute(options: IActionExecuteOptions = {}): Promise<PersistentObject> {
+            if (!this.canExecute || (options.selectedItems != null && !this.selectionRule(options.selectedItems.length)))
+                return null;
+
+            try {
+                return await this._onExecute(options);
+            }
+            catch (e) {
+                if (options.throwExceptions)
+                    throw e;
+                else
+                    this.owner.setNotification(e);
+            }
         }
 
-        protected _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
-            const confirmation = this.definition.confirmation && (!noConfirmation) ? this.service.hooks.onActionConfirmation(this, menuOption) : Promise.resolve(true);
+        protected async _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
+            if (this.definition.confirmation && (!noConfirmation) && !await this.service.hooks.onActionConfirmation(this, menuOption))
+                return null;
 
-            return confirmation.then(result => {
-                if (result) {
-                    return this.owner.queueWork(() => {
-                        return new Promise<PersistentObject>((resolve, reject) => {
-                            parameters = this._getParameters(parameters, menuOption);
+            return this.owner.queueWork(async () => {
+                parameters = this._getParameters(parameters, menuOption);
 
-                            if (selectedItems == null && this.query) {
-                                if (this.query.selectAll.allSelected) {
-                                    if (!this.query.selectAll.inverse)
-                                        selectedItems = [];
-                                    else
-                                        selectedItems = this.query.items.filter(i => !i.isSelected);
-                                }
-                                else
-                                    selectedItems = this.query.selectedItems;
+                if (selectedItems == null && this.query) {
+                    if (this.query.selectAll.allSelected) {
+                        if (!this.query.selectAll.inverse)
+                            selectedItems = [];
+                        else
+                            selectedItems = this.query.items.filter(i => !i.isSelected);
+                    }
+                    else
+                        selectedItems = this.query.selectedItems;
 
-                                selectedItems = selectedItems.filter(i => !i.ignoreSelect);
-                            }
-
-                            this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters).then(po => {
-                                if (po != null) {
-                                    if (po.fullTypeName === "Vidyano.Notification") {
-                                        if (po.objectId != null && JSON.parse(po.objectId).dialog) {
-                                            this._setNotification();
-                                            this.service.hooks.onMessageDialog(NotificationType[po.notificationType], po.notification, false, this.service.hooks.service.getTranslatedMessage("OK"));
-                                        }
-                                        else {
-                                            if (this.query && this.definition.refreshQueryOnCompleted)
-                                                /* tslint:disable:no-var */ var notificationPO = po; /* tslint:enable:no-var */
-                                            else
-                                                this._setNotification(po.notification, po.notificationType, po.notificationDuration);
-                                        }
-                                    } else if (po.fullTypeName === "Vidyano.RegisteredStream") {
-                                        this.service._getStream(po);
-                                    } else if (po.fullTypeName === "Vidyano.AddReference") {
-                                        const query = po.queries[0];
-                                        query.parent = this.parent;
-
-                                        this.service.hooks.onSelectReference(query).then(selectedItems => {
-                                            if (!selectedItems || !selectedItems.length)
-                                                return;
-
-                                            this.service.executeAction("Query.AddReference", this.parent, query, selectedItems, { AddAction: this.name }, true).then(() => {
-                                                this.query.search();
-                                            }).catch(e => {
-                                                this.query.setNotification(e);
-                                            });
-                                        });
-                                    } else if (this.parent != null && (po.fullTypeName === this.parent.fullTypeName || po.isNew === this.parent.isNew) && po.id === this.parent.id && po.objectId === this.parent.objectId) {
-                                        this.parent.refreshFromResult(po);
-                                    } else {
-                                        po.ownerQuery = this.query;
-                                        po.ownerPersistentObject = this.parent;
-
-                                        if (!skipOpen)
-                                            this.service.hooks.onOpen(po, false, true);
-                                    }
-                                }
-
-                                if (this.query != null && this.definition.refreshQueryOnCompleted) {
-                                    this.query.search().then(_ => {
-                                        if (notificationPO && !this.query.notification)
-                                            this._setNotification(po.notification, po.notificationType, po.notificationDuration);
-                                    });
-                                }
-
-                                resolve(po);
-                            }, error => {
-                                reject(error);
-                            });
-                        });
-                    });
+                    selectedItems = selectedItems.filter(i => !i.ignoreSelect);
                 }
-                else
-                    return Promise.resolve(null);
+
+                const po = await this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters);
+                if (!po)
+                    return null;
+
+                if (po.fullTypeName === "Vidyano.Notification") {
+                    if (po.objectId != null && JSON.parse(po.objectId).dialog) {
+                        this._setNotification();
+                        this.service.hooks.onMessageDialog(NotificationType[po.notificationType], po.notification, false, this.service.hooks.service.getTranslatedMessage("OK"));
+                    }
+                    else {
+                        if (this.query && this.definition.refreshQueryOnCompleted)
+                            /* tslint:disable:no-var */ var notificationPO = po; /* tslint:enable:no-var */
+                        else
+                            this._setNotification(po.notification, po.notificationType, po.notificationDuration);
+                    }
+                } else if (po.fullTypeName === "Vidyano.RegisteredStream") {
+                    this.service._getStream(po);
+                } else if (po.fullTypeName === "Vidyano.AddReference") {
+                    const query = po.queries[0];
+                    query.parent = this.parent;
+
+                    const selectedItems = await this.service.hooks.onSelectReference(query);
+                    if (selectedItems && selectedItems.length > 0) {
+                        try {
+                            await this.service.executeAction("Query.AddReference", this.parent, query, selectedItems, { AddAction: this.name }, true);
+                            await this.query.search();
+                        }
+                        catch (e) {
+                            this.query.setNotification(e);
+                        }
+                    }
+                } else if (this.parent != null && (po.fullTypeName === this.parent.fullTypeName || po.isNew === this.parent.isNew) && po.id === this.parent.id && po.objectId === this.parent.objectId) {
+                    this.parent.refreshFromResult(po);
+                } else {
+                    po.ownerQuery = this.query;
+                    po.ownerPersistentObject = this.parent;
+
+                    if (!skipOpen)
+                        this.service.hooks.onOpen(po, false, true);
+                }
+
+                if (this.query != null && this.definition.refreshQueryOnCompleted) {
+                    await this.query.search();
+                    if (notificationPO && !this.query.notification)
+                        this._setNotification(po.notification, po.notificationType, po.notificationDuration);
+                }
+
+                return po;
             });
         }
 
@@ -4805,27 +4759,22 @@ namespace Vidyano {
                 this.canExecute = isDirty;
             }
 
-            protected _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
-                return new Promise<PersistentObject>((resolve, reject) => {
-                    this.parent.save().then(() => {
-                        if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
-                            const edit = this.parent.actions["Edit"];
-                            const endEdit = this.parent.actions["EndEdit"];
+            protected async _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
+                await this.parent.save();
+                if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
+                    const edit = this.parent.actions["Edit"];
+                    const endEdit = this.parent.actions["EndEdit"];
 
-                            if (this.parent.stateBehavior.indexOf("StayInEdit") !== -1 && endEdit != null) {
-                                endEdit.canExecute = false;
-                            } else if (edit) {
-                                edit.isVisible = true;
-                                if (endEdit != null)
-                                    endEdit.isVisible = false;
-                            }
-                        }
+                    if (this.parent.stateBehavior.indexOf("StayInEdit") !== -1 && endEdit != null) {
+                        endEdit.canExecute = false;
+                    } else if (edit) {
+                        edit.isVisible = true;
+                        if (endEdit != null)
+                            endEdit.isVisible = false;
+                    }
+                }
 
-                        resolve(this.parent);
-                    }, e => {
-                        reject(e);
-                    });
-                });
+                return this.parent;
             }
         }
 
@@ -4835,25 +4784,20 @@ namespace Vidyano {
                 this.dependentActions = ["CancelSave"];
             }
 
-            protected _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
+            protected async _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
                 const wasNew = this.parent.isNew;
-                return new Promise<PersistentObject>((resolve, reject) => {
-                    this.parent.save().then(() => {
-                        if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
-                            if (wasNew && this.parent.ownerAttributeWithReference == null && this.parent.stateBehavior.indexOf("OpenAfterNew") !== -1)
-                                this.parent.queueWork(() => this.service.getPersistentObject(this.parent.parent, this.parent.id, this.parent.objectId)).then(po2 => {
-                                    this.service.hooks.onOpen(po2, true);
-                                    resolve(this.parent);
-                                }, reject);
-                            else {
-                                this.service.hooks.onClose(this.parent);
-                                resolve(this.parent);
-                            }
-                        }
-                        else
-                            resolve(this.parent);
-                    }, reject);
-                });
+
+                await this.parent.save();
+                if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
+                    if (wasNew && this.parent.ownerAttributeWithReference == null && this.parent.stateBehavior.indexOf("OpenAfterNew") !== -1) {
+                        const newPO = await this.parent.queueWork(() => this.service.getPersistentObject(this.parent.parent, this.parent.id, this.parent.objectId));
+                        this.service.hooks.onOpen(newPO, true);
+                    }
+                    else
+                        this.service.hooks.onClose(this.parent);
+                }
+
+                return this.parent;
             }
         }
 
@@ -4905,10 +4849,13 @@ namespace Vidyano {
                 super(service, definition, owner);
             }
 
-            protected _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
+            protected async _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
                 const owner = this.query ? this.query.persistentObject : this.parent;
                 const helpWindow = window.open();
-                return this.service.executeAction("PersistentObject.ShowHelp", owner, null, null).then(po => {
+
+                try {
+                    const po = await this.service.executeAction("PersistentObject.ShowHelp", owner, null, null);
+
                     if (po != null) {
                         if (po.fullTypeName === "Vidyano.RegisteredStream" || po.getAttributeValue("Type") === "0") {
                             helpWindow.close();
@@ -4920,11 +4867,13 @@ namespace Vidyano {
                     }
                     else
                         helpWindow.close();
-                    return null;
-                }, e => {
+                }
+                catch (e) {
                     helpWindow.close();
                     this.owner.setNotification(e);
-                });
+                }
+
+                return null;
             }
         }
 
@@ -5161,17 +5110,17 @@ namespace Vidyano {
             return this._queryRe;
         }
 
-        saveUserSettings(): Promise<any> {
+        async saveUserSettings(): Promise<any> {
             if (this.userSettingsId !== "00000000-0000-0000-0000-000000000000") {
-                return this.service.getPersistentObject(null, this.userSettingsId, null).then(po => {
-                    po.attributes["Settings"].value = JSON.stringify(this.userSettings);
-                    return po.save().then(() => this.userSettings);
-                });
+                const po = await this.service.getPersistentObject(null, this.userSettingsId, null);
+                po.attributes["Settings"].value = JSON.stringify(this.userSettings);
+
+                await po.save();
             }
             else
                 localStorage["UserSettings"] = JSON.stringify(this.userSettings);
 
-            return Promise.resolve(this.userSettings);
+            return this.userSettings;
         }
 
         _updateSession(session: any) {

@@ -65,18 +65,17 @@ namespace Vidyano.WebComponents {
             this.app.redirectToSignOut(false);
         }
 
-        feedback() {
-            this.service.getPersistentObject(null, this.service.application.feedbackId).then(po => {
-                const commentAttr = po.getAttribute("Comment");
-                const commentOptions = ["Browser: " + navigator.userAgent, "Vidyano Client: " + Vidyano.version];
-                const location = window.location.toString();
-                if (!location.contains("FromAction/"))
-                    commentOptions.push("Url: " + location);
-                commentAttr.options = commentOptions;
-                commentAttr.isValueChanged = true;
+        async feedback() {
+            const po = await this.service.getPersistentObject(null, this.service.application.feedbackId);
+            const commentAttr = po.getAttribute("Comment");
+            const commentOptions = ["Browser: " + navigator.userAgent, "Vidyano Client: " + Vidyano.version];
+            const location = window.location.toString();
+            if (!location.contains("FromAction/"))
+                commentOptions.push("Url: " + location);
+            commentAttr.options = commentOptions;
+            commentAttr.isValueChanged = true;
 
-                this.service.hooks.onOpen(po, false, true);
-            });
+            this.service.hooks.onOpen(po, false, true);
         }
 
         userSettings() {
