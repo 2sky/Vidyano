@@ -87,6 +87,9 @@ namespace Vidyano.WebComponents.Attributes {
                 const result = await this.attribute.lookup.search();
                 this.attribute.lookup.textSearch = null;
 
+                if (!result)
+                    return;
+
                 if (result.length === 1) {
                     await this.attribute.changeReference([result[0]]);
                     this._update();

@@ -1035,7 +1035,7 @@ namespace Vidyano {
             return this.hooks.onConstructPersistentObject(this, result.result);
         }
 
-        async executeQuery(parent: PersistentObject, query: Query, asLookup: boolean = false): Promise<any> {
+        async executeQuery(parent: PersistentObject, query: Query, asLookup: boolean = false, throwExceptions?: boolean): Promise<any> {
             const data = this._createData("executeQuery");
             data.query = query._toServiceObject();
 
@@ -1053,7 +1053,9 @@ namespace Vidyano {
             }
             catch (e) {
                 query.setNotification(e);
-                throw e;
+
+                if (throwExceptions)
+                    throw e;
             }
         }
 
@@ -2172,7 +2174,7 @@ namespace Vidyano {
                                 this.ownerAttributeWithReference.value = this.breadcrumb;
                         }
                         else if (this.ownerQuery)
-                            await this.ownerQuery.search();
+                            this.ownerQuery.search();
                     }
                     else if (!StringEx.isNullOrWhiteSpace(this.notification))
                         throw this.notification;
@@ -2357,7 +2359,7 @@ namespace Vidyano {
             if (result.queriesToRefresh) {
                 result.queriesToRefresh.forEach(id => {
                     const query = Enumerable.from(this.queries).firstOrDefault(q => q.id === id || q.name === id);
-                    if (query && (query.hasSearched || query.totalItems != null)) {
+                    if (query && (query.hasSearched || query.notification || query.totalItems != null)) {
                         query.search();
                     }
                 });
@@ -3592,7 +3594,7 @@ namespace Vidyano {
 
         async getItems(start: number, length: number = this.pageSize, skipQueue: boolean = false): Promise<QueryResultItem[]> {
             if (!this.hasSearched) {
-                await this.search(0);
+                await this.search({ delay: 0, throwExceptions: true });
                 return this.getItems(start, length);
             }
 
@@ -3676,7 +3678,14 @@ namespace Vidyano {
             return !skipQueue ? this.queueWork(work, false) : work();
         }
 
-        async search(delay?: number): Promise<QueryResultItem[]> {
+        search(delay?: number): Promise<QueryResultItem[]>;
+        search(options: { delay?: number; throwExceptions?: boolean; }): Promise<QueryResultItem[]>;
+        async search(options: { delay?: number; throwExceptions?: boolean; }): Promise<QueryResultItem[]> {
+            if (typeof options === "number") {
+                options = { delay: options };
+                console.warn(`Calling search with a single delay parameter is deprecated. Use search({delay: ${options.delay}) instead.`);
+            }
+
             const search = () => {
                 this._queriedPages = [];
                 this._updateItems([], true);
@@ -3686,7 +3695,10 @@ namespace Vidyano {
                     if (this._lastUpdated && this._lastUpdated > now)
                         return this.items;
 
-                    const result = await this.service.executeQuery(this.parent, this, this._asLookup);
+                    const result = await this.service.executeQuery(this.parent, this, this._asLookup, !!options.throwExceptions);
+                    if (!result)
+                        return null;
+
                     if (!this._lastUpdated || this._lastUpdated <= now) {
                         this.hasSearched = true;
                         this._setResult(result);
@@ -3696,9 +3708,9 @@ namespace Vidyano {
                 }, false);
             };
 
-            if (delay > 0) {
+            if (options.delay > 0) {
                 const now = new Date();
-                await new Promise(resolve => setTimeout(resolve, delay));
+                await new Promise(resolve => setTimeout(resolve, options.delay));
 
                 if (!this._lastUpdated || this._lastUpdated <= now)
                     return search();
@@ -4629,11 +4641,12 @@ namespace Vidyano {
                         if (selectedItems && selectedItems.length > 0) {
                             try {
                                 await this.service.executeAction("Query.AddReference", this.parent, query, selectedItems, { AddAction: this.name }, true);
-                                await this.query.search();
                             }
                             catch (e) {
                                 this.query.setNotification(e);
                             }
+
+                            await this.query.search();
                         }
                     } else if (this.parent != null && (po.fullTypeName === this.parent.fullTypeName || po.isNew === this.parent.isNew) && po.id === this.parent.id && po.objectId === this.parent.objectId) {
                         this.parent.refreshFromResult(po);
