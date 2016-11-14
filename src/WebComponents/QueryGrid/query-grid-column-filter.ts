@@ -268,9 +268,6 @@ namespace Vidyano.WebComponents {
                 await this.column.query.search();
                 await this.column.column.refreshDistincts();
             }
-            catch (e) {
-                this.app.showAlert(e, Vidyano.NotificationType.Error);
-            }
             finally {
                 this._setLoading(false);
             }
@@ -323,7 +320,12 @@ namespace Vidyano.WebComponents {
             this.searchText = "";
 
             this._renderDistincts();
-            await this.column.query.search();
+            if (!await this.column.query.search())
+                return;
+
+            this._renderDistincts();
+            this._updateFilters();
+            this._updateDistincts();
         }
 
         private _inverse(e: Event) {
