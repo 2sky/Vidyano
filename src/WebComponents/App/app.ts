@@ -274,7 +274,6 @@ namespace Vidyano.WebComponents {
 
         private _setInitializing: (init: boolean) => void;
         private _setKeys: (keys: string) => void;
-        private _setProgramUnit: (pu: ProgramUnit) => void;
         private _setCurrentRoute: (route: AppRoute) => void;
         private _setBarebone: (barebone: boolean) => void;
         private _setProfilerLoaded: (val: boolean) => void;
