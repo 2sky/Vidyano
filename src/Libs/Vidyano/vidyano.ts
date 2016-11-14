@@ -2168,8 +2168,8 @@ namespace Vidyano {
                                 parent.beginEdit();
                                 this.ownerAttributeWithReference.changeReference([po.objectId]);
                             }
-                            else if ((<any>this.ownerAttributeWithReference).value !== this.breadcrumb)
-                                (<any>this.ownerAttributeWithReference).value = this.breadcrumb;
+                            else if (this.ownerAttributeWithReference.value !== this.breadcrumb)
+                                this.ownerAttributeWithReference.value = this.breadcrumb;
                         }
                         else if (this.ownerQuery)
                             await this.ownerQuery.search();
@@ -3775,7 +3775,7 @@ namespace Vidyano {
             this.selectedItems = this.selectedItems;
         }
 
-        private _notifyItemSelectionChanged(item: QueryResultItem) {
+        _notifyItemSelectionChanged(item: QueryResultItem) {
             if (this._isSelectionModifying)
                 return;
 
@@ -4126,7 +4126,7 @@ namespace Vidyano {
             const oldIsSelected = this._isSelected;
             this.notifyPropertyChanged("isSelected", this._isSelected = val, oldIsSelected);
 
-            (<any>this.query)._notifyItemSelectionChanged(this);
+            this.query._notifyItemSelectionChanged(this);
         }
 
         get ignoreSelect(): boolean {
