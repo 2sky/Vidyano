@@ -425,9 +425,11 @@ namespace Vidyano.WebComponents {
 
         createServiceHooks(): ServiceHooks {
             if (this.hooks) {
-                const ctor = this.hooks.split(".").reduce((obj: any, path: string) => obj[path], window);
+                const ctor = this.hooks.split(".").reduce((obj: any, path: string) => obj && obj[path], window);
                 if (ctor)
                     return new ctor(this);
+                else
+                    console.error(`Service hooks "${this.hooks}" was not found.`);
             }
 
             return new AppServiceHooks(this);
