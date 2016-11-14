@@ -4607,50 +4607,51 @@ namespace Vidyano {
                 }
 
                 const po = await this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters);
-                if (!po)
-                    return null;
-
-                if (po.fullTypeName === "Vidyano.Notification") {
-                    if (po.objectId != null && JSON.parse(po.objectId).dialog) {
-                        this._setNotification();
-                        this.service.hooks.onMessageDialog(NotificationType[po.notificationType], po.notification, false, this.service.hooks.service.getTranslatedMessage("OK"));
-                    }
-                    else {
-                        if (this.query && this.definition.refreshQueryOnCompleted)
+                if (po) {
+                    if (po.fullTypeName === "Vidyano.Notification") {
+                        if (po.objectId != null && JSON.parse(po.objectId).dialog) {
+                            this._setNotification();
+                            this.service.hooks.onMessageDialog(NotificationType[po.notificationType], po.notification, false, this.service.hooks.service.getTranslatedMessage("OK"));
+                        }
+                        else {
+                            if (this.query && this.definition.refreshQueryOnCompleted)
                             /* tslint:disable:no-var */ var notificationPO = po; /* tslint:enable:no-var */
-                        else
-                            this._setNotification(po.notification, po.notificationType, po.notificationDuration);
-                    }
-                } else if (po.fullTypeName === "Vidyano.RegisteredStream") {
-                    this.service._getStream(po);
-                } else if (po.fullTypeName === "Vidyano.AddReference") {
-                    const query = po.queries[0];
-                    query.parent = this.parent;
-
-                    const selectedItems = await this.service.hooks.onSelectReference(query);
-                    if (selectedItems && selectedItems.length > 0) {
-                        try {
-                            await this.service.executeAction("Query.AddReference", this.parent, query, selectedItems, { AddAction: this.name }, true);
-                            await this.query.search();
+                            else
+                                this._setNotification(po.notification, po.notificationType, po.notificationDuration);
                         }
-                        catch (e) {
-                            this.query.setNotification(e);
-                        }
-                    }
-                } else if (this.parent != null && (po.fullTypeName === this.parent.fullTypeName || po.isNew === this.parent.isNew) && po.id === this.parent.id && po.objectId === this.parent.objectId) {
-                    this.parent.refreshFromResult(po);
-                } else {
-                    po.ownerQuery = this.query;
-                    po.ownerPersistentObject = this.parent;
+                    } else if (po.fullTypeName === "Vidyano.RegisteredStream") {
+                        this.service._getStream(po);
+                    } else if (po.fullTypeName === "Vidyano.AddReference") {
+                        const query = po.queries[0];
+                        query.parent = this.parent;
 
-                    if (!skipOpen)
-                        this.service.hooks.onOpen(po, false, true);
+                        const selectedItems = await this.service.hooks.onSelectReference(query);
+                        if (selectedItems && selectedItems.length > 0) {
+                            try {
+                                await this.service.executeAction("Query.AddReference", this.parent, query, selectedItems, { AddAction: this.name }, true);
+                                await this.query.search();
+                            }
+                            catch (e) {
+                                this.query.setNotification(e);
+                            }
+                        }
+                    } else if (this.parent != null && (po.fullTypeName === this.parent.fullTypeName || po.isNew === this.parent.isNew) && po.id === this.parent.id && po.objectId === this.parent.objectId) {
+                        this.parent.refreshFromResult(po);
+                    } else {
+                        po.ownerQuery = this.query;
+                        po.ownerPersistentObject = this.parent;
+
+                        if (!skipOpen)
+                            this.service.hooks.onOpen(po, false, true);
+                    }
                 }
 
                 if (this.query != null && this.definition.refreshQueryOnCompleted) {
-                    await this.query.search();
-                    if (notificationPO && !this.query.notification)
-                        this._setNotification(po.notification, po.notificationType, po.notificationDuration);
+                    // NOTE: Don't wait for search to complete
+                    this.query.search().then(() => {
+                        if (notificationPO && !this.query.notification)
+                            this._setNotification(po.notification, po.notificationType, po.notificationDuration);
+                    });
                 }
 
                 return po;
