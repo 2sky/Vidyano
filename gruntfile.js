@@ -42,6 +42,12 @@ module.exports = function(grunt) {
         },
         clean: ["dist/Vidyano.Web2/src/"],
         copy: {
+            tslib: {
+                cwd: "node_modules/tslib",
+                src: "tslib.js",
+                dest: "src/Libs/tslib/",
+                expand: true
+            },
             dist: {
                 cwd: "src",
                 src: "**",
@@ -120,12 +126,14 @@ module.exports = function(grunt) {
     grunt.registerTask("default", [
         "bower:install",
         "sass",
+        "copy:tslib",
         "ts"
     ]);
 
     grunt.registerTask("nuget", [
         "bower:install",
         "sass",
+        "copy:tslib",
         "ts",
         "tslint",
         "clean",
@@ -140,6 +148,7 @@ module.exports = function(grunt) {
     grunt.registerTask("cdn", [
         "bower:install",
         "sass",
+        "copy:tslib",
         "ts",
         "clean",
         "copy:dist",

@@ -219,6 +219,7 @@ ModelManifest.xml
 /src/Libs/pathjs/
 /src/Libs/polymer/
 /src/Libs/sortable/
+/src/Libs/tslib/
 /src/Libs/webcomponentsjs/
 /src/Test/*.js
 /dist/Vidyano.Web2/src
