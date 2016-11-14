@@ -4572,7 +4572,7 @@ namespace Vidyano {
         }
 
         async execute(options: IActionExecuteOptions = {}): Promise<PersistentObject> {
-            if (!this.canExecute || (options.selectedItems != null && !this.selectionRule(options.selectedItems.length)))
+            if (!this.canExecute && !(options.selectedItems != null && this.selectionRule(options.selectedItems.length)))
                 return null;
 
             try {
