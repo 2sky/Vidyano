@@ -4340,7 +4340,10 @@ namespace Vidyano {
         createNew(): Promise<QueryFilter> {
             const newAction = (<Action>this._filtersAsDetail.details.actions["New"]);
 
-            return this._query.queueWork(async () => new QueryFilter(await newAction.execute({ skipOpen: true })));
+            return this._query.queueWork(async () => {
+                const po = await newAction.execute({ skipOpen: true });
+                return new QueryFilter(po);
+            });
         }
 
         save(filter: QueryFilter = this.currentFilter): Promise<QueryFilter> {
