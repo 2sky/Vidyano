@@ -314,7 +314,7 @@ namespace Vidyano.WebComponents {
                 Vidyano.Path.root(base.href);
                 Vidyano.Path.history.listen();
 
-                Vidyano.Path["dispatch"](document.location.toString().substr(base.href.length));
+                Vidyano.Path["dispatch"](document.location.toString().substr(base.href.length).replace(document.location.hash, ""));
             }
 
             if (!this.label)
