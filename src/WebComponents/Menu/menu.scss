@@ -174,7 +174,7 @@ $backgroundColor: $blue-grey-900;
     &[collapsed] {
         header {
             vi-icon[header] {
-                fill: var(--vi-menu-color);
+                fill: var(--vi-menu-color, $color);
                 width: var(--theme-h1);
                 height: var(--theme-h1);
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
