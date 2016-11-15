@@ -188,13 +188,13 @@
             }
         }
 
-        async scrollToTop(animated?: boolean) {
+        async scrollToTop(offsetTop: number = 0, animated?: boolean) {
             if (animated) {
                 await this._initializeZenscroll();
-                this._zenscroll.toY(0);
+                this._zenscroll.toY(offsetTop);
             }
             else
-                this.$["wrapper"].scrollTop = 0;
+                this.$["wrapper"].scrollTop = offsetTop;
         }
 
         async scrollToBottom(animated?: boolean) {
