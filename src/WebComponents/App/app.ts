@@ -616,9 +616,9 @@ namespace Vidyano.WebComponents {
             if (initializing)
                 return;
 
-            let currentRoute = this.currentRoute;
+            let currentPath = this.path;
             this._routeUpdater = this._routeUpdater.then(async () => {
-                if (this.path !== path || this.currentRoute !== currentRoute)
+                if (currentPath !== this.path)
                     return;
 
                 path = Vidyano.WebComponents.App.removeRootPath(this._convertPath(this.service.application, path));
@@ -654,23 +654,21 @@ namespace Vidyano.WebComponents {
                     return;
                 }
 
-                if (!!this.currentRoute && newRoute === this.currentRoute && this.currentRoute.matchesParameters(mappedPathRoute.params))
-                    return;
-
-                return (this.currentRoute ? currentRoute.deactivate() : Promise.resolve(true)).then(proceed => {
-                    if (!proceed || currentRoute !== this.currentRoute)
+                if (this.currentRoute) {
+                    if (this.currentRoute === newRoute && this.currentRoute.matchesParameters(mappedPathRoute.params))
                         return;
 
-                    Enumerable.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
+                    if (!await this.currentRoute.deactivate())
+                        return;
+                }
 
-                    if (!!newRoute) {
-                        newRoute.activate(mappedPathRoute.params);
-                        this._setCurrentRoute(newRoute);
-                    } else
-                        this._setCurrentRoute(null);
+                Enumerable.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
 
-                    this._appRoutePresenter.notFound = !!path && !this.currentRoute;
-                });
+                if (!!newRoute)
+                    await newRoute.activate(mappedPathRoute.params);
+
+                this._setCurrentRoute(newRoute);
+                this._appRoutePresenter.notFound = !!path && !this.currentRoute;
             });
         }
 
