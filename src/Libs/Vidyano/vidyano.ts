@@ -21,7 +21,7 @@ declare const Set: ISetConstructor;
 namespace Vidyano {
     "use strict";
 
-    export const version = "latest";
+    export let version = "latest";
 
     export let cookiePrefix: string;
     if (document.head) {
