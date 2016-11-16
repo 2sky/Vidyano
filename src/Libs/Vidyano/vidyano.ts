@@ -1137,10 +1137,12 @@ namespace Vidyano {
 
                 const origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : "");
                 if (this.serviceUri.startsWith("http") && !this.serviceUri.startsWith(origin) + "/") {
+                    data.parent = parent.toServiceObject();
+
                     const inputsEnum = inputs.getEnumerator();
                     while (inputsEnum.moveNext()) {
                         const input = inputsEnum.current().value;
-                        const attribute = parent.getAttribute(inputsEnum.current().key);
+                        const attribute = Enumerable.from(data.parent.attributes).first(a => a.name === inputsEnum.current().key);
 
                         await new Promise((resolve, reject) => {
                             const file = input.files[0];
@@ -1166,8 +1168,6 @@ namespace Vidyano {
                             reader.readAsDataURL(file);
                         });
                     }
-
-                    data.parent = parent.toServiceObject();
 
                     const result = await this._postJSON(this._createUri("ExecuteAction"), data);
                     return await executeThen(result);
