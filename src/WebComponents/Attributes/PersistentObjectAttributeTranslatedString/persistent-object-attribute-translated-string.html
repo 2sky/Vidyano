@@ -18,7 +18,7 @@
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]" reverse-content$="[[multiline]]">
                 <template is="dom-if" if="[[!multiline]]">
-                    <input content class="flex" value="{{value::input}}" type="text" on-blur="_editInputBlur" readonly$="[[readOnly]]">
+                    <input content class="flex" value="{{value::input}}" type="text" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off">
                 </template>
                 <template is="dom-if" if="[[multiline]]">
                     <vi-scroller content class="fit">
@@ -47,7 +47,7 @@
                     <li>
                         <label>[[string.label]]</label>
                         <template is="dom-if" if="[[!multiline]]">
-                            <input value="{{string.value::input}}" type="text" readonly$="[[readonly]]">
+                            <input value="{{string.value::input}}" type="text" readonly$="[[readonly]]" autocomplete="off">
                         </template>
                         <template is="dom-if" if="[[multiline]]">
                             <textarea rows="5" value="{{string.value::input}}"></textarea>

@@ -31,16 +31,16 @@
             <iron-collapse id="vidyano">
                 <div>
                     <label for="user">[[translateMessage('UserName', isAttached)]]</label>
-                    <input value="{{userName::input}}" id="user" type="text" disabled$="[[signingIn]]" on-keydown="_keydown" />
+                    <input value="{{userName::input}}" id="user" type="text" disabled$="[[signingIn]]" on-keydown="_keydown" autocomplete="off">
                 </div>
                 <div>
                     <label for="pass">[[translateMessage('Password', isAttached)]]</label>
-                    <input value="{{password::input}}" id="pass" type="password" disabled$="[[signingIn]]" on-keydown="_keydown" />
+                    <input value="{{password::input}}" id="pass" type="password" disabled$="[[signingIn]]" on-keydown="_keydown">
                 </div>
                 <template is="dom-if" if="[[twoFactorAuthentication]]">
                     <div>
                         <label for="twofactor">[[translateMessage('TwoFactorCode', isAttached)]]</label>
-                        <input value="{{twoFactorCode::input}}" id="twofactor" type="number" disabled$="[[signingIn]]" on-keydown="_keydown" />
+                        <input value="{{twoFactorCode::input}}" id="twofactor" type="number" disabled$="[[signingIn]]" on-keydown="_keydown">
                     </div>
                 </template>
                 <div class="layout horizontal">

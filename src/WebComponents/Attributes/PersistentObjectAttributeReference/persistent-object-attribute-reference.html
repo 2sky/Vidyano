@@ -48,7 +48,7 @@
             </template>
             <template is="dom-if" if="[[!attribute.selectInPlace]]">
                 <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                    <input content value="{{filter::input}}" on-blur="_filterBlur" readonly$="[[attribute.isReadOnly]]" />
+                    <input content value="{{filter::input}}" on-blur="_filterBlur" readonly$="[[attribute.isReadOnly]]" autocomplete="off">
                     <a class="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
                         <vi-icon source="ArrowUpRight"></vi-icon>
                     </a>

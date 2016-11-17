@@ -11,7 +11,7 @@
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <vi-popup sticky content disabled$="[[_disablePopup(readOnly, attribute.parent.isFrozen)]]">
                     <div header class="layout horizontal flex">
-                        <input class="flex" header value="[[attribute.displayValue]]" readonly />
+                        <input class="flex" header value="[[attribute.displayValue]]" readonly>
                         <vi-icon source="CaretDown" hidden$="[[readOnly]]"></vi-icon>
                     </div>
                     <ul content>

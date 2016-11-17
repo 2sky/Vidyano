@@ -8,7 +8,7 @@
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <div content class="layout horizontal">
                     <span class="before" hidden$="[[!unitBefore]]">[[unitBefore]]</span>
-                    <input id="input" class="flex" value="{{value::input}}" type$="[[inputtype]]" on-keypress="_keypress" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]">
+                    <input id="input" class="flex" value="{{value::input}}" type$="[[inputtype]]" on-keypress="_keypress" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off">
                     <span class="after" hidden$="[[!unitAfter]]">[[unitAfter]]</span>
                 </div>
             </vi-persistent-object-attribute-edit>
