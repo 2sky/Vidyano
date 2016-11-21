@@ -128,6 +128,10 @@
             return html;
         }
 
+        private _textInline(text: string): string {
+            return text && text.replace(/<br>/g, " ");
+        }
+
         private _computeHidden(text: string, duration: number): boolean {
             return text == null || duration > 0;
         }
