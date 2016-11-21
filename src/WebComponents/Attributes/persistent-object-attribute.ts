@@ -83,6 +83,10 @@ namespace Vidyano.WebComponents.Attributes {
             return isReadOnly || disabled;
         }
 
+        private _computePlaceholder(attribute: Vidyano.PersistentObjectAttribute): string {
+            return attribute ? this.attribute.getTypeHint("placeholder", "", void 0, true) : "";
+        }
+
         private _computeOptions(options: string[] | Common.IKeyValuePair[], isRequired: boolean, type: string): string[] | Common.IKeyValuePair[] {
             if (!options || options.length === 0 || isRequired || ["KeyValueList", "DropDown", "ComboBox"].indexOf(type) === -1)
                 return options;
@@ -163,6 +167,10 @@ namespace Vidyano.WebComponents.Attributes {
                     type: Object,
                     notify: true,
                     observer: "_valueChanged"
+                };
+                info.properties["placeholder"] = {
+                    type: String,
+                    computed: "_computePlaceholder(attribute)"
                 };
                 info.properties["validationError"] = {
                     type: Object,

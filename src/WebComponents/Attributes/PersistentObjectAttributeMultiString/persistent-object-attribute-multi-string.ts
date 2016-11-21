@@ -25,7 +25,8 @@ namespace Vidyano.WebComponents.Attributes {
 			disabled: {
 				type: Boolean,
 				reflectToAttribute: true
-			}
+			},
+            placeholder: String
 		}
     })
     export class PersistentObjectAttributeMultiStringItem extends WebComponent {

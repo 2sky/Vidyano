@@ -61,7 +61,8 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 value: false
-            }
+            },
+            placeholder: String
         },
         listeners: {
             "keydown": "_keydown"
