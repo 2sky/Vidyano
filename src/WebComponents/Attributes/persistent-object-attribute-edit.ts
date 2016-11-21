@@ -36,20 +36,8 @@ namespace Vidyano.WebComponents.Attributes {
             this._setFocus(false);
         }
 
-        private _showError() {
-            if (!this.attribute || !this.attribute.validationError)
-                return;
-
-            this.app.showMessageDialog({
-                title: this.app.translateMessage(NotificationType[NotificationType.Error]),
-                titleIcon: "Notification_Error",
-                actions: [this.translations.OK],
-                message: this.attribute.validationError
-            });
-        }
-
         private _computeHasError(validationError: string): boolean {
-            return !StringEx.isNullOrEmpty(validationError);
+            return !!validationError;
         }
     }
 }

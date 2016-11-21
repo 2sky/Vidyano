@@ -1,0 +1,38 @@
+@import "../../vars.scss";
+
+:host {
+    width: var(--theme-h2);
+    height: var(--theme-h2);
+    line-height: var(--theme-h2);
+    padding: 0;
+    background-color: transparent;
+    cursor: pointer;
+
+    vi-icon {
+        width: var(--theme-h2);
+        height: var(--theme-h2);
+        --vi-icon-width: var(--theme-h3);
+        --vi-icon-height: var(--theme-h3);
+        fill: var(--theme-color-error);
+    }
+
+    pre[content] {
+        padding: var(--theme-h5);
+        border: 1px solid var(--theme-color-error);
+    }
+
+    #content {
+        &.top {
+            -moz-transform: translateY(var(--theme-h4));
+            -ms-transform: translateY(var(--theme-h4));
+            -o-transform: translateY(var(--theme-h4));
+            -webkit-transform: translateY(var(--theme-h4));
+            transform: translateY(var(--theme-h4));
+        }
+
+        &.bottom {
+            -webkit-transform: translateY(calc(var(--theme-h4) * -1));
+            transform: translateY(calc(var(--theme-h4) * -1));
+        }
+    }
+}

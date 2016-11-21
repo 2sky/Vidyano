@@ -2,24 +2,26 @@
 <link rel="import" href="../../Style/style.html" />
 <link rel="import" href="../../Scroller/scroller.html" />
 <link rel="import" href="../../SizeTracker/size-tracker.html" />
+<link rel="import" href="../PersistentObjectAttributeValidationError/persistent-object-attribute-validation-error.html" />
 
 <dom-module id="vi-persistent-object-attribute-as-detail-row">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-as-detail-row.css" />
         <template is="dom-repeat" items="[[columns]]" as="column" filter="_isColumnVisible">
-            <div class="column" data-column$="[[column.name]]">
+            <div class="column layout horizontal" data-column$="[[column.name]]">
                 <template is="dom-if" if="[[editing]]">
                     <template is="dom-if" if="[[_isPresenterAvailable(fullEdit, softEdit)]]">
-                        <vi-persistent-object-attribute-presenter no-label attribute="[[_getAttributeForColumn(serviceObject, column)]]" soft-edit-only$="[[_isSoftEditOnly(fullEdit, softEdit)]]"></vi-persistent-object-attribute-presenter>
+                        <vi-persistent-object-attribute-presenter class="flex" no-label attribute="[[_getAttributeForColumn(serviceObject, column)]]" soft-edit-only$="[[_isSoftEditOnly(fullEdit, softEdit)]]"></vi-persistent-object-attribute-presenter>
                     </template>
                     <template is="dom-if" if="[[!fullEdit]]">
-                        <div pre-edit on-tap="_setFullEdit">
-                            <span>[[_getDisplayValue(serviceObject, column, fullEdit)]]</span>
+                        <div pre-edit on-tap="_setFullEdit" class="flex layout horizontal-reverse">
+                            <vi-persistent-object-attribute-validation-error attribute="[[_getAttributeForColumn(serviceObject, column)]]"></vi-persistent-object-attribute-validation-error>
+                            <span class="flex">[[_getDisplayValue(serviceObject, column, fullEdit, serviceObject.lastUpdated)]]</span>
                         </div>
                     </template>
                 </template>
                 <template is="dom-if" if="[[!editing]]">
-                    <span>[[_getDisplayValue(serviceObject, column)]]</span>
+                    <span class="flex">[[_getDisplayValue(serviceObject, column, lastUpdated)]]</span>
                 </template>
             </div>
         </template>

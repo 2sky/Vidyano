@@ -29,13 +29,29 @@
         > [pre-edit] {
             height: var(--theme-h2);
             line-height: calc(var(--theme-h2) - 2px);
-            border: 1px solid var(--theme-light-border);
-            box-sizing: border-box;
+
+            span {
+                display: block;
+                position: relative;
+                border: 1px solid var(--theme-light-border);
+                box-sizing: border-box;
+            }
+
+            vi-persistent-object-attribute-validation-error:not([hidden]) + span {
+                border-color: var(--theme-color-error) !important;
+
+                &::before {
+                    @include fit();
+                    content: " ";
+                    opacity: 0.05;
+                    background-color: var(--theme-color-error);
+                    pointer-events: none;
+                }
+            }
         }
 
         span {
-            display: block;
-            margin: 0 var(--theme-h5);
+            padding: 0 var(--theme-h5);
             overflow: hidden;
             -ms-text-overflow: ellipsis;
             -o-text-overflow: ellipsis;

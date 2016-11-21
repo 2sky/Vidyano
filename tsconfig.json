@@ -63,6 +63,7 @@
     "src/WebComponents/Attributes/PersistentObjectAttributeString/persistent-object-attribute-string.ts",
     "src/WebComponents/Attributes/PersistentObjectAttributeTranslatedString/persistent-object-attribute-translated-string.ts",
     "src/WebComponents/Attributes/PersistentObjectAttributeUser/persistent-object-attribute-user.ts",
+    "src/WebComponents/Attributes/PersistentObjectAttributeValidationError/persistent-object-attribute-validation-error.ts",
     "src/WebComponents/Button/button.ts",
     "src/WebComponents/Chart/chart.ts",
     "src/WebComponents/ChartSelector/chart-selector.ts",

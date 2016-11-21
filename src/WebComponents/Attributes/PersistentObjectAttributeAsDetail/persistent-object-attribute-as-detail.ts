@@ -236,18 +236,25 @@ namespace Vidyano.WebComponents.Attributes {
                 type: Boolean,
                 computed: "_computeSoftEdit(serviceObject)",
                 value: false
+            },
+            lastUpdated: {
+                type: Object,
+                value: null,
+                readOnly: true
             }
         },
         observers: [
             "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached)"
         ],
         forwardObservers: [
-            "serviceObject.attributes.*.displayValue"
+            "serviceObject.lastUpdated"
         ]
     })
     export class PersistentObjectAttributeAsDetailRow extends WebComponents.WebComponent {
         private fullEdit: boolean;
         serviceObject: Vidyano.PersistentObject;
+
+        private _setLastUpdated: (lastUpdated: Date) => void;
 
         private _isColumnVisible(column: QueryColumn) {
             return !column.isHidden && column.width !== "0";
