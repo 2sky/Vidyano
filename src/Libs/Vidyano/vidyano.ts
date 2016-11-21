@@ -2457,7 +2457,7 @@ namespace Vidyano {
             this.offset = attr.offset || 0;
             this.toolTip = attr.toolTip;
             this.rules = attr.rules;
-            this.validationError = attr.validationError;
+            this.validationError = attr.validationError || null;
             this.visibility = attr.visibility;
             this.typeHints = attr.typeHints || {};
             this.editTemplateKey = attr.editTemplateKey;
@@ -2734,7 +2734,7 @@ namespace Vidyano {
             this._refreshValue = undefined;
             this.isValueChanged = resultAttr.isValueChanged;
             this.triggersRefresh = resultAttr.triggersRefresh;
-            this.validationError = resultAttr.validationError;
+            this.validationError = resultAttr.validationError || null;
 
             return visibilityChanged;
         }
