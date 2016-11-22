@@ -107,7 +107,7 @@
         }
 
         private _computeReadOnly(tab: Vidyano.PersistentObjectAttributeTab): boolean {
-            return !!tab && !tab.attributes.some(attribute => !attribute.isReadOnly && attribute.isVisible);
+            return !!tab && !tab.parent.isNew && !tab.attributes.some(attribute => !attribute.isReadOnly && attribute.isVisible);
         }
 
         private _computeDialogActions(persistentObject: Vidyano.PersistentObject): Vidyano.Action[] {
