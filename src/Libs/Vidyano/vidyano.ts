@@ -5227,8 +5227,12 @@ namespace Vidyano {
                 });
             }
 
-            if (this.openFirst && this.items.length > 0)
+            if (this.openFirst && this.items.length > 0) {
                 this.path = this.items[0].path;
+
+                if (this.items[0].title === this.title)
+                    this.items.splice(0, 1);
+            }
         }
 
         private _createItem(routes: IRoutes, itemData: any): ProgramUnitItem {
