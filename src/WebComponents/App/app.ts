@@ -481,19 +481,20 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        importComponent(component: string): Promise<any> {
+        async importComponent(component: string): Promise<any> {
             if (component.split(".").reduce((obj: any, path: string) => obj[path], Vidyano.WebComponents))
                 return Promise.resolve(null);
 
             const vidyanoComponentFolder = component.replace(".", "/");
             const vidyanoComponent = vidyanoComponentFolder.split("/").reverse()[0].replace(/([A-Z])/g, m => "-" + m[0].toLowerCase()).substr(1);
+            const href = this.resolveUrl(`../${vidyanoComponentFolder}/${vidyanoComponent}.html`);
 
-            return new Promise((resolve, reject) => {
-                const href = this.resolveUrl(`../${vidyanoComponentFolder}/${vidyanoComponent}.html`);
-                this.importHref(href, _ => resolve(null), e => {
-                    console.error(`Unable to load component ${component} via import ${href}`);
-                });
-            });
+            try {
+                await this.importHref(href);
+            }
+            catch (e) {
+                console.error(`Unable to load component ${component} via import ${href}`);
+            }
         }
 
         private _distributeAppRoutes() {

@@ -287,11 +287,6 @@
         splice: (path: string, index: number, removeCount?: number, items?: any[]) => any[];
 
         /**
-         * Dynamically imports an HTML document.
-         */
-        importHref: (href: string, onLoad?: (e: CustomEvent) => void, onFail?: (e: CustomEvent) => void) => void;
-
-        /**
          * Takes a URL relative to the <dom-module> of an imported Polymer element, and returns a path relative to the current document.
          * This method can be used, for example, to refer to an asset delivered alongside an HTML import.
          */
@@ -443,6 +438,19 @@
                 return key;
 
             return this.app.service.getTranslatedMessage.apply(this.app.service, [key].concat(params));
+        }
+
+        /** 
+         * Dynamically imports an HTML document. 
+         */
+        importHref(href: string): Promise<any> {
+            const _importHref: (href: string, onLoad?: (e: CustomEvent) => void, onFail?: (e: CustomEvent) => void) => void = Polymer["Base"].importHref;
+            return new Promise((resolve, reject) => {
+                _importHref.call(this, href, e => resolve(e.target["import"]), err => {
+                    console.error(err);
+                    reject(err);
+                });
+            });
         }
 
         protected _getFocusableElement(source: Node = this): HTMLElement {

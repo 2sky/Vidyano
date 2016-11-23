@@ -182,9 +182,8 @@
 
         private async _initializeZenscroll(): Promise<any> {
             if (!this._zenscroll) {
-                await new Promise(resolve => this.importHref(this.resolveUrl("zenscroller.html"), () => {
-                    this._zenscroll = zenscroll.createScroller(this.$["wrapper"], 500, 0);
-                }));
+                await this.importHref(this.resolveUrl("zenscroller.html"));
+                this._zenscroll = zenscroll.createScroller(this.$["wrapper"], 500, 0);
             }
         }
 

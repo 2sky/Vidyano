@@ -97,14 +97,7 @@ namespace Vidyano.WebComponents {
                         return;
                     }
 
-                    await new Promise(resolve => {
-                        this.importHref(this.resolveUrl("../Chart/chart-dependencies.html"), e => {
-                            resolve(true);
-                        }, err => {
-                            console.error(err);
-                            resolve(false);
-                        });
-                    });
+                    await this.importHref(this.resolveUrl("../Chart/chart-dependencies.html"));
 
                     if (query !== this.query || this._renderedQuery === query)
                         return;

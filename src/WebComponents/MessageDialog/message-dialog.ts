@@ -21,12 +21,21 @@
         }
     })
     export class MessageDialog extends Dialog {
+        options: IMessageDialogOptions;
+
         private _setOptions: (options: IMessageDialogOptions) => void;
 
         constructor(options: IMessageDialogOptions) {
             super();
 
             this._setOptions(options);
+        }
+
+        async open(): Promise<any> {
+            if (this.options.rich)
+                await this.importHref(this.resolveUrl("../../Libs/marked-element/marked-element.html"));
+
+            await super.open();
         }
 
         private _hasHeaderIcon(options: IMessageDialogOptions): boolean {

@@ -86,7 +86,7 @@ namespace Vidyano.WebComponents {
     })
     export class PersistentObjectAttributePresenter extends WebComponent implements IConfigurable {
         private static _attributeImports: {
-            [key: string]: Promise<boolean>;
+            [key: string]: Promise<any>;
         } = {
             "AsDetail": undefined,
             "BinaryFile": undefined,
@@ -177,21 +177,20 @@ namespace Vidyano.WebComponents {
                     typeImport.synonyms.forEach(s => Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[s] = new Promise(resolve => { synonymResolvers.push(resolve); }));
                 }
 
-                Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = new Promise(resolve => {
-                    this.async(() => {
-                        this.importHref(this.resolveUrl("../Attributes/" + typeImport.filename), e => {
-                            resolve(true);
-                            if (synonymResolvers)
-                                synonymResolvers.forEach(resolver => resolver(true));
+                Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = new Promise(async (resolve) => {
+                    try {
+                        await this.importHref(this.resolveUrl("../Attributes/" + typeImport.filename));
+                        if (synonymResolvers)
+                            synonymResolvers.forEach(resolver => resolver(true));
 
-                            this._renderAttribute(attribute, attributeType);
-                        }, err => {
-                            console.error(err);
-
-                            Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = Promise.resolve(false);
-                            this._setLoading(false);
-                        });
-                    });
+                        this._renderAttribute(attribute, attributeType);
+                        resolve(true);
+                    }
+                    catch (err) {
+                        Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = Promise.resolve(false);
+                        this._setLoading(false);
+                        resolve(false);
+                    }
                 });
             }
         }
