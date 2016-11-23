@@ -33,23 +33,23 @@ namespace Vidyano.WebComponents {
             super.attached();
         }
 
-        open(): Promise<any> {
+        async open(): Promise<any> {
             let trackHandler: Function;
             const header = <HTMLElement>Polymer.dom(this.root).querySelector("header");
             if (header)
                 Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));
 
-            return new Promise(resolve => {
+            const result = await new Promise(resolve => {
                 this._resolve = resolve;
 
                 Polymer["IronOverlayBehaviorImpl"].open.apply(this);
-            }).then(result => {
-                if (trackHandler)
-                    Polymer.Gestures.remove(header, "track", trackHandler);
-
-                this.close();
-                return result;
             });
+
+            if (trackHandler)
+                Polymer.Gestures.remove(header, "track", trackHandler);
+
+            Polymer["IronOverlayBehaviorImpl"].close.apply(this);
+            return result;
         }
 
         private _esc(e: KeyboardEvent) {
@@ -58,7 +58,6 @@ namespace Vidyano.WebComponents {
 
         close(result?: any) {
             this._resolve(result);
-            Polymer["IronOverlayBehaviorImpl"].close.apply(this);
         }
 
         private _onClosed() {

@@ -35,7 +35,7 @@
             if (this.options.rich)
                 await this.importHref(this.resolveUrl("../../Libs/marked-element/marked-element.html"));
 
-            await super.open();
+            return super.open();
         }
 
         private _hasHeaderIcon(options: IMessageDialogOptions): boolean {
