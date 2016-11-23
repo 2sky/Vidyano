@@ -630,12 +630,9 @@ namespace Vidyano.WebComponents {
                         programUnit = this.service.application.programUnits[0];
 
                     if (programUnit && !this.barebone) {
-                        if (programUnit.openFirst) {
-                            const openFirstPath = programUnit.items[0].path;
-                            if (path !== openFirstPath && openFirstPath != null) {
-                                this.async(() => this.changePath(openFirstPath));
-                                return;
-                            }
+                        if (programUnit.openFirst && programUnit.path && path !== programUnit.path) {
+                            this.async(() => this.changePath(programUnit.path));
+                            return;
                         }
                         else {
                             const config = this.app.configuration.getProgramUnitConfig(programUnit.name);
