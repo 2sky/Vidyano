@@ -93,9 +93,10 @@ namespace Vidyano.WebComponents {
 
         private async _deactivate(e: CustomEvent) {
             const route = <AppRoute>Polymer.dom(this).parentNode;
+            const currentPath = App.removeRootPath(route.path);
             const newPath = App.removeRootPath(this.app.path);
 
-            if (this.persistentObject && this.persistentObject.isDirty && this.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit" ) && App.removeRootPath(route.path) !== newPath) {
+            if (this.persistentObject && this.persistentObject.isDirty && this.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit") && currentPath !== newPath) {
                 e.preventDefault();
 
                 const result = await this.app.showMessageDialog( {
@@ -123,7 +124,7 @@ namespace Vidyano.WebComponents {
                 }
                 else {
                     route.deactivator(false);
-                    this.app.changePath(route.path);
+                    this.app.changePath(currentPath);
                 }
             }
         }
