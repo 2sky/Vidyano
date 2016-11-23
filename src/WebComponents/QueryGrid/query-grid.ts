@@ -905,7 +905,7 @@
             canSelect: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeCanSelect(query, noSelection)"
+                computed: "_computeCanSelect(query, noSelection, asLookup)"
             },
             canSelectAll: {
                 type: Boolean,
@@ -1245,8 +1245,8 @@
             return newItems;
         }
 
-        private _computeCanSelect(query: Vidyano.Query, noSelection: boolean): boolean {
-            return !noSelection && !!query && query.actions.some(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue);
+        private _computeCanSelect(query: Vidyano.Query, noSelection: boolean, asLookup: boolean): boolean {
+            return !noSelection && !!query && (asLookup || query.actions.some(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue));
         }
 
         private _computeCanSelectAll(canSelect: boolean, isAvailable: boolean): boolean {
