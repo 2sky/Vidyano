@@ -887,7 +887,8 @@
             },
             asLookup: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: false
             },
             viewportSize: {
                 type: Object,
