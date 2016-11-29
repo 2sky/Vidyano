@@ -212,20 +212,24 @@
 
         &.top {
             top: 0;
+            -webkit-transform: translateY(-48px);
             transform: translateY(calc(var(--theme-h2) * -1.5));
         }
 
         &.bottom {
             bottom: 0;
+            -webkit-transform: translateY(48px);
             transform: translateY(calc(var(--theme-h2) * 1.5));
         }
     }
 
     &[scroll-top-shadow] > .scroll-shadow.top {
+        -webkit-transform: translateY(-32px);
         transform: translateY(calc(var(--theme-h2) * -1));
     }
 
     &[scroll-bottom-shadow] > .scroll-shadow.bottom {
+        -webkit-transform: translateY(32px);
         transform: translateY(var(--theme-h2));
     }
 

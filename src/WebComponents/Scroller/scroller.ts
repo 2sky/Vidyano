@@ -245,7 +245,7 @@
 
             const verticalScrollTop = verticalScrollOffset === 0 ? 0 : Math.round((1 / ((innerHeight - outerHeight) / verticalScrollOffset)) * this._verticalScrollSpace);
             if (verticalScrollTop !== this._verticalScrollTop)
-                this.$["vertical"].style.transform = `translate3d(0, ${this._verticalScrollTop = verticalScrollTop}px, 0)`;
+                this.$["vertical"].style.webkitTransform = this.$["vertical"].style.transform = `translate3d(0, ${this._verticalScrollTop = verticalScrollTop}px, 0)`;
 
             this._setScrollTopShadow(!this.noScrollShadow && verticalScrollTop > 0);
             this._setScrollBottomShadow(!this.noScrollShadow && innerHeight - verticalScrollOffset - outerHeight > 0);
@@ -271,7 +271,7 @@
 
             const horizontalScrollLeft = horizontalScrollOffset === 0 ? 0 : Math.round((1 / ((innerWidth - outerWidth) / horizontalScrollOffset)) * this._horizontalScrollSpace);
             if (horizontalScrollLeft !== this._horizontalScrollLeft)
-                this.$["horizontal"].style.transform = `translate3d(${this._horizontalScrollLeft = horizontalScrollLeft}px, 0, 0)`;
+                this.$["horizontal"].style.webkitTransform = this.$["horizontal"].style.transform = `translate3d(${this._horizontalScrollLeft = horizontalScrollLeft}px, 0, 0)`;
         }
 
         private _trackVertical(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
