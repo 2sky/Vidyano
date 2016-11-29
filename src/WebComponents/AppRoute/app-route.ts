@@ -138,7 +138,7 @@ namespace Vidyano.WebComponents {
             if (!this._hasChildren)
                 return;
 
-            Polymer.dom(this).children.forEach(c => Polymer.dom(this).removeChild(c));
+            Polymer.dom(this).children.filter(c => c.tagName !== "TEMPLATE" && c.getAttribute("is") !== "dom-template").forEach(c => Polymer.dom(this).removeChild(c));
             this._hasChildren = false;
         }
 
