@@ -252,7 +252,6 @@ namespace Vidyano.WebComponents {
         private _initializeResolve: (app: Vidyano.Application) => void;
         private _initializeReject: (e: any) => void;
         private _initialize: Promise<Vidyano.Application> = new Promise((resolve, reject) => { this._initializeResolve = resolve; this._initializeReject = reject; });
-        private _initializationError: string;
         private _routeMap: { [key: string]: AppRoute } = {};
         private _routeUpdater: Promise<any> = Promise.resolve();
         private _keybindingRegistrations: { [key: string]: Keyboard.IKeybindingRegistration[]; } = {};
@@ -339,10 +338,6 @@ namespace Vidyano.WebComponents {
 
         get initialize(): Promise<Vidyano.Application> {
             return this._initialize;
-        }
-
-        get initializationError(): string {
-            return this._initializationError;
         }
 
         changePath(path: string, replaceCurrent: boolean = false) {
@@ -528,28 +523,37 @@ namespace Vidyano.WebComponents {
             Vidyano.cookiePrefix = cookiePrefix;
         }
 
-        private _updateInitialize(...promises: Promise<any>[]) {
-            if (this._initializeResolve) {
-                Promise.all(promises).then((results: any[]) => {
-                    this._setInitializing(false);
+        private async _updateInitialize(...promises: Promise<any>[]) {
+            try {
+                if (this._initializeResolve) {
+                    const results = await Promise.all(promises);
                     this._initializeResolve(results[0]);
                     this._initializeResolve = null;
                     this._initializeReject = null;
-                }, e => {
-                    this._setInitializing(false);
-                    this._initializeReject(e);
-                    this._initializeResolve = null;
-                    this._initializeReject = null;
-                });
+                }
+                else {
+                    this._initialize = Promise.all(promises).then((results: any[]) => {
+                        this._setInitializing(false);
+                        return results[0];
+                    });
+
+                    await this._initialize;
+                }
+
+                this._setInitializing(false);
             }
-            else {
-                this._initialize = Promise.all(promises).then((results: any[]) => {
-                    this._setInitializing(false);
-                    return results[0];
-                }, e => {
-                    this._setInitializing(false);
-                    throw e;
+            catch (e) {
+                const noInternet = Vidyano.NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || Vidyano.NoInternetMessage.messages.get("en");
+
+                await this.showMessageDialog({
+                    title: e === noInternet.message ? noInternet.title : this.app.label || document.title,
+                    message: e,
+                    actions: [noInternet.tryAgain],
+                    actionTypes: ["Danger"],
+                    noClose: true
                 });
+
+                document.location.reload();
             }
         }
 
@@ -561,14 +565,15 @@ namespace Vidyano.WebComponents {
 
             this._setInitializing(true);
             this.set("serviceInitializer", service.initialize(skipDefaultCredentialLogin).then(() => {
-                if (this.service === service) {
-                    this._initializationError = null;
-
-                    return this.service.application;
-                }
-            }, e => {
                 if (this.service === service)
-                    this._initializationError = e !== "Session expired" ? e : null;
+                    return this.service.application;
+
+                return null;
+            }, e => {
+                if (this.service === service) {
+                    if (e !== "Session expired")
+                        throw e;
+                }
 
                 return null;
             }));

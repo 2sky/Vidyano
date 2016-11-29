@@ -7,11 +7,6 @@
                 type: String,
                 notify: true
             },
-            initializationError: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true
-            },
             label: String,
             image: {
                 type: String,
@@ -25,8 +20,6 @@
     export class SignIn extends WebComponent {
         error: string;
         image: string;
-
-        private _setInitializationError: (val: boolean) => void;
 
         private async _activate(e: CustomEvent) {
             const route = <AppRoute>Polymer.dom(this).parentNode;
@@ -53,22 +46,6 @@
                 Vidyano.cookie("returnUrl", returnUrl, { expires: 1, force: true });
                 this.app.service.signInExternal(Object.keys(route.app.service.providers)[0]);
                 return;
-            }
-
-            if (this.app.initializationError) {
-                this._setInitializationError(true);
-
-                const noInternet = Vidyano.NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || Vidyano.NoInternetMessage.messages.get("en");
-
-                await this.app.showMessageDialog({
-                    title: this.app.initializationError === noInternet.message ? noInternet.title : this.app.label || document.title,
-                    message: this.app.initializationError,
-                    actions: [noInternet.tryAgain],
-                    actionTypes: ["Danger"],
-                    noClose: true
-                });
-
-                document.location.reload();
             }
 
             this.empty(undefined, c => c instanceof Vidyano.WebComponents.SignInProvider);
