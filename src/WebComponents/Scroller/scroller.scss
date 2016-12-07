@@ -65,7 +65,7 @@
         }
     }
 
-    &:not([force-scrollbars]):not([hovering]):not([scrolling]) .scrollbar-parent .scrollbar {
+    &:not([force-scrollbars]):not([hovering]):not([scrolling]) > .scrollbar-parent .scrollbar {
         opacity: 0;
     }
 
