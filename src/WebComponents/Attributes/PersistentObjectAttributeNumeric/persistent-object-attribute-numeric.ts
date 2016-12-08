@@ -25,8 +25,10 @@
         private _isNullable: boolean;
         private _decimalSeparator: string;
         private _dataType: string;
+        private _queuedValue: string;
         unitBefore: string;
         unitAfter: string;
+        focused: boolean;
 
         private static _decimalTypes = ["NullableDecimal", "Decimal", "NullableSingle", "Single", "NullableDouble", "Double"];
         private static _unsignedTypes = ["Byte", "NullableByte", "UInt16", "NullableUInt16", "UInt32", "NullableUInt32", "UInt64", "NullableUInt64"];
@@ -63,24 +65,41 @@
                 this.value = value;
         }
 
-        protected _valueChanged(newValue: any) {
+        protected async _valueChanged(newValue: any) {
+            if (!this.attribute)
+                return;
+
             if (newValue != null && this._decimalSeparator !== ".")
                 newValue = newValue.replace(this._decimalSeparator, ".");
 
-            if (this.attribute) {
-                try {
-                    const bigNumberValue = !StringEx.isNullOrEmpty(newValue) ? new BigNumber(newValue) : null;
-                    if (this.attribute.value instanceof BigNumber && bigNumberValue != null && bigNumberValue.equals(this.attribute.value))
+            try {
+                if (this.focused) {
+                    if (newValue === "" || newValue === "-") {
+                        this._queuedValue = this.attribute.isRequired ? "0" : "";
                         return;
-
-                    this.attribute.setValue(bigNumberValue, false).catch(Vidyano.noop);
-                } catch (e) {
-                    this.notifyPath("value", this.attribute.value);
+                    }
+                    else
+                        this._queuedValue = undefined;
                 }
+
+                const bigNumberValue = !StringEx.isNullOrEmpty(newValue) ? new BigNumber(newValue) : null;
+                if (this.attribute.value instanceof BigNumber && bigNumberValue != null && bigNumberValue.equals(this.attribute.value))
+                    return;
+
+                await this.attribute.setValue(bigNumberValue, false).catch(Vidyano.noop);
+            } catch (e) {
+                this.notifyPath("value", this.attribute.value);
             }
         }
 
         private _editInputBlur(e: Event) {
+            this._setFocused(false);
+
+            if (typeof this._queuedValue !== "undefined") {
+                this._valueChanged(this._queuedValue);
+                this._queuedValue = undefined;
+            }
+
             if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh) {
                 let newValue = this.value;
                 if (newValue != null && this._decimalSeparator !== ".")
@@ -90,10 +109,8 @@
             }
 
             const input = <HTMLInputElement>e.target;
-            if (input.value === "" || input.value == null)
+            if (input.value === "" || input.value === "-" || input.value == null)
                 input.value = this.attribute.value;
-
-            this._setFocused(false);
         }
 
         private _editInputFocus(e: Event) {
