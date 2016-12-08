@@ -4167,7 +4167,7 @@ namespace Vidyano {
             return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);
         }
 
-        getPersistentObject(): Promise<PersistentObject> {
+        getPersistentObject(throwExceptions?: boolean): Promise<PersistentObject> {
             return this.query.queueWork(async () => {
                 try {
                     const po = await this.service.getPersistentObject(this.query.parent, this.query.persistentObject.id, this.id);
@@ -4177,6 +4177,9 @@ namespace Vidyano {
                 }
                 catch (e) {
                     this.query.setNotification(e);
+                    if (throwExceptions)
+                        throw e;
+
                     return null;
                 }
             }, false);
