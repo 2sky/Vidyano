@@ -33,32 +33,40 @@
             if (node.nodeType !== Node.ELEMENT_NODE)
                 return;
 
-            const operation = added ? "push" : "remove";
+            let arr: Array<WebComponent>;
             switch (node.tagName.toUpperCase()) {
                 case "VI-PERSISTENT-OBJECT-ATTRIBUTE-CONFIG":
-                    this._attributeConfigs[operation](node);
+                    arr = this._attributeConfigs;
                     break;
 
                 case "VI-PERSISTENT-OBJECT-CONFIG":
-                    this._persistentObjectConfigs[operation](node);
+                    arr = this._persistentObjectConfigs;
                     break;
 
                 case "VI-PERSISTENT-OBJECT-TAB-CONFIG":
-                    this._tabConfigs[operation](node);
+                    arr = this._tabConfigs;
                     break;
 
                 case "VI-PROGRAM-UNIT-CONFIG":
-                    this._programUnitConfigs[operation](node);
+                    arr = this._programUnitConfigs;
                     break;
 
                 case "VI-QUERY-CONFIG":
-                    this._queryConfigs[operation](node);
+                    arr = this._queryConfigs;
                     break;
 
                 case "VI-QUERY-CHART-CONFIG":
-                    this._queryChartConfigs[operation](node);
+                    arr = this._queryChartConfigs;
                     break;
+
+                default:
+                    return;
             }
+
+            if (added)
+                arr.push(node);
+            else
+                arr.remove(node);
         }
 
         getSetting(key: string, defaultValue?: string): string {
