@@ -65,7 +65,7 @@
                 this.value = value;
         }
 
-        protected async _valueChanged(newValue: any) {
+        protected async _valueChanged(newValue: string) {
             if (!this.attribute)
                 return;
 
@@ -76,6 +76,10 @@
                 if (this.focused) {
                     if (newValue === "" || newValue === "-") {
                         this._queuedValue = this.attribute.isRequired ? "0" : "";
+                        return;
+                    }
+                    else if (newValue.endsWith(".")) {
+                        this._queuedValue = newValue.trimEnd(".");
                         return;
                     }
                     else
@@ -120,6 +124,9 @@
         private _canParse(value: string): boolean {
             if (!value && this.attribute.type.startsWith("Nullable"))
                 return true;
+
+            if (value && value.startsWith(this._decimalSeparator))
+                value = `0${value}`;
 
             switch (this.attribute.type) {
                 case "Byte":
@@ -172,7 +179,7 @@
         private _keypress(e: KeyboardEvent): void {
             const keyCode = e.keyCode || e.which;
 
-            if (keyCode === Keyboard.KeyCodes.backspace || keyCode === Keyboard.KeyCodes.tab || keyCode === Keyboard.KeyCodes.shift || keyCode === Keyboard.KeyCodes.control || keyCode === Keyboard.KeyCodes.alt || keyCode === Keyboard.KeyCodes.leftarrow || keyCode === Keyboard.KeyCodes.rightarrow || keyCode === Keyboard.KeyCodes.uparrow || keyCode === Keyboard.KeyCodes.downarrow)
+            if (keyCode === Keyboard.KeyCodes.tab || keyCode === Keyboard.KeyCodes.shift || keyCode === Keyboard.KeyCodes.control || keyCode === Keyboard.KeyCodes.alt || keyCode === Keyboard.KeyCodes.leftarrow || keyCode === Keyboard.KeyCodes.rightarrow || keyCode === Keyboard.KeyCodes.uparrow || keyCode === Keyboard.KeyCodes.downarrow)
                 return;
 
             const input = <HTMLInputElement>e.target;
