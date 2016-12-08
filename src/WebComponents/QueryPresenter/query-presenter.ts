@@ -29,13 +29,13 @@ namespace Vidyano.WebComponents {
         },
         observers: [
             "_updateQuery(queryId, app)",
-            "_updateTitle(query.label)"
+            "_updateTitle(query.labelWithTotalItems)"
         ],
         listeners: {
             "app-route-activate": "_activate"
         },
         forwardObservers: [
-            "query.label"
+            "query.labelWithTotalItems"
         ]
     })
     export class QueryPresenter extends WebComponent {
