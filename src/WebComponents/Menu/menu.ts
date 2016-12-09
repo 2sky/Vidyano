@@ -245,6 +245,10 @@ namespace Vidyano.WebComponents {
             href: {
                 type: String,
                 computed: "_computedHref(item, app)"
+            },
+            collapseGroupsOnTap: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         observers: [
@@ -258,6 +262,7 @@ namespace Vidyano.WebComponents {
     })
     export class MenuItem extends WebComponent {
         readonly expand: boolean; private _setExpand: (val: boolean) => void;
+        collapseGroupsOnTap: boolean;
         item: Vidyano.ProgramUnitItem;
         programUnit: Vidyano.ProgramUnit;
         collapsed: boolean;
@@ -275,7 +280,17 @@ namespace Vidyano.WebComponents {
             return level + 1;
         }
 
+        private _collapseRecursive() {
+            if (!this.collapseGroupsOnTap)
+                this._setExpand(false);
+
+            Array.prototype.forEach.call(Polymer.dom(this.root).querySelectorAll("vi-menu-item[has-items]"), (item: MenuItem) => item._collapseRecursive());
+        }
+
         private _tap(e: Event) {
+            if (!this.filtering && this.collapseGroupsOnTap)
+                this._collapseRecursive();
+
             if (!this.item || !this.item.path) {
                 e.preventDefault();
                 this._setExpand(!this.expand);
