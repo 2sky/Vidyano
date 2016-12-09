@@ -95,11 +95,6 @@
             staySignedIn: {
                 type: Boolean
             },
-            expand: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
             signingIn: {
                 type: Boolean,
                 readOnly: true,
@@ -132,19 +127,16 @@
         private _signInButton: HTMLButtonElement;
         private _signInButtonWidth = 0;
         private _signingInMessage: string;
+        readonly isVidyano: boolean; private _setIsVidyano: (val: boolean) => void;
+        readonly signingIn: boolean; private _setSigningIn: (val: boolean) => void;
+        readonly twoFactorAuthentication: boolean; private _setTwoFactorAuthentication: (val: boolean) => void;
         name: string;
         userName: string;
         password: string;
         staySignedIn: boolean;
-        isVidyano: boolean;
-        signingIn: boolean;
         signingInCounter: number;
-        twoFactorAuthentication: boolean;
         twoFactorCode: string;
 
-        private _setIsVidyano: (val: boolean) => void;
-        private _setSigningIn: (val: boolean) => void;
-        private _setTwoFactorAuthentication: (val: boolean) => void;
 
         constructor(isVidyano: boolean, private _isOnlyProvider: boolean, private _returnUrl: string) {
             super();

@@ -37,13 +37,10 @@ namespace Vidyano.WebComponents {
         private _hasChildren: boolean;
         private _parameters: { [key: string]: string } = {};
         private _documentTitleBackup: string;
+        readonly active: boolean; private _setActive: (val: boolean) => void;
+        readonly path: string; private _setPath: (val: string) => void;
         allowSignedOut: boolean;
-        active: boolean;
-        path: string;
         deactivator: (result: boolean) => void;
-
-        private _setActive: (val: boolean) => void;
-        private _setPath: (val: string) => void;
 
         constructor(public route: string, public component: string) {
             super();

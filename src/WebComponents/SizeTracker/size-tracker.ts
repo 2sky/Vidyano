@@ -40,11 +40,10 @@
         private _resizeLast: ISize;
         private _resizeRAF: Function;
         private _scrollListener: EventListener;
+        readonly size: ISize; private _setSize: (size: ISize) => void;
         deferred: boolean;
         triggerZero: boolean;
         bubbles: boolean;
-
-        private _setSize: (size: ISize) => void;
 
         attached() {
             if (this.deferred)

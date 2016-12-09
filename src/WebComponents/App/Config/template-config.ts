@@ -3,11 +3,9 @@ namespace Vidyano.WebComponents {
 
     export abstract class TemplateConfig<T> extends WebComponent {
         private _template: PolymerTemplate;
-        hasTemplate: boolean;
+        readonly hasTemplate: boolean; private _setHasTemplate: (val: boolean) => void;
         as: string;
         asModel: (model: T) => any;
-
-        private _setHasTemplate: (val: boolean) => void;
 
         attached() {
             super.attached();

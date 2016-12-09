@@ -18,10 +18,8 @@ namespace Vidyano.WebComponents {
         },
     })
     export class ProgramUnitPresenter extends WebComponent {
-        programUnit: Vidyano.ProgramUnit;
-
-        private _setProgramUnit: (programUnit: Vidyano.ProgramUnit) => void;
-        private _setError: (error: string) => void;
+        readonly programUnit: Vidyano.ProgramUnit; private _setProgramUnit: (programUnit: Vidyano.ProgramUnit) => void;
+        readonly error: string; private _setError: (error: string) => void;
 
         private _activate(e: CustomEvent) {
             const route = <AppRoute>Polymer.dom(this).parentNode;

@@ -45,13 +45,10 @@ namespace Vidyano.WebComponents {
     })
     export class QueryItemsPresenter extends WebComponent implements IConfigurable {
         private _renderedQuery: Vidyano.Query;
+        readonly loading: boolean; private _setLoading: (loading: boolean) => void;
+        readonly templated: boolean; private _setTemplated: (templated: boolean) => void;
+        readonly fileDrop: boolean; private _setFileDrop: (fileDrop: boolean) => void;
         query: Vidyano.Query;
-        templated: boolean;
-        fileDrop: boolean;
-
-        private _setLoading: (loading: boolean) => void;
-        private _setTemplated: (templated: boolean) => void;
-        private _setFileDrop: (fileDrop: boolean) => void;
 
         private async _renderQuery(query: Vidyano.Query, currentChart: Vidyano.QueryChart, isAttached: boolean) {
             if (!isAttached)

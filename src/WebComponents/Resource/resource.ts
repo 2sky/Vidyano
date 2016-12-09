@@ -5,12 +5,10 @@ namespace Vidyano.WebComponents {
 
     export abstract class Resource extends WebComponent {
         private _loadedSource: string;
+        readonly hasResource: boolean; private _setHasResource: (value: boolean) => void;
         name: string;
         source: string;
         model: any;
-        hasResource: boolean;
-
-        private _setHasResource: (value: boolean) => void;
 
         attached() {
             super.attached();

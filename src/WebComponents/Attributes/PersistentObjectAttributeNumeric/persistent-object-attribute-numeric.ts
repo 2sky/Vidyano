@@ -26,14 +26,12 @@
         private _decimalSeparator: string;
         private _dataType: string;
         private _queuedValue: string;
+        readonly focused: boolean; private _setFocused: (val: boolean) => void;
         unitBefore: string;
         unitAfter: string;
-        focused: boolean;
 
         private static _decimalTypes = ["NullableDecimal", "Decimal", "NullableSingle", "Single", "NullableDouble", "Double"];
         private static _unsignedTypes = ["Byte", "NullableByte", "UInt16", "NullableUInt16", "UInt32", "NullableUInt32", "UInt64", "NullableUInt64"];
-
-        private _setFocused: (val: boolean) => void;
 
         _attributeChanged() {
             super._attributeChanged();

@@ -21,9 +21,7 @@
         }
     })
     export class MessageDialog extends Dialog {
-        options: IMessageDialogOptions;
-
-        private _setOptions: (options: IMessageDialogOptions) => void;
+        readonly options: IMessageDialogOptions; private _setOptions: (options: IMessageDialogOptions) => void;
 
         constructor(options: IMessageDialogOptions) {
             super();

@@ -15,8 +15,7 @@
         }
     })
     export class QueryGridConfigureDialog extends Dialog {
-        private _columnElements: QueryGridConfigureDialogColumn[];
-        private _set_columnElements: (columns: QueryGridConfigureDialogColumn[]) => void;
+        private readonly _columnElements: QueryGridConfigureDialogColumn[]; private _set_columnElements: (columns: QueryGridConfigureDialogColumn[]) => void;
 
         constructor(public grid: QueryGrid, private _settings: QueryGridUserSettings) {
             super();

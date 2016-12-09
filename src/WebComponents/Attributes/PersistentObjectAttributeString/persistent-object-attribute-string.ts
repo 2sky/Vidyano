@@ -29,14 +29,11 @@
     })
     export class PersistentObjectAttributeString extends PersistentObjectAttribute {
         private _suggestionsSeparator: string;
+        readonly editInputStyle: string; private _setEditInputStyle: (style: string) => void;
+        readonly suggestions: string[]; private _setSuggestions: (suggestions: string[]) => void;
         characterCasing: string;
-        editInputStyle: string;
         inputtype: string;
         maxlength: number;
-        suggestions: string[];
-
-        private _setEditInputStyle: (style: string) => void;
-        private _setSuggestions: (suggestions: string[]) => void;
 
         protected _attributeChanged() {
             super._attributeChanged();

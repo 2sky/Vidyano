@@ -44,15 +44,13 @@ namespace Vidyano.WebComponents.Attributes {
         ]
     })
     export class PersistentObjectAttributeReference extends WebComponents.Attributes.PersistentObjectAttribute {
+        readonly canClear: boolean; private _setCanClear: (val: boolean) => void;
+        readonly canAddNewReference: boolean; private _setCanAddNewReference: (val: boolean) => void;
+        readonly canBrowseReference: boolean; private _setCanBrowseReference: (val: boolean) => void;
         objectId: string;
         attribute: Vidyano.PersistentObjectAttributeWithReference;
         href: string;
         filter: string;
-        canAddNewReference: boolean;
-
-        private _setCanClear: (val: boolean) => void;
-        private _setCanAddNewReference: (val: boolean) => void;
-        private _setCanBrowseReference: (val: boolean) => void;
 
         attached() {
             super.attached();

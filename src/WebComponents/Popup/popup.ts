@@ -73,17 +73,14 @@ namespace Vidyano.WebComponents {
         private _currentTarget: HTMLElement | WebComponent;
         private _currentContent: HTMLElement;
         protected _currentOrientation: string;
-        open: boolean;
+        readonly open: boolean; protected _setOpen: (val: boolean) => void;
+        readonly hover: boolean; private _setHover: (val: boolean) => void;
         orientation: string;
         contentAlign: string;
         disabled: boolean;
         sticky: boolean;
-        hover: boolean;
         boundingTarget: HTMLElement;
         closeDelay: number;
-
-        protected _setOpen: (val: boolean) => void;
-        private _setHover: (val: boolean) => void;
 
         popup(target: HTMLElement | WebComponent): Promise<any> {
             if (this.open)

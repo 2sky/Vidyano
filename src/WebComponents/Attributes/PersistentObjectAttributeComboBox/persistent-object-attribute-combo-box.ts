@@ -19,10 +19,8 @@ namespace Vidyano.WebComponents.Attributes {
         }
     })
     export class PersistentObjectAttributeComboBox extends WebComponents.Attributes.PersistentObjectAttribute {
-        comboBoxOptions: string[];
+        readonly comboBoxOptions: string[]; private _setComboBoxOptions: (options: string[]) => void;
         newValue: string;
-
-        private _setComboBoxOptions: (options: string[]) => void;
 
         protected _editingChanged() {
             super._editingChanged();

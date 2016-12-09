@@ -87,16 +87,13 @@ namespace Vidyano.WebComponents {
     })
     export class ActionButton extends WebComponent {
         private _skipObserver: boolean;
-        options: linqjs.KeyValuePair<number, string>[];
-        canExecute: boolean;
+        readonly options: linqjs.KeyValuePair<number, string>[]; private _setOptions: (val: linqjs.KeyValuePair<number, string>[]) => void;
+        readonly canExecute: boolean; private _setCanExecute: (val: boolean) => void;
+        readonly siblingIcon: boolean; private _setSiblingIcon: (val: boolean) => void;
+        readonly hidden: boolean; private _setHidden: (val: boolean) => void;
         noLabel: boolean;
         openOnHover: boolean;
         forceLabel: boolean;
-
-        private _setCanExecute: (val: boolean) => void;
-        private _setHidden: (val: boolean) => void;
-        private _setOptions: (val: linqjs.KeyValuePair<number, string>[]) => void;
-        private _setSiblingIcon: (val: boolean) => void;
 
         constructor(public item: Vidyano.QueryResultItem, public action: Action) {
             super();

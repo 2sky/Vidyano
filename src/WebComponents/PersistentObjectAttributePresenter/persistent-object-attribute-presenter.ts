@@ -112,15 +112,13 @@ namespace Vidyano.WebComponents {
         private _renderedAttributeElement: Vidyano.WebComponents.Attributes.PersistentObjectAttribute;
         private _customTemplate: PolymerTemplate;
         private _focusQueued: boolean;
+        readonly loading: boolean; private _setLoading: (loading: boolean) => void;
         attribute: Vidyano.PersistentObjectAttribute;
         nonEdit: boolean;
         noLabel: boolean;
         height: number;
-        loading: boolean;
         disabled: boolean;
         readOnly: boolean;
-
-        private _setLoading: (loading: boolean) => void;
 
         attached() {
             if (!this._customTemplate)

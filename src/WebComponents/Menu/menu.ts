@@ -44,14 +44,13 @@ namespace Vidyano.WebComponents {
     export class Menu extends WebComponent {
         private static _minResizeWidth: number;
         private _resizeWidth: number;
+        readonly isResizing: boolean; private _setIsResizing: (val: boolean) => void;
         filter: string;
         filtering: boolean;
         activeProgramUnit: ProgramUnit;
         collapsed: boolean;
         hasGlobalSearch: boolean;
         hideSearch: boolean;
-
-        private _setIsResizing: (val: boolean) => void;
 
         attached() {
             super.attached();
@@ -258,16 +257,14 @@ namespace Vidyano.WebComponents {
         }
     })
     export class MenuItem extends WebComponent {
+        readonly expand: boolean; private _setExpand: (val: boolean) => void;
         item: Vidyano.ProgramUnitItem;
         programUnit: Vidyano.ProgramUnit;
-        expand: boolean;
         collapsed: boolean;
         filter: string;
         filtering: boolean;
         hidden: boolean;
         filterParent: ProgramUnitItem;
-
-        private _setExpand: (val: boolean) => void;
 
         private _updateIndentVariable(level: number) {
             this.customStyle["--vi-menu-item-indent-level"] = level.toString();

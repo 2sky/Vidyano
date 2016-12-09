@@ -62,14 +62,11 @@
         private _isDateFilled: boolean;
         private _isTimeFilled: boolean;
         private _skipBlurRefreshUpdate: boolean;
-        hasTimeComponent: boolean;
-        hasInvalidTime: boolean;
-        hasDateComponent: boolean;
-        hasInvalidDate: boolean;
+        readonly hasInvalidTime: boolean; private _setHasInvalidTime: (invalid: boolean) => void;
+        readonly hasInvalidDate: boolean; private _setHasInvalidDate: (invalid: boolean) => void;
+        readonly hasTimeComponent: boolean;
+        readonly hasDateComponent: boolean;
         selectedDate: Date;
-
-        private _setHasInvalidTime: (invalid: boolean) => void;
-        private _setHasInvalidDate: (invalid: boolean) => void;
 
         get dateInput(): HTMLInputElement {
             return this._dateInput || (this._dateInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("#date"));

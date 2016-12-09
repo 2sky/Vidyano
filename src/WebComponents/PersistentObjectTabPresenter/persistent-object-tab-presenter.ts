@@ -26,11 +26,9 @@ namespace Vidyano.WebComponents {
     export class PersistentObjectTabPresenter extends WebComponent {
         private _renderedTab: Vidyano.PersistentObjectTab;
         private _tabAttributes: Vidyano.PersistentObjectAttribute[];
+        readonly loading: boolean; private _setLoading: (loading: boolean) => void;
+        readonly templated: boolean; private _setTemplated: (templated: boolean) => void;
         tab: Vidyano.PersistentObjectTab;
-        templated: boolean;
-
-        private _setLoading: (loading: boolean) => void;
-        private _setTemplated: (templated: boolean) => void;
 
         private async _renderTab(tab: Vidyano.PersistentObjectTab, isAttached: boolean) {
             if (!isAttached || this._renderedTab === tab)

@@ -41,13 +41,11 @@ namespace Vidyano.WebComponents {
         }
     })
     export class PersistentObjectWizardDialog extends Dialog {
-        currentTab: Vidyano.PersistentObjectAttributeTab;
+        readonly currentTab: Vidyano.PersistentObjectAttributeTab; private _setCurrentTab: (tab: Vidyano.PersistentObjectTab) => void;
+        readonly canPrevious: boolean;
+        readonly canNext: boolean;
+        readonly canFinish: boolean;
         hasPendingAttributes: boolean;
-
-        private _setCurrentTab: (tab: Vidyano.PersistentObjectTab) => void;
-        private _setCanPrevious: (val: boolean) => void;
-        private _setCanNext: (val: boolean) => void;
-        private _setCanFinish: (val: boolean) => void;
 
         constructor(public persistentObject: Vidyano.PersistentObject) {
             super();

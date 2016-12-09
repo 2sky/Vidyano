@@ -42,12 +42,10 @@
         ]
     })
     export class Notification extends WebComponent {
+        readonly isOverflowing: boolean; private _setIsOverflowing: (val: boolean) => void;
         serviceObject: Vidyano.ServiceObjectWithActions;
-        isOverflowing: boolean;
         type: string;
         text: string;
-
-        private _setIsOverflowing: (val: boolean) => void;
 
         private _close() {
             this.serviceObject.setNotification(null);

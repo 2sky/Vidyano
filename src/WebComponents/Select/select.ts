@@ -74,20 +74,16 @@ namespace Vidyano.WebComponents {
     export class Select extends WebComponent {
         private items: ISelectItem[];
         private filteredItems: ISelectItem[];
-        private selectedItem: ISelectItem;
-        private suggestion: ISelectItem;
-        private filtering: boolean;
         private _lastMatchedInputValue: string;
         private _inputValue: string;
         private _pendingSelectedOption: string;
+        readonly suggestion: ISelectItem; private _setSuggestion: (suggestion: ISelectItem) => void;
+        readonly filtering: boolean; private _setFiltering: (filtering: boolean) => void;
+        readonly selectedItem: ISelectItem; private _setSelectedItem: (item: ISelectItem) => void;
         options: string[] | Common.IKeyValuePair[];
         selectedOption: string;
         keepUnmatched: boolean;
         readonly: boolean;
-
-        private _setSuggestion: (suggestion: ISelectItem) => void;
-        private _setSelectedItem: (item: ISelectItem) => void;
-        private _setFiltering: (filtering: boolean) => void;
 
         open() {
             if (this.readonly || !this.items || this.items.length === 0)

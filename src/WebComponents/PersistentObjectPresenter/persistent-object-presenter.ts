@@ -49,14 +49,12 @@ namespace Vidyano.WebComponents {
     })
     export class PersistentObjectPresenter extends WebComponent implements IConfigurable {
         private _cacheEntry: PersistentObjectAppCacheEntry;
+        readonly loading: boolean; private _setLoading: (loading: boolean) => void;
+        readonly templated: boolean; private _setTemplated: (templated: boolean) => void;
+        readonly error: string; private _setError: (error: string) => void;
         persistentObjectId: string;
         persistentObjectObjectId: string;
         persistentObject: Vidyano.PersistentObject;
-        templated: boolean;
-
-        private _setLoading: (loading: boolean) => void;
-        private _setTemplated: (templated: boolean) => void;
-        private _setError: (error: string) => void;
 
         private _activate(e: CustomEvent) {
             const route = <AppRoute>Polymer.dom(this).parentNode;

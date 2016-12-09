@@ -27,9 +27,8 @@
         private _labelTextNode: Text;
         private _filter: QueryGridColumnFilterProxyBase;
         private _sorting: string;
-
-        private _setSorting: (sorting: string) => void;
-        private _setDisableSort: (disable: boolean) => void;
+        readonly disableSort: boolean; private _setDisableSort: (disable: boolean) => void;
+        readonly sorting: string; private _setSorting: (sorting: string) => void;
 
         attached() {
             this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid-minimum-column-width"));

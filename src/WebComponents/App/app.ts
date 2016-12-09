@@ -257,25 +257,21 @@ namespace Vidyano.WebComponents {
         private _keybindingRegistrations: { [key: string]: Keyboard.IKeybindingRegistration[]; } = {};
         private _beforeUnloadEventHandler: EventListener;
         private _activeDialogs: Dialog[] = [];
+        readonly initializing: boolean; private _setInitializing: (init: boolean) => void;
+        readonly keys: string; private _setKeys: (keys: string) => void;
+        readonly currentRoute: AppRoute; private _setCurrentRoute: (route: AppRoute) => void;
+        readonly barebone: boolean; private _setBarebone: (barebone: boolean) => void;
+        readonly profilerLoaded: boolean; private _setProfilerLoaded: (val: boolean) => void;
         service: Vidyano.Service;
         programUnit: ProgramUnit;
-        currentRoute: AppRoute;
         uri: string;
         hooks: string;
         noHistory: boolean;
         path: string;
         cacheSize: number;
         noMenu: boolean;
-        barebone: boolean;
         label: string;
-        keys: string;
         isTracking: boolean;
-
-        private _setInitializing: (init: boolean) => void;
-        private _setKeys: (keys: string) => void;
-        private _setCurrentRoute: (route: AppRoute) => void;
-        private _setBarebone: (barebone: boolean) => void;
-        private _setProfilerLoaded: (val: boolean) => void;
 
         attached() {
             super.attached();

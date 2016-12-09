@@ -41,11 +41,10 @@ namespace Vidyano.WebComponents {
     export class QueryPresenter extends WebComponent {
         private _customTemplate: PolymerTemplate;
         private _cacheEntry: QueryAppCacheEntry;
+        readonly loading: boolean; private _setLoading: (loading: boolean) => void;
+        readonly error: string; private _setError: (error: string) => void;
         queryId: string;
         query: Vidyano.Query;
-
-        private _setLoading: (loading: boolean) => void;
-        private _setError: (error: string) => void;
 
         attached() {
             if (!this._customTemplate)

@@ -68,18 +68,15 @@
         private _monthsAndYearsCells: HTMLDivElement[];
         private _minYears: number;
         private _scopedClassName: string;
+        readonly cells: IDatePickerCell[]; private _setCells: (cells: IDatePickerCell[]) => void;
+        readonly canFast: boolean; private _setCanFast: (canFast: boolean) => void;
+        readonly currentDate: moment.Moment; private _setCurrentDate: (date: moment.Moment) => void;
+        readonly today: moment.Moment; private _setToday: (date: moment.Moment) => void;
+        readonly header: string; private _setHeader: (header: string) => void;
+        readonly deferredCellsUpdate: boolean; private _setDeferredCellsUpdate: (defer: boolean) => void;
         zoom: string;
         selectedDate: Date;
         monthMode: boolean;
-        currentDate: moment.Moment;
-        cells: IDatePickerCell[];
-
-        private _setCells: (cells: IDatePickerCell[]) => void;
-        private _setCanFast: (canFast: boolean) => void;
-        private _setCurrentDate: (date: moment.Moment) => void;
-        private _setToday: (date: moment.Moment) => void;
-        private _setHeader: (header: string) => void;
-        private _setDeferredCellsUpdate: (defer: boolean) => void;
 
         attached() {
             super.attached();

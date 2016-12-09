@@ -23,9 +23,7 @@ namespace Vidyano.WebComponents {
         }
     })
     export class FileDrop extends WebComponent {
-        dragOver: boolean;
-
-        private _setDragOver: (val: boolean) => void;
+        readonly dragOver: boolean; private _setDragOver: (val: boolean) => void;
 
         private _dragEnter(e: DragEvent) {
             e.preventDefault();

@@ -39,16 +39,12 @@ namespace Vidyano.WebComponents {
         ]
     })
     export class User extends WebComponent {
-        private service: Vidyano.Service;
-        isSignedIn: boolean;
-        collapsed: boolean;
-
-        private _setService: (service: Vidyano.Service) => void;
-        private _setIsSignedIn: (val: boolean) => void;
-        private _setCanFeedback: (val: boolean) => void;
-        private _setCanUserSettings: (val: boolean) => void;
-        private _setCanProfile: (val: boolean) => void;
-        private _setUserName: (val: string) => void;
+        readonly service: Vidyano.Service; private _setService: (service: Vidyano.Service) => void;
+        readonly isSignedIn: boolean; private _setIsSignedIn: (val: boolean) => void;
+        readonly canFeedback: boolean; private _setCanFeedback: (val: boolean) => void;
+        readonly canUserSettings: boolean; private _setCanUserSettings: (val: boolean) => void;
+        readonly canProfile: boolean; private _setCanProfile: (val: boolean) => void;
+        readonly userName: string; private _setUserName: (val: string) => void;
 
         attached() {
             super.attached();

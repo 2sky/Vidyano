@@ -392,16 +392,13 @@
 
     export abstract class WebComponent extends PolymerBase {
         private _app: Vidyano.WebComponents.App;
-
+        readonly translations: any; private _setTranslations: (translations: any) => void;
         className: string;
         classList: DOMTokenList;
         tagName: string;
         style: CSSStyleDeclaration;
         isAttached: boolean;
         app: Vidyano.WebComponents.App;
-        translations: any;
-
-        private _setTranslations: (translations: any) => void;
 
         protected attached() {
             if (!this.app)

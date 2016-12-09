@@ -49,11 +49,9 @@
         private _itemsChecksum: string;
         private _presentersLoading: number = 0;
         private _layout: HTMLTableElement;
+        readonly loading: boolean; private _setLoading: (loading: boolean) => void;
         group: Vidyano.PersistentObjectAttributeGroup;
         columns: number;
-        loading: boolean;
-
-        private _setLoading: (loading: boolean) => void;
 
         private _computeLabel(group: Vidyano.PersistentObjectAttributeGroup, groupIndex: number, translations: any): string {
             if (group.label && groupIndex === 0) {

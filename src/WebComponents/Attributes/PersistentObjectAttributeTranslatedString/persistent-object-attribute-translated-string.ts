@@ -26,10 +26,8 @@
     })
     export class PersistentObjectAttributeTranslatedString extends PersistentObjectAttribute {
         private _defaultLanguage: string;
-        strings: ITranslatedString[];
+        readonly strings: ITranslatedString[]; private _setStrings: (strings: ITranslatedString[]) => void;
         multiline: boolean;
-
-        private _setStrings: (strings: ITranslatedString[]) => void;
 
         protected _optionsChanged(options: string[] | Common.IKeyValuePair[]) {
             super._optionsChanged(options);

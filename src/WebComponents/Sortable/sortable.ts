@@ -11,14 +11,13 @@
 
     export abstract class Sortable extends WebComponent {
         private _sortable: ISortable;
+        readonly isDragging: boolean; private _setIsDragging: (isDragging: boolean) => void;
+        readonly isGroupDragging: boolean; private _setIsGroupDragging: (isGroupDragging: boolean) => void;
         group: string;
         filter: string;
         handle: string;
         draggableItems: string;
         enabled: boolean;
-
-        private _setIsDragging: (isDragging: boolean) => void;
-        private _setIsGroupDragging: (isGroupDragging: boolean) => void;
 
         attached() {
             super.attached();

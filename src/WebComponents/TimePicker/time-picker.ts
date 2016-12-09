@@ -24,13 +24,10 @@
         }
     })
     export class TimePicker extends WebComponent {
-        hours: number;
-        minutes: number;
+        readonly hours: number; private _setHours: (hours: number) => void;
+        readonly minutes: number; private _setMinutes: (minutes: number) => void;
         state: string;
         time: Date;
-
-        private _setHours: (hours: number) => void;
-        private _setMinutes: (minutes: number) => void;
 
         attached() {
             super.attached();

@@ -52,13 +52,11 @@ namespace Vidyano.WebComponents.Attributes {
         private _inlineAddHeight: number;
         private _lastComputedWidths: number;
         private _initialActiveObjectSet: boolean;
+        readonly initializing: boolean; private _setInitializing: (init: boolean) => void;
+        readonly newAction: Vidyano.Action; private _setNewAction: (action: Vidyano.Action) => void;
+        readonly deleteAction: Vidyano.Action; private _setDeleteAction: (action: Vidyano.Action) => void;
         attribute: Vidyano.PersistentObjectAttributeAsDetail;
-        newAction: Vidyano.Action;
         newActionPinned: boolean;
-
-        private _setInitializing: (init: boolean) => void;
-        private _setNewAction: (action: Vidyano.Action) => void;
-        private _setDeleteAction: (action: Vidyano.Action) => void;
 
         private _isColumnVisible(column: QueryColumn) {
             return !column.isHidden && column.width !== "0";
@@ -252,9 +250,8 @@ namespace Vidyano.WebComponents.Attributes {
     })
     export class PersistentObjectAttributeAsDetailRow extends WebComponents.WebComponent {
         private fullEdit: boolean;
+        readonly lastUpdated: Date; private _setLastUpdated: (lastUpdated: Date) => void;
         serviceObject: Vidyano.PersistentObject;
-
-        private _setLastUpdated: (lastUpdated: Date) => void;
 
         private _isColumnVisible(column: QueryColumn) {
             return !column.isHidden && column.width !== "0";

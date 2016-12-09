@@ -131,8 +131,6 @@
     })
     export class Scroller extends WebComponent {
         private static _minBarSize: number = 40;
-        private _setHovering: (hovering: boolean) => void;
-        private _setScrolling: (scrolling: string) => void;
         private _verticalScrollHeight: number;
         private _verticalScrollTop: number;
         private _verticalScrollSpace: number;
@@ -141,30 +139,25 @@
         private _horizontalScrollSpace: number;
         private _trackStart: number;
         private _zenscroll: IZenscroll;
-        outerWidth: number;
-        outerHeight: number;
-        innerWidth: number;
-        innerHeight: number;
-        horizontal: boolean;
+        readonly hovering: boolean; private _setHovering: (hovering: boolean) => void;
+        readonly scrolling: string; private _setScrolling: (scrolling: string) => void;
+        readonly atTop: boolean; private _setAtTop: (atTop: boolean) => void;
+        readonly outerWidth: number; private _setOuterWidth: (width: number) => void;
+        readonly outerHeight: number; private _setOuterHeight: (height: number) => void;
+        readonly innerWidth: number; private _setInnerWidth: (width: number) => void;
+        readonly innerHeight: number; private _setInnerHeight: (height: number) => void;
+        readonly horizontal: boolean; private _setHorizontal: (val: boolean) => void;
+        readonly vertical: boolean; private _setVertical: (val: boolean) => void;
+        readonly scrollTopShadow: boolean; private _setScrollTopShadow: (val: boolean) => void;
+        readonly scrollBottomShadow: boolean; private _setScrollBottomShadow: (val: boolean) => void;
+        readonly hiddenScrollbars: boolean; private _setHiddenScrollbars: (val: boolean) => void;
         noHorizontal: boolean;
-        vertical: boolean;
         noVertical: boolean;
         horizontalScrollOffset: number;
         verticalScrollOffset: number;
         forceScrollbars: boolean;
         noScrollShadow: boolean;
         isWebKit: boolean;
-
-        private _setAtTop: (atTop: boolean) => void;
-        private _setOuterWidth: (width: number) => void;
-        private _setOuterHeight: (height: number) => void;
-        private _setInnerWidth: (width: number) => void;
-        private _setInnerHeight: (height: number) => void;
-        private _setHorizontal: (val: boolean) => void;
-        private _setVertical: (val: boolean) => void;
-        private _setScrollTopShadow: (val: boolean) => void;
-        private _setScrollBottomShadow: (val: boolean) => void;
-        private _setHiddenScrollbars: (val: boolean) => void;
 
         attached() {
             super.attached();

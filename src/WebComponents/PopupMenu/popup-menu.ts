@@ -115,9 +115,8 @@ namespace Vidyano.WebComponents {
     })
     export class PopupMenuItem extends WebComponent {
         private _observer: PolymerDomChangeObserver;
+        readonly hasChildren: boolean; private _setHasChildren: (hasChildren: boolean) => void;
         checked: boolean;
-
-        private _setHasChildren: (hasChildren: boolean) => void;
 
         constructor(public label?: string, public icon?: string, private _action?: () => void) {
             super();
@@ -170,9 +169,8 @@ namespace Vidyano.WebComponents {
     })
     export class PopupMenuItemSplit extends WebComponent {
         private _observer: PolymerDomChangeObserver;
+        readonly hasChildren: boolean; private _setHasChildren: (hasChildren: boolean) => void;
         checked: boolean;
-
-        private _setHasChildren: (hasChildren: boolean) => void;
 
         constructor(public label?: string, public icon?: string, private _action?: () => void) {
             super();

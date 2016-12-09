@@ -70,46 +70,6 @@ namespace Vidyano.WebComponents {
     }
 
     @WebComponent.register({
-        properties: {
-            column: Object,
-            queryColumn: {
-                type: Object,
-                computed: "column.column"
-            },
-            filtered: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
-            queryFiltering: {
-                type: Boolean,
-                computed: "queryColumn.query.isFiltering",
-                reflectToAttribute: true
-            },
-            inversed: {
-                type: Boolean,
-                computed: "queryColumn.selectedDistinctsInversed"
-            },
-            loading: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true
-            },
-            searchText: String,
-            disabled: {
-                type: Boolean,
-                computed: "!column.canFilter",
-                reflectToAttribute: true
-            }
-        },
-        observers: [
-            "_update(queryColumn.selectedDistincts, queryColumn.selectedDistinctsInversed)"
-        ],
-        forwardObservers: [
-            "queryColumn.selectedDistincts",
-            "queryColumn.selectedDistinctsInversed",
-            "queryColumn.query.isFiltering"
-        ],
         listeners: {
             "tap": "_upgrade"
         }
@@ -178,12 +138,11 @@ namespace Vidyano.WebComponents {
         private _openOnAttach: boolean = true;
         private _distinctHeight: number;
         private _resizeStart: ISize;
+        readonly loading: boolean; private _setLoading: (loading: boolean) => void;
         column: QueryGridColumn;
         searchText: string;
         label: string;
         distincts: IQueryGridColumnFilterDistinct[];
-
-        private _setLoading: (loading: boolean) => void;
 
         attached() {
             super.attached();

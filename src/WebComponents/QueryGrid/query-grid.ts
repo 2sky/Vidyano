@@ -1023,19 +1023,14 @@
         private _columnMenuColumn: QueryGridColumn;
         private _lastUpdated: Date;
         private _reorderRow: QueryGridTableDataRow;
+        readonly columnWidthsCalculated: boolean; private _setColumnWidthsCalculated: (val: boolean) => void;
+        readonly rowHeight: number; private _setRowHeight: (rowHeight: number) => void;
+        readonly initializing: boolean; private _setInitializing: (initializing: boolean) => void;
+        readonly isReordering: boolean; private _setIsReordering: (reodering: boolean) => void;
         canReorder: boolean;
-        rowHeight: number;
         viewportSize: ISize;
         query: Vidyano.Query;
         asLookup: boolean;
-        initializing: boolean;
-        isReordering: boolean;
-
-        private _setInitializing: (initializing: boolean) => void;
-        private _setViewportSize: (size: ISize) => void;
-        private _setRowHeight: (rowHeight: number) => void;
-        private _setColumnWidthsCalculated: (val: boolean) => void;
-        private _setIsReordering: (reodering: boolean) => void;
 
         attached() {
             if (QueryGrid.tableCache.length > 0 && !this._tableData) {

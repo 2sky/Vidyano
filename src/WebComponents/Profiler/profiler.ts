@@ -65,17 +65,13 @@ namespace Vidyano.WebComponents {
     })
     export class Profiler extends WebComponent {
         private _boundMousehweel = this._onMousewheel.bind(this);
-        lastRequest: IProfilerServiceRequest;
-        selectedRequest: IProfilerServiceRequest;
-        zoom: number;
+        readonly lastRequest: IProfilerServiceRequest; private _setLastRequest: (request: Vidyano.IServiceRequest) => void;
+        readonly selectedRequest: IProfilerServiceRequest; private _setSelectedRequest: (request: Vidyano.IServiceRequest) => void;
+        readonly hoveredEntry: IServiceRequestProfilerEntry; private _setHoveredEntry: (entry: IServiceRequestProfilerEntry) => void;
+        readonly selectedEntry: IServiceRequestProfilerEntry; private _setSelectedEntry: (entry: IServiceRequestProfilerEntry) => void;
+        readonly zoom: number; private _setZoom: (value: number) => void;
         timelineSize: ISize;
         profiledRequests: IProfilerServiceRequest[];
-
-        private _setLastRequest: (request: Vidyano.IServiceRequest) => void;
-        private _setSelectedRequest: (request: Vidyano.IServiceRequest) => void;
-        private _setHoveredEntry: (entry: IServiceRequestProfilerEntry) => void;
-        private _setSelectedEntry: (entry: IServiceRequestProfilerEntry) => void;
-        private _setZoom: (value: number) => void;
 
         attached() {
             super.attached();

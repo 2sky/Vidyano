@@ -29,9 +29,8 @@
         }
     })
     export class Button extends WebComponents.WebComponent {
+        readonly customLayout: boolean; private _setCustomLayout: (custom: boolean) => void;
         disabled: boolean;
-
-        private _setCustomLayout: (custom: boolean) => void;
 
         attached() {
             super.attached();

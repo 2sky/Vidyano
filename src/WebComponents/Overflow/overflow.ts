@@ -17,9 +17,7 @@ namespace Vidyano.WebComponents {
         private _overflownChildren: linqjs.Enumerable<HTMLElement>;
         private _visibibleSizeChangedSkip: { width: number; height: number };
         private _previousHeight: number;
-        hasOverflow: boolean;
-
-        private _setHasOverflow: (val: boolean) => void;
+        readonly hasOverflow: boolean; private _setHasOverflow: (val: boolean) => void;
 
         private _visibleContainerSizeChanged(e: Event, detail: { width: number; height: number }) {
             this.$["visible"].style.maxWidth = `${detail.width}px`;
