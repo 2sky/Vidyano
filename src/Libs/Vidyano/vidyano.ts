@@ -4652,7 +4652,7 @@ namespace Vidyano {
                                 this.query.setNotification(e);
                             }
 
-                            await this.query.search();
+                            this.query.search();
                         }
                     } else if (this.parent != null && (po.fullTypeName === this.parent.fullTypeName || po.isNew === this.parent.isNew) && po.id === this.parent.id && po.objectId === this.parent.objectId) {
                         this.parent.refreshFromResult(po);
