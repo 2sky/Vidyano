@@ -160,9 +160,12 @@ namespace Vidyano.WebComponents {
             return false;
         }
 
-        private _add(e: TapEvent) {
-            const routes = JSON.parse(this.app.service.application.getAttributeValue("Routes"));
-            if (Object.keys(routes.persistentObjects).length === 0) {
+        private async _add(e: TapEvent) {
+            const query = (await Promise.all([this.app.service.getQuery("5a4ed5c7-b843-4a1b-88f7-14bd1747458b"), this.app.importComponent("SelectReferenceDialog")]))[0] as Vidyano.Query;
+            if (!query)
+                return;
+
+            if (query.items.length == 0) {
                 this.app.showMessageDialog({
                     title: "Add menu item",
                     message: "Your application contains no persistent objects.\n\nFor more information [Getting Started](https://vidyano.com/gettingstarted)",
@@ -170,23 +173,28 @@ namespace Vidyano.WebComponents {
                     actionTypes: ["Danger"],
                     rich: true
                 });
+
+                return;
             }
-            else {
-                let query: Vidyano.Query;
-                Promise.all([this.app.service.getQuery("5a4ed5c7-b843-4a1b-88f7-14bd1747458b").then(q => query = q), this.app.importComponent("SelectReferenceDialog")]).then(() => {
-                    if (!query)
-                        return;
 
-                    const dialog = new Vidyano.WebComponents.SelectReferenceDialog(query);
-                    this.app.showDialog(dialog).then(async () => {
-                        if (!query.selectedItems || query.selectedItems.length === 0)
-                            return;
+            const dialog = new Vidyano.WebComponents.SelectReferenceDialog(query);
+            this.app.showDialog(dialog).then(async () => {
+                if (!query.selectedItems || query.selectedItems.length === 0)
+                    return;
 
-                        await this.app.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: this.app.service.application.programUnits[0].id });
-                        document.location.reload();
+                try {
+                    await this.app.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: this.app.service.application.programUnits[0].id });
+                    document.location.reload();
+                }
+                catch (e) {
+                    this.app.showMessageDialog({
+                        title: "Add menu item",
+                        message: e,
+                        actions: [this.translateMessage("OK")],
+                        actionTypes: ["Danger"]
                     });
-                });
-            }
+                }
+            });
         }
     }
 
