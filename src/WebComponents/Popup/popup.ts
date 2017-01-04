@@ -548,5 +548,9 @@ namespace Vidyano.WebComponents {
 
             e.stopPropagation();
         }
+
+        static closeAll(parent?: HTMLElement | WebComponent) {
+            PopupCore.closeAll(parent);
+        }
     }
 }
