@@ -56,14 +56,18 @@
                 return;
             }
 
-            const value = this.attribute.value.toString();
-            if (this.value != null && this._canParse(value) && new BigNumber(this.value).equals(this.attribute.value))
+            const attributeValue = this.attribute.value.toString();
+            let myValue = this.value;
+            if (this.value && this._decimalSeparator !== ".")
+                myValue = this.value.replace(this._decimalSeparator, ".");
+
+            if (myValue != null && this._canParse(myValue) && new BigNumber(myValue).equals(this.attribute.value))
                 return;
 
             if (this._decimalSeparator !== ".")
-                this.value = value.replace(".", this._decimalSeparator);
+                this.value = attributeValue.replace(".", this._decimalSeparator);
             else
-                this.value = value;
+                this.value = attributeValue;
         }
 
         protected async _valueChanged(newValue: string) {
@@ -113,7 +117,11 @@
                 this.attribute.value = newValue;
             }
 
-            this.value = this.attribute.value;
+            let attributeValue = this.attribute.value ? this.attribute.value.toString() : "";
+            if (this._decimalSeparator !== ".")
+                this.value = attributeValue.replace(".", this._decimalSeparator);
+            else
+                this.value = attributeValue;
         }
 
         private _editInputFocus(e: Event) {
