@@ -57,6 +57,9 @@
             }
 
             const value = this.attribute.value.toString();
+            if (this.value != null && this._canParse(value) && new BigNumber(this.value).equals(this.attribute.value))
+                return;
+
             if (this._decimalSeparator !== ".")
                 this.value = value.replace(".", this._decimalSeparator);
             else
@@ -110,9 +113,7 @@
                 this.attribute.value = newValue;
             }
 
-            const input = <HTMLInputElement>e.target;
-            if (input.value === "" || input.value === "-" || input.value == null)
-                input.value = this.attribute.value;
+            this.value = this.attribute.value;
         }
 
         private _editInputFocus(e: Event) {
@@ -188,11 +189,11 @@
 
             if (keyCode < Keyboard.KeyCodes.zero || keyCode > Keyboard.KeyCodes.nine) {
                 if ((keyCode === Keyboard.KeyCodes.comma || keyCode === Keyboard.KeyCodes.period) && !value.contains(this._decimalSeparator) && this._allowDecimal) {
-                    input.value = value.insert(this._decimalSeparator, carretIndex);
+                    this.value = input.value = value.insert(this._decimalSeparator, carretIndex);
                     this._setCarretIndex(input, carretIndex + 1);
                 }
                 else if (keyCode === Keyboard.KeyCodes.subtract && !value.contains("-") && carretIndex === 0 && PersistentObjectAttributeNumeric._unsignedTypes.indexOf(this.attribute.type) === -1) {
-                    input.value = value.insert("-", carretIndex);
+                    this.value = input.value = value.insert("-", carretIndex);
                     this._setCarretIndex(input, carretIndex + 1);
                 }
 
