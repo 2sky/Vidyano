@@ -100,7 +100,7 @@ namespace Vidyano.WebComponents {
 
             // Close non-parent popups
             const parentPopup = this._findParentPopup();
-            const firstOpenNonParentChild = Popup._openPopups[parentPopup == null ? 0 : Popup._openPopups.indexOf(parentPopup) + 1];
+            const firstOpenNonParentChild = PopupCore._openPopups[parentPopup == null ? 0 : PopupCore._openPopups.indexOf(parentPopup) + 1];
             if (firstOpenNonParentChild != null)
                 firstOpenNonParentChild.close();
 
@@ -305,7 +305,7 @@ namespace Vidyano.WebComponents {
                 this._closeOnMoveoutTimer = undefined;
             }
 
-            const openChild = Popup._openPopups[Popup._openPopups.indexOf(this) + 1];
+            const openChild = PopupCore._openPopups[PopupCore._openPopups.indexOf(this) + 1];
             if (openChild != null)
                 openChild.close();
 
@@ -315,14 +315,14 @@ namespace Vidyano.WebComponents {
             if (this._resolver)
                 this._resolver();
 
-            Popup._openPopups.remove(this);
+            PopupCore._openPopups.remove(this);
 
             this.fire("popup-closed", null, { bubbles: false, cancelable: false });
         }
 
         protected _findParentPopup(): Popup {
             let element = this.parentNode;
-            while (element != null && Popup._openPopups.indexOf(<any>element) === -1)
+            while (element != null && PopupCore._openPopups.indexOf(<any>element) === -1)
                 element = (<any>element).host || element.parentNode;
 
             return <Popup><any>element;
@@ -359,7 +359,7 @@ namespace Vidyano.WebComponents {
         }
 
         static closeAll(parent?: HTMLElement | WebComponent) {
-            const rootPopup = Popup._openPopups[0];
+            const rootPopup = PopupCore._openPopups[0];
             if (rootPopup && (!parent || Popup._isDescendant(<HTMLElement>parent, rootPopup)))
                 rootPopup.close();
         }
