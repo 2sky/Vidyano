@@ -165,7 +165,7 @@ namespace Vidyano.WebComponents {
             if (!query)
                 return;
 
-            if (query.items.length == 0) {
+            if (query.items.length === 0) {
                 this.app.showMessageDialog({
                     title: "Add menu item",
                     message: "Your application contains no persistent objects.\n\nFor more information [Getting Started](https://vidyano.com/gettingstarted)",
