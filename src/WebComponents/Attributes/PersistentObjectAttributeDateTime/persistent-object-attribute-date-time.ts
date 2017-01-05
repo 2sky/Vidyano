@@ -76,6 +76,13 @@
             return this._timeInput || (this._timeInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("#time"));
         }
 
+        private _focused(e: FocusEvent) {
+            const target = <HTMLInputElement>e.target;
+
+            if ((target.id === "date" && !this._isDateFilled) || (target.id === "time" && !this._isTimeFilled))
+                target.selectionStart = target.selectionEnd = 0;
+        }
+
         protected _editingChanged() {
             super._editingChanged();
 
