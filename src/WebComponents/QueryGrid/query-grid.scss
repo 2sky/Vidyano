@@ -67,16 +67,6 @@
 
     footer#dataFooterHost {
         border-top: 1px solid var(--theme-light-border);
-        @include relative();
-
-        &:after {
-            @include fit();
-            background-color: white;
-            content: " ";
-            left: 0;
-            top: 0;
-            bottom: 0;
-        }
 
         table {
             td[is="vi-query-grid-table-footer-column"].pinned.last-pinned {
