@@ -250,7 +250,7 @@ namespace Vidyano.WebComponents {
                 };
             }
 
-            if (Popup._isBuggyGetBoundingClientRect === undefined) {
+            if (PopupCore._isBuggyGetBoundingClientRect === undefined) {
                 const outer = document.createElement("div");
                 outer.style.webkitTransform = outer.style.transform = "translate(-100px, -100px)";
 
@@ -264,10 +264,10 @@ namespace Vidyano.WebComponents {
                 const innerRect = inner.getBoundingClientRect();
                 document.body.removeChild(outer);
 
-                Popup._isBuggyGetBoundingClientRect = outerRect.left === innerRect.left;
+                PopupCore._isBuggyGetBoundingClientRect = outerRect.left === innerRect.left;
             }
 
-            if (Popup._isBuggyGetBoundingClientRect) {
+            if (PopupCore._isBuggyGetBoundingClientRect) {
                 let parent = this.findParent(p => p === target) != null ? target.parentElement : this.parentElement;
                 while (parent != null) {
                     const computedStyle = getComputedStyle(parent, null),
@@ -360,7 +360,7 @@ namespace Vidyano.WebComponents {
 
         static closeAll(parent?: HTMLElement | WebComponent) {
             const rootPopup = PopupCore._openPopups[0];
-            if (rootPopup && (!parent || Popup._isDescendant(<HTMLElement>parent, rootPopup)))
+            if (rootPopup && (!parent || PopupCore._isDescendant(<HTMLElement>parent, rootPopup)))
                 rootPopup.close();
         }
 
