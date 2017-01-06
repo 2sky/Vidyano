@@ -61,7 +61,7 @@
             if (this.value && this._decimalSeparator !== ".")
                 myValue = this.value.replace(this._decimalSeparator, ".");
 
-            if (myValue != null && this._canParse(myValue) && new BigNumber(myValue).equals(this.attribute.value))
+            if (!!myValue && this._canParse(myValue) && new BigNumber(myValue).equals(this.attribute.value))
                 return;
 
             if (this._decimalSeparator !== ".")
