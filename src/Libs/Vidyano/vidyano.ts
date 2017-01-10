@@ -138,7 +138,7 @@ namespace Vidyano {
         return parts;
     }
 
-    export function cookie(key: string, value?: any, options?: { force?: boolean; raw?: boolean; path?: string; domain?: string; secure?: boolean; expires?: number | Date; }) {
+    export function cookie(key: string, value?: any, options?: { force?: boolean; raw?: boolean; path?: string; domain?: string; secure?: boolean; expires?: number | Date; }): string {
         const now = new Date();
 
         // key and at least value given, set cookie...
@@ -422,7 +422,7 @@ namespace Vidyano {
             super();
 
             (<any>this.hooks)._service = this;
-            this.staySignedIn = cookie("staySignedIn", undefined, { force: true });
+            this.staySignedIn = cookie("staySignedIn", { force: true }) === "true";
         }
 
         static set token(token: string) {
