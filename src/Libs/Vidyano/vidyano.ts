@@ -411,6 +411,7 @@ namespace Vidyano {
         private _application: Application;
         private _profile: boolean;
         private _profiledRequests: IServiceRequest[];
+        private _queuedClientOperations: ClientOperations.IClientOperation[] = [];
         staySignedIn: boolean;
         icons: linqjs.Dictionary<string, string>;
         actionDefinitions: linqjs.Dictionary<string, ActionDefinition>;
@@ -569,8 +570,13 @@ namespace Vidyano {
                 this._setProfiledRequests(requests.slice(0, 20));
             }
 
-            if (result.operations)
-                setTimeout(() => result.operations.forEach(o => this.hooks.onClientOperation(o)), 0);
+            if (this._queuedClientOperations.length > 0) {
+                setTimeout(() => {
+                    let operation: ClientOperations.IClientOperation;
+                    while (operation = this._queuedClientOperations.splice(0, 1)[0])
+                        this.hooks.onClientOperation(operation);
+                }, 0);
+            }
         }
 
         private _getJSON(url: string): Promise<any> {
@@ -719,6 +725,10 @@ namespace Vidyano {
 
             form.submit();
             document.body.removeChild(form);
+        }
+
+        get queuedClientOperations(): ClientOperations.IClientOperation[] {
+            return this._queuedClientOperations;
         }
 
         get application(): Application {
@@ -1108,6 +1118,9 @@ namespace Vidyano {
                     parent.freeze();
 
                 const executeThen: (QueryResultItem: any) => Promise<Vidyano.PersistentObject> = async result => {
+                    if (result.operations)
+                        this._queuedClientOperations.push(...result.operations);
+
                     if (!result.retry)
                         return result.result ? await this.hooks.onConstructPersistentObject(this, result.result) : null;
 
@@ -4808,6 +4821,27 @@ namespace Vidyano {
                 const wasNew = this.parent.isNew;
 
                 await this.parent.save();
+
+                // NOTE: Check if operations will open a new persistent object anyway
+                if (this.service.queuedClientOperations.length > 0 &&
+                    this.service.queuedClientOperations.some(o => {
+                        if (o.type === "Open") {
+                            (<ClientOperations.IOpenOperation>o).replace = true;
+                            return true;
+                        }
+                        else if (o.type === "ExecuteMethod") {
+                            const eo = <ClientOperations.IExecuteMethodOperation>o;
+                            if (eo.name === "navigate") {
+                                eo.arguments[1] = true;
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    })
+                )
+                    return this.parent;
+
                 if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
                     if (wasNew && this.parent.ownerAttributeWithReference == null && this.parent.stateBehavior.indexOf("OpenAfterNew") !== -1) {
                         const newPO = await this.parent.queueWork(() => this.service.getPersistentObject(this.parent.parent, this.parent.id, this.parent.objectId));
