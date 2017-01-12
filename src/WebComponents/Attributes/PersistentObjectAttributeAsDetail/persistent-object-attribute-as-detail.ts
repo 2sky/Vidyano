@@ -186,14 +186,21 @@ namespace Vidyano.WebComponents.Attributes {
                 lookupAttribute.lookup.search();
 
                 const result = await this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(lookupAttribute.lookup));
-                if (result)
+                if (result) {
                     await lookupAttribute.changeReference(result);
+                    
+                    if (this.attribute.triggersRefresh)
+                        await this.attribute._triggerAttributeRefresh(true);
+                }
                 else
                     this.pop("attribute.objects");
             }
             else {
                 this.attribute.isValueChanged = true;
                 this.attribute.parent.triggerDirty();
+                    
+                if (this.attribute.triggersRefresh)
+                    await this.attribute._triggerAttributeRefresh(true);
             }
         }
 
@@ -206,6 +213,9 @@ namespace Vidyano.WebComponents.Attributes {
 
             this.attribute.isValueChanged = true;
             this.attribute.parent.triggerDirty();
+            
+            if (this.attribute.triggersRefresh)
+                this.attribute._triggerAttributeRefresh(true);
         }
 
         private _isActiveObject(activeObject: Vidyano.PersistentObject, obj: Vidyano.PersistentObject): boolean {
