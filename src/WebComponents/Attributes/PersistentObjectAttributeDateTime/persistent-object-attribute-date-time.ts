@@ -285,5 +285,13 @@
 
             return displayFormat === "{0:y}";
         }
+
+        private _previousMonth(e: TapEvent) {
+            this.selectedDate = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth() - 1, this.selectedDate.getDate());
+        }
+
+        private _nextMonth(e: TapEvent) {
+            this.selectedDate = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth() + 1, this.selectedDate.getDate());
+        }
     }
 }
