@@ -188,7 +188,7 @@ namespace Vidyano.WebComponents.Attributes {
                 const result = await this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(lookupAttribute.lookup));
                 if (result) {
                     await lookupAttribute.changeReference(result);
-                    
+
                     if (this.attribute.triggersRefresh)
                         await this.attribute._triggerAttributeRefresh(true);
                 }
@@ -198,7 +198,7 @@ namespace Vidyano.WebComponents.Attributes {
             else {
                 this.attribute.isValueChanged = true;
                 this.attribute.parent.triggerDirty();
-                    
+
                 if (this.attribute.triggersRefresh)
                     await this.attribute._triggerAttributeRefresh(true);
             }
@@ -213,7 +213,7 @@ namespace Vidyano.WebComponents.Attributes {
 
             this.attribute.isValueChanged = true;
             this.attribute.parent.triggerDirty();
-            
+
             if (this.attribute.triggersRefresh)
                 this.attribute._triggerAttributeRefresh(true);
         }
