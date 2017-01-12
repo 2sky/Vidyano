@@ -66,6 +66,7 @@
         readonly hasInvalidDate: boolean; private _setHasInvalidDate: (invalid: boolean) => void;
         readonly hasTimeComponent: boolean;
         readonly hasDateComponent: boolean;
+        readonly monthMode: boolean;
         selectedDate: Date;
 
         get dateInput(): HTMLInputElement {
@@ -133,7 +134,7 @@
                             this.attribute.setValue(newTimeValue, true).catch(Vidyano.noop);
                     }
                     else
-                        this.attribute.setValue(this.selectedDate, false).catch(Vidyano.noop);
+                        this.attribute.setValue(this.selectedDate, this.monthMode).catch(Vidyano.noop);
                 }
             }
 
