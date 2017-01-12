@@ -70,6 +70,35 @@ namespace Vidyano.WebComponents {
     }
 
     @WebComponent.register({
+        properties: {
+            column: Object,
+            queryColumn: {
+                type: Object,
+                computed: "column.column"
+            },
+            filtered: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
+            queryFiltering: {
+                type: Boolean,
+                computed: "queryColumn.query.isFiltering",
+                reflectToAttribute: true
+            },
+            inversed: {
+                type: Boolean,
+                computed: "queryColumn.selectedDistinctsInversed"
+            }
+        },
+        observers: [
+            "_update(queryColumn.selectedDistincts, queryColumn.selectedDistinctsInversed, isAttached)",
+        ],
+        forwardObservers: [
+            "queryColumn.selectedDistincts",
+            "queryColumn.selectedDistinctsInversed",
+            "queryColumn.query.isFiltering"
+        ],
         listeners: {
             "tap": "_upgrade"
         }
