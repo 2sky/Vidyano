@@ -24,7 +24,11 @@ namespace Vidyano.WebComponents {
                 type: String,
                 readOnly: true
             },
-            allowSignedOut: Boolean
+            allowSignedOut: Boolean,
+            preserveContent: {
+                type: Boolean,
+                reflectToAttribute: true
+            }
         },
         listeners: {
             "title-changed": "_titleChanged"
@@ -41,6 +45,7 @@ namespace Vidyano.WebComponents {
         readonly path: string; private _setPath: (val: string) => void;
         allowSignedOut: boolean;
         deactivator: (result: boolean) => void;
+        preserveContent: boolean;
 
         constructor(public route: string, public component: string) {
             super();
@@ -57,50 +62,53 @@ namespace Vidyano.WebComponents {
             this._documentTitleBackup = document.title;
             this._parameters = parameters;
 
-            this._clearChildren();
+            if (this.preserveContent && Polymer.dom(this).children.length > 0)
+                this._fireActivate(<WebComponent>Polymer.dom(this).children[0]);
+            else {
+                this._clearChildren();
 
-            if (this.component) {
-                if (this._constructorComponent !== this.component) {
-                    this._constructor = this._constructorFromComponent(this.component);
-                    if (!this._constructor) {
-                        if (!this._constructor && this.component.startsWith("Vidyano.WebComponents.")) {
-                            const component = this.component;
+                if (this.component) {
+                    if (this._constructorComponent !== this.component) {
+                        this._constructor = this._constructorFromComponent(this.component);
+                        if (!this._constructor) {
+                            if (!this._constructor && this.component.startsWith("Vidyano.WebComponents.")) {
+                                const component = this.component;
 
-                            await this.app.importComponent(this.component.replace(/^(Vidyano.WebComponents.)/, ""));
-                            if (this.component !== component || (this._parameters && JSON.stringify(this._parameters) !== JSON.stringify(parameters)))
-                                return;
+                                await this.app.importComponent(this.component.replace(/^(Vidyano.WebComponents.)/, ""));
+                                if (this.component !== component || (this._parameters && JSON.stringify(this._parameters) !== JSON.stringify(parameters)))
+                                    return;
 
-                            this._constructor = this._constructorFromComponent(this.component);
-                            if (this._constructor) {
-                                this._constructorComponent = this.component;
-                                this._distributeNewComponent();
+                                this._constructor = this._constructorFromComponent(this.component);
+                                if (this._constructor) {
+                                    this._constructorComponent = this.component;
+                                    this._distributeNewComponent();
+                                }
                             }
                         }
+                        else {
+                            this._constructorComponent = this.component;
+                            this._distributeNewComponent();
+                        }
                     }
-                    else {
-                        this._constructorComponent = this.component;
+                    else
                         this._distributeNewComponent();
-                    }
-                }
-                else
-                    this._distributeNewComponent();
-            }
-            else {
-                const template = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
-                if (template) {
-                    Polymer.dom(this).appendChild(template.stamp({ app: this.app }).root);
-                    Polymer.dom(this).flush();
-
-                    this._hasChildren = true;
                 }
                 else {
-                    const firstChild = <WebComponent>Polymer.dom(this).children[0];
-                    if (firstChild) {
-                        if (firstChild.updateStyles)
-                            firstChild.updateStyles();
+                    const template = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
+                    if (template) {
+                        Polymer.dom(this).appendChild(template.stamp({ app: this.app }).root);
+                        Polymer.dom(this).flush();
 
-                        if (firstChild.fire)
-                            firstChild.fire("app-route-activate", null, { bubbles: false });
+                        this._hasChildren = true;
+                    }
+                    else {
+                        const firstChild = <WebComponent>Polymer.dom(this).children[0];
+                        if (firstChild) {
+                            if (firstChild.updateStyles)
+                                firstChild.updateStyles();
+
+                            this._fireActivate(firstChild);
+                        }
                     }
                 }
             }
@@ -127,8 +135,12 @@ namespace Vidyano.WebComponents {
 
             this._hasChildren = true;
 
-            if (componentInstance.fire)
-                componentInstance.fire("app-route-activate", null, { bubbles: false });
+            this._fireActivate(componentInstance)
+        }
+
+        private _fireActivate(target: WebComponent) {
+            if (target.fire)
+                target.fire("app-route-activate", { route: this, parameters: this._parameters }, { bubbles: true });
         }
 
         private _clearChildren() {
@@ -139,7 +151,7 @@ namespace Vidyano.WebComponents {
             this._hasChildren = false;
         }
 
-        deactivate(): Promise<boolean> {
+        deactivate(nextRoute?: AppRoute): Promise<boolean> {
             const component = <WebComponent>Polymer.dom(this).children[0];
 
             return new Promise(resolve => {
@@ -148,7 +160,9 @@ namespace Vidyano.WebComponents {
                     resolve(true);
             }).then(result => {
                 if (result) {
-                    this._setActive(false);
+                    if (!this.preserveContent || nextRoute !== this)
+                        this._setActive(false);
+
                     document.title = this._documentTitleBackup;
                 }
 
