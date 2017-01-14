@@ -135,7 +135,7 @@ namespace Vidyano.WebComponents {
 
             this._hasChildren = true;
 
-            this._fireActivate(componentInstance)
+            this._fireActivate(componentInstance);
         }
 
         private _fireActivate(target: WebComponent) {

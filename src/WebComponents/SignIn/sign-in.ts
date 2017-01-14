@@ -1,6 +1,10 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
+    interface ISignInRouteParameters {
+        returnUrl: string;
+    }
+
     @WebComponent.register({
         properties: {
             error: {
@@ -21,36 +25,35 @@
         error: string;
         image: string;
 
-        private async _activate(e: CustomEvent) {
-            const route = <AppRoute>Polymer.dom(this).parentNode;
-            const returnUrl = decodeURIComponent(route.parameters.returnUrl || "");
+        private async _activate(e: CustomEvent, { parameters }: { parameters: ISignInRouteParameters; }) {
+            const returnUrl = decodeURIComponent(parameters.returnUrl || "");
 
-            if (route.app.service.isSignedIn) {
-                this.async(() => route.app.redirectToSignOut(), 0);
+            if (this.app.service.isSignedIn) {
+                this.async(() => this.app.redirectToSignOut(), 0);
 
                 e.preventDefault();
                 return;
             }
 
-            if (route.app.service.windowsAuthentication) {
+            if (this.app.service.windowsAuthentication) {
                 e.preventDefault();
 
-                await route.app.service.signInUsingCredentials("", "");
-                route.app.changePath(returnUrl);
+                await this.app.service.signInUsingCredentials("", "");
+                this.app.changePath(returnUrl);
 
                 return;
             }
-            else if (route.app.service.providers && Object.keys(route.app.service.providers).length === 1 && !route.app.service.providers["Vidyano"]) {
+            else if (this.app.service.providers && Object.keys(this.app.service.providers).length === 1 && !this.app.service.providers["Vidyano"]) {
                 this.empty(this.root);
 
                 Vidyano.cookie("returnUrl", returnUrl, { expires: 1, force: true });
-                this.app.service.signInExternal(Object.keys(route.app.service.providers)[0]);
+                this.app.service.signInExternal(Object.keys(this.app.service.providers)[0]);
                 return;
             }
 
             this.empty(undefined, c => c instanceof Vidyano.WebComponents.SignInProvider);
 
-            const providers = Object.keys(route.app.service.providers);
+            const providers = Object.keys(this.app.service.providers);
             providers.forEach(name => {
                 const provider = new WebComponents.SignInProvider(name === "Vidyano", providers.length === 1, returnUrl);
                 provider.name = name;

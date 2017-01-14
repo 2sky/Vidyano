@@ -1,6 +1,12 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    interface IPersistentObjectPresenterRouteParameters {
+        id: string;
+        objectId: string;
+        fromActionId: string;
+    }
+
     @WebComponent.register({
         properties: {
             persistentObjectId: {
@@ -56,11 +62,9 @@ namespace Vidyano.WebComponents {
         persistentObjectObjectId: string;
         persistentObject: Vidyano.PersistentObject;
 
-        private _activate(e: CustomEvent) {
-            const route = <AppRoute>Polymer.dom(this).parentNode;
-
-            if (route.parameters.fromActionId) {
-                if (this._cacheEntry = <PersistentObjectFromActionAppCacheEntry>route.app.cachePing(new PersistentObjectFromActionAppCacheEntry(undefined, route.parameters.fromActionId)))
+        private _activate(e: CustomEvent, { parameters }: { parameters: IPersistentObjectPresenterRouteParameters; }) {
+            if (parameters.fromActionId) {
+                if (this._cacheEntry = <PersistentObjectFromActionAppCacheEntry>this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(undefined, parameters.fromActionId)))
                     this.persistentObject = this._cacheEntry.persistentObject;
 
                 if (!this._cacheEntry) {
@@ -72,10 +76,10 @@ namespace Vidyano.WebComponents {
                     return;
                 }
             } else {
-                const cacheEntry = new PersistentObjectAppCacheEntry(route.parameters.id, route.parameters.objectId);
-                this._cacheEntry = <PersistentObjectAppCacheEntry>route.app.cachePing(cacheEntry);
+                const cacheEntry = new PersistentObjectAppCacheEntry(parameters.id, parameters.objectId);
+                this._cacheEntry = <PersistentObjectAppCacheEntry>this.app.cachePing(cacheEntry);
                 if (!this._cacheEntry)
-                    route.app.cache(this._cacheEntry = cacheEntry);
+                    this.app.cache(this._cacheEntry = cacheEntry);
 
                 if (this._cacheEntry.persistentObject)
                     this.persistentObject = this._cacheEntry.persistentObject;

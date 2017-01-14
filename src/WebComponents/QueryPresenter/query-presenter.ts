@@ -1,6 +1,11 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    interface IQueryPresenterRouteParameters {
+        programUnitName: string;
+        id: string;
+    }
+
     @WebComponent.register({
         properties: {
             queryId: {
@@ -53,15 +58,13 @@ namespace Vidyano.WebComponents {
             super.attached();
         }
 
-        private _activate(e: CustomEvent) {
-            const route = <AppRoute>Polymer.dom(this).parentNode;
-
-            this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(route.parameters.id));
+        private _activate(e: CustomEvent, { parameters }: { parameters: IQueryPresenterRouteParameters; }) {
+            this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(parameters.id));
             if (this._cacheEntry && this._cacheEntry.query)
                 this.query = this._cacheEntry.query;
             else {
                 this.queryId = this.query = undefined;
-                this.queryId = route.parameters.id;
+                this.queryId = parameters.id;
             }
 
             this.fire("title-changed", { title: this.query ? this.query.label : null }, { bubbles: true });
