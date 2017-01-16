@@ -287,12 +287,12 @@
         }
 
         private _previousMonth(e: TapEvent) {
-            const selectedDate = this.selectedDate ? moment(this.selectedDate) : moment().startOf('month');
+            const selectedDate = this.selectedDate ? moment(this.selectedDate) : moment().startOf("month");
             this.selectedDate = selectedDate.subtract(1, "month").toDate();
         }
 
         private _nextMonth(e: TapEvent) {
-            const selectedDate = this.selectedDate ? moment(this.selectedDate) : moment().startOf('month');
+            const selectedDate = this.selectedDate ? moment(this.selectedDate) : moment().startOf("month");
             this.selectedDate = selectedDate.add(1, "month").toDate();
         }
     }
