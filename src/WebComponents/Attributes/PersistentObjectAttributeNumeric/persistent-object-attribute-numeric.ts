@@ -117,11 +117,13 @@
                 this.attribute.value = newValue;
             }
 
-            let attributeValue = this.attribute.value ? this.attribute.value.toString() : "";
-            if (this._decimalSeparator !== ".")
-                this.value = attributeValue.replace(".", this._decimalSeparator);
-            else
-                this.value = attributeValue;
+            let attributeValue = this.attribute.value ? this.attribute.value.toString() : (this.attribute.isRequired || this.value ? "0" : "");
+            if (attributeValue !== this.value) {
+                if (this._decimalSeparator !== ".")
+                    this.value = attributeValue.replace(".", this._decimalSeparator);
+                else
+                    this.value = attributeValue;
+            }
         }
 
         private _editInputFocus(e: Event) {
