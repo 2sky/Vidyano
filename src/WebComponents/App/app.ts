@@ -975,8 +975,13 @@ namespace Vidyano.WebComponents {
             const newQuery = super.onConstructQuery(service, query, parent, asLookup, maxSelectedItems);
 
             const queryConfig = this.app.configuration.getQueryConfig(newQuery);
-            if (queryConfig && queryConfig.defaultChart)
-                newQuery.defaultChartName = queryConfig.defaultChart;
+            if (queryConfig) {
+                if (queryConfig.defaultChart)
+                    newQuery.defaultChartName = queryConfig.defaultChart;
+
+                if (queryConfig.selectAll)
+                    newQuery.selectAll.isAvailable = true;
+            }
 
             return newQuery;
         }
