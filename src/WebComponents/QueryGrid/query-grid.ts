@@ -449,6 +449,9 @@
             if (this.item.getTypeHint("extraclass", "").split(" ").some(c => c.toUpperCase() === "DISABLED"))
                 return;
 
+            if (this.table.grid.fire("item-tap", { item: this.item }, { bubbles: false, cancelable: true }).defaultPrevented)
+                return;
+
             if (this.table.grid.query.canRead && !this.table.grid.query.asLookup && !this.table.grid.asLookup) {
                 if (!this.table.grid.app.noHistory && e.detail.sourceEvent && ((<KeyboardEvent>e.detail.sourceEvent).ctrlKey || (<KeyboardEvent>e.detail.sourceEvent).shiftKey)) {
                     // Open in new window/tab
@@ -469,8 +472,6 @@
                     this.item.query.service.hooks.onOpen(po);
                 }
             }
-            else
-                this.table.grid.fire("item-tap", { item: this.item }, { bubbles: false });
         }
 
         private _itemPropertyChanged(sender: Vidyano.QueryResultItem, args: Vidyano.Common.PropertyChangedArgs) {
