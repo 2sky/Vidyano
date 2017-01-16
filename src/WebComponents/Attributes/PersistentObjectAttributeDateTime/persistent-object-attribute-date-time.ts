@@ -287,11 +287,13 @@
         }
 
         private _previousMonth(e: TapEvent) {
-            this.selectedDate = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth() - 1, this.selectedDate.getDate());
+            const selectedDate = this.selectedDate ? moment(this.selectedDate) : moment().startOf('month');
+            this.selectedDate = selectedDate.subtract(1, "month").toDate();
         }
 
         private _nextMonth(e: TapEvent) {
-            this.selectedDate = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth() + 1, this.selectedDate.getDate());
+            const selectedDate = this.selectedDate ? moment(this.selectedDate) : moment().startOf('month');
+            this.selectedDate = selectedDate.add(1, "month").toDate();
         }
     }
 }
