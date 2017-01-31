@@ -15,6 +15,9 @@
             </div>
             <ul content filtering$="[[filtering]]" on-select-option="_select">
                 <template is="dom-repeat" items="[[filteredItems]]" as="item">
+                    <template is="dom-if" if="[[_showGroup(item)]]">
+                        <li class="group">[[item.group]]</li>
+                    </template>
                     <li is="vi-select-option-item" suggested="[[_equals(item, suggestion)]]" selected="[[_equals(item, selectedItem)]]" item="{{item}}">[[item.displayValue]]</li>
                 </template>
             </ul>

@@ -88,10 +88,21 @@ $border-color: #ddd;
                 padding-left: var(--theme-h5);
                 line-height: calc(var(--theme-h2) - 2px);
                 height: calc(var(--theme-h2) - 2px);
-                cursor: pointer;
 
-                &:hover {
-                    background-color: var(--theme-color-faint);
+                &:not(.group) {
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: var(--theme-color-faint);
+                    }
+                }
+
+                &.group {
+                    color: #888;
+                }
+
+                &[group] {
+                    padding-left: var(--theme-h3);
                 }
             }
 
