@@ -10,7 +10,7 @@
         <template is="dom-if" if="[[editing]]">
             <template is="dom-if" if="[[!radio]]">
                 <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                    <vi-select content options="[[options]]" selected-option="{{value}}" readonly="[[readOnly]]" disabled="[[attribute.parent.isFrozen]]" placeholder="[[placeholder]]"></vi-select>
+                    <vi-select content options="[[options]]" selected-option="{{value}}" readonly="[[readOnly]]" disabled="[[attribute.parent.isFrozen]]" placeholder="[[placeholder]]" group-separator="[[groupSeparator]]"></vi-select>
                 </vi-persistent-object-attribute-edit>
             </template>
             <template is="dom-if" if="[[radio]]">
