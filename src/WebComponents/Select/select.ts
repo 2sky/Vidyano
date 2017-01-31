@@ -239,7 +239,7 @@ namespace Vidyano.WebComponents {
                     optionsByGroup = Enumerable.from(<Common.IKeyValuePair[]>options).groupBy(kvp => {
                         const displayValue = kvp ? kvp.value : null;
                         const displayParts = displayValue ? displayValue.split(this.groupSeparator, 2) : [];
-                        return displayParts.length == 2 ? displayParts[0] || null : null;
+                        return displayParts.length === 2 ? displayParts[0] || null : null;
                     }, o => o).toArray();
                 }
 
