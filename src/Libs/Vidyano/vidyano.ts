@@ -2400,7 +2400,7 @@ namespace Vidyano {
             };
 
             if (!immediate)
-                return this.queueWork(work);
+                return this.queueWork(work, false);
             else
                 return work();
         }
