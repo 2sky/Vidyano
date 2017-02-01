@@ -238,9 +238,9 @@
 
             if (this.zoom === "days") {
                 const newSelectedDate = moment(this.selectedDate || new Date());
-                newSelectedDate.date(cell.date.date());
-                newSelectedDate.month(cell.date.month());
                 newSelectedDate.year(cell.date.year());
+                newSelectedDate.month(cell.date.month());
+                newSelectedDate.date(cell.date.date());
 
                 this.selectedDate = newSelectedDate.clone().toDate();
 
