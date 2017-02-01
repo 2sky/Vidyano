@@ -570,6 +570,11 @@ namespace Vidyano {
                 this._setProfiledRequests(requests.slice(0, 20));
             }
 
+            if (result.operations) {
+                this._queuedClientOperations.push(...result.operations);
+                result.operations = null;
+            }
+
             if (this._queuedClientOperations.length > 0) {
                 setTimeout(() => {
                     let operation: ClientOperations.IClientOperation;
@@ -1118,8 +1123,10 @@ namespace Vidyano {
                     parent.freeze();
 
                 const executeThen: (QueryResultItem: any) => Promise<Vidyano.PersistentObject> = async result => {
-                    if (result.operations)
+                    if (result.operations) {
                         this._queuedClientOperations.push(...result.operations);
+                        result.operations = null;
+                    }
 
                     if (!result.retry)
                         return result.result ? await this.hooks.onConstructPersistentObject(this, result.result) : null;
