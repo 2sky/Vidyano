@@ -1,14 +1,7 @@
 /* tslint:disable:no-var-keyword */
 /* tslint:disable:no-use-before-declare */
-if (!_markedWithoutSoftbreaks) {
-    var marked;
-    var _markedWithoutSoftbreaks = marked;
-    marked = function marked(markdown, opts) {
-        opts.breaks = true;
-
-        return _markedWithoutSoftbreaks(markdown, opts);
-    };
-}
+var marked;
+marked.defaults.breaks = true;
 /* tslint:enable:no-var-keyword */
 /* tslint:enable:no-use-before-declare */
 
