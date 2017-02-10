@@ -452,6 +452,23 @@
             if (this.table.grid.fire("item-tap", { item: this.item }, { bubbles: false, cancelable: true }).defaultPrevented)
                 return;
 
+            let openaction = this.item.getTypeHint("openaction", null);
+            if (openaction) {
+                const action = Enumerable.from(this.item.query.actions).firstOrDefault(a => a.name === openaction) || Vidyano.Action.get(this.item.service, openaction, this.item.query);
+                if (action) {
+                    const po = await action.execute({
+                        selectedItems: [this.item]
+                    });
+
+                    if (po)
+                        this.item.query.service.hooks.onOpen(po);
+                }
+                else
+                    console.warn(`Unknown openaction '${openaction}'.`);
+
+                return;
+            }
+
             if (this.table.grid.query.canRead && !this.table.grid.query.asLookup && !this.table.grid.asLookup) {
                 if (!this.table.grid.app.noHistory && e.detail.sourceEvent && ((<KeyboardEvent>e.detail.sourceEvent).ctrlKey || (<KeyboardEvent>e.detail.sourceEvent).shiftKey)) {
                     // Open in new window/tab
