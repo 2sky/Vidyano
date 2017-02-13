@@ -221,7 +221,8 @@ namespace Vidyano.WebComponents {
                 type: String,
                 reflectToAttribute: true,
                 value: "#009688"
-            }
+            },
+            configs: String
         },
         observers: [
             "_updateInitialize(serviceInitializer, appRoutesInitializer)",
@@ -230,7 +231,8 @@ namespace Vidyano.WebComponents {
             "_cleanUpOnSignOut(service.isSignedIn)",
             "_resolveDependencies(service.application.hasManagement)",
             "_computeThemeColorVariants(themeColor, 'color', isAttached)",
-            "_computeThemeColorVariants(themeAccentColor, 'accent-color', isAttached)"
+            "_computeThemeColorVariants(themeAccentColor, 'accent-color', isAttached)",
+            "_importConfigs(configs, isAttached)"
         ],
         hostAttributes: {
             "tabindex": "-1"
@@ -517,6 +519,14 @@ namespace Vidyano.WebComponents {
 
         private _cookiePrefixChanged(cookiePrefix: string) {
             Vidyano.cookiePrefix = cookiePrefix;
+        }
+
+        private async _importConfigs(configs: string, isAttached: boolean) {
+            if (!configs || !isAttached)
+                return;
+
+            const doc = <HTMLDocument>await this.importHref(configs);
+            Enumerable.from(doc.body.children).forEach(c => Polymer.dom(this).appendChild(c));
         }
 
         private async _updateInitialize(...promises: Promise<any>[]) {
