@@ -526,7 +526,7 @@ namespace Vidyano.WebComponents {
                 return;
 
             const doc = <HTMLDocument>await this.importHref(configs);
-            Enumerable.from(doc.body.children).forEach(c => Polymer.dom(this).appendChild(c));
+            Enumerable.from(doc.body.childNodes).forEach(c => Polymer.dom(this).appendChild(c));
         }
 
         private async _updateInitialize(...promises: Promise<any>[]) {
