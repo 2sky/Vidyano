@@ -2,7 +2,7 @@ namespace Vidyano.WebComponents {
     "use strict";
 
     interface IAppRouteComponentConstructor extends HTMLElement {
-        new (app: App): IAppRouteComponentConstructor;
+        new (): IAppRouteComponentConstructor;
     }
 
     @WebComponent.register({
@@ -129,7 +129,7 @@ namespace Vidyano.WebComponents {
 
             this._clearChildren();
 
-            const componentInstance = <WebComponent><any>new this._constructor(this.app);
+            const componentInstance = <WebComponent><any>new this._constructor();
             Polymer.dom(this).appendChild(componentInstance);
             Polymer.dom(this).flush();
 
