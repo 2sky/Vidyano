@@ -89,6 +89,11 @@ namespace Vidyano.WebComponents {
             inversed: {
                 type: Boolean,
                 computed: "queryColumn.selectedDistinctsInversed"
+            },
+            disabled: {
+                type: Boolean,
+                computed: "!column.canFilter",
+                reflectToAttribute: true
             }
         },
         observers: [
