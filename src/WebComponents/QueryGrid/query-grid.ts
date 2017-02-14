@@ -455,14 +455,8 @@
             let openaction = this.item.getTypeHint("openaction", null);
             if (openaction) {
                 const action = Enumerable.from(this.item.query.actions).firstOrDefault(a => a.name === openaction) || Vidyano.Action.get(this.item.service, openaction, this.item.query);
-                if (action) {
-                    const po = await action.execute({
-                        selectedItems: [this.item]
-                    });
-
-                    if (po)
-                        this.item.query.service.hooks.onOpen(po);
-                }
+                if (action)
+                    await action.execute({ selectedItems: [this.item] });
                 else
                     console.warn(`Unknown openaction '${openaction}'.`);
 
