@@ -2,14 +2,14 @@
 
 <dom-module id="vi-popup-core">
     <template>
-        <link rel="import" type="css" href="popup-core.css">
+        <link rel="stylesheet" href="popup-core.css">
         <content></content>
     </template>
 </dom-module>
 
 <dom-module id="vi-popup">
     <template>
-        <link rel="import" type="css" href="popup.css">
+        <link rel="stylesheet" href="popup.css">
         <vi-size-tracker id="toggleSizeTracker" deferred on-sizechanged="_toggleSizeChanged"></vi-size-tracker>
         <div toggle class="horizontal layout">
             <content select="[header]"></content>
