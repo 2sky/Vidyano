@@ -30,12 +30,12 @@
         <iron-media-query query="(min-width: 480px) and (max-width: 839px)" query-matches="{{isTablet}}"></iron-media-query>
         <iron-media-query query="(min-width: 840px)" query-matches="{{isDesktop}}"></iron-media-query>
         <vi-profiler service="[[service]]" hidden$="[[!isProfiling]]"></vi-profiler>
-        <template is="dom-if" if="[[showMenu]]" restamp>
-            <vi-menu menu label="[[label]]" program-units="[[service.application.programUnits]]" active-program-unit="[[programUnit]]">
-                <content select="[label]:not([label='sign-in'])"></content>
-            </vi-menu>
-        </template>
         <template is="dom-if" if="[[!barebone]]" restamp>
+            <template is="dom-if" if="[[showMenu]]" restamp>
+                <vi-menu menu label="[[label]]" program-units="[[service.application.programUnits]]" active-program-unit="[[programUnit]]">
+                    <content select="[label]:not([label='sign-in'])"></content>
+                </vi-menu>
+            </template>
             <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
             <vi-app-route-presenter class="flex">
                 <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
