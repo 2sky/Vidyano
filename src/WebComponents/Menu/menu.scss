@@ -108,8 +108,8 @@ $backgroundColor: $blue-grey-900;
         .label {
             display: block;
             font-size: var(--theme-h3);
-            line-height: var(--vi-menu-expanded-header-height);
-            height: var(--vi-menu-expanded-header-height);
+            line-height: calc(var(--theme-h1) * 2);
+            height: calc(var(--theme-h1) * 2);
             background-color: var(--theme-color-dark);
             white-space: nowrap;
             overflow: hidden;

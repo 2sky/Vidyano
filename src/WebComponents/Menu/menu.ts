@@ -60,9 +60,6 @@ namespace Vidyano.WebComponents {
             Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).forEach(element => Polymer.dom(this.$["footerElements"]).appendChild(element));
             Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).forEach(element => Polymer.dom(this.$["headerElements"]).appendChild(element));
 
-            // Fix for FireFox line-height calc bug (https://bugzilla.mozilla.org/show_bug.cgi?id=594933)
-            this.customStyle["--vi-menu-expanded-header-height"] = (parseInt(this.getComputedStyleValue("--theme-h1")) * 2) + "px";
-
             if (!Menu._minResizeWidth)
                 Menu._minResizeWidth = this.offsetWidth;
 
