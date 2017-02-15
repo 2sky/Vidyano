@@ -74,6 +74,14 @@ module.exports = function(grunt) {
                 src: ['src/**/*.ts', 'node_modules/typescript/lib/lib.d.ts']
             }
         },
+        cssmin: {
+            dist: {
+                files: [{
+                    expand: true,
+                    src: 'dist/Vidyano.Web2/src/WebComponents/**/*.css'
+                }]
+            }
+        },
         uglify: {
             nuget: {
                 options: {
@@ -142,6 +150,7 @@ module.exports = function(grunt) {
         "replace:vidyanoVersion",
         "replace:nugetVersion",
         "uglify",
+        "cssmin",
         "dtsGenerator"
     ]);
 
@@ -163,6 +172,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks("grunt-bower-task");
     grunt.loadNpmTasks("grunt-contrib-clean");
+    grunt.loadNpmTasks("grunt-contrib-cssmin");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks("grunt-sass");
