@@ -25,7 +25,6 @@
         private _isNullable: boolean;
         private _decimalSeparator: string;
         private _dataType: string;
-        private _queuedValue: string;
         readonly focused: boolean; private _setFocused: (val: boolean) => void;
         unitBefore: string;
         unitAfter: string;
@@ -61,6 +60,13 @@
             if (this.value && this._decimalSeparator !== ".")
                 myValue = this.value.replace(this._decimalSeparator, ".");
 
+            if (this.focused) {
+                if (myValue === "" || myValue === "-")
+                    myValue = this.attribute.isRequired ? "0" : "";
+                else if (myValue.endsWith("."))
+                    myValue = myValue.trimEnd(".");
+            }
+
             if (!!myValue && this._canParse(myValue) && new BigNumber(myValue).equals(this.attribute.value))
                 return;
 
@@ -79,16 +85,15 @@
 
             try {
                 if (this.focused) {
-                    if (newValue === "" || newValue === "-") {
-                        this._queuedValue = this.attribute.isRequired ? "0" : "";
-                        return;
-                    }
-                    else if (newValue.endsWith(".")) {
-                        this._queuedValue = newValue.trimEnd(".");
-                        return;
-                    }
-                    else
-                        this._queuedValue = undefined;
+                    if (newValue === "" || newValue === "-")
+                        newValue = this.attribute.isRequired ? "0" : "";
+                    else if (newValue.endsWith("."))
+                        newValue = newValue.trimEnd(".");
+                }
+
+                if (!this._canParse(newValue)) {
+                    this.value = oldValue;
+                    return;
                 }
 
                 const bigNumberValue = !StringEx.isNullOrEmpty(newValue) ? new BigNumber(newValue) : null;
@@ -103,11 +108,6 @@
 
         private _editInputBlur(e: Event) {
             this._setFocused(false);
-
-            if (typeof this._queuedValue !== "undefined") {
-                this._valueChanged(this._queuedValue);
-                this._queuedValue = undefined;
-            }
 
             if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh) {
                 let newValue = this.value;
