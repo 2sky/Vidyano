@@ -48,11 +48,11 @@
             this._setStrings(strings);
         }
 
-        protected _valueChanged(newValue: string) {
+        protected _valueChanged(newValue: string, oldValue: string) {
             if (newValue === this.attribute.value)
                 return;
 
-            super._valueChanged(newValue);
+            super._valueChanged(newValue, oldValue);
 
             Enumerable.from(this.strings).first(s => s.key === this._defaultLanguage).value = newValue;
 

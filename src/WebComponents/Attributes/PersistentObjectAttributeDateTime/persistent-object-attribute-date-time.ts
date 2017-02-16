@@ -101,8 +101,8 @@
                 this._renderSelectedDate(false, true);
         }
 
-        protected _valueChanged(newValue: any) {
-            super._valueChanged(newValue);
+        protected _valueChanged(newValue: any, oldValue: any) {
+            super._valueChanged(newValue, oldValue);
 
             if (this.attribute && this.value) {
                 if (this.attribute.type === "Time" || this.attribute.type === "NullableTime") {

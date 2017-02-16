@@ -57,10 +57,10 @@
                 this.attribute.setValue(this.value = this.attribute.value, true).catch(Vidyano.noop);
         }
 
-        protected _valueChanged() {
+        protected _valueChanged(value: any, oldValue: any) {
             const newValue = this._changeCasing(this.value);
             if (newValue === this.value)
-                super._valueChanged(newValue);
+                super._valueChanged(newValue, oldValue);
             else
                 this.attribute.setValue(newValue, false).catch(Vidyano.noop);
         }

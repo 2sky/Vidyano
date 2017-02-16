@@ -70,7 +70,7 @@
                 this.value = attributeValue;
         }
 
-        protected async _valueChanged(newValue: string) {
+        protected async _valueChanged(newValue: string, oldValue: string) {
             if (!this.attribute)
                 return;
 

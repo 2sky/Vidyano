@@ -66,7 +66,7 @@ namespace Vidyano.WebComponents.Attributes {
             // Noop
         }
 
-        protected _valueChanged(newValue: any) {
+        protected _valueChanged(newValue: any, oldValue: any) {
             if (this.attribute && newValue !== this.attribute.value)
                 this.attribute.setValue(newValue, false).catch(Vidyano.noop);
         }
