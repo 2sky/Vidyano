@@ -24,11 +24,11 @@ namespace Vidyano.WebComponents.Attributes {
             const query = await this.attribute.parent.queueWork(() => this.app.service.getQuery(this.attribute.getTypeHint("IncludeGroups") === "True" ? "98b12f32-3f2d-4f54-b963-cb9206f74355" : "273a8302-ddc8-43db-a7f6-c3c28fc8f593"));
             query.maxSelectedItems = 1;
 
-            const result = await this.app.showDialog(new SelectReferenceDialog(query));
+            const result = <QueryResultItem[]>await this.app.showDialog(new SelectReferenceDialog(query));
             if (!result)
                 return;
 
-            this._setNewUser(result[0].id, result[0].getValue("FriendlyName") || result[0].breadcrumb);
+            this._setNewUser(result[0].id, result[0].getValue("FriendlyName") || result[0].getValue("Name"));
         }
 
         private _clearReference() {

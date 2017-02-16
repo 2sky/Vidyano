@@ -4117,7 +4117,6 @@ namespace Vidyano {
     export class QueryResultItem extends ServiceObject {
         private _ignoreSelect: boolean;
         id: string;
-        breadcrumb: string;
         rawValues: linqjs.Enumerable<QueryResultItemValue>;
         typeHints: any;
         private _fullValuesByName: any;
@@ -4127,7 +4126,6 @@ namespace Vidyano {
             super(service);
 
             this.id = item.id;
-            this.breadcrumb = item.breadcrumb;
 
             if (item.values)
                 this.rawValues = Enumerable.from(item.values).select(v => service.hooks.onConstructQueryResultItemValue(this.service, this, v)).memoize();
