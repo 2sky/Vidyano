@@ -217,10 +217,16 @@
                 r.cells.filter(c => !c.parentElement || c.parentElement === r.host).forEach(c => r.host.appendChild(c));
             });
 
-            if (this._layout)
-                Polymer.dom(this.root).replaceChild(layoutFragment, this._layout);
-            else
-                Polymer.dom(this.root).appendChild(layoutFragment);
+            const currentLayout = this._layout;
+            this.async(() => {
+                if (layout !== this._layout)
+                    return;
+
+                if (currentLayout)
+                    Polymer.dom(this.root).replaceChild(layoutFragment, currentLayout);
+                else
+                    Polymer.dom(this.root).appendChild(layoutFragment);
+            });
 
             this._layout = layout;
         }
