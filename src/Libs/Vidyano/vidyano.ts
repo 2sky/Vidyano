@@ -1819,9 +1819,9 @@ namespace Vidyano {
     export class ServiceObjectWithActions extends ServiceObject {
         private _queue: Queue;
         private _isBusy: boolean = false;
-        notification: string;
-        notificationType: NotificationType;
-        notificationDuration: number;
+        private _notification: string;
+        private _notificationType: NotificationType;
+        private _notificationDuration: number;
         actions: Action[] = [];
 
         constructor(service: Service, private _actionNames: string[] = []) {
@@ -1842,21 +1842,33 @@ namespace Vidyano {
             this.notifyPropertyChanged("isBusy", this._isBusy = val, oldIsBusy);
         }
 
+        get notification(): string {
+            return this._notification;
+        }
+
+        get notificationType(): NotificationType {
+            return this._notificationType;
+        }
+
+        get notificationDuration(): number {
+            return this._notificationDuration;
+        }
+
         setNotification(notification: string = null, type: NotificationType = NotificationType.Error, duration: number = 0) {
             if (notification != null && typeof notification === "object")
                 notification = notification["message"];
 
             const oldNotificationDuration = this.notificationDuration;
             if (oldNotificationDuration !== duration)
-                this.notifyPropertyChanged("notificationDuration", this.notificationDuration = duration, oldNotificationDuration);
+                this.notifyPropertyChanged("notificationDuration", this._notificationDuration = duration, oldNotificationDuration);
 
-            const oldNotificationType = this.notificationType;
+            const oldNotificationType = this._notificationType;
             if (oldNotificationType !== type)
-                this.notifyPropertyChanged("notificationType", this.notificationType = type, oldNotificationType);
+                this.notifyPropertyChanged("notificationType", this._notificationType = type, oldNotificationType);
 
             const oldNotification = this.notification;
             if (oldNotification !== notification)
-                this.notifyPropertyChanged("notification", this.notification = notification, oldNotification);
+                this.notifyPropertyChanged("notification", this._notification = notification, oldNotification);
 
             if (this.notificationDuration)
                 this.service.hooks.onShowNotification(notification, type, duration);
@@ -1952,9 +1964,7 @@ namespace Vidyano {
             this.queryLayoutMode = po.queryLayoutMode === "FullPage" ? PersistentObjectLayoutMode.FullPage : PersistentObjectLayoutMode.MasterDetail;
             this.objectId = po.objectId;
             this._breadcrumb = po.breadcrumb;
-            this.notification = po.notification;
-            this.notificationType = typeof (po.notificationType) === "number" ? po.notificationType : NotificationType[<string>po.notificationType];
-            this.notificationDuration = po.notificationDuration || 0;
+            this.setNotification(po.notification, typeof (po.notificationType) === "number" ? po.notificationType : NotificationType[<string>po.notificationType], po.notificationDuration || 0);
             this.isNew = !!po.isNew;
             this.newOptions = po.newOptions;
             this.isReadOnly = !!po.isReadOnly;
@@ -3248,9 +3258,7 @@ namespace Vidyano {
             this._canReorder = !!query.canReorder && !asLookup;
             this.isHidden = query.isHidden;
             this.label = query.label;
-            this.notification = query.notification;
-            this.notificationType = typeof (query.notificationType) === "number" ? query.notificationType : NotificationType[<string>query.notificationType];
-            this.notificationDuration = query.notificationDuration || 0;
+            this.setNotification(query.notification, typeof (query.notificationType) === "number" ? query.notificationType : NotificationType[<string>query.notificationType], query.notificationDuration || 0);
             this.offset = query.offset || 0;
             this.textSearch = query.textSearch || "";
             this.pageSize = query.pageSize;
