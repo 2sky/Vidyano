@@ -598,14 +598,17 @@ namespace Vidyano.WebComponents {
                 return;
 
             const anchorParent = this.findParent((e: HTMLElement) => e.tagName === "A" && !!(<HTMLAnchorElement>e).href, e.target as HTMLElement) as HTMLAnchorElement;
-            if (anchorParent && anchorParent.href.startsWith(Vidyano.Path.routes.root) && !anchorParent.hasAttribute("download") && !anchorParent.hasAttribute("external")) {
-                if (anchorParent.hash && anchorParent.hash.startsWith("#!/"))
-                    this.changePath(anchorParent.hash.substr(2));
-                else
-                    this.changePath(App.removeRootPath(anchorParent.pathname));
+            if (anchorParent && anchorParent.href.startsWith(Path.routes.root) && !anchorParent.hasAttribute("download") && !anchorParent.hasAttribute("external")) {
+                const mappedPath = Path.match(Path.routes.rootPath + anchorParent.href.slice(Path.routes.root.length), true);
+                if (mappedPath != null) {
+                    if (anchorParent.hash && anchorParent.hash.startsWith("#!/"))
+                        this.changePath(anchorParent.hash.substr(2));
+                    else
+                        this.changePath(App.removeRootPath(anchorParent.pathname));
 
-                e.stopPropagation();
-                e.preventDefault();
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
             }
         }
 
