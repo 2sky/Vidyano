@@ -2245,6 +2245,9 @@ namespace Vidyano {
         }
 
         refreshFromResult(result: PersistentObject, resultWins: boolean = false) {
+            if (result instanceof PersistentObject)
+                result = result._lastResult;
+
             this._lastResult = result;
 
             const changedAttributes: PersistentObjectAttribute[] = [];
