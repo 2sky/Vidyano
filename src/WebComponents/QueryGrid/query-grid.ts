@@ -1063,8 +1063,6 @@
                 });
             }
 
-            this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid-minimum-column-width"));
-
             super.attached();
         }
 
@@ -1466,6 +1464,9 @@
                                         if (this.offsetParent === null /* Visibility check */ || (width === 0 && getComputedStyle(cell.cell).display === "none"))
                                             return layoutUpdating = true; // Layout is still updating
                                     }
+
+                                    if (!this._minimumColumnWidth)
+                                        this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid-minimum-column-width"));
 
                                     width = Math.max(width + 10, this._minimumColumnWidth);
                                     if (width !== columnWidths[cell.column.name]) {
