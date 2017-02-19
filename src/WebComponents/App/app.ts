@@ -599,12 +599,12 @@ namespace Vidyano.WebComponents {
 
             const anchorParent = this.findParent((e: HTMLElement) => e.tagName === "A" && !!(<HTMLAnchorElement>e).href, e.target as HTMLElement) as HTMLAnchorElement;
             if (anchorParent && anchorParent.href.startsWith(Path.routes.root) && !anchorParent.hasAttribute("download") && !anchorParent.hasAttribute("external")) {
-                const path = anchorParent.href.slice(Path.routes.root.length);
+                let path = anchorParent.href.slice(Path.routes.root.length);
+                if (path.startsWith("#!/"))
+                    path = path.substr(3);
+
                 if (Path.match(Path.routes.rootPath + path, true) != null || Path.match(Path.routes.rootPath + (this._convertPath(this.service.application, path)), true) != null) {
-                    if (anchorParent.hash && anchorParent.hash.startsWith("#!/"))
-                        this.changePath(anchorParent.hash.substr(2));
-                    else
-                        this.changePath(App.removeRootPath(anchorParent.pathname));
+                    this.changePath(path);
 
                     e.stopPropagation();
                     e.preventDefault();
