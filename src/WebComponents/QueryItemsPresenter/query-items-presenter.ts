@@ -103,9 +103,9 @@ namespace Vidyano.WebComponents {
 
                     Polymer.dom(this).appendChild(chartConfig.stamp(currentChart, chartConfig.as || "chart"));
                 }
-
-                this._setLoading(false);
             }
+
+            this._setLoading(false);
         }
 
         private _onFileDropped(e: CustomEvent, details: IFileDropDetails) {
