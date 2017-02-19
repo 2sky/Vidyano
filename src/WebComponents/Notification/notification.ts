@@ -52,7 +52,7 @@
         }
 
         private _moreInfo(e: Event) {
-            if (!this.isOverflowing)
+            if (!this.isOverflowing || (<HTMLElement>e.target).tagName === "A")
                 return;
 
             let header: string;
