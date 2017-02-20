@@ -2390,11 +2390,10 @@ namespace Vidyano {
                 this._setBreadcrumb(result.breadcrumb);
 
             if (result.queriesToRefresh) {
-                result.queriesToRefresh.forEach(id => {
+                result.queriesToRefresh.forEach(async id => {
                     const query = Enumerable.from(this.queries).firstOrDefault(q => q.id === id || q.name === id);
-                    if (query && (query.hasSearched || query.notification || query.totalItems != null)) {
-                        query.search();
-                    }
+                    if (query && (query.hasSearched || query.notification || query.totalItems != null))
+                        await query.search();
                 });
             }
 
@@ -4696,9 +4695,17 @@ namespace Vidyano {
 
                 if (this.query != null && this.definition.refreshQueryOnCompleted) {
                     // NOTE: Don't wait for search to complete
-                    this.query.search().then(() => {
+                    const selectedIds = this.definition.keepSelectionOnRefresh ? this.query.selectedItems.map(i => i.id) : null;
+                    this.query.search().then(items => {
                         if (notificationPO && !this.query.notification)
                             this._setNotification(po.notification, po.notificationType, po.notificationDuration);
+
+                        if (selectedIds != null && selectedIds.length > 0) {
+                            const itemsEnum = Enumerable.from(items);
+                            const newSelectionItems = selectedIds.map(id => itemsEnum.firstOrDefault(i => i.id === id)).filter(i => i != null);
+                            if (newSelectionItems.length === selectedIds.length)
+                                this.query.selectedItems = newSelectionItems;
+                        }
                     });
                 }
 
@@ -4993,6 +5000,7 @@ namespace Vidyano {
         private _displayName: string;
         private _isPinned: boolean;
         private _refreshQueryOnCompleted: boolean;
+        private _keepSelectionOnRefresh: boolean;
         private _offset: number;
         private _iconData: string;
         private _reverseIconData: string;
@@ -5008,6 +5016,7 @@ namespace Vidyano {
             this._confirmation = item.getValue("Confirmation");
             this._selectionRule = ExpressionParser.get(item.getValue("SelectionRule"));
             this._refreshQueryOnCompleted = item.getValue("RefreshQueryOnCompleted");
+            this._keepSelectionOnRefresh = item.getValue("KeepSelectionOnRefresh");
             this._offset = item.getValue("Offset");
             this._showedOn = (<string>item.getValue("ShowedOn") || "").split(",").map(v => v.trim());
 
@@ -5065,6 +5074,10 @@ namespace Vidyano {
 
         get refreshQueryOnCompleted(): boolean {
             return this._refreshQueryOnCompleted;
+        }
+
+        get keepSelectionOnRefresh(): boolean {
+            return this._keepSelectionOnRefresh;
         }
 
         get offset(): number {
