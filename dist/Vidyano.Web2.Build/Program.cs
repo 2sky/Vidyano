@@ -19,7 +19,7 @@ namespace Vidyano.Web2.Build
                 var doc = new HtmlDocument();
                 doc.Load(html);
 
-                var links = doc.DocumentNode.SelectNodes("link[@rel='stylesheet']");
+                var links = doc.DocumentNode.SelectNodes("//link[@rel='stylesheet']");
                 if (links != null)
                 {
                     foreach (var link in links)
@@ -40,7 +40,7 @@ namespace Vidyano.Web2.Build
                     }
                 }
 
-                var scripts = doc.DocumentNode.SelectNodes("script");
+                var scripts = doc.DocumentNode.SelectNodes("//script");
                 if (scripts != null)
                 {
                     foreach (var script in scripts)
