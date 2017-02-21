@@ -429,11 +429,11 @@ namespace Vidyano.WebComponents {
         }
 
         redirectToSignIn(keepUrl: boolean = true) {
-            this.app.service.hooks.onRedirectToSignIn(keepUrl);
+            (<AppServiceHooks>this.app.service.hooks).onRedirectToSignIn(keepUrl);
         }
 
         redirectToSignOut(keepUrl: boolean = true) {
-            this.app.service.hooks.onRedirectToSignOut(keepUrl);
+            (<AppServiceHooks>this.app.service.hooks).onRedirectToSignOut(keepUrl);
         }
 
         async showDialog(dialog: Dialog): Promise<any> {
