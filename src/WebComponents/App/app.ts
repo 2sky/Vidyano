@@ -278,6 +278,14 @@ namespace Vidyano.WebComponents {
         attached() {
             super.attached();
 
+            window.addEventListener("storage", this._onSessionStorage.bind(this), false);
+
+            // Sync session storage between tabs
+            if (!sessionStorage.length) {
+                localStorage.setItem("vi-getSessionStorage", "-");
+                localStorage.removeItem("vi-getSessionStorage");
+            };
+
             this.set("appRoutesInitializer", new Promise(resolve => {
                 const bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0];
                 this._setBarebone(!!bareboneTemplate);
@@ -328,6 +336,26 @@ namespace Vidyano.WebComponents {
                 Polymer.dom(this._appRoutePresenter).unobserveNodes(this._nodeObserver);
                 this._nodeObserver = null;
             }
+        }
+
+        private _onSessionStorage(event: StorageEvent) {
+            if (!event)
+                event = <StorageEvent>window.event;
+
+            if (event.newValue == null)
+                return;
+
+            if (event.key === "vi-getSessionStorage") {
+                localStorage.setItem("vi-setSessionStorage", JSON.stringify(sessionStorage));
+                localStorage.removeItem("vi-setSessionStorage");
+            } else if (event.key === "vi-setSessionStorage" && !sessionStorage.length) {
+                const data = JSON.parse(event.newValue);
+                for (const key in data) {
+                    sessionStorage.setItem(key, data[key]);
+                }
+            }
+            else if (event.key === "vi-signOut" && this.app.service && this.app.service.isSignedIn && Vidyano.cookiePrefix === event.newValue)
+                this.redirectToSignOut();
         }
 
         get configuration(): AppConfig {
@@ -707,12 +735,17 @@ namespace Vidyano.WebComponents {
         }
 
         private _cleanUpOnSignOut(isSignedIn: boolean) {
-            if (!isSignedIn) {
+            if (isSignedIn === false) {
+
                 this.cacheClear();
                 for (const route in this._routeMap)
                     this._routeMap[route].reset();
 
                 this._setCurrentRoute(null);
+
+                // Trigger sign out across tabs for the same base uri
+                localStorage.setItem("vi-signOut", Vidyano.cookiePrefix);
+                localStorage.removeItem("vi-signOut");
             }
         }
 

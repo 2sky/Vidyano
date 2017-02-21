@@ -1,31 +1,5 @@
 ﻿<script> Polymer = { lazyRegister: "max", useNativeCSSProperties: true, suppressTemplateNotifications: true, suppressBindingNotifications: true }; </script>
-<script>
-var sessionStorage_transfer = function (event) {
-    if (!event) event = window.event;
-    if (!event.newValue) return;
-    if (event.key == "vi-getSessionStorage") {
-        localStorage.setItem("vi-sessionStorage", JSON.stringify(sessionStorage));
-        localStorage.removeItem("vi-sessionStorage");
-    } else if (event.key == "vi-sessionStorage" && !sessionStorage.length) {
-        var data = JSON.parse(event.newValue);
-        for (var key in data)
-            sessionStorage.setItem(key, data[key]);
-    }
-};
-
-if (window.addEventListener)
-    window.addEventListener("storage", sessionStorage_transfer, false);
-else
-    window.attachEvent("onstorage", sessionStorage_transfer);
-
-if (!sessionStorage.length) {
-    localStorage.setItem("vi-getSessionStorage", "-");
-    localStorage.removeItem("vi-getSessionStorage");
-};
-</script>
 <link rel="import" href="Libs/polymer/polymer.html" />
 <link rel="import" href="Libs/layout/layout.html" />
 <link rel="import" href="vidyano-lite.html" />
-<script src="Libs/pathjs/path.js"></script>
-
 <link rel="import" href="WebComponents/App/app.html" />
