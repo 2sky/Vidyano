@@ -46,6 +46,7 @@ namespace Vidyano.Web2
                     });
                 }
 
+#if !DEBUG
                 html = scriptRe.Replace(html, match =>
                 {
                     var src = match.Groups[1].Value;
@@ -65,6 +66,7 @@ namespace Vidyano.Web2
                     var script = GetEmbeddedResource(directory + src);
                     return "<script>" + script + "</script>";
                 });
+#endif
 
                 html = linkRe.Replace(html, match =>
                 {
