@@ -1847,6 +1847,9 @@ namespace Vidyano {
         }
 
         setNotification(notification: string = null, type: NotificationType = NotificationType.Error, duration: number = 0) {
+            if (typeof (type) === "string")
+                type = NotificationType[<string>type];
+
             if (notification != null && typeof notification === "object")
                 notification = notification["message"];
 
@@ -1956,7 +1959,7 @@ namespace Vidyano {
             this.queryLayoutMode = po.queryLayoutMode === "FullPage" ? PersistentObjectLayoutMode.FullPage : PersistentObjectLayoutMode.MasterDetail;
             this.objectId = po.objectId;
             this._breadcrumb = po.breadcrumb;
-            this.setNotification(po.notification, typeof (po.notificationType) === "number" ? po.notificationType : NotificationType[<string>po.notificationType], po.notificationDuration || 0);
+            this.setNotification(po.notification, po.notificationType, po.notificationDuration);
             this.isNew = !!po.isNew;
             this.newOptions = po.newOptions;
             this.isReadOnly = !!po.isReadOnly;
@@ -3252,7 +3255,7 @@ namespace Vidyano {
             this._canReorder = !!query.canReorder && !asLookup;
             this.isHidden = query.isHidden;
             this.label = query.label;
-            this.setNotification(query.notification, typeof (query.notificationType) === "number" ? query.notificationType : NotificationType[<string>query.notificationType], query.notificationDuration || 0);
+            this.setNotification(query.notification, query.notificationType, query.notificationDuration);
             this.offset = query.offset || 0;
             this.textSearch = query.textSearch || "";
             this.pageSize = query.pageSize;
@@ -3573,7 +3576,7 @@ namespace Vidyano {
 
             this._setTotalItem(result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null);
 
-            this.setNotification(result.notification, result.notificationType, result.notificationDuration || 0);
+            this.setNotification(result.notification, result.notificationType, result.notificationDuration);
 
             if ((this._charts && this._charts.count() > 0) || (result.charts && result.charts.length > 0))
                 this._setCharts(Enumerable.from(result.charts).select(c => new QueryChart(this, c.label, c.name, c.options, c.type)).memoize());
