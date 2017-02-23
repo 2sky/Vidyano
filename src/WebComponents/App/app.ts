@@ -518,6 +518,31 @@ namespace Vidyano.WebComponents {
             }
         }
 
+        private static _libs = {
+            "alertify": "alertify.js/alertify.html",
+            "codemirror": "codemirror/codemirror.html",
+            "d3": "d3/d3.min.js",
+            "iron-a11y-keys": "iron-a11y-keys/iron-a11y-keys.html",
+            "iron-collapse": "iron-collapse/iron-collapse.html",
+            "iron-list": "iron-list/iron-list.html",
+            "iron-media-query": "iron-media-query/iron-media-query.html",
+            "marked-element": "marked-element/marked-element.html",
+            "masked-input": "MaskedInput/masked-input.html",
+            "moment": "moment/moment.html",
+            "paper-ripple": "paper-ripple/paper-ripple.html",
+            "sortable": "sortable/sortable.html"
+        };
+        async importLib(lib: string): Promise<any> {
+            const href = this.resolveUrl(`../../Libs/${App._libs[lib] || lib}`);
+
+            try {
+                await this.importHref(href);
+            }
+            catch (e) {
+                console.error(`Unable to load support library ${lib} via import ${href}`);
+            }
+        }
+
         private _distributeAppRoutes() {
             this._nodeObserver = Polymer.dom(this._appRoutePresenter).observeNodes(this._nodesChanged.bind(this));
             Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this._appRoutePresenter).appendChild(route));
