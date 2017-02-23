@@ -437,8 +437,8 @@
             return this.app.service.getTranslatedMessage.apply(this.app.service, [key].concat(params));
         }
 
-        /** 
-         * Dynamically imports an HTML document. 
+        /**
+         * Dynamically imports an HTML document.
          */
         importHref(href: string): Promise<any> {
             const _importHref: (href: string, onLoad?: (e: CustomEvent) => void, onFail?: (e: CustomEvent) => void) => void = Polymer["Base"].importHref;

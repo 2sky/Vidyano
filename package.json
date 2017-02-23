@@ -12,10 +12,10 @@
     "grunt-git-revision": "^0.0.1",
     "grunt-sass": "^1.1.0",
     "grunt-text-replace": "^0.4.0",
-    "grunt-ts": "^5.1.0",
-    "grunt-tslint": "^3.1.0",
-    "tslint": "4.0.0-dev.0",
-    "typescript": "^2.1.4",
-    "tslib": "git@github.com:microsoft/tslib.git#master"
+    "grunt-ts": "^6.0.0-beta.11",
+    "grunt-tslint": "4.0.1",
+    "tslint": "4.4.2",
+    "typescript": "^2.2.0",
+    "tslib": "^1.6.0"
   }
 }

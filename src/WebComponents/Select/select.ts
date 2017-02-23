@@ -226,7 +226,7 @@ namespace Vidyano.WebComponents {
 
             const isKvp = !(<any[]>options).some(o => typeof o === "string");
 
-            let groupFirstOptions: Map;
+            let groupFirstOptions: Map<any, any>;
             if (this.groupSeparator) {
                 let optionsByGroup: linqjs.Grouping<string, any>[];
 

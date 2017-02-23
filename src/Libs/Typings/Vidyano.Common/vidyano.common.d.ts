@@ -67,13 +67,4 @@ interface BigNumber {
 declare var BigNumber: {
     new (number: number | string): BigNumber;
 };
-
-interface Map {
-    get(key: any): any;
-    set(key: any, value: any): Map;
-}
-
-declare var Map: {
-    new (): Map;
-};
 /* tslint:enable:interface-name */

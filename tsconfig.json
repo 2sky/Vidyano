@@ -14,7 +14,7 @@
     "src/Libs/Typings/Alertify.js/alertify.d.ts",
     "src/Libs/Typings/CodeMirror/codemirror.d.ts",
     "src/Libs/Typings/d3/d3.d.ts",
-    "src/Libs/Typings/es6-promises/es6-promises.d.ts",
+    "src/Libs/Typings/es6-shim/es6-shim.d.ts",
     "src/Libs/Typings/Linq/linq.d.ts",
     "src/Libs/Typings/MaskedInput/masked_input.d.ts",
     "src/Libs/Typings/Moment/moment.d.ts",
