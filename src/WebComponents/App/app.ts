@@ -280,12 +280,6 @@ namespace Vidyano.WebComponents {
 
             window.addEventListener("storage", this._onSessionStorage.bind(this), false);
 
-            // Sync session storage between tabs
-            if (!sessionStorage.length) {
-                localStorage.setItem("vi-getSessionStorage", "-");
-                localStorage.removeItem("vi-getSessionStorage");
-            };
-
             this.set("appRoutesInitializer", new Promise(resolve => {
                 const bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0];
                 this._setBarebone(!!bareboneTemplate);
@@ -345,16 +339,7 @@ namespace Vidyano.WebComponents {
             if (event.newValue == null)
                 return;
 
-            if (event.key === "vi-getSessionStorage") {
-                localStorage.setItem("vi-setSessionStorage", JSON.stringify(sessionStorage));
-                localStorage.removeItem("vi-setSessionStorage");
-            } else if (event.key === "vi-setSessionStorage" && !sessionStorage.length) {
-                const data = JSON.parse(event.newValue);
-                for (const key in data) {
-                    sessionStorage.setItem(key, data[key]);
-                }
-            }
-            else if (event.key === "vi-signOut" && this.app.service && this.app.service.isSignedIn && Vidyano.cookiePrefix === event.newValue)
+            if (event.key === "vi-signOut" && this.app.service && this.app.service.isSignedIn && Vidyano.cookiePrefix === event.newValue)
                 this.redirectToSignOut();
         }
 

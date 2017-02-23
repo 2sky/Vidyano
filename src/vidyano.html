@@ -1,4 +1,29 @@
-﻿<script> Polymer = { lazyRegister: "max", useNativeCSSProperties: true, suppressTemplateNotifications: true, suppressBindingNotifications: true }; </script>
+﻿<script>
+    window.addEventListener("storage", event => {
+        if (!event)
+            event = window.event;
+
+        if (event.newValue == null)
+            return;
+
+        if (event.key === "vi-getSessionStorage") {
+            localStorage.setItem("vi-setSessionStorage", JSON.stringify(sessionStorage));
+            localStorage.removeItem("vi-setSessionStorage");
+        } else if (event.key === "vi-setSessionStorage" && !sessionStorage.length) {
+            const data = JSON.parse(event.newValue);
+            for (const key in data)
+                sessionStorage.setItem(key, data[key]);
+        }
+    }, false);
+
+    // Sync session storage between tabs
+    if (!sessionStorage.length) {
+        localStorage.setItem("vi-getSessionStorage", "-");
+        localStorage.removeItem("vi-getSessionStorage");
+    };
+</script>
+
+<script> Polymer = { lazyRegister: "max", useNativeCSSProperties: true, suppressTemplateNotifications: true, suppressBindingNotifications: true }; </script>
 <link rel="import" href="Libs/polymer/polymer.html" />
 <link rel="import" href="Libs/layout/layout.html" />
 <link rel="import" href="vidyano-lite.html" />
