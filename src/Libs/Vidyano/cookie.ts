@@ -73,7 +73,7 @@
                     encodeURIComponent(key), "=",
                     options.raw ? value : encodeURIComponent(value),
                     options.expires ? "; expires=" + expires.toUTCString() : "", // use expires attribute, max-age is not supported by IE
-                    options.path ? "; path=" + options.path : "",
+                    "; path=" + (options.path || cookiePrefix),
                     options.domain ? "; domain=" + options.domain : "",
                     options.secure ? "; secure" : ""
                 ].join(""));
