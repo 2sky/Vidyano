@@ -759,3 +759,66 @@ var Unique = (function () {
         }
     }
 })(window);
+
+///////////////////////////////////////////////////////////////
+/// Helper Methods ////////////////////////////////////////////
+///////////////////////////////////////////////////////////////
+
+var Vidyano;
+(function (Vidyano) {
+    "use strict";
+    function noop() {
+    }
+    Vidyano.noop = noop;
+    function extend(target) {
+        var sources = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            sources[_i - 1] = arguments[_i];
+        }
+        sources.forEach(function (source) {
+            for (var key in source) {
+                if (source.hasOwnProperty(key))
+                    target[key] = source[key];
+            }
+        });
+        return target;
+    }
+    Vidyano.extend = extend;
+    function splitWithTail(value, separator, limit) {
+        var pattern, startIndex, m, parts = [];
+        if (!limit)
+            return value.split(separator);
+        if (separator instanceof RegExp)
+            pattern = new RegExp(separator.source, "g" + (separator.ignoreCase ? "i" : "") + (separator.multiline ? "m" : ""));
+        else
+            pattern = new RegExp(separator.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1"), "g");
+        do {
+            startIndex = pattern.lastIndex;
+            if (m = pattern.exec(value)) {
+                parts.push(value.substr(startIndex, m.index - startIndex));
+            }
+        } while (m && parts.length < limit - 1);
+        parts.push(value.substr(pattern.lastIndex));
+        return parts;
+    }
+    Vidyano.splitWithTail = splitWithTail;
+    function _debounce(func, wait, immediate) {
+        var result;
+        var timeout = null;
+        return function () {
+            var context = this, args = arguments;
+            var later = function () {
+                timeout = null;
+                if (!immediate)
+                    result = func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow)
+                result = func.apply(context, args);
+            return result;
+        };
+    }
+    Vidyano._debounce = _debounce;
+})(Vidyano || (Vidyano = {}));

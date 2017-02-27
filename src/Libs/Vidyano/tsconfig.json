@@ -7,11 +7,15 @@
     "emitDecoratorMetadata": false,
     "inlineSourceMap": true,
     "inlineSources": true,
-    "noEmitHelpers": true
+    "noEmitHelpers": true,
+    "outFile": "vidyano.js",
+    "declaration": true
   },
   "include": [
-    "src/Libs/Typings/**/*.d.ts",
-    "src/Libs/Vidyano/vidyano.d.ts",
-    "src/WebComponents/**/*.ts"
+    "_reference.ts",
+    "**/*.ts"
+  ],
+  "exclude": [
+    "vidyano.d.ts"
   ]
 }

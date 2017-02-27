@@ -22,8 +22,15 @@ module.exports = function(grunt) {
             },
         },
         ts: {
-            default: {
-                tsconfig: true,
+            vidyano: {
+                cwd: 'src/Libs/Vidyano/',
+                tsconfig: 'src/Libs/Vidyano/tsconfig.json',
+                options: {
+                    fast: 'never'
+                }
+            },
+            webcomponents: {
+                tsconfig: "tsconfig.json",
                 options: {
                     fast: 'never'
                 }
@@ -35,8 +42,10 @@ module.exports = function(grunt) {
             },
             files: {
                 src: [
-                    'src/Libs/Vidyano/*.ts',
-                    'src/WebComponents/**/*.ts'
+                    'src/Libs/Vidyano/**/*.ts',
+                    'src/WebComponents/**/*.ts',
+                    '!src/Libs/Vidyano/_reference.ts',
+                    '!src/Libs/Vidyano/vidyano.d.ts'
                 ]
             }
         },

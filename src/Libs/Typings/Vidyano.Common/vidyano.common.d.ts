@@ -1,4 +1,3 @@
-/* tslint:disable:interface-name */
 interface String {
     asDataUri(): string;
     contains(str: string): boolean;
@@ -67,4 +66,10 @@ interface BigNumber {
 declare var BigNumber: {
     new (number: number | string): BigNumber;
 };
-/* tslint:enable:interface-name */
+
+declare namespace Vidyano {
+    export function noop();
+    export function extend(target: any, ...sources: any[]);
+    export function splitWithTail(value: string, separator: string | RegExp, limit?: number): string[]
+    export function _debounce(func: Function, wait: number, immediate?: boolean): Function;
+}
