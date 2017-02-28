@@ -141,6 +141,10 @@
             // Noop
         }
 
+        onUpdateAvailable() {
+            // Noop
+        }
+
         async onRetryAction(retry: IRetryAction): Promise<string> {
             if (!retry.persistentObject)
                 return retry.options[await this.onMessageDialog(retry.title, retry.message, false, ...retry.options)];

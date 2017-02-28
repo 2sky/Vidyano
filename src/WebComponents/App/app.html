@@ -108,6 +108,15 @@
         <template is="dom-if" if="[[service.application.hasManagement]]">
             <vi-popup-menu id="viConfigure" ctrl-key context-menu-only></vi-popup-menu>
         </template>
+        <template is="dom-if" if="[[updateAvailable]]">
+            <div id="update">
+                <div class="overlay" on-tap="_refreshForUpdateDismiss"></div>
+                <div class="message" on-tap="_refreshForUpdate">
+                    <span>[[translations.ApplicationOutdated]]</span>
+                    <span class="highlight">[[translations.ApplicationOutdatedRefresh]]</span>
+                </div>
+            </div>
+        </template>
     </template>
 </dom-module>
 

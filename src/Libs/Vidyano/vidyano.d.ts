@@ -845,6 +845,7 @@ declare namespace Vidyano {
         onClientOperation(operation: ClientOperations.IClientOperation): void;
         onSelectedItemsActions(query: Query, selectedItems: QueryResultItem[], action: ISelectedItemsActionArgs): void;
         onRefreshFromResult(po: PersistentObject): void;
+        onUpdateAvailable(): void;
         onRetryAction(retry: IRetryAction): Promise<string>;
     }
 }
@@ -1237,5 +1238,10 @@ declare namespace Vidyano {
         class viSearch extends Action {
             constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions);
         }
+    }
+}
+declare namespace Vidyano {
+    namespace ClientOperations {
+        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
     }
 }

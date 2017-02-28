@@ -222,7 +222,12 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: "#009688"
             },
-            configs: String
+            configs: String,
+            updateAvailable: {
+                type: Boolean,
+                readOnly: true,
+                value: false
+            }
         },
         observers: [
             "_updateInitialize(serviceInitializer, appRoutesInitializer)",
@@ -239,7 +244,8 @@ namespace Vidyano.WebComponents {
         },
         listeners: {
             "contextmenu": "_configureContextmenu",
-            "click": "_anchorClickHandler"
+            "click": "_anchorClickHandler",
+            "app-update-available": "_updateAvailable"
         },
         forwardObservers: [
             "service.isSignedIn",
@@ -259,11 +265,13 @@ namespace Vidyano.WebComponents {
         private _keybindingRegistrations: { [key: string]: Keyboard.IKeybindingRegistration[]; } = {};
         private _beforeUnloadEventHandler: EventListener;
         private _activeDialogs: Dialog[] = [];
+        private _updateAvailableSnoozeTimer: number;
         readonly initializing: boolean; private _setInitializing: (init: boolean) => void;
         readonly keys: string; private _setKeys: (keys: string) => void;
         readonly currentRoute: AppRoute; private _setCurrentRoute: (route: AppRoute) => void;
         readonly barebone: boolean; private _setBarebone: (barebone: boolean) => void;
         readonly profilerLoaded: boolean; private _setProfilerLoaded: (val: boolean) => void;
+        readonly updateAvailable: boolean; private _setUpdateAvailable: (updateAvailable: boolean) => void;
         service: Vidyano.Service;
         programUnit: ProgramUnit;
         uri: string;
@@ -916,6 +924,33 @@ namespace Vidyano.WebComponents {
             this.updateStyles();
         }
 
+        private _updateAvailable() {
+            if (this._updateAvailableSnoozeTimer)
+                return;
+
+            this._setUpdateAvailable(true);
+
+            Polymer.dom(this).flush();
+            this.async(() => this.$$("#update").classList.add("show"), 100);
+        }
+
+        private _refreshForUpdate() {
+            document.location.reload(true);
+        }
+
+        private _refreshForUpdateDismiss() {
+            if (this._updateAvailableSnoozeTimer)
+                clearTimeout(this._updateAvailableSnoozeTimer);
+
+            this._updateAvailableSnoozeTimer = setTimeout(() => {
+                this._updateAvailableSnoozeTimer = null;
+                this._updateAvailable();
+            }, 300000);
+
+            this.$$("#update").classList.remove("show");
+            this.async(() => this._setUpdateAvailable(false), 500);
+        }
+
         static removeRootPath(path: string = ""): string {
             if (path.startsWith(Path.routes.rootPath))
                 return path.substr(Path.routes.rootPath.length);
@@ -1197,6 +1232,10 @@ namespace Vidyano.WebComponents {
             this.app.service.signOut(true).then(() => this.app.reinitialize());
 
             return true;
+        }
+
+        onUpdateAvailable() {
+            this.app.fire("app-update-available", null);
         }
 
         onNavigate(path: string, replaceCurrent: boolean = false) {
