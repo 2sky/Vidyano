@@ -1,7 +1,7 @@
 ﻿namespace Vidyano {
     "use strict";
 
-    export const version = "latest";
+    export let version = "latest";
 
     export class Service extends Vidyano.Common.Observable<Service> {
         private static _getMs = window.performance && window.performance.now ? () => window.performance.now() : () => new Date().getTime();

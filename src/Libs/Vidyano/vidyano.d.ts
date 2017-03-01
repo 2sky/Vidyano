@@ -850,7 +850,7 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
-    const version = "latest";
+    let version: string;
     class Service extends Vidyano.Common.Observable<Service> {
         serviceUri: string;
         hooks: ServiceHooks;
