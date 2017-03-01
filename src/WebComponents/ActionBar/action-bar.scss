@@ -29,8 +29,14 @@
 
     --vi-input-search-placeholder-color: #B3B3B3;
     --vi-input-search: #{'{
-        margin: 0 var(--theme-h5);
-        padding: var(--theme-h5) 0 var(--theme-h5) var(--theme-h5);
+        margin-top: 0;
+        margin-right: var(--theme-h5);
+        margin-bottom: 0;
+        margin-left: var(--theme-h5);
+        padding-top: var(--theme-h5);
+        padding-right: 0;
+        padding-bottom: var(--theme-h5);
+        padding-left: var(--theme-h5);
         min-width: 16em;
         height: var(--theme-h1);
         border-left: 1px solid #EAEAEA;
@@ -42,7 +48,10 @@
         border-width: 1px 0 1px 1px;
         border-style: solid;
         border-color: transparent;
-        padding: 0 calc(var(--theme-h1) - var(--theme-h2));
+        padding-top: 0;
+        padding-right: calc(var(--theme-h1) - var(--theme-h2));
+        padding-bottom: 0;
+        padding-left: calc(var(--theme-h1) - var(--theme-h2));
         color: #333;
     }'};
 

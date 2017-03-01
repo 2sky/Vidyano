@@ -11,9 +11,15 @@
 
     --vi-input-search: #{'{
         height: var(--theme-h2);
-        border: 1px solid var(--theme-light-border);
+        border-top: 1px solid var(--theme-light-border);
+        border-right: 1px solid var(--theme-light-border);
+        border-bottom: 1px solid var(--theme-light-border);
+        border-left: 1px solid var(--theme-light-border);
         box-sizing: border-box;
-        margin: 0 0 var(--theme-h5) calc(var(--theme-h2) + var(--theme-h5));
+        margin-top: 0;
+        margin-right: 0;
+        margin-bottom: var(--theme-h5);
+        margin-left: calc(var(--theme-h2) + var(--theme-h5));
     }'};
 
     --vi-input-search-input: #{'{
@@ -23,7 +29,10 @@
 
     --vi-input-search-button: #{'{
         width: var(--theme-h2);
-        padding: 0;
+        padding-top: 0;
+        padding-right: 0;
+        padding-bottom: 0;
+        padding-left: 0;
         fill: var(--theme-light-border);
     }'};
 

@@ -4,12 +4,18 @@
     --vi-input-search: #{'{
         line-height: var(--theme-h2);
         height: var(--theme-h2);
-        border: 1px solid #EAEAEA;
+        border-top: 1px solid #EAEAEA;
+        border-right: 1px solid #EAEAEA;
+        border-bottom: 1px solid #EAEAEA;
+        border-left: 1px solid #EAEAEA;
         box-sizing: border-box;
     }'};
 
     --vi-input-search-input: #{'{
-        padding: calc(var(--theme-h1) - var(--theme-h2));
+        padding-top: calc(var(--theme-h1) - var(--theme-h2));
+        padding-right: calc(var(--theme-h1) - var(--theme-h2));
+        padding-bottom: calc(var(--theme-h1) - var(--theme-h2));
+        padding-left: calc(var(--theme-h1) - var(--theme-h2));
         color: #333;
     }'};
 

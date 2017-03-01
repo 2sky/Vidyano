@@ -144,7 +144,10 @@ $backgroundColor: $blue-grey-900;
 
     vi-input-search:not([collapsed]) {
         --vi-input-search: #{'{
-            margin: calc(var(--theme-h4) / 2) calc(var(--theme-h4) - var(--theme-h4) / 2);
+            margin-top: calc(var(--theme-h4) / 2);
+            margin-right: calc(var(--theme-h4) - var(--theme-h4) / 2);
+            margin-bottom: calc(var(--theme-h4) / 2);
+            margin-left: calc(var(--theme-h4) - var(--theme-h4) / 2);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }'};
 
