@@ -68,7 +68,7 @@ namespace Vidyano.Web2
                 {
                     case ".html":
                         var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), true, false);
-                        return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[extension]) };
+                        return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[extension]) }.AddVersion(id);
 
                     case ".css":
                     case ".js":
@@ -79,7 +79,7 @@ namespace Vidyano.Web2
             var ifNoneMatch = Request.Headers.IfNoneMatch.FirstOrDefault();
             Tuple<string, string> cacheInfo;
             if (cache.TryGetValue(id, out cacheInfo) && ifNoneMatch?.Tag == cacheInfo.Item1)
-                return new HttpResponseMessage(HttpStatusCode.NotModified);
+                return new HttpResponseMessage(HttpStatusCode.NotModified).AddVersion(id);
 
             string content;
             lock (syncRoot)
@@ -127,7 +127,7 @@ namespace Vidyano.Web2
                     httpContent = new CompressedContent(httpContent, encoding);
             }
 
-            var response = new HttpResponseMessage { Content = httpContent };
+            var response = new HttpResponseMessage { Content = httpContent }.AddVersion(id);
             response.Headers.ETag = new EntityTagHeaderValue(cacheInfo.Item1);
 
             return response;
@@ -208,6 +208,28 @@ namespace Vidyano.Web2
             foreach (var b in bytes)
                 sb.Append(b.ToString("X2"));
             return sb.ToString();
+        }
+    }
+
+    static class HttpResponseMessageEx
+    {
+        private static readonly string version = typeof(Web2Controller).Assembly.GetName().Version.ToString(3);
+
+        public static HttpResponseMessage AddVersion(this HttpResponseMessage message, string id)
+        {
+            if (string.Equals(id, "vidyano.html"))
+            {
+                var cookie = new CookieHeaderValue("__vi", version)
+                {
+                    HttpOnly = true,
+                    Path = "/",
+                    Expires = DateTimeOffset.Now.AddYears(1)
+                };
+
+                message.Headers.TryAddWithoutValidation("Set-Cookie", cookie.ToString());
+            }
+
+            return message;
         }
     }
 }
