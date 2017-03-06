@@ -55,6 +55,10 @@
                     data.authToken = this.authToken;
             }
 
+            const requestedLanguage = this.requestedLanguage;
+            if (requestedLanguage != null)
+                data.requestedLanguage = requestedLanguage;
+
             if (this.application && this.application.session)
                 data.session = this.application.session.toServiceObject(true);
 
@@ -361,6 +365,14 @@
         }
         set language(l: ILanguage) {
             this._language = l;
+        }
+
+        get requestedLanguage(): string {
+            return Vidyano.cookie("requestedLanguage");
+        }
+
+        set requestedLanguage(val: string) {
+            Vidyano.cookie("requestedLanguage", val);
         }
 
         get isSignedIn(): boolean {

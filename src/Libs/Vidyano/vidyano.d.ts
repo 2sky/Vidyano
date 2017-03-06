@@ -890,6 +890,7 @@ declare namespace Vidyano {
         readonly application: Application;
         private _setApplication(application);
         language: ILanguage;
+        requestedLanguage: string;
         readonly isSignedIn: boolean;
         private _setIsSignedIn(val);
         readonly languages: ILanguage[];
