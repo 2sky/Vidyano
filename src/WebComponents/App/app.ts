@@ -633,10 +633,18 @@ namespace Vidyano.WebComponents {
             return service;
         }
 
-        reinitialize() {
+        async reinitialize() {
             const uri = this.uri;
             this.uri = undefined;
+
+            const currentLanguageMessages = this.service.language.messages;
             this.uri = uri;
+
+            if (currentLanguageMessages) {
+                await this.initialize;
+                Object.keys(this.service.language.messages).forEach(k => currentLanguageMessages[k] = this.service.language.messages[k]);
+                this.service.language.messages = currentLanguageMessages;
+            }
         }
 
         private _anchorClickHandler(e: TapEvent, data: any) {
