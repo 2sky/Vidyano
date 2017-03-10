@@ -343,7 +343,7 @@
             let isDirty = false;
 
             this.attributes.removeAll(attr => {
-                if (!result.attributes.some(a => a.id === attr.id)) {
+                if (!result.attributes.some(serviceAttr => serviceAttr.id === attr.id)) {
                     delete this.attributes[attr.name];
                     attr.parent = null;
                     changedAttributes.push(attr);
@@ -355,7 +355,7 @@
             });
 
             this.attributes.forEach(attr => {
-                let serviceAttr = Enumerable.from(result.attributes).firstOrDefault(a => a.id === attr.id);
+                let serviceAttr = Enumerable.from(result.attributes).firstOrDefault(serviceAttr => serviceAttr.id === attr.id);
                 if (serviceAttr) {
                     if (!(serviceAttr instanceof PersistentObjectAttribute))
                         serviceAttr = this._createPersistentObjectAttribute(serviceAttr);
@@ -368,8 +368,9 @@
                     isDirty = true;
             });
 
-            result.attributes.forEach(attr => {
-                if (!this.attributes.some(a => a.id === attr.id)) {
+            result.attributes.forEach(serviceAttr => {
+                if (!this.attributes.some(a => a.id === serviceAttr.id)) {
+                    const attr = this._createPersistentObjectAttribute(serviceAttr);
                     this.attributes.push(attr);
                     attr.parent = this;
 
