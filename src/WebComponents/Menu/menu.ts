@@ -18,6 +18,14 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 computed: "_computeHasGlobalSearch(app.service.application.globalSearchId)"
             },
+            instantSearchDelay: {
+                type: Number,
+                computed: "_computeInstantSearchDelay(app.service.application)"
+            },
+            instantSearchResults: {
+                type: Array,
+                readOnly: true
+            },
             filter: {
                 type: String,
                 observer: "_filterChanged"
@@ -45,6 +53,8 @@ namespace Vidyano.WebComponents {
         private static _minResizeWidth: number;
         private _resizeWidth: number;
         readonly isResizing: boolean; private _setIsResizing: (val: boolean) => void;
+        readonly instantSearchDelay: number;
+        readonly instantSearchResults: IInstantSearchResult[]; private _setInstantSearchResults: (results: IInstantSearchResult[]) => void;
         filter: string;
         filtering: boolean;
         activeProgramUnit: ProgramUnit;
@@ -81,6 +91,29 @@ namespace Vidyano.WebComponents {
 
         private _filterChanged() {
             this.filtering = !StringEx.isNullOrEmpty(this.filter);
+
+            if (this.filtering) {
+                if (this.instantSearchDelay) {
+                    const filter = this.filter;
+                    this.debounce("Menu.InstantSearch", async () => {
+                        const results = await this.app.service.getInstantSearch(filter);
+                        if (filter !== this.filter)
+                            return;
+
+                        const exp = new RegExp(`(${filter})`, "gi");
+                        this._setInstantSearchResults(results.length > 0 ? results.map(r => {
+                            r["match"] = r.breadcrumb.replace(exp, "<span class='style-scope vi-menu match'>$1</span>");
+                            r["href"] = `${Vidyano.Path.routes.rootPath}PersistentObject.${r.id}/${r.objectId}`;
+
+                            return r;
+                        }) : null);
+                    }, this.instantSearchDelay);
+                }
+            }
+            else {
+                this.cancelDebouncer("Menu.InstantSearch");
+                this._setInstantSearchResults(null);
+            }
         }
 
         private _search() {
@@ -96,6 +129,10 @@ namespace Vidyano.WebComponents {
 
         private _computeHasGlobalSearch(globalSearchId: string): boolean {
             return globalSearchId !== "00000000-0000-0000-0000-000000000000";
+        }
+
+        private _computeInstantSearchDelay(application: Vidyano.Application): number {
+            return application.getAttributeValue("InstantSearchDelay");
         }
 
         private _computeCollapsedWithGlobalSearch(collapsed: boolean, hasGlobalSearch: boolean): boolean {

@@ -927,6 +927,13 @@
             return data.d;
         }
 
+        async getInstantSearch(search: string): Promise<IInstantSearchResult[]> {
+            const uri = this._createUri(`Instant?q=${encodeURIComponent(search)}`);
+
+            const data = await this._getJSON(uri);
+            return data.d;
+        }
+
         static getDate = function (yearString: string, monthString: string, dayString: string, hourString: string, minuteString: string, secondString: string, msString: string) {
             const year = parseInt(yearString, 10);
             const month = parseInt(monthString || "1", 10) - 1;
@@ -1206,6 +1213,13 @@
         skip?: number;
         hideIds?: boolean;
         hideType?: boolean;
+    }
+
+    export interface IInstantSearchResult {
+        id: string;
+        label: string;
+        objectId: string;
+        breadcrumb: string;
     }
 
     export interface IRetryAction {

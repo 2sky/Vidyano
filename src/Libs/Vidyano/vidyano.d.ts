@@ -919,6 +919,7 @@ declare namespace Vidyano {
         executeQuery(parent: PersistentObject, query: Query, asLookup?: boolean, throwExceptions?: boolean): Promise<any>;
         executeAction(action: string, parent: PersistentObject, query: Query, selectedItems: Array<QueryResultItem>, parameters?: any, skipHooks?: boolean): Promise<PersistentObject>;
         getReport(token: string, {filter, orderBy, top, skip, hideIds, hideType}?: IReportOptions): Promise<any[]>;
+        getInstantSearch(search: string): Promise<IInstantSearchResult[]>;
         static getDate: (yearString: string, monthString: string, dayString: string, hourString: string, minuteString: string, secondString: string, msString: string) => Date;
         static fromServiceString(value: string, typeName: string): any;
         static toServiceString(value: any, typeName: string): string;
@@ -955,6 +956,12 @@ declare namespace Vidyano {
         skip?: number;
         hideIds?: boolean;
         hideType?: boolean;
+    }
+    interface IInstantSearchResult {
+        id: string;
+        label: string;
+        objectId: string;
+        breadcrumb: string;
     }
     interface IRetryAction {
         title: string;

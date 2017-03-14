@@ -26,6 +26,11 @@
         <template is="dom-if" if="[[!collapsed]]">
             <div class="horizontal layout flex relative">
                 <vi-scroller class="flex programUnits" no-horizontal>
+                    <div class="instantSearch" hidden$="[[!instantSearchResults]]">
+                        <template is="dom-repeat" items="[[instantSearchResults]]" as="item">
+                            <a href$="[[item.href]]" class="layout horizontal"><div class="flex" inner-h-t-m-l="[[item.match]]"></div><span class="label">[[item.label]]</span></a>
+                        </template>
+                    </div>
                     <template is="dom-repeat" items="[[programUnits]]" as="programUnit">
                         <vi-menu-item class="program-unit" item="[[programUnit]]" filter="[[filter]]" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]" items="[[programUnit.items]]" collapse-groups-on-tap></vi-menu-item>
                         <template is="dom-if" if="[[_computeIsFirstRunProgramUnit(app.service.application, programUnit)]]">

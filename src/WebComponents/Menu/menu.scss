@@ -15,6 +15,8 @@ $backgroundColor: $blue-grey-900;
         width: var(--vi-menu--expand-width, 17em);
 
         header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
             #toggleCollapse {
                 background-color: transparent;
             }
@@ -33,6 +35,54 @@ $backgroundColor: $blue-grey-900;
 
             &:hover {
                 background-color: rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .instantSearch {
+            position: relative;
+            margin-bottom: var(--theme-h5);
+            padding: var(--theme-h5) 0;
+            background-color: rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+            a {
+                cursor: pointer;
+                color: var(--vi-menu-color, $color);
+                line-height: var(--theme-h2);
+                padding: 0 var(--theme-h4);
+                text-decoration: none;
+                overflow: hidden;
+                text-overflow: ellipsis;
+
+                div {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    padding-right: var(--theme-h5);
+                }
+
+                span {
+                    &.match {
+                        color: #FFDD00;
+                        font-weight: bold;
+                    }
+
+                    &.label {
+                        font-size: 11px;
+                        font-weight: 100;
+                        text-transform: uppercase;
+                        line-height: var(--theme-h2);
+                        transform: translateY(1px);
+                    }
+                }
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.1);
+                }
+            }
+
+            & + vi-menu-item {
+                margin-top: var(--theme-h5);
             }
         }
     }
@@ -148,7 +198,6 @@ $backgroundColor: $blue-grey-900;
             margin-right: calc(var(--theme-h4) - var(--theme-h4) / 2);
             margin-bottom: calc(var(--theme-h4) / 2);
             margin-left: calc(var(--theme-h4) - var(--theme-h4) / 2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }'};
 
         --vi-input-search-input: #{'{
