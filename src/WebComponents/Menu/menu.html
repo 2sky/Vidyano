@@ -28,7 +28,7 @@
                 <vi-scroller class="flex programUnits" no-horizontal>
                     <div class="instantSearch" hidden$="[[!instantSearchResults]]">
                         <template is="dom-repeat" items="[[instantSearchResults]]" as="item">
-                            <a href$="[[item.href]]" class="layout horizontal"><div class="flex" inner-h-t-m-l="[[item.match]]"></div><span class="label">[[item.label]]</span></a>
+                            <a href$="[[item.href]]" class="layout horizontal" on-mouseenter="_instantSearchResultMouseEnter"><div class="flex" inner-h-t-m-l="[[item.match]]"></div><span class="label">[[item.label]]</span></a>
                         </template>
                     </div>
                     <template is="dom-repeat" items="[[programUnits]]" as="programUnit">
