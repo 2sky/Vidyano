@@ -882,7 +882,7 @@ declare namespace Vidyano {
         private _getMs();
         private _postJSON(url, data);
         private _postJSONProcess(data, result, requestMethod, createdRequest, requestStart, elapsedMs);
-        private _getJSON(url);
+        private _getJSON(url, headers?);
         private static _decodeBase64(input);
         private static _getServiceTimeString;
         _getStream(obj: PersistentObject, action?: string, parent?: PersistentObject, query?: Query, selectedItems?: Array<QueryResultItem>, parameters?: any): void;

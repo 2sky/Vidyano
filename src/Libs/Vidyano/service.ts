@@ -191,10 +191,17 @@
             }
         }
 
-        private _getJSON(url: string): Promise<any> {
+        private _getJSON(url: string, headers?: any): Promise<any> {
             return new Promise((resolve, reject) => {
                 const r = new XMLHttpRequest();
+
                 r.open("GET", url, true);
+
+                if (headers) {
+                    for (const key in headers)
+                        r.setRequestHeader(key, headers[key]);
+                }
+
                 r.onload = () => {
                     if (r.status !== 200) {
                         reject(r.statusText);
@@ -930,7 +937,9 @@
         async getInstantSearch(search: string): Promise<IInstantSearchResult[]> {
             const uri = this._createUri(`Instant?q=${encodeURIComponent(search)}`);
 
-            const data = await this._getJSON(uri);
+            const data = await this._getJSON(uri, {
+                "Authorization": `Bearer ${encodeURIComponent(this.userName)}/${this.authToken.replace("/", "_")}`
+            });
             return data.d;
         }
 
