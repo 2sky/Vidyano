@@ -18,7 +18,9 @@
             <vi-chart-selector query="[[serviceObject]]"></vi-chart-selector>
         </template>
         <template is="dom-if" if="[[canSearch]]">
-            <vi-input-search value="{{serviceObject.textSearch}}" on-search="_search"></vi-input-search>
+            <div class="search layout horizontal center-center">
+                <vi-input-search value="{{serviceObject.textSearch}}" on-search="_search"></vi-input-search>
+            </div>
         </template>
     </template>
 </dom-module>

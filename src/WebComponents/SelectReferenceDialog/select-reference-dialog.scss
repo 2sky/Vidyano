@@ -24,7 +24,9 @@
     }'};
 
     --vi-input-search-input-focused-button: #{'{
-        background-color: var(--theme-color);
+        border-top-width: 0;
+        border-right-width: 0;
+        border-bottom-width: 0;
     }'};
 }
 

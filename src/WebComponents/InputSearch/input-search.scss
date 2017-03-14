@@ -4,6 +4,7 @@
     @include layout-horizontal();
     line-height: var(--theme-h2);
     @apply(--vi-input-search);
+    position: relative;
 
     input {
         border: none;
@@ -11,13 +12,9 @@
         -moz-box-sizing: border-box;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
-        padding: 8px 12px;
+        padding: 8px var(--theme-h2) 8px 12px;
         background-color: transparent;
         color: white;
-        -moz-transition: all 0.3s ease-in-out;
-        -o-transition: all 0.3s ease-in-out;
-        -webkit-transition: all 0.3s ease-in-out;
-        transition: all 0.3s ease-in-out;
         width: 100%;
 
         &::-webkit-input-placeholder {
@@ -37,6 +34,10 @@
     }
 
     button {
+        position: absolute;
+        top: 1px;
+        right: 1px;
+        bottom: 1px;
         border: none;
         outline: none;
         fill: #aaa;
@@ -44,10 +45,6 @@
         width: var(--theme-h2);
         background-color: transparent;
         margin: 1px 1px 1px 0;
-        -moz-transition: all 0.3s ease-in-out;
-        -o-transition: all 0.3s ease-in-out;
-        -webkit-transition: all 0.3s ease-in-out;
-        transition: all 0.3s ease-in-out;
 
         @apply(--vi-input-search-button);
     }
@@ -55,9 +52,18 @@
     input:focus {
         @apply(--vi-input-search-input-focused);
 
-        + button {
-            fill: white;
+        ~ button {
+            fill: var(--theme-color);
             @apply(--vi-input-search-input-focused-button);
+
+            &.search {
+                fill: #B3B3B3;
+                @apply(--vi-input-search-input-focused-button-search);
+            }
+
+            &.reset {
+                @apply(--vi-input-search-input-focused-button-reset);
+            }
         }
     }
 }

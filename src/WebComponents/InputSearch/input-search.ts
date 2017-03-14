@@ -8,6 +8,10 @@ namespace Vidyano.WebComponents {
                 notify: true,
                 value: ""
             },
+            hasValue: {
+                type: Boolean,
+                computed: "_computeHasValue(value)"
+            },
             focused: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -42,6 +46,13 @@ namespace Vidyano.WebComponents {
                 e.stopPropagation();
         }
 
+        private _resetClick(e?: TapEvent) {
+            this.value = "";
+
+            if (e && !this.value)
+                e.stopPropagation();
+        }
+
         private _input_focused() {
             this.focused = true;
         }
@@ -53,6 +64,10 @@ namespace Vidyano.WebComponents {
         private _stop_tap(e: TapEvent) {
             e.stopPropagation();
             this.focus();
+        }
+
+        private _computeHasValue(value: string): boolean {
+            return !!value;
         }
 
         focus() {
