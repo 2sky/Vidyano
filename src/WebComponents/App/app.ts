@@ -359,6 +359,10 @@ namespace Vidyano.WebComponents {
             return this._initialize;
         }
 
+        get routeMap(): { [key: string]: AppRoute } {
+            return this._routeMap;
+        }
+
         changePath(path: string, replaceCurrent: boolean = false) {
             path = path.trimStart("/");
             if (this.path === path)
