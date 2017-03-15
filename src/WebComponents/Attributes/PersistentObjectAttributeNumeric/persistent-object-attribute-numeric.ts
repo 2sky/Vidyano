@@ -188,7 +188,7 @@
         private _keypress(e: KeyboardEvent): void {
             const keyCode = e.keyCode || e.which;
 
-            if (keyCode === Keyboard.KeyCodes.tab || keyCode === Keyboard.KeyCodes.shift || keyCode === Keyboard.KeyCodes.control || keyCode === Keyboard.KeyCodes.alt || keyCode === Keyboard.KeyCodes.leftarrow || keyCode === Keyboard.KeyCodes.rightarrow || keyCode === Keyboard.KeyCodes.uparrow || keyCode === Keyboard.KeyCodes.downarrow)
+            if (keyCode === Keyboard.KeyCodes.tab || keyCode === Keyboard.KeyCodes.shift || keyCode === Keyboard.KeyCodes.control || keyCode === Keyboard.KeyCodes.alt || keyCode === Keyboard.KeyCodes.leftarrow || keyCode === Keyboard.KeyCodes.rightarrow || keyCode === Keyboard.KeyCodes.uparrow || keyCode === Keyboard.KeyCodes.downarrow || keyCode === Keyboard.KeyCodes.backspace)
                 return;
 
             const input = <HTMLInputElement>e.target;
