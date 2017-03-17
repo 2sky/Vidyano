@@ -9,12 +9,6 @@ declare class ResizeObserver implements IResizeObserver {
     unobserve: (target: HTMLElement) => void;
 }
 
-declare class IntersectionObserver implements IResizeObserver {
-    constructor(observer: (entries: { target: HTMLElement; boundingClientRect: ClientRect }[]) => void);
-    observe: (target: HTMLElement) => void;
-    unobserve: (target: HTMLElement) => void;
-}
-
 namespace Vidyano.WebComponents {
     "use strict";
 
