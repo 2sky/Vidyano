@@ -34,15 +34,6 @@ namespace Vidyano.WebComponents {
             });
         });
     }
-    else if (typeof IntersectionObserver !== "undefined") {
-        observer = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                const tracker = <SizeTracker>Enumerable.from(e.target.children).firstOrDefault(e => e instanceof SizeTracker);
-                if (tracker)
-                    tracker["_triggerSizeChanged"](e.boundingClientRect);
-            });
-        });
-    }
 
     @WebComponent.register({
         properties: {
