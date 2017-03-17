@@ -1,10 +1,12 @@
 ﻿<dom-module id="vi-size-tracker">
     <template>
         <link rel="stylesheet" href="size-tracker.css" />
-        <div id="root" class="resize-triggers">
-            <div id="expand" class="expand-trigger"><div id="expandChild"></div></div>
-            <div id="contract" class="contract-trigger"></div>
-        </div>
+        <template is="dom-if" if="[[noResizeObserver]]" id="resizeObserverShim">
+            <div id="root" class="resize-triggers">
+                <div id="expand" class="expand-trigger"><div id="expandChild"></div></div>
+                <div id="contract" class="contract-trigger"></div>
+            </div>
+        </template>
     </template>
 </dom-module>
 

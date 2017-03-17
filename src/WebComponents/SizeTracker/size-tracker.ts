@@ -1,4 +1,21 @@
-﻿namespace Vidyano.WebComponents {
+﻿interface IResizeObserver {
+    observe: (target: HTMLElement) => void;
+    unobserve: (target: HTMLElement) => void;
+}
+
+declare class ResizeObserver implements IResizeObserver {
+    constructor(observer: (entries: { target: HTMLElement; contentRect: ClientRect }[]) => void);
+    observe: (target: HTMLElement) => void;
+    unobserve: (target: HTMLElement) => void;
+}
+
+declare class IntersectionObserver implements IResizeObserver {
+    constructor(observer: (entries: { target: HTMLElement; boundingClientRect: ClientRect }[]) => void);
+    observe: (target: HTMLElement) => void;
+    unobserve: (target: HTMLElement) => void;
+}
+
+namespace Vidyano.WebComponents {
     "use strict";
 
     const requestFrame = (function () {
@@ -12,6 +29,26 @@
             window.clearTimeout;
         return function (id) { return cancel(id); };
     })();
+
+    let observer: IResizeObserver;
+    if (typeof ResizeObserver !== "undefined") {
+        observer = new ResizeObserver(entries => {
+            entries.forEach(e => {
+                const tracker = <SizeTracker>Enumerable.from(e.target.children).firstOrDefault(e => e instanceof SizeTracker);
+                if (tracker)
+                    tracker["_triggerSizeChanged"](e.contentRect);
+            });
+        });
+    }
+    else if (typeof IntersectionObserver !== "undefined") {
+        observer = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                const tracker = <SizeTracker>Enumerable.from(e.target.children).firstOrDefault(e => e instanceof SizeTracker);
+                if (tracker)
+                    tracker["_triggerSizeChanged"](e.boundingClientRect);
+            });
+        });
+    }
 
     @WebComponent.register({
         properties: {
@@ -31,6 +68,10 @@
             bubbles: {
                 type: Boolean,
                 reflectToAttribute: true
+            },
+            noResizeObserver: {
+                type: Boolean,
+                readOnly: true
             }
         }
     })
@@ -40,12 +81,16 @@
         private _resizeLast: ISize;
         private _resizeRAF: Function;
         private _scrollListener: EventListener;
+        private _isActive: boolean;
         readonly size: ISize; private _setSize: (size: ISize) => void;
+        readonly noResizeObserver: boolean; private _setNoResizeObserver: (noResizeObserver: boolean) => void;
         deferred: boolean;
         triggerZero: boolean;
         bubbles: boolean;
 
         attached() {
+            super.attached();
+
             if (this.deferred)
                 return;
 
@@ -53,22 +98,46 @@
         }
 
         detached() {
-            if (this._scrollListener) {
+            super.detached();
+
+            if (observer)
+                observer.unobserve(this.parentElement);
+            else if (this._scrollListener) {
                 this.$["root"].removeEventListener("scroll", this._scrollListener);
                 this._scrollListener = undefined;
             }
         }
 
         measure() {
-            this.deferred = false;
+            if (!this._isActive) {
+                this.deferred = false;
 
-            const root = <any>this.$["root"];
-            if (!this._scrollListener) {
-                this._resetTriggers(root);
-                root.addEventListener("scroll", this._scrollListener = this._onScroll.bind(this), true);
+                if (observer)
+                    observer.observe(this.parentElement);
+                else {
+                    this._setNoResizeObserver(true);
+                    this.$["resizeObserverShim"]["render"]();
+                    this.$["root"] = <HTMLElement>Polymer.dom(this.root).querySelector("#root");
+                    this.$["expand"] = <HTMLElement>Polymer.dom(this.root).querySelector("#expand");
+                    this.$["expandChild"] = <HTMLElement>Polymer.dom(this.root).querySelector("#expandChild");
+                    this.$["contract"] = <HTMLElement>Polymer.dom(this.root).querySelector("#contract");
+                }
+
+                this._isActive = true;
             }
 
-            this._triggerSizeChanged();
+            if (this.noResizeObserver) {
+                if (!this._scrollListener) {
+                    this._resetTriggers(this.$["root"]);
+                    this.$["root"].addEventListener("scroll", this._scrollListener = this._onScroll.bind(this), true);
+
+                    this._triggerSizeChanged();
+                }
+            }
+            else if (this._resizeLast) {
+                this._setSize(this._resizeLast);
+                this.fire("sizechanged", this._resizeLast, { onNode: this, bubbles: !!this.bubbles });
+            }
         }
 
         private _onScroll(e: UIEvent) {
@@ -81,15 +150,17 @@
             });
         }
 
-        private _triggerSizeChanged() {
-            const root = this.$["root"];
-            if (!this._resizeLast || root.offsetWidth !== this._resizeLast.width || root.offsetHeight !== this._resizeLast.height) {
+        private _triggerSizeChanged(cr?: { width: number; height: number; }) {
+            if (!cr)
+                cr = { width: this.$["root"].offsetWidth, height: this.$["root"].offsetHeight };
+
+            if (!this._resizeLast || cr.width !== this._resizeLast.width || cr.height !== this._resizeLast.height) {
                 this._resizeLast = {
-                    width: root.offsetWidth,
-                    height: root.offsetHeight
+                    width: cr.width,
+                    height: cr.height
                 };
 
-                if ((this._resizeLast.width === 0 || this._resizeLast.height === 0 ) && !this.triggerZero)
+                if ((this._resizeLast.width === 0 || this._resizeLast.height === 0) && !this.triggerZero)
                     return;
 
                 this._setSize(this._resizeLast);
@@ -102,15 +173,11 @@
         }
 
         private _resetTriggers(element: HTMLElement) {
-            const expand = <HTMLElement>element.querySelector("#expand"),
-                  contract = <HTMLElement>element.querySelector("#contract"),
-                  expandChild = <HTMLElement>element.querySelector("#expandChild");
+            this.$["contract"].scrollLeft = this.$["contract"].scrollWidth;
+            this.$["contract"].scrollTop = this.$["contract"].scrollHeight;
 
-            contract.scrollLeft = contract.scrollWidth;
-            contract.scrollTop = contract.scrollHeight;
-
-            const width = expand.offsetWidth;
-            const height = expand.offsetHeight;
+            const width = this.$["expand"].offsetWidth;
+            const height = this.$["expand"].offsetHeight;
 
             if (!width || !height) {
                 if (!(<any>element).__resizeTimerQueued__) {
@@ -130,17 +197,17 @@
                 }
             }
 
-            if (!(<any>expandChild).__resizeLast__)
-                (<any>expandChild).__resizeLast__ = {};
+            if (!(<any>this.$["expandChild"]).__resizeLast__)
+                (<any>this.$["expandChild"]).__resizeLast__ = {};
 
-            if ((<any>expandChild).__resizeLast__.width !== width + 1)
-                expandChild.style.width = ((<any>expandChild).__resizeLast__.width = width + 1) + "px";
+            if ((<any>this.$["expandChild"]).__resizeLast__.width !== width + 1)
+                this.$["expandChild"].style.width = ((<any>this.$["expandChild"]).__resizeLast__.width = width + 1) + "px";
 
-            if ((<any>expandChild).__resizeLast__.height !== height + 1)
-                expandChild.style.height = ((<any>expandChild).__resizeLast__.height = height + 1) + "px";
+            if ((<any>this.$["expandChild"]).__resizeLast__.height !== height + 1)
+                this.$["expandChild"].style.height = ((<any>this.$["expandChild"]).__resizeLast__.height = height + 1) + "px";
 
-            expand.scrollLeft = expand.scrollWidth;
-            expand.scrollTop = expand.scrollHeight;
+            this.$["expand"].scrollLeft = this.$["expand"].scrollWidth;
+            this.$["expand"].scrollTop = this.$["expand"].scrollHeight;
         }
     }
 }
