@@ -137,7 +137,7 @@ namespace Vidyano.WebComponents {
 
         private _attributeChanged(attribute: Vidyano.PersistentObjectAttribute, isAttached: boolean) {
             if (this._renderedAttribute) {
-                Polymer.dom(this.$["content"]).children.forEach(c => Polymer.dom(this.$["content"]).removeChild(c));
+                Polymer.dom(this.$.content).children.forEach(c => Polymer.dom(this.$.content).removeChild(c));
                 this._renderedAttributeElement = this._renderedAttribute = null;
             }
 
@@ -253,13 +253,13 @@ namespace Vidyano.WebComponents {
             let focusTarget: HTMLElement;
             try {
                 if (this._customTemplate)
-                    Polymer.dom(focusTarget = this.$["content"]).appendChild(this._customTemplate.stamp({ attribute: attribute }).root);
+                    Polymer.dom(focusTarget = this.$.content).appendChild(this._customTemplate.stamp({ attribute: attribute }).root);
                 else {
                     const config = <PersistentObjectAttributeConfig>this.app.configuration.getAttributeConfig(attribute);
                     this.noLabel = this.noLabel || (config && !!config.noLabel);
 
                     if (!!config && config.hasTemplate)
-                        Polymer.dom(this.$["content"]).appendChild(config.stamp(attribute, config.as || "attribute"));
+                        Polymer.dom(this.$.content).appendChild(config.stamp(attribute, config.as || "attribute"));
                     else {
                         this._renderedAttributeElement = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
                         this._renderedAttributeElement.classList.add("attribute");
@@ -267,7 +267,7 @@ namespace Vidyano.WebComponents {
                         this._renderedAttributeElement.nonEdit = this.nonEdit;
                         this._renderedAttributeElement.disabled = this.disabled;
 
-                        Polymer.dom(this.$["content"]).appendChild(focusTarget = this._renderedAttributeElement);
+                        Polymer.dom(this.$.content).appendChild(focusTarget = this._renderedAttributeElement);
                     }
                 }
 

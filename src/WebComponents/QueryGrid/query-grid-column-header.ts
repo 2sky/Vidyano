@@ -109,7 +109,7 @@
 
         private _updateLabel(label: string) {
             if (!this._labelTextNode)
-                this._labelTextNode = this.$["label"].appendChild(document.createTextNode(label));
+                this._labelTextNode = this.$.label.appendChild(document.createTextNode(label));
             else
                 this._labelTextNode.nodeValue = label;
         }

@@ -20,10 +20,10 @@ namespace Vidyano.WebComponents {
         readonly hasOverflow: boolean; private _setHasOverflow: (val: boolean) => void;
 
         private _visibleContainerSizeChanged(e: Event, detail: { width: number; height: number }) {
-            this.$["visible"].style.maxWidth = `${detail.width}px`;
+            this.$.visible.style.maxWidth = `${detail.width}px`;
 
             if (this._previousHeight !== detail.height)
-                this.$["first"].style.height = `${this._previousHeight = detail.height}px`;
+                this.$.first.style.height = `${this._previousHeight = detail.height}px`;
         }
 
         private _childSizechanged() {
@@ -31,7 +31,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _visibleSizeChanged(e: Event, detail: { width: number; height: number }) {
-            const popup = <WebComponents.Popup><any>this.$["overflowPopup"];
+            const popup = <WebComponents.Popup><any>this.$.overflowPopup;
             if (popup.open)
                 return;
 
@@ -85,7 +85,7 @@ namespace Vidyano.WebComponents {
 
             Polymer.dom(this).flush();
 
-            const popup = <WebComponents.Popup><any>this.$["overflowPopup"];
+            const popup = <WebComponents.Popup><any>this.$.overflowPopup;
             await popup.popup();
 
             children.forEach(child => {

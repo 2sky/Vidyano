@@ -63,11 +63,11 @@
         }
 
         private _imageChanged() {
-            this.$["image"].style.backgroundImage = this.image ? "url(" + this.image + ")" : undefined;
+            this.$.image.style.backgroundImage = this.image ? "url(" + this.image + ")" : undefined;
             if (this.image)
-                this.$["image"].classList.add("has-image");
+                this.$.image.classList.add("has-image");
             else
-                this.$["image"].classList.remove("has-image");
+                this.$.image.classList.remove("has-image");
         }
     }
 

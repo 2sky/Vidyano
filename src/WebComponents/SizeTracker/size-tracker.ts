@@ -88,7 +88,7 @@ namespace Vidyano.WebComponents {
             if (observer)
                 observer.unobserve(this.parentElement);
             else if (this._scrollListener) {
-                this.$["root"].removeEventListener("scroll", this._scrollListener);
+                this.$.root.removeEventListener("scroll", this._scrollListener);
                 this._scrollListener = undefined;
             }
         }
@@ -101,11 +101,11 @@ namespace Vidyano.WebComponents {
                     observer.observe(this.parentElement);
                 else {
                     this._setNoResizeObserver(true);
-                    this.$["resizeObserverShim"]["render"]();
-                    this.$["root"] = <HTMLElement>Polymer.dom(this.root).querySelector("#root");
-                    this.$["expand"] = <HTMLElement>Polymer.dom(this.root).querySelector("#expand");
-                    this.$["expandChild"] = <HTMLElement>Polymer.dom(this.root).querySelector("#expandChild");
-                    this.$["contract"] = <HTMLElement>Polymer.dom(this.root).querySelector("#contract");
+                    this.$.resizeObserverShim["render"]();
+                    this.$.root = <HTMLElement>Polymer.dom(this.root).querySelector("#root");
+                    this.$.expand = <HTMLElement>Polymer.dom(this.root).querySelector("#expand");
+                    this.$.expandChild = <HTMLElement>Polymer.dom(this.root).querySelector("#expandChild");
+                    this.$.contract = <HTMLElement>Polymer.dom(this.root).querySelector("#contract");
                 }
 
                 this._isActive = true;
@@ -113,8 +113,8 @@ namespace Vidyano.WebComponents {
 
             if (this.noResizeObserver) {
                 if (!this._scrollListener) {
-                    this._resetTriggers(this.$["root"]);
-                    this.$["root"].addEventListener("scroll", this._scrollListener = this._onScroll.bind(this), true);
+                    this._resetTriggers(this.$.root);
+                    this.$.root.addEventListener("scroll", this._scrollListener = this._onScroll.bind(this), true);
 
                     this._triggerSizeChanged();
                 }
@@ -130,14 +130,14 @@ namespace Vidyano.WebComponents {
                 cancelFrame(this._resizeRAF);
 
             this._resizeRAF = requestFrame(() => {
-                this._resetTriggers(this.$["root"]);
+                this._resetTriggers(this.$.root);
                 this._triggerSizeChanged();
             });
         }
 
         private _triggerSizeChanged(cr?: { width: number; height: number; }) {
             if (!cr)
-                cr = { width: this.$["root"].offsetWidth, height: this.$["root"].offsetHeight };
+                cr = { width: this.$.root.offsetWidth, height: this.$.root.offsetHeight };
 
             if (!this._resizeLast || cr.width !== this._resizeLast.width || cr.height !== this._resizeLast.height) {
                 this._resizeLast = {
@@ -158,11 +158,11 @@ namespace Vidyano.WebComponents {
         }
 
         private _resetTriggers(element: HTMLElement) {
-            this.$["contract"].scrollLeft = this.$["contract"].scrollWidth;
-            this.$["contract"].scrollTop = this.$["contract"].scrollHeight;
+            this.$.contract.scrollLeft = this.$.contract.scrollWidth;
+            this.$.contract.scrollTop = this.$.contract.scrollHeight;
 
-            const width = this.$["expand"].offsetWidth;
-            const height = this.$["expand"].offsetHeight;
+            const width = this.$.expand.offsetWidth;
+            const height = this.$.expand.offsetHeight;
 
             if (!width || !height) {
                 if (!(<any>element).__resizeTimerQueued__) {
@@ -182,17 +182,17 @@ namespace Vidyano.WebComponents {
                 }
             }
 
-            if (!(<any>this.$["expandChild"]).__resizeLast__)
-                (<any>this.$["expandChild"]).__resizeLast__ = {};
+            if (!(<any>this.$.expandChild).__resizeLast__)
+                (<any>this.$.expandChild).__resizeLast__ = {};
 
-            if ((<any>this.$["expandChild"]).__resizeLast__.width !== width + 1)
-                this.$["expandChild"].style.width = ((<any>this.$["expandChild"]).__resizeLast__.width = width + 1) + "px";
+            if ((<any>this.$.expandChild).__resizeLast__.width !== width + 1)
+                this.$.expandChild.style.width = ((<any>this.$.expandChild).__resizeLast__.width = width + 1) + "px";
 
-            if ((<any>this.$["expandChild"]).__resizeLast__.height !== height + 1)
-                this.$["expandChild"].style.height = ((<any>this.$["expandChild"]).__resizeLast__.height = height + 1) + "px";
+            if ((<any>this.$.expandChild).__resizeLast__.height !== height + 1)
+                this.$.expandChild.style.height = ((<any>this.$.expandChild).__resizeLast__.height = height + 1) + "px";
 
-            this.$["expand"].scrollLeft = this.$["expand"].scrollWidth;
-            this.$["expand"].scrollTop = this.$["expand"].scrollHeight;
+            this.$.expand.scrollLeft = this.$.expand.scrollWidth;
+            this.$.expand.scrollTop = this.$.expand.scrollHeight;
         }
     }
 }

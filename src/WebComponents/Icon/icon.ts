@@ -10,7 +10,7 @@ namespace Vidyano.WebComponents {
         }
 
         protected get _contentTarget(): Node {
-            return this.$["svgHost"];
+            return this.$.svgHost;
         }
 
         static LoadFragment(source: string): DocumentFragment {

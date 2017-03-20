@@ -67,8 +67,8 @@ namespace Vidyano.WebComponents {
 
             this.hideSearch = this.app.configuration.getSetting("vi-menu.hide-search", "false").toLowerCase() === "true";
 
-            Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).forEach(element => Polymer.dom(this.$["footerElements"]).appendChild(element));
-            Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).forEach(element => Polymer.dom(this.$["headerElements"]).appendChild(element));
+            Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).forEach(element => Polymer.dom(this.$.footerElements).appendChild(element));
+            Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).forEach(element => Polymer.dom(this.$.headerElements).appendChild(element));
 
             if (!Menu._minResizeWidth)
                 Menu._minResizeWidth = this.offsetWidth;
@@ -85,8 +85,8 @@ namespace Vidyano.WebComponents {
         detached() {
             super.detached();
 
-            Enumerable.from(Polymer.dom(this.$["footerElements"]).children).forEach(element => Polymer.dom(this.app).appendChild(element));
-            Enumerable.from(Polymer.dom(this.$["headerElements"]).children).forEach(element => Polymer.dom(this.app).appendChild(element));
+            Enumerable.from(Polymer.dom(this.$.footerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
+            Enumerable.from(Polymer.dom(this.$.headerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
         }
 
         private _filterChanged() {
@@ -366,7 +366,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _expandChanged(expand: boolean) {
-            (<any>this.$["subItems"]).opened = expand;
+            (<any>this.$.subItems).opened = expand;
         }
 
         private _filterChanged() {
@@ -375,7 +375,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _updateOpened(filtering: boolean, item: Vidyano.ProgramUnitItem, expand: boolean) {
-            (<any>this.$["subItems"]).opened = filtering || item === this.programUnit || expand;
+            (<any>this.$.subItems).opened = filtering || item === this.programUnit || expand;
         }
 
         private _hasMatch(item: ProgramUnitItem, search: string): boolean {
@@ -398,13 +398,13 @@ namespace Vidyano.WebComponents {
 
         private _updateItemTitle(item: Vidyano.ProgramUnitItem, filter: string, filtering: boolean, collapsed: boolean) {
             if (item instanceof Vidyano.ProgramUnit && collapsed)
-                this.$["title"].textContent = item.title[0];
+                this.$.title.textContent = item.title[0];
             else if (filtering && this._hasMatch(item, this.filter.toUpperCase())) {
                 const exp = new RegExp(`(${filter})`, "gi");
-                this.$["title"].innerHTML = item.title.replace(exp, "<span class='style-scope vi-menu-item match'>$1</span>");
+                this.$.title.innerHTML = item.title.replace(exp, "<span class='style-scope vi-menu-item match'>$1</span>");
             }
             else
-                this.$["title"].textContent = item.title;
+                this.$.title.textContent = item.title;
         }
 
         private _computeIcon(item: Vidyano.ProgramUnitItem): string {
@@ -447,7 +447,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _titleMouseenter() {
-            this.$["title"].setAttribute("title", this.$["title"].offsetWidth < this.$["title"].scrollWidth ? this.item.title : "");
+            this.$.title.setAttribute("title", this.$.title.offsetWidth < this.$.title.scrollWidth ? this.item.title : "");
         }
 
         _viConfigure(actions: IConfigurableAction[]) {

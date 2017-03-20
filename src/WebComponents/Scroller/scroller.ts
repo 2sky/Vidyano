@@ -170,13 +170,13 @@
 
         get scroller(): HTMLElement {
             // NOTE: This property is used by other components to determine the scrolling parent.
-            return this.$["wrapper"];
+            return this.$.wrapper;
         }
 
         private async _initializeZenscroll(): Promise<any> {
             if (!this._zenscroll) {
                 await this.importHref(this.resolveUrl("zenscroller.html"));
-                this._zenscroll = zenscroll.createScroller(this.$["wrapper"], 500, 0);
+                this._zenscroll = zenscroll.createScroller(this.$.wrapper, 500, 0);
             }
         }
 
@@ -186,7 +186,7 @@
                 this._zenscroll.toY(offsetTop);
             }
             else
-                this.$["wrapper"].scrollTop = offsetTop;
+                this.$.wrapper.scrollTop = offsetTop;
         }
 
         async scrollToBottom(animated?: boolean) {
@@ -195,7 +195,7 @@
                 this._zenscroll.toY(this.innerHeight);
             }
             else
-                this.$["wrapper"].scrollTop = this.innerHeight;
+                this.$.wrapper.scrollTop = this.innerHeight;
         }
 
         private _outerSizeChanged(e: Event, detail: { width: number; height: number }) {
@@ -230,7 +230,7 @@
 
                 if (height !== this._verticalScrollHeight) {
                     this._verticalScrollHeight = height;
-                    this.$["vertical"].style.height = `${height}px`;
+                    this.$.vertical.style.height = `${height}px`;
                 }
             }
 
@@ -238,7 +238,7 @@
 
             const verticalScrollTop = verticalScrollOffset === 0 ? 0 : Math.round((1 / ((innerHeight - outerHeight) / verticalScrollOffset)) * this._verticalScrollSpace);
             if (verticalScrollTop !== this._verticalScrollTop)
-                this.$["vertical"].style.webkitTransform = this.$["vertical"].style.transform = `translate3d(0, ${this._verticalScrollTop = verticalScrollTop}px, 0)`;
+                this.$.vertical.style.webkitTransform = this.$.vertical.style.transform = `translate3d(0, ${this._verticalScrollTop = verticalScrollTop}px, 0)`;
 
             this._setScrollTopShadow(!this.noScrollShadow && verticalScrollTop > 0);
             this._setScrollBottomShadow(!this.noScrollShadow && innerHeight - verticalScrollOffset - outerHeight > 0);
@@ -256,7 +256,7 @@
 
                 if (width !== this._horizontalScrollWidth) {
                     this._horizontalScrollWidth = width;
-                    this.$["horizontal"].style.width = `${width}px`;
+                    this.$.horizontal.style.width = `${width}px`;
                 }
             }
 
@@ -264,11 +264,11 @@
 
             const horizontalScrollLeft = horizontalScrollOffset === 0 ? 0 : Math.round((1 / ((innerWidth - outerWidth) / horizontalScrollOffset)) * this._horizontalScrollSpace);
             if (horizontalScrollLeft !== this._horizontalScrollLeft)
-                this.$["horizontal"].style.webkitTransform = this.$["horizontal"].style.transform = `translate3d(${this._horizontalScrollLeft = horizontalScrollLeft}px, 0, 0)`;
+                this.$.horizontal.style.webkitTransform = this.$.horizontal.style.transform = `translate3d(${this._horizontalScrollLeft = horizontalScrollLeft}px, 0, 0)`;
         }
 
         private _trackVertical(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
-            const wrapper = this.$["wrapper"];
+            const wrapper = this.$.wrapper;
 
             if (detail.state === "start") {
                 this.app.isTracking = true;
@@ -292,7 +292,7 @@
         }
 
         private _trackHorizontal(e: CustomEvent, detail: PolymerTrackDetail) {
-            const wrapper = this.$["wrapper"];
+            const wrapper = this.$.wrapper;
 
             if (detail.state === "start") {
                 this.app.isTracking = true;
@@ -328,7 +328,7 @@
         }
 
         private _updateScrollOffsets() {
-            const wrapper = this.$["wrapper"];
+            const wrapper = this.$.wrapper;
             if (this.vertical)
                 this._setAtTop((this.verticalScrollOffset = wrapper.scrollTop) === 0);
 
@@ -337,7 +337,7 @@
         }
 
         private _verticalScrollOffsetChanged(newVerticalScrollOffset: number) {
-            const wrapper = this.$["wrapper"];
+            const wrapper = this.$.wrapper;
             if (wrapper.scrollTop === newVerticalScrollOffset)
                 return;
 
@@ -345,7 +345,7 @@
         }
 
         private _horizontalScrollOffsetChanged(newHorizontalScrollOffset: number) {
-            const wrapper = this.$["wrapper"];
+            const wrapper = this.$.wrapper;
             if (wrapper.scrollLeft === newHorizontalScrollOffset)
                 return;
 
@@ -364,9 +364,9 @@
             const event = <MouseEvent>e.detail.sourceEvent;
             if (event.offsetY) {
                 if (event.offsetY > this._verticalScrollTop + this._verticalScrollHeight)
-                    this.$["wrapper"].scrollTop += this.$["wrapper"].scrollHeight * 0.1;
+                    this.$.wrapper.scrollTop += this.$.wrapper.scrollHeight * 0.1;
                 else if (event.offsetY < this._verticalScrollTop)
-                    this.$["wrapper"].scrollTop -= this.$["wrapper"].scrollHeight * 0.1;
+                    this.$.wrapper.scrollTop -= this.$.wrapper.scrollHeight * 0.1;
 
                 e.stopPropagation();
             }
@@ -376,9 +376,9 @@
             const event = <MouseEvent>e.detail.sourceEvent;
             if (event.offsetX) {
                 if (event.offsetX > this._horizontalScrollLeft + this._horizontalScrollLeft)
-                    this.$["wrapper"].scrollLeft += this.$["wrapper"].scrollWidth * 0.1;
+                    this.$.wrapper.scrollLeft += this.$.wrapper.scrollWidth * 0.1;
                 else if (event.offsetX < this._horizontalScrollLeft)
-                    this.$["wrapper"].scrollLeft -= this.$["wrapper"].scrollWidth * 0.1;
+                    this.$.wrapper.scrollLeft -= this.$.wrapper.scrollWidth * 0.1;
 
                 e.stopPropagation();
             }

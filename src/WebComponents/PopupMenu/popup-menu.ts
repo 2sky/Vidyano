@@ -45,7 +45,7 @@ namespace Vidyano.WebComponents {
         openOnHover: boolean;
 
         popup(): Promise<any> {
-            return (<Popup>this.$["popup"]).popup();
+            return (<Popup>this.$.popup).popup();
         }
 
         private _hookContextMenu(isAttached: boolean, contextMenu: boolean) {
@@ -62,7 +62,7 @@ namespace Vidyano.WebComponents {
                 return true;
 
             if (e.which === 3 && !!this.shiftKey === !!e.shiftKey && !!this.ctrlKey === !!e.ctrlKey) {
-                const popup = <Popup><any>this.$["popup"];
+                const popup = <Popup><any>this.$.popup;
 
                 popup.style.left = e.pageX + "px";
                 popup.style.top = e.pageY + "px";
@@ -80,7 +80,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _alignmentChanged() {
-            (<Popup><any>this.$["popup"]).contentAlign = this.rightAlign ? "right" : "";
+            (<Popup><any>this.$.popup).contentAlign = this.rightAlign ? "right" : "";
         }
 
         private _mouseenter() {
@@ -123,7 +123,7 @@ namespace Vidyano.WebComponents {
         }
 
         attached() {
-            this._observer = Polymer.dom(this.$["subItems"]).observeNodes(info => {
+            this._observer = Polymer.dom(this.$.subItems).observeNodes(info => {
                 this._setHasChildren(Polymer.dom(info.target).getDistributedNodes().length > 0);
             });
 
@@ -131,7 +131,7 @@ namespace Vidyano.WebComponents {
         }
 
         detached() {
-            Polymer.dom(this.$["subItems"]).unobserveNodes(this._observer);
+            Polymer.dom(this.$.subItems).unobserveNodes(this._observer);
 
             super.detached();
         }
@@ -177,7 +177,7 @@ namespace Vidyano.WebComponents {
         }
 
         attached() {
-            this._observer = Polymer.dom(this.$["subItems"]).observeNodes(info => {
+            this._observer = Polymer.dom(this.$.subItems).observeNodes(info => {
                 this._setHasChildren(Polymer.dom(info.target).getDistributedNodes().length > 0);
             });
 
@@ -185,7 +185,7 @@ namespace Vidyano.WebComponents {
         }
 
         detached() {
-            Polymer.dom(this.$["subItems"]).unobserveNodes(this._observer);
+            Polymer.dom(this.$.subItems).unobserveNodes(this._observer);
 
             super.detached();
         }

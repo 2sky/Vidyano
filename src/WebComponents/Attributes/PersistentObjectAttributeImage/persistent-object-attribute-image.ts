@@ -134,8 +134,8 @@ namespace Vidyano.WebComponents.Attributes {
             this.updateStyles();
 
             if (!this._updated) {
-                this.$["img"].removeAttribute("hidden");
-                this.$["spinner"].setAttribute("hidden", "");
+                this.$.img.removeAttribute("hidden");
+                this.$.spinner.setAttribute("hidden", "");
 
                 this._updated = true;
             }

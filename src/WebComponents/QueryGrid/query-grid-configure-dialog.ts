@@ -28,8 +28,8 @@
             const columns = Enumerable.from(this._columnElements).orderBy(c => c.column.offset).memoize();
 
             requestAnimationFrame(() => {
-                this._updateColumns(this.$["pinned"], columns.where(c => c.isPinned).toArray());
-                this._updateColumns(this.$["unpinned"], columns.where(c => !c.isPinned).toArray());
+                this._updateColumns(this.$.pinned, columns.where(c => c.isPinned).toArray());
+                this._updateColumns(this.$.unpinned, columns.where(c => !c.isPinned).toArray());
             });
 
             if (e)

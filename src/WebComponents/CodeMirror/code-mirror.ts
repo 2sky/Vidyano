@@ -63,7 +63,7 @@ namespace Vidyano.WebComponents {
             }
 
             if (!this._codeMirror) {
-                const textArea = <HTMLTextAreaElement>this.$["target"];
+                const textArea = <HTMLTextAreaElement>this.$.target;
                 this._codeMirror = CMFromTextArea(textArea, {
                     value: textArea.value = this.value
                 });
