@@ -132,7 +132,7 @@
             if (!detail.size.height)
                 return;
 
-            this.$["main"].style.height = `${detail.size.height}px`;
+            this.$.main.style.height = `${detail.size.height}px`;
             this._translateReset();
         }
     }

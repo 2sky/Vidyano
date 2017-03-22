@@ -74,7 +74,7 @@ namespace Vidyano.WebComponents.Attributes {
             if (!height || !newAction)
                 return false;
 
-            const scroller = (<Scroller><any>this.$["body"]);
+            const scroller = <Scroller>this.$.body;
             if (!this._inlineAddHeight) {
                 const inlineAdd = <HTMLElement>scroller.querySelector(".row.add.inline");
                 if (!inlineAdd)
@@ -84,7 +84,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
 
             const contentHeight = this.newActionPinned ? height : height - this._inlineAddHeight;
-            return contentHeight + this._inlineAddHeight > this.$["table"].offsetHeight - this.$["head"].offsetHeight;
+            return contentHeight + this._inlineAddHeight > this.$.table.offsetHeight - this.$.head.offsetHeight;
         }
 
         private _updateActions(actions: Vidyano.Action[], editing: boolean, readOnly: boolean) {
@@ -142,7 +142,7 @@ namespace Vidyano.WebComponents.Attributes {
             if (usedWidth < width)
                 widths[0].width += width - usedWidth;
 
-            const style = <Style>this.$["style"];
+            const style = <Style>this.$.style;
             style.setStyle("ColumnStyles", ...widths.map(w => `.column[data-column='${w.name}'] { width: ${w.width}px; }`));
 
             this._setInitializing(false);

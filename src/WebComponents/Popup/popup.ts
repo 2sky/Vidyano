@@ -436,9 +436,9 @@ namespace Vidyano.WebComponents {
         }
 
         protected _open(target: HTMLElement | WebComponent) {
-            super._open(target, this.$["content"]);
+            super._open(target, this.$.content);
 
-            const rootSizeTracker = <WebComponents.SizeTracker><any>this.$["toggleSizeTracker"];
+            const rootSizeTracker = <WebComponents.SizeTracker><any>this.$.toggleSizeTracker;
             rootSizeTracker.measure();
         }
 
@@ -521,29 +521,29 @@ namespace Vidyano.WebComponents {
                     if (this.boundingTarget) {
                         const maxWidth = this._getTargetRect(this.boundingTarget).targetRect.width;
                         if (maxWidth > 0) {
-                            this.$["content"].style.maxWidth = maxWidth + "px";
+                            this.$.content.style.maxWidth = maxWidth + "px";
 
                             if (minWidth > maxWidth)
                                 minWidth = maxWidth;
                         }
                         else
-                            this.$["content"].style.maxWidth = "initial";
+                            this.$.content.style.maxWidth = "initial";
                     }
 
-                    this.$["content"].style.minWidth = minWidth + "px";
+                    this.$.content.style.minWidth = minWidth + "px";
                 }
                 else
-                    this.$["content"].style.minHeight = detail.height + "px";
+                    this.$.content.style.minHeight = detail.height + "px";
             }
             else {
                 if (this._currentOrientation === "vertical") {
                     if (this.boundingTarget)
-                        this.$["content"].style.maxWidth = this._getTargetRect(this.boundingTarget).targetRect.width + "px";
+                        this.$.content.style.maxWidth = this._getTargetRect(this.boundingTarget).targetRect.width + "px";
 
-                    this.$["content"].style.width = detail.width + "px";
+                    this.$.content.style.width = detail.width + "px";
                 }
                 else
-                    this.$["content"].style.height = detail.height + "px";
+                    this.$.content.style.height = detail.height + "px";
             }
 
             e.stopPropagation();

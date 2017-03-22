@@ -101,8 +101,8 @@ namespace Vidyano.WebComponents {
             this.popup.popup();
         }
 
-        private get popup(): WebComponents.Popup {
-            return <WebComponents.Popup><any>this.$["popup"];
+        private get popup(): Popup {
+            return <Popup>this.$.popup;
         }
 
         private _keydown(e: KeyboardEvent) {
@@ -112,7 +112,7 @@ namespace Vidyano.WebComponents {
             if (this.items && this.items.length > 0) {
                 const currentIndex = this.filteredItems.indexOf(this.filtering ? this.suggestion : this.selectedItem);
 
-                if (e.which === WebComponents.Keyboard.KeyCodes.downarrow) {
+                if (e.which === Keyboard.KeyCodes.downarrow) {
                     this.popup.popup();
 
                     if (currentIndex + 1 < this.filteredItems.length) {
@@ -125,7 +125,7 @@ namespace Vidyano.WebComponents {
                     e.stopPropagation();
                     e.preventDefault();
                 }
-                else if (e.which === WebComponents.Keyboard.KeyCodes.uparrow) {
+                else if (e.which === Keyboard.KeyCodes.uparrow) {
                     this.popup.popup();
 
                     if (currentIndex > 0) {
@@ -138,7 +138,7 @@ namespace Vidyano.WebComponents {
                     e.stopPropagation();
                     e.preventDefault();
                 }
-                else if (e.which === WebComponents.Keyboard.KeyCodes.enter || e.which === WebComponents.Keyboard.KeyCodes.tab) {
+                else if (e.which === Keyboard.KeyCodes.enter || e.which === Keyboard.KeyCodes.tab) {
                     this.popup.close();
 
                     if (this.suggestion !== this.selectedItem)
@@ -146,12 +146,12 @@ namespace Vidyano.WebComponents {
                     else
                         this._selectedItemChanged();
 
-                    if (e.which === WebComponents.Keyboard.KeyCodes.enter) {
+                    if (e.which === Keyboard.KeyCodes.enter) {
                         e.stopPropagation();
                         e.preventDefault();
                     }
                 }
-                else if (e.which === WebComponents.Keyboard.KeyCodes.escape) {
+                else if (e.which === Keyboard.KeyCodes.escape) {
                     this.popup.close();
 
                     if (this.filtering)
@@ -169,7 +169,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _keyup(e: KeyboardEvent) {
-            if (this._lastMatchedInputValue !== this._inputValue && !this.filtering && e.which !== WebComponents.Keyboard.KeyCodes.enter && e.which !== WebComponents.Keyboard.KeyCodes.tab && e.which !== WebComponents.Keyboard.KeyCodes.escape)
+            if (this._lastMatchedInputValue !== this._inputValue && !this.filtering && e.which !== Keyboard.KeyCodes.enter && e.which !== Keyboard.KeyCodes.tab && e.which !== Keyboard.KeyCodes.escape)
                 this._setFiltering(true);
         }
 
@@ -327,8 +327,8 @@ namespace Vidyano.WebComponents {
                 suggestionRemainder = suggestion.displayValue.substr(inputValue.length);
             }
 
-            this.$["match"].innerHTML = this._escapeHTML(suggestionMatch).replace(" ", "&nbsp;");
-            this.$["remainder"].innerHTML = this._escapeHTML(suggestionRemainder).replace(" ", "&nbsp;");
+            this.$.match.innerHTML = this._escapeHTML(suggestionMatch).replace(" ", "&nbsp;");
+            this.$.remainder.innerHTML = this._escapeHTML(suggestionRemainder).replace(" ", "&nbsp;");
         }
 
         private _setSelectedOption(option: string | Common.IKeyValuePair, force?: boolean) {

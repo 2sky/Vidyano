@@ -53,7 +53,7 @@
                     value = StringEx.format(format, value);
 
                 if (!this._labelTextNode)
-                    this._labelTextNode = this.$["label"].appendChild(document.createTextNode(value));
+                    this._labelTextNode = this.$.label.appendChild(document.createTextNode(value));
                 else
                     this._labelTextNode.nodeValue = value;
             }

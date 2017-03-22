@@ -43,7 +43,7 @@ namespace Vidyano.WebComponents.Attributes {
 
             if (this._focusQueued) {
                 this._focusQueued = false;
-                this.$["input"].focus();
+                this.$.input.focus();
             }
         }
 
@@ -104,7 +104,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _itemValueNew(e: Event, detail: { value: string }) {
             this.value = `${this.value || ""}\n${detail.value}`;
-            this.strings[this.strings.length - 1].$["input"].focus();
+            this.strings[this.strings.length - 1].$.input.focus();
 
             e.stopPropagation();
         }

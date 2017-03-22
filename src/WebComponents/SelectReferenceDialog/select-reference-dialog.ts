@@ -39,7 +39,7 @@
 
         private _initializingChanged(value: boolean) {
             if (!value)
-                (<InputSearch>this.$["search"]).focus();
+                this.$.search.focus();
         }
 
         private _selectedItemsChanged() {

@@ -76,13 +76,13 @@ namespace Vidyano.WebComponents {
         attached() {
             super.attached();
 
-            this.$["timeline"].addEventListener("DOMMouseScroll", this._boundMousehweel);
+            this.$.timeline.addEventListener("DOMMouseScroll", this._boundMousehweel);
         }
 
         detached() {
             super.detached();
 
-            this.$["timeline"].removeEventListener("DOMMouseScroll", this._boundMousehweel);
+            this.$.timeline.removeEventListener("DOMMouseScroll", this._boundMousehweel);
         }
 
         private _computeSQL(request: IProfilerServiceRequest): string {
@@ -127,7 +127,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _onMousewheel(e: any) {
-            const scroller = <Scroller>this.$["timelineScroller"];
+            const scroller = <Scroller>this.$.timelineScroller;
 
             const rect = scroller.getBoundingClientRect();
 			const offsetX = e.pageX - rect.left - window.pageXOffset;
@@ -202,7 +202,7 @@ namespace Vidyano.WebComponents {
             const entryLevelGap = parseInt(this.getComputedStyleValue("--vi-profiler-entry-level-gap"));
             const scale = d3.scale.linear().domain([0, request.profiler.elapsedMilliseconds]).range([0, width]);
 
-            const svg = d3.select(this.$["timeline"]).
+            const svg = d3.select(this.$.timeline).
                 attr("width", width).
                 attr("height", size.height);
 
@@ -328,7 +328,7 @@ namespace Vidyano.WebComponents {
 
         private _selectedEntryChanged(entry: IServiceRequestProfilerEntry) {
             const info = document.createDocumentFragment();
-            this.empty(this.$["selectedEntryInfo"]);
+            this.empty(this.$.selectedEntryInfo);
 
             if (!entry)
                 return;
@@ -448,7 +448,7 @@ namespace Vidyano.WebComponents {
                 }
             }
 
-            Polymer.dom(this.$["selectedEntryInfo"]).appendChild(info);
+            Polymer.dom(this.$.selectedEntryInfo).appendChild(info);
         }
 
         private _closeSelectedEntry() {

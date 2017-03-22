@@ -1055,9 +1055,9 @@
 
                     this._tableHeader.grid = this._tableData.grid = this._tableFooter.grid = this;
 
-                    Polymer.dom(this.$["dataHeaderHost"]).appendChild(this._tableHeader.host);
-                    Polymer.dom(this.$["dataHost"]).appendChild(this._tableData.host);
-                    Polymer.dom(this.$["dataFooterHost"]).appendChild(this._tableFooter.host);
+                    Polymer.dom(this.$.dataHeaderHost).appendChild(this._tableHeader.host);
+                    Polymer.dom(this.$.dataHost).appendChild(this._tableData.host);
+                    Polymer.dom(this.$.dataFooterHost).appendChild(this._tableFooter.host);
 
                     this.updateStyles();
                 });
@@ -1125,15 +1125,15 @@
         }
 
         private get _style(): Style {
-            return <Style><any>this.$["style"];
+            return <Style>this.$.style;
         }
 
         private get _actionMenu(): PopupCore {
-            return <PopupCore><any>this.$["actions"];
+            return <PopupCore>this.$.actions;
         }
 
         private get _columnMenu(): PopupMenu {
-            return <PopupMenu><any>this.$["columnMenu"];
+            return <PopupMenu>this.$.columnMenu;
         }
 
         private _initializingChanged() {
@@ -1209,7 +1209,7 @@
                 return [];
 
             if (verticalScrollOffset > 0 && (!items || items.length === 0) && this.offsetParent != null) {
-                (<Scroller>this.$["scroller"]).scrollToTop();
+                (<Scroller>this.$.scroller).scrollToTop();
                 return undefined;
             }
 
@@ -1284,13 +1284,13 @@
                         start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                     if (!this._tableHeader)
-                        Polymer.dom(this.$["dataHeaderHost"]).appendChild((this._tableHeader = new Vidyano.WebComponents.QueryGridTableHeader(this)).host);
+                        Polymer.dom(this.$.dataHeaderHost).appendChild((this._tableHeader = new Vidyano.WebComponents.QueryGridTableHeader(this)).host);
 
                     if (!this._tableData)
-                        Polymer.dom(this.$["dataHost"]).appendChild((this._tableData = new Vidyano.WebComponents.QueryGridTableData(this)).host);
+                        Polymer.dom(this.$.dataHost).appendChild((this._tableData = new Vidyano.WebComponents.QueryGridTableData(this)).host);
 
                     if (!this._tableFooter)
-                        Polymer.dom(this.$["dataFooterHost"]).appendChild((this._tableFooter = new Vidyano.WebComponents.QueryGridTableFooter(this)).host);
+                        Polymer.dom(this.$.dataFooterHost).appendChild((this._tableFooter = new Vidyano.WebComponents.QueryGridTableFooter(this)).host);
 
                     Promise.all([this._tableHeader.update(columns.length), this._tableFooter.update(columns.length), this._tableData.update(items.length, columns.length)]).then(() => {
                         (<QueryGridTableDataBody><any>this._tableData.section).enabled = canReorder;
@@ -1323,9 +1323,9 @@
         private _updateVerticalSpacer(totalItems: number, rowHeight: number) {
             this._requestAnimationFrame(() => {
                 const newHeight = totalItems * rowHeight;
-                this.$["verticalSpacer"].style.height = `${newHeight}px`;
+                this.$.verticalSpacer.style.height = `${newHeight}px`;
 
-                this._verticalSpacerCorrection = (newHeight - this.viewportSize.height) / (this.$["verticalSpacer"].clientHeight - this.viewportSize.height);
+                this._verticalSpacerCorrection = (newHeight - this.viewportSize.height) / (this.$.verticalSpacer.clientHeight - this.viewportSize.height);
             });
         }
 
@@ -1378,7 +1378,7 @@
                     this._hasPendingUpdates = hasPendingUpdates;
 
                     if (this._virtualTableOffsetCurrent !== this._virtualTableOffset && this._virtualTableOffset === virtualTableOffset)
-                        this.translate3d("0", `${Math.round(this._virtualTableOffsetCurrent = this._virtualTableOffset)}px`, "0", this.$["dataHost"]);
+                        this.translate3d("0", `${Math.round(this._virtualTableOffsetCurrent = this._virtualTableOffset)}px`, "0", this.$.dataHost);
 
                     if (Vidyano.WebComponents.QueryGrid.profile) {
                         const timeTaken = Vidyano.WebComponents.QueryGrid.perf.now() - start;
@@ -1424,7 +1424,7 @@
         private _updateColumnWidths(): Promise<any> {
             if (!this._columns.some(c => !c.calculatedWidth) || !this._tableData || !this._tableData.rows || this._tableData.rows.length === 0 || (<QueryGridTableDataRow>this._tableData.rows[0]).noData) {
                 if (this.query && !this.query.isBusy && this.query.items.length === 0) {
-                    this._tableData.host.style.minWidth = `${this.$["dataHeaderHost"].scrollWidth}px`;
+                    this._tableData.host.style.minWidth = `${this.$.dataHeaderHost.scrollWidth}px`;
                     this._setInitializing(false);
                 }
 
@@ -1723,7 +1723,7 @@
                 src = src.parentElement;
 
             const column = this._columnMenuColumn = src instanceof QueryGridColumnHeader ? src.column : null;
-            const togglePin = <PopupMenuItem>this.$["columnMenuTogglePin"];
+            const togglePin = <PopupMenuItem>this.$.columnMenuTogglePin;
 
             if (column) {
                 togglePin.removeAttribute("hidden");

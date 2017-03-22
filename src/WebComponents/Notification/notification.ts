@@ -103,7 +103,7 @@
             if (!this.text)
                 return;
 
-            const text = <HTMLSpanElement>this.$["text"];
+            const text = <HTMLSpanElement>this.$.text;
 
             if (this.text.contains("<br>"))
                 this._setIsOverflowing(true);

@@ -63,7 +63,7 @@ namespace Vidyano.WebComponents {
 
             this._label = label;
             if (!this._labelTextNode)
-                this.$["label"].appendChild(this._labelTextNode = document.createTextNode(label));
+                this.$.label.appendChild(this._labelTextNode = document.createTextNode(label));
             else
                 this._labelTextNode.nodeValue = label;
         }
@@ -185,11 +185,11 @@ namespace Vidyano.WebComponents {
                 this._openOnAttach = false;
 
                 this.async(() => {
-                    this.$["distincts"] = <HTMLElement>this.querySelector("#distincts");
-                    this.$["search"] = <HTMLElement>this.querySelector("#search");
+                    this.$.distincts = <HTMLElement>this.querySelector("#distincts");
+                    this.$.search = <HTMLElement>this.querySelector("#search");
 
                     // Specifies that the inner wrapper of the vi-scoller element will handle the scroll event on the behalf of the iron-list
-                    (<any>this.$["distincts"]).scrollTarget = (<any>this.$["distinctsContainer"]).$["wrapper"];
+                    (<any>this.$.distincts).scrollTarget = (<any>this.$.distinctsContainer).$.wrapper;
 
                     const popup = <Popup><any>this.querySelector("vi-popup#filter");
                     popup.popup();
@@ -201,7 +201,7 @@ namespace Vidyano.WebComponents {
             if (!this.column.canFilter)
                 return;
 
-            const popup = <Vidyano.WebComponents.Popup>this.$["filter"];
+            const popup = <Vidyano.WebComponents.Popup>this.$.filter;
             popup.boundingTarget = this.findParent<QueryGrid>(p => p instanceof Vidyano.WebComponents.QueryGrid).parentElement;
             popup.closeDelay = parseInt(this.app.configuration.getSetting("vi-query-grid-column-filter.close-delay", "750"));
 
@@ -210,12 +210,12 @@ namespace Vidyano.WebComponents {
 
                 try {
                     await this.column.column.refreshDistincts();
-                    const distinctsList = <HTMLElement>this.$["distincts"];
+                    const distinctsList = <HTMLElement>this.$.distincts;
                     distinctsList.style.minWidth = this.offsetWidth + "px";
 
                     this._setLoading(false);
 
-                    const input = <InputSearch><any>this.$["search"];
+                    const input = <InputSearch><any>this.$.search;
                     input.focus();
                 }
                 catch (e) {
@@ -224,7 +224,7 @@ namespace Vidyano.WebComponents {
                 }
             }
             else {
-                const distinctsList = <HTMLElement>this.$["distincts"];
+                const distinctsList = <HTMLElement>this.$.distincts;
                 distinctsList.style.minWidth = this.offsetWidth + "px";
                 distinctsList.scrollTop = 0;
             }
@@ -345,17 +345,17 @@ namespace Vidyano.WebComponents {
         private _onResize(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
             if (detail.state === "start") {
                 this.app.isTracking = true;
-                const filter = <Popup>this.$["filter"];
+                const filter = <Popup>this.$.filter;
                 filter.sticky = true;
 
-                this._resizeStart = { width: this.$["filterContent"].offsetWidth, height: this.$["filterContent"].offsetHeight };
+                this._resizeStart = { width: this.$.filterContent.offsetWidth, height: this.$.filterContent.offsetHeight };
             }
             else if (detail.state === "track") {
-                this.$["filterContent"].style.width = `${this._resizeStart.width + detail.dx}px`;
-                this.$["filterContent"].style.height = `${this._resizeStart.height + detail.dy}px`;
+                this.$.filterContent.style.width = `${this._resizeStart.width + detail.dx}px`;
+                this.$.filterContent.style.height = `${this._resizeStart.height + detail.dy}px`;
             }
             else if (detail.state === "end") {
-                const filter = <Popup>this.$["filter"];
+                const filter = <Popup>this.$.filter;
                 filter.sticky = false;
 
                 this._resizeStart = null;

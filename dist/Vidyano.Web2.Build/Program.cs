@@ -1,7 +1,9 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Vidyano.Web2.Build
 {
@@ -9,12 +11,22 @@ namespace Vidyano.Web2.Build
     {
         static void Main(string[] args)
         {
-            var basePath = Path.Combine(Environment.CurrentDirectory, "src");
-            Console.WriteLine(basePath);
+            if (args.Length < 1)
+            {
+                Console.WriteLine("Missing argument: sourcefolder");
+                return;
+            }
 
-            var webComponentsFolder = Path.Combine(basePath, "WebComponents");
+            var sourceFolder = args[0];
+            var outdir = args.FirstOrDefault(a => a.StartsWith("-outdir=", StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrEmpty(outdir))
+            {
+                outdir = outdir.Split(new[] { '=' }, 2)[1];
+                if (!Directory.Exists(outdir))
+                    Directory.CreateDirectory(outdir);
+            }
 
-            foreach (var html in Directory.GetFiles(webComponentsFolder, "*.html", SearchOption.AllDirectories))
+            foreach (var html in Directory.GetFiles(sourceFolder, "*.html", SearchOption.AllDirectories))
             {
                 var doc = new HtmlDocument();
                 doc.Load(html);
@@ -29,14 +41,15 @@ namespace Vidyano.Web2.Build
                             continue;
 
                         var cssFile = Path.Combine(Path.GetDirectoryName(html), href);
-                        if (!cssFile.StartsWith(webComponentsFolder))
+                        if (!cssFile.StartsWith(sourceFolder) && link.GetAttributeValue("inline", null) == null)
                             continue;
 
                         Console.WriteLine($"Inlining style: {cssFile}");
 
                         link.ParentNode.ReplaceChild(HtmlNode.CreateNode($"<style>{File.ReadAllText(cssFile)}</style>"), link);
 
-                        File.Delete(cssFile);
+                        if (string.IsNullOrEmpty(outdir))
+                            File.Delete(cssFile);
                     }
                 }
 
@@ -50,18 +63,20 @@ namespace Vidyano.Web2.Build
                             continue;
 
                         var jsFile = Path.Combine(Path.GetDirectoryName(html), src);
-                        if (!jsFile.StartsWith(webComponentsFolder))
+                        if (!jsFile.StartsWith(sourceFolder) && script.GetAttributeValue("inline", null) == null)
                             continue;
 
                         Console.WriteLine($"Inlining script: {jsFile}");
 
-                        script.ParentNode.ReplaceChild(HtmlNode.CreateNode($"<script>{File.ReadAllText(jsFile)}</script>"), script);
+                        var scriptContent = Regex.Replace(File.ReadAllText(jsFile), "//[#@]\\s(source(?:Mapping)?URL)=\\s*(\\S+)", "");
+                        script.ParentNode.ReplaceChild(HtmlNode.CreateNode($"<script>{scriptContent}</script>"), script);
 
-                        File.Delete(jsFile);
+                        if (string.IsNullOrEmpty(outdir))
+                            File.Delete(jsFile);
                     }
                 }
 
-                doc.Save(html, Encoding.UTF8);
+                doc.Save(string.IsNullOrEmpty(outdir) ? html : Path.Combine(outdir, Path.GetFileName(html)), Encoding.UTF8);
             }
         }
     }
