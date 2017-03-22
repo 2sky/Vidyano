@@ -182,7 +182,7 @@
                     selectedItems = selectedItems.filter(i => !i.ignoreSelect);
                 }
 
-                const po = await this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters);
+                let po = await this.service.executeAction(this._targetType + "." + this.definition.name, this.parent, this.query, selectedItems, parameters);
                 if (po) {
                     if (po.fullTypeName === "Vidyano.Notification") {
                         if (po.objectId != null && JSON.parse(po.objectId).dialog) {
@@ -195,6 +195,8 @@
                             else
                                 this._setNotification(po.notification, po.notificationType, po.notificationDuration);
                         }
+
+                        po = null;
                     } else if (po.fullTypeName === "Vidyano.RegisteredStream") {
                         this.service._getStream(po);
                     } else if (po.fullTypeName === "Vidyano.AddReference") {
@@ -228,7 +230,7 @@
                     const selectedIds = this.definition.keepSelectionOnRefresh ? this.query.selectedItems.map(i => i.id) : null;
                     this.query.search().then(items => {
                         if (notificationPO && !this.query.notification)
-                            this._setNotification(po.notification, po.notificationType, po.notificationDuration);
+                            this._setNotification(notificationPO.notification, notificationPO.notificationType, notificationPO.notificationDuration);
 
                         if (selectedIds != null && selectedIds.length > 0) {
                             const itemsEnum = Enumerable.from(items);

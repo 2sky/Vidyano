@@ -53,7 +53,7 @@
             this.queryLayoutMode = po.queryLayoutMode === "FullPage" ? PersistentObjectLayoutMode.FullPage : PersistentObjectLayoutMode.MasterDetail;
             this.objectId = po.objectId;
             this._breadcrumb = po.breadcrumb;
-            this.setNotification(po.notification, po.notificationType, po.notificationDuration);
+            this.setNotification(po.notification, po.notificationType, po.notificationDuration, true);
             this.isNew = !!po.isNew;
             this.newOptions = po.newOptions;
             this.isReadOnly = !!po.isReadOnly;

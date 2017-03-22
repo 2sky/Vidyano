@@ -39,7 +39,7 @@
             return this._notificationDuration;
         }
 
-        setNotification(notification: string = null, type: NotificationType = NotificationType.Error, duration: number = 0) {
+        setNotification(notification: string = null, type: NotificationType = NotificationType.Error, duration: number = 0, skipShowNotification?: boolean) {
             if (typeof (type) === "string")
                 type = NotificationType[<string>type];
 
@@ -58,7 +58,7 @@
             if (oldNotification !== notification)
                 this.notifyPropertyChanged("notification", this._notification = notification, oldNotification);
 
-            if (this.notificationDuration)
+            if (!skipShowNotification && this.notificationDuration)
                 this.service.hooks.onShowNotification(notification, type, duration);
         }
 

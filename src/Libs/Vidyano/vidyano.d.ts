@@ -122,7 +122,7 @@ declare namespace Vidyano {
         readonly notification: string;
         readonly notificationType: NotificationType;
         readonly notificationDuration: number;
-        setNotification(notification?: string, type?: NotificationType, duration?: number): void;
+        setNotification(notification?: string, type?: NotificationType, duration?: number, skipShowNotification?: boolean): void;
         queueWork<T>(work: () => Promise<T>, blockActions?: boolean): Promise<T>;
         protected _initializeActions(): void;
         private _blockActions(block);
