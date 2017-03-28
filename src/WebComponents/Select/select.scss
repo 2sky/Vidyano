@@ -80,6 +80,7 @@ $border-color: #ddd;
         [content] {
             max-height: calc(var(--theme-h2) * 10);
             overflow-y: auto;
+            -ms-overflow-style: scrollbar;
             padding: 0;
             margin: 0;
             list-style: none;
