@@ -1232,7 +1232,7 @@ namespace Vidyano.WebComponents {
                 query.search();
 
             await this.app.importComponent("SelectReferenceDialog");
-            return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query));
+            return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query, false, false, true));
         }
 
         onSessionExpired(): boolean {
