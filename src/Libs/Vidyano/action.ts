@@ -209,10 +209,11 @@
                                 await this.service.executeAction("Query.AddReference", this.parent, query, selectedItems, { AddAction: this.name }, true);
                             }
                             catch (e) {
-                                this.query.setNotification(e);
+                                this._setNotification(e);
                             }
 
-                            this.query.search();
+                            if (this.query)
+                                this.query.search();
                         }
                     } else if (this.parent != null && (po.fullTypeName === this.parent.fullTypeName || po.isNew === this.parent.isNew) && po.id === this.parent.id && po.objectId === this.parent.objectId) {
                         this.parent.refreshFromResult(po);
