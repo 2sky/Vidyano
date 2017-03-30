@@ -36,6 +36,7 @@
                 if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
                     if (wasNew && this.parent.ownerAttributeWithReference == null && this.parent.stateBehavior.indexOf("OpenAfterNew") !== -1) {
                         const newPO = await this.parent.queueWork(() => this.service.getPersistentObject(this.parent.parent, this.parent.id, this.parent.objectId));
+                        newPO.ownerQuery = this.parent.ownerQuery;
                         this.service.hooks.onOpen(newPO, true);
                     }
                     else
