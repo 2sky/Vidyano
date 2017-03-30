@@ -35,7 +35,7 @@
         <div id="table">
             <div id="head" class="horizontal layout">
                 <template is="dom-repeat" items="[[attribute.details.columns]]" as="column" filter="_isColumnVisible">
-                    <div class="column" data-column$="[[column.name]]"><label>[[column.label]]</label></div>
+                    <div class="column" data-column$="[[column.name]]"><label on-mouseenter="_titleMouseenter">[[column.label]]</label></div>
                 </template>
             </div>
             <vi-scroller id="body" no-horizontal force-scrollbars$="[[editing]]">

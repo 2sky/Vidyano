@@ -228,6 +228,11 @@ namespace Vidyano.WebComponents.Attributes {
 
             e.stopPropagation();
         }
+
+        private _titleMouseenter(e: MouseEvent) {
+            const label = <HTMLElement>e.target;
+            label.setAttribute("title", label.offsetWidth < label.scrollWidth ? label.textContent : "");
+        }
     }
 
     @WebComponent.register({
