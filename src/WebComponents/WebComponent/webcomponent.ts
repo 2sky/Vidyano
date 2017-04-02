@@ -191,6 +191,11 @@
          * forwardObservers is used to forward Vidyano.Common.Observable notifications to Polymer notifyPath
          */
         forwardObservers?: string[];
+
+        /*
+         * If true, the component will add isDesktop, isTablet, isPhone properties with reflectToAttribute
+         */
+        mediaQueryAttributes?: boolean;
     }
 
     export interface IObserveChainDisposer {
@@ -591,6 +596,53 @@
                 type: Object,
                 readOnly: true
             };
+
+            if (info.mediaQueryAttributes) {
+                info.properties["isDesktop"] = {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                };
+
+                info.properties["isTablet"] = {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                };
+
+                info.properties["isPhone"] = {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                };
+
+                info.observers = info.observers || [];
+                info.observers.push("_mediaQueryObserver(app)");
+
+                wcPrototype["_mediaQueryObserver"] = function (app: Vidyano.WebComponents.App) {
+                    if (this._mediaQueryObserverInfo) {
+                        this._mediaQueryObserverInfo.app.removeEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
+                        this._mediaQueryObserverInfo = null;
+                    }
+
+                    if (app) {
+                        this._mediaQueryObserverInfo = {
+                            app: app,
+                            listener: (e: Event) => {
+                                this["_setIsDesktop"](e["detail"] === "desktop");
+                                this["_setIsTablet"](e["detail"] === "tablet");
+                                this["_setIsPhone"](e["detail"] === "phone");
+                            }
+                        };
+
+                        this["_setIsDesktop"](app["isDesktop"]);
+                        this["_setIsTablet"](app["isTablet"]);
+                        this["_setIsPhone"](app["isPhone"]);
+
+                        app.addEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
+                    }
+                };
+            }
 
             if (info.forwardObservers) {
                 info.observers = info.observers || [];

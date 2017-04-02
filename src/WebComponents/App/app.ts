@@ -237,7 +237,8 @@ namespace Vidyano.WebComponents {
             "_resolveDependencies(service.application.hasManagement)",
             "_computeThemeColorVariants(themeColor, 'color', isAttached)",
             "_computeThemeColorVariants(themeAccentColor, 'accent-color', isAttached)",
-            "_importConfigs(configs, isAttached)"
+            "_importConfigs(configs, isAttached)",
+            "_mediaQueryChanged(isDesktop, isTablet, isPhone)"
         ],
         hostAttributes: {
             "tabindex": "-1"
@@ -826,6 +827,10 @@ namespace Vidyano.WebComponents {
             });
 
             this._setKeys(Enumerable.from(currentKeys).distinct().toArray().join(" "));
+        }
+
+        private _mediaQueryChanged(isDesktop: boolean, isTablet: boolean, isPhone: boolean) {
+            this.fire("media-query-changed", isDesktop ? "desktop" : (isTablet ? "tablet" : "phone"), { bubbles: false });
         }
 
         private _keysPressed(e: Keyboard.IKeysEvent) {
