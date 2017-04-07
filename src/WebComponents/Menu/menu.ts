@@ -433,7 +433,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _computedHasItems(item: Vidyano.ProgramUnitItem): boolean {
-            return item instanceof Vidyano.ProgramUnit || item instanceof Vidyano.ProgramUnitItemGroup;
+            return (item instanceof Vidyano.ProgramUnit || item instanceof Vidyano.ProgramUnitItemGroup) && item.items.length > 0;
         }
 
         private _computedHref(item: Vidyano.ProgramUnitItem, app: Vidyano.WebComponents.App): string {
