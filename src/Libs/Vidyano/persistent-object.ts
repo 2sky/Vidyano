@@ -58,6 +58,7 @@
             this.newOptions = po.newOptions;
             this.isReadOnly = !!po.isReadOnly;
             this.isHidden = !!po.isHidden;
+            this._isDeleted = !!po.isDeleted;
             this.ignoreCheckRules = !!po.ignoreCheckRules;
             this.stateBehavior = po.stateBehavior || "None";
             this.setIsEditing(false);
