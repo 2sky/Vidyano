@@ -142,7 +142,8 @@
         }
 
         onUpdateAvailable() {
-            // Noop
+            localStorage.setItem("vi-updateAvailable", Vidyano.cookiePrefix);
+            localStorage.removeItem("vi-updateAvailable");
         }
 
         async onRetryAction(retry: IRetryAction): Promise<string> {

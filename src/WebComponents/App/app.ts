@@ -345,11 +345,17 @@ namespace Vidyano.WebComponents {
             if (!event)
                 event = <StorageEvent>window.event;
 
-            if (event.newValue == null)
+            if (event.newValue == null || Vidyano.cookiePrefix !== event.newValue)
                 return;
 
-            if (event.key === "vi-signOut" && this.app.service && this.app.service.isSignedIn && Vidyano.cookiePrefix === event.newValue)
+            if (event.key === "vi-signOut" && this.service && this.service.isSignedIn)
                 this.redirectToSignOut();
+            else if (event.key === "vi-updateAvailable") {
+                if (this.service != null)
+                    this.service.hooks.onUpdateAvailable();
+                else
+                    this._updateAvailable();
+            }
         }
 
         get configuration(): AppConfig {
@@ -1252,6 +1258,8 @@ namespace Vidyano.WebComponents {
         }
 
         onUpdateAvailable() {
+            super.onUpdateAvailable();
+
             this.app.fire("app-update-available", null);
         }
 
