@@ -315,7 +315,7 @@ namespace Vidyano.WebComponents {
             }));
 
             Vidyano.Path.rescue(() => {
-                this.path = App.removeRootPath(Vidyano.Path.routes.current);
+                this.path = decodeURI(App.removeRootPath(Vidyano.Path.routes.current));
             });
 
             if (!this.noHistory) {
