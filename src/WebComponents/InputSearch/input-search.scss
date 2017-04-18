@@ -12,7 +12,8 @@
         -moz-box-sizing: border-box;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
-        padding: 8px var(--theme-h2) 8px 12px;
+        padding-right: var(--theme-h2);
+        padding-left: var(--theme-h5);
         background-color: transparent;
         color: white;
         width: 100%;

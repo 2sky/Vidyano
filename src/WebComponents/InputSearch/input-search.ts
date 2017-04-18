@@ -47,7 +47,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _resetClick(e?: TapEvent) {
-            this.value = "";
+            this.fire("search", this.value = "");
 
             if (e && !this.value)
                 e.stopPropagation();
