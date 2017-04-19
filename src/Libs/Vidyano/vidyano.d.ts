@@ -683,6 +683,7 @@ declare namespace Vidyano {
     }
     interface ISortOption {
         column: QueryColumn;
+        name: string;
         direction: SortDirection;
     }
     interface IQuerySelectAll {

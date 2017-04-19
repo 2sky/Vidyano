@@ -9,6 +9,7 @@
 
     export interface ISortOption {
         column: QueryColumn;
+        name: string;
         direction: SortDirection;
     }
 
@@ -384,12 +385,11 @@
                     options.split(";").map(option => option.trim()).forEach(option => {
                         const optionParts = splitWithTail(option, " ", 2).map(option => option.trim());
                         const col = this.getColumn(optionParts[0]);
-                        if (col) {
-                            newSortOptions.push({
-                                column: col,
-                                direction: optionParts.length < 2 || optionParts[1].toUpperCase() === "ASC" ? SortDirection.Ascending : SortDirection.Descending
-                            });
-                        }
+                        newSortOptions.push({
+                            column: col,
+                            name: optionParts[0],
+                            direction: optionParts.length < 2 || optionParts[1].toUpperCase() === "ASC" ? SortDirection.Ascending : SortDirection.Descending
+                        });
                     });
                 }
             }
@@ -432,7 +432,7 @@
                     result["allSelectedInversed"] = true;
             }
 
-            result["sortOptions"] = this.sortOptions ? this.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ") : "";
+            result["sortOptions"] = this.sortOptions ? this.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ") : "";
 
             if (this.persistentObject)
                 result.persistentObject = this.persistentObject.toServiceObject();

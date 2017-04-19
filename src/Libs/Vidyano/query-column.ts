@@ -189,7 +189,7 @@
 
                 if (!sortOption) {
                     if (direction !== SortDirection.None)
-                        this.query.sortOptions = this.query.sortOptions.concat([{ column: this, direction: direction }]);
+                        this.query.sortOptions = this.query.sortOptions.concat([{ column: this, name: this.name, direction: direction }]);
                 }
                 else {
                     if (direction !== SortDirection.None) {
@@ -200,11 +200,11 @@
                         this.query.sortOptions = this.query.sortOptions.filter(option => option !== sortOption);
                 }
             } else
-                this.query.sortOptions = direction !== SortDirection.None ? [{ column: this, direction: direction }] : [];
+                this.query.sortOptions = direction !== SortDirection.None ? [{ column: this, name: this.name, direction: direction }] : [];
 
             const result = await this.query.search();
             const querySettings = (this.service.application.userSettings["QuerySettings"] || (this.service.application.userSettings["QuerySettings"] = {}))[this.query.id] || {};
-            querySettings["sortOptions"] = this.query.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.column.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
+            querySettings["sortOptions"] = this.query.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
 
             this.service.application.userSettings["QuerySettings"][this.query.id] = querySettings;
             await this.service.application.saveUserSettings();
