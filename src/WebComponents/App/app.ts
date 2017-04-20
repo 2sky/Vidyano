@@ -1217,11 +1217,11 @@ namespace Vidyano.WebComponents {
         }
 
         onRedirectToSignIn(keepUrl: boolean) {
-            this.app.changePath("SignIn" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path)).replace(/\./g, "%2E").replace("SignIn", "") : ""), true);
+            this.app.changePath("SignIn" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path).replace(/SignIn\/?/, "")).replace(/\./g, "%2E") : ""), true);
         }
 
         onRedirectToSignOut(keepUrl: boolean) {
-            this.app.changePath("SignOut" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(decodeURIComponent(this.app.path))).replace(/\./g, "%2E").replace("SignIn", "") : ""), true);
+            this.app.changePath("SignOut" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(decodeURIComponent(this.app.path)).replace(/SignIn\/?/, "")).replace(/\./g, "%2E") : ""), true);
         }
 
         onMessageDialog(title: string, message: string, rich: boolean, ...actions: string[]): Promise<number> {
