@@ -338,10 +338,13 @@
             if (result instanceof PersistentObject)
                 result = result._lastResult;
 
-            this._lastResult = result;
-
             const changedAttributes: PersistentObjectAttribute[] = [];
             let isDirty = false;
+
+            if (!this.isEditing && result.attributes.some(a => a.isValueChanged))
+                this.beginEdit();
+
+            this._lastResult = result;
 
             this.attributes.removeAll(attr => {
                 if (!result.attributes.some(serviceAttr => serviceAttr.id === attr.id)) {
