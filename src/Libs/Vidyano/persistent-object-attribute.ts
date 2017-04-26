@@ -1,6 +1,17 @@
 ﻿namespace Vidyano {
     "use strict";
 
+    export interface IServicePersistentObjectAttribute {
+        name: string;
+        type: string;
+        label: string;
+        value?: string;
+        isReadOnly?: boolean;
+        isRequired?: boolean;
+        rules?: string;
+        visibility: "Always" | "Read" | "New" | "Never";
+    }
+
     export class PersistentObjectAttribute extends ServiceObject {
         private _isSystem: boolean;
         private _lastParsedValue: string;
@@ -38,6 +49,7 @@
         column: number;
         columnSpan: number;
 
+        constructor(service: Service, attr: IServicePersistentObjectAttribute, parent: PersistentObject);
         constructor(service: Service, attr: any, public parent: PersistentObject) {
             super(service);
 

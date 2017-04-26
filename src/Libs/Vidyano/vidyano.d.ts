@@ -247,6 +247,16 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
+    interface IServicePersistentObjectAttribute {
+        name: string;
+        type: string;
+        label: string;
+        value?: string;
+        isReadOnly?: boolean;
+        isRequired?: boolean;
+        rules?: string;
+        visibility: "Always" | "Read" | "New" | "Never";
+    }
     class PersistentObjectAttribute extends ServiceObject {
         parent: PersistentObject;
         private _isSystem;
@@ -282,7 +292,7 @@ declare namespace Vidyano {
         triggersRefresh: boolean;
         column: number;
         columnSpan: number;
-        constructor(service: Service, attr: any, parent: PersistentObject);
+        constructor(service: Service, attr: IServicePersistentObjectAttribute, parent: PersistentObject);
         readonly groupKey: string;
         group: PersistentObjectAttributeGroup;
         readonly tabKey: string;
@@ -389,6 +399,12 @@ declare namespace Vidyano {
         FullPage = 0,
         MasterDetail = 1,
     }
+    interface IServicePersistentObject {
+        type?: string;
+        breadcrumb?: string;
+        attributes?: IServicePersistentObjectAttribute[];
+        stateBehavior?: "OpenInEdit" | "StayInEdit" | "AsDialog";
+    }
     class PersistentObject extends ServiceObjectWithActions {
         private _isSystem;
         private _lastResult;
@@ -423,7 +439,7 @@ declare namespace Vidyano {
         queriesToRefresh: Array<string>;
         attributes: PersistentObjectAttribute[];
         queries: Query[];
-        constructor(service: Service, po: any);
+        constructor(service: Service, po: IServicePersistentObject);
         private _createPersistentObjectAttribute(attr);
         readonly id: string;
         readonly isSystem: boolean;

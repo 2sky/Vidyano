@@ -6,6 +6,13 @@
         MasterDetail
     }
 
+    export interface IServicePersistentObject {
+        type?: string;
+        breadcrumb?: string;
+        attributes?: IServicePersistentObjectAttribute[];
+        stateBehavior?: "OpenInEdit" | "StayInEdit" | "AsDialog";
+    }
+
     export class PersistentObject extends ServiceObjectWithActions {
         private _isSystem: boolean;
         private _lastResult: any;
@@ -42,6 +49,7 @@
         attributes: PersistentObjectAttribute[];
         queries: Query[];
 
+        constructor(service: Service, po: IServicePersistentObject);
         constructor(service: Service, po: any) {
             super(service, (po._actionNames || po.actions || []).map(a => a === "Edit" && po.isNew ? "Save" : a));
 
