@@ -601,50 +601,42 @@
 
             Vidyano.cookie("staySignedIn", this.staySignedIn ? "true" : null, { force: true, expires: 365 });
 
-            try {
-                const result = await this._postJSON(this._createUri("GetApplication"), data);
+            const result = await this._postJSON(this._createUri("GetApplication"), data);
 
-                if (!StringEx.isNullOrEmpty(result.exception))
-                    throw result.exception;
+            if (!StringEx.isNullOrEmpty(result.exception))
+                throw result.exception;
 
-                if (result.application == null)
-                    throw "Unknown error";
+            if (result.application == null)
+                throw "Unknown error";
 
-                this._setApplication(new Application(this, result.application));
+            this._setApplication(new Application(this, result.application));
 
-                const resourcesQuery = this.application.getQuery("Resources");
-                if (resourcesQuery)
-                    this.icons = Enumerable.from(resourcesQuery.items).where((i => i.getValue("Type") === "Icon")).toDictionary(i => <string>i.getValue("Key"), i => <string>i.getValue("Data"));
-                else
-                    this.icons = Enumerable.empty<string>().toDictionary(i => i, i => i);
+            const resourcesQuery = this.application.getQuery("Resources");
+            if (resourcesQuery)
+                this.icons = Enumerable.from(resourcesQuery.items).where((i => i.getValue("Type") === "Icon")).toDictionary(i => <string>i.getValue("Key"), i => <string>i.getValue("Data"));
+            else
+                this.icons = Enumerable.empty<string>().toDictionary(i => i, i => i);
 
-                this.actionDefinitions = Enumerable.from(this.application.getQuery("Actions").items).toDictionary(i => <string>i.getValue("Name"), i => new ActionDefinition(this, i));
+            this.actionDefinitions = Enumerable.from(this.application.getQuery("Actions").items).toDictionary(i => <string>i.getValue("Name"), i => new ActionDefinition(this, i));
 
-                this.language = Enumerable.from(this._languages).firstOrDefault(l => l.culture === result.userLanguage) || Enumerable.from(this._languages).firstOrDefault(l => l.isDefault);
+            this.language = Enumerable.from(this._languages).firstOrDefault(l => l.culture === result.userLanguage) || Enumerable.from(this._languages).firstOrDefault(l => l.isDefault);
 
-                const clientMessagesQuery = this.application.getQuery("ClientMessages");
-                if (clientMessagesQuery)
-                    clientMessagesQuery.items.forEach(msg => this.language.messages[msg.getValue("Key")] = msg.getValue("Value"));
+            const clientMessagesQuery = this.application.getQuery("ClientMessages");
+            if (clientMessagesQuery)
+                clientMessagesQuery.items.forEach(msg => this.language.messages[msg.getValue("Key")] = msg.getValue("Value"));
 
-                this.actionDefinitions.toEnumerable().forEach(kvp => this.language.messages[`Action_${kvp.key}`] = kvp.value.displayName);
+            this.actionDefinitions.toEnumerable().forEach(kvp => this.language.messages[`Action_${kvp.key}`] = kvp.value.displayName);
 
-                CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
+            CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
 
-                this._setUserName(result.userName);
+            this._setUserName(result.userName);
 
-                if (result.session)
-                    this.application._updateSession(result.session);
+            if (result.session)
+                this.application._updateSession(result.session);
 
-                this._setIsSignedIn(true);
+            this._setIsSignedIn(true);
 
-                return this.application;
-            }
-            catch (e) {
-                this._setApplication(null);
-                this._setIsSignedIn(false);
-
-                throw e;
-            }
+            return this.application;
         }
 
         async getQuery(id: string, asLookup?: boolean): Promise<Query> {
