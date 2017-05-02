@@ -360,6 +360,8 @@ namespace Vidyano.WebComponents {
 
                 this._resizeStart = null;
                 this.app.isTracking = false;
+                
+                (<PolymerBase>this.$.distincts).fire("iron-resize", null);
             }
         }
 
