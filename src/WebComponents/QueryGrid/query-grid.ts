@@ -1039,6 +1039,7 @@
         readonly rowHeight: number; private _setRowHeight: (rowHeight: number) => void;
         readonly initializing: boolean; private _setInitializing: (initializing: boolean) => void;
         readonly isReordering: boolean; private _setIsReordering: (reodering: boolean) => void;
+        readonly hasTotalItem: boolean;
         canReorder: boolean;
         viewportSize: ISize;
         query: Vidyano.Query;
@@ -1447,7 +1448,11 @@
                         const columnOffsets: { [key: string]: number; } = {};
                         let hasWidthsStyle = !!this._style.getStyle("ColumnWidths");
 
-                        [this._tableHeader, this._tableData, this._tableFooter].some(table => {
+                        const tables: QueryGridTable[] = [this._tableHeader, this._tableData];
+                        if (this.hasTotalItem)
+                            tables.push(this._tableFooter);
+
+                        tables.some(table => {
                             if (table.rows && table.rows.length > 0) {
                                 let offset = 0;
 
@@ -1461,7 +1466,7 @@
                                     if (isNaN(width)) {
                                         width = cell.cell.offsetWidth;
                                         /* If grid is not visible, don't calculate the width */
-                                        if (this.offsetParent === null /* Visibility check */ || (width === 0 && getComputedStyle(cell.cell).display === "none"))
+                                        if (!width || this.offsetParent === null /* Visibility check */ || getComputedStyle(cell.cell).display === "none")
                                             return layoutUpdating = true; // Layout is still updating
                                     }
 
