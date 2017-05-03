@@ -5,14 +5,14 @@ $animation-time: 1s;
 :host {
     display: block;
     position: relative;
-    width: var(--vi-spinner-width, var(--theme-h2));
-    height: var(--vi-spinner-height, var(--theme-h2));
+    width: var(--vi-spinner-size, var(--theme-h2));
+    height: var(--vi-spinner-size, var(--theme-h2));
 
     &:not([block]) {
         position: absolute;
         left: 50%;
         top: 50%;
-        transform: translate(calc(var(--vi-spinner-width, var(--theme-h2)) / -2), calc(var(--vi-spinner-height, var(--theme-h2)) / -2));
+        transform: translate(calc(var(--vi-spinner-size, var(--theme-h2)) / -2), calc(var(--vi-spinner-size, var(--theme-h2)) / -2));
     }
 
     .box {
@@ -23,30 +23,30 @@ $animation-time: 1s;
         animation: loadAnimation $animation-time linear infinite;
 
         &:nth-of-type(1) {
-          position: absolute;
-          top: 2.5%;
-          left: 2.5%;
-          animation-delay: -($animation-time / 4 ) * 3;
+            position: absolute;
+            top: 2.5%;
+            left: 2.5%;
+            animation-delay: -($animation-time / 4 ) * 3;
         }
 
         &:nth-of-type(2) {
-          position: absolute;
-          top: 2.5%;
-          right: 2.5%;
-          animation-delay: -($animation-time / 4 ) * 2;
+            position: absolute;
+            top: 2.5%;
+            right: 2.5%;
+            animation-delay: -($animation-time / 4 ) * 2;
         }
 
         &:nth-of-type(3) {
-          position: absolute;
-          bottom: 2.5%;
-          right: 2.5%;
-          animation-delay: -($animation-time / 4);
+            position: absolute;
+            bottom: 2.5%;
+            right: 2.5%;
+            animation-delay: -($animation-time / 4);
         }
 
         &:nth-of-type(4) {
-          position: absolute;
-          bottom: 2.5%;
-          left: 2.5%;
+            position: absolute;
+            bottom: 2.5%;
+            left: 2.5%;
         }
     }
 }
