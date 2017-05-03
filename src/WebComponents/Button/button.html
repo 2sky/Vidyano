@@ -10,6 +10,9 @@
             <template is="dom-if" if="[[label]]">
                 <span>[[label]]</span>
             </template>
+            <template is="dom-if" if="[[busy]]">
+                <vi-spinner></vi-spinner>
+            </template>
         </template>
     </template>
 </dom-module>

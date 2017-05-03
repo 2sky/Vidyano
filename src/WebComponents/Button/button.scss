@@ -4,6 +4,7 @@
     background-color: $bgColor;
     color: $fgColor;
     fill: $fgColor;
+    --vi-spinner-color: $fgColor;
 
     &:not([disabled]):hover {
         background-color: $bgHoverColor;
@@ -34,7 +35,7 @@
     transition-timing-function: ease-out;
     border: none;
     outline: none;
-
+    --vi-spinner-size: 1.5em;
     /* elevation values from http://codepen.io/shyndman/pen/c5394ddf2e8b2a5c9185904b57421cdb */
     &[elevation] {
         transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -62,7 +63,7 @@
     }
 
     &[elevation="5"] {
-        box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0  6px 30px 5px rgba(0, 0, 0, 0.12), 0  8px 10px -5px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
     }
 
     @apply(--vi-button);
@@ -102,6 +103,12 @@
         > vi-icon[has-resource] + span {
             margin-left: 2px;
         }
+
+        &[busy] {
+            > span {
+                visibility: hidden;
+            }
+        }
     }
 
     &[type=""], &:not([type]) {
@@ -109,12 +116,13 @@
             background-color: var(--theme-color);
             color: white;
             fill: white;
+            --vi-spinner-color: white;
 
             &:not([disabled]):hover {
                 background-color: var(--theme-color-light);
             }
 
-            &[disabled] {
+            &:not([busy])[disabled] {
                 opacity: 0.5;
                 @apply(--vi-button-disabled);
             }
@@ -124,6 +132,7 @@
             background-color: transparent;
             color: var(--theme-color);
             fill: var(--theme-color);
+            --vi-spinner-color: var(--theme-color);
 
             &:not([disabled]):hover {
                 &::before {
@@ -134,7 +143,7 @@
                 }
             }
 
-            &[disabled] {
+            &:not([busy])[disabled] {
                 opacity: 0.5;
                 @apply(--vi-button-disabled);
             }

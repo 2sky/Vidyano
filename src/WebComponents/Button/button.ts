@@ -22,7 +22,12 @@
                 reflectToAttribute: true
             },
             icon: String,
-            label: String
+            label: String,
+            busy: {
+                type: Boolean,
+                reflectToAttribute: true,
+                observer: "_busyChanged"
+            }
         },
         listeners: {
             "tap": "_tap"
@@ -36,6 +41,10 @@
             super.attached();
 
             this._setCustomLayout(Polymer.dom(this).children.length > 0);
+        }
+
+        private _busyChanged(busy: boolean) {
+            this.disabled = busy;
         }
 
         private _tap(e: TapEvent) {
