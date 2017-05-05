@@ -25,8 +25,7 @@
             label: String,
             busy: {
                 type: Boolean,
-                reflectToAttribute: true,
-                observer: "_busyChanged"
+                reflectToAttribute: true
             }
         },
         listeners: {
@@ -41,10 +40,6 @@
             super.attached();
 
             this._setCustomLayout(Polymer.dom(this).children.length > 0);
-        }
-
-        private _busyChanged(busy: boolean) {
-            this.disabled = busy;
         }
 
         private _tap(e: TapEvent) {
