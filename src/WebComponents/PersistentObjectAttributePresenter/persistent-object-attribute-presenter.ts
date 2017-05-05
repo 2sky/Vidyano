@@ -1,6 +1,27 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    const _attributeImports: { [key: string]: Promise<any>; } = {
+        "AsDetail": undefined,
+        "BinaryFile": undefined,
+        "Boolean": undefined,
+        "ComboBox": undefined,
+        "CommonMark": undefined,
+        "DateTime": undefined,
+        "DropDown": undefined,
+        "FlagsEnum": undefined,
+        "Image": undefined,
+        "KeyValueList": undefined,
+        "MultiLineString": undefined,
+        "MultiString": undefined,
+        "Numeric": undefined,
+        "Password": undefined,
+        "Reference": undefined,
+        "String": undefined,
+        "TranslatedString": undefined,
+        "User": undefined
+    };
+
     @WebComponent.register({
         properties: {
             attribute: Object,
@@ -85,29 +106,6 @@ namespace Vidyano.WebComponents {
         ]
     })
     export class PersistentObjectAttributePresenter extends WebComponent implements IConfigurable {
-        private static _attributeImports: {
-            [key: string]: Promise<any>;
-        } = {
-            "AsDetail": undefined,
-            "BinaryFile": undefined,
-            "Boolean": undefined,
-            "ComboBox": undefined,
-            "CommonMark": undefined,
-            "DateTime": undefined,
-            "DropDown": undefined,
-            "FlagsEnum": undefined,
-            "Image": undefined,
-            "KeyValueList": undefined,
-            "MultiLineString": undefined,
-            "MultiString": undefined,
-            "Numeric": undefined,
-            "Password": undefined,
-            "Reference": undefined,
-            "String": undefined,
-            "TranslatedString": undefined,
-            "User": undefined
-        };
-
         private _renderedAttribute: Vidyano.PersistentObjectAttribute;
         private _renderedAttributeElement: Vidyano.WebComponents.Attributes.PersistentObjectAttribute;
         private _customTemplate: PolymerTemplate;
@@ -157,14 +155,14 @@ namespace Vidyano.WebComponents {
                 else
                     attributeType = attribute.type;
 
-                if (Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] !== undefined) {
+                if (_attributeImports[attributeType] !== undefined) {
                     this._renderAttribute(attribute, attributeType);
                     return;
                 }
 
                 const typeImport = this._getAttributeTypeImportInfo(attributeType);
                 if (!typeImport) {
-                    Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = Promise.resolve(false);
+                    _attributeImports[attributeType] = Promise.resolve(false);
                     this._renderAttribute(attribute, attributeType);
                     return;
                 }
@@ -172,10 +170,10 @@ namespace Vidyano.WebComponents {
                 let synonymResolvers: ((result: {}) => void)[];
                 if (typeImport.synonyms) {
                     synonymResolvers = [];
-                    typeImport.synonyms.forEach(s => Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[s] = new Promise(resolve => { synonymResolvers.push(resolve); }));
+                    typeImport.synonyms.forEach(s => _attributeImports[s] = new Promise(resolve => { synonymResolvers.push(resolve); }));
                 }
 
-                Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = new Promise(async (resolve) => {
+                _attributeImports[attributeType] = new Promise(async (resolve) => {
                     try {
                         await this.importHref(this.resolveUrl("../Attributes/" + typeImport.filename));
                         if (synonymResolvers)
@@ -185,7 +183,7 @@ namespace Vidyano.WebComponents {
                         resolve(true);
                     }
                     catch (err) {
-                        Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType] = Promise.resolve(false);
+                        _attributeImports[attributeType] = Promise.resolve(false);
                         this._setLoading(false);
                         resolve(false);
                     }
@@ -228,7 +226,7 @@ namespace Vidyano.WebComponents {
             else if (type === "MultiLineString")
                 return { filename: "PersistentObjectAttributeMultiLineString/persistent-object-attribute-multi-line-string.html", synonyms: synonyms };
             else if (type === "MultiString")
-               return { filename: "PersistentObjectAttributeMultiString/persistent-object-attribute-multi-string.html", synonyms: synonyms };
+                return { filename: "PersistentObjectAttributeMultiString/persistent-object-attribute-multi-string.html", synonyms: synonyms };
             else if (type === "Numeric")
                 return { filename: "PersistentObjectAttributeNumeric/persistent-object-attribute-numeric.html", synonyms: synonyms };
             else if (type === "Password")
@@ -246,7 +244,7 @@ namespace Vidyano.WebComponents {
         }
 
         private async _renderAttribute(attribute: Vidyano.PersistentObjectAttribute, attributeType: string) {
-            await Vidyano.WebComponents.PersistentObjectAttributePresenter._attributeImports[attributeType];
+            await _attributeImports[attributeType];
             if (!this.isAttached || attribute !== this.attribute || this._renderedAttribute === attribute)
                 return;
 
