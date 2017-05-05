@@ -971,6 +971,10 @@
             _horizontalScrollOffset: {
                 type: Number,
                 observer: "_horizontalScrollOffsetChanged"
+            },
+            forceScrollbars: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         observers: [
