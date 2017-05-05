@@ -5,6 +5,11 @@ namespace Vidyano.WebComponents {
         new (): IAppRouteComponentConstructor;
     }
 
+    export interface IAppRouteActivatedArgs {
+        route: Vidyano.WebComponents.AppRoute;
+        parameters: { [key: string]: string };
+    }
+
     @WebComponent.register({
         properties: {
             route: {
