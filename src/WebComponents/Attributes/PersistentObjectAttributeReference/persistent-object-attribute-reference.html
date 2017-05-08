@@ -38,11 +38,11 @@
                 </template>
                 <template is="dom-if" if="[[selectInPlaceAsRadio]]">
                     <div content>
-                        <template is="dom-repeat" items="[[options]]" as="option">
-                            <div id="radiobuttons">
+                        <div id="radiobuttons" orientation$="[[orientation]]">
+                            <template is="dom-repeat" items="[[options]]" as="option">
                                 <vi-checkbox label="[[option.value]]" checked="[[_isRadioChecked(option.key, objectId)]]" on-changed="_radioChanged" radio></vi-checkbox>
-                            </div>
-                        </template>
+                            </template>
+                        </div>
                     </div>
                 </template>
             </template>

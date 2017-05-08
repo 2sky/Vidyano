@@ -91,5 +91,10 @@
 
     #radiobuttons {
         line-height: var(--theme-h2);
+
+        &[orientation="horizontal"] {
+            @include layout-horizontal();
+            @include layout-wrap();
+        }
     }
 }

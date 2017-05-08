@@ -34,6 +34,10 @@ namespace Vidyano.WebComponents.Attributes {
                 type: Boolean,
                 computed: "_computeSelectInPlaceAsRadio(attribute)"
             },
+            orientation: {
+                type: String,
+                computed: "_computeOrientation(attribute)"
+            },
             target: {
                 type: String,
                 computed: "_computeTarget(attribute, href)"
@@ -191,6 +195,10 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _computeSelectInPlaceAsRadio(attribute: Vidyano.PersistentObjectAttributeWithReference): boolean {
             return attribute && attribute.getTypeHint("inputtype", undefined, undefined, true) === "radio";
+        }
+
+        private _computeOrientation(attribute: Vidyano.PersistentObjectAttributeWithReference): string {
+            return attribute && attribute.getTypeHint("orientation", "vertical", undefined, true);
         }
 
         private _isRadioChecked(optionKey: string, objectId: string): boolean {
