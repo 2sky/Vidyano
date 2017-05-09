@@ -25,7 +25,7 @@
         environment: string = "Web";
         environmentVersion: string = "2";
 
-        constructor(public serviceUri: string, public hooks: ServiceHooks = new ServiceHooks(), private _forceUser?: string) {
+        constructor(public serviceUri: string, public hooks: ServiceHooks = new ServiceHooks()) {
             super();
 
             (<any>this.hooks)._service = this;
@@ -418,7 +418,7 @@
         }
 
         get userName(): string {
-            return this._forceUser || Vidyano.cookie("userName");
+            return Vidyano.cookie("userName");
         }
 
         private _setUserName(val: string) {
@@ -439,15 +439,11 @@
         }
 
         private get authToken(): string {
-            if (this._forceUser)
-                return null;
 
             return Vidyano.cookie("authToken");
         }
 
         private set authToken(val: string) {
-            if (this._forceUser)
-                return;
 
             if (this.staySignedIn)
                 Vidyano.cookie("authToken", val, { expires: 14 });
@@ -525,7 +521,7 @@
 
             this._setUserName(this.userName || this._clientData.defaultUser);
 
-            if (this._forceUser || !StringEx.isNullOrEmpty(this.authToken) || ((this._clientData.defaultUser || this.windowsAuthentication) && !skipDefaultCredentialLogin))
+            if (!StringEx.isNullOrEmpty(this.authToken) || ((this._clientData.defaultUser || this.windowsAuthentication) && !skipDefaultCredentialLogin))
                 return this._getApplication();
             else {
                 this._setIsSignedIn(!!this.application);

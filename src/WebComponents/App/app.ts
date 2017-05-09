@@ -132,7 +132,7 @@ namespace Vidyano.WebComponents {
             },
             service: {
                 type: Object,
-                computed: "_computeService(uri, user, hooks, isAttached)"
+                computed: "_computeInitialService(uri, hooks, isAttached)"
             },
             user: {
                 type: String,
@@ -273,7 +273,6 @@ namespace Vidyano.WebComponents {
         readonly barebone: boolean; private _setBarebone: (barebone: boolean) => void;
         readonly profilerLoaded: boolean; private _setProfilerLoaded: (val: boolean) => void;
         readonly updateAvailable: boolean; private _setUpdateAvailable: (updateAvailable: boolean) => void;
-        service: Vidyano.Service;
         programUnit: ProgramUnit;
         uri: string;
         hooks: string;
@@ -448,18 +447,6 @@ namespace Vidyano.WebComponents {
             this._cache = [];
         }
 
-        createServiceHooks(): ServiceHooks {
-            if (this.hooks) {
-                const ctor = this.hooks.split(".").reduce((obj: any, path: string) => obj && obj[path], window);
-                if (ctor)
-                    return new ctor(this);
-                else
-                    console.error(`Service hooks "${this.hooks}" was not found.`);
-            }
-
-            return new AppServiceHooks(this);
-        }
-
         redirectToSignIn(keepUrl: boolean = true) {
             (<AppServiceHooks>this.app.service.hooks).onRedirectToSignIn(keepUrl);
         }
@@ -620,9 +607,26 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _computeService(uri: string, user: string, hooks: ServiceHooks): Vidyano.Service {
-            const service = new Vidyano.Service(this.uri, this.createServiceHooks(), user);
+        private _computeInitialService(uri: string, hooks: string, isAttached: boolean): Vidyano.Service {
+            if (this.service) {
+                if (isAttached)
+                    console.error("Service uri and hooks cannot be altered.");
 
+                return this.service;
+            }
+
+            let hooksInstance: Vidyano.ServiceHooks;
+            if (hooks) {
+                const ctor = this.hooks.split(".").reduce((obj: any, path: string) => obj && obj[path], window);
+                if (ctor)
+                    hooksInstance = new ctor(this);
+                else
+                    console.error(`Service hooks "${this.hooks}" was not found.`);
+            }
+            else
+                hooksInstance = new AppServiceHooks(this);
+
+            const service = new Vidyano.Service(this.uri, hooksInstance);
             const path = this.noHistory ? this.path : App.removeRootPath(document.location.pathname);
             const skipDefaultCredentialLogin = path.startsWith("SignIn");
 

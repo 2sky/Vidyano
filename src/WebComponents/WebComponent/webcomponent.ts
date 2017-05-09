@@ -397,6 +397,7 @@
 
     export abstract class WebComponent extends PolymerBase {
         private _app: Vidyano.WebComponents.App;
+        readonly service: Vidyano.Service;
         readonly translations: any; private _setTranslations: (translations: any) => void;
         className: string;
         classList: DOMTokenList;
@@ -549,6 +550,10 @@
             return this._app = null;
         }
 
+        private _computeService(app: Vidyano.WebComponents.App): Vidyano.Service {
+            return app.service;
+        }
+
         // This function simply returns the value. This can be used to reflect a property on an observable object as an attribute.
         private _forwardComputed(value: any): any {
             return value;
@@ -587,30 +592,38 @@
                 }
             }
 
-            info.properties["isAttached"] = Boolean;
-            info.properties["app"] = {
+            info.properties.isAttached = Boolean;
+            info.properties.app = {
                 type: Object,
                 computed: "_computeApp(isAttached)"
             };
-            info.properties["translations"] = {
+
+            if (!info.properties.service) {
+                info.properties.service = {
+                    type: Object,
+                    computed: "_computeService(app)"
+                };
+            }
+
+            info.properties.translations = {
                 type: Object,
                 readOnly: true
             };
 
             if (info.mediaQueryAttributes) {
-                info.properties["isDesktop"] = {
+                info.properties.isDesktop = {
                     type: Boolean,
                     reflectToAttribute: true,
                     readOnly: true
                 };
 
-                info.properties["isTablet"] = {
+                info.properties.isTablet = {
                     type: Boolean,
                     reflectToAttribute: true,
                     readOnly: true
                 };
 
-                info.properties["isPhone"] = {
+                info.properties.isPhone = {
                     type: Boolean,
                     reflectToAttribute: true,
                     readOnly: true

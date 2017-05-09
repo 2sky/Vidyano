@@ -12,10 +12,6 @@ namespace Vidyano.WebComponents {
                 type: String,
                 readOnly: true
             },
-            service: {
-                type: Object,
-                readOnly: true
-            },
             canFeedback: {
                 type: Boolean,
                 readOnly: true
@@ -45,13 +41,6 @@ namespace Vidyano.WebComponents {
         readonly canUserSettings: boolean; private _setCanUserSettings: (val: boolean) => void;
         readonly canProfile: boolean; private _setCanProfile: (val: boolean) => void;
         readonly userName: string; private _setUserName: (val: string) => void;
-
-        attached() {
-            super.attached();
-
-            // Set local service property because vi-app is not observable
-            this._setService(this.app.service);
-        }
 
         signIn() {
             this.app.redirectToSignIn();

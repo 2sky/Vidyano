@@ -871,7 +871,6 @@ declare namespace Vidyano {
     class Service extends Vidyano.Common.Observable<Service> {
         serviceUri: string;
         hooks: ServiceHooks;
-        private _forceUser;
         private static _getMs;
         private static _base64KeyStr;
         private static _token;
@@ -892,7 +891,7 @@ declare namespace Vidyano {
         actionDefinitions: linqjs.Dictionary<string, ActionDefinition>;
         environment: string;
         environmentVersion: string;
-        constructor(serviceUri: string, hooks?: ServiceHooks, _forceUser?: string);
+        constructor(serviceUri: string, hooks?: ServiceHooks);
         static token: string;
         private _createUri(method);
         private _createData(method, data?);
