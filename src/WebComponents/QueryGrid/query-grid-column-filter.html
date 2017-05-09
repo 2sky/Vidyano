@@ -36,23 +36,21 @@
                             <template is="dom-if" if="[[loading]]">
                                 <vi-spinner></vi-spinner>
                             </template>
-                            <vi-scroller id="distinctsContainer" no-horizontal class="flex">
-                                <iron-list id="distincts" items="[[distincts]]" as="item" inversed$="[[inversed]]">
-                                    <template>
-                                        <div>
-                                            <template is="dom-if" if="[[item.type]]">
-                                                <vi-checkbox checked="{{item.checked}}" label="[[item.displayValue]]" distinct-type$="[[item.type]]" on-tap="_distinctClick"></vi-checkbox>
-                                            </template>
-                                            <template is="dom-if" if="[[!item.type]]">
-                                                <div class="hasMore">
-                                                    <vi-icon source="Selected"></vi-icon>
-                                                    <vi-icon source="Ellipsis"></vi-icon>
-                                                </div>
-                                            </template>
-                                        </div>
-                                    </template>
-                                </iron-list>
-                            </vi-scroller>
+                            <vi-list class="flex" id="distincts" items="[[distincts]]" as="item">
+                                <template>
+                                    <div>
+                                        <template is="dom-if" if="[[item.type]]">
+                                            <vi-checkbox checked="{{item.checked}}" label="[[item.displayValue]]" distinct-type$="[[item.type]]" on-tap="_distinctClick"></vi-checkbox>
+                                        </template>
+                                        <template is="dom-if" if="[[!item.type]]">
+                                            <div class="hasMore">
+                                                <vi-icon source="Selected"></vi-icon>
+                                                <vi-icon source="Ellipsis"></vi-icon>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </vi-list>
                         </div>
                     </div>
                 </div>

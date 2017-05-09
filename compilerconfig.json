@@ -160,6 +160,10 @@
     "inputFile": "src/WebComponents/InputSearch/input-search.scss"
   },
   {
+    "outputFile": "src/WebComponents/List/list.css",
+    "inputFile": "src/WebComponents/List/list.scss"
+  },
+  {
     "outputFile": "src/WebComponents/Menu/menu-item.css",
     "inputFile": "src/WebComponents/Menu/menu-item.scss"
   },

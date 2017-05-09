@@ -190,14 +190,11 @@
             }
         }
 
-        #distinctsContainer {
+        #distincts {
             border: 1px solid var(--theme-light-border);
             margin-left: var(--theme-h5);
             box-sizing: border-box;
             cursor: default;
-        }
-
-        #distincts {
             font-weight: normal;
 
             vi-checkbox {

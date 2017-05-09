@@ -1,0 +1,6 @@
+@import "../_vars.scss";
+
+:host {
+    @include relative();
+    @include layout-horizontal();
+}

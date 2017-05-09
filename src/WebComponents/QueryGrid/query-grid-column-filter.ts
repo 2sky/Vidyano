@@ -181,16 +181,12 @@ namespace Vidyano.WebComponents {
         attached() {
             super.attached();
 
+            this.app.importComponent("List");
+
             if (this._openOnAttach) {
                 this._openOnAttach = false;
 
                 this.async(() => {
-                    this.$.distincts = <HTMLElement>this.querySelector("#distincts");
-                    this.$.search = <HTMLElement>this.querySelector("#search");
-
-                    // Specifies that the inner wrapper of the vi-scoller element will handle the scroll event on the behalf of the iron-list
-                    (<any>this.$.distincts).scrollTarget = (<any>this.$.distinctsContainer).$.wrapper;
-
                     const popup = <Popup><any>this.querySelector("vi-popup#filter");
                     popup.popup();
                 });
