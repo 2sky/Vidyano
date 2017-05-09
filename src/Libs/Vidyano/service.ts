@@ -370,8 +370,13 @@
         get language(): ILanguage {
             return this._language;
         }
+
         set language(l: ILanguage) {
-            this._language = l;
+            if (this._language === l)
+                return;
+
+            const oldLanguage = this._language;
+            this.notifyPropertyChanged("language", this._language = l, oldLanguage);
         }
 
         get requestedLanguage(): string {
@@ -379,6 +384,9 @@
         }
 
         set requestedLanguage(val: string) {
+            if (this.requestedLanguage === val)
+                return;
+
             Vidyano.cookie("requestedLanguage", val);
         }
 
@@ -584,6 +592,10 @@
 
             this._setIsSignedIn(false);
             return Promise.resolve(true);
+        }
+
+        reinitialize(): Promise<Application> {
+            return this._getApplication();
         }
 
         private async _getApplication(data: any = this._createData("")): Promise<Application> {

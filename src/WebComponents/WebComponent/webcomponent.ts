@@ -398,7 +398,7 @@
     export abstract class WebComponent extends PolymerBase {
         private _app: Vidyano.WebComponents.App;
         readonly service: Vidyano.Service;
-        readonly translations: any; private _setTranslations: (translations: any) => void;
+        readonly translations: { [key: string]: string; };
         className: string;
         classList: DOMTokenList;
         tagName: string;
@@ -407,10 +407,7 @@
         app: Vidyano.WebComponents.App;
 
         protected attached() {
-            if (!this.app)
-                return;
-
-            this.app.initialize.then(() => this._setTranslations(!!this.app.service && !!this.app.service.language ? this.app.service.language.messages : []));
+            // Noop
         }
 
         protected detached() {
@@ -550,10 +547,6 @@
             return this._app = null;
         }
 
-        private _computeService(app: Vidyano.WebComponents.App): Vidyano.Service {
-            return app.service;
-        }
-
         // This function simply returns the value. This can be used to reflect a property on an observable object as an attribute.
         private _forwardComputed(value: any): any {
             return value;
@@ -601,110 +594,64 @@
             if (!info.properties.service) {
                 info.properties.service = {
                     type: Object,
-                    computed: "_computeService(app)"
+                    computed: "_forwardComputed(app.service)"
                 };
             }
 
             info.properties.translations = {
                 type: Object,
-                readOnly: true
+                computed: "_forwardComputed(service.language.messages)"
             };
 
-            if (info.mediaQueryAttributes) {
-                info.properties.isDesktop = {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                };
+            info.observers = info.observers || [];
 
-                info.properties.isTablet = {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                };
+            info.forwardObservers = info.forwardObservers || [];
+            info.forwardObservers.push("service.language");
 
-                info.properties.isPhone = {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                };
+            Enumerable.from(info.forwardObservers).groupBy(path => {
+                const functionIndex = path.indexOf("(");
+                return (functionIndex > 0 ? path.substr(functionIndex + 1) : path).split(".", 2)[0];
+            }, path => path).forEach(source => {
+                const methodName = "_observablePropertyObserver_" + source.key();
+                info.observers.push(methodName + "(" + source.key() + ", isAttached)");
 
-                info.observers = info.observers || [];
-                info.observers.push("_mediaQueryObserver(app)");
+                const properties = source.toArray();
+                wcPrototype[methodName] = function (sourceObj: any, attached: boolean) {
+                    if (sourceObj == null)
+                        return;
 
-                wcPrototype["_mediaQueryObserver"] = function (app: Vidyano.WebComponents.App) {
-                    if (this._mediaQueryObserverInfo) {
-                        this._mediaQueryObserverInfo.app.removeEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
-                        this._mediaQueryObserverInfo = null;
-                    }
+                    const forwardObserversCollectionName = `_forwardObservers_${source.key()}`;
+                    const forwardObservers = this[forwardObserversCollectionName] || (this[forwardObserversCollectionName] = []) || [];
 
-                    if (app) {
-                        this._mediaQueryObserverInfo = {
-                            app: app,
-                            listener: (e: Event) => {
-                                this["_setIsDesktop"](e["detail"] === "desktop");
-                                this["_setIsTablet"](e["detail"] === "tablet");
-                                this["_setIsPhone"](e["detail"] === "phone");
+                    while (forwardObservers.length > 0)
+                        forwardObservers.pop()();
+
+                    if (!attached)
+                        return;
+
+                    properties.forEach(p => {
+                        const functionIndex = p.indexOf("(");
+                        const path = functionIndex > 0 ? p.substr(functionIndex + source.key().length + 2, p.length - (functionIndex + source.key().length + 2) - 1) : p.substr(source.key().length + 1);
+
+                        let observer = functionIndex > 0 ? this[p.substr(0, functionIndex)] : null;
+                        if (observer)
+                            observer = observer.bind(this);
+
+                        forwardObservers.push(this._forwardObservable(sourceObj, path, source.key(), observer));
+                        if (observer && sourceObj && attached) {
+                            const valuePath = path.slice().split(".").reverse();
+                            let value = sourceObj;
+
+                            do {
+                                value = value[valuePath.pop()];
                             }
-                        };
+                            while (value != null && valuePath.length > 0);
 
-                        this["_setIsDesktop"](app["isDesktop"]);
-                        this["_setIsTablet"](app["isTablet"]);
-                        this["_setIsPhone"](app["isPhone"]);
-
-                        app.addEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
-                    }
+                            observer(value);
+                        }
+                    });
                 };
-            }
-
-            if (info.forwardObservers) {
-                info.observers = info.observers || [];
-
-                Enumerable.from(info.forwardObservers).groupBy(path => {
-                    const functionIndex = path.indexOf("(");
-                    return (functionIndex > 0 ? path.substr(functionIndex + 1) : path).split(".", 2)[0];
-                }, path => path).forEach(source => {
-                    const methodName = "_observablePropertyObserver_" + source.key();
-                    info.observers.push(methodName + "(" + source.key() + ", isAttached)");
-
-                    const properties = source.toArray();
-                    wcPrototype[methodName] = function (sourceObj: any, attached: boolean) {
-                        if (sourceObj == null)
-                            return;
-
-                        const forwardObserversCollectionName = `_forwardObservers_${source.key()}`;
-                        const forwardObservers = this[forwardObserversCollectionName] || (this[forwardObserversCollectionName] = []) || [];
-
-                        while (forwardObservers.length > 0)
-                            forwardObservers.pop()();
-
-                        if (!attached)
-                            return;
-
-                        properties.forEach(p => {
-                            const functionIndex = p.indexOf("(");
-                            const path = functionIndex > 0 ? p.substr(functionIndex + source.key().length + 2, p.length - (functionIndex + source.key().length + 2) - 1) : p.substr(source.key().length + 1);
-
-                            let observer = functionIndex > 0 ? this[p.substr(0, functionIndex)] : null;
-                            if (observer)
-                                observer = observer.bind(this);
-
-                            forwardObservers.push(this._forwardObservable(sourceObj, path, source.key(), observer));
-                            if (observer && sourceObj && attached) {
-                                const valuePath = path.slice().split(".").reverse();
-                                let value = sourceObj;
-
-                                do {
-                                    value = value[valuePath.pop()];
-                                }
-                                while (value != null && valuePath.length > 0);
-
-                                observer(value);
-                            }
-                        });
-                    };
-                });
-            }
+            });
 
             if (info.keybindings) {
                 (info.observers = info.observers || []).push("_keybindingsObserver(isAttached)");
@@ -779,6 +726,52 @@
                                 Polymer.dom(this.root).removeChild(reg.element);
                             }
                         }
+                    }
+                };
+            }
+
+            if (info.mediaQueryAttributes) {
+                info.properties.isDesktop = {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                };
+
+                info.properties.isTablet = {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                };
+
+                info.properties.isPhone = {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                };
+
+                info.observers.push("_mediaQueryObserver(app)");
+
+                wcPrototype["_mediaQueryObserver"] = function (app: Vidyano.WebComponents.App) {
+                    if (this._mediaQueryObserverInfo) {
+                        this._mediaQueryObserverInfo.app.removeEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
+                        this._mediaQueryObserverInfo = null;
+                    }
+
+                    if (app) {
+                        this._mediaQueryObserverInfo = {
+                            app: app,
+                            listener: (e: Event) => {
+                                this["_setIsDesktop"](e["detail"] === "desktop");
+                                this["_setIsTablet"](e["detail"] === "tablet");
+                                this["_setIsPhone"](e["detail"] === "phone");
+                            }
+                        };
+
+                        this["_setIsDesktop"](app["isDesktop"]);
+                        this["_setIsTablet"](app["isTablet"]);
+                        this["_setIsPhone"](app["isPhone"]);
+
+                        app.addEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
                     }
                 };
             }

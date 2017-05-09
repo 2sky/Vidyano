@@ -609,9 +609,7 @@ namespace Vidyano.WebComponents {
 
         private _computeInitialService(uri: string, hooks: string, isAttached: boolean): Vidyano.Service {
             if (this.service) {
-                if (isAttached)
-                    console.error("Service uri and hooks cannot be altered.");
-
+                console.warn("Service uri and hooks cannot be altered.");
                 return this.service;
             }
 
@@ -646,20 +644,6 @@ namespace Vidyano.WebComponents {
             }));
 
             return service;
-        }
-
-        async reinitialize() {
-            const uri = this.uri;
-            this.uri = undefined;
-
-            const currentLanguageMessages = this.service.language.messages;
-            this.uri = uri;
-
-            if (currentLanguageMessages) {
-                await this.initialize;
-                Object.keys(this.service.language.messages).forEach(k => currentLanguageMessages[k] = this.service.language.messages[k]);
-                this.service.language.messages = currentLanguageMessages;
-            }
         }
 
         private _anchorClickHandler(e: TapEvent, data: any) {
@@ -1256,7 +1240,7 @@ namespace Vidyano.WebComponents {
                 return false;
             }
 
-            this.app.service.signOut(true).then(() => this.app.reinitialize());
+            this.app.service.signOut(true);
 
             return true;
         }
