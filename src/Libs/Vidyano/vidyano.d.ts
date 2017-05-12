@@ -929,7 +929,6 @@ declare namespace Vidyano {
         signInUsingCredentials(userName: string, password: string, code?: string): Promise<Application>;
         signInUsingDefaultCredentials(): Promise<Application>;
         signOut(skipAcs?: boolean): Promise<boolean>;
-        reinitialize(): Promise<Application>;
         private _getApplication(data?);
         getQuery(id: string, asLookup?: boolean): Promise<Query>;
         getPersistentObject(parent: PersistentObject, id: string, objectId?: string): Promise<PersistentObject>;

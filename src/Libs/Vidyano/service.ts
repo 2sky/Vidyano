@@ -594,10 +594,6 @@
             return Promise.resolve(true);
         }
 
-        reinitialize(): Promise<Application> {
-            return this._getApplication();
-        }
-
         private async _getApplication(data: any = this._createData("")): Promise<Application> {
             if (!(data.authToken || data.accessToken || data.password) && this.userName && this.userName !== this.defaultUserName) {
                 this._setUserName(this.defaultUserName);
