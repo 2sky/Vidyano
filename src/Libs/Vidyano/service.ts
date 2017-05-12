@@ -9,7 +9,7 @@
         private static _token: string;
         private _lastAuthTokenUpdate: Date = new Date();
         private _isUsingDefaultCredentials: boolean;
-        private _clientData: any;
+        private _clientData: IServiceClientData;
         private _language: ILanguage;
         private _languages: ILanguage[];
         private _windowsAuthentication: boolean;
@@ -1243,6 +1243,7 @@
         exception: string;
         languages: { [code: string]: { name: string; isDefault: boolean; messages: { [key: string]: string; } } };
         providers: { [name: string]: { parameters: IProviderParameters } };
+        windowsAuthentication: boolean;
     }
 
     export interface IServiceRequest {

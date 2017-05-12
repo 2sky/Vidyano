@@ -1003,6 +1003,7 @@ declare namespace Vidyano {
                 parameters: IProviderParameters;
             };
         };
+        windowsAuthentication: boolean;
     }
     interface IServiceRequest {
         when: Date;
