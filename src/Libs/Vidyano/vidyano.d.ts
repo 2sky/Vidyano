@@ -837,7 +837,7 @@ declare namespace Vidyano {
         createData(data: any): void;
         trackEvent(name: string, option: string, owner: ServiceObjectWithActions): void;
         onInitialize(clientData: IServiceClientData): Promise<IServiceClientData>;
-        onSessionExpired(): boolean;
+        onSessionExpired(): Promise<boolean>;
         onActionConfirmation(action: Action, option: number): Promise<boolean>;
         onAction(args: ExecuteActionArgs): Promise<PersistentObject>;
         onOpen(obj: ServiceObject, replaceCurrent?: boolean, fromAction?: boolean): void;

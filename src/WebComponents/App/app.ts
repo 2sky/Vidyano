@@ -1234,14 +1234,13 @@ namespace Vidyano.WebComponents {
             return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query, false, false, true));
         }
 
-        onSessionExpired(): boolean {
+        async onSessionExpired(): Promise<boolean> {
             if (!this.app.barebone) {
                 this.app.redirectToSignIn();
                 return false;
             }
 
-            this.app.service.signOut(true);
-
+            await this.app.service.signOut(true);
             return true;
         }
 

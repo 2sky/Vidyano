@@ -20,8 +20,8 @@
             return Promise.resolve(clientData);
         }
 
-        onSessionExpired(): boolean {
-            return false;
+        onSessionExpired(): Promise<boolean> {
+            return Promise.resolve(false);
         }
 
         onActionConfirmation(action: Action, option: number): Promise<boolean> {

@@ -87,7 +87,7 @@
                 const r = new XMLHttpRequest();
                 r.open("POST", url, true);
                 r.overrideMimeType("application/json; charset=utf-8");
-                r.onload = () => {
+                r.onload = async () => {
                     if (r.status !== 200) {
                         reject(r.statusText);
                         return;
@@ -114,7 +114,14 @@
                         if (this.defaultUserName && this.defaultUserName === this.userName) {
                             delete data.password;
                             this._postJSON(url, data).then(resolve, reject);
-                        } else if (!this.hooks.onSessionExpired())
+                        } else if (!await this.hooks.onSessionExpired())
+                            reject(result.exception);
+                        else if (this.defaultUserName) {
+                            delete data.password;
+                            data.userName = this.defaultUserName;
+                            this._postJSON(url, data).then(resolve, reject);
+                        }
+                        else
                             reject(result.exception);
 
                         return;
