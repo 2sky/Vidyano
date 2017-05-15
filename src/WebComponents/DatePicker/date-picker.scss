@@ -53,7 +53,7 @@ $border-color: #eee;
                 min-width: var(--theme-h1);
                 min-height: var(--theme-h1);
                 line-height: var(--theme-h2);
-                width: calc(100% / 7);
+                width: var(--theme-h1);
             }
 
             &[type="day"] {
