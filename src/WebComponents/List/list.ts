@@ -39,6 +39,16 @@ namespace Vidyano.WebComponents {
             });
         }
 
+        private _bindIronListDataHost() {
+            // Workaround for making sure events are delegated to the correct host
+            const list = Polymer.dom(this.root).querySelector("#list");
+            if (list["dataHost"] && list["dataHost"]["_rootDataHost"] === this) {
+                const dataHostParent = this.findParent(e => e["dataHost"]);
+                if (dataHostParent)
+                    list["dataHost"] = dataHostParent["dataHost"];
+            }
+        }
+
         private _sizeChanged() {
             const list = <PolymerBase>Polymer.dom(this.root).querySelector("#list");
             if (!list || !list.fire)
