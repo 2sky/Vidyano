@@ -666,7 +666,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _convertPath(application: Vidyano.Application, path: string): string {
-            if (application) {
+            if (application && !this.barebone) {
                 let match = application.poRe.exec(path);
                 if (match)
                     path = (match[1] || "") + "PersistentObject." + application.routes.persistentObjects[match[3]] + (match[4] || "");
