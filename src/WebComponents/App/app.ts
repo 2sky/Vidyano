@@ -493,20 +493,22 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        async importComponent(component: string): Promise<any> {
-            if (component.split(".").reduce((obj: any, path: string) => obj[path], Vidyano.WebComponents))
-                return Promise.resolve(null);
+        importComponent(...components: string[]): Promise<any> {
+            return Promise.all(components.map(async component => {
+                if (component.split(".").reduce((obj: any, path: string) => obj[path], Vidyano.WebComponents))
+                    return Promise.resolve(null);
 
-            const vidyanoComponentFolder = component.replace(".", "/");
-            const vidyanoComponent = vidyanoComponentFolder.split("/").reverse()[0].replace(/([A-Z])/g, m => "-" + m[0].toLowerCase()).substr(1);
-            const href = this.resolveUrl(`../${vidyanoComponentFolder}/${vidyanoComponent}.html`);
+                const vidyanoComponentFolder = component.replace(".", "/");
+                const vidyanoComponent = vidyanoComponentFolder.split("/").reverse()[0].replace(/([A-Z])/g, m => "-" + m[0].toLowerCase()).substr(1);
+                const href = this.resolveUrl(`../${vidyanoComponentFolder}/${vidyanoComponent}.html`);
 
-            try {
-                await this.importHref(href);
-            }
-            catch (e) {
-                console.error(`Unable to load component ${component} via import ${href}`);
-            }
+                try {
+                    await this.importHref(href);
+                }
+                catch (e) {
+                    console.error(`Unable to load component ${component} via import ${href}`);
+                }
+            }));
         }
 
         private static _libs = {

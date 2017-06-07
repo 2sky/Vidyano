@@ -450,7 +450,11 @@
         }
 
         get defaultUserName(): string {
-            return !!this._clientData ? this._clientData.defaultUser : null;
+            return !!this._clientData ? this._clientData.defaultUser || null : null;
+        }
+
+        get registerUserName(): string {
+            return !!this._providers && this._providers["Vidyano"] ? this._providers["Vidyano"].registerUser || null : null;
         }
 
         private get authToken(): string {
@@ -602,7 +606,7 @@
         }
 
         private async _getApplication(data: any = this._createData("")): Promise<Application> {
-            if (!(data.authToken || data.accessToken || data.password) && this.userName && this.userName !== this.defaultUserName) {
+            if (!(data.authToken || data.accessToken || data.password) && this.userName && this.userName !== this.defaultUserName && this.userName !== this.registerUserName) {
                 this._setUserName(this.defaultUserName);
                 if (!this.userName && !this.hooks.onSessionExpired())
                     throw "Session expired";
@@ -640,12 +644,14 @@
 
             CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
 
-            this._setUserName(result.userName);
+            if (this.userName !== this.registerUserName) {
+                this._setUserName(result.userName);
 
-            if (result.session)
-                this.application._updateSession(result.session);
+                if (result.session)
+                    this.application._updateSession(result.session);
 
-            this._setIsSignedIn(true);
+                this._setIsSignedIn(true);
+            }
 
             return this.application;
         }
@@ -946,6 +952,10 @@
             return data.d;
         }
 
+        forgotPassword(userName: string): Promise<IForgotPassword> {
+            return this._postJSON(this._createUri("forgotpassword"), { userName: userName });
+        }
+
         static getDate = function (yearString: string, monthString: string, dayString: string, hourString: string, minuteString: string, secondString: string, msString: string) {
             const year = parseInt(yearString, 10);
             const month = parseInt(monthString || "1", 10) - 1;
@@ -1207,6 +1217,15 @@
         requestUri: string;
         signOutUri: string;
         redirectUri: string;
+        registerPersistentObjectId?: string;
+        registerUser?: string;
+        forgot?: boolean;
+    }
+
+    export interface IForgotPassword {
+        notification: string;
+        notificationType: NotificationType;
+        notificationDuration: number;
     }
 
     export interface ILanguage {

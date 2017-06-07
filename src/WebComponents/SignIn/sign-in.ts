@@ -55,7 +55,7 @@
 
             const providers = Object.keys(this.app.service.providers);
             providers.forEach(name => {
-                const provider = new WebComponents.SignInProvider(name === "Vidyano", providers.length === 1, returnUrl);
+                const provider = new WebComponents.SignInProvider(name === "Vidyano", providers.length === 1, returnUrl, this.app.service.providers[name]);
                 provider.name = name;
 
                 Polymer.dom(this).appendChild(provider);
@@ -89,7 +89,13 @@
             },
             userName: {
                 type: String,
-                notify: true
+                notify: true,
+                observer: "_userNameChanged"
+            },
+            userNameError: {
+                type: Boolean,
+                value: false,
+                observer: "_userNameErrorChanged"
             },
             password: {
                 type: String,
@@ -98,7 +104,7 @@
             staySignedIn: {
                 type: Boolean
             },
-            signingIn: {
+            isBusy: {
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true,
@@ -108,10 +114,6 @@
                 type: Number,
                 value: 0
             },
-            signInLabel: {
-                type: String,
-                computed: "_computeSigninButtonLabel(signingIn, signingInCounter, app)"
-            },
             twoFactorAuthentication: {
                 type: Boolean,
                 readOnly: true,
@@ -120,6 +122,21 @@
             twoFactorCode: {
                 type: String,
                 notify: true
+            },
+            hasForgot: {
+                type: Boolean,
+                readOnly: true,
+                value: false
+            },
+            hasRegister: {
+                type: Boolean,
+                readOnly: true,
+                value: false
+            },
+            register: {
+                type: Object,
+                readOnly: true,
+                value: null
             }
         },
         listeners: {
@@ -131,17 +148,20 @@
         private _signInButtonWidth = 0;
         private _signingInMessage: string;
         readonly isVidyano: boolean; private _setIsVidyano: (val: boolean) => void;
-        readonly signingIn: boolean; private _setSigningIn: (val: boolean) => void;
+        readonly isBusy: boolean; private _setIsBusy: (val: boolean) => void;
         readonly twoFactorAuthentication: boolean; private _setTwoFactorAuthentication: (val: boolean) => void;
+        readonly hasForgot: boolean; private _setHasForgot: (hasForgot: boolean) => void;
+        readonly hasRegister: boolean; private _setHasRegister: (hasRegister: boolean) => void;
+        readonly register: Vidyano.PersistentObject; private _setRegister: (register: Vidyano.PersistentObject) => void;
         name: string;
         userName: string;
+        userNameError: boolean;
         password: string;
         staySignedIn: boolean;
         signingInCounter: number;
         twoFactorCode: string;
 
-
-        constructor(isVidyano: boolean, private _isOnlyProvider: boolean, private _returnUrl: string) {
+        constructor(isVidyano: boolean, private _isOnlyProvider: boolean, private _returnUrl: string, private _parameters: IProviderParameters) {
             super();
 
             this._setIsVidyano(isVidyano);
@@ -150,17 +170,22 @@
         attached() {
             super.attached();
 
-            if (this.isVidyano && this._isOnlyProvider) {
-                Polymer.dom(this.root).querySelector("template")["render"]();
-                const collapse = this.$$("#vidyano");
-                collapse["noAnimation"] = true;
-                collapse["opened"] = true;
-                setTimeout(() => this._autoFocus(), 300);
+            if (this.isVidyano) {
+                this._setHasForgot(this._parameters.forgotPassword || false);
+                this._setHasRegister(!!this._parameters.registerUser && !!this._parameters.registerPersistentObjectId);
+
+                if (this._isOnlyProvider) {
+                    Polymer.dom(this.root).querySelector("template")["render"]();
+                    const collapse = this.$$("#vidyano");
+                    collapse["noAnimation"] = true;
+                    collapse["opened"] = true;
+                    setTimeout(() => this._autoFocus(), 300);
+                }
             }
         }
 
         private _vidyanoSignInAttached() {
-            this.userName = this.app.service.userName !== this.app.service.defaultUserName ? this.app.service.userName : "";
+            this.userName = this.app.service.userName !== this.app.service.defaultUserName && this.app.service.userName !== this.app.service.registerUserName ? this.app.service.userName : "";
             this.staySignedIn = Vidyano.cookie("staySignedIn", { force: true }) === "true";
             this._autoFocus();
         }
@@ -208,14 +233,15 @@
         }
 
         private async _signIn() {
-            this._setSigningIn(true);
+            this.userNameError = false;
+            this._setIsBusy(true);
 
             const currentRoute = this.app.currentRoute;
             this.app.service.staySignedIn = this.staySignedIn;
             try {
                 await this.app.service.signInUsingCredentials(this.userName, this.password, this.twoFactorAuthentication ? this.twoFactorCode : undefined);
                 this._setTwoFactorAuthentication(false);
-                this._setSigningIn(false);
+                this._setIsBusy(false);
 
                 this.password = "";
                 this.twoFactorCode = "";
@@ -226,8 +252,6 @@
                 }
             }
             catch (e) {
-                this._setSigningIn(false);
-
                 if (e === "Two-factor authentication enabled for user." || e === "Invalid code.") {
                     if (e === "Invalid code.")
                         this.app.showAlert(e, NotificationType.Error, 3000);
@@ -256,30 +280,86 @@
                     actionTypes: ["Danger"]
                 });
             }
+            finally {
+                this._setIsBusy(false);
+            }
         }
 
-        private _computeSigninButtonLabel(signingIn: boolean, signingInCounter: number, app: Vidyano.WebComponents.App): string {
-            if (!signingIn)
-                return app.service.getTranslatedMessage("SignIn");
-
-            const button = this._signInButton || (this._signInButton = <HTMLButtonElement><any>this.$$("button#signIn"));
-            if (!this._signingInMessage) {
-                this._signingInMessage = this.app.service.getTranslatedMessage("SigningIn").trimEnd(".").trimEnd(" ") + " ";
-                const span = document.createElement("span");
-                span.textContent = this._signingInMessage + "...";
-                button.appendChild(span);
-                button.style.width = `${span.offsetWidth + 6}px`;
-                button.removeChild(span);
+        private async _forgotPassword() {
+            if (!this.userName) {
+                this.userNameError = true;
+                return;
             }
 
-            setTimeout(() => {
-                if (this.signingInCounter + 1 > 3)
-                    this.signingInCounter = 1;
-                else
-                    this.signingInCounter++;
-            }, 500);
+            this.userNameError = false;
+            this._setIsBusy(true);
+            try {
+                const result = await this.service.forgotPassword(this.userName);
+                this.app.showAlert(result.notification, result.notificationType, result.notificationDuration);
+            }
+            finally {
+                this._setIsBusy(false);
+            }
+        }
 
-            return this._signingInMessage + Array(signingInCounter + 1).join(".");
+        private _userNameErrorChanged(userNameError: boolean) {
+            if (userNameError)
+                (<HTMLInputElement>Polymer.dom(this.root).querySelector("input#user")).focus();
+        }
+
+        private _userNameChanged() {
+            this.userNameError = false;
+        }
+
+        private async _register() {
+            this.userNameError = false;
+            this._setIsBusy(true);
+
+            try {
+                const imports = this.app.importComponent("PersistentObjectTab", "PersistentObjectAttributePresenter");
+                await this.service.signInUsingCredentials(this._parameters.registerUser, null);
+                const register = await this.service.getPersistentObject(null, this._parameters.registerPersistentObjectId);
+                register.beginEdit();
+                await imports;
+
+                this._setIsBusy(false);
+
+                if (register.stateBehavior.indexOf("OpenAsDialog") >= 0) {
+                    await this.app.showDialog(new PersistentObjectDialog(register, {
+                        saveLabel: this.translations["RegisterSave"]
+                    }));
+                } else
+                    this._setRegister(register);
+            }
+            catch (e) {
+                this.app.showAlert(e, NotificationType.Error);
+            }
+            finally {
+                this._setIsBusy(false);
+            }
+        }
+
+        private async _registerSave() {
+            this._setIsBusy(true);
+            try {
+                await this.register.save();
+                if (this.register.notification)
+                    this.app.showAlert(this.register.notification, this.register.notificationType, this.register.notificationDuration);
+
+                this._setRegister(null);
+                this.service.signOut();
+            }
+            catch (e) {
+                this.app.showAlert(e, NotificationType.Error);
+            }
+            finally {
+                this._setIsBusy(false);
+            }
+        }
+
+        private _registerCancel() {
+            this._setRegister(null);
+            this.service.signOut();
         }
     }
 }

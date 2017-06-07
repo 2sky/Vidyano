@@ -21,9 +21,9 @@
 
     &[is-vidyano] {
         #vidyano {
-            padding-left: var(--theme-h1);
+            padding-left: var(--theme-h3);
 
-            > div {
+            iron-collapse:first-of-type > div {
                 &:not(:last-child) {
                     margin-bottom: var(--theme-h4);
                     margin-top: var(--theme-h3);
@@ -51,29 +51,86 @@
                     &:focus {
                         border-color: var(--theme-color-light);
                     }
+
+                    &[error] {
+                        border-color: var(--colors-red-700);
+                        background-color: var( --colors-red-50);
+                    }
                 }
 
-                &:last-of-type {
-                    line-height: var(--theme-h2);
-                    height: var(--theme-h2);
-                    margin-top: var(--theme-h3);
-                    @include layout-horizontal();
-
-                    vi-checkbox:not([checked]) {
-                        color: #888;
-                        fill: #bbb;
-                    }
-
-                    vi-checkbox[checked] {
-                        color: #666;
-                    }
+                &.buttons {
+                    margin: var(--theme-h4) 0;
 
                     button {
-                        cursor: pointer;
                         padding: 0 var(--theme-h4);
                         box-sizing: content-box;
-                        height: var(--theme-h2);
-                        @include theme-color-button();
+                        line-height: var(--theme-h1);
+                        height: var(--theme-h1);
+
+                        &.forgot {
+                            background-color: #aaa;
+                        }
+
+                        &.register {
+                            margin-top: var(--theme-h4);
+                            background-color: var(--theme-color-dark);
+                        }
+                    }
+
+                    &[has-forgot] > div > button {
+                        @include flex();
+
+                        &.signIn {
+                            margin-right: var(--theme-h5);
+                        }
+
+                        &.forgot {
+                            margin-left: var(--theme-h5);
+                        }
+                    }
+                }
+            }
+
+            vi-checkbox {
+                display: inline-block;
+                line-height: var(--theme-h2);
+                height: var(--theme-h2);
+
+                &:not([checked]) {
+                    color: #888;
+                    fill: #bbb;
+                }
+
+                &[checked] {
+                    color: #666;
+                }
+            }
+
+            iron-collapse#registerTab {
+                margin-top: var(--theme-h4);
+
+                vi-persistent-object-tab {
+                    margin-left: calc(var(--theme-h4) * -1);
+                    margin-right: calc(var(--theme-h4) * -1);
+                }
+
+                .buttons {
+                    margin-top: var(--theme-h5);
+
+                    button {
+                        padding: 0 var(--theme-h4);
+                        box-sizing: content-box;
+                        line-height: var(--theme-h1);
+                        height: var(--theme-h1);
+
+                        &.save {
+                            margin-right: var(--theme-h5);
+                        }
+
+                        &.cancel {
+                            margin-left: var(--theme-h5);
+                            background-color: #aaa;
+                        }
                     }
                 }
             }
@@ -88,7 +145,7 @@
 
             #vidyano {
                 padding-left: 0;
-                max-height: 200px;
+                max-height: 400px;
             }
         }
     }

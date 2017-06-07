@@ -919,6 +919,7 @@ declare namespace Vidyano {
         readonly userName: string;
         private _setUserName(val);
         readonly defaultUserName: string;
+        readonly registerUserName: string;
         private authToken;
         profile: boolean;
         readonly profiledRequests: IServiceRequest[];
@@ -936,6 +937,7 @@ declare namespace Vidyano {
         executeAction(action: string, parent: PersistentObject, query: Query, selectedItems: Array<QueryResultItem>, parameters?: any, skipHooks?: boolean): Promise<PersistentObject>;
         getReport(token: string, {filter, orderBy, top, skip, hideIds, hideType}?: IReportOptions): Promise<any[]>;
         getInstantSearch(search: string): Promise<IInstantSearchResult[]>;
+        forgotPassword(userName: string): Promise<IForgotPassword>;
         static getDate: (yearString: string, monthString: string, dayString: string, hourString: string, minuteString: string, secondString: string, msString: string) => Date;
         static fromServiceString(value: string, typeName: string): any;
         static toServiceString(value: any, typeName: string): string;
@@ -956,6 +958,14 @@ declare namespace Vidyano {
         requestUri: string;
         signOutUri: string;
         redirectUri: string;
+        registerPersistentObjectId?: string;
+        registerUser?: string;
+        forgot?: boolean;
+    }
+    interface IForgotPassword {
+        notification: string;
+        notificationType: NotificationType;
+        notificationDuration: number;
     }
     interface ILanguage {
         culture: string;
