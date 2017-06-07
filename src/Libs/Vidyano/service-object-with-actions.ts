@@ -39,7 +39,7 @@
             return this._notificationDuration;
         }
 
-        setNotification(notification: string = null, type: NotificationType = NotificationType.Error, duration: number = 0, skipShowNotification?: boolean) {
+        setNotification(notification: string = null, type: NotificationType = NotificationType.Error, duration?: number, skipShowNotification?: boolean) {
             if (typeof (type) === "string")
                 type = NotificationType[<string>type];
 

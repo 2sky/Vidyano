@@ -141,7 +141,13 @@
         },
         listeners: {
             "tap": "_tap"
-        }
+        },
+        observers: [
+            "_showRegisterNotification(register.notification)"
+        ],
+        forwardObservers: [
+            "register.notification"
+        ]
     })
     export class SignInProvider extends WebComponent {
         private _signInButton: HTMLButtonElement;
@@ -316,7 +322,7 @@
             this._setIsBusy(true);
 
             try {
-                const imports = this.app.importComponent("PersistentObjectTab", "PersistentObjectAttributePresenter");
+                const imports = this.app.importComponent("PersistentObjectTab", "PersistentObjectAttributePresenter", "PersistentObjectDialog");
                 await this.service.signInUsingCredentials(this._parameters.registerUser, null);
                 const register = await this.service.getPersistentObject(null, this._parameters.registerPersistentObjectId);
                 register.beginEdit();
@@ -343,14 +349,9 @@
             this._setIsBusy(true);
             try {
                 await this.register.save();
-                if (this.register.notification)
-                    this.app.showAlert(this.register.notification, this.register.notificationType, this.register.notificationDuration);
 
                 this._setRegister(null);
                 this.service.signOut();
-            }
-            catch (e) {
-                this.app.showAlert(e, NotificationType.Error);
             }
             finally {
                 this._setIsBusy(false);
@@ -360,6 +361,13 @@
         private _registerCancel() {
             this._setRegister(null);
             this.service.signOut();
+        }
+
+        private _showRegisterNotification(notification: string) {
+            if (!notification)
+                return;
+
+            this.app.showAlert(this.register.notification, this.register.notificationType, this.register.notificationDuration);
         }
     }
 }
