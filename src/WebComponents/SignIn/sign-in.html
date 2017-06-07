@@ -48,7 +48,7 @@
                     <div class="layout vertical buttons" has-forgot$="[[hasForgot]]" has-register$="[[hasRegister]]">
                         <div class="layout horizontal">
                             <button is="vi-button" class="flex signIn" id="signIn" on-tap="_signIn" disabled$="[[isBusy]]" label="[[translations.SignIn]]"></button>
-                            <button is="vi-button" class="flex forgot" on-tap="_forgotPassword" label="Forgot password?" disabled$="[[isBusy]]" hidden$="[[!hasForgot]]"></button>
+                            <button is="vi-button" class="flex forgot" on-tap="_forgotPassword" label="[[translations.ForgotPassword]]" disabled$="[[isBusy]]" hidden$="[[!hasForgot]]"></button>
                         </div>
                         <button is="vi-button" class="register" on-tap="_register" label="[[translations.Register]]" disabled$="[[isBusy]]" hidden$="[[!hasRegister]]"></button>
                     </div>
