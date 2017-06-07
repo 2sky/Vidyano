@@ -960,7 +960,7 @@ declare namespace Vidyano {
         redirectUri: string;
         registerPersistentObjectId?: string;
         registerUser?: string;
-        forgot?: boolean;
+        forgotPassword?: boolean;
     }
     interface IForgotPassword {
         notification: string;

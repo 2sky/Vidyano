@@ -1219,7 +1219,7 @@
         redirectUri: string;
         registerPersistentObjectId?: string;
         registerUser?: string;
-        forgot?: boolean;
+        forgotPassword?: boolean;
     }
 
     export interface IForgotPassword {
