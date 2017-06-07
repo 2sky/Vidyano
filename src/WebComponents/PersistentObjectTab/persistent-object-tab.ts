@@ -17,6 +17,11 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 value: true
+            },
+            noScroll: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
             }
         },
         observers: [

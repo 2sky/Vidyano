@@ -5,10 +5,10 @@
 
     > vi-scroller {
         @include flex();
+    }
 
-        .groups {
-            display: block;
-            padding-bottom:  var(--theme-h4);
-        }
+    .groups {
+        display: block;
+        padding-bottom: var(--theme-h4);
     }
 }
