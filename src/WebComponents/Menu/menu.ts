@@ -446,6 +446,10 @@ namespace Vidyano.WebComponents {
             return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? app.noHistory ? "#" : Path.routes.rootPath + this.item.path : undefined;
         }
 
+        private _isProgramUnitItemUrl(item: Vidyano.ProgramUnitItem): boolean {
+            return item instanceof Vidyano.ProgramUnitItemUrl;
+        }
+
         private _titleMouseenter() {
             this.$.title.setAttribute("title", this.$.title.offsetWidth < this.$.title.scrollWidth ? this.item.title : "");
         }
