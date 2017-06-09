@@ -78,32 +78,42 @@
 
                 if (this._textNode && this._textNode.nodeValue)
                     this._textNode.nodeValue = "";
-            } else if (value == null) {
-                if (this._icon) {
-                    this._icon.setAttribute("hidden", "");
-                    this._isHidden = true;
-                }
-
-                if (!this._textNode)
-                    this._textNode = <Text>Polymer.dom(this.root).appendChild(document.createTextNode("—"));
-                else
-                    this._textNode.nodeValue = "—";
             } else {
-                if (this._isHidden) {
-                    this._icon.removeAttribute("hidden");
-                    this._isHidden = false;
+                const displayValue: boolean = value.getValue();
+                if (displayValue == null) {
+                    if (this._icon) {
+                        this._icon.setAttribute("hidden", "");
+                        this._isHidden = true;
+                    }
+
+                    if (!this._textNode)
+                        this._textNode = <Text>Polymer.dom(this.root).appendChild(document.createTextNode(value.column.typeHints["nullkey"] || "—"));
+                    else
+                        this._textNode.nodeValue = value.column.typeHints["nullkey"] || "—";
+                } else if (!value.column.typeHints || ((!value.column.typeHints["falsekey"] && !displayValue) || (!value.column.typeHints["truekey"] && !displayValue))) {
+                    if (this._isHidden) {
+                        this._icon.removeAttribute("hidden");
+                        this._isHidden = false;
+                    }
+
+                    if (this._textNode && this._textNode.nodeValue)
+                        this._textNode.nodeValue = "";
+
+                    if (!this._icon)
+                        this._icon = <HTMLElement>Polymer.dom(this.root).appendChild(new Vidyano.WebComponents.Icon("Selected"));
+
+                    if (!value.getValue())
+                        this._icon.removeAttribute("is-selected");
+                    else
+                        this._icon.setAttribute("is-selected", "");
                 }
-
-                if (this._textNode && this._textNode.nodeValue)
-                    this._textNode.nodeValue = "";
-
-                if (!this._icon)
-                    this._icon = <HTMLElement>Polymer.dom(this.root).appendChild(new Vidyano.WebComponents.Icon("Selected"));
-
-                if (!value.getValue())
-                    this._icon.removeAttribute("is-selected");
-                else
-                    this._icon.setAttribute("is-selected", "");
+                else {
+                    const displayTextValue = value.column.typeHints[displayValue ? "truekey" : "falsekey"];
+                    if (!this._textNode)
+                        this._textNode = <Text>Polymer.dom(this.root).appendChild(document.createTextNode(displayTextValue));
+                    else
+                        this._textNode.nodeValue = displayTextValue;
+                }
             }
         }
     }
