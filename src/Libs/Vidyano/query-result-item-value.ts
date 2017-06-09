@@ -2,6 +2,7 @@
     "use strict";
 
     export class QueryResultItemValue extends ServiceObject {
+        private _column: Vidyano.QueryColumn;
         private _value: any;
         private _valueParsed: boolean;
 
@@ -15,10 +16,19 @@
             super(service);
 
             this.key = value.key;
+            this._column = this._item.query.getColumn(this.key);
             this.value = value.value;
             this.persistentObjectId = value.persistentObjectId;
             this.objectId = value.objectId;
             this.typeHints = value.typeHints;
+        }
+
+        get item(): Vidyano.QueryResultItem {
+            return this._item;
+        }
+
+        get column(): Vidyano.QueryColumn {
+            return this._column;
         }
 
         getTypeHint(name: string, defaultValue?: string, typeHints?: any): string {

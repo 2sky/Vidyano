@@ -655,6 +655,7 @@ declare namespace Vidyano {
 declare namespace Vidyano {
     class QueryResultItemValue extends ServiceObject {
         private _item;
+        private _column;
         private _value;
         private _valueParsed;
         key: string;
@@ -663,6 +664,8 @@ declare namespace Vidyano {
         persistentObjectId: string;
         objectId: string;
         constructor(service: Service, _item: QueryResultItem, value: any);
+        readonly item: Vidyano.QueryResultItem;
+        readonly column: Vidyano.QueryColumn;
         getTypeHint(name: string, defaultValue?: string, typeHints?: any): string;
         getValue(): any;
         _toServiceObject(): any;
