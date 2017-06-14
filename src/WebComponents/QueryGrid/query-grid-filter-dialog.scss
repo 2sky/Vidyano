@@ -1,0 +1,20 @@
+﻿@import "../vars.scss";
+
+$min-main-width: 400px;
+
+:host {
+    --vi-persistent-object-dialog-base-width-base: $min-main-width;
+
+    main {
+        padding: var(--theme-h4) var(--theme-h4) 0 var(--theme-h4);
+    }
+}
+
+:host-context(vi-app[is-phone]) main {
+    width: 85vw;
+}
+
+:host-context(vi-app[is-tablet]), :host-context(vi-app[is-desktop]) {
+    width: $min-main-width;
+    max-width: $min-main-width;
+}

@@ -1,0 +1,29 @@
+﻿@import "../vars.scss";
+
+:host {
+    @include layout-horizontal();
+
+    vi-icon {
+        width: var(--theme-h2);
+        height: var(--theme-h2);
+    }
+
+    #group {
+        &:not([grouping]) {
+            & > vi-persistent-object-attribute-edit, & > vi-icon {
+                display: none !important;
+            }
+        }
+        /*&[grouping] {
+            @include flex();
+
+            > vi-persistent-object-attribute-edit {
+                margin-left: -1px;
+            }
+        }*/
+        > vi-icon {
+            width: var(--theme-h2);
+            height: var(--theme-h2);
+        }
+    }
+}

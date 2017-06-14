@@ -19,7 +19,7 @@
     <template>
         <link rel="stylesheet" href="popup-menu-item.css" />
         <vi-popup open-on-hover class="flex">
-            <button header is="vi-button" inverse$="[[!checked]]">
+            <button header is="vi-button" inverse$="[[!checked]]" class="layout horizontal">
                 <vi-icon id="icon" source="[[icon]]"></vi-icon>
                 <span class="flex">[[label]]</span>
                 <vi-icon source="Forward" hidden$="[[!hasChildren]]"></vi-icon>
@@ -39,7 +39,7 @@
             <span class="flex">[[label]]</span>
         </button>
         <vi-popup open-on-hover hidden$="[[!hasChildren]]">
-            <button id="split" is="vi-button" header on-tap="_splitTap" inverse>
+            <button id="split" class="flex" is="vi-button" header icon="Forward" on-tap="_splitTap" inverse>
                 <vi-icon source="Forward"></vi-icon>
             </button>
             <div content>
