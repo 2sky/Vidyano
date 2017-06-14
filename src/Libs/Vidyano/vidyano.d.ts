@@ -641,7 +641,7 @@ declare namespace Vidyano {
         private _computeFilterData();
         getFilter(name: string): QueryFilter;
         createNew(): Promise<QueryFilter>;
-        save(filter?: QueryFilter): Promise<QueryFilter>;
+        save(filter?: QueryFilter): Promise<boolean>;
         delete(name: string | QueryFilter): Promise<any>;
     }
     class QueryFilter extends Vidyano.Common.Observable<QueryFilter> {

@@ -97,6 +97,11 @@ interface TemplateInstance {
     item: any;
     index: number;
     root: DocumentFragment;
+
+    /**
+     * Notifies Polymer for a change in the given path.
+     */
+    notifyPath: (path: string, value: any, fromAbove?: boolean) => void;
 }
 
 interface TapEvent extends CustomEvent {

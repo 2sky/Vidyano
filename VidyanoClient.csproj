@@ -44,6 +44,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="src\WebComponents\Attributes\persistent-object-attribute-edit.css">
+      <DependentUpon>persistent-object-attribute-edit.scss</DependentUpon>
+    </Content>
+    <Content Include="src\WebComponents\Attributes\persistent-object-attribute-edit.min.css">
+      <DependentUpon>persistent-object-attribute-edit.css</DependentUpon>
+    </Content>
+    <Content Include="src\WebComponents\QueryGrid\query-grid-filter-dialog-name.css">
+      <DependentUpon>query-grid-filter-dialog-name.scss</DependentUpon>
+    </Content>
+    <Content Include="src\WebComponents\QueryGrid\query-grid-filter-dialog-name.min.css">
+      <DependentUpon>query-grid-filter-dialog-name.css</DependentUpon>
+    </Content>
+    <Content Include="src\WebComponents\QueryGrid\query-grid-filter-dialog.css">
+      <DependentUpon>query-grid-filter-dialog.scss</DependentUpon>
+    </Content>
+    <Content Include="src\WebComponents\QueryGrid\query-grid-filter-dialog.min.css">
+      <DependentUpon>query-grid-filter-dialog.css</DependentUpon>
+    </Content>
     <TypeScriptCompile Include="src\**\*.ts" />
     <Content Include="src\*.html" />
     <Content Include="src\Libs\alertify.js\alertify.html" />

@@ -13,6 +13,10 @@ namespace Vidyano.WebComponents.Attributes {
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "_computeHasError(attribute.validationError)"
+            },
+            reverse: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         listeners: {

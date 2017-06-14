@@ -26,6 +26,10 @@
         .buttons {
             @apply(--vi-persistent-object-attribute-edit-buttons);
         }
+
+        &[reverse] {
+            @include layout-horizontal-reverse();
+        }
     }
 
     &[reverse-content] {
@@ -98,84 +102,106 @@
         }
     }
 
-    .buttons {
-        @include layout-horizontal();
-        background-color: white;
+    .box {
+        .buttons {
+            @include layout-horizontal();
+            background-color: white;
 
-        > ::content {
-            > button, > .button, > [button], > vi-popup:not([content]) button[header] {
-                @include relative();
-                outline: none;
-                cursor: pointer;
-                width: calc(var(--theme-h2) - 2px);
-                height: calc(var(--theme-h2) - 2px);
-                line-height: calc(var(--theme-h2) - 2px);
-                padding: 0;
-                box-sizing: content-box;
-                text-align: center;
-                @include theme-color-button-inverse();
-                -moz-transition: background-color 0.1s ease-out;
-                -o-transition: background-color 0.1s ease-out;
-                -webkit-transition: background-color 0.1s ease-out;
-                transition: background-color 0.1s ease-out;
-
-                &::after {
-                    position: absolute;
-                    bottom: -1px;
-                    left: 3px;
-                    right: 4px;
-                    content: " ";
-                    border-bottom: 1px solid var(--theme-light-border);
-                    -moz-transition: all 0.1s ease-in-out;
-                    -o-transition: all 0.1s ease-in-out;
-                    -webkit-transition: all 0.1s ease-out;
-                    transition: all 0.1s ease-in-out;
-                }
-
-                &::before {
-                    position: absolute;
-                    top: 4px;
-                    bottom: 4px;
-                    left: 0;
-                    content: " ";
-                    border-left: 1px solid var(--theme-light-border);
-                    -moz-transition: all 0.1s ease-in-out;
-                    -o-transition: all 0.1s ease-in-out;
-                    -webkit-transition: all 0.1s ease-out;
-                    transition: all 0.1s ease-in-out;
-                }
-
-                vi-icon {
+            > ::content {
+                > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                    @include relative();
+                    outline: none;
+                    cursor: pointer;
                     width: calc(var(--theme-h2) - 2px);
                     height: calc(var(--theme-h2) - 2px);
+                    line-height: calc(var(--theme-h2) - 2px);
+                    padding: 0;
+                    box-sizing: content-box;
+                    text-align: center;
+                    @include theme-color-button-inverse();
+                    -moz-transition: background-color 0.1s ease-out;
+                    -o-transition: background-color 0.1s ease-out;
+                    -webkit-transition: background-color 0.1s ease-out;
+                    transition: background-color 0.1s ease-out;
 
-                    svg {
-                        -moz-transition: fill 0.1s ease-out;
-                        -o-transition: fill 0.1s ease-out;
-                        -webkit-transition: fill 0.1s ease-out;
-                        transition: fill 0.1s ease-out;
+                    &::after {
+                        position: absolute;
+                        bottom: -1px;
+                        left: 3px;
+                        right: 4px;
+                        content: " ";
+                        border-bottom: 1px solid var(--theme-light-border);
+                        -moz-transition: all 0.1s ease-in-out;
+                        -o-transition: all 0.1s ease-in-out;
+                        -webkit-transition: all 0.1s ease-out;
+                        transition: all 0.1s ease-in-out;
+                    }
+
+                    &::before {
+                        position: absolute;
+                        top: 4px;
+                        bottom: 4px;
+                        content: " ";
+                        -moz-transition: all 0.1s ease-in-out;
+                        -o-transition: all 0.1s ease-in-out;
+                        -webkit-transition: all 0.1s ease-out;
+                        transition: all 0.1s ease-in-out;
+                    }
+
+                    vi-icon {
+                        width: calc(var(--theme-h2) - 2px);
+                        height: calc(var(--theme-h2) - 2px);
+
+                        svg {
+                            -moz-transition: fill 0.1s ease-out;
+                            -o-transition: fill 0.1s ease-out;
+                            -webkit-transition: fill 0.1s ease-out;
+                            transition: fill 0.1s ease-out;
+                        }
+                    }
+                }
+            }
+
+            &:hover > ::content {
+                > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                    &::after {
+                        left: 0;
+                        right: 0;
+                    }
+
+                    &::before {
+                        top: 0;
+                        bottom: 0;
+                    }
+
+                    &:hover {
+                        background-color: var(--theme-color-faint) !important;
+
+                        > vi-icon {
+                            fill: var(--theme-color) !important;
+                        }
                     }
                 }
             }
         }
 
-        &:hover > ::content {
-            > button, > .button, > [button], > vi-popup:not([content]) button[header] {
-                &::after {
-                    left: 0;
-                    right: 0;
+        &:not([reverse]) {
+            .buttons ::content {
+                > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                    &::before {
+                        left: 0;
+                        border-left: 1px solid var(--theme-light-border);
+                    }
                 }
+            }
+        }
 
-                &::before {
-                    top: 0;
-                    bottom: 0;
-                }
-
-                &:hover {
-                    background-color: var(--theme-color-faint) !important;
-
-                    > vi-icon {
-                        fill: var(--theme-color) !important;
+        &[reverse] {
+            .buttons > ::content {
+                > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                    &::before {
+                        right: 0;
+                        border-right: 1px solid var(--theme-light-border);
                     }
                 }
             }

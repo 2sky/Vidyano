@@ -300,6 +300,14 @@
     "inputFile": "src/WebComponents/QueryGrid/query-grid-filters.scss"
   },
   {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-filter-dialog.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-filter-dialog.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-filter-dialog-name.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-filter-dialog-name.scss"
+  },
+  {
     "outputFile": "src/WebComponents/QueryGrid/query-grid-select-all.css",
     "inputFile": "src/WebComponents/QueryGrid/query-grid-select-all.scss"
   },

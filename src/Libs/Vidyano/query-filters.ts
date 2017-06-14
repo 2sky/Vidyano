@@ -89,7 +89,19 @@
                 return;
             }
 
-            this._setFilters(this._filtersAsDetail.objects.map(filter => new QueryFilter(filter)));
+            const currentFilters: { [name: string]: QueryFilter; } = {};
+            if (this._filters)
+                this._filters.forEach(f => currentFilters[f.name || ""] = f);
+
+            this._setFilters(this._filtersAsDetail.objects.map(filter => {
+                const existing = currentFilters[filter.getAttributeValue("Name") || ""];
+                if (existing) {
+                    existing.persistentObject.refreshFromResult(filter);
+                    return existing;
+                }
+
+                return new QueryFilter(filter);
+            }));
 
             if (setDefaultFilter)
                 this._currentFilter = Enumerable.from(this._filters).firstOrDefault(f => f.persistentObject.getAttributeValue("IsDefault"));
@@ -118,11 +130,15 @@
             });
         }
 
-        save(filter: QueryFilter = this.currentFilter): Promise<QueryFilter> {
+        save(filter: QueryFilter = this.currentFilter): Promise<boolean> {
             if (!filter)
-                return;
-            else if (filter.isLocked)
-                return Promise.reject<QueryFilter>("Filter is locked.");
+                return Promise.reject<boolean>("Expected argument filter.");
+
+            if (filter.isLocked)
+                return Promise.reject<boolean>("Filter is locked.");
+
+            if (this._filtersAsDetail.objects.some(f => f.isNew))
+                return Promise.reject<boolean>("Only one new filter can be saved at a time.");
 
             this._filtersPO.beginEdit();
 
@@ -135,10 +151,23 @@
                 this._filtersAsDetail.objects.push(filter.persistentObject);
 
             return this._query.queueWork(async () => {
-                await this._filtersPO.save();
+                let result: boolean;
+
+                try {
+                    result = await this._filtersPO.save();
+                }
+                catch (e) {
+                    result = false;
+                    filter.persistentObject.setNotification(e, Vidyano.NotificationType.Error);
+                }
+
+                const newFilter = Enumerable.from(this._filtersAsDetail.objects).firstOrDefault(f => f.isNew);
+                if (newFilter)
+                    this._filtersAsDetail.objects.remove(filter.persistentObject = newFilter);
+
                 this._computeFilters();
 
-                return this.getFilter(filter.name);
+                return result;
             });
         }
 

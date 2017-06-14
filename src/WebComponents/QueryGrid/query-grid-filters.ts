@@ -1,6 +1,12 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
+    interface IQueryFilter {
+        filter?: QueryFilter;
+        groupName?: string;
+        children?: IQueryFilter[];
+    }
+
     @WebComponent.register({
         properties: {
             query: Object,
@@ -15,7 +21,15 @@
             },
             filters: {
                 type: Array,
-                computed: "_computeFilters(query.filters.filters)"
+                computed: "query.filters.filters"
+            },
+            userFilters: {
+                type: Array,
+                computed: "_computeUserFilters(filters)"
+            },
+            lockedFilters: {
+                type: Array,
+                computed: "_computeLockedFilters(filters)"
             },
             hasFilters: {
                 type: Boolean,
@@ -65,8 +79,59 @@
         queryFilters: Vidyano.QueryFilters;
         currentFilter: Vidyano.QueryFilter;
 
-        private _computeFilters(filters: QueryFilter[]): QueryFilter[] {
-            return filters;
+        private _computeUserFilters(filters: QueryFilter[]): IQueryFilter[] {
+            return this._computeFilters(filters, false);
+        }
+
+        private _computeLockedFilters(filters: QueryFilter[]): IQueryFilter[] {
+            return this._computeFilters(filters, true);
+        }
+
+        private _computeFilters(filters: QueryFilter[], isLocked: boolean): IQueryFilter[] {
+            if (!filters)
+                return null;
+
+            const orderedFilters = Enumerable.from(filters).where(f => f.isLocked === isLocked).orderBy(f => f.name.split("\n", 2)[0]).toArray();
+            if (orderedFilters.length === 0)
+                return null;
+
+            const result: IQueryFilter[] = [];
+            let group: IQueryFilter;
+            orderedFilters.forEach(filter => {
+                if (!filter.name)
+                    return;
+
+                const nameParts = filter.name.split("\n", 2);
+                if (nameParts.length === 1) {
+                    result.push({
+                        filter: filter
+                    });
+                }
+                else {
+                    if (group && group.groupName === nameParts[0])
+                        group.children.push(filter);
+                    else {
+                        result.push(group = {
+                            groupName: nameParts[0],
+                            children: [{ filter: filter }]
+                        });
+                    }
+                }
+            });
+
+            return result;
+        }
+
+        private _catchGroupTap(e: TapEvent) {
+            e.stopPropagation();
+        }
+
+        private _nonGroupName(name: string): string {
+            if (!name)
+                return name;
+
+            const nameParts = name.split("\n", 2);
+            return nameParts.length === 1 ? nameParts[0] : nameParts[1];
         }
 
         private _computeHidden(filters: Vidyano.QueryFilters): boolean {
@@ -115,27 +180,7 @@
         }
 
         private async _saveAs() {
-            await this.app.importComponent("PersistentObjectDialog");
-            const newFilter = await this.query.filters.createNew();
-
-            let dialog: Vidyano.WebComponents.PersistentObjectDialog;
-            this.app.showDialog(dialog = new Vidyano.WebComponents.PersistentObjectDialog(newFilter.persistentObject, {
-                save: async (po, close) => {
-                    try {
-                        await this.query.filters.save(newFilter);
-                        this.query.filters.currentFilter = newFilter;
-                        close();
-                    }
-                    catch (e) {
-                        dialog.persistentObject = newFilter.persistentObject = Enumerable.from(this.query.filters.detailsAttribute.objects).last(po => po.isNew);
-                    }
-                },
-                cancel: async close => {
-                    await this.query.filters.delete(newFilter);
-                    close();
-                },
-                noHeader: true
-            }));
+            this.app.showDialog(new Vidyano.WebComponents.QueryGridFilterDialog(this.query.filters, await this.query.filters.createNew()));
         }
 
         private _save() {
@@ -144,44 +189,25 @@
 
         private async _edit(e: TapEvent) {
             e.stopPropagation();
+            const filter = <Vidyano.QueryFilter>e.model.filter.filter;
 
-            await this.app.importComponent("PersistentObjectDialog");
-
-            const filter = <Vidyano.QueryFilter>e.model.filter;
-            this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(filter.persistentObject, {
-                save: async (po, close) => {
-                    await this.query.filters.save(filter);
-                    close();
-                },
-                noHeader: true
-            }));
+            this.app.showDialog(new Vidyano.WebComponents.QueryGridFilterDialog(this.query.filters, filter));
         }
 
         private async _delete(e: TapEvent) {
             e.stopPropagation();
-
-            const name = (<HTMLElement>e.currentTarget).getAttribute("data-filter");
-            if (!name)
-                return;
+            const filter = <Vidyano.QueryFilter>e.model.filter.filter;
 
             const result = await this.app.showMessageDialog({
-                title: name,
+                title: this._nonGroupName(filter.name),
                 titleIcon: "Action_Delete",
-                message: this.translateMessage("AskForDeleteFilter", name),
+                message: this.translateMessage("AskForDeleteFilter", this._nonGroupName(filter.name)),
                 actions: [this.translateMessage("Delete"), this.translateMessage("Cancel")],
                 actionTypes: ["Danger"]
             });
 
             if (result === 0)
-                await this.query.filters.delete(name);
-        }
-
-        private _userFilters(filters: Vidyano.QueryFilter[]): Vidyano.QueryFilter[] {
-            return filters ? filters.filter(f => !f.isLocked) : null;
-        }
-
-        private _lockedFilters(filters: Vidyano.QueryFilter[]): Vidyano.QueryFilter[] {
-            return filters ? filters.filter(f => f.isLocked) : null;
+                await this.query.filters.delete(filter);
         }
     }
 }
