@@ -171,12 +171,8 @@
             this.query.filters.currentFilter = null;
         }
 
-        private _load(e: Event) {
-            const name = (<HTMLElement>e.currentTarget).getAttribute("data-filter");
-            if (!name)
-                return;
-
-            this.queryFilters.currentFilter = this.queryFilters.getFilter(name);
+        private _load(e: TapEvent) {
+            this.queryFilters.currentFilter = <Vidyano.QueryFilter>e.model.filter.filter;
         }
 
         private async _saveAs() {
@@ -188,14 +184,11 @@
         }
 
         private async _edit(e: TapEvent) {
-            e.stopPropagation();
             const filter = <Vidyano.QueryFilter>e.model.filter.filter;
-
             this.app.showDialog(new Vidyano.WebComponents.QueryGridFilterDialog(this.query.filters, filter));
         }
 
         private async _delete(e: TapEvent) {
-            e.stopPropagation();
             const filter = <Vidyano.QueryFilter>e.model.filter.filter;
 
             const result = await this.app.showMessageDialog({
