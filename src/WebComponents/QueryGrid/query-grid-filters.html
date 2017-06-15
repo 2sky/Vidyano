@@ -41,16 +41,16 @@
             </template>
             <template is="dom-if" if="[[lockedFilters]]">
                 <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
-                <template is="dom-repeat" items="[[userFilters]]" as="filter">
+                <template is="dom-repeat" items="[[lockedFilters]]" as="filter">
                     <template is="dom-if" if="[[filter.groupName]]">
                         <vi-popup-menu-item icon-space label="[[filter.groupName]]" icon="Folder">
                             <template is="dom-repeat" items="[[filter.children]]" as="filter">
-                                <vi-popup-menu-item-split icon-space label="[[filter.filter.name]]" on-tap="_load"></vi-popup-menu-item-split>
+                                <vi-popup-menu-item-split icon-space label="[[_nonGroupName(filter.filter.name)]]" on-tap="_load"></vi-popup-menu-item-split>
                             </template>
                         </vi-popup-menu-item>
                     </template>
                     <template is="dom-if" if="[[!filter.groupName]]">
-                        <vi-popup-menu-item-split icon-space label="[[filter.filter.name]]" on-tap="_load"></vi-popup-menu-item-split>
+                        <vi-popup-menu-item-split icon-space label="[[_nonGroupName(filter.filter.name)]]" on-tap="_load"></vi-popup-menu-item-split>
                     </template>
                 </template>
             </template>
