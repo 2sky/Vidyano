@@ -50,6 +50,9 @@
     <Content Include="src\WebComponents\Attributes\persistent-object-attribute-edit.min.css">
       <DependentUpon>persistent-object-attribute-edit.css</DependentUpon>
     </Content>
+    <Content Include="src\WebComponents\PopupMenu\popup-menu-item-with-actions.css">
+      <DependentUpon>popup-menu-item-with-actions.scss</DependentUpon>
+    </Content>
     <Content Include="src\WebComponents\QueryGrid\query-grid-filter-dialog-name.css">
       <DependentUpon>query-grid-filter-dialog-name.scss</DependentUpon>
     </Content>

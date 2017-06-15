@@ -205,6 +205,44 @@ namespace Vidyano.WebComponents {
         }
     }
 
+    @WebComponent.register({
+        properties: {
+            label: String,
+            icon: String
+        },
+        listeners: {
+            "tap": "_onTap"
+        }
+    })
+    export class PopupMenuItemWithActions extends WebComponent {
+        private _observer: PolymerDomChangeObserver;
+        readonly hasChildren: boolean; private _setHasChildren: (hasChildren: boolean) => void;
+
+        constructor(public label?: string, public icon?: string, private _action?: () => void) {
+            super();
+        }
+
+        private _onTap(e: TapEvent) {
+            if (this._action) {
+                this._action();
+                Vidyano.WebComponents.Popup.closeAll();
+
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }
+
+        private _actionsTap(e: TapEvent) {
+            Vidyano.WebComponents.Popup.closeAll();
+            e.stopPropagation();
+        }
+
+        private _catch(e: Event) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }
+
     @WebComponent.register()
     export class PopupMenuItemSeparator extends WebComponent {
     }

@@ -9,7 +9,7 @@
                 <content select="[header]"></content>
             </template>
             <div content>
-                <content id="items" select="vi-popup-menu-item, vi-popup-menu-item-split, vi-popup-menu-item-separator"></content>
+                <content id="items" select="vi-popup-menu-item, vi-popup-menu-item-split, vi-popup-menu-item-separator, vi-popup-menu-item-with-actions"></content>
             </div>
         </vi-popup>
     </template>
@@ -25,7 +25,7 @@
                 <vi-icon source="Forward" hidden$="[[!hasChildren]]"></vi-icon>
             </button>
             <div content>
-                <content id="subItems" select="vi-popup-menu-item, vi-popup-menu-item-split, vi-popup-menu-item-separator"></content>
+                <content id="subItems" select="vi-popup-menu-item, vi-popup-menu-item-split, vi-popup-menu-item-separator, vi-popup-menu-item-with-actions"></content>
             </div>
         </vi-popup>
     </template>
@@ -43,9 +43,23 @@
                 <vi-icon source="Forward"></vi-icon>
             </button>
             <div content>
-                <content id="subItems" select="vi-popup-menu-item, vi-popup-menu-item-split, vi-popup-menu-item-separator"></content>
+                <content id="subItems" select="vi-popup-menu-item, vi-popup-menu-item-split, vi-popup-menu-item-separator, vi-popup-menu-item-with-actions"></content>
             </div>
         </vi-popup>
+    </template>
+</dom-module>
+
+<dom-module id="vi-popup-menu-item-with-actions">
+    <template>
+        <link rel="stylesheet" href="popup-menu-item-with-actions.css" />
+        <div inverse class="layout horizontal">
+            <paper-ripple></paper-ripple>
+            <vi-icon id="icon" source="[[icon]]"></vi-icon>
+            <span class="flex">[[label]]</span>
+            <div class="actions" on-tap="_actionsTap" on-down="_catch">
+                <content select="button"></content>
+            </div>
+        </div>
     </template>
 </dom-module>
 
