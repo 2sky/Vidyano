@@ -205,7 +205,7 @@
         }
 
         get name(): string {
-            return this.persistentObject.getAttributeValue("Name");
+            return this.persistentObject.getAttributeValue("Name") || "";
         }
 
         get isLocked(): boolean {
