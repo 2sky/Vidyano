@@ -19,7 +19,7 @@
                 <vi-popup-menu-item icon="Filter_Save" label="[[translations.SaveAs]]" on-tap="_saveAs"></vi-popup-menu-item>
             </template>
             <template is="dom-if" if="[[userFilters]]">
-                <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
+                <vi-popup-menu-item-separator hidden$="[[!_showUserFilterSeparator(canReset, canSave, canSaveAs)]]"></vi-popup-menu-item-separator>
                 <template is="dom-repeat" items="[[userFilters]]" as="filter">
                     <template is="dom-if" if="[[filter.groupName]]">
                         <vi-popup-menu-item icon-space label="[[filter.groupName]]" icon="Folder" on-tap="_catchGroupTap">
@@ -40,7 +40,7 @@
                 </template>
             </template>
             <template is="dom-if" if="[[lockedFilters]]">
-                <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
+                <vi-popup-menu-item-separator hidden$="[[!_showLockedFilterSeparator(canReset, canSave, canSaveAs, userFilters)]]"></vi-popup-menu-item-separator>
                 <template is="dom-repeat" items="[[lockedFilters]]" as="filter">
                     <template is="dom-if" if="[[filter.groupName]]">
                         <vi-popup-menu-item icon-space label="[[filter.groupName]]" icon="Folder">

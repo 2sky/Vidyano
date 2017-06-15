@@ -202,5 +202,13 @@
             if (result === 0)
                 await this.query.filters.delete(filter);
         }
+
+        private _showUserFilterSeparator(canReset: boolean, canSave: boolean, canSaveAs: boolean): boolean {
+            return canReset || canSave || canSaveAs;
+        }
+
+        private _showLockedFilterSeparator(canReset: boolean, canSave: boolean, canSaveAs: boolean, userFilters: IQueryFilter[]): boolean {
+            return canReset || canSave || canSaveAs || (!!userFilters && userFilters.length > 0);
+        }
     }
 }
