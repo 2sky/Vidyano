@@ -236,6 +236,10 @@
     "inputFile": "src/WebComponents/Popup/popup.scss"
   },
   {
+    "outputFile": "src/WebComponents/PopupMenu/popup-menu-item-with-actions.css",
+    "inputFile": "src/WebComponents/PopupMenu/popup-menu-item-with-actions.scss"
+  },
+  {
     "outputFile": "src/WebComponents/PopupMenu/popup-menu-item-separator.css",
     "inputFile": "src/WebComponents/PopupMenu/popup-menu-item-separator.scss"
   },
