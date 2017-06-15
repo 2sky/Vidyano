@@ -250,18 +250,8 @@ namespace Vidyano.WebComponents {
 
             let focusTarget: HTMLElement;
             try {
-                if (this._customTemplate) {
-                    const model = { attribute: attribute };
-                    let instanceResolver: (instance: TemplateInstance) => void;
-                    this.fire("templatestamp", {
-                        model: model,
-                        templateInstance: new Promise(resolve => instanceResolver = resolve)
-                    });
-
-                    const template = this._customTemplate.stamp(model);
-                    Polymer.dom(focusTarget = this.$.content).appendChild(template.root);
-                    instanceResolver(template);
-                }
+                if (this._customTemplate)
+                    Polymer.dom(focusTarget = this.$.content).appendChild(this._customTemplate.stamp({ attribute: attribute }).root);
                 else {
                     const config = <PersistentObjectAttributeConfig>this.app.configuration.getAttributeConfig(attribute);
                     this.noLabel = this.noLabel || (config && !!config.noLabel);
