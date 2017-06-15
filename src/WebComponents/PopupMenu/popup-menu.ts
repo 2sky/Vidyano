@@ -43,6 +43,7 @@ namespace Vidyano.WebComponents {
         ctrlKey: boolean;
         rightAlign: boolean;
         openOnHover: boolean;
+        open: boolean;
 
         popup(): Promise<any> {
             return (<Popup>this.$.popup).popup();
@@ -142,6 +143,17 @@ namespace Vidyano.WebComponents {
                 Vidyano.WebComponents.Popup.closeAll();
 
                 e.stopPropagation();
+                e.preventDefault();
+            }
+        }
+
+        private _catchTap(e: TapEvent) {
+            if (!this.hasChildren)
+                return;
+
+            if ((<PopupMenu>this.$.popup).open) {
+                e.stopPropagation();
+                e.stopImmediatePropagation();
                 e.preventDefault();
             }
         }
