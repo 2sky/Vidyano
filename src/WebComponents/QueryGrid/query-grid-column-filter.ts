@@ -181,8 +181,6 @@ namespace Vidyano.WebComponents {
         attached() {
             super.attached();
 
-            this.app.importComponent("List");
-
             if (this._openOnAttach) {
                 this._openOnAttach = false;
 
