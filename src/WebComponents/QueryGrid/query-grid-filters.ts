@@ -102,14 +102,11 @@
                     return;
 
                 const nameParts = filter.name.split("\n", 2);
-                if (nameParts.length === 1) {
-                    result.push({
-                        filter: filter
-                    });
-                }
+                if (nameParts.length === 1)
+                    result.push({ filter: filter });
                 else {
                     if (group && group.groupName === nameParts[0])
-                        group.children.push(filter);
+                        group.children.push({ filter: filter });
                     else {
                         result.push(group = {
                             groupName: nameParts[0],
