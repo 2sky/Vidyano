@@ -51,8 +51,19 @@
             monthMode: {
                 type: Boolean,
                 computed: "_computeMonthMode(attribute.typeHints.displayformat)"
+            },
+            minDate: {
+                type: Object,
+                computed: "_computeMinMaxDate(attribute.typeHints.mindate)"
+            },
+            maxDate: {
+                type: Object,
+                computed: "_computeMinMaxDate(attribute.typeHints.maxdate)"
             }
-        }
+        },
+        forwardObservers: [
+            "attribute.typeHints"
+        ]
     })
     export class PersistentObjectAttributeDateTime extends WebComponents.Attributes.PersistentObjectAttribute {
         private _dateInput: HTMLInputElement;
@@ -284,6 +295,13 @@
                 return false;
 
             return displayFormat === "{0:y}";
+        }
+
+        private _computeMinMaxDate(date: string): Date {
+            if (!date)
+                return null;
+
+            return moment(date, "YYYY-MM-DD").toDate();
         }
 
         private _previousMonth(e: TapEvent) {

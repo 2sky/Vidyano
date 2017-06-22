@@ -32,7 +32,7 @@
                                 <vi-icon source="ChevronRight"></vi-icon>
                             </button>
                         </template>
-                        <vi-date-picker class="button" selected-date="{{selectedDate}}" month-mode="[[monthMode]]"></vi-date-picker>
+                        <vi-date-picker class="button" selected-date="{{selectedDate}}" month-mode="[[monthMode]]" min-date="[[minDate]]" max-date="[[maxDate]]"></vi-date-picker>
                     </template>
                     <template is="dom-if" if="[[canClear]]">
                         <button on-tap="_clear" tabindex="-1">
