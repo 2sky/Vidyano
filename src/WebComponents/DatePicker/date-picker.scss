@@ -102,7 +102,7 @@ $border-color: #eee;
                 }
             }
 
-            &[is-selected] {
+            &[is-selected]:not([unselectable]) {
                 &::before, &::after {
                     position: absolute;
                     right: 0;
@@ -140,6 +140,15 @@ $border-color: #eee;
 
             &[type$="month"], &[type$="year"] {
                 width: calc(100% / 3);
+            }
+
+            &[unselectable] {
+                color: #dedede !important;
+                cursor: default !important;
+
+                &:hover {
+                    background-color: transparent !important;
+                }
             }
         }
     }

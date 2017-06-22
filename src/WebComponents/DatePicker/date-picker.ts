@@ -52,6 +52,14 @@
                 type: Boolean,
                 readOnly: true,
                 value: true
+            },
+            minDate: {
+                type: Object,
+                value: null
+            },
+            maxDate: {
+                type: Object,
+                value: null
             }
         },
         observers: [
@@ -77,6 +85,8 @@
         zoom: string;
         selectedDate: Date;
         monthMode: boolean;
+        minDate: Date;
+        maxDate: Date;
 
         attached() {
             super.attached();
@@ -196,6 +206,13 @@
             return !!monthOffset;
         }
 
+        private _isUnselectable(date: moment.Moment, minDate: Date, maxDate: Date): boolean {
+            if (!date || (!minDate && !maxDate))
+                return false;
+
+            return (minDate && date.isBefore(minDate)) || (maxDate && date.isAfter(maxDate));
+        }
+
         private _computeMoment(date: Date): moment.Moment {
             return moment(date);
         }
@@ -235,6 +252,11 @@
             const cell = <IDatePickerCell>e.model.cell;
             if (!cell || !cell.date)
                 return;
+
+            if ((<HTMLElement>e.target).hasAttribute("unselectable")) {
+                e.stopPropagation();
+                return;
+            }
 
             if (this.zoom === "days") {
                 const newSelectedDate = moment(this.selectedDate || new Date());

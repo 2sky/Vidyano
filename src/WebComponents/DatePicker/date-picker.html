@@ -18,7 +18,7 @@
                 <main class="layout horizontal wrap" zoom$="[[zoom]]">
                     <template is="dom-if" if="[[!deferredCellsUpdate]]">
                         <template is="dom-repeat" items="[[cells]]" as="cell">
-                            <div class="cell layout horizontal center-center" type$="[[cell.type]]" is-selected$="[[_isSelected(zoom, cell.date, selectedDateMoment)]]" is-today$="[[_isToday(zoom, cell.date, today)]]" is-other$="[[_isOther(cell.monthOffset)]]" break$="[[cell.break]]" on-tap="_select">[[cell.content]]</div>
+                            <div class="cell layout horizontal center-center" type$="[[cell.type]]" is-selected$="[[_isSelected(zoom, cell.date, selectedDateMoment)]]" is-today$="[[_isToday(zoom, cell.date, today)]]" is-other$="[[_isOther(cell.monthOffset)]]" unselectable$="[[_isUnselectable(cell.date, minDate, maxDate)]]" break$="[[cell.break]]" on-tap="_select">[[cell.content]]</div>
                         </template>
                     </template>
                 </main>
