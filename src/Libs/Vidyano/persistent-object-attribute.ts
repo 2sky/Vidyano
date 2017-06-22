@@ -347,11 +347,11 @@
             this.validationError = resultAttr.validationError || null;
 
             if (resultAttr.typeHints && Object.keys(resultAttr.typeHints).some(k => resultAttr.typeHints[k] !== this.typeHints[k])) {
-                for (var name in this.typeHints) {
+                for (let name in this.typeHints) {
                     if (resultAttr.typeHints[name] != null)
                         continue;
 
-                    resultAttr.typeHints[name] = this.typeHints[name]
+                    resultAttr.typeHints[name] = this.typeHints[name];
                 }
 
                 const oldTypeHints = this.typeHints;
