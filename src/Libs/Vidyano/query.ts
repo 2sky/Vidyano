@@ -107,6 +107,7 @@
         private _isSystem: boolean;
         private _isFiltering: boolean;
         private _columnObservers: Common.ISubjectDisposer[];
+        private _hasMore: boolean = null;
 
         persistentObject: PersistentObject;
         columns: QueryColumn[];
@@ -208,6 +209,18 @@
 
             const oldValue = this._canFilter;
             this.notifyPropertyChanged("canFilter", this._canFilter = val, oldValue);
+        }
+
+        get hasMore(): boolean {
+            return this._hasMore;
+        }
+
+        private _setHasMore(val: boolean) {
+            const oldValue = this._hasMore;
+            if (oldValue === val)
+                return;
+
+            this.notifyPropertyChanged("hasMore", this._hasMore = val, oldValue);
         }
 
         get canRead(): boolean {
@@ -407,7 +420,7 @@
             this.notifyPropertyChanged("totalItems", this._totalItems = items, oldTotalItems);
 
             const oldLabelWithTotalItems = this._labelWithTotalItems;
-            this._labelWithTotalItems = (this.totalItems != null ? this.totalItems + " " : "") + (this.totalItems !== 1 ? this.label : (this.singularLabel || this.persistentObject.label || this.persistentObject.type));
+            this._labelWithTotalItems = (this.totalItems != null ? this.totalItems + (this.hasMore ? "+" : "") + " " : "") + (this.totalItems !== 1 ? this.label : (this.singularLabel || this.persistentObject.label || this.persistentObject.type));
             this.notifyPropertyChanged("labelWithTotalItems", this._labelWithTotalItems, oldLabelWithTotalItems);
         }
 
@@ -457,6 +470,13 @@
             }
 
             if (this.pageSize > 0) {
+                if (result.totalItems === -1) {
+                    result.totalItems = (this.skip || 0) + result.items.length;
+                    this._setHasMore(true);
+                }
+                else
+                    this._setHasMore(false);
+
                 this._setTotalItems(result.totalItems || 0);
                 this._queriedPages.push(Math.floor((this.skip || 0) / this.pageSize));
             }
@@ -521,7 +541,7 @@
                 if (start > this.totalItems)
                     start = this.totalItems;
 
-                if (start + length > this.totalItems)
+                if (!this.hasMore && start + length > this.totalItems)
                     length = this.totalItems - start;
             }
 
@@ -550,10 +570,20 @@
                 try {
                     const result = await this.service.executeQuery(this.parent, clonedQuery, this._asLookup);
 
+                    if (result.totalItems === -1) {
+                        this._setHasMore(true);
+                        result.totalItems = clonedQuery.skip + result.items.length;
+                        this._setTotalItems(result.totalItems);
+                    }
+                    else if (this.hasMore) {
+                        this._setHasMore(false);
+                        this._setTotalItems(result.totalItems);
+                    }
+
                     for (let p = startPage; p <= endPage; p++)
                         this._queriedPages.push(p);
 
-                    const isChanged = this.pageSize > 0 && result.totalItems !== this.totalItems;
+                    const isChanged = !this.hasMore && this.pageSize > 0 && result.totalItems !== this.totalItems;
                     if (isChanged) {
                         // NOTE: Query has changed (items added/deleted) so remove old data
                         this._queriedPages = [];
@@ -569,7 +599,7 @@
                         this._setTotalItems(result.totalItems);
                     }
 
-                    for (let n = 0; n < clonedQuery.top && (clonedQuery.skip + n < clonedQuery.totalItems); n++) {
+                    for (let n = 0; n < clonedQuery.top && (clonedQuery.skip + n < result.totalItems); n++) {
                         if (this.items[clonedQuery.skip + n] == null) {
                             const item = this.items[clonedQuery.skip + n] = this.service.hooks.onConstructQueryResultItem(this.service, result.items[n], this);
                             if (this.selectAll.allSelected || (selectedItems && selectedItems[item.id]))

@@ -732,6 +732,7 @@ declare namespace Vidyano {
         private _isSystem;
         private _isFiltering;
         private _columnObservers;
+        private _hasMore;
         persistentObject: PersistentObject;
         columns: QueryColumn[];
         id: string;
@@ -763,6 +764,8 @@ declare namespace Vidyano {
         readonly filters: QueryFilters;
         readonly canFilter: boolean;
         private _setCanFilter(val);
+        readonly hasMore: boolean;
+        private _setHasMore(val);
         readonly canRead: boolean;
         readonly canReorder: boolean;
         readonly charts: linqjs.Enumerable<QueryChart>;
