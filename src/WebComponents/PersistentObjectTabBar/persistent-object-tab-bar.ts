@@ -82,8 +82,8 @@ namespace Vidyano.WebComponents {
                 computed: "_computeQueryLabel(query.label, query.filters.currentFilter)"
             },
             badge: {
-                type: Number,
-                computed: "query.totalItems"
+                type: String,
+                computed: "_computeBadge(query.totalItems, query.hasMore)"
             },
             hasBadge: {
                 type: Boolean,
@@ -110,8 +110,14 @@ namespace Vidyano.WebComponents {
             return tab === selectedTab;
         }
 
-        private _computeHasBadge(badge: number): boolean {
-            return badge !== undefined && badge >= 0;
+        private _computeBadge(totalItems: number, hasMore: boolean): string {
+            if (totalItems != null && totalItems >= 0)
+                return totalItems + (hasMore ? "+" : "");
+            return "";
+        }
+
+        private _computeHasBadge(badge: string): boolean {
+            return !!badge;
         }
 
         private _computeLabel(tabLabel: string, query: Vidyano.Query, queryLabel: string): string {
