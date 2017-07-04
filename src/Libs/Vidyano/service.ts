@@ -644,7 +644,7 @@
 
             CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
 
-            if (this.userName !== this.registerUserName) {
+            if (result.userName !== this.registerUserName) {
                 this._setUserName(result.userName);
 
                 if (result.session)
