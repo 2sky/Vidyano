@@ -44,7 +44,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_update(attribute.isReadOnly)"
+            "_update(attribute.isReadOnly, isAttached)"
         ]
     })
     export class PersistentObjectAttributeReference extends WebComponents.Attributes.PersistentObjectAttribute {
@@ -151,12 +151,15 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _update() {
+            if (!this.isAttached)
+                return;
+
             const hasReference = this.attribute instanceof Vidyano.PersistentObjectAttributeWithReference;
 
             if (hasReference && this.attribute.objectId !== this.objectId)
                 this.objectId = this.attribute ? this.attribute.objectId : null;
 
-            if (hasReference && this.attribute.lookup && this.attribute.lookup.canRead && this.attribute.objectId && this.app && !this.app.noHistory)
+            if (!this.app.barebone && hasReference && this.attribute.lookup && this.attribute.lookup.canRead && this.attribute.objectId && this.app && !this.app.noHistory)
                 this.href = Vidyano.Path.routes.rootPath + this.app.getUrlForPersistentObject(this.attribute.lookup.persistentObject.id, this.attribute.objectId);
             else
                 this.href = null;
@@ -174,7 +177,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private async _open(e: Event) {
-            if (this.attribute.parent.isNew || !this.attribute.lookup.canRead)
+            if (this.app.barebone || this.attribute.parent.isNew || !this.attribute.lookup.canRead)
                 return;
 
             e.preventDefault();
