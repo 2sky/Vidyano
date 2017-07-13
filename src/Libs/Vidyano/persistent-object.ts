@@ -1,4 +1,4 @@
-﻿namespace Vidyano {
+namespace Vidyano {
     "use strict";
 
     export enum PersistentObjectLayoutMode {
@@ -255,8 +255,9 @@
                 this.setIsEditing(false);
                 this._setIsDirty(false);
 
-                this.refreshFromResult(this._lastResultBackup, true);
+                const backup = this._lastResultBackup;
                 this._lastResultBackup = null;
+                this.refreshFromResult(backup, true);
 
                 if (!!this.notification)
                     this.setNotification();

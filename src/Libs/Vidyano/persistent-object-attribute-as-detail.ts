@@ -1,4 +1,4 @@
-﻿namespace Vidyano {
+namespace Vidyano {
     "use strict";
 
     export class PersistentObjectAttributeAsDetail extends PersistentObjectAttribute {
@@ -27,12 +27,8 @@
                 this._objects = [];
 
             this.parent.propertyChanged.attach((sender, args) => {
-                if (args.propertyName === "isEditing") {
-                    if (args.newValue)
-                        this.objects.forEach(o => o.beginEdit());
-                    else
-                        this.objects.forEach(o => o.cancelEdit());
-                }
+                if (args.propertyName === "isEditing" && args.newValue)
+                    this.objects.forEach(o => o.beginEdit());
                 else if (args.propertyName === "isFrozen") {
                     if (args.newValue)
                         this.objects.forEach(obj => obj.freeze());
