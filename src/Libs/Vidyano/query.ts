@@ -628,13 +628,14 @@ namespace Vidyano {
         }
 
         search(delay?: number): Promise<QueryResultItem[]>;
-        search(options: { delay?: number; throwExceptions?: boolean; }): Promise<QueryResultItem[]>;
+        search(options: { delay?: number; throwExceptions?: boolean; keepSelection?: boolean }): Promise<QueryResultItem[]>;
         async search(options: any = {}): Promise<QueryResultItem[]> {
             if (typeof options === "number") {
                 options = { delay: options };
                 console.warn(`Calling search with a single delay parameter is deprecated. Use search({delay: ${options.delay}) instead.`);
             }
 
+            const selectedIds = options.keepSelection ? this.selectedItems.map(i => i.id) : null;
             const search = () => {
                 this._queriedPages = [];
                 this._updateItems([], true);
@@ -654,7 +655,16 @@ namespace Vidyano {
                     }
 
                     return this.items;
-                }, false);
+                }, false).then(items => {
+                    if (selectedIds != null && selectedIds.length > 0) {
+                        const itemsEnum = Enumerable.from(items);
+                        const newSelectionItems = selectedIds.map(id => itemsEnum.firstOrDefault(i => i.id === id)).filter(i => i != null);
+                        if (newSelectionItems.length === selectedIds.length)
+                            this.selectedItems = newSelectionItems;
+                    }
+
+                    return items;
+                });
             };
 
             if (options.delay > 0) {

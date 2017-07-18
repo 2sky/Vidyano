@@ -797,6 +797,7 @@ declare namespace Vidyano {
         search(options: {
             delay?: number;
             throwExceptions?: boolean;
+            keepSelection?: boolean;
         }): Promise<QueryResultItem[]>;
         clone(asLookup?: boolean): Query;
         private _updateColumns(_columns?);

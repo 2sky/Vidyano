@@ -303,7 +303,7 @@ namespace Vidyano {
                                 this.ownerAttributeWithReference.value = this.breadcrumb;
                         }
                         else if (this.ownerQuery)
-                            this.ownerQuery.search();
+                            this.ownerQuery.search({ keepSelection: this.isBulkEdit });
                     }
                     else if (!StringEx.isNullOrWhiteSpace(this.notification))
                         throw this.notification;

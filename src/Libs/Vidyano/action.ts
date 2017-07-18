@@ -1,4 +1,4 @@
-﻿namespace Vidyano {
+namespace Vidyano {
     "use strict";
 
     export interface IActionExecuteOptions {
@@ -228,17 +228,9 @@
 
                 if (this.query != null && this.definition.refreshQueryOnCompleted) {
                     // NOTE: Don't wait for search to complete
-                    const selectedIds = this.definition.keepSelectionOnRefresh ? this.query.selectedItems.map(i => i.id) : null;
-                    this.query.search().then(items => {
+                    this.query.search({ keepSelection: this.definition.keepSelectionOnRefresh }).then(() => {
                         if (notificationPO && !this.query.notification)
                             this._setNotification(notificationPO.notification, notificationPO.notificationType, notificationPO.notificationDuration);
-
-                        if (selectedIds != null && selectedIds.length > 0) {
-                            const itemsEnum = Enumerable.from(items);
-                            const newSelectionItems = selectedIds.map(id => itemsEnum.firstOrDefault(i => i.id === id)).filter(i => i != null);
-                            if (newSelectionItems.length === selectedIds.length)
-                                this.query.selectedItems = newSelectionItems;
-                        }
                     });
                 }
 
