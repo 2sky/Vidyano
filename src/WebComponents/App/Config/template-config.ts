@@ -24,7 +24,7 @@ namespace Vidyano.WebComponents {
             return this._template.stamp(model).root;
         }
 
-        static register(info?: IWebComponentRegistrationInfo): (obj: any) => void {
+        static register(info?: IWebComponentRegistrationInfo, prefix?: string): (obj: any) => void {
             info.properties = info.properties || {};
             info.properties["hasTemplate"] = {
                 type: Boolean,
@@ -35,7 +35,7 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true
             };
 
-            return WebComponent.register(info);
+            return WebComponent.register(info, prefix);
         }
     }
 }

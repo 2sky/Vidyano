@@ -47,7 +47,7 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        static register(info: IWebComponentRegistrationInfo = {}): any {
+        static register(info: IWebComponentRegistrationInfo | Function = {}): any {
             if (typeof info === "function")
                 return Resource.register({})(info);
 

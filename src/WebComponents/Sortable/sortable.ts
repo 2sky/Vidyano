@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     const _groups: Sortable[] = [];
@@ -110,7 +110,7 @@
                 this._sortable.option("disabled", !enabled);
         }
 
-        static register(info: IWebComponentRegistrationInfo = {}): any {
+        static register(info: IWebComponentRegistrationInfo | Function = {}): any {
             if (typeof info === "function")
                 return Sortable.register({})(info);
 

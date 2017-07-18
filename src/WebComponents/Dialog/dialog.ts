@@ -112,7 +112,7 @@ namespace Vidyano.WebComponents {
             this.style.webkitTransform = this.style.transform = "";
         }
 
-        static register(info: IWebComponentRegistrationInfo = {}, prefix?: string): any {
+        static register(info: IWebComponentRegistrationInfo | Function = {}, prefix?: string): any {
             if (typeof info === "function")
                 return Dialog.register({})(info);
 

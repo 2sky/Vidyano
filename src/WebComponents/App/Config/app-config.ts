@@ -1,7 +1,7 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
-    @WebComponent.register
+    @WebComponent.register()
     export class AppConfig extends WebComponent {
         private _nodeObserver: PolymerDomChangeObserver;
         private _defaultAttributeConfig: PersistentObjectAttributeConfig;

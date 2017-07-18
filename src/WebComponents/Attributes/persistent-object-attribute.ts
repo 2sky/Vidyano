@@ -1,4 +1,4 @@
-﻿// https://gist.github.com/nuxodin/9250e56a3ce6c0446efa
+// https://gist.github.com/nuxodin/9250e56a3ce6c0446efa
 /* focusin/out event polyfill (firefox) */
 (function () {
     const w = window,
@@ -127,7 +127,7 @@ namespace Vidyano.WebComponents.Attributes {
             target.focus();
         }
 
-        static register(info: IWebComponentRegistrationInfo = {}): any {
+        static register(info: IWebComponentRegistrationInfo | Function = {}): any {
             if (typeof info === "function")
                 return PersistentObjectAttribute.register({})(info);
 

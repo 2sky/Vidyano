@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     const verboseLogElements = [];
@@ -827,15 +827,13 @@
             return wc;
         }
 
-        static register(obj: Function, info: IWebComponentRegistrationInfo, prefix?: string, ns?: any): Function;
-        static register(info?: IWebComponentRegistrationInfo, prefix?: string);
-        static register(info?: IWebComponentRegistrationInfo, prefix?: string): (obj: any) => void {
-            if (!info || typeof info === "object") {
+        static register(arg1?: IWebComponentRegistrationInfo | Function, arg2?: string | IWebComponentRegistrationInfo, arg3?: string): (obj: any) => void {
+            if (!arg1 || typeof arg1 === "object") {
                 return (obj: Function) => {
-                    return WebComponent._register(obj, info, prefix);
+                    return WebComponent._register(obj, <IWebComponentRegistrationInfo>arg1, <string>arg2);
                 };
             }
-            else if (typeof info === "function")
+            else if (typeof arg1 === "function")
                 return WebComponent._register.apply(this, arguments);
         }
     }

@@ -159,7 +159,7 @@ namespace Vidyano.WebComponents {
         deactivate(nextRoute?: AppRoute): Promise<boolean> {
             const component = <WebComponent>Polymer.dom(this).children[0];
 
-            return new Promise(resolve => {
+            return new Promise<boolean>(resolve => {
                 this.deactivator = resolve;
                 if (!component || !component.fire || !component.fire("app-route-deactivate", null, { bubbles: false, cancelable: true }).defaultPrevented)
                     resolve(true);

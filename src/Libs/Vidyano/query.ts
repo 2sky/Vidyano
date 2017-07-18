@@ -1,4 +1,4 @@
-﻿namespace Vidyano {
+namespace Vidyano {
     "use strict";
 
     export enum SortDirection {
@@ -629,7 +629,7 @@
 
         search(delay?: number): Promise<QueryResultItem[]>;
         search(options: { delay?: number; throwExceptions?: boolean; }): Promise<QueryResultItem[]>;
-        async search(options: { delay?: number; throwExceptions?: boolean; } = {}): Promise<QueryResultItem[]> {
+        async search(options: any = {}): Promise<QueryResultItem[]> {
             if (typeof options === "number") {
                 options = { delay: options };
                 console.warn(`Calling search with a single delay parameter is deprecated. Use search({delay: ${options.delay}) instead.`);
