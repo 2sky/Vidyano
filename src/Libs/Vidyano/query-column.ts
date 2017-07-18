@@ -1,4 +1,4 @@
-﻿namespace Vidyano {
+namespace Vidyano {
     "use strict";
 
     export interface IQueryColumnDistincts {
@@ -162,7 +162,7 @@
         }
 
         async refreshDistincts(): Promise<IQueryColumnDistincts> {
-            const result = await this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query, null, { ColumnName: this.name });
+            const result = await this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query, null, { ColumnName: this.name, AsLookup: this.query.asLookup });
             this.query.columns.filter(q => q !== this).forEach(col => {
                 if (col.distincts)
                     col.distincts.isDirty = true;
