@@ -175,8 +175,8 @@ namespace Vidyano {
                     bulkEdit.selectionRule = count => count === 1;
             }
 
-            if (!asLookup && query.filters && !(query.filters instanceof PersistentObject))
-                this._filters = new QueryFilters(this, service.hooks.onConstructPersistentObject(service, query.filters));
+            if (query.filters)
+                this._filters = query.filters instanceof QueryFilters ? query.filters.clone(this) : new QueryFilters(this, service.hooks.onConstructPersistentObject(service, query.filters));
             else
                 this._filters = null;
 
@@ -309,6 +309,15 @@ namespace Vidyano {
         private _selectAllPropertyChanged(selectAll: QuerySelectAllImpl, args: Vidyano.Common.PropertyChangedArgs) {
             if (args.propertyName === "allSelected")
                 this.selectedItems = this.selectAll.allSelected ? this.items : [];
+        }
+
+        async resetFilters() {
+            if (!!this._filters || !this.actions["Filter"])
+                return;
+
+            await this.queueWork(async () => {
+                this._filters = new QueryFilters(this, await this.service.getPersistentObject(null, "a0a2bd29-2921-43a6-a322-b2dcf4c895c2", this.id));
+            });
         }
 
         selectRange(from: number, to: number): boolean {

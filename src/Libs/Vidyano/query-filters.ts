@@ -1,4 +1,4 @@
-﻿namespace Vidyano {
+namespace Vidyano {
     "use strict";
 
     export class QueryFilters extends Vidyano.Common.Observable<QueryFilters> {
@@ -115,6 +115,10 @@
                     excludes: c.selectedDistinctsInversed ? c.selectedDistincts.toArray() : []
                 };
             }));
+        }
+
+        clone(targetQuery: Query): QueryFilters {
+            return new QueryFilters(targetQuery, targetQuery.service.hooks.onConstructPersistentObject(targetQuery.service, this._filtersPO["_lastResult"]));
         }
 
         getFilter(name: string): QueryFilter {

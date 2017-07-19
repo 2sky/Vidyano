@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     @Dialog.register({
@@ -26,17 +26,10 @@
             if (keepFilter)
                 return;
 
-            let search = forceSearch || !!query.textSearch || !query.hasSearched;
-            query.columns.forEach(c => {
-                if (!c.selectedDistincts.isEmpty()) {
-                    search = search || true;
-                    c.selectedDistincts = Enumerable.empty<string>();
-                }
+            if (!query.filters)
+                query.resetFilters();
 
-                c.selectedDistinctsInversed = false;
-            });
-
-            if (search)
+            if (forceSearch || !!query.textSearch || !query.hasSearched)
                 query.search();
         }
 

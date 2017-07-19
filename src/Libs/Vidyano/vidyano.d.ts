@@ -639,6 +639,7 @@ declare namespace Vidyano {
         currentFilter: QueryFilter;
         private _computeFilters(setDefaultFilter?);
         private _computeFilterData();
+        clone(targetQuery: Query): QueryFilters;
         getFilter(name: string): QueryFilter;
         createNew(): Promise<QueryFilter>;
         save(filter?: QueryFilter): Promise<boolean>;
@@ -776,6 +777,7 @@ declare namespace Vidyano {
         private _setLastUpdated(date?);
         selectedItems: QueryResultItem[];
         private _selectAllPropertyChanged(selectAll, args);
+        resetFilters(): Promise<void>;
         selectRange(from: number, to: number): boolean;
         readonly asLookup: boolean;
         readonly totalItems: number;
