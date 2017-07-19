@@ -1,4 +1,4 @@
-﻿<link rel="import" href="../../Popup/popup.html" />
+<link rel="import" href="../../Popup/popup.html" />
 
 <dom-module id="vi-persistent-object-attribute-string">
     <template>
@@ -8,7 +8,7 @@
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <input content value="{{value::input}}" type$="[[inputtype]]" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off" placeholder="[[placeholder]]">
+                <input content value="{{value::input}}" type$="[[inputtype]]" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off" placeholder="[[placeholder]]">
                 <template is="dom-if" if="[[hasSuggestions]]">
                     <vi-popup id="suggestions" class="button" content-align="right">
                         <vi-icon source="Add" header></vi-icon>
