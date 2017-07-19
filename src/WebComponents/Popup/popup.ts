@@ -115,10 +115,16 @@ namespace Vidyano.WebComponents {
             let boundHeight = windowHeight;
             let boundLeft = 0;
             if (this.boundingTarget) {
-                const boundTargetRect = this._getTargetRect(this.boundingTarget);
-                boundWidth = boundTargetRect.targetRect.right;
-                boundHeight = boundTargetRect.targetRect.bottom;
-                boundLeft = boundTargetRect.targetRect.left;
+                const boundTargetRectInfo = this._getTargetRect(this.boundingTarget);
+                boundWidth = boundTargetRectInfo.targetRect.right;
+                boundHeight = boundTargetRectInfo.targetRect.bottom;
+                boundLeft = boundTargetRectInfo.targetRect.left;
+
+                if (boundTargetRectInfo.transformedRect) {
+                    boundWidth += boundTargetRectInfo.transformedRect.right;
+                    boundHeight += boundTargetRectInfo.transformedRect.bottom;
+                    boundLeft += boundTargetRectInfo.transformedRect.left;
+                }
             }
 
             const alignments = (this.contentAlign || "").toUpperCase().split(" ");
