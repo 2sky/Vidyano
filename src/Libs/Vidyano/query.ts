@@ -392,10 +392,15 @@ namespace Vidyano {
                 throw "Unable to reorder, canReorder is set to false.";
 
             return await this.queueWork(async () => {
-                const po = await this.service.executeAction("QueryOrder.Reorder", this.parent, this, [before, item, after]);
-                this._setResult(po.queries[0]._lastResult);
+                try {
+                    const po = await this.service.executeAction("QueryOrder.Reorder", this.parent, this, [before, item, after]);
+                    this._setResult(po.queries[0]._lastResult);
 
-                return this.items;
+                    return this.items;
+                }
+                catch (e) {
+                    return [];
+                }
             });
         }
 
