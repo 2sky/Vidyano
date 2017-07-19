@@ -202,14 +202,20 @@ namespace Vidyano {
             } else
                 this.query.sortOptions = direction !== SortDirection.None ? [{ column: this, name: this.name, direction: direction }] : [];
 
-            const result = await this.query.search();
+            try {
+                await this.query.search({ throwExceptions: true });
+            }
+            catch (e) {
+                return this.query.items;
+            }
+
             const querySettings = (this.service.application.userSettings["QuerySettings"] || (this.service.application.userSettings["QuerySettings"] = {}))[this.query.id] || {};
             querySettings["sortOptions"] = this.query.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
 
             this.service.application.userSettings["QuerySettings"][this.query.id] = querySettings;
             await this.service.application.saveUserSettings();
 
-            return result;
+            return this.query.items;
         }
 
         private _queryPropertyChanged(sender: Vidyano.Query, args: Vidyano.Common.PropertyChangedArgs) {
