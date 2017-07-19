@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     @Resource.register
@@ -58,15 +58,27 @@
             value: {
                 type: Object,
                 observer: "_valueChanged"
+            },
+            oldValue: {
+                type: Object,
+                readOnly: true
             }
-        }
+        },
+        observers: [
+            "_update(value, oldValue, isAttached)"
+        ]
     })
     export class QueryGridCellBoolean extends WebComponent {
         private _isHidden: boolean;
         private _icon: HTMLElement;
         private _textNode: Text;
+        readonly oldValue: QueryResultItemValue; private _setOldValue: (oldValue: QueryResultItemValue) => void;
 
         private _valueChanged(value: QueryResultItemValue, oldValue: QueryResultItemValue) {
+            this._setOldValue(oldValue == null ? null : oldValue);
+        }
+
+        private _update(value: QueryResultItemValue, oldValue: QueryResultItemValue) {
             if (!!value && !!oldValue && value.getValue() === oldValue.getValue())
                 return;
 
@@ -108,7 +120,8 @@
                         this._icon.setAttribute("is-selected", "");
                 }
                 else {
-                    const displayTextValue = value.column.typeHints[displayValue ? "truekey" : "falsekey"];
+                    const displayTextKey = value.column.typeHints[displayValue ? "truekey" : "falsekey"];
+                    const displayTextValue = this.translations[displayTextKey] || displayTextKey;
                     if (!this._textNode)
                         this._textNode = <Text>Polymer.dom(this.root).appendChild(document.createTextNode(displayTextValue));
                     else
