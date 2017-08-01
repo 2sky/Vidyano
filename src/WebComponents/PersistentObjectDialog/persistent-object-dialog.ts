@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     export interface IPersistentObjectDialogOptions {
@@ -36,6 +36,9 @@
         },
         listeners: {
             "vi-persistent-object-tab-inner-size-changed": "_tabInnerSizeChanged"
+        },
+        keybindings: {
+            "ctrl+s": "_keyboardSave"
         }
     })
     export class PersistentObjectDialog extends Dialog {
@@ -47,6 +50,14 @@
 
             this.noHeader = _options.noHeader;
             persistentObject.beginEdit();
+        }
+
+        private _keyboardSave(e: KeyboardEvent) {
+            if (document.activeElement && document.activeElement instanceof HTMLInputElement)
+                document.activeElement.blur();
+
+            e.stopPropagation();
+            this._save();
         }
 
         private async _save() {
