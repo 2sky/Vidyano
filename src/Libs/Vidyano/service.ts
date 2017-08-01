@@ -1,4 +1,4 @@
-﻿namespace Vidyano {
+namespace Vidyano {
     "use strict";
 
     export let version = "latest";
@@ -405,7 +405,7 @@
             const oldIsSignedIn = this._isSignedIn;
             this._isSignedIn = val;
 
-            this._setIsUsingDefaultCredentials(val && this.defaultUserName && this.userName && this.defaultUserName.toLowerCase() === this.userName.toLowerCase());
+            this._setIsUsingDefaultCredentials(this.defaultUserName && this.userName && this.defaultUserName.toLowerCase() === this.userName.toLowerCase());
 
             if (val !== oldIsSignedIn)
                 this.notifyPropertyChanged("isSignedIn", this._isSignedIn, oldIsSignedIn);
@@ -652,6 +652,8 @@
 
                 this._setIsSignedIn(true);
             }
+            else
+                this._setIsSignedIn(false);
 
             return this.application;
         }
