@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents.Attributes {
+namespace Vidyano.WebComponents.Attributes {
     "use strict";
 
     @PersistentObjectAttribute.register({
@@ -128,6 +128,13 @@
 
         private _editInputFocus(e: Event) {
             this._setFocused(true);
+
+            const input = <HTMLInputElement>e.target;
+            if (!input.value || !this.attribute.getTypeHint("SelectAllOnFocus"))
+                return;
+
+            input.selectionStart = 0;
+            input.selectionEnd = input.value.length;
         }
 
         private _canParse(value: string): boolean {
