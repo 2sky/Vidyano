@@ -1,4 +1,4 @@
-﻿@import "../_vars.scss";
+@import "../_vars.scss";
 
 :host {
     position: relative;
@@ -15,7 +15,15 @@
         line-height: var(--theme-h2);
     }
 
-    &[inversed] {
+    &[partial] > * {
         opacity: 0.5;
+    }
+
+    &:not([partial]):not([can-select-all]) {
+        cursor: default;
+
+        & > * {
+            visibility: hidden;
+        }
     }
 }

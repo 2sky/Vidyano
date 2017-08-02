@@ -19,9 +19,7 @@
         <div class="vertical layout fit">
             <header id="dataHeaderHost" class="horizontal layout">
                 <header class="horizontal layout">
-                    <template is="dom-if" if="[[canSelectAll]]">
-                        <vi-query-grid-select-all query="[[query]]" disabled$="[[!canSelectAll]]"></vi-query-grid-select-all>
-                    </template>
+                    <vi-query-grid-select-all query="[[query]]" hidden$="[[!canSelect]]"></vi-query-grid-select-all>
                     <template is="dom-if" if="[[canFilter]]">
                         <vi-query-grid-filters id="filters" query="[[query]]"></vi-query-grid-filters>
                     </template>

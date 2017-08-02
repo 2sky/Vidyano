@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     export interface IQueryGridItemTapEventArgs {
@@ -828,7 +828,7 @@
                 this._row.table.grid.fire("item-select", {
                     item: this.item,
                     shift: !!event && event instanceof MouseEvent ? event.shiftKey : false,
-                    ctrl: this._row.table.grid.app.configuration.getSetting("vi-query-grid.single-click", "false").toLowerCase() === "true" || (!!event && event instanceof MouseEvent ? event.ctrlKey : true)
+                    ctrl: this._row.table.grid.app.configuration.getSetting("vi-query-grid.single-click", "true").toLowerCase() === "true" || (!!event && event instanceof MouseEvent ? event.ctrlKey : true)
                 }, { bubbles: false });
             }
 
@@ -919,11 +919,6 @@
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "_computeCanSelect(query, noSelection, asLookup)"
-            },
-            canSelectAll: {
-                type: Boolean,
-                reflectToAttribute: true,
-                computed: "_computeCanSelectAll(canSelect, query.selectAll.isAvailable)"
             },
             selectAllSelected: {
                 type: Boolean,
@@ -1258,10 +1253,6 @@
 
         private _computeCanSelect(query: Vidyano.Query, noSelection: boolean, asLookup: boolean): boolean {
             return !noSelection && !!query && (asLookup || query.actions.some(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue));
-        }
-
-        private _computeCanSelectAll(canSelect: boolean, isAvailable: boolean): boolean {
-            return canSelect && isAvailable;
         }
 
         private _computeHasSelectedItems(selectedItems: Vidyano.QueryResultItem[]): boolean {
