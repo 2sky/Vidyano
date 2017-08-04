@@ -377,8 +377,6 @@
         }
     }
 
-    &[can-select]:not([inline-actions]):not([can-filter]),
-    &[inline-actions]:not([can-select]):not([can-filter]),
     &[can-select][inline-actions]:not([can-filter]) {
         table[is="vi-query-grid-table-header"] {
             padding-left: var(--theme-h2);
