@@ -711,6 +711,36 @@ declare namespace Vidyano {
         allSelected: boolean;
         inverse: boolean;
     }
+    interface IQueryGroupingInfo {
+        groupedBy: string;
+        type: string;
+        groups: {
+            name: string;
+            start: number;
+            count: number;
+            end: number;
+        }[];
+    }
+    interface IServiceQueryChart {
+        label: string;
+        name: string;
+        type: string;
+        options: any;
+    }
+    interface IServiceQueryResult {
+        pageSize: number;
+        totalItems: number;
+        columns: Vidyano.QueryColumn[];
+        items: Vidyano.QueryResultItem[];
+        groupingInfo: IQueryGroupingInfo;
+        notification: string;
+        notificationType: Vidyano.NotificationType;
+        notificationDuration: number;
+        sortOptions: string;
+        charts: IServiceQueryChart[];
+        totalItem: Vidyano.QueryResultItem;
+        continuation?: string;
+    }
     class Query extends ServiceObjectWithActions {
         parent: PersistentObject;
         maxSelectedItems: number;
@@ -748,17 +778,9 @@ declare namespace Vidyano {
         pageSize: number;
         skip: number;
         top: number;
+        continuation: string;
         items: QueryResultItem[];
-        groupingInfo: {
-            groupedBy: string;
-            type: string;
-            groups: {
-                name: string;
-                start: number;
-                count: number;
-                end: number;
-            }[];
-        };
+        groupingInfo: IQueryGroupingInfo;
         selectAll: IQuerySelectAll;
         constructor(service: Service, query: any, parent?: PersistentObject, asLookup?: boolean, maxSelectedItems?: number);
         readonly isSystem: boolean;
@@ -791,7 +813,7 @@ declare namespace Vidyano {
         readonly isFiltering: boolean;
         private _updateIsFiltering();
         _toServiceObject(): any;
-        _setResult(result: any): void;
+        _setResult(result: IServiceQueryResult): void;
         getColumn(name: string): QueryColumn;
         getItemsInMemory(start: number, length: number): QueryResultItem[];
         getItems(start: number, length?: number, skipQueue?: boolean): Promise<QueryResultItem[]>;

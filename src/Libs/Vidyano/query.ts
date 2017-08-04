@@ -19,6 +19,39 @@ namespace Vidyano {
         inverse: boolean;
     }
 
+    export interface IQueryGroupingInfo {
+        groupedBy: string;
+        type: string;
+        groups: {
+            name: string;
+            start: number;
+            count: number;
+            end: number;
+        }[];
+    }
+
+    export interface IServiceQueryChart {
+        label: string;
+        name: string;
+        type: string;
+        options: any;
+    }
+
+    export interface IServiceQueryResult {
+        pageSize: number;
+        totalItems: number;
+        columns: Vidyano.QueryColumn[];
+        items: Vidyano.QueryResultItem[];
+        groupingInfo: IQueryGroupingInfo;
+        notification: string;
+        notificationType: Vidyano.NotificationType;
+        notificationDuration: number;
+        sortOptions: string;
+        charts: IServiceQueryChart[];
+        totalItem: Vidyano.QueryResultItem;
+        continuation?: string;
+    }
+
     class QuerySelectAllImpl extends Vidyano.Common.Observable<IQuerySelectAll> implements IQuerySelectAll {
         private _allSelected: boolean = false;
         private _inverse: boolean = false;
@@ -88,7 +121,7 @@ namespace Vidyano {
     }
 
     export class Query extends ServiceObjectWithActions {
-        private _lastResult: any;
+        private _lastResult: IServiceQueryResult;
         private _asLookup: boolean;
         private _isSelectionModifying: boolean;
         private _totalItems: number;
@@ -123,17 +156,9 @@ namespace Vidyano {
         pageSize: number;
         skip: number;
         top: number;
+        continuation: string;
         items: QueryResultItem[];
-        groupingInfo: {
-            groupedBy: string;
-            type: string;
-            groups: {
-                name: string;
-                start: number;
-                count: number;
-                end: number;
-            }[];
-        };
+        groupingInfo: IQueryGroupingInfo;
         selectAll: IQuerySelectAll;
 
         constructor(service: Service, query: any, public parent?: PersistentObject, asLookup: boolean = false, public maxSelectedItems?: number) {
@@ -456,7 +481,7 @@ namespace Vidyano {
         }
 
         _toServiceObject() {
-            const result = this.copyProperties(["id", "isSystem", "name", "label", "pageSize", "skip", "top", "textSearch"]);
+            const result = this.copyProperties(["id", "isSystem", "name", "label", "pageSize", "skip", "top", "textSearch", "continuation"]);
             if (this.selectAll.allSelected) {
                 result["allSelected"] = true;
                 if (this.selectAll.inverse)
@@ -473,9 +498,10 @@ namespace Vidyano {
             return result;
         }
 
-        _setResult(result: any) {
+        _setResult(result: IServiceQueryResult) {
             this._lastResult = result;
 
+            this.continuation = result.continuation;
             this.pageSize = result.pageSize || 0;
 
             this.groupingInfo = result.groupingInfo;
@@ -578,8 +604,13 @@ namespace Vidyano {
                 return this.items.slice(start, start + length);
 
             const clonedQuery = this.clone(this._asLookup);
-            clonedQuery.skip = startPage * this.pageSize;
+            const skip = startPage * this.pageSize;
             clonedQuery.top = (endPage - startPage + 1) * this.pageSize;
+
+            if (this.hasMore && this.items.length > 0 && this.continuation)
+                clonedQuery.continuation = this.continuation;
+            else
+                clonedQuery.skip = skip;
 
             const work = async () => {
                 if (Enumerable.rangeTo(startPage, endPage).all(p => this._queriedPages.indexOf(p) >= 0))
@@ -589,12 +620,14 @@ namespace Vidyano {
                     const result = await this.service.executeQuery(this.parent, clonedQuery, this._asLookup);
 
                     if (result.totalItems === -1) {
+                        this.continuation = result.continuation;
                         this._setHasMore(true);
-                        result.totalItems = clonedQuery.skip + result.items.length;
+                        result.totalItems = skip + result.items.length;
                         this._setTotalItems(result.totalItems);
                     }
                     else if (this.hasMore) {
                         this._setHasMore(false);
+                        result.totalItems = skip + result.items.length;
                         this._setTotalItems(result.totalItems);
                     }
 
@@ -617,9 +650,9 @@ namespace Vidyano {
                         this._setTotalItems(result.totalItems);
                     }
 
-                    for (let n = 0; n < clonedQuery.top && (clonedQuery.skip + n < result.totalItems); n++) {
-                        if (this.items[clonedQuery.skip + n] == null) {
-                            const item = this.items[clonedQuery.skip + n] = this.service.hooks.onConstructQueryResultItem(this.service, result.items[n], this);
+                    for (let n = 0; n < clonedQuery.top && (skip + n < result.totalItems); n++) {
+                        if (this.items[skip + n] == null) {
+                            const item = this.items[skip + n] = this.service.hooks.onConstructQueryResultItem(this.service, result.items[n], this);
                             if (this.selectAll.allSelected || (selectedItems && selectedItems[item.id]))
                                 (<any>item)._isSelected = true;
                         }
@@ -655,6 +688,7 @@ namespace Vidyano {
 
             const selectedIds = options.keepSelection ? this.selectedItems.map(i => i.id) : null;
             const search = () => {
+                this.continuation = null;
                 this._queriedPages = [];
                 this._updateItems([], true);
 
