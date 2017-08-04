@@ -175,8 +175,12 @@ namespace Vidyano {
                     bulkEdit.selectionRule = count => count === 1;
             }
 
-            if (query.filters)
-                this._filters = query.filters instanceof QueryFilters ? query.filters.clone(this) : new QueryFilters(this, service.hooks.onConstructPersistentObject(service, query.filters));
+            if (query.filters) {
+                if (query.filters instanceof QueryFilters)
+                    this._filters = asLookup ? query.filters.clone(this) : null;
+                else
+                    this._filters = new QueryFilters(this, service.hooks.onConstructPersistentObject(service, query.filters));
+            }
             else
                 this._filters = null;
 
