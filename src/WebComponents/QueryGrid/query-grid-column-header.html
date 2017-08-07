@@ -5,7 +5,7 @@
             <label id="label"></label>
             <vi-icon id="sortingIcon" source="[[sorting]]" hidden$="[[!sorting]]"></vi-icon>
         </div>
-        <content select="vi-query-grid-column-filter-proxy, vi-query-grid-column-filter"></content>
+        <slot></slot>
         <div class="resizer" on-track="_resizeTrack"></div>
     </template>
 </dom-module>
