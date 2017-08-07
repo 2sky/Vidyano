@@ -62,7 +62,7 @@
                 pointer-events: none;
 
                 > ::content {
-                    > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                    > [slot="button"] {
                         opacity: 0.25;
 
                         &::before {
@@ -108,7 +108,7 @@
             background-color: white;
 
             > ::content {
-                > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                > [slot="button"] {
                     @include relative();
                     outline: none;
                     cursor: pointer;
@@ -163,7 +163,7 @@
             }
 
             &:hover > ::content {
-                > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                > [slot="button"] {
                     &::after {
                         left: 0;
                         right: 0;
@@ -187,7 +187,7 @@
 
         &:not([reverse]) {
             .buttons ::content {
-                > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                > [slot="button"] {
                     &::before {
                         left: 0;
                         border-left: 1px solid var(--theme-light-border);
@@ -198,7 +198,7 @@
 
         &[reverse] {
             .buttons > ::content {
-                > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                > [slot="button"] {
                     &::before {
                         right: 0;
                         border-right: 1px solid var(--theme-light-border);
@@ -213,7 +213,7 @@
             border-color: var(--theme-color-lighter);
 
             > .buttons ::content {
-                > button, > .button, > [button], > vi-popup:not([content]) button[header] {
+                > [slot="button"] {
                     &::after, &::before {
                         border-color: var(--theme-color-lighter);
                     }

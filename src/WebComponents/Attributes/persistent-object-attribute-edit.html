@@ -1,4 +1,4 @@
-﻿<link rel="import" href="PersistentObjectAttributeValidationError/persistent-object-attribute-validation-error.html" />
+<link rel="import" href="PersistentObjectAttributeValidationError/persistent-object-attribute-validation-error.html" />
 
 <dom-module id="vi-persistent-object-attribute-edit">
     <template>
@@ -7,7 +7,7 @@
             <div class="box layout horizontal fit" reverse$="[[reverse]]">
                 <slot name="content"></slot>
                 <div class="buttons">
-                    <content select=".button, button, vi-popup:not([content])"></content>
+                    <slot name="button"></slot>
                 </div>
             </div>
         </fieldset>

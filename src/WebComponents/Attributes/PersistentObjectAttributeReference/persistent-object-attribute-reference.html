@@ -18,19 +18,19 @@
                 <template is="dom-if" if="[[!selectInPlaceAsRadio]]">
                     <vi-persistent-object-attribute-edit attribute="[[attribute]]" reverse-content>
                         <vi-select id="selectInPlace" slot="content" class="flex" options="[[options]]" selected-option="{{objectId}}" readonly$="[[attribute.isReadOnly]]" placeholder="[[placeholder]]"></vi-select>
-                        <button on-tap="_openSelect" hidden$="[[attribute.isReadOnly]]">
+                        <button slot="button" on-tap="_openSelect" hidden$="[[attribute.isReadOnly]]">
                             <vi-icon source="CaretDown"></vi-icon>
                         </button>
-                        <a class="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
+                        <a slot="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
                             <vi-icon source="ArrowUpRight"></vi-icon>
                         </a>
                         <template is="dom-if" if="[[canAddNewReference]]" restamp>
-                            <button on-tap="_addNewReference" tabindex="-1">
+                            <button slot="button" on-tap="_addNewReference" tabindex="-1">
                                 <vi-icon source="Add"></vi-icon>
                             </button>
                         </template>
                         <template is="dom-if" if="[[canClear]]" restamp>
-                            <button on-tap="_clearReference" tabindex="-1">
+                            <button slot="button" on-tap="_clearReference" tabindex="-1">
                                 <vi-icon source="Remove"></vi-icon>
                             </button>
                         </template>
@@ -49,21 +49,21 @@
             <template is="dom-if" if="[[!attribute.selectInPlace]]">
                 <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                     <input slot="content" value="{{filter::input}}" on-blur="_filterBlur" readonly$="[[attribute.isReadOnly]]" autocomplete="off" placeholder="[[placeholder]]">
-                    <a class="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
+                    <a slot="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
                         <vi-icon source="ArrowUpRight"></vi-icon>
                     </a>
                     <template is="dom-if" if="[[canBrowseReference]]" restamp>
-                        <button on-tap="_browse" tabindex="-1">
+                        <button slot="button" on-tap="_browse" tabindex="-1">
                             <vi-icon source="Ellipsis"></vi-icon>
                         </button>
                     </template>
                     <template is="dom-if" if="[[canAddNewReference]]" restamp>
-                        <button on-tap="_addNewReference" tabindex="-1">
+                        <button slot="button" on-tap="_addNewReference" tabindex="-1">
                             <vi-icon source="Add"></vi-icon>
                         </button>
                     </template>
                     <template is="dom-if" if="[[canClear]]" restamp>
-                        <button on-tap="_clearReference" tabindex="-1">
+                        <button slot="button" on-tap="_clearReference" tabindex="-1">
                             <vi-icon source="Remove"></vi-icon>
                         </button>
                     </template>

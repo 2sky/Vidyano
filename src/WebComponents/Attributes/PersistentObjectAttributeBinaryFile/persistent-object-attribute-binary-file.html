@@ -8,12 +8,12 @@
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <input slot="content" class="flex" value="{{fileName}}" type="text" readonly placeholder="[[placeholder]]">
                 <template is="dom-if" if="[[!readOnly]]">
-                    <div class="button browse" on-change="_change">
+                    <div class="browse" slot="button" on-change="_change">
                         <vi-icon source="FileUpload"></vi-icon>
                         <content select="[upload]"></content>
                     </div>
                     <template is="dom-if" if="[[canClear]]" restamp>
-                        <button on-tap="_clear" tabindex="-1">
+                        <button slot="button" on-tap="_clear" tabindex="-1">
                             <vi-icon source="Remove"></vi-icon>
                         </button>
                     </template>

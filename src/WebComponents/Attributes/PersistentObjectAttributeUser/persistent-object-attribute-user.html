@@ -11,12 +11,12 @@
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <input slot="content" value="[[friendlyName]]" readonly>
                 <template is="dom-if" if="[[canBrowseReference]]" restamp>
-                    <button on-tap="_browseReference" tabindex="-1">
+                    <button slot="button" on-tap="_browseReference" tabindex="-1">
                         <vi-icon source="Ellipsis"></vi-icon>
                     </button>
                 </template>
                 <template is="dom-if" if="[[canClear]]" restamp>
-                    <button on-tap="_clearReference" tabindex="-1">
+                    <button slot="button" on-tap="_clearReference" tabindex="-1">
                         <vi-icon source="Remove"></vi-icon>
                     </button>
                 </template>
