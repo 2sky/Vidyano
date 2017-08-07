@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="query-items-presenter.css" />
         <template is="dom-if" if="[[fileDrop]]">
             <vi-file-drop class="layout horizontal">
-                <content></content>
+                <slot></slot>
             </vi-file-drop>
         </template>
         <template is="dom-if" if="[[!fileDrop]]">
