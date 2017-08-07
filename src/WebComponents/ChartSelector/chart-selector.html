@@ -7,7 +7,7 @@
         <template is="dom-repeat" items="[[types]]" as="type">
             <template is="dom-if" if="[[!type.single]]">
                 <vi-popup-menu>
-                    <button is="vi-button" header inverse icon="[[type.icon]]"></button>
+                    <button is="vi-button" slot="header" inverse icon="[[type.icon]]"></button>
                     <template is="dom-repeat" items="[[type.charts]]" as="chart">
                         <vi-popup-menu-item label="[[chart.label]]" on-tap="_showChart"></vi-popup-menu-item>
                     </template>

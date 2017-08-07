@@ -27,7 +27,7 @@
         <link rel="stylesheet" href="query-grid-filter-dialog-name.css" />
         <vi-persistent-object-attribute-edit attribute="[[attribute]]" class="flex" reverse>
             <button slot="button" is="vi-button" icon="Folder" on-tap="_toggleGrouping" inverse tabindex="-1"></button>
-            <div content class="layout horizontal flex">
+            <div slot="content" class="layout horizontal flex">
                 <input class="flex" value="{{group::input}}" hidden$="[[!grouping]]" id="groupInput" />
                 <vi-icon source="ChevronRight" hidden$="[[!grouping]]"></vi-icon>
                 <input class="flex" value="{{name::input}}" id="nameInput" />

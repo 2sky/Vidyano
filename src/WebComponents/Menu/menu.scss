@@ -122,7 +122,7 @@ $backgroundColor: $blue-grey-900;
                 display: block;
             }
 
-            .subItems[content] {
+            .subItems {
                 vi-menu-item {
                     padding-right: var(--theme-h4);
                 }
@@ -139,7 +139,7 @@ $backgroundColor: $blue-grey-900;
         }
 
         vi-popup {
-            [content] {
+            [slot="content"] {
                 background-color: var(--vi-menu-background, $backgroundColor);
             }
         }
@@ -233,7 +233,7 @@ $backgroundColor: $blue-grey-900;
 
     &[collapsed] {
         header {
-            vi-icon[header] {
+            vi-icon[slot="header"] {
                 fill: var(--vi-menu-color, $color);
                 width: var(--theme-h1);
                 height: var(--theme-h1);

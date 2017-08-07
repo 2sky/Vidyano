@@ -6,10 +6,10 @@
         <link rel="stylesheet" href="popup-menu.css" />
         <vi-popup open-on-hover="{{openOnHover}}" id="popup" disabled="[[disabled]]" open="{{open}}">
             <template is="dom-if" if="[[!contextMenuOnly]]">
-                <content select="[header]"></content>
+                <slot name="header"></slot>
             </template>
-            <div content>
-                <content id="items" select="vi-popup-menu-item, vi-popup-menu-item-split, vi-popup-menu-item-separator, vi-popup-menu-item-with-actions"></content>
+            <div id="items">
+                <slot></slot>
             </div>
         </vi-popup>
     </template>
@@ -19,13 +19,13 @@
     <template>
         <link rel="stylesheet" href="popup-menu-item.css" />
         <vi-popup open-on-hover class="flex" id="popup">
-            <button header is="vi-button" inverse$="[[!checked]]" class="layout horizontal" on-tap="_catchTap">
+            <button slot="header" is="vi-button" inverse$="[[!checked]]" class="layout horizontal" on-tap="_catchTap">
                 <vi-icon id="icon" source="[[icon]]"></vi-icon>
                 <span class="flex">[[label]]</span>
                 <vi-icon source="Forward" hidden$="[[!hasChildren]]"></vi-icon>
             </button>
-            <div content>
-                <content id="subItems" select="vi-popup-menu-item, vi-popup-menu-item-split, vi-popup-menu-item-separator, vi-popup-menu-item-with-actions"></content>
+            <div id="subItems">
+                <slot></slot>
             </div>
         </vi-popup>
     </template>
@@ -42,8 +42,8 @@
             <button id="split" class="flex" is="vi-button" header icon="Forward" on-tap="_splitTap" inverse>
                 <vi-icon source="Forward"></vi-icon>
             </button>
-            <div content>
-                <content id="subItems" select="vi-popup-menu-item, vi-popup-menu-item-split, vi-popup-menu-item-separator, vi-popup-menu-item-with-actions"></content>
+            <div id="subItems">
+                <slot></slot>
             </div>
         </vi-popup>
     </template>
@@ -57,7 +57,7 @@
             <vi-icon id="icon" source="[[icon]]"></vi-icon>
             <span class="flex">[[label]]</span>
             <div class="actions" on-tap="_actionsTap" on-down="_catch">
-                <content select="button"></content>
+                <slot name="button"></slot>
             </div>
         </div>
     </template>

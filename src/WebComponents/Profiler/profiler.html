@@ -9,7 +9,7 @@
     <template>
         <link rel="stylesheet" href="profiler.css" />
         <vi-popup sticky disabled$="[[!lastRequest]]">
-            <div header class="flex layout horizontal">
+            <div slot="header" class="flex layout horizontal">
                 <vi-icon source="Profiler"></vi-icon>
                 <div class="flex" hidden$="[[_hasLastRequest(lastRequest)]]">[[awaiting]]</div>
                 <div class="flex layout horizontal" hidden$="[[!_hasLastRequest(lastRequest)]]" id="lastRequest">
@@ -34,7 +34,7 @@
                 </div>
                 <button is="vi-button" icon="Remove" type="light-monochrome" inverse on-tap="_close"></button>
             </div>
-            <div content class="layout horizontal">
+            <div slot="content" class="layout horizontal">
                 <vi-scroller no-horizontal align-vertical-scrollbar="left">
                     <div>
                         <template is="dom-repeat" items="[[profiledRequests]]" as="request">

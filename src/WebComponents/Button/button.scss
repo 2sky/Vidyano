@@ -1,4 +1,4 @@
-﻿@import "../_vars.scss";
+@import "../_vars.scss";
 
 @mixin colorizer($bgColor, $fgColor, $bgHoverColor) {
     background-color: $bgColor;
@@ -181,7 +181,7 @@
     }
 }
 
-vi-popup[open] > [toggle] button[is="vi-button"][header] {
+vi-popup[open] > [toggle] button[is="vi-button"][slot="header"] {
     &[type=""], &:not([type]) {
         &:not([inverse]) {
             background-color: var(--theme-color-light);

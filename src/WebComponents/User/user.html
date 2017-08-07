@@ -8,7 +8,7 @@
                 <span>[[userName]]</span>
             </div>
             <vi-popup-menu right-align>
-                <button id="settings" header is="vi-button">
+                <button id="settings" slot="header" is="vi-button">
                     <vi-icon source="Up"></vi-icon>
                 </button>
                 <template is="dom-if" if="[[canUserSettings]]">
@@ -33,10 +33,6 @@
         </template>
     </template>
 </dom-module>
-
-<vi-icon name="Profiler">
-
-</vi-icon>
 
 <!-- Stopwatch by Samy Menai from the Noun Project-->
 <vi-icon name="Profiler">

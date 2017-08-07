@@ -4,7 +4,7 @@
     @include layout-horizontal();
 
     &[editing] {
-        [content] {
+        [slot="content"] {
             @include layout-horizontal();
         }
 

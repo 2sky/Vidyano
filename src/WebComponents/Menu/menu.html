@@ -18,8 +18,8 @@
             </template>
             <template is="dom-if" if="[[collapsedWithGlobalSearch]]">
                 <vi-popup orientation="horizontal" content-align="right" sticky>
-                    <vi-icon header source="Search" on-tap="_focusSearch"></vi-icon>
-                    <vi-input-search id="collapsedInputSearch" content collapsed value="{{filter}}" on-tap="_catchInputSearchTap" on-search="_search"></vi-input-search>
+                    <vi-icon slot="header" source="Search" on-tap="_focusSearch"></vi-icon>
+                    <vi-input-search slot="content" id="collapsedInputSearch" collapsed value="{{filter}}" on-tap="_catchInputSearchTap" on-search="_search"></vi-input-search>
                 </vi-popup>
             </template>
         </header>
@@ -44,8 +44,8 @@
             <div class="flex programUnits">
                 <template is="dom-repeat" items="[[programUnits]]" as="programUnit">
                     <vi-popup orientation="horizontal" content-align="right" open-on-hover>
-                        <vi-menu-item header class="program-unit" item="[[programUnit]]" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]"></vi-menu-item>
-                        <vi-scroller content no-horizontal class="subItems" has-group-items$="[[_hasGroupItems(programUnit.items)]]" item-count$="[[_countItems(programUnit.items)]]">
+                        <vi-menu-item slot="header" class="program-unit" item="[[programUnit]]" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]"></vi-menu-item>
+                        <vi-scroller slot="content" no-horizontal class="subItems" has-group-items$="[[_hasGroupItems(programUnit.items)]]" item-count$="[[_countItems(programUnit.items)]]">
                             <vi-menu-item class="program-unit" item="[[programUnit]]" filter="[[filter]]" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]" items="[[programUnit.items]]"></vi-menu-item>
                         </vi-scroller>
                     </vi-popup>

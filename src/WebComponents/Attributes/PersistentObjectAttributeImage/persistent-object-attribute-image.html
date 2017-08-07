@@ -12,7 +12,7 @@
         <template is="dom-if" if="[[editing]]" restamp>
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <div class="flex relative" slot="content">
-                    <div class="fit" content>
+                    <div class="fit image-container">
                         <img src="[[image]]" on-tap="_showDialog" can-open$="[[hasValue]]" />
                     </div>
                 </div>

@@ -5,7 +5,7 @@
     <template>
         <link rel="stylesheet" href="query-grid-filters.css" />
         <vi-popup-menu disabled="[[disabled]]">
-            <button header is="vi-button" inverse$="[[!isFiltering]]" disabled$="[[disabled]]">
+            <button slot="header" is="vi-button" inverse$="[[!isFiltering]]" disabled$="[[disabled]]">
                 <vi-icon source="Filter_Menu"></vi-icon>
             </button>
             <template is="dom-if" if="[[canReset]]">
@@ -25,16 +25,16 @@
                         <vi-popup-menu-item icon-space label="[[filter.groupName]]" icon="Folder" on-tap="_catchGroupTap">
                             <template is="dom-repeat" items="[[filter.children]]" as="filter">
                                 <vi-popup-menu-item-with-actions icon-space label="[[_nonGroupName(filter.filter.name)]]" on-tap="_load">
-                                    <button is="vi-button" icon="Action_Edit" inverse on-tap="_edit"></button>
-                                    <button is="vi-button" icon="Action_Delete" inverse on-tap="_delete"></button>
+                                    <button slot="button" is="vi-button" icon="Action_Edit" inverse on-tap="_edit"></button>
+                                    <button slot="button" is="vi-button" icon="Action_Delete" inverse on-tap="_delete"></button>
                                 </vi-popup-menu-item-with-actions>
                             </template>
                         </vi-popup-menu-item>
                     </template>
                     <template is="dom-if" if="[[!filter.groupName]]">
                         <vi-popup-menu-item-with-actions icon-space label="[[filter.filter.name]]" on-tap="_load">
-                            <button is="vi-button" icon="Action_Edit" inverse on-tap="_edit"></button>
-                            <button is="vi-button" icon="Action_Delete" inverse on-tap="_delete"></button>
+                            <button slot="button" is="vi-button" icon="Action_Edit" inverse on-tap="_edit"></button>
+                            <button slot="button" is="vi-button" icon="Action_Delete" inverse on-tap="_delete"></button>
                         </vi-popup-menu-item-with-actions>
                     </template>
                 </template>

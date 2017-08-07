@@ -13,7 +13,7 @@
         </template>
         <template is="dom-if" if="[[options]]">
             <vi-popup-menu open-on-hover="[[_computeOpenOnHover(overflow, openOnHover)]]" disabled="[[!canExecute]]">
-                <button is="vi-button" disabled="[[!canExecute]]" header inverse class="options">
+                <button is="vi-button" disabled="[[!canExecute]]" slot="header" inverse class="options">
                     <div class="layout horizontal">
                         <vi-icon source="[[icon]]"></vi-icon>
                         <span class="label">[[action.definition.displayName]]</span>

@@ -38,7 +38,7 @@ namespace Vidyano.WebComponents {
             requestAnimationFrame(() => {
                 const children = this._getChildren();
                 children.forEach(child => {
-                    Polymer.dom(child).removeAttribute("overflow");
+                    Polymer.dom(child).removeAttribute("slot");
                 });
 
                 this._setHasOverflow(children.toArray().some(child => child.offsetTop > 0));
@@ -58,7 +58,7 @@ namespace Vidyano.WebComponents {
             this._overflownChildren = this._getChildren();
             this._overflownChildren.forEach(child => {
                 if (child.offsetTop > 0)
-                    Polymer.dom(child).setAttribute("overflow", "");
+                    Polymer.dom(child).setAttribute("slot", "overflow");
             });
 
             Polymer.dom(this).flush();
@@ -66,7 +66,7 @@ namespace Vidyano.WebComponents {
 
         private _popupClosed() {
             this._overflownChildren.forEach(child => {
-                Polymer.dom(child).removeAttribute("overflow");
+                Polymer.dom(child).removeAttribute("slot");
             });
 
             Polymer.dom(this).flush();
@@ -80,7 +80,7 @@ namespace Vidyano.WebComponents {
             const children = this._getChildren();
             children.forEach(child => {
                 if (child.offsetTop > 0)
-                    Polymer.dom(child).setAttribute("overflow", "");
+                    Polymer.dom(child).setAttribute("slot", "overflow");
             });
 
             Polymer.dom(this).flush();
@@ -89,7 +89,7 @@ namespace Vidyano.WebComponents {
             await popup.popup();
 
             children.forEach(child => {
-                Polymer.dom(child).removeAttribute("overflow");
+                Polymer.dom(child).removeAttribute("slot");
             });
 
             Polymer.dom(this).flush();

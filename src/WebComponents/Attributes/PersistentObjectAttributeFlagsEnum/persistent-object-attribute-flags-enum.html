@@ -1,4 +1,4 @@
-﻿<link rel="import" href="../../Checkbox/checkbox.html" />
+<link rel="import" href="../../Checkbox/checkbox.html" />
 <link rel="import" href="../../Popup/popup.html" />
 
 <dom-module name="vi-persistent-object-attribute-flags-enum">
@@ -10,11 +10,11 @@
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <vi-popup sticky slot="content" disabled$="[[_disablePopup(readOnly, attribute.parent.isFrozen)]]">
-                    <div header class="layout horizontal flex">
+                    <div slot="header" class="layout horizontal flex">
                         <input class="flex" header value="[[attribute.displayValue]]" readonly placeholder="[[placeholder]]">
                         <vi-icon source="CaretDown" hidden$="[[readOnly]]"></vi-icon>
                     </div>
-                    <ul content>
+                    <ul>
                         <template is="dom-repeat" items="[[options]]" as="option">
                             <li>
                                 <vi-persistent-object-attribute-flags-enum-flag attribute="[[attribute]]" option="[[option]]"></vi-persistent-object-attribute-flags-enum-flag>

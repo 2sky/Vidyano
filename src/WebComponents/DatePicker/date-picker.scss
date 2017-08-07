@@ -8,7 +8,7 @@ $border-color: #eee;
 
     &:hover {
         vi-popup[open] {
-            [header] {
+            [slot="header"] {
                 background-color: var(--theme-color) !important;
                 fill: white !important;
             }

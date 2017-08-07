@@ -1,4 +1,4 @@
-﻿@import "../_vars.scss";
+@import "../_vars.scss";
 
 :host {
     position: relative;
@@ -59,7 +59,7 @@
         background-color: var(--theme-color-faint);
     }
 
-    button[header] {
+    button[slot="header"] {
         box-sizing: border-box;
         overflow: hidden;
         text-align: left;
@@ -103,7 +103,7 @@
         }
     }
 
-    [content] {
+    #filterContentHost {
         @include noSelection();
 
         #filterContent {
@@ -120,127 +120,126 @@
                 width: var(--theme-h2);
                 background-color: #F7F7F7;
             }
-        }
 
-        .menuItem {
-            position: relative;
-            cursor: pointer;
-            text-align: left;
-            line-height: var(--theme-h2);
-            font-weight: normal;
-            overflow: hidden;
-            padding-right: var(--theme-h5);
-
-            vi-icon {
-                text-align: center;
-                min-width: var(--theme-h2);
-                height: var(--theme-h2);
-            }
-
-            &[disabled] {
-                opacity: 0.25;
-                cursor: default;
-            }
-
-            span {
-                margin-left: var(--theme-h5);
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-            }
-        }
-
-
-        .split {
-            border-top: 1px solid var(--theme-light-border);
-            margin: 0 0 var(--theme-h5) calc(var(--theme-h2) + var(--theme-h5));
-        }
-
-        .advanced {
-            padding: 0 var(--vi-query-grid-cell-padding, --theme-h5) var(--vi-query-grid-cell-padding, --theme-h5) 0;
-            position: relative;
-
-            > div {
-                padding-left: var(--theme-h2);
-
-                button#inverse {
-                    @include layout-horizontal();
-                    @include layout-center-center();
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: var(--theme-h2);
-                    height: var(--theme-h3);
-                    cursor: pointer;
-                    @include theme-color-button-inverse();
-
-                    &[inversed]:not(:active) {
-                        fill: darkred !important;
-                    }
-
-                    &:not(:active) {
-                        fill: #aaa !important;
-                    }
-
-                    vi-icon svg {
-                        width: var(--theme-h4);
-                        height: var(--theme-h4);
-                    }
-                }
-            }
-        }
-
-        #distincts {
-            border: 1px solid var(--theme-light-border);
-            margin-left: var(--theme-h5);
-            box-sizing: border-box;
-            cursor: default;
-            font-weight: normal;
-
-            vi-checkbox {
-                line-height: var(--theme-h3);
-                height: var(--theme-h3);
-                padding: 0 var(--theme-h5);
-
-                &:hover {
-                    background-color: var(--vi-query-grid-column-filter-distinct-hover-color, --theme-color-faint);
-                }
-            }
-
-            vi-checkbox[checked] {
-                --vi-checkbox-checked-color: green;
-            }
-
-            &[inversed] vi-checkbox[checked] {
-                --vi-checkbox-checked-color: darkred;
-            }
-
-            vi-checkbox {
-                &[distinct-type="remaining"] {
-                    color: var(--vi-query-grid-column-filter-distinct-remaining-color, #aaa);
-                }
-            }
-
-            div.hasMore {
+            .menuItem {
+                position: relative;
+                cursor: pointer;
                 text-align: left;
-                cursor: default;
-                opacity: 0.25;
+                line-height: var(--theme-h2);
+                font-weight: normal;
+                overflow: hidden;
+                padding-right: var(--theme-h5);
 
                 vi-icon {
-                    display: inline-block;
+                    text-align: center;
+                    min-width: var(--theme-h2);
+                    height: var(--theme-h2);
+                }
+
+                &[disabled] {
+                    opacity: 0.25;
+                    cursor: default;
+                }
+
+                span {
+                    margin-left: var(--theme-h5);
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                }
+            }
+
+            .split {
+                border-top: 1px solid var(--theme-light-border);
+                margin: 0 0 var(--theme-h5) calc(var(--theme-h2) + var(--theme-h5));
+            }
+
+            .advanced {
+                padding: 0 var(--vi-query-grid-cell-padding, --theme-h5) var(--vi-query-grid-cell-padding, --theme-h5) 0;
+                position: relative;
+
+                > div {
+                    padding-left: var(--theme-h2);
+
+                    button#inverse {
+                        @include layout-horizontal();
+                        @include layout-center-center();
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: var(--theme-h2);
+                        height: var(--theme-h3);
+                        cursor: pointer;
+                        @include theme-color-button-inverse();
+
+                        &[inversed]:not(:active) {
+                            fill: darkred !important;
+                        }
+
+                        &:not(:active) {
+                            fill: #aaa !important;
+                        }
+
+                        vi-icon svg {
+                            width: var(--theme-h4);
+                            height: var(--theme-h4);
+                        }
+                    }
+                }
+            }
+
+            #distincts {
+                border: 1px solid var(--theme-light-border);
+                margin-left: var(--theme-h5);
+                box-sizing: border-box;
+                cursor: default;
+                font-weight: normal;
+
+                vi-checkbox {
                     line-height: var(--theme-h3);
                     height: var(--theme-h3);
                     padding: 0 var(--theme-h5);
-                    box-sizing: border-box;
 
-                    &:first-of-type ::content {
-                        svg #check {
-                            display: none;
-                        }
+                    &:hover {
+                        background-color: var(--vi-query-grid-column-filter-distinct-hover-color, --theme-color-faint);
                     }
+                }
 
-                    &:last-of-type {
-                        padding-left: 0;
+                vi-checkbox[checked] {
+                    --vi-checkbox-checked-color: green;
+                }
+
+                &[inversed] vi-checkbox[checked] {
+                    --vi-checkbox-checked-color: darkred;
+                }
+
+                vi-checkbox {
+                    &[distinct-type="remaining"] {
+                        color: var(--vi-query-grid-column-filter-distinct-remaining-color, #aaa);
+                    }
+                }
+
+                div.hasMore {
+                    text-align: left;
+                    cursor: default;
+                    opacity: 0.25;
+
+                    vi-icon {
+                        display: inline-block;
+                        line-height: var(--theme-h3);
+                        height: var(--theme-h3);
+                        padding: 0 var(--theme-h5);
+                        box-sizing: border-box;
+
+                        &:first-of-type ::content {
+                            svg #check {
+                                display: none;
+                            }
+                        }
+
+                        &:last-of-type {
+                            padding-left: 0;
+                        }
                     }
                 }
             }

@@ -16,11 +16,11 @@
     <template>
         <link rel="stylesheet" href="query-grid-column-filter.css" />
         <vi-popup id="filter" on-popup-opening="_popupOpening" class="flex" disabled="[[!column.canFilter]]">
-            <button is="vi-button" header inverse>
+            <button is="vi-button" slot="header" inverse>
                 <span id="label"></span>
                 <vi-icon source="Filter"></vi-icon>
             </button>
-            <div content class="relative" on-click="_catchClick">
+            <div id="filterContentHost" class="relative" on-click="_catchClick">
                 <div id="filterContent" class="vertical layout">
                     <div class="left"></div>
                     <div class="menuItem horizontal layout" disabled$="[[!filtered]]" on-tap="_clear">

@@ -11,8 +11,8 @@
                 <input slot="content" value="{{value::input}}" type$="[[inputtype]]" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off" placeholder="[[placeholder]]">
                 <template is="dom-if" if="[[hasSuggestions]]">
                     <vi-popup id="suggestions" slot="button" content-align="right">
-                        <vi-icon source="Add" header></vi-icon>
-                        <vi-scroller content>
+                        <vi-icon source="Add" slot="header"></vi-icon>
+                        <vi-scroller>
                             <ul>
                                 <template is="dom-repeat" items="[[filteredSuggestions]]" as="suggestion">
                                     <li on-tap="_addSuggestion">[[suggestion]]</li>

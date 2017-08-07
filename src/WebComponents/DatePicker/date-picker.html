@@ -6,8 +6,8 @@
 	<template>
 		<link rel="stylesheet" href="date-picker.css" />
         <vi-popup content-align="right" on-popup-opening="_opening">
-            <vi-icon header source="Calendar"></vi-icon>
-            <div class="calendar" content>
+            <vi-icon slot="header" source="Calendar"></vi-icon>
+            <div class="calendar">
                 <header class="horizontal layout">
                     <button is="vi-button" n="-1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastBackward"></vi-icon></button>
                     <button is="vi-button" n="-1" on-tap="_slow"><vi-icon source="Backward"></vi-icon></button>
