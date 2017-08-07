@@ -1,9 +1,9 @@
-﻿<dom-module id="vi-button">
+<dom-module id="vi-button">
     <template>
         <link rel="stylesheet" href="button.css" />
         <paper-ripple></paper-ripple>
         <template is="dom-if" if="[[customLayout]]">
-            <content></content>
+            <slot></slot>
         </template>
         <template is="dom-if" if="[[!customLayout]]">
             <vi-icon source="[[icon]]"></vi-icon>

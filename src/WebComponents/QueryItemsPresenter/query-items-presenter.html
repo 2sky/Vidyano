@@ -10,7 +10,7 @@
             </vi-file-drop>
         </template>
         <template is="dom-if" if="[[!fileDrop]]">
-            <content></content>
+            <slot></slot>
         </template>
         <vi-spinner hidden$="[[!loading]]"></vi-spinner>
     </template>

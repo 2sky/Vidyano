@@ -6,11 +6,11 @@
         <link rel="stylesheet" href="website.css" />
         <template is="dom-if" if="[[scroll]]">
             <vi-scroller no-horizontal>
-                <content></content>
+                <slot></slot>
             </vi-scroller>
         </template>
         <template is="dom-if" if="[[!scroll]]">
-            <content></content>
+            <slot></slot>
         </template>
     </template>
 </dom-module>

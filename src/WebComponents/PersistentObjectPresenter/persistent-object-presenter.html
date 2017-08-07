@@ -6,7 +6,7 @@
         <template is="dom-if" if="[[error]]" restamp>
             <vi-error class="flex" message="[[error]]"></vi-error>
         </template>
-        <content></content>
+        <slot></slot>
         <template is="dom-if" if="[[loading]]">
             <vi-spinner></vi-spinner>
         </template>
