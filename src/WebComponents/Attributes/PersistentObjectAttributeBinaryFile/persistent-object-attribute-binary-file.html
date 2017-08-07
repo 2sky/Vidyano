@@ -10,7 +10,7 @@
                 <template is="dom-if" if="[[!readOnly]]">
                     <div class="browse" slot="button" on-change="_change">
                         <vi-icon source="FileUpload"></vi-icon>
-                        <content select="[upload]"></content>
+                        <slot name="upload"></slot>
                     </div>
                     <template is="dom-if" if="[[canClear]]" restamp>
                         <button slot="button" on-tap="_clear" tabindex="-1">

@@ -48,7 +48,7 @@ namespace Vidyano.WebComponents.Attributes {
 
                 if (!this._inputContainer) {
                     this._inputContainer = document.createElement("div");
-                    this._inputContainer.setAttribute("upload", "");
+                    this._inputContainer.setAttribute("slot", "upload");
 
                     Polymer.dom(this).appendChild(this._inputContainer);
                 }
