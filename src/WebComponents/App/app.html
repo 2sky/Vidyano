@@ -1,4 +1,4 @@
-﻿<script src="../../Libs/pathjs/path.js"></script>
+<script src="../../Libs/pathjs/path.js"></script>
 <link rel="import" href="../../Libs/iron-a11y-keys/iron-a11y-keys.html" />
 <link rel="import" href="../../Libs/iron-collapse/iron-collapse.html" />
 <link rel="import" href="../../Libs/iron-list/iron-list.html" />
@@ -34,7 +34,7 @@
         <template is="dom-if" if="[[!barebone]]" restamp>
             <template is="dom-if" if="[[showMenu]]" restamp>
                 <vi-menu menu label="[[label]]" program-units="[[service.application.programUnits]]" active-program-unit="[[programUnit]]">
-                    <content select="[label]:not([label='sign-in'])"></content>
+                    <slot name="menu-label"></slot>
                 </vi-menu>
             </template>
             <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
@@ -47,7 +47,7 @@
                 <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
                 <vi-app-route class="fit" route="SignIn(/)(:returnUrl)" allow-signed-out>
                     <vi-sign-in label="[[label]]" image="[[signInImage]]">
-                        <content select="[label='sign-in']"></content>
+                        <slot name="sign-in-label"></slot>
                     </vi-sign-in>
                 </vi-app-route>
                 <vi-app-route route="SignOut(/)(:returnUrl)" allow-signed-out>

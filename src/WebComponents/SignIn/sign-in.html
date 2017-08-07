@@ -1,4 +1,4 @@
-﻿<link rel="import" href="../AttachedNotifier/attached-notifier.html" />
+<link rel="import" href="../AttachedNotifier/attached-notifier.html" />
 <link rel="import" href="../Button/button.html" />
 <link rel="import" href="../Checkbox/checkbox.html" />
 <link rel="import" href="../Scroller/scroller.html" />
@@ -12,7 +12,7 @@
         <vi-scroller no-horizontal>
             <div id="side">
                 <header>
-                    <content select="[label='sign-in']"></content><h1>[[label]]</h1>
+                    <slot name="sign-in-label"></slot>
                 </header>
                 <main>
                     <content></content>
