@@ -34,6 +34,11 @@ namespace Vidyano.WebComponents {
                 type: String,
                 reflectToAttribute: true
             };
+            info.properties["slot"] = {
+                type: String,
+                reflectToAttribute: true,
+                value: "vi-setting"
+            }
 
             return WebComponent.register(info, prefix);
         }

@@ -4,7 +4,12 @@ namespace Vidyano.WebComponents {
     @WebComponent.register({
         properties: {
             key: String,
-            value: String
+            value: String,
+            slot: {
+                type: String,
+                reflectToAttribute: true,
+                value: "vi-setting"
+            }
         }
     })
     export class AppSetting extends WebComponent {
