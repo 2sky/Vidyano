@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     interface IZenscroll {
@@ -162,10 +162,8 @@
         attached() {
             super.attached();
 
-            if (!this.isWebKit) {
-                this.customStyle["--theme-scrollbar-width"] = `${scrollbarWidth()}px`;
-                this.updateStyles();
-            }
+            if (!this.isWebKit)
+                this.updateStyles({ "--theme-scrollbar-width": `${scrollbarWidth()}px` });
         }
 
         get scroller(): HTMLElement {

@@ -335,11 +335,6 @@ namespace Vidyano.WebComponents {
         toggleAttribute: (name: string, bool: boolean, node?: Node | WebComponent) => void;
 
         /**
-         * Key-value pairs for the custom styles on the element.
-         */
-        customStyle: { [key: string]: string };
-
-        /**
          * Returns the computed style value for the given property.
          */
         getComputedStyleValue: (property: string) => string;
@@ -347,7 +342,7 @@ namespace Vidyano.WebComponents {
         /**
          * Revaluates custom property values.
          */
-        updateStyles: () => void;
+        updateStyles: (props: any) => void;
 
         /**
          * Force immediate content distribution.
@@ -534,7 +529,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _computeApp(isAttached: boolean): Vidyano.WebComponents.App {
-            if (!isAttached)
+            if (!isAttached || !Vidyano.WebComponents["App"])
                 return this._app;
 
             if (this instanceof Vidyano.WebComponents.App)

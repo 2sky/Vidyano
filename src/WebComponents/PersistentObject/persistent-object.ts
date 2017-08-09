@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     @WebComponent.register({
@@ -144,8 +144,7 @@
         }
 
         private _masterWidthChanged() {
-            this.customStyle["--vi-persistent-object-master-width"] = this.masterWidth;
-            this.updateStyles();
+            this.updateStyles({ "--vi-persistent-object-master-width": this.masterWidth });
         }
 
         private _computeMasterTabs(persistentObject: Vidyano.PersistentObject, tabs: Vidyano.PersistentObjectTab[]): Vidyano.PersistentObjectTab[] {

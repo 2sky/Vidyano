@@ -58,9 +58,10 @@ namespace Vidyano.WebComponents {
             this._overflownChildren = this._getChildren();
             this._overflownChildren.forEach(child => {
                 if (child.offsetTop > 0)
-                    Polymer.dom(child).setAttribute("slot", "overflow");
+                    Polymer.dom(child)["slot"] = "overflow";
             });
 
+            Polymer.dom(this.$.overflowPopup).flush();
             Polymer.dom(this).flush();
         }
 
@@ -83,6 +84,7 @@ namespace Vidyano.WebComponents {
                     Polymer.dom(child).setAttribute("slot", "overflow");
             });
 
+            Polymer.dom(this.$.overflowPopup).flush();
             Polymer.dom(this).flush();
 
             const popup = <WebComponents.Popup><any>this.$.overflowPopup;

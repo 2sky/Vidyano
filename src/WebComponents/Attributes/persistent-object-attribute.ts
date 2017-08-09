@@ -108,12 +108,10 @@ namespace Vidyano.WebComponents.Attributes {
             const foreground = this.attribute.getTypeHint("foreground", null, true);
 
             if ((!isEditing || isReadOnly) && foreground) {
-                this._foreground = this.customStyle["--vi-persistent-object-attribute-foreground"] = foreground;
-                this.updateStyles();
+                this.updateStyles({ "--vi-persistent-object-attribute-foreground": foreground });
             }
             else if (this._foreground) {
-                this._foreground = this.customStyle["--vi-persistent-object-attribute-foreground"] = null;
-                this.updateStyles();
+                this.updateStyles({ "--vi-persistent-object-attribute-foreground": null });
             }
         }
 

@@ -75,9 +75,7 @@ namespace Vidyano.WebComponents {
 
             const menuWidth = parseInt(Vidyano.cookie("menu-width"));
             if (menuWidth)
-                this.customStyle["--vi-menu--expand-width"] = `${menuWidth}px`;
-
-            this.updateStyles();
+                this.updateStyles({ "--vi-menu--expand-width": `${menuWidth}px` });
 
             this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
         }
@@ -169,14 +167,12 @@ namespace Vidyano.WebComponents {
             if (detail.state === "start") {
                 this.app.isTracking = true;
                 this._resizeWidth = Math.max(Menu._minResizeWidth, this.offsetWidth);
-                this.customStyle["--vi-menu--expand-width"] = `${this._resizeWidth}px`;
-                this.updateStyles();
+                this.updateStyles({ "--vi-menu--expand-width": `${this._resizeWidth}px` });
                 this._setIsResizing(true);
             }
             else if (detail.state === "track") {
                 this._resizeWidth = Math.max(Menu._minResizeWidth, this._resizeWidth + detail.ddx);
-                this.customStyle["--vi-menu--expand-width"] = `${this._resizeWidth}px`;
-                this.updateStyles();
+                this.updateStyles({ "--vi-menu--expand-width": `${this._resizeWidth}px` });
             }
             else if (detail.state === "end") {
                 Vidyano.cookie("menu-width", String(this._resizeWidth));
@@ -320,8 +316,7 @@ namespace Vidyano.WebComponents {
         filterParent: ProgramUnitItem;
 
         private _updateIndentVariable(level: number) {
-            this.customStyle["--vi-menu-item-indent-level"] = level.toString();
-            this.updateStyles();
+            this.updateStyles({ "--vi-menu-item-indent-level": level.toString() });
         }
 
         private _computeSubLevel(level: number): number {

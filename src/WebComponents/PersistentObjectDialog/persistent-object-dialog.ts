@@ -111,8 +111,7 @@ namespace Vidyano.WebComponents {
             tab.columnCount = tab.columnCount > 1 ? tab.columnCount : 1;
 
             const width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * tab.columnCount;
-            this.customStyle["--vi-persistent-object-dialog-computed-width"] = `${width}px`;
-            this.updateStyles();
+            this.updateStyles({ "--vi-persistent-object-dialog-computed-width": `${width}px` });
 
             return tab;
         }

@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     @WebComponent.register({
@@ -17,8 +17,7 @@
             if (!isAttached)
                 return;
 
-            this.customStyle["--vi-spinner-color"] = color;
-            this.updateStyles();
+            this.updateStyles({ "--vi-spinner-color": color });
         }
     }
 }

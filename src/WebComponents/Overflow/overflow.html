@@ -15,9 +15,7 @@
         </div>
         <vi-popup id="overflowPopup" class="horizontal layout" manual on-popup-opening="_popupOpening" on-popup-closed="_popupClosed">
             <button slot="header" flex inverse is="vi-button" label="&hellip;"></button>
-            <div id="overflowChildren" class="vertical layout">
-                <slot name="overflow"></slot>
-            </div>
+            <slot slot="content" name="overflow"></slot>
         </vi-popup>
     </template>
 </dom-module>

@@ -58,8 +58,7 @@ namespace Vidyano.WebComponents {
             super.attached();
 
             const width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * (this.currentTab.columnCount || 1);
-            this.customStyle["--vi-persistent-object-dialog-computed-width"] = `${width}px`;
-            this.updateStyles();
+            this.updateStyles({ "--vi-persistent-object-dialog-computed-width": `${width}px` });
         }
 
         private _tabInnerSizeChanged(e: CustomEvent, detail: { size: ISize; }) {

@@ -129,9 +129,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _showImage(headerSize: Vidyano.WebComponents.ISize, footerSize: Vidyano.WebComponents.ISize) {
-            this.customStyle["--vi-persistent-object-attribute-image-dialog--max-height"] = `${headerSize.height + footerSize.height}px`;
-
-            this.updateStyles();
+            this.updateStyles({ "--vi-persistent-object-attribute-image-dialog--max-height": `${headerSize.height + footerSize.height}px` });
 
             if (!this._updated) {
                 this.$.img.removeAttribute("hidden");
