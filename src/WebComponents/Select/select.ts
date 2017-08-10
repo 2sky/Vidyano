@@ -3,7 +3,14 @@ namespace Vidyano.WebComponents {
 
     @WebComponent.register({
         properties: {
-            options: Array,
+            options: {
+                type: Array,
+                value: null
+            },
+            hasOptions: {
+                type: Boolean,
+                computed: "_computeHasOptions(options, readonly)"
+            },
             keepUnmatched: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -205,6 +212,10 @@ namespace Vidyano.WebComponents {
                 (focusOption["scrollIntoViewIfNeeded"] || focusOption["scrollIntoView"]).apply(focusOption);
         }
 
+        private _computeHasOptions(options: string[], readonly: boolean): boolean {
+            return !readonly && !!options && options.length > 0;
+        }
+
         private _computeUngroupedOptions(options: string[] | Common.IKeyValuePair[], groupSeparator: string): string[] | Common.IKeyValuePair[] {
             if (!groupSeparator || !options || options.length === 0)
                 return options;
@@ -399,8 +410,8 @@ namespace Vidyano.WebComponents {
             return item1 != null && item2 != null && item1.option === item2.option;
         }
 
-        private _isReadonlyInput(readonly: boolean, disableFiltering: boolean): boolean {
-            return readonly || disableFiltering;
+        private _isReadonlyInput(hasOptions: boolean, disableFiltering: boolean): boolean {
+            return !hasOptions || disableFiltering;
         }
 
         private _disablePopup(readonly: boolean, disabled: boolean): boolean {
