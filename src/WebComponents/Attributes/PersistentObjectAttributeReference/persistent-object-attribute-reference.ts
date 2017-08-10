@@ -204,6 +204,10 @@ namespace Vidyano.WebComponents.Attributes {
             return attribute && attribute.getTypeHint("orientation", "vertical", undefined, true);
         }
 
+        private _computeCanOpenSelect(isReadOnly: boolean, options: string[]): boolean {
+            return !isReadOnly && !!options && options.length > 0;
+        }
+
         private _isRadioChecked(optionKey: string, objectId: string): boolean {
             return optionKey === objectId;
         }

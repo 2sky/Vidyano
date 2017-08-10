@@ -18,7 +18,7 @@
                 <template is="dom-if" if="[[!selectInPlaceAsRadio]]">
                     <vi-persistent-object-attribute-edit attribute="[[attribute]]" reverse-content>
                         <vi-select id="selectInPlace" content class="flex" options="[[options]]" selected-option="{{objectId}}" readonly$="[[attribute.isReadOnly]]" placeholder="[[placeholder]]"></vi-select>
-                        <button on-tap="_openSelect" hidden$="[[attribute.isReadOnly]]">
+                        <button on-tap="_openSelect" hidden$="[[!_computeCanOpenSelect(attribute.isReadOnly, options)]]">
                             <vi-icon source="CaretDown"></vi-icon>
                         </button>
                         <a class="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
