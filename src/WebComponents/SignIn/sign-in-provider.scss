@@ -19,138 +19,138 @@
         color: #666;
     }
 
-    &[is-vidyano] {
-        #vidyano {
-            padding-left: var(--theme-h3);
+    &[signing-in] button {
+        text-align: left;
+    }
+}
 
-            iron-collapse:first-of-type > div {
-                &:not(:last-child) {
-                    margin-bottom: var(--theme-h4);
-                    margin-top: var(--theme-h3);
+:host([is-vidyano]) {
+    #vidyano {
+        padding-left: var(--theme-h3);
+
+        iron-collapse:first-of-type > div {
+            &:not(:last-child) {
+                margin-bottom: var(--theme-h4);
+                margin-top: var(--theme-h3);
+            }
+
+            label {
+                display: block;
+                font-size: calc(var(--theme-h4) - 1px);
+                font-weight: bold;
+                padding-bottom: var(--theme-h5);
+                font-weight: 400;
+                color: #888;
+                overflow: hidden;
+                text-transform: uppercase;
+            }
+
+            input {
+                box-sizing: border-box;
+                margin: 0;
+                padding: var(--theme-h5);
+                border: 1px solid #ddd;
+                outline: none;
+                width: 100%;
+
+                &:focus {
+                    border-color: var(--theme-color-light);
                 }
 
-                label {
-                    display: block;
-                    font-size: calc(var(--theme-h4) - 1px);
-                    font-weight: bold;
-                    padding-bottom: var(--theme-h5);
-                    font-weight: 400;
-                    color: #888;
-                    overflow: hidden;
-                    text-transform: uppercase;
-                }
-
-                input {
-                    box-sizing: border-box;
-                    margin: 0;
-                    padding: var(--theme-h5);
-                    border: 1px solid #ddd;
-                    outline: none;
-                    width: 100%;
-
-                    &:focus {
-                        border-color: var(--theme-color-light);
-                    }
-
-                    &[error] {
-                        border-color: var(--colors-red-700);
-                        background-color: var( --colors-red-50);
-                    }
-                }
-
-                &.buttons {
-                    margin: var(--theme-h4) 0;
-
-                    button {
-                        padding: 0 var(--theme-h4);
-                        box-sizing: content-box;
-                        line-height: var(--theme-h1);
-                        height: var(--theme-h1);
-
-                        &.forgot {
-                            background-color: #aaa;
-                        }
-
-                        &.register {
-                            margin-top: var(--theme-h4);
-                            background-color: var(--theme-color-dark);
-                        }
-                    }
-
-                    &[has-forgot] > div > button {
-                        @include flex();
-
-                        &.signIn {
-                            margin-right: var(--theme-h5);
-                        }
-
-                        &.forgot {
-                            margin-left: var(--theme-h5);
-                        }
-                    }
+                &[error] {
+                    border-color: var(--colors-red-700);
+                    background-color: var( --colors-red-50);
                 }
             }
 
-            vi-checkbox {
-                display: inline-block;
-                line-height: var(--theme-h2);
-                height: var(--theme-h2);
+            &.buttons {
+                margin: var(--theme-h4) 0;
 
-                &:not([checked]) {
-                    color: #888;
-                    fill: #bbb;
+                button {
+                    padding: 0 var(--theme-h4);
+                    box-sizing: content-box;
+                    line-height: var(--theme-h1);
+                    height: var(--theme-h1);
+
+                    &.forgot {
+                        background-color: #aaa;
+                    }
+
+                    &.register {
+                        margin-top: var(--theme-h4);
+                        background-color: var(--theme-color-dark);
+                    }
                 }
 
-                &[checked] {
-                    color: #666;
-                }
-            }
+                &[has-forgot] > div > button {
+                    @include flex();
 
-            iron-collapse#registerTab {
-                margin-top: var(--theme-h4);
+                    &.signIn {
+                        margin-right: var(--theme-h5);
+                    }
 
-                vi-persistent-object-tab {
-                    margin-left: calc(var(--theme-h4) * -1);
-                    margin-right: calc(var(--theme-h4) * -1);
-                }
-
-                .buttons {
-                    margin-top: var(--theme-h5);
-
-                    button {
-                        padding: 0 var(--theme-h4);
-                        box-sizing: content-box;
-                        line-height: var(--theme-h1);
-                        height: var(--theme-h1);
-
-                        &.save {
-                            margin-right: var(--theme-h5);
-                        }
-
-                        &.cancel {
-                            margin-left: var(--theme-h5);
-                            background-color: #aaa;
-                        }
+                    &.forgot {
+                        margin-left: var(--theme-h5);
                     }
                 }
             }
         }
 
-        &:only-of-type {
-            cursor: default;
+        vi-checkbox {
+            display: inline-block;
+            line-height: var(--theme-h2);
+            height: var(--theme-h2);
 
-            h3, h4 {
-                display: none;
+            &:not([checked]) {
+                color: #888;
+                fill: #bbb;
             }
 
-            #vidyano {
-                padding-left: 0;
-                max-height: 400px;
+            &[checked] {
+                color: #666;
+            }
+        }
+
+        iron-collapse#registerTab {
+            margin-top: var(--theme-h4);
+
+            vi-persistent-object-tab {
+                margin-left: calc(var(--theme-h4) * -1);
+                margin-right: calc(var(--theme-h4) * -1);
+            }
+
+            .buttons {
+                margin-top: var(--theme-h5);
+
+                button {
+                    padding: 0 var(--theme-h4);
+                    box-sizing: content-box;
+                    line-height: var(--theme-h1);
+                    height: var(--theme-h1);
+
+                    &.save {
+                        margin-right: var(--theme-h5);
+                    }
+
+                    &.cancel {
+                        margin-left: var(--theme-h5);
+                        background-color: #aaa;
+                    }
+                }
             }
         }
     }
 
-    &[signing-in] button {
-        text-align: left;
+    &:only-of-type {
+        cursor: default;
+
+        h3, h4 {
+            display: none;
+        }
+
+        #vidyano {
+            padding-left: 0;
+            max-height: 400px;
+        }
     }
 }

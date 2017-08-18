@@ -55,7 +55,7 @@ namespace Vidyano.WebComponents {
 
             // NOTE: Hack to initialize app under website
             this["_app"] = new Vidyano.WebComponents.App();
-            this.isAttached = !(this.isAttached = !this.isAttached);
+            this.isConnected = !(this.isConnected = !this.isConnected);
 
             this.app.uri = this.serviceUri;
             this.app.noMenu = true;

@@ -33,7 +33,7 @@
             }
         },
         observers: [
-            "_arrange(group.attributes, columns, isAttached)"
+            "_arrange(group.attributes, columns, isConnected)"
         ],
         listeners: {
             "attribute-loading": "_onAttributeLoading",

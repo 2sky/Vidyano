@@ -386,7 +386,7 @@ namespace Vidyano.WebComponents {
         onUpdateAvailable() {
             super.onUpdateAvailable();
 
-            this.app.fire("app-update-available", null);
+            this.app.dispatchEvent(new CustomEvent("app-update-available"));
         }
 
         onNavigate(path: string, replaceCurrent: boolean = false) {
@@ -488,7 +488,7 @@ namespace Vidyano.WebComponents {
             },
             service: {
                 type: Object,
-                computed: "_computeInitialService(uri, hooks, isAttached)"
+                computed: "_computeInitialService(uri, hooks)"
             },
             user: {
                 type: String,
@@ -588,13 +588,12 @@ namespace Vidyano.WebComponents {
         observers: [
             "_updateInitialize(serviceInitializer, appRoutesInitializer)",
             "_updateRoute(path, initializing)",
-            "_hookWindowBeforeUnload(noHistory, isAttached)",
+            "_hookWindowBeforeUnload(noHistory, isConnected)",
             "_cleanUpOnSignOut(service.isSignedIn)",
             "_resolveDependencies(service.application.hasManagement)",
-            "_computeThemeColorVariants(themeColor, 'color', isAttached)",
-            "_computeThemeColorVariants(themeAccentColor, 'accent-color', isAttached)",
-            "_importConfigs(configs, isAttached)",
-            "_mediaQueryChanged(isDesktop, isTablet, isPhone)"
+            "_computeThemeColorVariants(themeColor, 'color', isConnected)",
+            "_computeThemeColorVariants(themeAccentColor, 'accent-color', isConnected)",
+            "_importConfigs(configs, isConnected)",
         ],
         hostAttributes: {
             "tabindex": "-1"
@@ -612,7 +611,7 @@ namespace Vidyano.WebComponents {
     })
     export class App extends WebComponent {
         private _cache: AppCacheEntry[] = [];
-        private _nodeObserver: PolymerDomChangeObserver;
+        private _nodeObserver: Polymer.FlattenedNodesObserver;
         private _appRoutePresenter: Vidyano.WebComponents.AppRoutePresenter;
         private _initializeResolve: (app: Vidyano.Application) => void;
         private _initializeReject: (e: any) => void;
@@ -639,13 +638,19 @@ namespace Vidyano.WebComponents {
         label: string;
         isTracking: boolean;
 
-        attached() {
-            super.attached();
+        constructor() {
+            super();
+
+            window["app"] = this;
+        }
+
+        connectedCallback() {
+            super.connectedCallback();
 
             window.addEventListener("storage", this._onSessionStorage.bind(this), false);
 
             this.set("appRoutesInitializer", new Promise(resolve => {
-                const bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0];
+                const bareboneTemplate = <HTMLTemplateElement>Enumerable.from(this.children).firstOrDefault(c => c.tagName === "TEMPLATE" && c.hasAttribute("preserve-content"));
                 this._setBarebone(!!bareboneTemplate);
                 if (this.barebone) {
                     const appRouteTargetSetter = (e: CustomEvent) => {
@@ -658,11 +663,11 @@ namespace Vidyano.WebComponents {
 
                     this.addEventListener("app-route-presenter-attached", appRouteTargetSetter.bind(this));
 
-                    Polymer.dom(this.root).appendChild(bareboneTemplate.stamp({ app: this }).root);
+                    this.shadowRoot.appendChild(document.importNode(bareboneTemplate.content, true));
                 } else {
-                    Polymer.dom(this).flush();
+                    Polymer.flush();
 
-                    this._appRoutePresenter = Polymer.dom(this.root).querySelector("vi-app-route-presenter") as Vidyano.WebComponents.AppRoutePresenter;
+                    this._appRoutePresenter = this.shadowRoot.querySelector("vi-app-route-presenter") as Vidyano.WebComponents.AppRoutePresenter;
                     this._distributeAppRoutes();
 
                     resolve(this._appRoutePresenter);
@@ -683,15 +688,15 @@ namespace Vidyano.WebComponents {
             if (!this.label)
                 this.label = this.title;
 
-            const keys = <any>this.$$("iron-a11y-keys");
+            const keys = <any>this.shadowRoot.querySelectorAll("iron-a11y-keys");
             keys.target = document.body;
         }
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
             if (this._nodeObserver) {
-                Polymer.dom(this._appRoutePresenter).unobserveNodes(this._nodeObserver);
+                this._nodeObserver.disconnect();
                 this._nodeObserver = null;
             }
         }
@@ -714,7 +719,7 @@ namespace Vidyano.WebComponents {
         }
 
         get configuration(): AppConfig {
-            return this.$$("vi-app-config") as AppConfig;
+            return this.shadowRoot.querySelector("vi-app-config") as AppConfig;
         }
 
         get initialize(): Promise<Vidyano.Application> {
@@ -812,16 +817,17 @@ namespace Vidyano.WebComponents {
         }
 
         async showDialog(dialog: Dialog): Promise<any> {
-            Polymer.dom(this.root).appendChild(dialog);
-            this._activeDialogs.push(dialog);
+            console.error("todo");
+            //Polymer.dom(this.root).appendChild(dialog);
+            //this._activeDialogs.push(dialog);
 
-            try {
-                return await dialog.open();
-            }
-            finally {
-                Polymer.dom(this.root).removeChild(dialog);
-                this._activeDialogs.pop();
-            }
+            //try {
+            //    return await dialog.open();
+            //}
+            //finally {
+            //    Polymer.dom(this.root).removeChild(dialog);
+            //    this._activeDialogs.pop();
+            //}
         }
 
         async showMessageDialog(options: Vidyano.WebComponents.IMessageDialogOptions): Promise<any> {
@@ -893,14 +899,14 @@ namespace Vidyano.WebComponents {
         }
 
         private _distributeAppRoutes() {
-            this._nodeObserver = Polymer.dom(this._appRoutePresenter).observeNodes(this._nodesChanged.bind(this));
-            Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this._appRoutePresenter).appendChild(route));
+            this._nodeObserver = new Polymer.FlattenedNodesObserver(this._appRoutePresenter, this._nodesChanged.bind(this));
+            Enumerable.from(this.querySelectorAll("vi-app-route")).forEach(route => this._appRoutePresenter.appendChild(route));
 
             if (this.noHistory)
                 this.changePath(this.path);
         }
 
-        private _nodesChanged(info: PolymerDomChangedInfo) {
+        private _nodesChanged(info: Polymer.FlattenedNodesObserverInfo) {
             info.addedNodes.filter(node => node instanceof Vidyano.WebComponents.AppRoute).forEach((appRoute: Vidyano.WebComponents.AppRoute) => {
                 const route = App.removeRootPath(appRoute.route);
 
@@ -923,15 +929,19 @@ namespace Vidyano.WebComponents {
             Vidyano.cookiePrefix = cookiePrefix;
         }
 
-        private async _importConfigs(configs: string, isAttached: boolean) {
-            if (!configs || !isAttached)
-                return;
+        private async _importConfigs(configs: string, isConnected: boolean) {
+            console.error("todo");
+            //if (!configs || !isConnected)
+            //    return;
 
-            const doc = <HTMLDocument>await this.importHref(configs);
-            Enumerable.from(doc.body.childNodes).forEach(c => Polymer.dom(this).appendChild(c));
+            //const doc = <HTMLDocument>await this.importHref(configs);
+            //Enumerable.from(doc.body.childNodes).forEach(c => Polymer.dom(this).appendChild(c));
         }
 
         private async _updateInitialize(...promises: Promise<any>[]) {
+            if (!promises || promises.some(p => !p))
+                return;
+
             try {
                 if (this._initializeResolve) {
                     const results = await Promise.all(promises);
@@ -965,7 +975,7 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _computeInitialService(uri: string, hooks: string, isAttached: boolean): Vidyano.Service {
+        private _computeInitialService(uri: string, hooks: string): Vidyano.Service {
             if (this.service) {
                 console.warn("Service uri and hooks cannot be altered.");
                 return this.service;
@@ -1004,7 +1014,7 @@ namespace Vidyano.WebComponents {
             return service;
         }
 
-        private _anchorClickHandler(e: TapEvent, data: any) {
+        private _anchorClickHandler(e: Event, data: any) {
             if (e.defaultPrevented)
                 return;
 
@@ -1056,13 +1066,13 @@ namespace Vidyano.WebComponents {
 
                     if (programUnit && !this.barebone) {
                         if (programUnit.openFirst && programUnit.path && path !== programUnit.path) {
-                            this.async(() => this.changePath(programUnit.path));
+                            this.changePath(programUnit.path);
                             return;
                         }
                         else {
                             const config = this.app.configuration.getProgramUnitConfig(programUnit.name);
                             if (!!config && config.hasTemplate) {
-                                this.async(() => this.changePath(programUnit.name));
+                                this.changePath(programUnit.name);
                                 return;
                             }
                         }
@@ -1085,7 +1095,7 @@ namespace Vidyano.WebComponents {
                         return;
                 }
 
-                Enumerable.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
+                Array.from(this.shadowRoot.querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
 
                 if (!!newRoute)
                     await newRoute.activate(mappedPathRoute.params);
@@ -1132,13 +1142,13 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _hookWindowBeforeUnload(noHistory: boolean, isAttached: boolean) {
+        private _hookWindowBeforeUnload(noHistory: boolean, isConnected: boolean) {
             if (this._beforeUnloadEventHandler) {
                 window.removeEventListener("beforeunload", this._beforeUnloadEventHandler);
                 this._beforeUnloadEventHandler = null;
             }
 
-            if (!noHistory && isAttached)
+            if (!noHistory && isConnected)
                 window.addEventListener("beforeunload", this._beforeUnloadEventHandler = this._beforeUnload.bind(this));
         }
 
@@ -1179,10 +1189,6 @@ namespace Vidyano.WebComponents {
             });
 
             this._setKeys(Enumerable.from(currentKeys).distinct().toArray().join(" "));
-        }
-
-        private _mediaQueryChanged(isDesktop: boolean, isTablet: boolean, isPhone: boolean) {
-            this.fire("media-query-changed", isDesktop ? "desktop" : (isTablet ? "tablet" : "phone"), { bubbles: false });
         }
 
         private _keysPressed(e: Keyboard.IKeysEvent) {
@@ -1251,7 +1257,7 @@ namespace Vidyano.WebComponents {
                                 item = new Vidyano.WebComponents.PopupMenuItem(action.label, action.icon, action.action);
                             else {
                                 item = new Vidyano.WebComponents.PopupMenuItemSplit(action.label, action.icon, action.action);
-                                action.subActions.forEach(subA => Polymer.dom(item).appendChild(new Vidyano.WebComponents.PopupMenuItem(subA.label, subA.icon, subA.action)));
+                                action.subActions.forEach(subA => item.appendChild(new Vidyano.WebComponents.PopupMenuItem(subA.label, subA.icon, subA.action)));
                             }
 
                             configureItems.push(item);
@@ -1267,14 +1273,14 @@ namespace Vidyano.WebComponents {
                 return;
             }
 
-            const popupMenuItem = <PopupMenuItem>this.$$("#viConfigure");
+            const popupMenuItem = <PopupMenuItem>this.shadowRoot.querySelector("#viConfigure");
             this.empty(popupMenuItem);
 
-            configureItems.forEach(item => Polymer.dom(popupMenuItem).appendChild(item));
+            configureItems.forEach(item => popupMenuItem.appendChild(item));
         }
 
-        private _computeThemeColorVariants(base: string, target: string, isAttached: boolean) {
-            if (!isAttached || !base)
+        private _computeThemeColorVariants(base: string, target: string, isConnected: boolean) {
+            if (!isConnected || !base)
                 return;
 
             if (!base.startsWith("#"))
@@ -1300,8 +1306,8 @@ namespace Vidyano.WebComponents {
 
             this._setUpdateAvailable(true);
 
-            Polymer.dom(this).flush();
-            this.async(() => this.$$("#update").classList.add("show"), 100);
+            Polymer.flush();
+            setTimeout(() => this.shadowRoot.querySelector("#update").classList.add("show"), 100);
         }
 
         private _refreshForUpdate() {
@@ -1317,8 +1323,8 @@ namespace Vidyano.WebComponents {
                 this._updateAvailable();
             }, 300000);
 
-            this.$$("#update").classList.remove("show");
-            this.async(() => this._setUpdateAvailable(false), 500);
+            this.shadowRoot.querySelector("#update").classList.remove("show");
+            setTimeout(() => this._setUpdateAvailable(false), 500);
         }
 
         static removeRootPath(path: string = ""): string {

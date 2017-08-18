@@ -6,7 +6,7 @@ namespace Vidyano.WebComponents {
             retry: Object,
             tab: {
                 type: Object,
-                computed: "_computeTab(retry.persistentObject, isAttached)"
+                computed: "_computeTab(retry.persistentObject, isConnected)"
             }
         }
     })
@@ -18,8 +18,8 @@ namespace Vidyano.WebComponents {
                 retry.message = null;
         }
 
-        private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {
-            if (!persistentObject || !isAttached)
+        private _computeTab(persistentObject: Vidyano.PersistentObject, isConnected: boolean): Vidyano.PersistentObjectAttributeTab {
+            if (!persistentObject || !isConnected)
                 return null;
 
             const tab = <Vidyano.PersistentObjectAttributeTab>Enumerable.from(persistentObject.tabs).firstOrDefault(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);

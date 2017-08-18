@@ -41,7 +41,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_updateWidths(columns, size.width, deleteAction, editing, isAttached)",
+            "_updateWidths(columns, size.width, deleteAction, editing, isConnected)",
             "_updateActions(attribute.details.actions, editing, readOnly)"
         ],
         forwardObservers: [
@@ -92,8 +92,8 @@ namespace Vidyano.WebComponents.Attributes {
             this._setDeleteAction(editing && !readOnly ? actions["Delete"] || null : null);
         }
 
-        private _updateWidths(columns: QueryColumn[], width: number, deleteAction: Vidyano.Action, editing: boolean, isAttached: boolean) {
-            if (!isAttached || !columns || !columns.length || !width || this._lastComputedWidths === width)
+        private _updateWidths(columns: QueryColumn[], width: number, deleteAction: Vidyano.Action, editing: boolean, isConnected: boolean) {
+            if (!isConnected || !columns || !columns.length || !width || this._lastComputedWidths === width)
                 return;
 
             const widths: { name: string; width: number; }[] = [];
@@ -257,7 +257,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached)"
+            "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isConnected)"
         ],
         forwardObservers: [
             "serviceObject.lastUpdated"
@@ -281,8 +281,8 @@ namespace Vidyano.WebComponents.Attributes {
             return obj.attributes[column.name];
         }
 
-        private _scrollNewDetailRowIntoView(serviceObject: Vidyano.PersistentObject, columns: Vidyano.QueryColumn[], editing: boolean, isAttached: boolean) {
-            if (editing && isAttached && !!serviceObject && serviceObject.isNew && !!columns)
+        private _scrollNewDetailRowIntoView(serviceObject: Vidyano.PersistentObject, columns: Vidyano.QueryColumn[], editing: boolean, isConnected: boolean) {
+            if (editing && isConnected && !!serviceObject && serviceObject.isNew && !!columns)
                 this.scrollIntoView(false);
         }
 
@@ -299,11 +299,11 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _setFullEdit(e: TapEvent) {
-            this.fire("full-edit", null);
-            Polymer.dom(this).flush();
+            this.dispatchEvent(new CustomEvent("full-edit"));
+            Polymer.flush();
 
             const attribute = this._getAttributeForColumn(this.serviceObject, e.model.column);
-            const presenters = Enumerable.from(Polymer.dom(this.root).querySelectorAll("vi-persistent-object-attribute-presenter"));
+            const presenters = Enumerable.from(this.shadowRoot.querySelectorAll("vi-persistent-object-attribute-presenter"));
             const presenter = <PersistentObjectAttributePresenter>presenters.firstOrDefault((p: PersistentObjectAttributePresenter) => p.attribute === attribute);
             if (!presenter)
                 return;

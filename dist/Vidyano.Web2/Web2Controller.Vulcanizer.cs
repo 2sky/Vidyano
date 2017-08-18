@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -68,6 +68,7 @@ namespace Vidyano.Web2
                 });
 #endif
 
+                var styleTag = "<style is='custom-style' include='iron-flex iron-positioning'>";
                 html = linkRe.Replace(html, match =>
                 {
                     var id = directory + match.Groups[1].Value;
@@ -75,13 +76,13 @@ namespace Vidyano.Web2
                     {
                         var file = Path.Combine(Web2Home, id);
                         if (File.Exists(file))
-                            return "<style>" + File.ReadAllText(file) + "</style>";
+                            return styleTag + File.ReadAllText(file) + "</style>";
                     }
 
                     if (useLocalFileSystem)
-                        return "<style>" + File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id)) + "</style>";
+                        return styleTag + File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id)) + "</style>";
 
-                    return "<style>" + GetEmbeddedResource(id) + "</style>";
+                    return styleTag + GetEmbeddedResource(id) + "</style>";
                 });
 
                 return html;

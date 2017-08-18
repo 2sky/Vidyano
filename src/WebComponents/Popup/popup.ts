@@ -423,7 +423,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_hookTapAndHoverEvents(isAttached, openOnHover)"
+            "_hookTapAndHoverEvents(isConnected, openOnHover)"
         ],
         listeners: {
             "tap": "_tap"
@@ -454,7 +454,7 @@ namespace Vidyano.WebComponents {
             if (this._header === this.parentElement)
                 (<any>this._header).popup = this;
 
-            if (this.isAttached) {
+            if (this.isConnected) {
                 if (this.openOnHover) {
                     this._header.addEventListener("mouseenter", this._enterHandler = this._onOpen.bind(this));
                     this.addEventListener("mouseleave", this._leaveHandler = this.close.bind(this));

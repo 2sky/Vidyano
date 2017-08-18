@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     @WebComponent.register({
@@ -12,10 +12,11 @@
     export class AppRoutePresenter extends WebComponent {
         notFound: boolean;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
-            this.fire("app-route-presenter-attached", null);
+
+            this.dispatchEvent(new CustomEvent("app-route-presenter-attached"));
         }
     }
 }

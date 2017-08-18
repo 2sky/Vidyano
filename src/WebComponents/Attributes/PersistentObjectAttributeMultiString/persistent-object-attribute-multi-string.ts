@@ -80,7 +80,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_render(strings, editing, isAttached)"
+            "_render(strings, editing, isConnected)"
         ],
         listeners: {
             "multi-string-item-value-new": "_itemValueNew",
@@ -124,8 +124,8 @@ namespace Vidyano.WebComponents.Attributes {
             return Array.prototype.map.apply(this.querySelectorAll("#inputs > vi-resource"), [resource => resource.model.value]);
         }
 
-        private _render(strings: PersistentObjectAttributeMultiStringItem[], editing: boolean, isAttached: boolean) {
-            if (!editing || !isAttached)
+        private _render(strings: PersistentObjectAttributeMultiStringItem[], editing: boolean, isConnected: boolean) {
+            if (!editing || !isConnected)
                 return;
 
             Polymer.dom(this).flush();

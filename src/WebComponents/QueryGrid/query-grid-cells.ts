@@ -65,7 +65,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_update(value, oldValue, isAttached)"
+            "_update(value, oldValue, isConnected)"
         ]
     })
     export class QueryGridCellBoolean extends WebComponent {

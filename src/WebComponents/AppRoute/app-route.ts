@@ -67,11 +67,12 @@ namespace Vidyano.WebComponents {
             this._documentTitleBackup = document.title;
             this._parameters = parameters;
 
-            if (this.preserveContent && Polymer.dom(this).children.length > 0)
-                this._fireActivate(<WebComponent>Polymer.dom(this).children[0]);
+            this._setActive(true);
+
+            if (this.preserveContent && Array.from(this.children).length > 0)
+                this._activate(<WebComponent>this.children[0]);
             else {
                 this._clearChildren();
-
                 if (this.component) {
                     if (this._constructorComponent !== this.component) {
                         this._constructor = this._constructorFromComponent(this.component);
@@ -99,26 +100,27 @@ namespace Vidyano.WebComponents {
                         this._distributeNewComponent();
                 }
                 else {
-                    const template = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
-                    if (template) {
-                        Polymer.dom(this).appendChild(template.stamp({ app: this.app }).root);
-                        Polymer.dom(this).flush();
+                    debugger;
+                    // TODO
+                    //const template = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
+                    //if (template) {
+                    //    Polymer.dom(this).appendChild(template.stamp({ app: this.app }).root);
+                    //    Polymer.dom(this).flush();
 
-                        this._hasChildren = true;
-                    }
-                    else {
-                        const firstChild = <WebComponent>Polymer.dom(this).children[0];
-                        if (firstChild) {
-                            if (firstChild.updateStyles)
-                                firstChild.updateStyles();
+                    //    this._hasChildren = true;
+                    //}
+                    //else {
+                    //    const firstChild = <WebComponent>Polymer.dom(this).children[0];
+                    //    if (firstChild) {
+                    //        if (firstChild.updateStyles)
+                    //            firstChild.updateStyles();
 
-                            this._fireActivate(firstChild);
-                        }
-                    }
+                    //        this._fireActivate(firstChild);
+                    //    }
+                    //}
                 }
             }
 
-            this._setActive(true);
             this._setPath(this.app.path);
 
             (<AppServiceHooks>this.app.service.hooks).trackPageView(this.app.path);
@@ -135,33 +137,32 @@ namespace Vidyano.WebComponents {
             this._clearChildren();
 
             const componentInstance = <WebComponent><any>new this._constructor();
-            Polymer.dom(this).appendChild(componentInstance);
-            Polymer.dom(this).flush();
+            this.appendChild(componentInstance);
+            Polymer.flush();
 
             this._hasChildren = true;
 
-            this._fireActivate(componentInstance);
+            this._activate(componentInstance);
         }
 
-        private _fireActivate(target: WebComponent) {
-            if (target.fire)
-                target.fire("app-route-activate", { route: this, parameters: this._parameters }, { bubbles: true });
+        private _activate(target: WebComponent) {
+            target.dispatchEvent(new CustomEvent("app-route-activate", { detail: { route: this, parameters: this._parameters }, bubbles: true, composed: true }));
         }
 
         private _clearChildren() {
             if (!this._hasChildren)
                 return;
 
-            Polymer.dom(this).children.filter(c => c.tagName !== "TEMPLATE" && c.getAttribute("is") !== "dom-template").forEach(c => Polymer.dom(this).removeChild(c));
+            Array.from(this.children).filter(c => c.tagName !== "TEMPLATE" && c.getAttribute("is") !== "dom-template").forEach(c => this.removeChild(c));
             this._hasChildren = false;
         }
 
         deactivate(nextRoute?: AppRoute): Promise<boolean> {
-            const component = <WebComponent>Polymer.dom(this).children[0];
+            const component = <WebComponent>this.children[0];
 
             return new Promise<boolean>(resolve => {
                 this.deactivator = resolve;
-                if (!component || !component.fire || !component.fire("app-route-deactivate", null, { bubbles: false, cancelable: true }).defaultPrevented)
+                if (!component || !(component instanceof WebComponent) || !component.dispatchEvent(new CustomEvent("app-route-deactivate", { bubbles: false, cancelable: true })))
                     resolve(true);
             }).then(result => {
                 if (result) {
@@ -189,20 +190,21 @@ namespace Vidyano.WebComponents {
         }
 
         private _activeChanged() {
-            this.toggleClass("active", this.active);
+            this.classList.toggle("active", this.active);
 
             if (this.activate)
-                this.fire("app-route-activated", null);
+                dispatchEvent(new CustomEvent("app-route-activated"));
             else
-                this.fire("app-route-deactivated", null);
+                dispatchEvent(new CustomEvent("app-route-deactivated"));
         }
 
-        private _titleChanged(e: CustomEvent, detail: { title: string; }) {
-            if (!this.active || this.app.noHistory || e.defaultPrevented || Polymer.dom(e.srcElement || <Node>e.target).parentNode !== this)
+        private _titleChanged(e: CustomEvent) {
+            if (!this.active || this.app.noHistory || e.defaultPrevented || (e.srcElement || <Node>e.target).parentNode !== this)
                 return;
 
-            if (this._documentTitleBackup !== detail.title && !!detail.title)
-                document.title = `${detail.title} · ${this._documentTitleBackup}`;
+            const { title }: { title: string } = e.detail;
+            if (this._documentTitleBackup !== title && !!title)
+                document.title = `${title} · ${this._documentTitleBackup}`;
             else
                 document.title = this._documentTitleBackup;
 

@@ -9,11 +9,11 @@
             <vi-icon slot="header" source="Calendar"></vi-icon>
             <div class="calendar">
                 <header class="horizontal layout">
-                    <button is="vi-button" n="-1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastBackward"></vi-icon></button>
-                    <button is="vi-button" n="-1" on-tap="_slow"><vi-icon source="Backward"></vi-icon></button>
-                    <button is="vi-button" class="flex" on-tap="_zoomOut" label="[[header]]"></button>
-                    <button is="vi-button" n="1" on-tap="_slow"><vi-icon source="Forward"></vi-icon></button>
-                    <button is="vi-button" n="1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastForward"></vi-icon></button>
+                    <vi-button n="-1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastBackward"></vi-icon></vi-button>
+                    <vi-button n="-1" on-tap="_slow"><vi-icon source="Backward"></vi-icon></vi-button>
+                    <vi-button class="flex" on-tap="_zoomOut" label="[[header]]"></vi-button>
+                    <vi-button n="1" on-tap="_slow"><vi-icon source="Forward"></vi-icon></vi-button>
+                    <vi-button n="1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastForward"></vi-icon></vi-button>
                 </header>
                 <main class="layout horizontal wrap" zoom$="[[zoom]]">
                     <template is="dom-if" if="[[!deferredCellsUpdate]]">

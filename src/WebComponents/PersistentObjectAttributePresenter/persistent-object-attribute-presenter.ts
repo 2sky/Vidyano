@@ -91,7 +91,7 @@ namespace Vidyano.WebComponents {
             "focus": "_onFocus"
         },
         observers: [
-            "_attributeChanged(attribute, isAttached)"
+            "_attributeChanged(attribute, isConnected)"
         ],
         forwardObservers: [
             "attribute.parent.isEditing",
@@ -133,13 +133,13 @@ namespace Vidyano.WebComponents {
                 this._focusQueued = true;
         }
 
-        private _attributeChanged(attribute: Vidyano.PersistentObjectAttribute, isAttached: boolean) {
+        private _attributeChanged(attribute: Vidyano.PersistentObjectAttribute, isConnected: boolean) {
             if (this._renderedAttribute) {
                 Polymer.dom(this.$.content).children.forEach(c => Polymer.dom(this.$.content).removeChild(c));
                 this._renderedAttributeElement = this._renderedAttribute = null;
             }
 
-            if (attribute && isAttached) {
+            if (attribute && isConnected) {
                 this._setLoading(true);
 
                 if (!this.getAttribute("height"))
@@ -245,7 +245,7 @@ namespace Vidyano.WebComponents {
 
         private async _renderAttribute(attribute: Vidyano.PersistentObjectAttribute, attributeType: string) {
             await _attributeImports[attributeType];
-            if (!this.isAttached || attribute !== this.attribute || this._renderedAttribute === attribute)
+            if (!this.isConnected || attribute !== this.attribute || this._renderedAttribute === attribute)
                 return;
 
             let focusTarget: HTMLElement;

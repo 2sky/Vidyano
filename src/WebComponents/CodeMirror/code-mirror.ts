@@ -29,7 +29,7 @@ namespace Vidyano.WebComponents {
             },
             initialized: {
                 type: Boolean,
-                computed: "_initialize(mode, isAttached)"
+                computed: "_initialize(mode, isConnected)"
             },
             readOnly: {
                 type: Boolean,
@@ -52,8 +52,8 @@ namespace Vidyano.WebComponents {
         readOnly: boolean;
         value: string;
 
-        private _initialize(mode: string, isAttached: boolean): boolean {
-            if (!mode || !isAttached) {
+        private _initialize(mode: string, isConnected: boolean): boolean {
+            if (!mode || !isConnected) {
                 if (this._codeMirrorValueChangedHandler) {
                     this._codeMirror.off("change", this._codeMirrorValueChangedHandler);
                     this._codeMirrorValueChangedHandler = null;

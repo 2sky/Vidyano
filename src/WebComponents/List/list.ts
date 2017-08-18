@@ -12,14 +12,14 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_hookIronListToScroller(parentScroller, isAttached)"
+            "_hookIronListToScroller(parentScroller, isConnected)"
         ]
     })
     export class List extends WebComponent {
         parentScroller: boolean;
 
-        private _hookIronListToScroller(parentScroller: boolean, isAttached: boolean) {
-            if (!isAttached)
+        private _hookIronListToScroller(parentScroller: boolean, isConnected: boolean) {
+            if (!isConnected)
                 return;
 
             if (parentScroller) {
@@ -28,7 +28,7 @@ namespace Vidyano.WebComponents {
             }
 
             this.async(() => {
-                if (parentScroller !== this.parentScroller || !this.isAttached)
+                if (parentScroller !== this.parentScroller || !this.isConnected)
                     return;
 
                 const list = Polymer.dom(this.root).querySelector("#list");

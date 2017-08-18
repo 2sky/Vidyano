@@ -19,7 +19,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_initialize(format, separator, isAttached)"
+            "_initialize(format, separator, isConnected)"
         ]
     })
     export class MaskedInput extends WebComponent {
@@ -35,8 +35,8 @@ namespace Vidyano.WebComponents {
         separator: string;
         readonly: boolean;
 
-        private _initialize(format: string, separator: string, isAttached: boolean) {
-            if (!isAttached)
+        private _initialize(format: string, separator: string, isConnected: boolean) {
+            if (!isConnected)
                 return;
 
             this._maskedInput = new window["MaskedInput"]({

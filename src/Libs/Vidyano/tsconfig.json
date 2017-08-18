@@ -1,7 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "removeComments": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": false,

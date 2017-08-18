@@ -3,7 +3,7 @@ namespace Vidyano.WebComponents {
 
     @WebComponent.register()
     export class AppConfig extends WebComponent {
-        private _nodeObserver: PolymerDomChangeObserver;
+        private _nodeObserver: Polymer.FlattenedNodesObserver;
         private _defaultAttributeConfig: PersistentObjectAttributeConfig;
         private _persistentObjectConfigs: PersistentObjectConfig[] = [];
         private _attributeConfigs: PersistentObjectAttributeConfig[] = [];
@@ -12,19 +12,19 @@ namespace Vidyano.WebComponents {
         private _queryConfigs: QueryConfig[] = [];
         private _queryChartConfigs: QueryChartConfig[] = [];
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
-            this._nodeObserver = Polymer.dom(this.root).observeNodes(this._nodesChanged.bind(this));
+            this._nodeObserver = new Polymer.FlattenedNodesObserver(this, this._nodesChanged.bind(this));
         }
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
-            Polymer.dom(this.root).unobserveNodes(this._nodeObserver);
+            this._nodeObserver.disconnect();
         }
 
-        private _nodesChanged(info: PolymerDomChangedInfo) {
+        private _nodesChanged(info: Polymer.FlattenedNodesObserverInfo) {
             info.addedNodes.forEach(node => this._handleNode(node as WebComponent, true));
             info.removedNodes.forEach(node => this._handleNode(node as WebComponent, false));
         }

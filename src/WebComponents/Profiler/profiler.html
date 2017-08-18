@@ -32,7 +32,7 @@
                         <h1>[[lastRequest.transport]]ms</h1>
                     </div>
                 </div>
-                <button is="vi-button" icon="Remove" type="light-monochrome" inverse on-tap="_close"></button>
+                <vi-button icon="Remove" type="light-monochrome" inverse on-tap="_close"></vi-button>
             </div>
             <div slot="content" class="layout horizontal">
                 <vi-scroller no-horizontal align-vertical-scrollbar="left">
@@ -95,7 +95,7 @@
                 <div class="flex relative" hidden$="[[!_hasSelectedEntry(selectedEntry)]]" id="selectedEntry">
                     <header class="horizontal layout">
                         <h1 class="flex">[[selectedEntry.methodName]]</h1>
-                        <button is="vi-button" icon="Remove" inverse on-tap="_closeSelectedEntry"></button>
+                        <vi-button icon="Remove" inverse on-tap="_closeSelectedEntry"></vi-button>
                     </header>
                     <vi-scroller class="fit">
                         <main id="selectedEntryInfo"></main>

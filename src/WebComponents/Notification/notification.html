@@ -1,4 +1,4 @@
-﻿<link rel="import" href="../Button/button.html" />
+<link rel="import" href="../Button/button.html" />
 <link rel="import" href="../SizeTracker/size-tracker.html" />
 
 <dom-module id="vi-notification">
@@ -13,9 +13,9 @@
             </template>
             <span id="text" inner-h-t-m-l="[[_textInline(text)]]"></span>
         </div>
-        <button is="vi-button" id="close" on-tap="_close">
+        <vi-button id="close" on-tap="_close">
             <vi-icon source="Notification_Close"></vi-icon>
-        </button>
+        </vi-button>
     </template>
 </dom-module>
 

@@ -85,7 +85,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_persistentObjectChanged(persistentObject, isAttached)",
+            "_persistentObjectChanged(persistentObject, isConnected)",
             "_persistentObjectNotificationChanged(persistentObject.notification)"
         ],
         forwardObservers: [
@@ -126,8 +126,8 @@ namespace Vidyano.WebComponents {
             super.detached();
         }
 
-        private _persistentObjectChanged(persistentObject: Vidyano.PersistentObject, isAttached: boolean) {
-            if (persistentObject && isAttached) {
+        private _persistentObjectChanged(persistentObject: Vidyano.PersistentObject, isConnected: boolean) {
+            if (persistentObject && isConnected) {
                 this._cacheEntry = <PersistentObjectAppCacheEntry>this.app.cache(new PersistentObjectAppCacheEntry(this.persistentObject));
 
                 this.selectedMasterTab = this._cacheEntry.selectedMasterTab || this._computeMasterTabs(this.persistentObject, this.persistentObject.tabs)[0] || null;

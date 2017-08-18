@@ -1563,7 +1563,7 @@ namespace Vidyano.WebComponents {
 
         private _requestAnimationFrame(action: () => void): number {
             return requestAnimationFrame(() => {
-                if (!this.isAttached)
+                if (!this.isConnected)
                     return;
 
                 action();
@@ -1643,7 +1643,7 @@ namespace Vidyano.WebComponents {
 
             let host = detail.host;
             if (!host && detail.position) {
-                host = this.$$("#actionsAnchor");
+                host = this.shadowRoot.querySelector("#actionsAnchor");
                 if (!host) {
                     host = document.createElement("div");
                     host.id = "actionsAnchor";

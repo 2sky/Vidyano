@@ -1,19 +1,21 @@
 <dom-module id="vi-button">
     <template>
         <link rel="stylesheet" href="button.css" />
-        <paper-ripple></paper-ripple>
-        <template is="dom-if" if="[[customLayout]]">
-            <slot></slot>
-        </template>
-        <template is="dom-if" if="[[!customLayout]]">
-            <vi-icon source="[[icon]]"></vi-icon>
-            <template is="dom-if" if="[[label]]">
-                <span>[[label]]</span>
+        <button disabled$="[[disabled]]">
+            <paper-ripple></paper-ripple>
+            <template is="dom-if" if="[[customLayout]]">
+                <slot></slot>
             </template>
-            <template is="dom-if" if="[[busy]]">
-                <vi-spinner></vi-spinner>
+            <template is="dom-if" if="[[!customLayout]]">
+                <vi-icon source="[[icon]]"></vi-icon>
+                <template is="dom-if" if="[[label]]">
+                    <span>[[label]]</span>
+                </template>
+                <template is="dom-if" if="[[busy]]">
+                    <vi-spinner></vi-spinner>
+                </template>
             </template>
-        </template>
+        </button>
     </template>
 </dom-module>
 

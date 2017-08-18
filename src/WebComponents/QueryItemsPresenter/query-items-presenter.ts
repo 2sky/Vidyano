@@ -34,7 +34,7 @@ namespace Vidyano.WebComponents {
             "f2": "_bulkEdit"
         },
         observers: [
-            "_renderQuery(query, query.currentChart, isAttached)"
+            "_renderQuery(query, query.currentChart, isConnected)"
         ],
         forwardObservers: [
             "query.currentChart"
@@ -50,8 +50,8 @@ namespace Vidyano.WebComponents {
         readonly fileDrop: boolean; private _setFileDrop: (fileDrop: boolean) => void;
         query: Vidyano.Query;
 
-        private async _renderQuery(query: Vidyano.Query, currentChart: Vidyano.QueryChart, isAttached: boolean) {
-            if (!isAttached)
+        private async _renderQuery(query: Vidyano.Query, currentChart: Vidyano.QueryChart, isConnected: boolean) {
+            if (!isConnected)
                 return;
 
             this.empty();

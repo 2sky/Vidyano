@@ -1,4 +1,4 @@
-﻿interface IResizeObserver {
+interface IResizeObserver {
     observe: (target: HTMLElement) => void;
     unobserve: (target: HTMLElement) => void;
 }
@@ -121,7 +121,7 @@ namespace Vidyano.WebComponents {
             }
             else if (this._resizeLast) {
                 this._setSize(this._resizeLast);
-                this.fire("sizechanged", this._resizeLast, { onNode: this, bubbles: !!this.bubbles });
+                this.dispatchEvent(new CustomEvent("sizechanged", { detail: { this._resizeLast }, bubbles: !!this.bubbles }));
             }
         }
 

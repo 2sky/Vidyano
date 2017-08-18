@@ -1,4 +1,4 @@
-﻿interface PolymerProperty {
+interface PolymerProperty {
     type: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor;
     computed?: string;
     reflectToAttribute?: boolean;
@@ -8,146 +8,143 @@
     notify?: boolean;
 }
 
-interface PolymerProperties {
-    [name: string]: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor | PolymerProperty;
+ interface PolymerProperties {
+     [name: string]: ObjectConstructor | StringConstructor | BooleanConstructor | DateConstructor | NumberConstructor | ArrayConstructor | PolymerProperty; 
 }
 
-interface PolymerDomApiClassList {
-    add(className: string): void;
-    remove(className: string): void;
-    toggle(className: string): void;
+/**
+ * @license
+ * Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+ * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+ * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+ * The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+ * Code distributed by Google as part of the polymer project is also
+ * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+ */
+
+interface Constructor<T> {
+    new (...args: any[]): T;
 }
 
-interface PolymerDomApi {
-    getDistributedNodes(): HTMLElement[];
-    getDestinationInsertionPoints(): HTMLElement[];
-    flush(): void;
-    childNodes: Node[];
-    children: HTMLElement[];
-    classList: PolymerDomApiClassList;
-    firstChild: Node;
-    firstElementChild: Element;
-    innerHTML: string;
-    lastChild: Node;
-    lastElementChild: Element;
-    nextElementSibling: Element;
-    nextSibling: Node;
-    node: Node;
-    parentNode: Node;
-    previousElementSibling: Element;
-    previousSibling: Node;
-    textContent: string;
-    insertBefore(newChild: Node | Vidyano.WebComponents.WebComponent, refChild?: Node | Vidyano.WebComponents.WebComponent): Node;
-    removeAttribute(name?: string): void;
-    setAttribute(name?: string, value?: string): void;
-    querySelector(selectors: string): Node | HTMLElement | Vidyano.WebComponents.WebComponent;
-    querySelectorAll(selectors: string): NodeList;
-    appendChild(newChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;
-    removeChild(oldChild: Node | Vidyano.WebComponents.WebComponent): Node | Vidyano.WebComponents.WebComponent;
-    replaceChild(newChild: Node | Vidyano.WebComponents.WebComponent, oldChild: Node | Vidyano.WebComponents.WebComponent): Node;
-    getEffectiveChildNodes(): Node[];
-    observeNodes(callBack: (info: PolymerDomChangedInfo) => void): PolymerDomChangeObserver;
-    unobserveNodes(observer: PolymerDomChangeObserver);
+/**
+ * An interface to match all Objects, but not primitives.
+ */
+interface Base { }
+
+/**
+ * A subclass-factory style mixin that extends `superclass` with a new subclass
+ * that implements the interface `M`.
+ */
+type Mixin<M> =
+    <C extends Base>(superclass: Constructor<C>) => Constructor<M & C>;
+
+/**
+ * The Polymer function and namespace.
+ */
+declare class Polymer {
+
+    /**
+     * The "Polymer function" for backwards compatibility with Polymer 1.x.
+     */
+    static (definition: any): void;
+
+    /**
+     * Forces several classes of asynchronously queued tasks to flush.
+     */
+    static flush(): void;
+
+    /**
+     * A base class for Polymer custom elements that includes the
+     * `Polymer.MetaEffects`, `Polymer.BatchedEffects`, `Polymer.PropertyEffects`,
+     * etc., mixins.
+     */
+    static Element: PolymerElementConstructor;
+
+    static ElementMixin: Mixin<PolymerElement>;
+
+    static PropertyEffects: Mixin<PolymerPropertyEffects>;
+
+    static BatchedEffects: Mixin<PolymerBatchedEffects>;
+
+    static GestureEventListeners: Mixin<PolymerGestureEventListeners>;
 }
 
-interface PolymerDomChangedInfo {
-    addedNodes: Node[];
-    removedNodes: Node[];
-    target: Element;
-}
+declare namespace Polymer {
+    export interface FlattenedNodesObserverInfo {
+        addedNodes: Node[];
+        removedNodes: Node[];
+        target: Element;
+    }
 
-interface PolymerDomChangeObserver {
-}
+    export class FlattenedNodesObserver {
+        static getFlattenedNodes(node: Node): Node[];
 
-interface PolymerTrackEvent extends CustomEvent {
-    detail: {
-        sourceEvent?: Event;
+        constructor(target: Node, callback: (info: FlattenedNodesObserverInfo) => void);
+
+        connect(): void;
+        disconnect(): void;
+        flush();
     }
 }
 
-interface PolymerTrackDetail {
-    /**
-    state - a string indicating the tracking state:
-        - start - fired when tracking is first detected (finger/button down and moved past a pre-set distance threshold)
-        - track - fired while tracking
-        - end - fired when tracking ends
-    */
-    state: string;
-    /** clientX coordinate for event */
-    x: number;
-    /** clientY coordinate for event */
-    y: number;
-    /** change in pixels horizontally since the first track event */
-    dx: number;
-    /** change in pixels vertically since the first track event */
-    dy: number;
-    /** change in pixels horizontally since last track event */
-    ddx: number;
-    /** change in pixels vertically since last track event */
-    ddy: number;
-    /** a function that may be called to determine the element currently being hovered */
-    hover(): Element | Vidyano.WebComponents.WebComponent;
+declare interface PolymerElementConstructor {
+    new (): PolymerElement;
 }
 
-interface PolymerTemplate extends Node {
-    stamp: (model: any) => TemplateInstance;
+declare class PolymerElement extends PolymerMetaEffects {
+    static finalized: boolean;
+    static finalize(): void;
+    static readonly template: HTMLTemplateElement;
+    $: any;
+    ready(): void;
+    connectedCallback(): void;
+    disconnectedCallback(): void;
+    attributeChangedCallback(): void;
+    updateStyles(properties: any): void;
+    resolveUrl(url: string, baseURI?: string): string;
+    resolveCss(cssText: string, baseURI: string): string;
+    pathFromUrl(url: string): string;
+    rootPath: string;
 }
 
-interface TemplateInstance {
-    item: any;
-    index: number;
-    root: DocumentFragment;
-
-    /**
-     * Notifies Polymer for a change in the given path.
-     */
-    notifyPath: (path: string, value: any, fromAbove?: boolean) => void;
+declare class PolymerPropertyEffects extends HTMLElement {
+    ready(): void;
+    linkPaths(to: string, from: string): void;
+    unlinkPaths(path: string): void;
+    notifySplices(path: string, splices: any[]): void;
+    get(path: string | (string | number)[], root?: any): any;
+    set(path: string | (string | number)[], value: any): void;
+    push(path: string, ...items: any[]): any;
+    pop(path: string): any;
+    shift(path: string): any;
+    unshift(path: string): number;
+    splice(path: string, start: number, removeCount?: number, ...items: Array<any>): Array<any>;
+    notifyPath(path: string, value: any): void;
 }
 
-interface TapEvent extends CustomEvent {
-    detail: {
-        x: number;
-        y: number;
-        sourceEvent: Event;
-        preventer?: Event;
-    };
-
-    model?: TemplateInstance | any;
+declare class PolymerBatchedEffects extends PolymerPropertyEffects {
+    // _propertiesChanged(currentProps, changedProps, oldProps): void;
+    // _setPropertyToNodeFromAnnotation(node, prop, value): void;
+    // _setPropertyFromNotification(path, value, event): void;
+    // _setPropertyFromComputation(prop, value): void;
+    // _enqueueClient(client): void;
+    // _flushClients(): void;
+    setProperties(props: any): void;
 }
 
-interface PolymerGestures {
-    add: (node: HTMLElement, eventName: string, handler: Function) => void;
-    remove: (node: HTMLElement, eventName: string, handler: Function) => void;
+declare class PolymerMetaEffects extends PolymerBatchedEffects {
+    // _clearPropagateEffects(): void;
+    // _createPropertyFromInfo(name: string, info): void;
+    // _setPropertyDefaults(properties): void;
 }
 
-declare var Polymer: {
-    (polymer: any): any;
-    dom(element: Node | Vidyano.WebComponents.WebComponent): PolymerDomApi;
-    getRegisteredPrototype(tagName: string): any;
+declare interface PolymerGestureEventListeners {
+    _addEventListenerToNode(node: Node, eventName: string, handler: EventListener);
+    _removeEventListenerFromNode(node: Node, eventName: string, handler: EventListener);
+}
 
-    /**
-     * Returns true if the element is a Polymer web component.
-     */
-    isInstance(element: HTMLElement): boolean;
-
-    whenReady(callback: () => void): void;
-
-    /**
-     * no-operation function for handy stubs
-     */
-    nop(): void;
-
-    api: any;
-
-    Gestures: PolymerGestures;
-};
-declare var CustomElements: {
-    registry: {
-        [tag: string]: {
-            ctor: any;
-        }
-    }
-
-    ready: boolean;
-    useNative: boolean;
-};
+declare var ShadyCSS: {
+    getComputedStyleValue(element: HTMLElement, propertyName: string): string;
+    nativeCss: boolean;
+    nativeShadow: boolean;
+}

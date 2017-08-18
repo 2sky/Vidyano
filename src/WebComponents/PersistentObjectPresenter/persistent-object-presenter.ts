@@ -38,7 +38,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_updatePersistentObject(persistentObjectId, persistentObjectObjectId, isAttached)"
+            "_updatePersistentObject(persistentObjectId, persistentObjectObjectId, isConnected)"
         ],
         listeners: {
             "app-route-activate": "_activate",
@@ -62,7 +62,8 @@ namespace Vidyano.WebComponents {
         persistentObjectObjectId: string;
         persistentObject: Vidyano.PersistentObject;
 
-        private _activate(e: CustomEvent, { parameters }: { parameters: IPersistentObjectPresenterRouteParameters; }) {
+        private _activate(e: CustomEvent) {
+            const { parameters }: { parameters: IPersistentObjectPresenterRouteParameters; } = e.detail;
             if (parameters.fromActionId) {
                 if (this._cacheEntry = <PersistentObjectFromActionAppCacheEntry>this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(undefined, parameters.fromActionId)))
                     this.persistentObject = this._cacheEntry.persistentObject;
@@ -89,12 +90,12 @@ namespace Vidyano.WebComponents {
                     this.persistentObjectId = this._cacheEntry.id;
                 }
 
-                this.fire("title-changed", { title: this.persistentObject ? this.persistentObject.breadcrumb : null }, { bubbles: true });
+                this.dispatchEvent(new CustomEvent("title-changed", { detail: { title: this.persistentObject ? this.persistentObject.breadcrumb : null }, bubbles: true }));
             }
         }
 
         private async _deactivate(e: CustomEvent) {
-            const route = <AppRoute>Polymer.dom(this).parentNode;
+            const route = <AppRoute>this.parentNode;
             const currentPath = App.removeRootPath(route.path);
             const newPath = App.removeRootPath(this.app.path);
 
@@ -131,10 +132,10 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private async _updatePersistentObject(persistentObjectId: string, persistentObjectObjectId: string, isAttached: boolean) {
+        private async _updatePersistentObject(persistentObjectId: string, persistentObjectObjectId: string, isConnected: boolean) {
             this._setError(null);
 
-            if (!this.isAttached || (this.persistentObject && this.persistentObject.id === persistentObjectId && this.persistentObject.objectId === persistentObjectObjectId))
+            if (!this.isConnected || (this.persistentObject && this.persistentObject.id === persistentObjectId && this.persistentObject.objectId === persistentObjectObjectId))
                 return;
 
             if (persistentObjectId != null) {
@@ -171,7 +172,7 @@ namespace Vidyano.WebComponents {
                 this._setTemplated(!!config && config.hasTemplate);
 
                 if (this.templated) {
-                    Polymer.dom(this).appendChild(config.stamp(persistentObject, config.as || "persistentObject"));
+                    this.appendChild(config.stamp(persistentObject, config.as || "persistentObject"));
                     this._setLoading(false);
                 }
                 else {
@@ -180,7 +181,7 @@ namespace Vidyano.WebComponents {
                 }
             }
 
-            this.fire("title-changed", { title: persistentObject ? persistentObject.breadcrumb : null }, { bubbles: true });
+            this.dispatchEvent(new CustomEvent("title-changed", { detail: { title: persistentObject ? persistentObject.breadcrumb : null }, bubbles: true }));
         }
 
         private async _renderPersistentObject(persistentObject: Vidyano.PersistentObject) {
@@ -189,7 +190,7 @@ namespace Vidyano.WebComponents {
 
             const persistentObjectComponent = new Vidyano.WebComponents.PersistentObject();
             persistentObjectComponent.persistentObject = persistentObject;
-            Polymer.dom(this).appendChild(persistentObjectComponent);
+            this.appendChild(persistentObjectComponent);
 
             this._setLoading(false);
         }

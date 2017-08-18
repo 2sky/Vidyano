@@ -44,7 +44,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_update(attribute.isReadOnly, isAttached)"
+            "_update(attribute.isReadOnly, isConnected)"
         ]
     })
     export class PersistentObjectAttributeReference extends WebComponents.Attributes.PersistentObjectAttribute {
@@ -151,7 +151,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _update() {
-            if (!this.isAttached)
+            if (!this.isConnected)
                 return;
 
             const hasReference = this.attribute instanceof Vidyano.PersistentObjectAttributeWithReference;

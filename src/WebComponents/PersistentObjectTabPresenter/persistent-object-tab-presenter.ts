@@ -17,7 +17,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_renderTab(tab, isAttached)"
+            "_renderTab(tab, isConnected)"
         ],
         listeners: {
             "attribute-loaded": "_attributeLoaded"
@@ -30,8 +30,8 @@ namespace Vidyano.WebComponents {
         readonly templated: boolean; private _setTemplated: (templated: boolean) => void;
         tab: Vidyano.PersistentObjectTab;
 
-        private async _renderTab(tab: Vidyano.PersistentObjectTab, isAttached: boolean) {
-            if (!isAttached || this._renderedTab === tab)
+        private async _renderTab(tab: Vidyano.PersistentObjectTab, isConnected: boolean) {
+            if (!isConnected || this._renderedTab === tab)
                 return;
 
             this.empty();

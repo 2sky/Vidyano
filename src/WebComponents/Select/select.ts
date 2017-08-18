@@ -200,7 +200,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _scrollItemIntoView() {
-            const focusOption = <HTMLElement>this.$$("[content] > li[selected]") || <HTMLElement>this.$$("[content] > li[suggested]");
+            const focusOption = <HTMLElement>this.shadowRoot.querySelector("[content] > li[selected]") || <HTMLElement>this.shadowRoot.querySelector("[content] > li[suggested]");
             if (focusOption)
                 (focusOption["scrollIntoViewIfNeeded"] || focusOption["scrollIntoView"]).apply(focusOption);
         }

@@ -76,7 +76,7 @@ namespace Vidyano.WebComponents {
         },
         observers: [
             "_observeAction(action.canExecute, action.isVisible, action.options)",
-            "_computeSiblingIcon(overflow, isAttached)"
+            "_computeSiblingIcon(overflow, isConnected)"
         ],
         forwardObservers: [
             "action.isPinned",
@@ -196,8 +196,8 @@ namespace Vidyano.WebComponents {
             return overflow && !Icon.Exists(icon) && siblingIcon;
         }
 
-        private _computeSiblingIcon(overflow: boolean, isAttached: boolean) {
-            const siblingIcon = overflow && isAttached && this.parentElement != null && Enumerable.from(this.parentElement.children).firstOrDefault((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
+        private _computeSiblingIcon(overflow: boolean, isConnected: boolean) {
+            const siblingIcon = overflow && isConnected && this.parentElement != null && Enumerable.from(this.parentElement.children).firstOrDefault((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
             this._setSiblingIcon(siblingIcon);
             if (siblingIcon) {
                 Enumerable.from(this.parentElement.children).forEach((ab: ActionButton) => {
@@ -212,7 +212,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _hiddenChanged() {
-            this.fire("sizechanged", null);
+            debugger;
+            // TODO: Is this still needed?
+            //this.fire("sizechanged", null);
         }
 
         _viConfigure(actions: IConfigurableAction[]) {

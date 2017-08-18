@@ -108,7 +108,7 @@ namespace Vidyano.WebComponents {
         }
 
         private async _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
-            if (this.isAttached && oldQuery)
+            if (this.isConnected && oldQuery)
                 this.empty();
 
             if (query) {

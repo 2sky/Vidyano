@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     interface ISignInRouteParameters {
@@ -25,7 +25,8 @@
         error: string;
         image: string;
 
-        private async _activate(e: CustomEvent, { parameters }: { parameters: ISignInRouteParameters; }) {
+        private async _activate(e: CustomEvent) {
+            const parameters = <ISignInRouteParameters>e.detail.parameters;
             const returnUrl = decodeURIComponent(parameters.returnUrl || "");
 
             if (this.app.service.isSignedIn) {
@@ -58,7 +59,7 @@
                 const provider = new WebComponents.SignInProvider(name === "Vidyano", providers.length === 1, returnUrl, this.app.service.providers[name]);
                 provider.name = name;
 
-                Polymer.dom(this).appendChild(provider);
+                this.appendChild(provider);
             });
         }
 
@@ -173,16 +174,17 @@
             this._setIsVidyano(isVidyano);
         }
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             if (this.isVidyano) {
                 this._setHasForgot(this._parameters.forgotPassword || false);
                 this._setHasRegister(!!this._parameters.registerUser && !!this._parameters.registerPersistentObjectId);
 
                 if (this._isOnlyProvider) {
-                    Polymer.dom(this.root).querySelector("template")["render"]();
-                    const collapse = this.$$("#vidyano");
+                    Polymer.flush();
+
+                    const collapse = this.shadowRoot.querySelector("#vidyano");
                     collapse["noAnimation"] = true;
                     collapse["opened"] = true;
                     setTimeout(() => this._autoFocus(), 300);
@@ -219,7 +221,7 @@
                 this.app.service.signInExternal(this.name);
             }
             else if (!this._isOnlyProvider) {
-                const vidyanoProvider = this.$$("#vidyano");
+                const vidyanoProvider = this.shadowRoot.querySelector("#vidyano");
                 if (!vidyanoProvider["opened"]) {
                     vidyanoProvider["toggle"]();
                     setTimeout(() => this._autoFocus(), 300);
@@ -229,11 +231,11 @@
 
         private _autoFocus() {
             if (StringEx.isNullOrEmpty(this.userName)) {
-                const user = <HTMLInputElement><any>this.$$("input#user");
+                const user = <HTMLInputElement><any>this.shadowRoot.querySelector("input#user");
                 user.focus();
             }
             else {
-                const pass = <HTMLInputElement><any>this.$$("input#pass");
+                const pass = <HTMLInputElement><any>this.shadowRoot.querySelector("input#pass");
                 pass.focus();
             }
         }
@@ -276,7 +278,7 @@
                 this.password = "";
                 this.twoFactorCode = "";
 
-                const pass = <HTMLInputElement><any>this.$$("input#pass");
+                const pass = <HTMLInputElement><any>this.shadowRoot.querySelector("input#pass");
                 pass.focus();
 
                 this.app.showMessageDialog({

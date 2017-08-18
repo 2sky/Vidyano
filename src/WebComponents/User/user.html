@@ -8,9 +8,9 @@
                 <span>[[userName]]</span>
             </div>
             <vi-popup-menu right-align>
-                <button id="settings" slot="header" is="vi-button">
+                <vi-button id="settings" slot="header">
                     <vi-icon source="Up"></vi-icon>
-                </button>
+                </vi-button>
                 <template is="dom-if" if="[[canUserSettings]]">
                     <vi-popup-menu-item icon="Configure" label="[[translateMessage('UserSettings', isAttached)]]" on-tap="userSettings"></vi-popup-menu-item>
                 </template>
@@ -26,10 +26,10 @@
             </vi-popup-menu>
         </template>
         <template is="dom-if" if="[[!isSignedIn]]">
-            <button is="vi-button" id="signIn" class="flex" on-tap="signIn">
+            <vi-button id="signIn" class="flex" on-tap="signIn">
                 <span>[[translateMessage('SignIn', isAttached)]]</span>
                 <vi-icon source="SignIn"></vi-icon>
-            </button>
+            </vi-button>
         </template>
     </template>
 </dom-module>

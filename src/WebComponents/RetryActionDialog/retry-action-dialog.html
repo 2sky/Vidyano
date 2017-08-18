@@ -15,7 +15,7 @@
         </main>
         <footer class="horizontal layout end-justified">
             <template is="dom-repeat" items="[[retry.options]]" as="option">
-                <button is="vi-button" on-tap="_onSelectOption" inverse="[[!_isFirst(index)]]" label="[[option]]"></button>
+                <vi-button on-tap="_onSelectOption" inverse="[[!_isFirst(index)]]" label="[[option]]"></vi-button>
             </template>
         </footer>
     </template>

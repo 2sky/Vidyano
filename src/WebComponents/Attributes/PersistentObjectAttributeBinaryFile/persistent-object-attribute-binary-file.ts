@@ -13,7 +13,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_registerInput(attribute, isAttached)"
+            "_registerInput(attribute, isConnected)"
         ]
     })
     export class PersistentObjectAttributeBinaryFile extends WebComponents.Attributes.PersistentObjectAttribute {
@@ -29,7 +29,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         }
 
-        private _registerInput(attribute: Vidyano.PersistentObjectAttribute, isAttached: boolean) {
+        private _registerInput(attribute: Vidyano.PersistentObjectAttribute, isConnected: boolean) {
             if (this._inputAttribute) {
                 this._inputAttribute.clearRegisteredInput();
                 this._inputAttribute = null;
@@ -38,7 +38,7 @@ namespace Vidyano.WebComponents.Attributes {
             if (this._inputContainer)
                 this._inputContainer.textContent = "";
 
-            if (attribute && isAttached) {
+            if (attribute && isConnected) {
                 this._inputAttribute = attribute;
 
                 const input = document.createElement("input");

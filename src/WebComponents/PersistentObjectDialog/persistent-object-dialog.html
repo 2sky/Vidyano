@@ -1,4 +1,4 @@
-﻿<link rel="import" href="../Button/button.html" />
+<link rel="import" href="../Button/button.html" />
 <link rel="import" href="../Dialog/dialog.html" />
 <link rel="import" href="../Notification/notification.html" />
 <link rel="import" href="../PersistentObjectTabPresenter/persistent-object-tab-presenter.html" />
@@ -16,16 +16,16 @@
         <footer class="horizontal layout">
             <div class="layout horizontal flex extra-actions">
                 <template is="dom-repeat" items="[[dialogActions]]" as="action">
-                    <button is="vi-button" label="[[action.definition.displayName]]" on-tap="_executeExtraAction" disabled$="[[persistentObject.isBusy]]"></button>
+                    <vi-button label="[[action.definition.displayName]]" on-tap="_executeExtraAction" disabled$="[[persistentObject.isBusy]]"></vi-button>
                 </template>
             </div>
             <div class="layout horizontal default-actions">
                 <template is="dom-if" if="[[!readOnly]]">
-                    <button is="vi-button" on-tap="_save" action-type="Default" label="[[saveLabel]]" disabled$="[[persistentObject.isBusy]]"></button>
-                    <button is="vi-button" inverse on-tap="_cancel" label="[[translateMessage('Cancel', isAttached)]]" disabled$="[[persistentObject.isBusy]]"></button>
+                    <vi-button on-tap="_save" action-type="Default" label="[[saveLabel]]" disabled$="[[persistentObject.isBusy]]"></vi-button>
+                    <vi-button inverse on-tap="_cancel" label="[[translateMessage('Cancel', isAttached)]]" disabled$="[[persistentObject.isBusy]]"></vi-button>
                 </template>
                 <template is="dom-if" if="[[readOnly]]">
-                    <button is="vi-button" on-tap="_cancel" action-type="Default" label="[[translateMessage('Close', isAttached)]]" disabled$="[[persistentObject.isBusy]]"></button>
+                    <vi-button on-tap="_cancel" action-type="Default" label="[[translateMessage('Close', isAttached)]]" disabled$="[[persistentObject.isBusy]]"></vi-button>
                 </template>
             </div>
         </footer>

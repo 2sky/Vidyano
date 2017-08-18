@@ -13,7 +13,7 @@ namespace Vidyano.WebComponents {
             persistentObject: Object,
             tab: {
                 type: Object,
-                computed: "_computeTab(persistentObject, isAttached)"
+                computed: "_computeTab(persistentObject, isConnected)"
             },
             readOnly: {
                 type: Boolean,
@@ -103,8 +103,8 @@ namespace Vidyano.WebComponents {
             return this._options.saveLabel || this.translateMessage("Save");
         }
 
-        private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {
-            if (!persistentObject || !isAttached)
+        private _computeTab(persistentObject: Vidyano.PersistentObject, isConnected: boolean): Vidyano.PersistentObjectAttributeTab {
+            if (!persistentObject || !isConnected)
                 return null;
 
             const tab = <Vidyano.PersistentObjectAttributeTab>Enumerable.from(persistentObject.tabs).firstOrDefault(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);

@@ -20,19 +20,19 @@
             },
             dateFormat: {
                 type: String,
-                computed: "_computeDateFormat(isAttached)"
+                computed: "_computeDateFormat(isConnected)"
             },
             dateSeparator: {
                 type: String,
-                computed: "_computeDateSeparator(isAttached)"
+                computed: "_computeDateSeparator(isConnected)"
             },
             timeFormat: {
                 type: String,
-                computed: "_computeTimeFormat(isAttached)"
+                computed: "_computeTimeFormat(isConnected)"
             },
             timeSeparator: {
                 type: String,
-                computed: "_computeTimeSeparator(isAttached)"
+                computed: "_computeTimeSeparator(isConnected)"
             },
             hasInvalidDate: {
                 type: Boolean,

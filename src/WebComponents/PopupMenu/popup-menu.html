@@ -19,11 +19,11 @@
     <template>
         <link rel="stylesheet" href="popup-menu-item.css" />
         <vi-popup open-on-hover class="flex" id="popup">
-            <button slot="header" is="vi-button" inverse$="[[!checked]]" class="layout horizontal" on-tap="_catchTap">
+            <vi-button slot="header" inverse$="[[!checked]]" class="layout horizontal" on-tap="_catchTap">
                 <vi-icon id="icon" source="[[icon]]"></vi-icon>
                 <span class="flex">[[label]]</span>
                 <vi-icon source="Forward" hidden$="[[!hasChildren]]"></vi-icon>
-            </button>
+            </vi-button>
             <div id="subItems">
                 <slot></slot>
             </div>
@@ -34,14 +34,14 @@
 <dom-module id="vi-popup-menu-item-split">
     <template>
         <link rel="stylesheet" href="popup-menu-item-split.css" />
-        <button is="vi-button" inverse$="[[!checked]]">
+        <vi-button inverse$="[[!checked]]">
             <vi-icon id="icon" source="[[icon]]"></vi-icon>
             <span class="flex">[[label]]</span>
-        </button>
+        </vi-button>
         <vi-popup open-on-hover hidden$="[[!hasChildren]]">
-            <button id="split" class="flex" is="vi-button" header icon="Forward" on-tap="_splitTap" inverse>
+            <vi-button id="split" class="flex" header icon="Forward" on-tap="_splitTap" inverse>
                 <vi-icon source="Forward"></vi-icon>
-            </button>
+            </vi-button>
             <div id="subItems">
                 <slot></slot>
             </div>

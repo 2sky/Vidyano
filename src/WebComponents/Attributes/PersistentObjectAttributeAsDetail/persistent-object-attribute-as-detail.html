@@ -49,7 +49,7 @@
                         </div>
                         <template is="dom-if" if="[[newAction]]">
                             <div class="row add inline layout horizontal" hidden$="[[newActionPinned]]">
-                                <button is="vi-button" inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add" disabled$="[[attribute.parent.isFrozen]]"></button>
+                                <vi-button inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add" disabled$="[[attribute.parent.isFrozen]]"></vi-button>
                                 <template is="dom-if" if="[[!newActionPinned]]" restamp>
                                     <slot name="button"></slot>
                                 </template>
@@ -61,9 +61,9 @@
                             <template is="dom-repeat" items="[[attribute.objects]]" as="obj">
                                 <div class="row" hidden$="[[obj.isDeleted]]">
                                     <div class="delete-button">
-                                        <button is="vi-button" inverse on-tap="_delete" disabled$="[[attribute.parent.isFrozen]]">
+                                        <vi-button inverse on-tap="_delete" disabled$="[[attribute.parent.isFrozen]]">
                                             <vi-icon source="Action_Delete"></vi-icon>
-                                        </button>
+                                        </vi-button>
                                     </div>
                                 </div>
                             </template>
@@ -73,7 +73,7 @@
             </vi-scroller>
             <template is="dom-if" if="[[newAction]]">
                 <div class="row add foot layout horizontal" hidden$="[[!newActionPinned]]">
-                    <button is="vi-button" inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add"></button>
+                    <vi-button inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add"></vi-button>
                     <template is="dom-if" if="[[newActionPinned]]" restamp>
                         <slot name="button"></slot>
                     </template>

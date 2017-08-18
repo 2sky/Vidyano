@@ -14,7 +14,7 @@
             <vi-size-tracker on-sizechanged="_visibleContainerSizeChanged"></vi-size-tracker>
         </div>
         <vi-popup id="overflowPopup" class="horizontal layout" manual on-popup-opening="_popupOpening" on-popup-closed="_popupClosed">
-            <button slot="header" flex inverse is="vi-button" label="&hellip;"></button>
+            <vi-button slot="header" flex inverse label="&hellip;"></vi-button>
             <slot slot="content" name="overflow"></slot>
         </vi-popup>
     </template>

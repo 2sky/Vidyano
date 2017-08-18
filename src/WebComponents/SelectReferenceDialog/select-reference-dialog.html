@@ -1,4 +1,4 @@
-﻿<link rel="import" href="../Button/button.html" />
+<link rel="import" href="../Button/button.html" />
 <link rel="import" href="../Dialog/dialog.html" />
 <link rel="import" href="../InputSearch/input-search.html" />
 <link rel="import" href="../Notification/notification.html" />
@@ -18,10 +18,10 @@
         </main>
         <footer class="horizontal-reverse layout justified">
             <div class="horizontal layout end-justified">
-                <button is="vi-button" on-tap="_select" disabled$="[[!canSelect]]" label="[[translateMessage('OK', isAttached)]]"></button>
-                <button is="vi-button" inverse on-tap="cancel" label="[[translateMessage('Cancel', isAttached)]]"></button>
+                <vi-button on-tap="_select" disabled$="[[!canSelect]]" label="[[translateMessage('OK', isAttached)]]"></vi-button>
+                <vi-button inverse on-tap="cancel" label="[[translateMessage('Cancel', isAttached)]]"></vi-button>
             </div>
-            <button is="vi-button" on-tap="_addNew" hidden$="[[!canAddNewReference]]" label="[[translateMessage('NewReference', isAttached)]]"></button>
+            <vi-button on-tap="_addNew" hidden$="[[!canAddNewReference]]" label="[[translateMessage('NewReference', isAttached)]]"></vi-button>
         </footer>
     </template>
 </dom-module>

@@ -8,9 +8,9 @@
     <template>
         <link rel="stylesheet" href="menu.css" />
         <header>
-            <button is="vi-button" id="toggleCollapse" on-tap="_toggleCollapse">
+            <vi-button id="toggleCollapse" on-tap="_toggleCollapse">
                 <vi-icon source="Menu_Collapse"></vi-icon>
-            </button>
+            </vi-button>
             <div class="label">[[label]]<slot name="menu-label"></slot></div>
             <div id="headerElements"></div>
             <template is="dom-if" if="[[!collapsed]]">

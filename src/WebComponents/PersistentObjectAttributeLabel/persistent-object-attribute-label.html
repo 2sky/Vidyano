@@ -1,4 +1,4 @@
-﻿<link rel="import" href="../Button/button.html" />
+<link rel="import" href="../Button/button.html" />
 
 <dom-module id="vi-persistent-object-attribute-label">
     <template>
@@ -8,9 +8,9 @@
         <div class="locked">
             <vi-icon source="Lock"></vi-icon>
         </div>
-        <button is="vi-button" inverse class="info" on-tap="_showTooltip" hidden$="[[!hasToolTip]]" tabindex="-1">
+        <vi-button inverse class="info" on-tap="_showTooltip" hidden$="[[!hasToolTip]]" tabindex="-1">
             <vi-icon source="Info"></vi-icon>
-        </button>
+        </vi-button>
     </template>
 </dom-module>
 

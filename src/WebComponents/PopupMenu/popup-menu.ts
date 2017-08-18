@@ -29,7 +29,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_hookContextMenu(isAttached, contextMenuOnly)"
+            "_hookContextMenu(isConnected, contextMenuOnly)"
         ],
         listeners: {
             "mouseenter": "_mouseenter",
@@ -49,11 +49,14 @@ namespace Vidyano.WebComponents {
             return (<Popup>this.$.popup).popup();
         }
 
-        private _hookContextMenu(isAttached: boolean, contextMenu: boolean) {
-            if (isAttached && contextMenu)
-                this.parentElement.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
+        private _hookContextMenu(isConnected: boolean, contextMenu: boolean) {
+            if (isConnected && contextMenu) {
+                const target = this.findParent();
+                target.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
+                this._openContextEventListener["_contextmenu_target"] = target;
+            }
             else if (this._openContextEventListener) {
-                this.parentElement.removeEventListener("contextmenu", this._openContextEventListener);
+                this._openContextEventListener["_contextmenu_target"].removeEventListener("contextmenu", this._openContextEventListener);
                 this._openContextEventListener = undefined;
             }
         }

@@ -42,7 +42,7 @@ namespace Vidyano.WebComponents {
         autofocus: boolean;
 
         private _computeColumns(size: ISize, defaultColumnCount: number): number {
-            if (defaultColumnCount)
+            if (!size || defaultColumnCount)
                 return defaultColumnCount;
 
             if (size.width >= 1500)

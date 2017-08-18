@@ -4,11 +4,11 @@
     @include flex();
     @include layout-horizontal();
 
-    ::content > * {
+    ::slotted(*) {
         @include flex();
     }
+}
 
-    &:not(.active) {
-        display: none !important;
-    }
+:host(:not(.active)) {
+    display: none !important;
 }

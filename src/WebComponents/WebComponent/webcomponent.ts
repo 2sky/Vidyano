@@ -202,180 +202,7 @@ namespace Vidyano.WebComponents {
         (): void;
     }
 
-    export class PolymerBase extends HTMLElement {
-        /**
-         * $ contains all names of elements in the shady DOM with an id attribute.
-         */
-        $: { [id: string]: HTMLElement };
-
-        /**
-         * Convenience method to run `querySelector` on this local DOM scope.
-         */
-        $$: (selector: string) => HTMLElement | WebComponents.WebComponent;
-
-        /**
-         * Shady DOM entry point.
-         */
-        root: HTMLElement | WebComponent;
-
-        /**
-         * Invokes a function asynchronously. The context of the callback
-         * function is bound to 'this' automatically.
-         * @method async
-         * @param {Function|String} method
-         * @param {any|Array} args
-         * @param {number} timeout
-         */
-        async: {
-            (method: string, args?: any, timeout?: number): number;
-            (method: Function, args?: any, timeout?: number): number;
-        };
-
-        /**
-         * Cancels the async function call.
-         */
-        cancelAsync: (handle: number) => void;
-
-        /*
-         * Fire an event.
-         * @method fire
-         * @returns {Object} event
-         * @param {string} type An event name.
-         * @param {any} detail
-         * @param {Node} onNode Target node.
-         */
-        fire: (type: string, detail: any, options?: { onNode?: Node; bubbles?: boolean; cancelable?: boolean; }) => CustomEvent;
-
-        /**
-         * Call debounce to collapse multiple requests for a named task into one invocation, which is made after the wait time has elapsed with no new request. If no wait time is given, the callback is called at microtask timing (guaranteed to be before paint).
-         */
-        debounce: (jobName: string, callback: Function, wait?: number) => void;
-
-        /**
-         * Cancels an active debouncer without calling the callback.
-         */
-        cancelDebouncer: (jobName: string) => void;
-
-        /**
-         * Calls the debounced callback immediately and cancels the debouncer.
-         */
-        flushDebouncer: (jobName: string) => void;
-
-        /**
-         * Returns true if the named debounce task is waiting to run.
-         */
-        isDebouncerActive: (jobName: string) => void;
-
-        /*
-         * Adds new elements to the end of an array, returns the new length and notifies Polymer that the array has changed.
-         */
-        push: (path: string, ...items: any[]) => number;
-
-        /*
-         * Removes the last element of an array, returns that element and notifies Polymer that the array has changed.
-         */
-        pop: (path: string) => any;
-
-        /*
-         * Adds new elements to the beginning of an array, returns the new length and notifies Polymer that the array has changed.
-         */
-        unshift: (path: string, items: any[]) => number;
-
-        /*
-         * Removes the first element of an array, returns that element and notifies Polymer that the array has changed.
-         */
-        shift: (path: string) => any;
-
-        /*
-         * Adds/Removes elements from an array and notifies Polymer that the array has changed.
-         */
-        splice: (path: string, index: number, removeCount?: number, items?: any[]) => any[];
-
-        /**
-         * Takes a URL relative to the <dom-module> of an imported Polymer element, and returns a path relative to the current document.
-         * This method can be used, for example, to refer to an asset delivered alongside an HTML import.
-         */
-        resolveUrl: (href: string) => string;
-
-        /**
-         * Gets a path's value.
-         */
-        get: (path: string, root?: WebComponent) => any;
-
-        /**
-         * Sets a path's value and notifies Polymer for a change for that path.
-         */
-        set: (path: string, value: any, root?: WebComponent) => void;
-
-        /**
-         * Notifies Polymer for a change in the given path.
-         */
-        notifyPath: (path: string, value: any, fromAbove?: boolean) => void;
-
-        /**
-         *  Applies a CSS transform to the specified node, or host element if no node is specified.
-         */
-        transform: (transform: string, node?: Node | WebComponent) => void;
-
-        /**
-         * Transforms the specified node, or host element if no node is specified.
-         */
-        translate3d: (x: string, y: string, z: string, node?: Node | WebComponent) => void;
-
-        /**
-         * Toggles the named boolean class on the host element, adding the class if bool is truthy and removing it if bool is falsey.
-         * If node is specified, sets the class on node instead of the host element.
-         */
-        toggleClass: (name: string, bool: boolean, node?: Node | WebComponent) => void;
-
-        /*
-         * Toggles the named boolean attribute on the host element, adding the attribute if bool is truthy and removing it if bool is falsey.
-         * If node is specified, sets the attribute on node instead of the host element.
-         */
-        toggleAttribute: (name: string, bool: boolean, node?: Node | WebComponent) => void;
-
-        /**
-         * Returns the computed style value for the given property.
-         */
-        getComputedStyleValue: (property: string) => string;
-
-        /**
-         * Revaluates custom property values.
-         */
-        updateStyles: (props: any) => void;
-
-        /**
-         * Force immediate content distribution.
-         */
-        distributeContent: () => void;
-
-        /**
-         * Returns a list of effective child nodes for this element.
-         */
-        getEffectiveChildNodes: () => Node[];
-
-        /**
-         * Returns a list of effective child elements for this element.
-         */
-        getEffectiveChildren: () => HTMLElement[];
-
-        /**
-         * Returns the first effective child that matches selector.
-         */
-        queryEffectiveChildren: (selector: string) => HTMLElement;
-
-        /**
-         * Returns a list of effective children that match selector.
-         */
-        queryAllEffectiveChildren: (selector: string) => HTMLElement[];
-    }
-
-    // HACK: This fixes the default __extends for extending from HTMLElement
-    /* tslint:disable:no-eval */
-    eval("PolymerBase = (function (_super) { function PolymerBase() { } return PolymerBase; })(HTMLElement); WebComponents.PolymerBase = PolymerBase;");
-    /* tslint:enable:no-eval */
-
-    export interface IConfigurable extends PolymerBase {
+    export interface IConfigurable {
         /**
          * Will be called when the context menu is openend on the element.
          */
@@ -390,23 +217,37 @@ namespace Vidyano.WebComponents {
         subActions?: IConfigurableAction[];
     }
 
-    export abstract class WebComponent extends PolymerBase {
-        private _app: Vidyano.WebComponents.App;
+    export abstract class WebComponent extends Polymer.GestureEventListeners(Polymer.Element) {
         readonly service: Vidyano.Service;
         readonly translations: { [key: string]: string; };
         className: string;
         classList: DOMTokenList;
         tagName: string;
         style: CSSStyleDeclaration;
-        isAttached: boolean;
+        isConnected: boolean;
         app: Vidyano.WebComponents.App;
 
-        protected attached() {
-            // Noop
+        connectedCallback() {
+            if (this["_updateListeners"])
+                this["_updateListeners"](true);
+
+            super.connectedCallback();
+            this.notifyPath("isConnected", true);
         }
 
-        protected detached() {
-            // Noop
+        disconnectedCallback() {
+            if (this["_updateListeners"])
+                this["_updateListeners"]();
+
+            super.disconnectedCallback();
+            this.notifyPath("isConnected", false);
+        }
+
+        protected getComputedStyleValue(propertyName: string): string {
+            if (typeof ShadyCSS !== "undefined")
+                return ShadyCSS.getComputedStyleValue(this, propertyName);
+            else
+                return getComputedStyle(this).getPropertyValue(propertyName);
         }
 
         computePath(relativePath: string): string {
@@ -414,16 +255,16 @@ namespace Vidyano.WebComponents {
         }
 
         empty(parent: Node = this, condition?: (e: Node) => boolean) {
-            Polymer.dom(parent).getEffectiveChildNodes().forEach(c => {
-                if (!condition || condition(c))
-                    Polymer.dom(parent).removeChild(c);
-            });
+            //Polymer.dom(parent).getEffectiveChildNodes().forEach(c => {
+            //    if (!condition || condition(c))
+            //        Polymer.dom(parent).removeChild(c);
+            //});
         }
 
-        findParent<T>(condition: (element: Node) => boolean, parent: Node = this): T {
+        findParent<T extends HTMLElement>(condition: (element: Node) => boolean = e => !!e, parent: Node = this.parentElement || this.parentNode.nodeType !== 11 ? this.parentNode : (<any>this.parentNode).host): T {
             let element = parent;
             while (!!element && !condition(element))
-                element = element.parentNode || (<any>element).host;
+                element = element.parentNode ? element.parentNode.nodeType !== 11 ? element.parentNode : (<any>element).host : null;
 
             return <T><any>element;
         }
@@ -439,7 +280,7 @@ namespace Vidyano.WebComponents {
          * Dynamically imports an HTML document.
          */
         importHref(href: string): Promise<any> {
-            const _importHref: (href: string, onLoad?: (e: CustomEvent) => void, onFail?: (e: CustomEvent) => void) => void = Polymer["Base"].importHref;
+            const _importHref: (href: string, onLoad?: (e: CustomEvent) => void, onFail?: (e: CustomEvent) => void) => void = Polymer.importHref;
             return new Promise((resolve, reject) => {
                 _importHref.call(this, href, e => resolve(e.target["import"]), err => {
                     console.error(err);
@@ -448,23 +289,23 @@ namespace Vidyano.WebComponents {
             });
         }
 
-        protected _getFocusableElement(source: Node = this): HTMLElement {
-            // Copyright (c) 2014 The Polymer Authors. All rights reserved.
-            // https://github.com/PolymerElements/iron-overlay-behavior/blob/2aea7b4945e0b10ce77e1a15ba0ef5a02cdc7984/iron-overlay-behavior.html
+        //protected _getFocusableElement(source: Node = this): HTMLElement {
+        //    // Copyright (c) 2014 The Polymer Authors. All rights reserved.
+        //    // https://github.com/PolymerElements/iron-overlay-behavior/blob/2aea7b4945e0b10ce77e1a15ba0ef5a02cdc7984/iron-overlay-behavior.html
 
-            // Elements that can be focused even if they have [disabled] attribute.
-            const FOCUSABLE_WITH_DISABLED = ["a[href]", "area[href]", "iframe", "[tabindex]", "[contentEditable=true]"];
-            // Elements that cannot be focused if they have [disabled] attribute.
-            const FOCUSABLE_WITHOUT_DISABLED = ["input", "select", "textarea", "button"];
+        //    // Elements that can be focused even if they have [disabled] attribute.
+        //    const FOCUSABLE_WITH_DISABLED = ["a[href]", "area[href]", "iframe", "[tabindex]", "[contentEditable=true]"];
+        //    // Elements that cannot be focused if they have [disabled] attribute.
+        //    const FOCUSABLE_WITHOUT_DISABLED = ["input", "select", "textarea", "button"];
 
-            // Discard elements with tabindex=-1 (makes them not focusable).
-            const selector = FOCUSABLE_WITH_DISABLED.join(":not([tabindex='-1']),") +
-                ":not([tabindex='-1'])," +
-                FOCUSABLE_WITHOUT_DISABLED.join(":not([disabled]):not([tabindex='-1']),") +
-                ":not([disabled]):not([tabindex='-1'])";
+        //    // Discard elements with tabindex=-1 (makes them not focusable).
+        //    const selector = FOCUSABLE_WITH_DISABLED.join(":not([tabindex='-1']),") +
+        //        ":not([tabindex='-1'])," +
+        //        FOCUSABLE_WITHOUT_DISABLED.join(":not([disabled]):not([tabindex='-1']),") +
+        //        ":not([disabled]):not([tabindex='-1'])";
 
-            return <HTMLElement>Polymer.dom(source).querySelector(selector);
-        }
+        //    return (<HTMLElement>source).querySelector(selector);
+        //}
 
         protected _escapeHTML(val: string): string {
             const span = document.createElement("span");
@@ -528,20 +369,6 @@ namespace Vidyano.WebComponents {
             };
         }
 
-        private _computeApp(isAttached: boolean): Vidyano.WebComponents.App {
-            if (!isAttached || !Vidyano.WebComponents["App"])
-                return this._app;
-
-            if (this instanceof Vidyano.WebComponents.App)
-                return (<Vidyano.WebComponents.WebComponent>this)._app = this;
-
-            const component = <Vidyano.WebComponents.WebComponent>this.findParent(e => !!e && (<any>e)._app instanceof Vidyano.WebComponents.App || e instanceof Vidyano.WebComponents.App);
-            if (!!component)
-                return this._app = component instanceof Vidyano.WebComponents.App ? component : component._app;
-
-            return this._app = null;
-        }
-
         // This function simply returns the value. This can be used to reflect a property on an observable object as an attribute.
         private _forwardComputed(value: any): any {
             return value;
@@ -558,32 +385,19 @@ namespace Vidyano.WebComponents {
         }
 
         private static _register(obj: Function, info: IWebComponentRegistrationInfo = {}, prefix: string = "vi", ns?: any) {
-            const name = WebComponent.getName(obj);
+            const name = obj.name;
             const elementName = prefix + name.replace(/([A-Z])/g, m => "-" + m[0].toLowerCase());
 
-            const wcPrototype = <any>info;
-            (<any>wcPrototype).is = elementName;
+            obj["is"] = elementName;
 
-            if (obj.length > 0)
-                wcPrototype.factoryImpl = obj;
-            else
-                wcPrototype.created = obj;
+            info.properties = info.properties || {};
+            obj["properties"] = info.properties;
 
-            info.properties = wcPrototype.properties || {};
+            info.properties.isConnected = Boolean;
 
-            for (const prop in info.properties) {
-                if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed)) {
-                    if (wcPrototype.properties[prop].computed[0] !== "!")
-                        info.properties[prop]["computed"] = "_forwardComputed(" + wcPrototype.properties[prop].computed + ")";
-                    else
-                        info.properties[prop]["computed"] = "_forwardNegate(" + wcPrototype.properties[prop].computed.substring(1) + ")";
-                }
-            }
-
-            info.properties.isAttached = Boolean;
             info.properties.app = {
                 type: Object,
-                computed: "_computeApp(isAttached)"
+                value: elementName !== "vi-app" ? () => window["app"] : function () { return this; }
             };
 
             if (!info.properties.service) {
@@ -598,7 +412,38 @@ namespace Vidyano.WebComponents {
                 computed: "_forwardComputed(service.language.messages)"
             };
 
+            for (const propName in info.properties) {
+                const prop = <PolymerProperty>info.properties[propName];
+
+                if (prop.computed && !/\)$/.test(prop.computed)) {
+                    if (prop.computed[0] !== "!")
+                        prop.computed = "_forwardComputed(" + prop.computed + ")";
+                    else
+                        prop.computed = "_forwardNegate(" + prop.computed.substring(1) + ")";
+                }
+            }
+
             info.observers = info.observers || [];
+            obj["observers"] = info.observers;
+
+            if (info.listeners) {
+                obj.prototype["_updateListeners"] = function (isConnected: boolean) {
+                    if (isConnected) {
+                        for (const l in info.listeners) {
+                            if (this[info.listeners[l]])
+                                this._addEventListenerToNode(this, l, this[info.listeners[l]].bound = this[info.listeners[l]].bind(this));
+                            else
+                                console.warn(`listener method '${info.listeners[l]}' not defined`);
+                        }
+                    }
+                    else {
+                        for (const l in info.listeners) {
+                            this._removeEventListenerFromNode(this, l, this[info.listeners[l]].bound);
+                            this[info.listeners[l]].bound = undefined;
+                        }
+                    }
+                }
+            }
 
             info.forwardObservers = info.forwardObservers || [];
             info.forwardObservers.push("service.language");
@@ -608,10 +453,10 @@ namespace Vidyano.WebComponents {
                 return (functionIndex > 0 ? path.substr(functionIndex + 1) : path).split(".", 2)[0];
             }, path => path).forEach(source => {
                 const methodName = "_observablePropertyObserver_" + source.key();
-                info.observers.push(methodName + "(" + source.key() + ", isAttached)");
+                info.observers.push(methodName + "(" + source.key() + ", isConnected)");
 
                 const properties = source.toArray();
-                wcPrototype[methodName] = function (sourceObj: any, attached: boolean) {
+                obj.prototype[methodName] = function (sourceObj: any, isConnected: boolean) {
                     if (sourceObj == null)
                         return;
 
@@ -621,7 +466,7 @@ namespace Vidyano.WebComponents {
                     while (forwardObservers.length > 0)
                         forwardObservers.pop()();
 
-                    if (!attached)
+                    if (!isConnected)
                         return;
 
                     properties.forEach(p => {
@@ -633,7 +478,7 @@ namespace Vidyano.WebComponents {
                             observer = observer.bind(this);
 
                         forwardObservers.push(this._forwardObservable(sourceObj, path, source.key(), observer));
-                        if (observer && sourceObj && attached) {
+                        if (observer && sourceObj && isConnected) {
                             const valuePath = path.slice().split(".").reverse();
                             let value = sourceObj;
 
@@ -648,178 +493,181 @@ namespace Vidyano.WebComponents {
                 };
             });
 
-            if (info.keybindings) {
-                (info.observers = info.observers || []).push("_keybindingsObserver(isAttached)");
+            //if (info.keybindings) {
+            //    (info.observers = info.observers || []).push("_keybindingsObserver(isConnected)");
 
-                wcPrototype["_keybindingsObserver"] = function (isAttached: boolean) {
-                    if (isAttached) {
-                        if (!this._keybindingRegistrations)
-                            this._keybindingRegistrations = [];
+            //    wcPrototype["_keybindingsObserver"] = function (isConnected: boolean) {
+            //        if (isConnected) {
+            //            if (!this._keybindingRegistrations)
+            //                this._keybindingRegistrations = [];
 
-                        const registerKeybinding = (keys: string) => {
-                            let keybinding = this.keybindings[keys];
-                            if (typeof keybinding === "string")
-                                keybinding = { listener: keybinding };
+            //            const registerKeybinding = (keys: string) => {
+            //                let keybinding = this.keybindings[keys];
+            //                if (typeof keybinding === "string")
+            //                    keybinding = { listener: keybinding };
 
-                            const listener = this[keybinding.listener];
-                            if (!listener) {
-                                console.warn("Keybindings listener '" + keybinding.listener + "' not found on element " + this.is);
-                                return;
-                            }
+            //                const listener = this[keybinding.listener];
+            //                if (!listener) {
+            //                    console.warn("Keybindings listener '" + keybinding.listener + "' not found on element " + this.is);
+            //                    return;
+            //                }
 
-                            const eventListener = (e: Keyboard.IKeysEvent) => {
-                                let combo = e.detail.combo;
-                                if (e.detail.keyboardEvent.ctrlKey && combo.indexOf("ctrl") < 0)
-                                    combo = "ctrl+" + combo;
-                                if (e.detail.keyboardEvent.shiftKey && combo.indexOf("shift") < 0)
-                                    combo = "shift+" + combo;
-                                if (e.detail.keyboardEvent.altKey && combo.indexOf("alt") < 0)
-                                    combo = "alt+" + combo;
+            //                const eventListener = (e: Keyboard.IKeysEvent) => {
+            //                    let combo = e.detail.combo;
+            //                    if (e.detail.keyboardEvent.ctrlKey && combo.indexOf("ctrl") < 0)
+            //                        combo = "ctrl+" + combo;
+            //                    if (e.detail.keyboardEvent.shiftKey && combo.indexOf("shift") < 0)
+            //                        combo = "shift+" + combo;
+            //                    if (e.detail.keyboardEvent.altKey && combo.indexOf("alt") < 0)
+            //                        combo = "alt+" + combo;
 
-                                const registrations = Enumerable.from(this._keybindingRegistrations).firstOrDefault(r => r.keys.some(k => k === combo));
-                                if (!registrations)
-                                    return;
+            //                    const registrations = Enumerable.from(this._keybindingRegistrations).firstOrDefault(r => r.keys.some(k => k === combo));
+            //                    if (!registrations)
+            //                        return;
 
-                                if (listener.call(this, e.detail.keyboardEvent) === true)
-                                    return;
+            //                    if (listener.call(this, e.detail.keyboardEvent) === true)
+            //                        return;
 
-                                e.stopPropagation();
-                                e.detail.keyboardEvent.stopPropagation();
-                                e.detail.keyboardEvent.preventDefault();
-                            };
+            //                    e.stopPropagation();
+            //                    e.detail.keyboardEvent.stopPropagation();
+            //                    e.detail.keyboardEvent.preventDefault();
+            //                };
 
-                            const element = <any>document.createElement("iron-a11y-keys");
-                            element.keys = keys;
-                            element.addEventListener("keys-pressed", eventListener);
+            //                const element = <any>document.createElement("iron-a11y-keys");
+            //                element.keys = keys;
+            //                element.addEventListener("keys-pressed", eventListener);
 
-                            const registration: Keyboard.IKeybindingRegistration = {
-                                keys: keys.split(" "),
-                                element: element,
-                                listener: eventListener,
-                                priority: keybinding.priority || 0,
-                                nonExclusive: keybinding.nonExclusive
-                            };
+            //                const registration: Keyboard.IKeybindingRegistration = {
+            //                    keys: keys.split(" "),
+            //                    element: element,
+            //                    listener: eventListener,
+            //                    priority: keybinding.priority || 0,
+            //                    nonExclusive: keybinding.nonExclusive
+            //                };
 
-                            this._keybindingRegistrations.push(registration);
-                            Polymer.dom(this.root).appendChild(element);
+            //                this._keybindingRegistrations.push(registration);
+            //                Polymer.dom(this.root).appendChild(element);
 
-                            this.app._registerKeybindings(registration);
-                        };
+            //                this.app._registerKeybindings(registration);
+            //            };
 
-                        for (const keys in this.keybindings) {
-                            registerKeybinding(keys);
-                        }
-                    }
-                    else {
-                        if (this._keybindingRegistrations) {
-                            while (this._keybindingRegistrations.length > 0) {
-                                const reg = this._keybindingRegistrations.splice(0, 1)[0];
+            //            for (const keys in this.keybindings) {
+            //                registerKeybinding(keys);
+            //            }
+            //        }
+            //        else {
+            //            if (this._keybindingRegistrations) {
+            //                while (this._keybindingRegistrations.length > 0) {
+            //                    const reg = this._keybindingRegistrations.splice(0, 1)[0];
 
-                                this.app._unregisterKeybindings(reg);
+            //                    this.app._unregisterKeybindings(reg);
 
-                                reg.element.removeEventListener("keys-pressed", reg.listener);
-                                Polymer.dom(this.root).removeChild(reg.element);
-                            }
-                        }
-                    }
-                };
-            }
+            //                    reg.element.removeEventListener("keys-pressed", reg.listener);
+            //                    Polymer.dom(this.root).removeChild(reg.element);
+            //                }
+            //            }
+            //        }
+            //    };
+            //}
 
-            if (info.mediaQueryAttributes) {
-                info.properties.isDesktop = {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                };
+            //if (info.mediaQueryAttributes) {
+            //    info.properties.isDesktop = {
+            //        type: Boolean,
+            //        reflectToAttribute: true,
+            //        readOnly: true
+            //    };
 
-                info.properties.isTablet = {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                };
+            //    info.properties.isTablet = {
+            //        type: Boolean,
+            //        reflectToAttribute: true,
+            //        readOnly: true
+            //    };
 
-                info.properties.isPhone = {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                };
+            //    info.properties.isPhone = {
+            //        type: Boolean,
+            //        reflectToAttribute: true,
+            //        readOnly: true
+            //    };
 
-                info.observers.push("_mediaQueryObserver(app)");
+            //    info.observers.push("_mediaQueryObserver(app)");
 
-                wcPrototype["_mediaQueryObserver"] = function (app: Vidyano.WebComponents.App) {
-                    if (this._mediaQueryObserverInfo) {
-                        this._mediaQueryObserverInfo.app.removeEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
-                        this._mediaQueryObserverInfo = null;
-                    }
+            //    wcPrototype["_mediaQueryObserver"] = function (app: Vidyano.WebComponents.App) {
+            //        if (this._mediaQueryObserverInfo) {
+            //            this._mediaQueryObserverInfo.app.removeEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
+            //            this._mediaQueryObserverInfo = null;
+            //        }
 
-                    if (app) {
-                        this._mediaQueryObserverInfo = {
-                            app: app,
-                            listener: (e: Event) => {
-                                this["_setIsDesktop"](e["detail"] === "desktop");
-                                this["_setIsTablet"](e["detail"] === "tablet");
-                                this["_setIsPhone"](e["detail"] === "phone");
-                            }
-                        };
+            //        if (app) {
+            //            this._mediaQueryObserverInfo = {
+            //                app: app,
+            //                listener: (e: Event) => {
+            //                    this["_setIsDesktop"](e["detail"] === "desktop");
+            //                    this["_setIsTablet"](e["detail"] === "tablet");
+            //                    this["_setIsPhone"](e["detail"] === "phone");
+            //                }
+            //            };
 
-                        this["_setIsDesktop"](app["isDesktop"]);
-                        this["_setIsTablet"](app["isTablet"]);
-                        this["_setIsPhone"](app["isPhone"]);
+            //            this["_setIsDesktop"](app["isDesktop"]);
+            //            this["_setIsTablet"](app["isTablet"]);
+            //            this["_setIsPhone"](app["isPhone"]);
 
-                        app.addEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
-                    }
-                };
-            }
+            //            app.addEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
+            //        }
+            //    };
+            //}
 
-            const extendFunction = (proto: any, p: string, elementName: string): Function => {
-                if (verboseSkipLogFunctions.indexOf(p) === -1 && (verboseLogElements.indexOf(elementName) > -1 || verboseLogFunctions.indexOf(p) > -1)) {
-                    return function () {
-                        if (!this._uniqueId)
-                            this._uniqueId = Unique.get();
+            //const extendFunction = (proto: any, p: string, elementName: string): Function => {
+            //    if (verboseSkipLogFunctions.indexOf(p) === -1 && (verboseLogElements.indexOf(elementName) > -1 || verboseLogFunctions.indexOf(p) > -1)) {
+            //        return function () {
+            //            if (!this._uniqueId)
+            //                this._uniqueId = Unique.get();
 
-                        console.group(p + (p === "attributeChanged" ? ": " + arguments[0] : "") + " (" + elementName + "#" + this._uniqueId + ")");
-                        const result = proto[p].apply(this, arguments);
-                        console.groupEnd();
-                        return result;
-                    };
-                }
-                else
-                    return proto[p];
-            };
+            //            console.group(p + (p === "attributeChanged" ? ": " + arguments[0] : "") + " (" + elementName + "#" + this._uniqueId + ")");
+            //            const result = proto[p].apply(this, arguments);
+            //            console.groupEnd();
+            //            return result;
+            //        };
+            //    }
+            //    else
+            //        return proto[p];
+            //};
 
-            for (const p in obj.prototype) {
-                const getter = obj.prototype.__lookupGetter__(p);
-                const setter = obj.prototype.__lookupSetter__(p);
-                if (getter || setter) {
-                    Object.defineProperty(wcPrototype, p, {
-                        get: getter || Polymer.nop,
-                        set: setter || Polymer.nop,
-                        enumerable: true,
-                        configurable: true
-                    });
-                }
-                else if (p !== "constructor" && typeof obj.prototype[p] === "function") {
-                    if (p.startsWith("_set") && p.length > 4) {
-                        const property = p.substr(4, 1).toLowerCase() + p.slice(5);
-                        if (info.properties[property] && (<any>info.properties[property]).readOnly)
-                            continue;
-                    }
+            //for (const p in obj.prototype) {
+            //    const getter = obj.prototype.__lookupGetter__(p);
+            //    const setter = obj.prototype.__lookupSetter__(p);
+            //    if (getter || setter) {
+            //        Object.defineProperty(wcPrototype, p, {
+            //            get: getter || Polymer.nop,
+            //            set: setter || Polymer.nop,
+            //            enumerable: true,
+            //            configurable: true
+            //        });
+            //    }
+            //    else if (p !== "constructor" && typeof obj.prototype[p] === "function") {
+            //        if (p.startsWith("_set") && p.length > 4) {
+            //            const property = p.substr(4, 1).toLowerCase() + p.slice(5);
+            //            if (info.properties[property] && (<any>info.properties[property]).readOnly)
+            //                continue;
+            //        }
 
-                    wcPrototype[p] = extendFunction(obj.prototype, p, elementName);
-                }
-            }
+            //        wcPrototype[p] = extendFunction(obj.prototype, p, elementName);
+            //    }
+            //}
 
 
-            const wc = Polymer(wcPrototype);
-            for (const method in obj) {
-                if (obj.hasOwnProperty(method) && method !== "getName" && method !== "registerOverride" && method !== "_finalizeRegistration" && method !== "publish")
-                    wc[method] = obj[method];
-            }
+            //const wc = Polymer(wcPrototype);
+            //for (const method in obj) {
+            //    if (obj.hasOwnProperty(method) && method !== "getName" && method !== "registerOverride" && method !== "_finalizeRegistration" && method !== "publish")
+            //        wc[method] = obj[method];
+            //}
 
-            if (ns)
-                ns[name] = wc;
+            //if (ns)
+            //    ns[name] = wc;
 
-            return wc;
+            //return wc;
+
+            window.customElements.define(elementName, obj);
+            return obj;
         }
 
         static register(arg1?: IWebComponentRegistrationInfo | Function, arg2?: string | IWebComponentRegistrationInfo, arg3?: string): (obj: any) => void {

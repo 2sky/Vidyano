@@ -14,8 +14,8 @@
     "grunt-text-replace": "^0.4.0",
     "grunt-ts": "^6.0.0-beta.16",
     "grunt-tslint": "4.0.1",
+    "tslib": "^1.6.0",
     "tslint": "4.4.2",
-    "typescript": "^2.4.1",
-    "tslib": "^1.6.0"
+    "typescript": "^2.4.1"
   }
 }

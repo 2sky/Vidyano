@@ -113,7 +113,7 @@ namespace Vidyano.WebComponents {
             isWebKit: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeIsWebKit(isAttached)"
+                computed: "_computeIsWebKit(isConnected)"
             }
         },
         forwardObservers: [
@@ -159,8 +159,8 @@ namespace Vidyano.WebComponents {
         noScrollShadow: boolean;
         isWebKit: boolean;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             if (!this.isWebKit)
                 this.updateStyles({ "--theme-scrollbar-width": `${scrollbarWidth()}px` });
@@ -197,7 +197,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _outerSizeChanged(e: Event, detail: { width: number; height: number }) {
-            this._setHiddenScrollbars(!this.isWebKit && !parseInt(this.getComputedStyleValue("--theme-scrollbar-width")));
+            this._setHiddenScrollbars(!this.isWebKit && !parseInt(getComputedStyle(this).getPropertyValue("--theme-scrollbar-width")));
 
             this._setOuterWidth(detail.width);
             this._setOuterHeight(detail.height);

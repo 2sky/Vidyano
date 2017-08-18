@@ -16,8 +16,8 @@
             <vi-persistent-object-attribute-presenter attribute="[[persistentObject.attributes.IsDefault]]"></vi-persistent-object-attribute-presenter>
         </main>
         <footer class="layout horizontal-reverse">
-            <button is="vi-button" inverse on-tap="cancel" label="[[translations.Cancel]]" disabled$="[[persistentObject.isBusy]]"></button>
-            <button is="vi-button" on-tap="_save" action-type="Default" label="[[translations.Save]]" disabled$="[[persistentObject.isBusy]]"></button>
+            <vi-button inverse on-tap="cancel" label="[[translations.Cancel]]" disabled$="[[persistentObject.isBusy]]"></vi-button>
+            <vi-button on-tap="_save" action-type="Default" label="[[translations.Save]]" disabled$="[[persistentObject.isBusy]]"></vi-button>
         </footer>
     </template>
 </dom-module>
@@ -26,7 +26,7 @@
     <template>
         <link rel="stylesheet" href="query-grid-filter-dialog-name.css" />
         <vi-persistent-object-attribute-edit attribute="[[attribute]]" class="flex" reverse>
-            <button slot="button" is="vi-button" icon="Folder" on-tap="_toggleGrouping" inverse tabindex="-1"></button>
+            <vi-button slot="button" icon="Folder" on-tap="_toggleGrouping" inverse tabindex="-1"></vi-button>
             <div slot="content" class="layout horizontal flex">
                 <input class="flex" value="{{group::input}}" hidden$="[[!grouping]]" id="groupInput" />
                 <vi-icon source="ChevronRight" hidden$="[[!grouping]]"></vi-icon>
