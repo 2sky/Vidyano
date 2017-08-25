@@ -930,10 +930,11 @@ namespace Vidyano.WebComponents {
         }
 
         private async _importConfigs(configs: string, isConnected: boolean) {
-            console.error("todo");
-            //if (!configs || !isConnected)
-            //    return;
+            if (!configs || !isConnected)
+                return;
 
+            // TODO
+            debugger;
             //const doc = <HTMLDocument>await this.importHref(configs);
             //Enumerable.from(doc.body.childNodes).forEach(c => Polymer.dom(this).appendChild(c));
         }

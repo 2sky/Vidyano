@@ -7,8 +7,8 @@
     ::slotted(*) {
         @include flex();
     }
-}
 
-:host(:not(.active)) {
-    display: none !important;
+    &:not(.active) {
+        display: none !important;
+    }
 }

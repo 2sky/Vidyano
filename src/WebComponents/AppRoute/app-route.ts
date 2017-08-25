@@ -100,24 +100,20 @@ namespace Vidyano.WebComponents {
                         this._distributeNewComponent();
                 }
                 else {
-                    debugger;
-                    // TODO
-                    //const template = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
-                    //if (template) {
+                    const template = this.querySelector("dom-template");
+                    if (template) {
+                        // TODO
+                        debugger;
                     //    Polymer.dom(this).appendChild(template.stamp({ app: this.app }).root);
                     //    Polymer.dom(this).flush();
 
                     //    this._hasChildren = true;
-                    //}
-                    //else {
-                    //    const firstChild = <WebComponent>Polymer.dom(this).children[0];
-                    //    if (firstChild) {
-                    //        if (firstChild.updateStyles)
-                    //            firstChild.updateStyles();
-
-                    //        this._fireActivate(firstChild);
-                    //    }
-                    //}
+                    }
+                    else {
+                        const firstChild = <WebComponent>this.children[0];
+                        if (firstChild)
+                            this._activate(firstChild);
+                    }
                 }
             }
 
@@ -159,10 +155,9 @@ namespace Vidyano.WebComponents {
 
         deactivate(nextRoute?: AppRoute): Promise<boolean> {
             const component = <WebComponent>this.children[0];
-
             return new Promise<boolean>(resolve => {
                 this.deactivator = resolve;
-                if (!component || !(component instanceof WebComponent) || !component.dispatchEvent(new CustomEvent("app-route-deactivate", { bubbles: false, cancelable: true })))
+                if (!component || !(component instanceof WebComponent) || component.dispatchEvent(new CustomEvent("app-route-deactivate", { bubbles: false, cancelable: true, composed: true })))
                     resolve(true);
             }).then(result => {
                 if (result) {

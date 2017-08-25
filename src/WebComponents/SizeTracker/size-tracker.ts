@@ -73,8 +73,8 @@ namespace Vidyano.WebComponents {
         triggerZero: boolean;
         bubbles: boolean;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             if (this.deferred)
                 return;
@@ -82,8 +82,8 @@ namespace Vidyano.WebComponents {
             this.measure();
         }
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
             if (observer)
                 observer.unobserve(this.parentElement);
@@ -102,10 +102,10 @@ namespace Vidyano.WebComponents {
                 else {
                     this._setNoResizeObserver(true);
                     this.$.resizeObserverShim["render"]();
-                    this.$.root = <HTMLElement>Polymer.dom(this.root).querySelector("#root");
-                    this.$.expand = <HTMLElement>Polymer.dom(this.root).querySelector("#expand");
-                    this.$.expandChild = <HTMLElement>Polymer.dom(this.root).querySelector("#expandChild");
-                    this.$.contract = <HTMLElement>Polymer.dom(this.root).querySelector("#contract");
+                    this.$.root = <HTMLElement>this.shadowRoot.querySelector("#root");
+                    this.$.expand = <HTMLElement>this.shadowRoot.querySelector("#expand");
+                    this.$.expandChild = <HTMLElement>this.shadowRoot.querySelector("#expandChild");
+                    this.$.contract = <HTMLElement>this.shadowRoot.querySelector("#contract");
                 }
 
                 this._isActive = true;
@@ -121,7 +121,7 @@ namespace Vidyano.WebComponents {
             }
             else if (this._resizeLast) {
                 this._setSize(this._resizeLast);
-                this.dispatchEvent(new CustomEvent("sizechanged", { detail: { this._resizeLast }, bubbles: !!this.bubbles }));
+                this.dispatchEvent(new CustomEvent("sizechanged", { detail: this._resizeLast , bubbles: !!this.bubbles }));
             }
         }
 
@@ -149,7 +149,8 @@ namespace Vidyano.WebComponents {
                     return;
 
                 this._setSize(this._resizeLast);
-                this.fire("sizechanged", this._resizeLast, { onNode: this, bubbles: !!this.bubbles });
+
+                this.dispatchEvent(new CustomEvent("sizechanged", { detail: this._resizeLast, bubbles: !!this.bubbles, composed: true }));
             }
         }
 

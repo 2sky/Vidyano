@@ -20,6 +20,7 @@
 
 :host {
     @include relative();
+    text-align: center;
     cursor: pointer;
     -moz-transition-property: fill, color, background-color;
     -o-transition-property: fill, color, background-color;
@@ -36,6 +37,7 @@
     border: none;
     outline: none;
     --vi-spinner-size: 1.5em;
+
     /* elevation values from http://codepen.io/shyndman/pen/c5394ddf2e8b2a5c9185904b57421cdb */
     &[elevation] {
         transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -84,7 +86,7 @@
     &:not([custom-layout]) {
         white-space: nowrap;
 
-        > vi-icon {
+        vi-icon {
             display: inline-block;
             height: 100%;
             @apply(--vi-button-icon);
@@ -94,18 +96,18 @@
             }
         }
 
-        > span {
+        span {
             display: inline-block;
             vertical-align: top;
             @apply(--vi-button-label);
         }
 
-        > vi-icon[has-resource] + span {
+        vi-icon[has-resource] + span {
             margin-left: 2px;
         }
 
         &[busy] {
-            > span {
+            span {
                 visibility: hidden;
             }
         }

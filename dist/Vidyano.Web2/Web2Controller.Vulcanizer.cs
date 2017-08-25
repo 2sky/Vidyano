@@ -26,6 +26,7 @@ namespace Vidyano.Web2
                 "paper-ripple"
             };
             private static readonly Regex linkPolymerRe = new Regex("<link.*?href=\".+?(" + string.Join("|", polymerDependencies) + ")\\.html\".*?>");
+            private static readonly Regex fixCssHostSelector = new Regex(@":host([^{ ,(][^{ ,]+)");
 
             public static string Generate(string path, string html, bool useLocalFileSystem = false, bool stripPolymerLinks = true)
             {
@@ -68,7 +69,7 @@ namespace Vidyano.Web2
                 });
 #endif
 
-                var styleTag = "<style is='custom-style' include='iron-flex iron-positioning'>";
+                var styleTag = "<style is='custom-style' include='iron-flex iron-positioning css-reset'>";
                 html = linkRe.Replace(html, match =>
                 {
                     var id = directory + match.Groups[1].Value;
@@ -76,16 +77,21 @@ namespace Vidyano.Web2
                     {
                         var file = Path.Combine(Web2Home, id);
                         if (File.Exists(file))
-                            return styleTag + File.ReadAllText(file) + "</style>";
+                            return styleTag + PostProcessCss(File.ReadAllText(file)) + "</style>";
                     }
 
                     if (useLocalFileSystem)
-                        return styleTag + File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id)) + "</style>";
+                        return styleTag + PostProcessCss(File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id))) + "</style>";
 
-                    return styleTag + GetEmbeddedResource(id) + "</style>";
+                    return styleTag + PostProcessCss(GetEmbeddedResource(id)) + "</style>";
                 });
 
                 return html;
+            }
+
+            private static string PostProcessCss(string css)
+            {
+                return fixCssHostSelector.Replace(css, m => $":host({m.Groups[1].Value.Trim()})");
             }
         }
     }

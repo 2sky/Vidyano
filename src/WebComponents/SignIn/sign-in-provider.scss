@@ -19,12 +19,12 @@
         color: #666;
     }
 
-    &[signing-in] button {
+    &[signing-in] vi-button {
         text-align: left;
     }
 }
 
-:host([is-vidyano]) {
+:host[is-vidyano] {
     #vidyano {
         padding-left: var(--theme-h3);
 
@@ -66,7 +66,7 @@
             &.buttons {
                 margin: var(--theme-h4) 0;
 
-                button {
+                vi-button {
                     padding: 0 var(--theme-h4);
                     box-sizing: content-box;
                     line-height: var(--theme-h1);
@@ -82,7 +82,7 @@
                     }
                 }
 
-                &[has-forgot] > div > button {
+                &[has-forgot] > div > vi-button {
                     @include flex();
 
                     &.signIn {
@@ -122,7 +122,7 @@
             .buttons {
                 margin-top: var(--theme-h5);
 
-                button {
+                vi-button {
                     padding: 0 var(--theme-h4);
                     box-sizing: content-box;
                     line-height: var(--theme-h1);

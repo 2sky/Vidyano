@@ -6,6 +6,51 @@
 <link rel="import" href="../../Libs/iron-media-query/iron-media-query.html" />
 <link rel="import" href="../../Libs/alertify.js/alertify.html" />
 <link rel="import" href="../../Libs/paper-ripple/paper-ripple.html" />
+
+<dom-module id="css-reset">
+    <template>
+        <style>
+            button,
+            input,
+            optgroup,
+            select,
+            textarea {
+                margin: 0;
+                font-family: inherit;
+            }
+
+            pre {
+                border: none;
+                font-size: 1em;
+                display: block;
+                height: auto;
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: inherit;
+            }
+
+            button {
+                border: none;
+                outline: none;
+            }
+
+            a:focus, a:active,
+            button::-moz-focus-inner,
+            input[type="reset"]::-moz-focus-inner,
+            input[type="button"]::-moz-focus-inner,
+            input[type="submit"]::-moz-focus-inner,
+            select::-moz-focus-inner,
+            input[type="file"] > input[type="button"]::-moz-focus-inner {
+                border: 0;
+                outline: 0;
+            }
+        </style>
+    </template>
+</dom-module>
+
 <link rel="import" href="../WebComponent/webcomponent.html" />
 <link rel="import" href="../Spinner/spinner.html" />
 <link rel="import" href="../AppRoutePresenter/app-route-presenter.html" />
