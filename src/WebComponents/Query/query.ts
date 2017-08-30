@@ -31,8 +31,8 @@
         private _cacheEntry: QueryAppCacheEntry;
         query: Vidyano.Query;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this._queryChanged();
         }

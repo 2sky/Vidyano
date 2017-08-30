@@ -126,18 +126,18 @@ namespace Vidyano.WebComponents {
             super();
         }
 
-        attached() {
+        connectedCallback() {
             this._observer = Polymer.dom(this.$.subItems).observeNodes(info => {
                 this._setHasChildren(Polymer.dom(info.target).getDistributedNodes().length > 0);
             });
 
-            super.attached();
+            super.connectedCallback();
         }
 
-        detached() {
+        disconnectedCallback() {
             Polymer.dom(this.$.subItems).unobserveNodes(this._observer);
 
-            super.detached();
+            super.disconnectedCallback();
         }
 
         private _onTap(e: TapEvent) {
@@ -191,18 +191,18 @@ namespace Vidyano.WebComponents {
             super();
         }
 
-        attached() {
+        connectedCallback() {
             this._observer = Polymer.dom(this.$.subItems).observeNodes(info => {
                 this._setHasChildren(Polymer.dom(info.target).getDistributedNodes().length > 0);
             });
 
-            super.attached();
+            super.connectedCallback();
         }
 
-        detached() {
+        disconnectedCallback() {
             Polymer.dom(this.$.subItems).unobserveNodes(this._observer);
 
-            super.detached();
+            super.disconnectedCallback();
         }
 
         private _onTap(e: TapEvent) {

@@ -212,7 +212,6 @@ namespace Vidyano.WebComponents {
         }
 
         private _hiddenChanged() {
-            debugger;
             // TODO: Is this still needed?
             //this.fire("sizechanged", null);
         }

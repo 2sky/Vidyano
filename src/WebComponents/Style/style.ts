@@ -14,13 +14,13 @@
         private _styles: { [key: string]: { node: Text; text: string; } } = {};
         key: string;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.parentElement.setAttribute("style-scope-id", this._uniqueId);
         }
 
-        detached() {
+        disconnectedCallback() {
             if (this._styleElement) {
                 document.head.removeChild(this._styleElement);
                 this._styleElement = undefined;
@@ -28,7 +28,7 @@
 
             this.parentElement.removeAttribute("style-scope-id");
 
-            super.detached();
+            super.disconnectedCallback();
         }
 
         getStyle(name: string): string {

@@ -88,8 +88,8 @@
         minDate: Date;
         maxDate: Date;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.zoom = this.monthMode ? "months" : "days";
             this._setToday(moment(new Date()));

@@ -51,7 +51,7 @@
             if (!this.radio)
                 this.checked = !this.checked;
             else
-                this.fire("changed", null);
+                this.dispatchEvent(new CustomEvent("changed"));
         }
 
         private _keyToggle(e: KeyboardEvent) {

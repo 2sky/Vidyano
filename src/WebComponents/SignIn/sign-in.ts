@@ -192,7 +192,7 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _vidyanoSignInAttached() {
+        private _vidyanoSignInconnectedCallback() {
             this.userName = this.app.service.userName !== this.app.service.defaultUserName && this.app.service.userName !== this.app.service.registerUserName ? this.app.service.userName : "";
             this.staySignedIn = Vidyano.cookie("staySignedIn", { force: true }) === "true";
             this._autoFocus();

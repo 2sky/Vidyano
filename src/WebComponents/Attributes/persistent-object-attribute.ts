@@ -116,13 +116,14 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         protected _onFocus(e: FocusEvent) {
-            Polymer.dom(this).flush();
+            Polymer.flush();
 
-            const target = <HTMLElement>this._getFocusableElement(this.root);
-            if (!target)
-                return;
+            //const target = <HTMLElement>this._getFocusableElement(this.shadowRoot);
+            //if (!target)
+            //    return;
 
-            target.focus();
+            //target.focus();
+            console.warn("todo: persistent-object-attribute._onFocus");
         }
 
         static register(info: IWebComponentRegistrationInfo | Function = {}): any {

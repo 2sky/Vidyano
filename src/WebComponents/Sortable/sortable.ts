@@ -19,8 +19,8 @@ namespace Vidyano.WebComponents {
         draggableItems: string;
         enabled: boolean;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             if (this.group)
                 _groups.push(this);
@@ -28,12 +28,12 @@ namespace Vidyano.WebComponents {
             this._create();
         }
 
-        detached() {
+        disconnectedCallback() {
             if (this.group)
                 _groups.remove(this);
 
             this._destroy();
-            super.detached();
+            super.disconnectedCallback();
         }
 
         groupChanged() {
@@ -57,15 +57,17 @@ namespace Vidyano.WebComponents {
         }
 
         protected _dragStart() {
-            this.fire("drag-start", undefined);
+            this.dispatchEvent(new CustomEvent("drag-start"));
         }
 
         protected _dragEnd(element: HTMLElement, newIndex: number, oldIndex: number) {
-            this.fire("drag-end", {
-                element: element,
-                newIndex: newIndex,
-                oldIndex: oldIndex
-            });
+            this.dispatchEvent(new CustomEvent("drag-end", {
+                detail: {
+                    element: element,
+                    newIndex: newIndex,
+                    oldIndex: oldIndex
+                }
+            }));
         }
 
         private _create() {

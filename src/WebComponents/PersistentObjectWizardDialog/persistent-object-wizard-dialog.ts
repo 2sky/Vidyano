@@ -54,8 +54,8 @@ namespace Vidyano.WebComponents {
             this._setCurrentTab(<Vidyano.PersistentObjectAttributeTab>persistentObject.tabs[0]);
         }
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             const width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * (this.currentTab.columnCount || 1);
             this.updateStyles({ "--vi-persistent-object-dialog-computed-width": `${width}px` });

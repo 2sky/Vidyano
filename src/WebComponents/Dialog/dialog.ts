@@ -12,7 +12,7 @@ namespace Vidyano.WebComponents {
 
         protected cancel: () => void;
 
-        attached() {
+        connectedCallback() {
             if (!this._sizeTracker) {
                 Polymer.dom(this.root).appendChild(this._sizeTracker = new Vidyano.WebComponents.SizeTracker());
                 this._sizeTracker.bubbles = true;
@@ -30,7 +30,7 @@ namespace Vidyano.WebComponents {
             // By default, don't cancel dialog on outside click.
             this.noCancelOnOutsideClick = true;
 
-            super.attached();
+            super.connectedCallback();
         }
 
         async open(): Promise<any> {

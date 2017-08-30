@@ -7,8 +7,8 @@ namespace Vidyano.WebComponents {
         as: string;
         asModel: (model: T) => any;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this._template = <PolymerTemplate>Polymer.dom(this).querySelector("template[is='dom-template']");
             this._setHasTemplate(!!this._template);

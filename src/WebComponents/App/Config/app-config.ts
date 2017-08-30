@@ -70,7 +70,7 @@ namespace Vidyano.WebComponents {
         }
 
         getSetting(key: string, defaultValue?: string): string {
-            const setting = <AppSetting>this.queryEffectiveChildren(`vi-app-setting[key="${key}"]`);
+            const setting = <AppSetting>Polymer.FlattenedNodesObserver.getFlattenedNodes(this).filter(n => n.nodeType === Node.ELEMENT_NODE && (<HTMLElement>n).getAttribute("key") === key)[0];
             return setting ? setting.getAttribute("value") : defaultValue;
         }
 
@@ -104,15 +104,6 @@ namespace Vidyano.WebComponents {
 
         getQueryChartConfig(type: string): QueryChartConfig {
             return (<AppServiceHooks>this.app.service.hooks).getQueryChartConfig(type, this._queryChartConfigs);
-        }
-
-        private _getConfigs<T>(type: any): linqjs.Enumerable<T> {
-            return <linqjs.Enumerable<T>>Enumerable.from(Polymer.dom(this).children).where(c => c.tagName !== "TEMPLATE").selectMany(element => {
-                if (element.tagName === "CONTENT")
-                    return Enumerable.from(Polymer.dom(element).getDistributedNodes()).where(c => c.tagName !== "TEMPLATE").toArray();
-
-                return [element];
-            }).where(child => child instanceof type).select(child => <T><any>child).memoize();
         }
     }
 }

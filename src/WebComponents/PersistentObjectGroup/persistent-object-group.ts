@@ -218,14 +218,14 @@
             });
 
             const currentLayout = this._layout;
-            this.async(() => {
+            Polymer.Async.microTask.run(() => {
                 if (layout !== this._layout)
                     return;
 
                 if (currentLayout)
-                    Polymer.dom(this.root).replaceChild(layoutFragment, currentLayout);
+                    this.shadowRoot.replaceChild(layoutFragment, currentLayout);
                 else
-                    Polymer.dom(this.root).appendChild(layoutFragment);
+                    this.shadowRoot.appendChild(layoutFragment);
             });
 
             this._layout = layout;

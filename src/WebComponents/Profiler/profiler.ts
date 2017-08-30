@@ -73,14 +73,14 @@ namespace Vidyano.WebComponents {
         timelineSize: ISize;
         profiledRequests: IProfilerServiceRequest[];
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.$.timeline.addEventListener("DOMMouseScroll", this._boundMousehweel);
         }
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
             this.$.timeline.removeEventListener("DOMMouseScroll", this._boundMousehweel);
         }

@@ -51,11 +51,11 @@ namespace Vidyano.WebComponents {
         queryId: string;
         query: Vidyano.Query;
 
-        attached() {
+        connectedCallback() {
             if (!this._customTemplate)
                 this._customTemplate = <PolymerTemplate><any>this.querySelector("template[is='dom-template']");
 
-            super.attached();
+            super.connectedCallback();
         }
 
         private _activate(e: CustomEvent, { parameters }: { parameters: IQueryPresenterRouteParameters; }) {

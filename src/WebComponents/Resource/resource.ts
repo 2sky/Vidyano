@@ -10,8 +10,8 @@ namespace Vidyano.WebComponents {
         source: string;
         model: any;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this._load();
         }

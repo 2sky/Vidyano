@@ -28,8 +28,8 @@ namespace Vidyano.WebComponents {
         serviceHooks: string;
         cookiePrefix: string;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             if (this.app)
                 return;

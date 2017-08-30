@@ -1044,7 +1044,7 @@ namespace Vidyano.WebComponents {
         query: Vidyano.Query;
         asLookup: boolean;
 
-        attached() {
+        connectedCallback() {
             if (QueryGrid.tableCache.length > 0 && !this._tableData) {
                 const tableCache = QueryGrid.tableCache.pop();
 
@@ -1063,11 +1063,11 @@ namespace Vidyano.WebComponents {
                 });
             }
 
-            super.attached();
+            super.connectedCallback();
         }
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
             this._columnMenuColumn = null;
 

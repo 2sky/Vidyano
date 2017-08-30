@@ -74,7 +74,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _computeCanShowDialog(strings: ITranslatedString[], multiline: boolean): boolean {
-            return strings.length > 1 || multiline;
+            return (strings && strings.length > 1) || multiline;
         }
 
         private async _showLanguagesDialog() {

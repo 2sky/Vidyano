@@ -54,6 +54,7 @@ namespace Vidyano.WebComponents {
         private _resizeWidth: number;
         readonly isResizing: boolean; private _setIsResizing: (val: boolean) => void;
         readonly instantSearchDelay: number;
+        private _instantSearchDebouncer: Polymer.Debouncer;
         readonly instantSearchResults: IInstantSearchResult[]; private _setInstantSearchResults: (results: IInstantSearchResult[]) => void;
         filter: string;
         filtering: boolean;
@@ -62,8 +63,8 @@ namespace Vidyano.WebComponents {
         hasGlobalSearch: boolean;
         hideSearch: boolean;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.hideSearch = this.app.configuration.getSetting("vi-menu.hide-search", "false").toLowerCase() === "true";
 
@@ -80,8 +81,8 @@ namespace Vidyano.WebComponents {
             this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
         }
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
             Enumerable.from(Polymer.dom(this.$.footerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
             Enumerable.from(Polymer.dom(this.$.headerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
@@ -93,7 +94,7 @@ namespace Vidyano.WebComponents {
             if (this.filtering) {
                 if (this.instantSearchDelay) {
                     const filter = this.filter;
-                    this.debounce("Menu.InstantSearch", async () => {
+                    this._instantSearchDebouncer = Polymer.Debouncer.debounce(this._instantSearchDebouncer, Polymer.Async.timeOut.after(this.instantSearchDelay), async () => {
                         const results = await this.app.service.getInstantSearch(filter);
                         if (filter !== this.filter)
                             return;
@@ -105,11 +106,13 @@ namespace Vidyano.WebComponents {
 
                             return r;
                         }) : null);
-                    }, this.instantSearchDelay);
+                    });
                 }
             }
             else {
-                this.cancelDebouncer("Menu.InstantSearch");
+                if (this._instantSearchDebouncer)
+                    this._instantSearchDebouncer.cancel();
+
                 this._setInstantSearchResults(null);
             }
         }

@@ -4,7 +4,7 @@ namespace Vidyano.WebComponents.Attributes {
     @Sortable.register
     export class PersistentObjectAttributeMultiStringItems extends Sortable {
         protected _dragEnd() {
-            this.fire("reorder-strings", {}, { bubbles: true });
+            this.dispatchEvent(new CustomEvent("reorder-strings", { bubbles: true, composed: true }));
         }
     }
 
@@ -38,8 +38,8 @@ namespace Vidyano.WebComponents.Attributes {
             super();
         }
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             if (this._focusQueued) {
                 this._focusQueued = false;
@@ -57,17 +57,17 @@ namespace Vidyano.WebComponents.Attributes {
 
             if (this.isNew) {
                 if (value) {
-                    this.fire("multi-string-item-value-new", { value: value });
+                    this.dispatchEvent(new CustomEvent("multi-string-item-value-new", { detail: { value: value } }));
                     this.value = "";
                 }
             }
             else
-                this.fire("multi-string-item-value-changed", null);
+                this.dispatchEvent(new CustomEvent("multi-string-item-value-changed"));
         }
 
         private _onInputBlur() {
             if (!this.isReadOnly && !this.isNew)
-                this.fire("multi-string-item-value-changed", null);
+                this.dispatchEvent(new CustomEvent("multi-string-item-value-changed"));
         }
     }
 
@@ -110,7 +110,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _itemsOrderChanged() {
-            const stringsContainer = <HTMLElement>Polymer.dom(this.root).querySelector("#strings");
+            const stringsContainer = <HTMLElement>this.shadowRoot.querySelector("#strings");
             this.value = Enumerable.from(stringsContainer.querySelectorAll("input")).where((i: HTMLInputElement) => !!i.value).select((i: HTMLInputElement) => i.value).toArray().join("\n");
         }
 
@@ -128,19 +128,19 @@ namespace Vidyano.WebComponents.Attributes {
             if (!editing || !isConnected)
                 return;
 
-            Polymer.dom(this).flush();
+            Polymer.flush();
 
-            const stringsContainer = <HTMLElement>Polymer.dom(this.root).querySelector("#strings");
+            const stringsContainer = <HTMLElement>this.shadowRoot.querySelector("#strings");
             const diff = stringsContainer.children.length !== strings.length || strings.some((s, n) => stringsContainer.children[n] !== s);
 
             strings.forEach((s: PersistentObjectAttributeMultiStringItem, index: number) => {
                 if (diff)
-                    Polymer.dom(stringsContainer).appendChild(s);
+                    stringsContainer.appendChild(s);
             });
 
             Enumerable.from(stringsContainer.children).toArray().forEach((c: PersistentObjectAttributeMultiStringItem) => {
                 if (strings.indexOf(c) < 0)
-                    Polymer.dom(stringsContainer).removeChild(c);
+                    stringsContainer.removeChild(c);
             });
         }
     }

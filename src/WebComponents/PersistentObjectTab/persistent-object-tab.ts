@@ -57,14 +57,14 @@ namespace Vidyano.WebComponents {
 
         private _autofocus(autofocus: boolean, isEditing: boolean) {
             if (autofocus && isEditing && this._autofocusTarget)
-                this.async(() => this._autofocusTarget.focus());
+                Polymer.Async.microTask.run(() => this._autofocusTarget.focus());
         }
 
-        private _attributeLoaded(e: CustomEvent, detail: { attribute: Vidyano.PersistentObjectAttribute }) {
+        private _attributeLoaded(e: CustomEvent) {
             if (!this._attributePresenters)
                 this._attributePresenters = [];
 
-            const presenter = <Vidyano.WebComponents.PersistentObjectAttributePresenter>e.target;
+            const presenter = <Vidyano.WebComponents.PersistentObjectAttributePresenter>e.composedPath()[0];
             this._attributePresenters.push(presenter);
 
             if (this._attributePresenters.length < this.tab.attributes.length)
@@ -82,7 +82,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _innerSizeChanged(size: ISize) {
-            this.fire("vi-persistent-object-tab-inner-size-changed", { size: size }, { bubbles: true});
+            this.dispatchEvent(new CustomEvent("vi-persistent-object-tab-inner-size-changed", { detail: { size: size }, bubbles: true, composed: true }));
         }
 
         _viConfigure(actions: IConfigurableAction[]) {

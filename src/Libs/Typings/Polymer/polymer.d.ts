@@ -53,6 +53,8 @@ declare class Polymer {
      */
     static flush(): void;
 
+    static importHref(href: string, onLoad?: (event: Event) => void, onError?: (event: Event) => void, optAsync?: boolean): HTMLLinkElement;
+
     /**
      * A base class for Polymer custom elements that includes the
      * `Polymer.MetaEffects`, `Polymer.BatchedEffects`, `Polymer.PropertyEffects`,
@@ -85,6 +87,37 @@ declare namespace Polymer {
         disconnect(): void;
         flush();
     }
+
+    export interface IAsyncModule {
+        run(fnc: Function): number;
+        cancel(handle: number): void;
+    }
+
+    export interface IAsyncTimeOutModule extends IAsyncModule {
+        after(delay: number): IAsyncModule;
+    }
+
+    export class Async {
+        static microTask: IAsyncModule;
+        static timeOut: IAsyncTimeOutModule;
+    }
+
+    export class Debouncer {
+        static debounce: (debouncer: Debouncer, asyncModule: IAsyncModule, callBack: () => void) => Debouncer;
+        cancel(): void;
+        flush(): void;
+        isActive(): boolean;
+    }
+
+    export interface TapEventDetail {
+        x: number;
+        y: number;
+        sourceEvent: Event;
+    }
+
+    export interface TapEvent extends CustomEvent {
+        detail: TapEventDetail;
+    }
 }
 
 declare interface PolymerElementConstructor {
@@ -95,7 +128,9 @@ declare class PolymerElement extends PolymerMetaEffects {
     static finalized: boolean;
     static finalize(): void;
     static readonly template: HTMLTemplateElement;
-    $: any;
+    $: {
+        [key: string]: HTMLElement;
+    };
     ready(): void;
     connectedCallback(): void;
     disconnectedCallback(): void;

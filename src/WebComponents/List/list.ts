@@ -50,11 +50,11 @@ namespace Vidyano.WebComponents {
         }
 
         private _sizeChanged() {
-            const list = <PolymerBase>Polymer.dom(this.root).querySelector("#list");
-            if (!list || !list.fire)
+            const list = this.shadowRoot.querySelector("#list");
+            if (!list)
                 return;
 
-            list.fire("iron-resize", null);
+            list.dispatchEvent(new CustomEvent("iron-resize"));
         }
     }
 }

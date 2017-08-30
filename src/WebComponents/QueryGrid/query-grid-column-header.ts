@@ -30,10 +30,10 @@
         readonly disableSort: boolean; private _setDisableSort: (disable: boolean) => void;
         readonly sorting: string; private _setSorting: (sorting: string) => void;
 
-        attached() {
+        connectedCallback() {
             this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid-minimum-column-width"));
 
-            super.attached();
+            super.connectedCallback();
 
             if (!this._filter)
                 Polymer.dom(this).appendChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilterProxy());

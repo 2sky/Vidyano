@@ -28,13 +28,13 @@ namespace Vidyano.WebComponents.Attributes {
             }
         }
 
-        detached() {
+        disconnectedCallback() {
             if (this._pasteListener) {
                 document.removeEventListener("paste", this._pasteListener, false);
                 this._pasteListener = null;
             }
 
-            super.detached();
+            super.disconnectedCallback();
         }
 
         private _change(e: Event) {

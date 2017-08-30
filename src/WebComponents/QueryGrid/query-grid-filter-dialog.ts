@@ -70,8 +70,8 @@
         group: string;
         name: string;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this._groupingChanged(this.grouping);
         }

@@ -56,8 +56,8 @@ namespace Vidyano.WebComponents.Attributes {
         href: string;
         filter: string;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
             this._update();
         }
 

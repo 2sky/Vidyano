@@ -178,8 +178,8 @@ namespace Vidyano.WebComponents {
         label: string;
         distincts: IQueryGridColumnFilterDistinct[];
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             if (this._openOnAttach) {
                 this._openOnAttach = false;

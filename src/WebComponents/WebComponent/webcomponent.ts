@@ -1,3 +1,12 @@
+interface Event {
+    composed: boolean;
+    composedPath(): Node[];
+}
+
+interface CustomEventInit {
+    composed?: boolean;
+}
+
 namespace Vidyano.WebComponents {
     "use strict";
 
@@ -255,10 +264,11 @@ namespace Vidyano.WebComponents {
         }
 
         empty(parent: Node = this, condition?: (e: Node) => boolean) {
-            //Polymer.dom(parent).getEffectiveChildNodes().forEach(c => {
-            //    if (!condition || condition(c))
-            //        Polymer.dom(parent).removeChild(c);
-            //});
+            let children = Array.from(parent.childNodes);
+            if (condition)
+                children = children.filter(c => condition(c));
+
+            children.forEach(c => parent.removeChild(c));
         }
 
         findParent<T extends HTMLElement>(condition: (element: Node) => boolean = e => !!e, parent: Node = this.parentElement || this.parentNode.nodeType !== 11 ? this.parentNode : (<any>this.parentNode).host): T {
@@ -288,24 +298,6 @@ namespace Vidyano.WebComponents {
                 });
             });
         }
-
-        //protected _getFocusableElement(source: Node = this): HTMLElement {
-        //    // Copyright (c) 2014 The Polymer Authors. All rights reserved.
-        //    // https://github.com/PolymerElements/iron-overlay-behavior/blob/2aea7b4945e0b10ce77e1a15ba0ef5a02cdc7984/iron-overlay-behavior.html
-
-        //    // Elements that can be focused even if they have [disabled] attribute.
-        //    const FOCUSABLE_WITH_DISABLED = ["a[href]", "area[href]", "iframe", "[tabindex]", "[contentEditable=true]"];
-        //    // Elements that cannot be focused if they have [disabled] attribute.
-        //    const FOCUSABLE_WITHOUT_DISABLED = ["input", "select", "textarea", "button"];
-
-        //    // Discard elements with tabindex=-1 (makes them not focusable).
-        //    const selector = FOCUSABLE_WITH_DISABLED.join(":not([tabindex='-1']),") +
-        //        ":not([tabindex='-1'])," +
-        //        FOCUSABLE_WITHOUT_DISABLED.join(":not([disabled]):not([tabindex='-1']),") +
-        //        ":not([disabled]):not([tabindex='-1'])";
-
-        //    return (<HTMLElement>source).querySelector(selector);
-        //}
 
         protected _escapeHTML(val: string): string {
             const span = document.createElement("span");
@@ -438,6 +430,9 @@ namespace Vidyano.WebComponents {
                     }
                     else {
                         for (const l in info.listeners) {
+                            if (!this[info.listeners[l]])
+                                continue;
+
                             this._removeEventListenerFromNode(this, l, this[info.listeners[l]].bound);
                             this[info.listeners[l]].bound = undefined;
                         }

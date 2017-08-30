@@ -98,7 +98,7 @@
         protected _editingChanged() {
             super._editingChanged();
 
-            Polymer.dom(this).flush();
+            Polymer.flush();
 
             if (this.editing) {
                 this._setHasInvalidDate(false);

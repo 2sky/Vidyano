@@ -118,11 +118,11 @@ namespace Vidyano.WebComponents {
         disabled: boolean;
         readOnly: boolean;
 
-        attached() {
+        connectedCallback() {
             if (!this._customTemplate)
                 this._customTemplate = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
 
-            super.attached();
+            super.connectedCallback();
         }
 
         queueFocus() {
@@ -135,7 +135,7 @@ namespace Vidyano.WebComponents {
 
         private _attributeChanged(attribute: Vidyano.PersistentObjectAttribute, isConnected: boolean) {
             if (this._renderedAttribute) {
-                Polymer.dom(this.$.content).children.forEach(c => Polymer.dom(this.$.content).removeChild(c));
+                Array.from(this.$.content.children).forEach(c => this.$.content.removeChild(c));
                 this._renderedAttributeElement = this._renderedAttribute = null;
             }
 
@@ -251,13 +251,13 @@ namespace Vidyano.WebComponents {
             let focusTarget: HTMLElement;
             try {
                 if (this._customTemplate)
-                    Polymer.dom(focusTarget = this.$.content).appendChild(this._customTemplate.stamp({ attribute: attribute }).root);
+                    (focusTarget = this.$.content).appendChild(this._customTemplate.stamp({ attribute: attribute }).root);
                 else {
                     const config = <PersistentObjectAttributeConfig>this.app.configuration.getAttributeConfig(attribute);
                     this.noLabel = this.noLabel || (config && !!config.noLabel);
 
                     if (!!config && config.hasTemplate)
-                        Polymer.dom(this.$.content).appendChild(config.stamp(attribute, config.as || "attribute"));
+                        this.$.content.appendChild(config.stamp(attribute, config.as || "attribute"));
                     else {
                         this._renderedAttributeElement = <WebComponents.Attributes.PersistentObjectAttribute>new (Vidyano.WebComponents.Attributes["PersistentObjectAttribute" + attributeType] || Vidyano.WebComponents.Attributes.PersistentObjectAttributeString)();
                         this._renderedAttributeElement.classList.add("attribute");
@@ -265,7 +265,7 @@ namespace Vidyano.WebComponents {
                         this._renderedAttributeElement.nonEdit = this.nonEdit;
                         this._renderedAttributeElement.disabled = this.disabled;
 
-                        Polymer.dom(this.$.content).appendChild(focusTarget = this._renderedAttributeElement);
+                        this.$.content.appendChild(focusTarget = this._renderedAttributeElement);
                     }
                 }
 
@@ -275,7 +275,7 @@ namespace Vidyano.WebComponents {
                 this._setLoading(false);
 
                 if (this._focusQueued) {
-                    Polymer.dom(focusTarget).flush();
+                    Polymer.flush();
 
                     const activeElement = document.activeElement;
                     let retry = 0;
@@ -324,19 +324,20 @@ namespace Vidyano.WebComponents {
         }
 
         private _onFocus() {
-            const target = <HTMLElement>this._renderedAttributeElement || this._getFocusableElement();
-            if (!target)
-                return;
+            //const target = <HTMLElement>this._renderedAttributeElement || this._getFocusableElement();
+            //if (!target)
+            //    return;
 
-            target.focus();
+            //target.focus();
+            console.warn("todo: persistent-object-attribute-presenter._onFocus");
         }
 
         private _loadingChanged(loading: boolean) {
             if (loading)
-                this.fire("attribute-loading", { attribute: this.attribute }, { bubbles: true });
+                this.dispatchEvent(new CustomEvent("attribute-loading", { detail: { attribute: this.attribute }, bubbles: true, composed: true }));
             else {
-                Polymer.dom(this).flush();
-                this.fire("attribute-loaded", { attribute: this.attribute }, { bubbles: true });
+                Polymer.flush();
+                this.dispatchEvent(new CustomEvent("attribute-loaded", { detail: { attribute: this.attribute }, bubbles: true, composed: true }));
             }
         }
 

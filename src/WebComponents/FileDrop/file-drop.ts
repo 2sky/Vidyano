@@ -56,10 +56,12 @@ namespace Vidyano.WebComponents {
 
             const reader = new FileReader();
             reader.onload = loadEvent => {
-                this.fire("file-dropped", <IFileDropDetails>{
-                    name: file.name,
-                    contents: (<any>loadEvent.target).result.match(/,(.*)$/)[1]
-                });
+                this.dispatchEvent(new CustomEvent("file-dropped", {
+                    detail: {
+                        name: file.name,
+                        contents: (<any>loadEvent.target).result.match(/,(.*)$/)[1]
+                    }
+                }));
             };
 
             reader.readAsDataURL(e.dataTransfer.files[0]);

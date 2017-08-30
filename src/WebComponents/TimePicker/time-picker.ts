@@ -29,8 +29,8 @@
         state: string;
         time: Date;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
             this._updateTime();
         }
 

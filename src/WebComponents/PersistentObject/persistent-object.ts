@@ -111,19 +111,19 @@ namespace Vidyano.WebComponents {
         detailTabs: Vidyano.PersistentObjectTab[];
         selectedDetailTab: Vidyano.PersistentObjectTab;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.setAttribute("style-scope-id", this._uniqueId);
         }
 
-        detached() {
+        disconnectedCallback() {
             if (this._styleElement) {
                 document.head.removeChild(this._styleElement);
                 this._styleElement = undefined;
             }
 
-            super.detached();
+            super.disconnectedCallback();
         }
 
         private _persistentObjectChanged(persistentObject: Vidyano.PersistentObject, isConnected: boolean) {
