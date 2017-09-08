@@ -261,7 +261,11 @@ namespace Vidyano.WebComponents.Attributes {
         ],
         forwardObservers: [
             "serviceObject.lastUpdated"
-        ]
+        ],
+        listeners: {
+            "attribute-loading": "_onAttributeLoading",
+            "attribute-loaded": "_onAttributeLoaded",
+        }
     })
     export class PersistentObjectAttributeAsDetailRow extends WebComponents.WebComponent {
         private fullEdit: boolean;
@@ -309,6 +313,14 @@ namespace Vidyano.WebComponents.Attributes {
                 return;
 
             presenter.queueFocus();
+        }
+
+        private _onAttributeLoading(e: CustomEvent) {
+            e.stopPropagation();
+        }
+
+        private _onAttributeLoaded(e: CustomEvent) {
+            e.stopPropagation();
         }
     }
 }
