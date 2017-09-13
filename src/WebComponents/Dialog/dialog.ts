@@ -53,7 +53,8 @@ namespace Vidyano.WebComponents {
         }
 
         private _esc(e: KeyboardEvent) {
-            this.close();
+            if (!this.noCancelOnEscKey)
+                this.close();
         }
 
         close(result?: any) {

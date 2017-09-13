@@ -51,7 +51,7 @@ namespace Vidyano {
 
         constructor(service: Service, po: IServicePersistentObject);
         constructor(service: Service, po: any) {
-            super(service, (po._actionNames || po.actions || []).map(a => a === "Edit" && po.isNew ? "Save" : a));
+            super(service, (po._actionNames || po.actions || []).map(a => a === "Edit" && po.isNew ? "Save" : a), po.actionLabels);
 
             this._id = po.id;
             this._isSystem = !!po.isSystem;

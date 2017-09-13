@@ -182,7 +182,7 @@ namespace Vidyano {
             let workHandlerResolve: (po: Vidyano.PersistentObject) => void;
             let workHandlerReject: (reason?: any) => void;
 
-            var workHandler = new Promise<Vidyano.PersistentObject>((resolve, reject) => {
+            const workHandler = new Promise<Vidyano.PersistentObject>((resolve, reject) => {
                 workHandlerResolve = resolve;
                 workHandlerReject = reject;
             });

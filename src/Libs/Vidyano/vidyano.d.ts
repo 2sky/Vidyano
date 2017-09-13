@@ -110,13 +110,16 @@ declare namespace Vidyano {
 declare namespace Vidyano {
     class ServiceObjectWithActions extends ServiceObject {
         private _actionNames;
+        private _actionLabels;
         private _queue;
         private _isBusy;
         private _notification;
         private _notificationType;
         private _notificationDuration;
         actions: Action[];
-        constructor(service: Service, _actionNames?: string[]);
+        constructor(service: Service, _actionNames?: string[], _actionLabels?: {
+            [key: string]: string;
+        });
         readonly isBusy: boolean;
         private _setIsBusy(val);
         readonly notification: string;
@@ -497,7 +500,7 @@ declare namespace Vidyano {
         private _poRe;
         private _queryRe;
         programUnits: ProgramUnit[];
-        constructor(service: Service, po: any);
+        constructor(service: Service, application: IServicePersistentObject);
         readonly userId: string;
         readonly friendlyUserName: string;
         readonly feedbackId: string;
@@ -922,6 +925,7 @@ declare namespace Vidyano {
         private _profile;
         private _profiledRequests;
         private _queuedClientOperations;
+        private _initial;
         staySignedIn: boolean;
         icons: linqjs.Dictionary<string, string>;
         actionDefinitions: linqjs.Dictionary<string, ActionDefinition>;

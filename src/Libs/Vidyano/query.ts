@@ -162,7 +162,7 @@ namespace Vidyano {
         selectAll: IQuerySelectAll;
 
         constructor(service: Service, query: any, public parent?: PersistentObject, asLookup: boolean = false, public maxSelectedItems?: number) {
-            super(service, query._actionNames || query.actions);
+            super(service, query._actionNames || query.actions, query.actionLabels);
 
             this._asLookup = asLookup;
             this._isSystem = !!query.isSystem;

@@ -17,8 +17,8 @@
         private _queryRe: RegExp;
         programUnits: ProgramUnit[];
 
-        constructor(service: Service, po: any) {
-            super(service, po);
+        constructor(service: Service, application: IServicePersistentObject) {
+            super(service, application);
 
             this._userId = this.getAttributeValue("UserId");
             this._friendlyUserName = this.getAttributeValue("FriendlyUserName") || service.userName;

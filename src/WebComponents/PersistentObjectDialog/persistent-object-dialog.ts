@@ -5,6 +5,7 @@ namespace Vidyano.WebComponents {
         noHeader?: boolean;
         saveLabel?: string;
         save?: (po: Vidyano.PersistentObject, close: () => void) => void;
+        noCancel?: boolean;
         cancel?: (close: () => void) => void;
     }
 
@@ -26,6 +27,10 @@ namespace Vidyano.WebComponents {
             dialogActions: {
                 type: Array,
                 computed: "_computeDialogActions(persistentObject, app)"
+            },
+            options: {
+                type: Object,
+                readOnly: true
             }
         },
         forwardObservers: [
@@ -43,12 +48,13 @@ namespace Vidyano.WebComponents {
     })
     export class PersistentObjectDialog extends Dialog {
         private _saveHook: (po: Vidyano.PersistentObject) => Promise<any>;
+        readonly options: IPersistentObjectDialogOptions; private _setOptions: (options: IPersistentObjectDialogOptions) => void;
         tab: Vidyano.PersistentObjectAttributeTab;
 
-        constructor(public persistentObject: Vidyano.PersistentObject, private _options: IPersistentObjectDialogOptions = {}) {
+        constructor(public persistentObject: Vidyano.PersistentObject, _options: IPersistentObjectDialogOptions = {}) {
             super();
 
-            this.noHeader = _options.noHeader;
+            this._setOptions(_options || null);
             persistentObject.beginEdit();
         }
 
@@ -61,8 +67,8 @@ namespace Vidyano.WebComponents {
         }
 
         private async _save() {
-            if (this._options.save)
-                this._options.save(this.persistentObject, () => this.close(this.persistentObject));
+            if (this.options.save)
+                this.options.save(this.persistentObject, () => this.close(this.persistentObject));
             else {
                 const wasNew = this.persistentObject.isNew;
                 await this.persistentObject.save();
@@ -88,8 +94,8 @@ namespace Vidyano.WebComponents {
         }
 
         private _cancel() {
-            if (this._options.cancel)
-                this._options.cancel(() => this.cancel());
+            if (this.options.cancel)
+                this.options.cancel(() => this.cancel());
             else if (this.persistentObject) {
                 this.persistentObject.cancelEdit();
                 this.cancel();
@@ -100,7 +106,14 @@ namespace Vidyano.WebComponents {
             if (!app)
                 return null;
 
-            return this._options.saveLabel || this.translateMessage("Save");
+            let label = this.options.saveLabel;
+            if (!label) {
+                const endEdit = this.persistentObject.getAction("EndEdit");
+                if (endEdit)
+                    label = endEdit.displayName;
+            }
+
+            return label || this.translateMessage("Save");
         }
 
         private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {
@@ -123,6 +136,11 @@ namespace Vidyano.WebComponents {
 
         private _computeDialogActions(persistentObject: Vidyano.PersistentObject): Vidyano.Action[] {
             return persistentObject.actions.filter(a => a.definition.showedOn.some(s => s === "Dialog"));
+        }
+
+        private _computeHideCancel(readOnly: boolean, noCancel: boolean): boolean {
+            console.log(readOnly, noCancel);
+            return readOnly || noCancel;
         }
 
         private _executeExtraAction(e: TapEvent) {

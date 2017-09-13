@@ -1,4 +1,4 @@
-﻿/* tslint:disable:no-var-keyword */
+/* tslint:disable:no-var-keyword */
 var _gaq: any[];
 /* tslint:enable:no-var-keyword */
 
@@ -189,7 +189,7 @@ namespace Vidyano.WebComponents {
             signInImage: String,
             showMenu: {
                 type: Boolean,
-                computed: "_computeShowMenu(service.application, noMenu)"
+                computed: "_computeShowMenu(service.application, noMenu, currentRoute)"
             },
             isDesktop: {
                 type: Boolean,
@@ -688,6 +688,21 @@ namespace Vidyano.WebComponents {
 
             let currentPath = this.path;
             this._routeUpdater = this._routeUpdater.then(async () => {
+                if (this.service["_initial"] != null) {
+                    const initial = this.service["_initial"];
+                    this.service["_initial"] = null;
+
+                    await this.importComponent("PersistentObjectDialog");
+                    const dialog = new Vidyano.WebComponents.PersistentObjectDialog(initial, {
+                        noHeader: !initial.breadcrumb,
+                        noCancel: true
+                    });
+
+                    dialog.noCancelOnEscKey = dialog.noCancelOnOutsideClick = true;
+
+                    await this.showDialog(dialog);
+                }
+
                 if (currentPath !== this.path)
                     return;
 
@@ -753,8 +768,8 @@ namespace Vidyano.WebComponents {
             return null;
         }
 
-        private _computeShowMenu(application: Vidyano.Application, noMenu: boolean): boolean {
-            const showMenu = application && !noMenu;
+        private _computeShowMenu(application: Vidyano.Application, noMenu: boolean, currentRoute: Vidyano.WebComponents.AppRoute): boolean {
+            const showMenu = application && !noMenu && currentRoute != null;
             if (showMenu)
                 this.importComponent("Menu");
 

@@ -19,6 +19,7 @@ namespace Vidyano {
         private _profile: boolean;
         private _profiledRequests: IServiceRequest[];
         private _queuedClientOperations: ClientOperations.IClientOperation[] = [];
+        private _initial: Vidyano.PersistentObject;
         staySignedIn: boolean;
         icons: linqjs.Dictionary<string, string>;
         actionDefinitions: linqjs.Dictionary<string, ActionDefinition>;
@@ -643,6 +644,9 @@ namespace Vidyano {
             this.actionDefinitions.toEnumerable().forEach(kvp => this.language.messages[`Action_${kvp.key}`] = kvp.value.displayName);
 
             CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
+
+            if (result.initial != null)
+                this._initial = this.hooks.onConstructPersistentObject(this, result.initial);
 
             if (result.userName !== this.registerUserName) {
                 this._setUserName(result.userName);

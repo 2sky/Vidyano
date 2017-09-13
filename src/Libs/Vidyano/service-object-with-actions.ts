@@ -9,7 +9,7 @@
         private _notificationDuration: number;
         actions: Action[] = [];
 
-        constructor(service: Service, private _actionNames: string[] = []) {
+        constructor(service: Service, private _actionNames: string[] = [], private _actionLabels?: { [key: string]: string }) {
             super(service);
 
             this._queue = new Queue(1);
@@ -94,6 +94,9 @@
             Action.addActions(this.service, this, this.actions, this._actionNames);
             this.actions.forEach(a => {
                 this.actions[a.name] = a;
+
+                if (this._actionLabels && this._actionLabels[a.name] != null)
+                    a.displayName = this._actionLabels[a.name];
             });
         }
 
