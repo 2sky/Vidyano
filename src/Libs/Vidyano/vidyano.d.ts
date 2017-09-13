@@ -122,6 +122,7 @@ declare namespace Vidyano {
         readonly notification: string;
         readonly notificationType: NotificationType;
         readonly notificationDuration: number;
+        getAction(name: string): Vidyano.Action;
         setNotification(notification?: string, type?: NotificationType, duration?: number, skipShowNotification?: boolean): void;
         queueWork<T>(work: () => Promise<T>, blockActions?: boolean): Promise<T>;
         protected _initializeActions(): void;
@@ -172,6 +173,8 @@ declare namespace Vidyano {
         canExecute: boolean;
         options: string[];
     }
+    type ActionExecutionHandler = (action: Vidyano.Action, worker: Promise<Vidyano.PersistentObject>, args: IActionExecuteOptions) => boolean | void | Promise<void>;
+    type ActionExecutionHandlerDispose = () => void;
     class Action extends ServiceObject {
         service: Service;
         definition: ActionDefinition;
@@ -186,6 +189,7 @@ declare namespace Vidyano {
         private _offset;
         protected _isPinned: boolean;
         private _options;
+        private _executeHandlers;
         selectionRule: (count: number) => boolean;
         displayName: string;
         dependentActions: any[];
@@ -200,8 +204,9 @@ declare namespace Vidyano {
         readonly isPinned: boolean;
         readonly options: string[];
         private _setOptions(options);
+        subscribe(handler: ActionExecutionHandler): ActionExecutionHandlerDispose;
         execute(options?: IActionExecuteOptions): Promise<PersistentObject>;
-        protected _onExecute({menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions}: IActionExecuteOptions): Promise<PersistentObject>;
+        protected _onExecute(options: IActionExecuteOptions): Promise<PersistentObject>;
         _getParameters(parameters: any, option: any): any;
         _onParentIsEditingChanged(isEditing: boolean): void;
         _onParentIsDirtyChanged(isDirty: boolean): void;

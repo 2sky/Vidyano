@@ -39,6 +39,10 @@
             return this._notificationDuration;
         }
 
+        getAction(name: string): Vidyano.Action {
+            return this.actions[name];
+        }
+
         setNotification(notification: string = null, type: NotificationType = NotificationType.Error, duration: number = null, skipShowNotification?: boolean) {
             if (typeof (type) === "string")
                 type = NotificationType[<string>type];
