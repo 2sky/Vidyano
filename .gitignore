@@ -227,3 +227,4 @@ ModelManifest.xml
 /dist/packages/
 *.nupkg
 *.map
+/\$RECYCLE\.BIN/
