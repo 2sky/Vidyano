@@ -14,7 +14,7 @@
                 </vi-persistent-object-attribute-edit>
             </template>
             <template is="dom-if" if="[[radio]]">
-                <div id="radiobuttons">
+                <div id="radiobuttons" orientation$="[[orientation]]">
                     <template is="dom-repeat" items="[[options]]" as="option">
                         <vi-checkbox label="[[_radioLabel(option)]]" checked="[[_isRadioChecked(option, value)]]" on-changed="_radioChanged" radio disabled$="[[attribute.parent.isFrozen]]"></vi-checkbox>
                     </template>

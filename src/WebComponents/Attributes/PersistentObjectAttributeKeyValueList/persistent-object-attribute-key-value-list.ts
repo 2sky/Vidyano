@@ -7,6 +7,10 @@ namespace Vidyano.WebComponents.Attributes {
                 type: Boolean,
                 computed: "_computeRadio(attribute)"
             },
+            orientation: {
+                type: String,
+                computed: "_computeOrientation(attribute)"
+            },
             groupSeparator: {
                 type: String,
                 computed: "_computeGroupSeparator(attribute)"
@@ -21,6 +25,10 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _computeRadio(attribute: Vidyano.PersistentObjectAttribute): boolean {
             return attribute && attribute.getTypeHint("inputtype", undefined, undefined, true) === "radio";
+        }
+
+        private _computeOrientation(attribute: Vidyano.PersistentObjectAttributeWithReference): string {
+            return attribute && attribute.getTypeHint("orientation", "vertical", undefined, true);
         }
 
         private _computeGroupSeparator(attribute: Vidyano.PersistentObjectAttribute): string {
