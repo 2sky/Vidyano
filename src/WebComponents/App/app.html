@@ -39,6 +39,7 @@
             </template>
             <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
             <vi-app-route-presenter class="flex">
+                <vi-app-route route=""></vi-app-route>
                 <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
                 <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
                 <vi-app-route route="PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>

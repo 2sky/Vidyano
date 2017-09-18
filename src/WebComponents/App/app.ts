@@ -728,7 +728,7 @@ namespace Vidyano.WebComponents {
                     }
                 }
 
-                const mappedPathRoute = !!path || this.barebone ? Vidyano.Path.match(Path.routes.rootPath + path, true) : null;
+                const mappedPathRoute = path != null || this.barebone ? Vidyano.Path.match(Path.routes.rootPath + path, true) : null;
                 const newRoute = mappedPathRoute ? this._routeMap[App.removeRootPath(mappedPathRoute.path)] : null;
 
                 if (!this.service.isSignedIn && (!newRoute || !newRoute.allowSignedOut)) {
