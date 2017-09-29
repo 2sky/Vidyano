@@ -21,9 +21,9 @@
                 <pre>[[options.message]]</pre>
             </template>
         </main>
-        <footer class="horizontal layout end-justified">
+        <footer class="horizontal layout end-justified" id="actions">
             <template is="dom-repeat" items="[[options.actions]]" as="action">
-                <button is="vi-button" on-tap="_onSelectAction" type$="[[_getActionType(options, index)]]" inverse="[[!_isFirst(index)]]" label="[[action]]"></button>
+                <button is="vi-button" on-tap="_onSelectAction" type$="[[_getActionType(options, index)]]" inverse="[[!_isActiveAction(activeAction, index)]]" label="[[action]]"></button>
             </template>
         </footer>
     </template>

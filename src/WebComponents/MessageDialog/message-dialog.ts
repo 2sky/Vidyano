@@ -17,11 +17,23 @@
             options: {
                 type: Object,
                 readOnly: true
+            },
+            activeAction: {
+                type: Number,
+                readOnly: true,
+                value: 0
             }
+        },
+        keybindings: {
+            "enter": "_keyboardConfirm",
+            "tab": "_keyboardNextAction",
+            "right": "_keyboardNextAction",
+            "left": "_keyboardPreviousAction"
         }
     })
     export class MessageDialog extends Dialog {
         readonly options: IMessageDialogOptions; private _setOptions: (options: IMessageDialogOptions) => void;
+        readonly activeAction: number; private _setActiveAction: (activeAction: number) => void;
 
         constructor(options: IMessageDialogOptions) {
             super();
@@ -32,6 +44,17 @@
         async open(): Promise<any> {
             if (this.options.rich)
                 await this.importHref(this.resolveUrl("../../Libs/marked-element/marked-element.html"));
+
+            const focus = setInterval(() => {
+                const button = <HTMLButtonElement>this.$.actions.querySelectorAll("button")[0];
+                if (!button)
+                    return;
+
+                if (document.activeElement !== button)
+                    button.focus();
+                else
+                    clearInterval(focus);
+            }, 100);
 
             return super.open();
         }
@@ -55,6 +78,25 @@
 
         private _isFirst(index: number): boolean {
             return index === 0;
+        }
+
+        private _keyboardConfirm() {
+            if (!this.options || !this.options.actions || !this.options.actions.length)
+                return;
+
+            this.close(this.activeAction);
+        }
+
+        private _keyboardNextAction() {
+            this._setActiveAction((this.activeAction + 1) % this.options.actions.length);
+        }
+
+        private _keyboardPreviousAction() {
+            this._setActiveAction((this.activeAction - 1 + this.options.actions.length) % this.options.actions.length);
+        }
+
+        private _isActiveAction(activeAction: number, index: number): boolean {
+            return activeAction === index;
         }
     }
 }
