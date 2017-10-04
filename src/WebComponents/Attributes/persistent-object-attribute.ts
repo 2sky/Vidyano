@@ -91,7 +91,7 @@ namespace Vidyano.WebComponents.Attributes {
             if (!options || options.length === 0 || isRequired || ["KeyValueList", "DropDown", "ComboBox"].indexOf(type) === -1)
                 return options;
 
-            if (typeof options[0] === "string") {
+            if (typeof options[0] === "string" || options[0] == null) {
                 if ((<string[]>options).some(o => o == null))
                     return options;
 
