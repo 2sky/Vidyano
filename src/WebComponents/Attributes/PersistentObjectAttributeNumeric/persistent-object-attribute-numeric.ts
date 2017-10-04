@@ -109,7 +109,10 @@ namespace Vidyano.WebComponents.Attributes {
         private _editInputBlur(e: Event) {
             this._setFocused(false);
 
-            if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh) {
+            if (!this.attribute)
+                return;
+
+            if (this.attribute.isValueChanged && this.attribute.triggersRefresh) {
                 let newValue = this.value;
                 if (newValue != null && this._decimalSeparator !== ".")
                     newValue = newValue.replace(this._decimalSeparator, ".");
