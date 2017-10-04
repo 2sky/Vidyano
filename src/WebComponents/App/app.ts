@@ -1171,6 +1171,8 @@ namespace Vidyano.WebComponents {
 
                     return;
                 }
+                else if (this.app.barebone)
+                    return;
 
                 let path: string;
                 if (!fromAction) {
