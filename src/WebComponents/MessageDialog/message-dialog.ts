@@ -21,11 +21,11 @@
             activeAction: {
                 type: Number,
                 readOnly: true,
-                value: 0
+                value: 0,
+                observer: "_activeActionChanged"
             }
         },
         keybindings: {
-            "enter": "_keyboardConfirm",
             "tab": "_keyboardNextAction",
             "right": "_keyboardNextAction",
             "left": "_keyboardPreviousAction"
@@ -80,11 +80,12 @@
             return index === 0;
         }
 
-        private _keyboardConfirm() {
-            if (!this.options || !this.options.actions || !this.options.actions.length)
+        private _activeActionChanged(activeAction: number) {
+            const button = <HTMLButtonElement>this.$.actions.querySelector(`button:nth-child(${activeAction + 1})`);
+            if (!button)
                 return;
 
-            this.close(this.activeAction);
+            button.focus();
         }
 
         private _keyboardNextAction() {
