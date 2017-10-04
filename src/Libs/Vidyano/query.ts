@@ -617,7 +617,7 @@ namespace Vidyano {
                     return this.items.slice(start, start + length);
 
                 try {
-                    const result = await this.service.executeQuery(this.parent, clonedQuery, this._asLookup);
+                    const result = await this.service.executeQuery(this.parent, clonedQuery, this._asLookup, true);
 
                     if (result.totalItems === -1) {
                         this.continuation = result.continuation;
