@@ -521,10 +521,20 @@ namespace Vidyano {
                 return true;
             };
 
+            let result: Promise<boolean>;
             if (!immediate)
-                return this.queueWork(work, false);
+                result = this.queueWork(work, false);
             else
-                return work();
+                result = work();
+
+            if (this.ownerDetailAttribute && this.ownerDetailAttribute.triggersRefresh) {
+                return result.then(async res => {
+                    await this.ownerDetailAttribute._triggerAttributeRefresh(immediate);
+                    return res;
+                });
+            }
+
+            return result;
         }
 
         _prepareAttributesForRefresh(sender: PersistentObjectAttribute) {
