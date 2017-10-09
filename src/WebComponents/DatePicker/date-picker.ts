@@ -60,7 +60,8 @@
             maxDate: {
                 type: Object,
                 value: null
-            }
+            },
+            newTime: String
         },
         observers: [
             "_render(cells, currentDate, deferredCellsUpdate)"
@@ -87,6 +88,7 @@
         monthMode: boolean;
         minDate: Date;
         maxDate: Date;
+        newTime: string;
 
         attached() {
             super.attached();
@@ -260,6 +262,15 @@
 
             if (this.zoom === "days") {
                 const newSelectedDate = moment(this.selectedDate || new Date());
+                if (!this.selectedDate && this.newTime) {
+                    const newTime = /(\d\d):(\d\d)(:(\d\d))?/.exec(this.newTime);
+                    if (newTime[1] != null && newTime[2] != null) {
+                        newSelectedDate.hours(parseInt(newTime[1]));
+                        newSelectedDate.minutes(parseInt(newTime[2]));
+                        newSelectedDate.seconds(parseInt(newTime[4] || "0"));
+                    }
+                }
+
                 newSelectedDate.year(cell.date.year());
                 newSelectedDate.month(cell.date.month());
                 newSelectedDate.date(cell.date.date());

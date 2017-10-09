@@ -59,6 +59,10 @@
             maxDate: {
                 type: Object,
                 computed: "_computeMinMaxDate(attribute.typeHints.maxdate)"
+            },
+            newTime: {
+                type: String,
+                computed: "attribute.typeHints.newtime"
             }
         },
         forwardObservers: [
