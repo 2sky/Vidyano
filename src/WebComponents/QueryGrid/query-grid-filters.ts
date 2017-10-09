@@ -91,7 +91,7 @@
             if (!filters)
                 return null;
 
-            const orderedFilters = Enumerable.from(filters).where(f => f.isLocked === isLocked).orderBy(f => f.name.split("\n", 2)[0]).toArray();
+            const orderedFilters = Enumerable.from(filters).where(f => f.isLocked === isLocked).orderBy(f => f.name.split("\n", 2)[0].toLowerCase()).toArray();
             if (orderedFilters.length === 0)
                 return null;
 
@@ -206,6 +206,14 @@
 
         private _showLockedFilterSeparator(canReset: boolean, canSave: boolean, canSaveAs: boolean, userFilters: IQueryFilter[]): boolean {
             return canReset || canSave || canSaveAs || (!!userFilters && userFilters.length > 0);
+        }
+
+        private _hasGroupName(filter: IQueryFilter): boolean {
+            return !!filter.groupName;
+        }
+
+        private _hasNoGroupName(filter: IQueryFilter): boolean {
+            return !filter.groupName;
         }
     }
 }

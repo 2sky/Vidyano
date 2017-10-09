@@ -20,23 +20,21 @@
             </template>
             <template is="dom-if" if="[[userFilters]]">
                 <vi-popup-menu-item-separator hidden$="[[!_showUserFilterSeparator(canReset, canSave, canSaveAs)]]"></vi-popup-menu-item-separator>
-                <template is="dom-repeat" items="[[userFilters]]" as="filter">
-                    <template is="dom-if" if="[[filter.groupName]]">
-                        <vi-popup-menu-item icon-space label="[[filter.groupName]]" icon="Folder" on-tap="_catchGroupTap">
-                            <template is="dom-repeat" items="[[filter.children]]" as="filter">
-                                <vi-popup-menu-item-with-actions icon-space label="[[_nonGroupName(filter.filter.name)]]" on-tap="_load">
-                                    <button is="vi-button" icon="Action_Edit" inverse on-tap="_edit"></button>
-                                    <button is="vi-button" icon="Action_Delete" inverse on-tap="_delete"></button>
-                                </vi-popup-menu-item-with-actions>
-                            </template>
-                        </vi-popup-menu-item>
-                    </template>
-                    <template is="dom-if" if="[[!filter.groupName]]">
-                        <vi-popup-menu-item-with-actions icon-space label="[[filter.filter.name]]" on-tap="_load">
-                            <button is="vi-button" icon="Action_Edit" inverse on-tap="_edit"></button>
-                            <button is="vi-button" icon="Action_Delete" inverse on-tap="_delete"></button>
-                        </vi-popup-menu-item-with-actions>
-                    </template>
+                <template is="dom-repeat" items="[[userFilters]]" as="filter" filter="_hasGroupName">
+                    <vi-popup-menu-item icon-space label="[[filter.groupName]]" icon="Folder" on-tap="_catchGroupTap">
+                        <template is="dom-repeat" items="[[filter.children]]" as="filter">
+                            <vi-popup-menu-item-with-actions icon-space label="[[_nonGroupName(filter.filter.name)]]" on-tap="_load">
+                                <button is="vi-button" icon="Action_Edit" inverse on-tap="_edit"></button>
+                                <button is="vi-button" icon="Action_Delete" inverse on-tap="_delete"></button>
+                            </vi-popup-menu-item-with-actions>
+                        </template>
+                    </vi-popup-menu-item>
+                </template>
+                <template is="dom-repeat" items="[[userFilters]]" as="filter" filter="_hasNoGroupName">
+                    <vi-popup-menu-item-with-actions icon-space label="[[filter.filter.name]]" on-tap="_load">
+                        <button is="vi-button" icon="Action_Edit" inverse on-tap="_edit"></button>
+                        <button is="vi-button" icon="Action_Delete" inverse on-tap="_delete"></button>
+                    </vi-popup-menu-item-with-actions>
                 </template>
             </template>
             <template is="dom-if" if="[[lockedFilters]]">

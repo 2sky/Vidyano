@@ -171,6 +171,9 @@ namespace Vidyano {
 
                 this._computeFilters();
 
+                if (!newFilter && filter.persistentObject.isNew)
+                    this.currentFilter = Enumerable.from(this.filters).firstOrDefault(f => f.name === filter.name);
+
                 return result;
             });
         }
