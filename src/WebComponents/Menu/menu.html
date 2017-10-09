@@ -17,8 +17,8 @@
                 <vi-input-search value="{{filter}}" on-search="_search"></vi-input-search>
             </template>
             <template is="dom-if" if="[[collapsedWithGlobalSearch]]">
-                <vi-popup orientation="horizontal" content-align="right" sticky>
-                    <vi-icon header source="Search" on-tap="_focusSearch"></vi-icon>
+                <vi-popup orientation="horizontal" content-align="right" sticky on-popup-opened="_focusSearch">
+                    <vi-icon header source="Search"></vi-icon>
                     <vi-input-search id="collapsedInputSearch" content collapsed value="{{filter}}" on-tap="_catchInputSearchTap" on-search="_search"></vi-input-search>
                 </vi-popup>
             </template>
