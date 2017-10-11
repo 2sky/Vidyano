@@ -108,7 +108,7 @@ namespace Vidyano.WebComponents {
 
             let label = this.options.saveLabel;
             if (!label) {
-                const endEdit = this.persistentObject.getAction("EndEdit");
+                const endEdit = this.persistentObject.getAction("EndEdit") || this.persistentObject.getAction("Save");
                 if (endEdit)
                     label = endEdit.displayName;
             }
