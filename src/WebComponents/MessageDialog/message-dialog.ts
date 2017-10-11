@@ -7,6 +7,8 @@
         titleIcon?: string;
         actions?: string[];
         actionTypes?: string[];
+        defaultAction?: number;
+        cancelAction?: number;
         message: string;
         extraClasses?: string[];
         rich?: boolean;
@@ -39,6 +41,22 @@
             super();
 
             this._setOptions(options);
+
+            if (options.defaultAction)
+                this._setActiveAction(options.defaultAction);
+        }
+
+        attached() {
+            super.attached();
+
+            this.noCancelOnEscKey = this.noCancelOnOutsideClick = this.options.noClose || this.options.cancelAction == null;
+        }
+
+        cancel() {
+            if (this.options.cancelAction == null)
+                super.cancel();
+            else
+                super.close(this.options.cancelAction);
         }
 
         async open(): Promise<any> {
@@ -46,7 +64,7 @@
                 await this.importHref(this.resolveUrl("../../Libs/marked-element/marked-element.html"));
 
             const focus = setInterval(() => {
-                const button = <HTMLButtonElement>this.$.actions.querySelectorAll("button")[0];
+                const button = <HTMLButtonElement>this.$.actions.querySelectorAll("button")[this.activeAction];
                 if (!button)
                     return;
 

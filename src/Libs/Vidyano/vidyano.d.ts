@@ -1033,6 +1033,8 @@ declare namespace Vidyano {
         title: string;
         message: string;
         options: string[];
+        defaultOption?: number;
+        cancelOption?: number;
         persistentObject?: PersistentObject;
     }
     interface IServiceClientData {

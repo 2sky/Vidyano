@@ -18,6 +18,17 @@ namespace Vidyano.WebComponents {
                 retry.message = null;
         }
 
+        attached() {
+            super.attached();
+
+            this.retry.cancelOption = 1;
+            this.noCancelOnOutsideClick = this.noCancelOnEscKey = this.retry.cancelOption == null;
+        }
+
+        cancel() {
+            this.close(this.retry.cancelOption);
+        }
+
         private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {
             if (!persistentObject || !isAttached)
                 return null;

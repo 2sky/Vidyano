@@ -1341,7 +1341,14 @@ namespace Vidyano.WebComponents {
                 return this.app.showDialog(new Vidyano.WebComponents.RetryActionDialog(retry));
             }
 
-            return super.onRetryAction(retry);
+            return retry.options[await this.app.showMessageDialog({
+                title: retry.title,
+                message: retry.message,
+                actions: retry.options,
+                noClose: retry.cancelOption == null,
+                defaultAction: retry.defaultOption,
+                cancelAction: retry.cancelOption
+            })];
         }
     }
 }

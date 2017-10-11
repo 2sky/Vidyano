@@ -146,11 +146,8 @@
             localStorage.removeItem("vi-updateAvailable");
         }
 
-        async onRetryAction(retry: IRetryAction): Promise<string> {
-            if (!retry.persistentObject)
-                return retry.options[await this.onMessageDialog(retry.title, retry.message, false, ...retry.options)];
-
-            throw "RetryAction with Persistent Object is not supported.";
+        onRetryAction(retry: IRetryAction): Promise<string> {
+            return Promise.resolve(null);
         }
     }
 }

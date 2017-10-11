@@ -139,7 +139,6 @@ namespace Vidyano.WebComponents {
         }
 
         private _computeHideCancel(readOnly: boolean, noCancel: boolean): boolean {
-            console.log(readOnly, noCancel);
             return readOnly || noCancel;
         }
 

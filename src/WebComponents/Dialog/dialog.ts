@@ -10,8 +10,6 @@ namespace Vidyano.WebComponents {
         noCancelOnEscKey: boolean;
         noHeader: boolean;
 
-        protected cancel: () => void;
-
         attached() {
             if (!this._sizeTracker) {
                 Polymer.dom(this.root).appendChild(this._sizeTracker = new Vidyano.WebComponents.SizeTracker());
@@ -54,11 +52,15 @@ namespace Vidyano.WebComponents {
 
         private _esc(e: KeyboardEvent) {
             if (!this.noCancelOnEscKey)
-                this.close();
+                this.cancel();
         }
 
         close(result?: any) {
             this._resolve(result);
+        }
+
+        cancel() {
+            Polymer["IronOverlayBehaviorImpl"].cancel.apply(this);
         }
 
         private _onClosed() {
