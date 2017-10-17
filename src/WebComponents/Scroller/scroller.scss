@@ -248,8 +248,10 @@
         > #wrapper {
             margin-right: calc(var(--theme-scrollbar-width) * -1);
             margin-bottom: calc(var(--theme-scrollbar-width) * -1);
-            padding-right: var(--theme-scrollbar-width);
-            padding-bottom: var(--theme-scrollbar-width);
+
+            > #content {
+                padding-bottom: var(--theme-scrollbar-width);
+            }
         }
     }
 }

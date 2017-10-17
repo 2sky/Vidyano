@@ -236,6 +236,9 @@
 
             this._setVertical(!noVertical && height > 0);
 
+            if (!this.isWebKit)
+                innerHeight -= scrollbarWidth();
+
             const verticalScrollTop = verticalScrollOffset === 0 ? 0 : Math.round((1 / ((innerHeight - outerHeight) / verticalScrollOffset)) * this._verticalScrollSpace);
             if (verticalScrollTop !== this._verticalScrollTop)
                 this.$.vertical.style.webkitTransform = this.$.vertical.style.transform = `translate3d(0, ${this._verticalScrollTop = verticalScrollTop}px, 0)`;
@@ -261,6 +264,9 @@
             }
 
             this._setHorizontal(!noHorizontal && width > 0);
+
+            if (!this.isWebKit)
+                innerWidth -= scrollbarWidth();
 
             const horizontalScrollLeft = horizontalScrollOffset === 0 ? 0 : Math.round((1 / ((innerWidth - outerWidth) / horizontalScrollOffset)) * this._horizontalScrollSpace);
             if (horizontalScrollLeft !== this._horizontalScrollLeft)
