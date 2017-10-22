@@ -70,11 +70,11 @@ namespace Vidyano.WebComponents.Attributes {
             let selection: number[];
             let input: HTMLInputElement;
 
-            if (value && this.characterCasing !== "Normal") {
+            if (this.editing && value && this.characterCasing !== "Normal") {
                 value = this.characterCasing === "Upper" ? value.toUpperCase() : value.toLowerCase();
                 if (value !== this.value) {
                     input = <HTMLInputElement>this.$.input || <HTMLInputElement>Polymer.dom(this.root).querySelector("input");
-                    if (input !== null)
+                    if (input != null)
                         selection = [input.selectionStart, input.selectionEnd];
                 }
             }
