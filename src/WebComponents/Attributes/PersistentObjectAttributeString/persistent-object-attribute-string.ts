@@ -67,11 +67,27 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         protected _valueChanged(value: any, oldValue: any) {
-            const newValue = this._changeCasing(this.value);
-            if (newValue === this.value)
-                super._valueChanged(newValue, oldValue);
+            let selection: number[];
+            let input: HTMLInputElement;
+
+            if (value && this.characterCasing !== "Normal") {
+                value = this.characterCasing === "Upper" ? value.toUpperCase() : value.toLowerCase();
+                if (value !== this.value) {
+                    input = <HTMLInputElement>this.$.input || <HTMLInputElement>Polymer.dom(this.root).querySelector("input");
+                    if (input !== null)
+                        selection = [input.selectionStart, input.selectionEnd];
+                }
+            }
+
+            if (value === this.value)
+                super._valueChanged(value, oldValue);
             else
-                this.attribute.setValue(newValue, false).catch(Vidyano.noop);
+                this.attribute.setValue(value, false).catch(Vidyano.noop);
+
+            if (selection != null) {
+                input.selectionStart = selection[0];
+                input.selectionEnd = selection[1];
+            }
         }
 
         private _addSuggestion(e: TapEvent) {
@@ -100,16 +116,6 @@ namespace Vidyano.WebComponents.Attributes {
                 this._setEditInputStyle("text-transform: lowercase;");
             else
                 this._setEditInputStyle(undefined);
-        }
-
-        private _changeCasing(val: string) {
-            if (val == null)
-                return null;
-
-            if (this.characterCasing === "Normal")
-                return val;
-
-            return this.characterCasing === "Upper" ? val.toUpperCase() : val.toLowerCase();
         }
     }
 }
