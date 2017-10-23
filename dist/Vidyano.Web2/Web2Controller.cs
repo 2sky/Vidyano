@@ -150,7 +150,7 @@ namespace Vidyano.Web2
 
             if (id.StartsWith("WebComponents", StringComparison.OrdinalIgnoreCase))
             {
-                var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(new FileStream(filePath, FileMode.Open)) };
+                var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(new FileStream(filePath, FileMode.Open, FileAccess.Read)) };
                 result.Content.Headers.ContentType = new MediaTypeHeaderValue(mimeType);
 
                 return result;
