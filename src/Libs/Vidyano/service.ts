@@ -951,10 +951,13 @@ namespace Vidyano {
 
         async getInstantSearch(search: string): Promise<IInstantSearchResult[]> {
             const uri = this._createUri(`Instant?q=${encodeURIComponent(search)}`);
+            const userName = encodeURIComponent(this.userName);
+            const authToken = this.authToken ? this.authToken.replace("/", "_") : "";
 
             const data = await this._getJSON(uri, {
-                "Authorization": `Bearer ${encodeURIComponent(this.userName)}/${this.authToken.replace("/", "_")}`
+                "Authorization": `Bearer ${userName}/${authToken}`
             });
+
             return data.d;
         }
 
