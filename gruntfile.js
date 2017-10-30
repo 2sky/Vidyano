@@ -100,7 +100,7 @@ module.exports = function(grunt) {
                     expand: true,
                     src: 'dist/Vidyano.Web2/src/**/*.js',
                     filter: function(src) {
-                        if (src == "dist\\Vidyano.Web2\\src\\Libs\\bignumber.js" || src.endsWith("lertify.js") || src.endsWith(".min.js"))
+                        if (src.endsWith("bignumber.js") || src.endsWith("lertify.js") || src.endsWith(".min.js"))
                             return false;
 
                         return true;
