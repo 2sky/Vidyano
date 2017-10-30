@@ -58,15 +58,6 @@ interface Array<T> {
     removeAll(f: (t: T) => boolean, thisObject?: any): void;
 }
 
-interface BigNumber {
-    toNumber(): number;
-    equals(value: BigNumber): boolean;
-}
-
-declare var BigNumber: {
-    new (number: number | string): BigNumber;
-};
-
 declare namespace Vidyano {
     export function noop();
     export function extend(target: any, ...sources: any[]);

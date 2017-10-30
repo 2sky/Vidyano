@@ -67,7 +67,7 @@
     "iron-list": "polymerelements/iron-list#^1.4.6",
     "iron-media-query": "polymerelements/iron-media-query#^1.0.8",
     "iron-overlay-behavior": "polymerelements/iron-overlay-behavior#^1.10.2",
-    "bignumber.js": "^2.0.7",
+    "bignumber.js": "^4.1.0",
     "moment": "^2.10.6",
     "sortable": "RubaXa/sortable#^1.2.1",
     "d3": "^3.5.6",
