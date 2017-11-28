@@ -368,6 +368,10 @@
     "inputFile": "src/WebComponents/TimePicker/time-picker.scss"
   },
   {
+    "outputFile": "src/WebComponents/Toggle/toggle.css",
+    "inputFile": "src/WebComponents/Toggle/toggle.scss"
+  },
+  {
     "outputFile": "src/WebComponents/User/user.css",
     "inputFile": "src/WebComponents/User/user.scss"
   },

@@ -2,6 +2,7 @@
 
 :host {
     @include noSelection();
+    @include layout-horizontal();
     line-height: normal;
 
     --vi-select-input: #{'{

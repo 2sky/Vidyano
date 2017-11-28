@@ -1,0 +1,16 @@
+﻿<dom-module id="vi-toggle">
+    <template>
+        <link rel="stylesheet" href="toggle.css" />
+        <div class="layout horizontal center">
+            <svg viewBox="0 0 80 32">
+                <g>
+                    <path d="M 0,0 H 80 V 32 H 0 Z" id="box" />
+                    <path d="M 4,4 H 28 V 28 H 4 Z" id="switch" />
+                </g>
+            </svg>
+            <span empty$="[[_isEmpty(label)]]">[[label]]</span>
+        </div>
+    </template>
+</dom-module>
+
+<script src="toggle.js"></script>
