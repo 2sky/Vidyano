@@ -7,13 +7,25 @@ namespace Vidyano.WebComponents.Attributes {
                 type: Boolean,
                 computed: "_computeCanToggle(editing, readOnly)"
             },
+            defaultInputtype: {
+                type: String,
+                readOnly: true
+            },
             checkBox: {
                 type: Boolean,
-                computed: "_computeCheckBox(attribute)"
+                computed: "_computeCheckBox(attribute, defaultInputtype)"
             }
         }
     })
     export class PersistentObjectAttributeBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
+        readonly defaultInputtype: string; private _setDefaultInputtype: (defaultInputtype: string) => void;
+
+        attached() {
+            super.attached();
+
+            this._setDefaultInputtype(this.app.configuration.getSetting("vi-persistent-object-attribute-boolean.inputtype", "toggle").toLowerCase());
+        }
+
         protected _valueChanged(newValue: any) {
             if (this.attribute && newValue !== this.attribute.value)
                 this.attribute.setValue(newValue, true).catch(Vidyano.noop);
@@ -27,8 +39,8 @@ namespace Vidyano.WebComponents.Attributes {
             return isReadOnly || isFrozen;
         }
 
-        private _computeCheckBox(attribute: Vidyano.PersistentObjectAttribute): boolean {
-            return attribute.getTypeHint("inputtype", undefined, undefined, true) === "checkbox";
+        private _computeCheckBox(attribute: Vidyano.PersistentObjectAttribute, defaultInputtype: string): boolean {
+            return attribute.getTypeHint("inputtype", defaultInputtype, undefined, true) === "checkbox";
         }
     }
 
