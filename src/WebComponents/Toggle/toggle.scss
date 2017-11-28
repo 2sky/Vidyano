@@ -4,24 +4,24 @@
     display: block;
     padding-right: var(--theme-h5);
     box-sizing: border-box;
+    --vi-toggle-width: var(--theme-h2);
 
     &:not([disabled]) {
         cursor: pointer;
     }
 
-    svg {
-        height: 16px;
-        fill: #484848;
+    #box {
+        padding: 2px;
+        border: 1px solid var(--theme-light-border);
+        width: var(--vi-toggle-width);
 
         #switch {
-            fill: white;
+            background-color: #333;
+            width: calc(var(--theme-h4) - 2px);
+            height: calc(var(--theme-h4) - 2px);
             transform: translateX(0);
-            transition: transform ease-in-out 0.25s;
-        }
-
-        #box {
-            fill: #c0c0c0;
-            transition: fill ease-in-out 0.25s;
+            -webkit-transition: transform 0.25s cubic-bezier(0,1,.6,1);
+            transition: transform 0.25s cubic-bezier(0,1,.6,1);
         }
     }
 
@@ -39,20 +39,37 @@
     &:focus {
         outline: 0;
 
-        span:not([empty]) {
+        &:not([disabled]) span:not([empty]) {
             outline: 1px dotted var(--theme-color-light);
         }
     }
 }
 
 :host-context([toggled]) {
-    svg {
-        #switch {
-            transform: translateX(48px);
-        }
+    #box {
+        background-color: var(--theme-color);
+        border-color: var(--theme-color);
 
-        #box {
-            fill: var(--theme-color);
+        #switch {
+            background-color: white;
+            transform: translateX(calc(var(--vi-toggle-width) - var(--theme-h4) + 2px));
+        }
+    }
+}
+
+:host-context([disabled][toggled]) {
+    #box {
+        background-color: #d6d6d6;
+        border-color: #d6d6d6;
+    }
+}
+
+:host-context([disabled]:not([toggled])) {
+    #box {
+        border-color: var(--theme-light-border);
+
+        #switch {
+            background-color: #a5a5a5;
         }
     }
 }
