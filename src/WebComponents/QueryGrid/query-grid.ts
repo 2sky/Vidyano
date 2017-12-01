@@ -911,11 +911,6 @@ namespace Vidyano.WebComponents {
                 type: Object,
                 observer: "_viewportSizeChanged"
             },
-            outOfViewColumns: {
-                type: Object,
-                readOnly: true,
-                value: () => { }
-            },
             rowHeight: {
                 type: Number,
                 readOnly: true
@@ -1045,9 +1040,8 @@ namespace Vidyano.WebComponents {
         private _columnMenuColumn: QueryGridColumn;
         private _lastUpdated: Date;
         private _reorderRow: QueryGridTableDataRow;
-        readonly columnWidthsCalculated: boolean; private _setColumnWidthsCalculated: (val: boolean) => void;
-        readonly outOfViewColumns: IQueryGridOutOfViewColumns; private _setOutOfViewColumns: (outOfViewColumns: IQueryGridOutOfViewColumns) => void;
         private _outOfViewColumnsWorkerHandle: number;
+        readonly columnWidthsCalculated: boolean; private _setColumnWidthsCalculated: (val: boolean) => void;
         readonly rowHeight: number; private _setRowHeight: (rowHeight: number) => void;
         readonly initializing: boolean; private _setInitializing: (initializing: boolean) => void;
         readonly isReordering: boolean; private _setIsReordering: (reodering: boolean) => void;
