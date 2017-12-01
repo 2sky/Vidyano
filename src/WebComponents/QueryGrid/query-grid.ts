@@ -865,6 +865,11 @@ namespace Vidyano.WebComponents {
         }
     }
 
+    interface IQueryGridOutOfViewColumns {
+        left?: QueryGridColumn[];
+        right?: QueryGridColumn[];
+    }
+
     @WebComponent.register({
         properties: {
             initializing: {
@@ -905,6 +910,11 @@ namespace Vidyano.WebComponents {
             viewportSize: {
                 type: Object,
                 observer: "_viewportSizeChanged"
+            },
+            outOfViewColumns: {
+                type: Object,
+                readOnly: true,
+                value: () => { }
             },
             rowHeight: {
                 type: Number,
@@ -975,6 +985,7 @@ namespace Vidyano.WebComponents {
         observers: [
             "_updateTables(_items, _columns, canReorder)",
             "_updateVerticalSpacer(query.totalItems, rowHeight)",
+            "_updateOutOfViewColumns(_columns, viewportSize, _horizontalScrollOffset, columnWidthsCalculated)"
         ],
         forwardObservers: [
             "query.columns",
@@ -1035,6 +1046,8 @@ namespace Vidyano.WebComponents {
         private _lastUpdated: Date;
         private _reorderRow: QueryGridTableDataRow;
         readonly columnWidthsCalculated: boolean; private _setColumnWidthsCalculated: (val: boolean) => void;
+        readonly outOfViewColumns: IQueryGridOutOfViewColumns; private _setOutOfViewColumns: (outOfViewColumns: IQueryGridOutOfViewColumns) => void;
+        private _outOfViewColumnsWorkerHandle: number;
         readonly rowHeight: number; private _setRowHeight: (rowHeight: number) => void;
         readonly initializing: boolean; private _setInitializing: (initializing: boolean) => void;
         readonly isReordering: boolean; private _setIsReordering: (reodering: boolean) => void;
@@ -1202,6 +1215,54 @@ namespace Vidyano.WebComponents {
             columns.forEach(c => c.reset());
 
             return columns;
+        }
+
+        private _updateOutOfViewColumns(columns: QueryGridColumn[], viewportSize: ISize, horizontalScrollOffset: number, columnWidthsCalculated: boolean) {
+            if (!columnWidthsCalculated)
+                return;
+
+            if (this._outOfViewColumnsWorkerHandle)
+                window.cancelIdleCallback(this._outOfViewColumnsWorkerHandle);
+
+            if (horizontalScrollOffset > 0)
+                this.$.moreLeft.removeAttribute("hidden");
+
+            this._outOfViewColumnsWorkerHandle = window.requestIdleCallback(() => {
+                if (!this.isAttached)
+                    return;
+
+                columns = columns.filter(c => !c.isHidden && !c.isPinned);
+                const offset = parseInt(this.getComputedStyleValue("--vi-query-grid--more-left-offset")) - this._tableHeader.host.offsetLeft;
+
+                const left: PopupMenuItem[] = [];
+                const right: PopupMenuItem[] = [];
+
+                columns.forEach(c => {
+                    if (c.calculatedOffset - horizontalScrollOffset < offset)
+                        left.push(<PopupMenuItem>Polymer.dom(this.$.moreLeftContent).querySelector(`vi-popup-menu-item[name="${c.name}"]`) || new Vidyano.WebComponents.PopupMenuItem(c.label, null, () => this._bringColumnIntoView(c)));
+                    else if (c.calculatedOffset + this._tableHeader.host.offsetLeft - horizontalScrollOffset > viewportSize.width)
+                        right.push(<PopupMenuItem>Polymer.dom(this.$.moreRightContent).querySelector(`vi-popup-menu-item[name="${c.name}"]`) || new Vidyano.WebComponents.PopupMenuItem(c.label, null, () => this._bringColumnIntoView(c, true)));
+                });
+
+                Polymer.dom(this.$.moreLeftContent).children.filter(c => left.indexOf(<PopupMenuItem>c) < 0).forEach(c => Polymer.dom(this.$.moreLeftContent).removeChild(c));
+                Polymer.dom(this.$.moreRightContent).children.filter(c => left.indexOf(<PopupMenuItem>c) < 0).forEach(c => Polymer.dom(this.$.moreRightContent).removeChild(c));
+
+                left.forEach(c => Polymer.dom(this.$.moreLeftContent).appendChild(c));
+                right.forEach(c => Polymer.dom(this.$.moreRightContent).appendChild(c));
+
+                Polymer.dom(this.$.moreLeftContent).flush();
+                Polymer.dom(this.$.moreRightContent).flush();
+
+                this.toggleAttribute("hidden", !left.length, this.$.moreLeft);
+                this.toggleAttribute("hidden", !right.length, this.$.moreRight);
+            });
+        }
+
+        private _bringColumnIntoView(column: QueryGridColumn, rightAlign?: boolean) {
+            if (rightAlign)
+                this._horizontalScrollOffset = column.calculatedOffset + column.calculatedWidth - this.viewportSize.width + this.$.headerControls.offsetWidth + this.$.moreRight.offsetWidth - 1;
+            else
+                this._horizontalScrollOffset = column.calculatedOffset - parseInt(this.getComputedStyleValue("--vi-query-grid--more-left-offset")) + this.$.headerControls.offsetWidth - this.$.moreLeft.offsetWidth - 1;
         }
 
         private _computeItems(items: Vidyano.QueryResultItem[], viewportSize: ISize, verticalScrollOffset: number, rowHeight: number, lastUpdated: Date): Vidyano.QueryResultItem[] {
@@ -1556,6 +1617,11 @@ namespace Vidyano.WebComponents {
 
                 this._updateTableDataPendingUpdates();
             }
+
+            // Update the offset of the .more.left popup
+            const offset = this._tableHeader.host.offsetLeft + Enumerable.from(this._columns).where(c => !c.isHidden && c.isPinned).sum(c => !detail || detail.column !== c ? c.calculatedWidth : detail.columnWidth);
+            this.customStyle["--vi-query-grid--more-left-offset"] = `${offset}px`;
+            this.updateStyles();
 
             if (e)
                 e.stopPropagation();

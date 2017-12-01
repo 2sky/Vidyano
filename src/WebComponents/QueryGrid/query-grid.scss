@@ -61,6 +61,33 @@
         }
     }
 
+    .more {
+        position: absolute;
+        top: 0;
+        z-index: 1;
+
+        button[header] {
+            width: var(--theme-h2);
+            height: var(--theme-h2);
+        }
+
+        &.left {
+            left: var(--vi-query-grid--more-left-offset);
+
+            button[header] {
+                background: linear-gradient(to left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 25%,rgba(255,255,255,1) 100%);
+            }
+        }
+
+        &.right {
+            right: 0;
+
+            button[header] {
+                background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 25%,rgba(255,255,255,1) 100%);
+            }
+        }
+    }
+
     vi-scroller {
         z-index: 0;
     }
