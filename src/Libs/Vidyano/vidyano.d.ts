@@ -973,7 +973,7 @@ declare namespace Vidyano {
         signOut(skipAcs?: boolean): Promise<boolean>;
         private _getApplication(data?);
         getQuery(id: string, asLookup?: boolean): Promise<Query>;
-        getPersistentObject(parent: PersistentObject, id: string, objectId?: string): Promise<PersistentObject>;
+        getPersistentObject(parent: PersistentObject, id: string, objectId?: string, isNew?: boolean): Promise<PersistentObject>;
         executeQuery(parent: PersistentObject, query: Query, asLookup?: boolean, throwExceptions?: boolean): Promise<any>;
         executeAction(action: string, parent: PersistentObject, query: Query, selectedItems: Array<QueryResultItem>, parameters?: any, skipHooks?: boolean): Promise<PersistentObject>;
         getReport(token: string, {filter, orderBy, top, skip, hideIds, hideType}?: IReportOptions): Promise<any[]>;

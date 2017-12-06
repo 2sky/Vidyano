@@ -673,10 +673,12 @@ namespace Vidyano {
             return this.hooks.onConstructQuery(this, result.query, null, asLookup);
         }
 
-        async getPersistentObject(parent: PersistentObject, id: string, objectId?: string): Promise<PersistentObject> {
+        async getPersistentObject(parent: PersistentObject, id: string, objectId?: string, isNew?: boolean): Promise<PersistentObject> {
             const data = this._createData("getPersistentObject");
             data.persistentObjectTypeId = id;
             data.objectId = objectId;
+            if (isNew)
+                data.isNew = isNew;
             if (parent != null)
                 data.parent = parent.toServiceObject();
 
