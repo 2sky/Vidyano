@@ -62,7 +62,7 @@ namespace Vidyano.WebComponents.Attributes {
 
             if (this.focused) {
                 if (myValue === "" || myValue === "-")
-                    myValue = this.attribute.isRequired ? "0" : "";
+                    myValue = this.attribute.isRequired && !this.attribute.type.startsWith("Nullable") ? "0" : "";
                 else if (myValue.endsWith("."))
                     myValue = myValue.trimEnd(".");
             }
@@ -86,7 +86,7 @@ namespace Vidyano.WebComponents.Attributes {
             try {
                 if (this.focused) {
                     if (newValue === "" || newValue === "-")
-                        newValue = this.attribute.isRequired ? "0" : "";
+                        newValue = this.attribute.isRequired && !this.attribute.type.startsWith("Nullable") ? "0" : "";
                     else if (newValue.endsWith("."))
                         newValue = newValue.trimEnd(".");
                 }
@@ -120,7 +120,7 @@ namespace Vidyano.WebComponents.Attributes {
                 this.attribute.value = newValue;
             }
 
-            let attributeValue = this.attribute.value ? this.attribute.value.toString() : (this.attribute.isRequired || this.value ? "0" : "");
+            let attributeValue = this.attribute.value ? this.attribute.value.toString() : ((this.attribute.isRequired && !this.attribute.type.startsWith("Nullable")) || this.value ? "0" : "");
             if (attributeValue !== this.value) {
                 if (this._decimalSeparator !== ".")
                     this.value = attributeValue.replace(".", this._decimalSeparator);
