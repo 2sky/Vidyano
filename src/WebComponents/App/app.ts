@@ -746,6 +746,14 @@ namespace Vidyano.WebComponents {
 
                 Enumerable.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
 
+                const redirect = await (<AppServiceHooks>this.app.service.hooks).onAppRouteChanging(newRoute, this.currentRoute);
+                if (redirect) {
+                    this._setCurrentRoute(null);
+                    this.async(() => this.changePath(redirect));
+
+                    return;
+                }
+
                 if (!!newRoute)
                     await newRoute.activate(mappedPathRoute.params);
 
@@ -1115,6 +1123,10 @@ namespace Vidyano.WebComponents {
             });
 
             return result === 0;
+        }
+
+        async onAppRouteChanging(newRoute: AppRoute, currentRoute: AppRoute): Promise<string> {
+            return Promise.resolve(null);
         }
 
         async onAction(args: ExecuteActionArgs): Promise<Vidyano.PersistentObject> {
