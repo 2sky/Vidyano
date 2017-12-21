@@ -127,9 +127,9 @@ namespace Vidyano.WebComponents.Attributes {
             target.focus();
         }
 
-        static register(info: IWebComponentRegistrationInfo | Function = {}): any {
+        static register(info: IWebComponentRegistrationInfo | Function = {}, prefix?: string): any {
             if (typeof info === "function")
-                return PersistentObjectAttribute.register({})(info);
+                return PersistentObjectAttribute.register({})(info, prefix);
 
             return (obj: Function) => {
                 info.properties = info.properties || {};
@@ -207,7 +207,7 @@ namespace Vidyano.WebComponents.Attributes {
                 info.hostAttributes = info.hostAttributes || {};
                 info.hostAttributes["tabindex"] = "-1";
 
-                const ctor = WebComponent.register(obj, info);
+                const ctor = WebComponent.register(obj, info, prefix);
 
                 const synonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[WebComponent.getName(obj).replace("PersistentObjectAttribute", "")];
                 if (synonyms) {
