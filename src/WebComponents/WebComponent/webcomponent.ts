@@ -830,7 +830,7 @@ namespace Vidyano.WebComponents {
         static register(arg1?: IWebComponentRegistrationInfo | Function, arg2?: string | IWebComponentRegistrationInfo, arg3?: string): (obj: any) => void {
             if (!arg1 || typeof arg1 === "object") {
                 return (obj: Function) => {
-                    return WebComponent._register(obj, <IWebComponentRegistrationInfo>arg1, <string>arg2);
+                    return WebComponent._register(obj, <IWebComponentRegistrationInfo>arg1, <string>arg2, arg3);
                 };
             }
             else if (typeof arg1 === "function")
