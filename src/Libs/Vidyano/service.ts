@@ -47,6 +47,7 @@ namespace Vidyano {
         private _createData(method: string, data?: any) {
             data = data || {};
 
+            data.clientVersion = version;
             data.environment = this.environment;
             data.environmentVersion = this.environmentVersion;
 
