@@ -294,6 +294,10 @@ namespace Vidyano.WebComponents {
                 type: String,
                 computed: "_computedHref(item, app)"
             },
+            rel: {
+                type: String,
+                computed: "_computedRel(item, app)"
+            },
             collapseGroupsOnTap: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -446,8 +450,11 @@ namespace Vidyano.WebComponents {
             return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? app.noHistory ? "#" : Path.routes.rootPath + this.item.path : undefined;
         }
 
-        private _isProgramUnitItemUrl(item: Vidyano.ProgramUnitItem): boolean {
-            return item instanceof Vidyano.ProgramUnitItemUrl;
+        private _computedRel(item: Vidyano.ProgramUnitItemUrl, app: Vidyano.WebComponents.App): string {
+            if (item instanceof Vidyano.ProgramUnitItemUrl && !item.path.startsWith(app.baseURI))
+                return "external noopener";
+
+            return null;
         }
 
         private _titleMouseenter() {
