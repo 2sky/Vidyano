@@ -451,7 +451,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _computedRel(item: Vidyano.ProgramUnitItemUrl, app: Vidyano.WebComponents.App): string {
-            if (item instanceof Vidyano.ProgramUnitItemUrl && !item.path.startsWith(app.baseURI))
+            if (item instanceof Vidyano.ProgramUnitItemUrl)
                 return "external noopener";
 
             return null;
