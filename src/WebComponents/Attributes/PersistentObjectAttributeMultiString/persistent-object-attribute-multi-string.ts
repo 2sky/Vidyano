@@ -18,6 +18,10 @@ namespace Vidyano.WebComponents.Attributes {
                 type: Boolean,
                 reflectToAttribute: true
             },
+            input: {
+                type: Object,
+                readOnly: true
+            },
             isNew: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -30,6 +34,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
     })
     export class PersistentObjectAttributeMultiStringItem extends WebComponent {
+        readonly input: HTMLInputElement; private _setInput: (input: HTMLInputElement): void;
         private _focusQueued: boolean;
         isNew: boolean;
         isReadOnly: boolean;
@@ -41,9 +46,11 @@ namespace Vidyano.WebComponents.Attributes {
         attached() {
             super.attached();
 
+            this._setInput(<HTMLInputElement>Polymer.dom(this.root).querySelector("input"));
+
             if (this._focusQueued) {
                 this._focusQueued = false;
-                this.$.input.focus();
+                this.input.focus();
             }
         }
 
@@ -104,7 +111,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _itemValueNew(e: Event, detail: { value: string }) {
             this.value = `${this.value || ""}\n${detail.value}`;
-            this.strings[this.strings.length - 1].$.input.focus();
+            this.strings[this.strings.length - 1].input.focus();
 
             e.stopPropagation();
         }
