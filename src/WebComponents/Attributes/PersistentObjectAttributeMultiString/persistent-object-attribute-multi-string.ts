@@ -34,7 +34,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
     })
     export class PersistentObjectAttributeMultiStringItem extends WebComponent {
-        readonly input: HTMLInputElement; private _setInput: (input: HTMLInputElement): void;
+        readonly input: HTMLInputElement; private _setInput: (input: HTMLInputElement) => void;
         private _focusQueued: boolean;
         isNew: boolean;
         isReadOnly: boolean;
