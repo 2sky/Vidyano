@@ -1,6 +1,10 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    export interface IMaskedInputFilled {
+        value: string;
+    }
+
     @WebComponent.register({
         extends: "input",
         properties: {
