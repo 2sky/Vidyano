@@ -98,6 +98,11 @@ namespace Vidyano.WebComponents {
         properties: {
             label: String,
             icon: String,
+            noIcon: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
             checked: {
                 type: Boolean,
                 reflectToAttribute: true,
