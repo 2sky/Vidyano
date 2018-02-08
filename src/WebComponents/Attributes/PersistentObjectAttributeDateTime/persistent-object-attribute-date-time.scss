@@ -24,14 +24,8 @@
             }
         }
 
-        &[has-invalid-date] {
-            input#date {
-                color: red;
-            }
-        }
-
-        &[has-invalid-time] {
-            input#time {
+        &[is-invalid] {
+            input#date, input#time, span#monthMode {
                 color: red;
             }
         }
