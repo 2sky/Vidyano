@@ -316,13 +316,21 @@
         }
 
         private _previousMonth(e: TapEvent) {
-            const selectedDate = this.selectedDate ? moment(this.selectedDate) : moment().startOf("month");
-            this.selectedDate = selectedDate.subtract(1, "month").toDate();
+            const selectedDateMoment = this.selectedDate ? moment(this.selectedDate) : moment().startOf("month");
+            const newSelectedDate = selectedDateMoment.subtract(1, "month").toDate();
+            if (this.minDate && newSelectedDate < this.minDate)
+                return;
+
+            this.selectedDate = newSelectedDate;
         }
 
         private _nextMonth(e: TapEvent) {
-            const selectedDate = this.selectedDate ? moment(this.selectedDate) : moment().startOf("month");
-            this.selectedDate = selectedDate.add(1, "month").toDate();
+            const selectedDateMoment = this.selectedDate ? moment(this.selectedDate) : moment().startOf("month");
+            const newSelectedDate = selectedDateMoment.add(1, "month").toDate();
+            if (this.maxDate && newSelectedDate > this.maxDate)
+                return;
+
+            this.selectedDate = newSelectedDate;
         }
     }
 }
