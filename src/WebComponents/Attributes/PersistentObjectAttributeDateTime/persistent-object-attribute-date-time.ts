@@ -83,7 +83,7 @@
         get dateInput(): HTMLInputElement {
             if (!this._dateInput) {
                 Polymer.dom(this).flush();
-                this._dateInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("#date")
+                this._dateInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("#date");
             }
 
             return this._dateInput;
@@ -92,7 +92,7 @@
         get timeInput(): HTMLInputElement {
             if (!this._timeInput) {
                 Polymer.dom(this).flush();
-                this._timeInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("#time")
+                this._timeInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("#time");
             }
 
             return this._timeInput;
