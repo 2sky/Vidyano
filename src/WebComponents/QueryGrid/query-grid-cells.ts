@@ -102,7 +102,7 @@ namespace Vidyano.WebComponents {
                         this._textNode = <Text>Polymer.dom(this.root).appendChild(document.createTextNode(value.column.typeHints["nullkey"] || "—"));
                     else
                         this._textNode.nodeValue = value.column.typeHints["nullkey"] || "—";
-                } else if (!value.column.typeHints || ((!value.column.typeHints["falsekey"] && !displayValue) || (!value.column.typeHints["truekey"] && !displayValue))) {
+                } else if (!value.column.typeHints || ((!value.column.typeHints["falsekey"] && !displayValue) || (!value.column.typeHints["truekey"] && displayValue))) {
                     if (this._isHidden) {
                         this._icon.removeAttribute("hidden");
                         this._isHidden = false;
