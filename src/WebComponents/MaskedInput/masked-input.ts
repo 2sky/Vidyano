@@ -24,7 +24,13 @@ namespace Vidyano.WebComponents {
         },
         observers: [
             "_initialize(format, separator, isAttached)"
-        ]
+        ],
+        listeners: {
+            "mousedown": "_resetCaretIndex",
+            "focus": "_resetCaretIndex",
+            "tap": "_resetCaretIndex",
+            "keydown": "_keydown"
+        }
     })
     export class MaskedInput extends WebComponent {
         private _maskedInput: {
@@ -53,6 +59,17 @@ namespace Vidyano.WebComponents {
             });
 
             this._readonlyChanged();
+        }
+
+        private _resetCaretIndex() {
+            const _this = <HTMLInputElement><any>this;
+            if (_this.value === this.format)
+                setTimeout(() => _this.setSelectionRange(0, 0));
+        }
+
+        private _keydown(e: KeyboardEvent) {
+            if (e.keyCode === Vidyano.WebComponents.Keyboard.KeyCodes.rightarrow)
+                this._resetCaretIndex();
         }
 
         private _readonlyChanged() {
