@@ -232,11 +232,6 @@
             this.attribute.setValue(value, document.activeElement !== this.dateInput && document.activeElement !== this.timeInput);
         }
 
-        private _inputBlur(e: Event) {
-            if (!this._skipBlurRefreshUpdate)
-                this._guardedSetValue(this.selectedDate);
-        }
-
         private _clear() {
             this.attribute.setValue(null, true).catch(Vidyano.noop);
         }
