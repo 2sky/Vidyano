@@ -53,7 +53,8 @@
         },
         observers: [
             "_selectedDateChanged(selectedDate, hasDateComponent, hasTimeComponent)",
-            "_selectedTimeChanged(selectedTime, hasDateComponent, hasTimeComponent)"
+            "_selectedTimeChanged(selectedTime, hasDateComponent, hasTimeComponent)",
+            "_render(selectedDate, selectedTime, hasDateComponent, hasTimeComponent, readOnly, editing)"
         ],
         forwardObservers: [
             "attribute.typeHints"
@@ -145,77 +146,45 @@
         }
 
         private _selectedDateChanged(selectedDate: Date, hasDateComponent: boolean, hasTimeComponent: boolean) {
-            if (!hasDateComponent)
+            if (!hasDateComponent || this._valueChangedBlock)
                 return;
 
-            if (!this._valueChangedBlock) {
-                let skipSet: boolean;
-                const newValue = new Date(selectedDate.getTime());
-                if (this.hasTimeComponent) {
-                    if (this.selectedTime)
-                        newValue.setHours(this.selectedTime.getHours(), this.selectedTime.getMinutes(), this.selectedTime.getSeconds(), this.selectedTime.getMilliseconds());
-                    else if (typeof this.attribute.typeHints.newtime === "string") {
-                        const time = this.attribute.typeHints.newtime.split(/[:.]/);
-                        while (time.length < 4)
-                            time.push("0");
+            let skipSet: boolean;
+            const newValue = new Date(selectedDate.getTime());
+            if (this.hasTimeComponent) {
+                if (this.selectedTime)
+                    newValue.setHours(this.selectedTime.getHours(), this.selectedTime.getMinutes(), this.selectedTime.getSeconds(), this.selectedTime.getMilliseconds());
+                else if (typeof this.attribute.typeHints.newtime === "string") {
+                    const time = this.attribute.typeHints.newtime.split(/[:.]/);
+                    while (time.length < 4)
+                        time.push("0");
 
-                        newValue.setHours(parseInt(time[0], 10), parseInt(time[1], 10), parseInt(time[2], 10), parseInt(time[3].substr(0, 3), 10));
-                    }
+                    newValue.setHours(parseInt(time[0], 10), parseInt(time[1], 10), parseInt(time[2], 10), parseInt(time[3].substr(0, 3), 10));
                 }
-
-                return this._guardedSetValue(newValue);
             }
 
-            if (!this.monthMode) {
-                const newDate = selectedDate ? moment(selectedDate).format(Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toUpperCase()) : this.dateFormat;
-                const selectionStart = this.dateInput.selectionStart;
-                const selectionEnd = this.dateInput.selectionEnd;
-
-                if (newDate !== this.dateInput.value)
-                    this.dateInput.value = newDate;
-
-                if (selectionStart > 0)
-                    this.dateInput.selectionStart = selectionStart;
-
-                if (selectionEnd > 0)
-                    this.dateInput.selectionEnd = selectionEnd;
-            }
+            this._guardedSetValue(newValue);
         }
 
         private _selectedTimeChanged(selectedTime: Date, hasDateComponent: boolean, hasTimeComponent: boolean) {
-            if (!hasTimeComponent)
+            if (!hasTimeComponent || this._valueChangedBlock)
                 return;
 
-            if (!this._valueChangedBlock) {
-                if (hasDateComponent) {
-                    if (selectedTime) {
-                        const newValue = new Date((this.selectedDate || new Date()).getTime());
-                        newValue.setHours(selectedTime.getHours(), this.selectedTime.getMinutes(), selectedTime.getSeconds(), selectedTime.getMilliseconds());
+            if (hasDateComponent) {
+                if (selectedTime) {
+                    const newValue = new Date((this.selectedDate || new Date()).getTime());
+                    newValue.setHours(selectedTime.getHours(), this.selectedTime.getMinutes(), selectedTime.getSeconds(), selectedTime.getMilliseconds());
 
-                        return this._guardedSetValue(newValue);
-                    }
+                    this._guardedSetValue(newValue);
                 }
-                else if (selectedTime) {
-                    const newTimeValue = StringEx.format("0:{0:D2}:{1:D2}:{2:D2}.{3:D3}0000", selectedTime.getHours(), selectedTime.getMinutes(), selectedTime.getSeconds(), selectedTime.getMilliseconds());
-                    if (!this.value || (<string>this.value).substr(0, newTimeValue.length - 4) !== newTimeValue.substr(0, newTimeValue.length - 4))
-                        return this._guardedSetValue(newTimeValue);
-                }
-                else
-                    return this._guardedSetValue(null);
             }
-
-            const newTime = selectedTime ? StringEx.format(`{0:D2}${Vidyano.CultureInfo.currentCulture.dateFormat.timeSeparator}{1:D2}`, selectedTime.getHours(), selectedTime.getMinutes()) : this.timeFormat;
-            const selectionStart = this.timeInput.selectionStart;
-            const selectionEnd = this.timeInput.selectionEnd;
-
-            if (newTime !== this.timeInput.value)
-                this.timeInput.value = newTime;
-
-            if (selectionStart > 0)
-                this.timeInput.selectionStart = selectionStart;
-
-            if (selectionEnd > 0)
-                this.timeInput.selectionEnd = selectionEnd;
+            else if (selectedTime) {
+                const newTimeValue = StringEx.format("0:{0:D2}:{1:D2}:{2:D2}.{3:D3}0000", selectedTime.getHours(), selectedTime.getMinutes(), selectedTime.getSeconds(), selectedTime.getMilliseconds());
+                if (!this.value || (<string>this.value).substr(0, newTimeValue.length - 4) !== newTimeValue.substr(0, newTimeValue.length - 4))
+                    this._guardedSetValue(newTimeValue);
+            }
+            else
+                this._guardedSetValue(null);
         }
 
         private _guardedSetValue(value: Date | string) {
@@ -230,6 +199,55 @@
                 this._setIsInvalid(false);
 
             this.attribute.setValue(value, document.activeElement !== this.dateInput && document.activeElement !== this.timeInput);
+        }
+
+        private _render(selectedDate: Date, selectedTime: Date, hasDateComponent: boolean, hasTimeComponent: boolean, readOnly: boolean, editing: boolean) {
+            if (!editing)
+                return;
+
+            if (hasDateComponent && !this.monthMode) {
+                let newDate: string;
+                if (selectedDate)
+                    newDate = moment(selectedDate).format(Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toUpperCase());
+                else if (!readOnly)
+                    newDate = this.dateFormat;
+                else
+                    newDate = "—";
+
+                const selectionStart = this.dateInput.selectionStart;
+                const selectionEnd = this.dateInput.selectionEnd;
+
+                if (newDate !== this.dateInput.value)
+                    this.dateInput.value = newDate;
+
+                if (selectionStart > 0)
+                    this.dateInput.selectionStart = selectionStart;
+
+                if (selectionEnd > 0)
+                    this.dateInput.selectionEnd = selectionEnd;
+            }
+
+            if (hasTimeComponent) {
+                let newTime: string;
+                if (selectedTime)
+                    newTime = StringEx.format(`{0:D2}${Vidyano.CultureInfo.currentCulture.dateFormat.timeSeparator}{1:D2}`, selectedTime.getHours(), selectedTime.getMinutes());
+                else if (!readOnly)
+                    newTime = this.timeFormat;
+                else
+                    newTime = hasDateComponent ? "" : "—";
+
+                const selectionStart = this.timeInput.selectionStart;
+                const selectionEnd = this.timeInput.selectionEnd;
+
+                if (newTime !== this.timeInput.value)
+                    this.timeInput.value = newTime;
+
+                if (selectionStart > 0)
+                    this.timeInput.selectionStart = selectionStart;
+
+                if (selectionEnd > 0)
+                    this.timeInput.selectionEnd = selectionEnd;
+            }
         }
 
         private _clear() {
