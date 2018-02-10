@@ -293,6 +293,44 @@
             e.stopPropagation();
         }
 
+        private _keydown(e: KeyboardEvent) {
+            if (!this.editing || this.readOnly)
+                return;
+
+            const input = <HTMLInputElement>e.target;
+            if (!input.value)
+                return;
+
+            if (input === this.timeInput && (e.keyCode === Vidyano.WebComponents.Keyboard.KeyCodes.backspace || e.keyCode === Vidyano.WebComponents.Keyboard.KeyCodes.leftarrow)) {
+                if (input.selectionStart === 0 && input.selectionEnd === 0 && this.hasDateComponent) {
+                    this.dateInput.focus();
+                    this.dateInput.selectionStart = this.dateInput.selectionEnd = this.dateInput.value.length;
+
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+
+                    return;
+                }
+            }
+
+            if (input === this.dateInput && input.value && e.keyCode === Vidyano.WebComponents.Keyboard.KeyCodes.rightarrow) {
+                if (input.selectionStart === input.value.length && input.selectionEnd === input.value.length && this.hasTimeComponent) {
+                    this.timeInput.focus();
+                    this.timeInput.selectionStart = this.timeInput.selectionEnd = 0;
+
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+
+                    return;
+                }
+            }
+
+            if (e.keyCode === Vidyano.WebComponents.Keyboard.KeyCodes.backspace && input.selectionStart === 0 && input.selectionEnd === input.value.length) {
+                input.value = input === this.dateInput ? this.dateFormat : this.timeFormat;
+                input.selectionStart = input.selectionEnd = 0;
+            }
+        }
+
         private _computeHasComponent(target: Vidyano.PersistentObjectAttribute, component: string): boolean {
             Polymer.dom(this).flush();
 

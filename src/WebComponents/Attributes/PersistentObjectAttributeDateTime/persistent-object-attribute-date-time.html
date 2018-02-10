@@ -12,8 +12,8 @@
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <div content class="layout horizontal">
                     <template is="dom-if" if="[[!monthMode]]">
-                        <input is="vi-masked-input" id="date" size="9" format$="[[dateFormat]]" separator$="[[dateSeparator]]" on-filled="_dateFilled" on-focus="_focused" readonly$="[[readOnly]]" hidden$="[[!hasDateComponent]]" flex$="[[!hasTimeComponent]]" autocomplete="off">
-                        <input is="vi-masked-input" id="time" size="5" format$="[[timeFormat]]" separator$="[[timeSeparator]]" on-filled="_timeFilled" on-focus="_focused" readonly$="[[readOnly]]" hidden$="[[!hasTimeComponent]]" autocomplete="off">
+                        <input is="vi-masked-input" id="date" size="9" format$="[[dateFormat]]" separator$="[[dateSeparator]]" on-filled="_dateFilled" on-keydown="_keydown" on-focus="_focused" readonly$="[[readOnly]]" hidden$="[[!hasDateComponent]]" flex$="[[!hasTimeComponent]]" autocomplete="off">
+                        <input is="vi-masked-input" id="time" size="5" format$="[[timeFormat]]" separator$="[[timeSeparator]]" on-filled="_timeFilled" on-keydown="_keydown" on-focus="_focused" readonly$="[[readOnly]]" hidden$="[[!hasTimeComponent]]" autocomplete="off">
                     </template>
                     <template is="dom-if" if="[[monthMode]]">
                         <span id="monthMode" hidden$="[[!hasDateComponent]]">[[attribute.displayValue]]</span>
