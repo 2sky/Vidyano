@@ -8,6 +8,7 @@
         value?: string;
         isReadOnly?: boolean;
         isRequired?: boolean;
+        isSensitive?: boolean;
         rules?: string;
         visibility: "Always" | "Read" | "New" | "Never";
     }
@@ -28,6 +29,7 @@
         private _isRequired: boolean;
         private _isReadOnly: boolean;
         private _isValueChanged: boolean;
+        private _isSensitive: boolean;
 
         protected _shouldRefresh: boolean = false;
         private _refreshValue: string;
@@ -64,6 +66,7 @@
             this._isReadOnly = !!attr.isReadOnly;
             this._isRequired = !!attr.isRequired;
             this._isValueChanged = !!attr.isValueChanged;
+            this._isSensitive = !!attr.isSensitive;
             this.offset = attr.offset || 0;
             this.toolTip = attr.toolTip;
             this.rules = attr.rules;
@@ -274,6 +277,10 @@
 
             const oldIsValueChanged = this._isValueChanged;
             this.notifyPropertyChanged("isValueChanged", this._isValueChanged = isValueChanged, oldIsValueChanged);
+        }
+
+        get isSensitive(): boolean {
+            return this._isSensitive;
         }
 
         getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string {

@@ -5,7 +5,6 @@
     line-height: var(--theme-h2);
     overflow: hidden;
     position: relative;
-
     --vi-query-grid-minimum-column-width: 30px;
 
     #dataHeaderHost {
@@ -57,6 +56,10 @@
         table {
             td[numeric] {
                 text-align: right;
+            }
+
+            td[sensitive] {
+                filter: blur(5px);
             }
         }
     }
@@ -379,9 +382,7 @@
             }
         }
     }
-
     // // FLAG COMBINATIONS //////////////////////////////////////////////////////////
-
     &:not([inline-actions]) {
         td[is="vi-query-grid-table-data-column-actions"] {
             display: none;
@@ -433,7 +434,7 @@
 
     &[can-select][inline-actions] {
         #dataFooterHost {
-            padding-left:calc(var(--theme-h2) * 2);
+            padding-left: calc(var(--theme-h2) * 2);
 
             &:after {
                 width: calc(var(--theme-h2) * 2);
@@ -443,14 +444,13 @@
 
     &[can-select]:not([inline-actions]), &:not([can-select])[inline-actions] {
         #dataFooterHost {
-            padding-left:var(--theme-h2);
+            padding-left: var(--theme-h2);
 
             &:after {
                 width: var(--theme-h2);
             }
         }
     }
-
     ///////////////////////////////////////////////////////////////////////////////
     #initializingOverlay {
         position: absolute;

@@ -8,6 +8,10 @@ namespace Vidyano {
         hasMore: boolean;
     }
 
+    export interface IServiceQueryColumn {
+        isSensitive?: boolean;
+    }
+
     export class QueryColumn extends ServiceObject {
         private displayAttribute: string;
         private _id: string;
@@ -15,6 +19,7 @@ namespace Vidyano {
         private _canSort: boolean;
         private _canFilter: boolean;
         private _canListDistincts: boolean;
+        private _isSensitive: boolean;
         private _name: string;
         private _type: string;
         private _label: string;
@@ -29,6 +34,7 @@ namespace Vidyano {
         width: string;
         typeHints: any;
 
+        constructor(service: Service, col: IServiceQueryColumn, query: Query);
         constructor(service: Service, col: any, public query: Query) {
             super(service);
 
@@ -37,6 +43,7 @@ namespace Vidyano {
             this._canSort = !!col.canSort;
             this._canFilter = !!col.canFilter;
             this._canListDistincts = !!col.canListDistincts;
+            this._isSensitive = !!col.isSensitive;
             if (col instanceof QueryColumn) {
                 this._selectedDistincts = col._selectedDistincts;
                 this._selectedDistinctsInversed = col._selectedDistinctsInversed;
@@ -84,6 +91,10 @@ namespace Vidyano {
 
         get canListDistincts(): boolean {
             return this._canListDistincts;
+        }
+
+        get isSensitive(): boolean {
+            return this._isSensitive;
         }
 
         get isSorting(): boolean {

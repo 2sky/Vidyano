@@ -17,6 +17,11 @@ namespace Vidyano.WebComponents.Attributes {
             reverse: {
                 type: Boolean,
                 reflectToAttribute: true
+            },
+            sensitive: {
+                type: Boolean,
+                computed: "attribute.isSensitive",
+                reflectToAttribute: true
             }
         },
         listeners: {
@@ -24,6 +29,7 @@ namespace Vidyano.WebComponents.Attributes {
             "focusout": "_blur",
         },
         forwardObservers: [
+            "attribute.isSensitive",
             "attribute.validationError",
             "attribute.parent.isFrozen"
         ]

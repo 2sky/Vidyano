@@ -38,6 +38,10 @@
         }
     }
 
+    &[sensitive] {
+        filter: blur(5px);
+    }
+
     &[has-error] {
         .box {
             border-color: var(--theme-color-error) !important;

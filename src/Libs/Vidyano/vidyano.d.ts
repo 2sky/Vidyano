@@ -263,6 +263,7 @@ declare namespace Vidyano {
         value?: string;
         isReadOnly?: boolean;
         isRequired?: boolean;
+        isSensitive?: boolean;
         rules?: string;
         visibility: "Always" | "Read" | "New" | "Never";
     }
@@ -283,6 +284,7 @@ declare namespace Vidyano {
         private _isRequired;
         private _isReadOnly;
         private _isValueChanged;
+        private _isSensitive;
         protected _shouldRefresh: boolean;
         private _refreshValue;
         id: string;
@@ -319,6 +321,7 @@ declare namespace Vidyano {
         value: any;
         setValue(val: any, allowRefresh?: boolean): Promise<any>;
         isValueChanged: boolean;
+        readonly isSensitive: boolean;
         getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string;
         getRegisteredInput(): HTMLInputElement;
         registerInput(input: HTMLInputElement): void;
@@ -590,6 +593,9 @@ declare namespace Vidyano {
         isDirty: boolean;
         hasMore: boolean;
     }
+    interface IServiceQueryColumn {
+        isSensitive?: boolean;
+    }
     class QueryColumn extends ServiceObject {
         query: Query;
         private displayAttribute;
@@ -598,6 +604,7 @@ declare namespace Vidyano {
         private _canSort;
         private _canFilter;
         private _canListDistincts;
+        private _isSensitive;
         private _name;
         private _type;
         private _label;
@@ -610,7 +617,7 @@ declare namespace Vidyano {
         isHidden: boolean;
         width: string;
         typeHints: any;
-        constructor(service: Service, col: any, query: Query);
+        constructor(service: Service, col: IServiceQueryColumn, query: Query);
         readonly id: string;
         readonly name: string;
         readonly type: string;
@@ -618,6 +625,7 @@ declare namespace Vidyano {
         readonly canFilter: boolean;
         readonly canSort: boolean;
         readonly canListDistincts: boolean;
+        readonly isSensitive: boolean;
         readonly isSorting: boolean;
         readonly sortDirection: SortDirection;
         selectedDistincts: linqjs.Enumerable<string>;

@@ -552,6 +552,11 @@ namespace Vidyano.WebComponents {
                     this.host.setAttribute("numeric", "");
                 else
                     this.host.removeAttribute("numeric");
+
+                if (this._column && this._column.column.isSensitive)
+                    this.host.setAttribute("sensitive", "");
+                else
+                    this.host.removeAttribute("sensitive");
             }
 
             if (!this.column || !this.column.isPinned) {
