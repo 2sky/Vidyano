@@ -63,12 +63,11 @@
             <vi-persistent-object-attribute-config type="DropDown" height="attr.getTypeHint('inputtype', '', undefined, true) === 'radio' ? 0 : 1"></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="KeyValueList" height="attr.getTypeHint('inputtype', '', undefined, true) === 'radio' ? 0 : 1"></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="Enum" height="attr.getTypeHint('inputtype', '', undefined, true) === 'radio' ? 0 : 1"></vi-persistent-object-attribute-config>
-            <vi-persistent-object-attribute-config type="MultiLineString" height="3"></vi-persistent-object-attribute-config>
-            <vi-persistent-object-attribute-config type="MultiString" height="3"></vi-persistent-object-attribute-config>
-            <vi-persistent-object-attribute-config type="Image" parent-id="1f364a36-7f9b-43d3-a7a4-11a340937d83" height="5"></vi-persistent-object-attribute-config>
-            <vi-persistent-object-attribute-config type="Image" height="2"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="MultiLineString" height="attr.getTypeHint('height', 3, undefined, true)"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="MultiString" height="attr.getTypeHint('height', 3, undefined, true)"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="Image" height="attr.getTypeHint('height', 2, undefined, true)"></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="TranslatedString" height="attr.getTypeHint('MultiLine') == 'True' ? 3 : 1"></vi-persistent-object-attribute-config>
-            <vi-persistent-object-attribute-config type="AsDetail" height="attr.getTypeHint('Height', 'auto') == 'auto' ? 0 : 6" width="4"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="AsDetail" height="attr.getTypeHint('height', 'auto', undefined, true) == 'auto' ? 0 : 6" width="4"></vi-persistent-object-attribute-config>
             <vi-persistent-object-tab-config type="Vidyano.Rule" name="Rule">
                 <template is="dom-template">
                     <div class="vertical layout flex">
