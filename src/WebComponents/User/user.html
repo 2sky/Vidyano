@@ -36,10 +36,10 @@
         </div>
         <div class="actions">
             <button is="vi-button" icon="Invisible" inverse="[[!isAppSensitive]]" title="[[translateMessage('Privacy', isAttached)]]" on-tap="_toggleSensitive"></button>
-            <button is="vi-button" icon="Profiler" inverse title="[[translateMessage('Profiler', isAttached)]]"></button>
-            <button is="vi-button" icon="UserFeedback" inverse title="[[translateMessage('Feedback', isAttached)]]"></button>
-            <button is="vi-button" icon="Configure" inverse title="[[translateMessage('UserSettings', isAttached)]]"></button>
-            <button is="vi-button" icon="SignOut" inverse title="[[translateMessage('SignOut', isAttached)]]"></button>
+            <button is="vi-button" icon="Profiler" inverse title="[[translateMessage('Profiler', isAttached)]]" hidden$="[[!canProfile]]" on-tap="_showProfiler"></button>
+            <button is="vi-button" icon="UserFeedback" inverse title="[[translateMessage('Feedback', isAttached)]]" hidden$="[[!canFeedback]]" on-tap="feedback"></button>
+            <button is="vi-button" icon="Configure" inverse title="[[translateMessage('UserSettings', isAttached)]]" hidden$="[[!canUserSettings]]" on-tap="userSettings"></button>
+            <button is="vi-button" icon="SignOut" inverse title="[[translateMessage('SignOut', isAttached)]]" hidden$="[[service.windowsAuthentication]]" on-tap="signOut"></button>
         </div>
     </template>
 </dom-module>
