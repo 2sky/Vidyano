@@ -2,7 +2,6 @@
 
 :host {
     @include layout-horizontal();
-
     white-space: nowrap;
     height: var(--theme-h2);
     line-height: var(--theme-h2);
@@ -30,14 +29,14 @@
             height: var(--theme-h2);
             line-height: calc(var(--theme-h2) - 2px);
 
-            span {
+            > div {
                 display: block;
                 position: relative;
                 border: 1px solid var(--theme-light-border);
                 box-sizing: border-box;
             }
 
-            vi-persistent-object-attribute-validation-error:not([hidden]) + span {
+            vi-persistent-object-attribute-validation-error:not([hidden]) + div {
                 border-color: var(--theme-color-error) !important;
 
                 &::before {
@@ -65,6 +64,10 @@
 
     &:not([full-edit])[frozen] [pre-edit] {
         background-color: #eee;
+    }
+
+    span[sensitive] {
+        @apply(--vi-app--sensitive);
     }
 }
 

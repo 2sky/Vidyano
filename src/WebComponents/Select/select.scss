@@ -122,4 +122,14 @@ $border-color: #ddd;
             cursor: default;
         }
     }
+
+    &[sensitive] {
+        input, li {
+            @apply(--vi-app--sensitive);
+        }
+
+        input + vi-icon {
+            opacity: 0.5;
+        }
+    }
 }

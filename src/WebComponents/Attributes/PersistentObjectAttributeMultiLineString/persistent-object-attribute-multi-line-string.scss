@@ -9,8 +9,12 @@
     }
 
     pre, textarea {
-		color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
-	}
+        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
+
+        &[sensitive] {
+            @apply(--vi-app--sensitive);
+        }
+    }
 
     pre {
         white-space: pre-line;

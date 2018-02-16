@@ -11,7 +11,7 @@
         -o-transition: border-color 0.2s ease-in-out;
         -webkit-transition: border-color 0.2s ease-in-out;
         transition: border-color 0.2s ease-in-out;
-        border: 1px solid var(--theme-light-border);
+        border: none;
         padding: 0 6px;
         box-sizing: border-box;
         outline: none;
@@ -23,6 +23,11 @@
         &:disabled {
             background-color: #eee;
         }
+    }
+
+    vi-persistent-object-attribute-edit {
+        height: calc(var(--theme-h2);
+        line-height: calc(var(--theme-h2);
     }
 
     vi-icon {
@@ -41,7 +46,11 @@
         }
 
         input {
-            border-style: dashed !important;
+            border: 1px dashed var(--theme-light-border);
+        }
+
+        vi-persistent-object-attribute-edit {
+            border: none !important;
         }
     }
 
@@ -49,5 +58,11 @@
         vi-icon {
             display: none;
         }
+    }
+}
+
+:host-context([sensitive]) {
+    input {
+        @apply(--vi-app--sensitive);
     }
 }

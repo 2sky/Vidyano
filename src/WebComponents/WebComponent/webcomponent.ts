@@ -193,9 +193,14 @@ namespace Vidyano.WebComponents {
         forwardObservers?: string[];
 
         /*
-         * If true, the component will add isDesktop, isTablet, isPhone properties with reflectToAttribute
+         * If true, the component will add readonly isDesktop, isTablet, isPhone properties with reflectToAttribute
          */
         mediaQueryAttributes?: boolean;
+
+        /*
+         * If true, the component will add a readonly isAppSensitive property with reflectToAttribute. The value will be toggled by the app.
+         */
+        sensitive?: boolean;
     }
 
     export interface IObserveChainDisposer {
@@ -772,6 +777,27 @@ namespace Vidyano.WebComponents {
                         this["_setIsPhone"](app["isPhone"]);
 
                         app.addEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
+                    }
+                };
+            }
+
+            if (info.sensitive) {
+                info.properties.isAppSensitive = {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    readOnly: true
+                };
+
+                info.observers.push("_appSensitiveObserver(app)");
+
+                wcPrototype["_appSensitiveObserver"] = function (app: Vidyano.WebComponents.App) {
+                    if (this.app) {
+                        this["_setIsAppSensitive"](app.sensitive);
+                        const _this = this;
+                        this.app.addEventListener("sensitive-changed", this["_appSensitiveListener"] = function (e) { _this["_setIsAppSensitive"](e.detail); });
+                    }
+                    else {
+                        this.app.removeEventListener("sensitive-changed", this["_appSensitiveListener"]);
                     }
                 };
             }

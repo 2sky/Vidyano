@@ -27,12 +27,17 @@ namespace Vidyano.WebComponents {
             collapsed: {
                 type: Boolean,
                 reflectToAttribute: true
+            },
+            appSensitive: {
+                type: Boolean,
+                readOnly: true
             }
         },
         forwardObservers: [
             "_signedInChanged(service.isSignedIn)",
             "_signedInChanged(service.isUsingDefaultCredentials)"
-        ]
+        ],
+        sensitive: true
     })
     export class User extends WebComponent {
         readonly service: Vidyano.Service; private _setService: (service: Vidyano.Service) => void;
@@ -65,6 +70,10 @@ namespace Vidyano.WebComponents {
 
         userSettings() {
             this.app.changePath((this.app.programUnit ? this.app.programUnit.name + "/" : "") + "PersistentObject." + this.service.application.userSettingsId + "/" + this.service.application.userId);
+        }
+
+        private _toggleSensitive() {
+            this.app.sensitive = !this.app.sensitive;
         }
 
         private _showProfiler() {

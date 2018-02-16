@@ -6,12 +6,12 @@
         <link rel="stylesheet" href="persistent-object-attribute-common-mark.css" />
         <template is="dom-if" if="[[!editing]]">
             <vi-scroller class="flex">
-                <marked-element markdown="[[attribute.displayValue]]"></marked-element>
+                <marked-element markdown="[[attribute.displayValue]]" sensitive$="[[sensitive]]"></marked-element>
             </vi-scroller>
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <textarea content value="{{value::input}}" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" on-blur="_editTextAreaBlur" readonly$="[[readOnly]]"></textarea>
+                <textarea content value="{{value::input}}" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" sensitive$="[[sensitive]]" on-blur="_editTextAreaBlur" readonly$="[[readOnly]]"></textarea>
             </<vi-persistent-object-attribute-edit attribute="[[attribute]]">
         </template>
     </template>

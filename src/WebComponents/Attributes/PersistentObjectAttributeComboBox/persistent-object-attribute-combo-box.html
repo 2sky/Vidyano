@@ -4,12 +4,12 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-combo-box.css" />
         <template is="dom-if" if="[[!editing]]">
-            <span>[[attribute.displayValue]]</span>
+            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
         </template>
         <template is="dom-if" if="[[editing]]" restamp>
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <div class="relative" content>
-                    <vi-select options="[[comboBoxOptions]]" selected-option="{{value}}" input-value="{{newValue}}" keep-unmatched readonly="[[readOnly]]" disabled="[[attribute.parent.isFrozen]]" placeholder="[[placeholder]]"></vi-select>
+                    <vi-select options="[[comboBoxOptions]]" selected-option="{{value}}" input-value="{{newValue}}" keep-unmatched readonly="[[readOnly]]" disabled="[[attribute.parent.isFrozen]]" placeholder="[[placeholder]]" sensitive="[[sensitive]]"></vi-select>
                 </div>
                 <template is="dom-if" if="[[!readOnly]]">
                     <button on-tap="_add" id="add" hidden$="[[!canAdd]]" tabindex="-1">

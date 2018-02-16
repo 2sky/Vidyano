@@ -3,7 +3,7 @@
 <dom-module id="vi-user">
     <template>
         <link rel="stylesheet" href="user.css" />
-        <template is="dom-if" if="[[isSignedIn]]">
+        <!--<template is="dom-if" if="[[isSignedIn]]">
             <div id="signedIn" class="horizontal layout center-justified flex">
                 <span>[[userName]]</span>
             </div>
@@ -30,7 +30,17 @@
                 <span>[[translateMessage('SignIn', isAttached)]]</span>
                 <vi-icon source="SignIn"></vi-icon>
             </button>
-        </template>
+        </template>-->
+        <div class="username horizontal layout center-justified">
+            <span>[[userName]]</span>
+        </div>
+        <div class="actions">
+            <button is="vi-button" icon="Invisible" inverse="[[!isAppSensitive]]" title="[[translateMessage('Privacy', isAttached)]]" on-tap="_toggleSensitive"></button>
+            <button is="vi-button" icon="Profiler" inverse title="[[translateMessage('Profiler', isAttached)]]"></button>
+            <button is="vi-button" icon="UserFeedback" inverse title="[[translateMessage('Feedback', isAttached)]]"></button>
+            <button is="vi-button" icon="Configure" inverse title="[[translateMessage('UserSettings', isAttached)]]"></button>
+            <button is="vi-button" icon="SignOut" inverse title="[[translateMessage('SignOut', isAttached)]]"></button>
+        </div>
     </template>
 </dom-module>
 

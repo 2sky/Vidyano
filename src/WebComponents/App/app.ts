@@ -227,6 +227,12 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 readOnly: true,
                 value: false
+            },
+            sensitive: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: true,
+                observer: "_sensitiveChanged"
             }
         },
         observers: [
@@ -282,6 +288,7 @@ namespace Vidyano.WebComponents {
         noMenu: boolean;
         label: string;
         isTracking: boolean;
+        sensitive: boolean;
 
         attached() {
             super.attached();
@@ -561,6 +568,10 @@ namespace Vidyano.WebComponents {
 
             this.importComponent("Profiler");
             return true;
+        }
+
+        private _sensitiveChanged(sensitive: boolean) {
+            this.fire("sensitive-changed", sensitive, { bubbles: false });
         }
 
         private _cookiePrefixChanged(cookiePrefix: string) {

@@ -16,12 +16,14 @@
                     <template is="dom-if" if="[[!fullEdit]]">
                         <div pre-edit on-tap="_setFullEdit" class="flex layout horizontal-reverse">
                             <vi-persistent-object-attribute-validation-error attribute="[[_getAttributeForColumn(serviceObject, column)]]"></vi-persistent-object-attribute-validation-error>
-                            <span class="flex">[[_getDisplayValue(serviceObject, column, fullEdit, serviceObject.lastUpdated)]]</span>
+                            <div class="flex">
+                                <span class="value" sensitive$="[[_isSensitive(column, isAppSensitive)]]">[[_getDisplayValue(serviceObject, column, fullEdit, serviceObject.lastUpdated)]]</span>
+                            </div>
                         </div>
                     </template>
                 </template>
                 <template is="dom-if" if="[[!editing]]">
-                    <span class="flex">[[_getDisplayValue(serviceObject, column, lastUpdated)]]</span>
+                    <span class="flex" sensitive$="[[_isSensitive(column, isAppSensitive)]]">[[_getDisplayValue(serviceObject, column, lastUpdated)]]</span>
                 </template>
             </div>
         </template>

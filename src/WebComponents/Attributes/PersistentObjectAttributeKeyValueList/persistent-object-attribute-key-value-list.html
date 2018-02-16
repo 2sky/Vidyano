@@ -5,20 +5,25 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-key-value-list.css" />
         <template is="dom-if" if="[[!editing]]">
-            <span>[[attribute.displayValue]]</span>
+            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
         </template>
         <template is="dom-if" if="[[editing]]">
             <template is="dom-if" if="[[!radio]]">
                 <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                    <vi-select content options="[[options]]" selected-option="{{value}}" readonly="[[readOnly]]" disabled="[[attribute.parent.isFrozen]]" placeholder="[[placeholder]]" group-separator="[[groupSeparator]]"></vi-select>
+                    <vi-select content options="[[options]]" selected-option="{{value}}" readonly="[[readOnly]]" disabled="[[attribute.parent.isFrozen]]" placeholder="[[placeholder]]" group-separator="[[groupSeparator]]" sensitive$="[[sensitive]]"></vi-select>
                 </vi-persistent-object-attribute-edit>
             </template>
             <template is="dom-if" if="[[radio]]">
-                <div id="radiobuttons" orientation$="[[orientation]]">
-                    <template is="dom-repeat" items="[[options]]" as="option">
-                        <vi-checkbox label="[[_radioLabel(option)]]" checked="[[_isRadioChecked(option, value)]]" on-changed="_radioChanged" radio disabled$="[[attribute.parent.isFrozen]]"></vi-checkbox>
-                    </template>
-                </div>
+                <template is="dom-if" if="[[!sensitive]]">
+                    <div id="radiobuttons" orientation$="[[orientation]]">
+                        <template is="dom-repeat" items="[[options]]" as="option">
+                            <vi-checkbox label="[[_radioLabel(option)]]" checked="[[_isRadioChecked(option, value)]]" on-changed="_radioChanged" radio disabled$="[[attribute.parent.isFrozen]]"></vi-checkbox>
+                        </template>
+                    </div>
+                </template>
+                <template is="dom-if" if="[[sensitive]]">
+                    <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+                </template>
             </template>
         </template>
     </template>

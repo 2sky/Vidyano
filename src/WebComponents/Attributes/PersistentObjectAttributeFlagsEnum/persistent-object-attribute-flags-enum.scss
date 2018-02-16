@@ -28,7 +28,11 @@
 
     input, span {
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
-    }
+        
+        &[sensitive] {
+            @apply(--vi-app--sensitive);
+        }
+    }    
 
     vi-icon {
         height: calc(var(--theme-h2) - 2px);

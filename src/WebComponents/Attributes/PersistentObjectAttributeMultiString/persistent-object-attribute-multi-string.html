@@ -4,8 +4,10 @@
 <dom-module id="vi-persistent-object-attribute-multi-string-item">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-multi-string-item.css" />
-        <vi-icon source="Hamburger" class="sort-handle"></vi-icon>
-        <input class="flex" value="{{value::input}}" on-blur="_onInputBlur" type="text" readonly$="[[isReadOnly]]" disabled$="[[disabled]]" autocomplete="off" placeholder="[[placeholder]]">
+        <vi-icon source="Hamburger" class="sort-handle" hidden$="[[sensitive]]"></vi-icon>
+        <vi-persistent-object-attribute-edit class="layout horizontal flex">
+            <input content class="flex" value="{{value::input}}" on-blur="_onInputBlur" type="text" readonly$="[[isReadOnly]]" disabled$="[[disabled]]" autocomplete="off" placeholder="[[placeholder]]">
+        </vi-persistent-object-attribute-edit>
     </template>
 </dom-module>
 
@@ -14,14 +16,14 @@
         <link rel="stylesheet" href="persistent-object-attribute-multi-string.css" />
         <template is="dom-if" if="[[!editing]]">
             <vi-scroller no-horizontal class="flex">
-                <pre>[[attribute.displayValue]]</pre>
+                <pre sensitive$="[[sensitive]]">[[attribute.displayValue]]</pre>
             </vi-scroller>
         </template>
         <template is="dom-if" if="[[editing]]">
 			<vi-scroller no-horizontal class="flex">
                 <fieldset disabled$="[[attribute.parent.isFrozen]]">
-                    <vi-persistent-object-attribute-multi-string-items id="strings" draggable-items="vi-persistent-object-attribute-multi-string-item" handle=".sort-handle" enabled="[[!attribute.parent.isFrozen]]"></vi-persistent-object-attribute-multi-string-items>
-                    <vi-persistent-object-attribute-multi-string-item is-new hidden$="[[readOnly]]" placeholder="[[placeholder]]"></vi-persistent-object-attribute-multi-string-item>
+                    <vi-persistent-object-attribute-multi-string-items id="strings" draggable-items="vi-persistent-object-attribute-multi-string-item" handle=".sort-handle" enabled="[[!attribute.parent.isFrozen]]" sensitive$="[[sensitive]]"></vi-persistent-object-attribute-multi-string-items>
+                    <vi-persistent-object-attribute-multi-string-item is-new hidden$="[[readOnly]]" placeholder="[[placeholder]]" sensitive$="[[sensitive]]"></vi-persistent-object-attribute-multi-string-item>
                 </fieldset>
 			</vi-scroller>
         </template>

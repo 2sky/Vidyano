@@ -83,7 +83,7 @@ namespace Vidyano.WebComponents.Attributes {
             maxlength: Number,
             strings: {
                 type: Array,
-                computed: "_computeStrings(value, attribute.isReadOnly)"
+                computed: "_computeStrings(value, attribute.isReadOnly, sensitive)"
             }
         },
         observers: [
@@ -102,9 +102,9 @@ namespace Vidyano.WebComponents.Attributes {
         strings: PersistentObjectAttributeMultiStringItem[];
         private _setNewString: (newString: PersistentObjectAttributeMultiStringItem) => void;
 
-        private _computeStrings(value: string, readOnly: boolean): PersistentObjectAttributeMultiStringItem[] {
+        private _computeStrings(value: string, readOnly: boolean, sensitive: boolean): PersistentObjectAttributeMultiStringItem[] {
             const strings = value ? value.split("\n").filter(v => !!v.length).map((v: string, n: number) => this.strings && this.strings[n] && this.strings[n].value === v ? this.strings[n] : new PersistentObjectAttributeMultiStringItem(v)) : [];
-            strings.forEach(s => s.isReadOnly = readOnly);
+            strings.forEach(s => s.isReadOnly = readOnly || sensitive);
 
             return strings;
         }

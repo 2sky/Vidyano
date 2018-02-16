@@ -20,8 +20,8 @@ namespace Vidyano.WebComponents.Attributes {
             },
             sensitive: {
                 type: Boolean,
-                computed: "attribute.isSensitive",
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                computed: "_computeSensitive(attribute.isSensitive, isAppSensitive)"
             }
         },
         listeners: {
@@ -32,7 +32,8 @@ namespace Vidyano.WebComponents.Attributes {
             "attribute.isSensitive",
             "attribute.validationError",
             "attribute.parent.isFrozen"
-        ]
+        ],
+        sensitive: true
     })
     export class PersistentObjectAttributeEdit extends WebComponent {
         private _setFocus: (val: boolean) => void;
@@ -48,6 +49,10 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _computeHasError(validationError: string): boolean {
             return !!validationError;
+        }
+
+        private _computeSensitive(isSensitive: boolean, isAppSensitive: boolean): boolean {
+            return isSensitive && isAppSensitive;
         }
     }
 }

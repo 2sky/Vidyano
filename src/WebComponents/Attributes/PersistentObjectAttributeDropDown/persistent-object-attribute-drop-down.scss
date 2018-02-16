@@ -15,6 +15,10 @@
         }'};
     }
 
+    span[sensitive] {
+        @apply(--vi-app--sensitive);
+    }
+
     #radiobuttons {
         line-height: var(--theme-h2);
 

@@ -4,11 +4,11 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-string.css" />
         <template is="dom-if" if="[[!editing]]">
-            <span>[[attribute.displayValue]]</span>
+            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <input content value="{{value::input}}" type$="[[inputtype]]" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off" placeholder="[[placeholder]]">
+                <input content value="{{value::input}}" type$="[[inputtype]]" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" sensitive$="[[sensitive]]" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off" placeholder="[[placeholder]]">
                 <content select=".button, button, vi-popup:not([content])"></content>
                 <template is="dom-if" if="[[hasSuggestions]]">
                     <vi-popup id="suggestions" class="button" content-align="right">

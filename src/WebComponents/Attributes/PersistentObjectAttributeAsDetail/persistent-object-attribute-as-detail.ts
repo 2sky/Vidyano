@@ -265,7 +265,8 @@ namespace Vidyano.WebComponents.Attributes {
         listeners: {
             "attribute-loading": "_onAttributeLoading",
             "attribute-loaded": "_onAttributeLoaded",
-        }
+        },
+        sensitive: true
     })
     export class PersistentObjectAttributeAsDetailRow extends WebComponents.WebComponent {
         private fullEdit: boolean;
@@ -300,6 +301,10 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _isSoftEditOnly(fullEdit: boolean, softEdit: boolean): boolean {
             return !fullEdit && softEdit;
+        }
+
+        private _isSensitive(column: QueryColumn, isAppSensitive: boolean): boolean {
+            return column.isSensitive && isAppSensitive;
         }
 
         private _setFullEdit(e: TapEvent) {

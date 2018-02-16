@@ -3,19 +3,19 @@
 <dom-module id="vi-persistent-object-attribute-multi-line-string">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-multi-line-string.css" />
-        <template is="dom-if" if="[[!codeMirror]]">
+        <template is="dom-if" if="[[!_useCodeMirror(codeMirror, sensitive)]]">
             <template is="dom-if" if="[[!editing]]">
                 <vi-scroller no-horizontal class="flex">
-                    <pre>[[attribute.displayValue]]</pre>
+                    <pre sensitive$="[[sensitive]]">[[attribute.displayValue]]</pre>
                 </vi-scroller>
             </template>
             <template is="dom-if" if="[[editing]]">
                 <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                    <textarea content value="{{value::input}}" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" on-blur="_editTextAreaBlur" readonly$="[[readOnly]]" placeholder$="[[placeholder]]"></textarea>
+                    <textarea content value="{{value::input}}" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" sensitive$="[[sensitive]]" on-blur="_editTextAreaBlur" readonly$="[[readOnly]]" placeholder$="[[placeholder]]"></textarea>
                 </vi-persistent-object-attribute-edit>
             </template>
         </template>
-        <template is="dom-if" if="[[codeMirror]]">
+        <template is="dom-if" if="[[_useCodeMirror(codeMirror, sensitive)]]">
             <vi-code-mirror class="flex" value="{{value}}" mode="[[codeMirror]]" line-numbers="[[!isCodeMirrorReadOnly]]" read-only="[[isCodeMirrorReadOnly]]"></vi-code-mirror>
         </template>
     </template>

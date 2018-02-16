@@ -6,17 +6,17 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-date-time.css" />
         <template is="dom-if" if="[[!editing]]">
-            <span>[[attribute.displayValue]]</span>
+            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <div content class="layout horizontal">
                     <template is="dom-if" if="[[!monthMode]]">
-                        <input is="vi-masked-input" id="date" size="9" format$="[[dateFormat]]" separator$="[[dateSeparator]]" on-filled="_dateFilled" on-keydown="_keydown" on-keyup="_keyup" on-blur="_blur" on-focus="_focused" readonly$="[[readOnly]]" hidden$="[[!hasDateComponent]]" flex$="[[!hasTimeComponent]]" autocomplete="off">
-                        <input is="vi-masked-input" id="time" size="5" format$="[[timeFormat]]" separator$="[[timeSeparator]]" on-filled="_timeFilled" on-keydown="_keydown" on-keyup="_keyup" on-blur="_blur" on-focus="_focused" readonly$="[[readOnly]]" hidden$="[[!hasTimeComponent]]" autocomplete="off">
+                        <input is="vi-masked-input" id="date" size="9" format$="[[dateFormat]]" separator$="[[dateSeparator]]" sensitive$="[[sensitive]]" on-filled="_dateFilled" on-keydown="_keydown" on-keyup="_keyup" on-blur="_blur" on-focus="_focused" readonly$="[[readOnly]]" hidden$="[[!hasDateComponent]]" flex$="[[!hasTimeComponent]]" autocomplete="off">
+                        <input is="vi-masked-input" id="time" size="5" format$="[[timeFormat]]" separator$="[[timeSeparator]]" sensitive$="[[sensitive]]" on-filled="_timeFilled" on-keydown="_keydown" on-keyup="_keyup" on-blur="_blur" on-focus="_focused" readonly$="[[readOnly]]" hidden$="[[!hasTimeComponent]]" autocomplete="off">
                     </template>
                     <template is="dom-if" if="[[monthMode]]">
-                        <span id="monthMode" hidden$="[[!hasDateComponent]]">[[attribute.displayValue]]</span>
+                        <span id="monthMode" hidden$="[[!hasDateComponent]]" sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
                     </template>
                 </div>
                 <template is="dom-if" if="[[!readOnly]]">

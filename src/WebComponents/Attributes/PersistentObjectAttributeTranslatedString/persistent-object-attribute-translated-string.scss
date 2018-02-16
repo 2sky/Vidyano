@@ -1,8 +1,8 @@
 @import "../../vars.scss";
 
 :host {
-	@include layout-horizontal();
-	overflow: hidden;
+    @include layout-horizontal();
+    overflow: hidden;
 
     span {
         overflow: hidden;
@@ -14,18 +14,22 @@
         line-height: normal !important;
     }
 
-	span, pre, input, textarea {
-		color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
-	}
+    span, pre, input, textarea {
+        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
 
-	&[multiline] {
-		#multiline {
-			overflow: hidden;
-			padding: var(--theme-h5) var(--theme-h5) 0 var(--theme-h5);
-		}
+        &[sensitive] {
+            @apply(--vi-app--sensitive);
+        }
+    }
 
-		button {
-			background-color: white;
-		}
-	}
+    &[multiline] {
+        #multiline {
+            overflow: hidden;
+            padding: var(--theme-h5) var(--theme-h5) 0 var(--theme-h5);
+        }
+
+        button {
+            background-color: white;
+        }
+    }
 }

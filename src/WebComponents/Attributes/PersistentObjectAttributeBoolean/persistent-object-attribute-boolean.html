@@ -5,11 +5,11 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-nullable-boolean.css" />
         <template is="dom-if" if="[[!editing]]" restamp>
-            <span>[[attribute.displayValue]]</span>
+            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <vi-select content options="[[booleanOptions]]" selected-option="{{value}}" disable-filtering readonly="[[readOnly]]" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]" placeholder="[[placeholder]]"></vi-select>
+                <vi-select content options="[[booleanOptions]]" selected-option="{{value}}" sensitive="[[sensitive]]" disable-filtering readonly="[[readOnly]]" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]" placeholder="[[placeholder]]"></vi-select>
             </vi-persistent-object-attribute-edit>
         </template>
     </template>
@@ -19,15 +19,20 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-boolean.css" />
         <template is="dom-if" if="[[editing]]">
-            <template is="dom-if" if="[[!checkBox]]">
-                <vi-toggle label="[[attribute.displayValue]]" toggled="{{value}}" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-toggle>
+            <template is="dom-if" if="[[!sensitive]]" restamp>
+                <template is="dom-if" if="[[!checkBox]]">
+                    <vi-toggle label="[[attribute.displayValue]]" toggled="{{value}}" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-toggle>
+                </template>
+                <template is="dom-if" if="[[checkBox]]">
+                    <vi-checkbox checked="{{value}}" label="[[attribute.displayValue]]" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-checkbox>
+                </template>
             </template>
-            <template is="dom-if" if="[[checkBox]]">
-                <vi-checkbox checked="{{value}}" label="[[attribute.displayValue]]" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-checkbox>
+            <template is="dom-if" if="[[sensitive]]" restamp>
+                <span sensitive>[[attribute.displayValue]]</span>
             </template>
         </template>
         <template is="dom-if" if="[[!editing]]">
-            <span>[[attribute.displayValue]]</span>
+            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
         </template>
     </template>
 </dom-module>

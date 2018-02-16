@@ -97,4 +97,10 @@
             @include layout-wrap();
         }
     }
+
+    span, input {
+        &[sensitive] {
+            @apply(--vi-app--sensitive);
+        }
+    }
 }

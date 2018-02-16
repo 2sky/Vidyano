@@ -5,12 +5,12 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-user.css" />
         <template is="dom-if" if="[[!editing]]">
-            <span>[[friendlyName]]</span>
+            <span sensitive$="[[sensitive]]">[[friendlyName]]</span>
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <input value="[[friendlyName]]" readonly content>
-                <template is="dom-if" if="[[canBrowseReference]]" restamp>
+                <input value="[[friendlyName]]" readonly content sensitive$="[[sensitive]]">
+                <template is="dom-if" if="[[!readOnly]]" restamp>
                     <button on-tap="_browseReference" tabindex="-1">
                         <vi-icon source="Ellipsis"></vi-icon>
                     </button>

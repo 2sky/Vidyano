@@ -67,6 +67,10 @@ namespace Vidyano.WebComponents.Attributes {
             return value ? value.asDataUri() : "";
         }
 
+        private _canOpen(hasValue: boolean, sensitive: boolean): boolean {
+            return hasValue && !sensitive;
+        }
+
         private _pasteAuto(e: ClipboardEvent) {
             if (this.readOnly || !this.editing)
                 return;
@@ -103,7 +107,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _showDialog() {
-            if (!this.value)
+            if (!this.value || this.sensitive)
                 return;
 
             this.app.showDialog(new Vidyano.WebComponents.Attributes.PersistentObjectAttributeImageDialog(this.attribute.label, this.value.asDataUri()));

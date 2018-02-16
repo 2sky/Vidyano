@@ -32,7 +32,7 @@ namespace Vidyano.WebComponents.Attributes {
             },
             selectInPlaceAsRadio: {
                 type: Boolean,
-                computed: "_computeSelectInPlaceAsRadio(attribute)"
+                computed: "_computeSelectInPlaceAsRadio(attribute, sensitive)"
             },
             orientation: {
                 type: String,
@@ -44,7 +44,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_update(attribute.isReadOnly, isAttached)"
+            "_update(attribute.isReadOnly, sensitive, isAttached)"
         ]
     })
     export class PersistentObjectAttributeReference extends WebComponents.Attributes.PersistentObjectAttribute {
@@ -166,9 +166,9 @@ namespace Vidyano.WebComponents.Attributes {
 
             this.filter = hasReference ? this.attribute.value : "";
 
-            this._setCanClear(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.attribute.isRequired && !StringEx.isNullOrEmpty(this.attribute.objectId));
-            this._setCanAddNewReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && this.attribute.canAddNewReference);
-            this._setCanBrowseReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.attribute.selectInPlace);
+            this._setCanClear(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.sensitive && !this.attribute.isRequired && !StringEx.isNullOrEmpty(this.attribute.objectId));
+            this._setCanAddNewReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.sensitive && this.attribute.canAddNewReference);
+            this._setCanBrowseReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.sensitive && !this.attribute.selectInPlace);
         }
 
         private _openSelect() {
@@ -196,8 +196,8 @@ namespace Vidyano.WebComponents.Attributes {
             return attribute && href && attribute.parent.isNew ? "_blank" : "";
         }
 
-        private _computeSelectInPlaceAsRadio(attribute: Vidyano.PersistentObjectAttributeWithReference): boolean {
-            return attribute && attribute.getTypeHint("inputtype", undefined, undefined, true) === "radio";
+        private _computeSelectInPlaceAsRadio(attribute: Vidyano.PersistentObjectAttributeWithReference, sensitive: boolean): boolean {
+            return !sensitive && attribute && attribute.getTypeHint("inputtype", undefined, undefined, true) === "radio";
         }
 
         private _computeOrientation(attribute: Vidyano.PersistentObjectAttributeWithReference): string {
@@ -206,6 +206,10 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _computeCanOpenSelect(isReadOnly: boolean, options: string[]): boolean {
             return !isReadOnly && !!options && options.length > 0;
+        }
+
+        private _computeTitle(displayValue: string, sensitive: boolean): string {
+            return !sensitive ? displayValue : "";
         }
 
         private _isRadioChecked(optionKey: string, objectId: string): boolean {

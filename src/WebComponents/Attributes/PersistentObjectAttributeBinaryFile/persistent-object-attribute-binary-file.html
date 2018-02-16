@@ -2,11 +2,11 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-binary-file.css" />
         <template is="dom-if" if="[[!editing]]">
-            <span>[[fileName]]</span>
+            <span sensitive$="[[sensitive]]">[[fileName]]</span>
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <input content class="flex" value="{{fileName}}" type="text" readonly placeholder="[[placeholder]]">
+                <input content class="flex" value="{{fileName}}" type="text" readonly placeholder="[[placeholder]]" sensitive$="[[sensitive]]">
                 <template is="dom-if" if="[[!readOnly]]">
                     <div class="button browse" on-change="_change">
                         <vi-icon source="FileUpload"></vi-icon>

@@ -59,7 +59,7 @@
             }
 
             td[sensitive] {
-                filter: blur(5px);
+                @apply(--vi-app--sensitive);
             }
         }
     }

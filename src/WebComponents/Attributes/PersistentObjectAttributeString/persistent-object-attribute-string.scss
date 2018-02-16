@@ -1,50 +1,54 @@
 @import "../../vars.scss";
 
 :host {
-	@include layout-horizontal();
-	overflow: hidden;
+    @include layout-horizontal();
+    overflow: hidden;
 
-	span {
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-	span, input {
-		color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
-	}
+    span, input {
+        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
 
-	#suggestions {
-		&[open] {
-			vi-icon {
-				fill: white !important;
-				background-color: var(--theme-color);
-			}
-		}
+        &[sensitive] {
+            @apply(--vi-app--sensitive);
+        }
+    }
 
-		vi-icon {
-			width: calc(var(--theme-h2) - 2px);
-			height: calc(var(--theme-h2) - 2px);
+    #suggestions {
+        &[open] {
+            vi-icon {
+                fill: white !important;
+                background-color: var(--theme-color);
+            }
+        }
 
-			&:hover {
-				fill: var(--theme-color);
-			}
-		}
+        vi-icon {
+            width: calc(var(--theme-h2) - 2px);
+            height: calc(var(--theme-h2) - 2px);
 
-		ul {
-			margin: 0;
-			padding: 0;
-    		list-style-type: none;
+            &:hover {
+                fill: var(--theme-color);
+            }
+        }
 
-			li {
-				padding: 0 var(--theme-h5);
-				height: var(--theme-h2);
-				cursor: pointer;
-				text-align: left;
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
 
-				&:hover {
-					background-color: var(--theme-color-faint);
-				}
-			}
-		}
-	}
+            li {
+                padding: 0 var(--theme-h5);
+                height: var(--theme-h2);
+                cursor: pointer;
+                text-align: left;
+
+                &:hover {
+                    background-color: var(--theme-color-faint);
+                }
+            }
+        }
+    }
 }

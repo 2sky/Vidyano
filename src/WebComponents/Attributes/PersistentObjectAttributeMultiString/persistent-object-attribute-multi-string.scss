@@ -1,26 +1,30 @@
 @import "../../vars.scss";
 
 :host {
-	@include layout-horizontal();
+    @include layout-horizontal();
 
-	#strings:empty + vi-persistent-object-attribute-multi-string-item {
-		::content vi-icon[source="Hamburger"] {
-			display: none;
-		}
-	}
+    #strings:empty + vi-persistent-object-attribute-multi-string-item {
+        ::content vi-icon[source="Hamburger"] {
+            display: none;
+        }
+    }
 
-	#strings:not([enabled]) {
-		> vi-persistent-object-attribute-multi-string-item {
-			::content vi-icon[source="Hamburger"] {
-				opacity: 0.25;
-				cursor: default;
-			}
-		}
-	}
+    #strings:not([enabled]) {
+        > vi-persistent-object-attribute-multi-string-item {
+            ::content vi-icon[source="Hamburger"] {
+                opacity: 0.25;
+                cursor: default;
+            }
+        }
+    }
 
-	fieldset {
-		padding: 0;
-		margin: 0;
-		border: none;
-	}
+    fieldset {
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+
+    pre[sensitive] {
+        @apply(--vi-app--sensitive);
+    }
 }

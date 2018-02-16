@@ -26,4 +26,8 @@
             border-left-color: var(--theme-color);
         }
     }
+
+    span[sensitive] {
+        @apply(--vi-app--sensitive);
+    }
 }

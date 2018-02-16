@@ -3,8 +3,8 @@
 
     @PersistentObjectAttribute.register
     export class PersistentObjectAttributeFlagsEnum extends WebComponents.Attributes.PersistentObjectAttribute {
-        private _disablePopup(readonly: boolean, disabled: boolean): boolean {
-            return readonly || disabled;
+        private _disablePopup(readonly: boolean, disabled: boolean, sensitive: boolean): boolean {
+            return readonly || disabled || sensitive;
         }
     }
 

@@ -6,4 +6,8 @@
     vi-select {
         border: none;
     }
+
+    span[sensitive] {
+        @apply(--vi-app--sensitive);
+    }
 }

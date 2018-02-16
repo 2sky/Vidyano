@@ -1,52 +1,56 @@
 @import "../../vars.scss";
 
 :host {
-	@include layout-horizontal();
+    @include layout-horizontal();
 
-	span, input {
-		color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
-	}
+    span, input {
+        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
 
-    vi-persistent-object-attribute-edit span {
-		position: relative;
-		width: calc(var(--theme-h2) - 2px);
-		text-align: center;
-		cursor: default;
-		@include noSelection();
-
-		&:before, &:after {
-			position: absolute;
-		    top: 4px;
-		    bottom: 4px;
-		    content: " ";
-		    transition: all 0.1s ease-in-out;
-		}
-
-        &.before:before {
-			right: 0;
-			border-right: 1px solid var(--theme-light-border);
+        &[sensitive] {
+            @apply(--vi-app--sensitive);
         }
-
-		&.after:after {
-			left: 0;
-			border-left: 1px solid var(--theme-light-border);
-        }
-
-		&:hover:before, &:hover:after {
-			top: 0;
-			bottom: 0;
-		}
-
-		&:empty {
-			display: none;
-		}
     }
 
-	&[focused] {
-		vi-persistent-object-attribute-edit span {
-			&:before, &:after {
-				border-color: var(--theme-color-lighter);
-			}
-		}
-	}
+    vi-persistent-object-attribute-edit span {
+        position: relative;
+        width: calc(var(--theme-h2) - 2px);
+        text-align: center;
+        cursor: default;
+        @include noSelection();
+
+        &:before, &:after {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            content: " ";
+            transition: all 0.1s ease-in-out;
+        }
+
+        &.before:before {
+            right: 0;
+            border-right: 1px solid var(--theme-light-border);
+        }
+
+        &.after:after {
+            left: 0;
+            border-left: 1px solid var(--theme-light-border);
+        }
+
+        &:hover:before, &:hover:after {
+            top: 0;
+            bottom: 0;
+        }
+
+        &:empty {
+            display: none;
+        }
+    }
+
+    &[focused] {
+        vi-persistent-object-attribute-edit span {
+            &:before, &:after {
+                border-color: var(--theme-color-lighter);
+            }
+        }
+    }
 }

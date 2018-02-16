@@ -9,11 +9,11 @@ namespace Vidyano.WebComponents.Attributes {
             },
             canClear: {
                 type: Boolean,
-                computed: "_computeCanClear(attribute.isRequired, value)"
+                computed: "_computeCanClear(readOnly, attribute.isRequired, value)"
             },
             canBrowseReference: {
                 type: Boolean,
-                computed: "_computeCanBrowseReference(attribute.isReadOnly)",
+                computed: "_computeCanBrowseReference(readOnly)",
             },
         }
     })
@@ -44,12 +44,12 @@ namespace Vidyano.WebComponents.Attributes {
             return options && options.length > 0 ? options[0] || "\u2014" : "\u2014";
         }
 
-        private _computeCanClear(isRequired: boolean, value: string): boolean {
-            return !isRequired && !StringEx.isNullOrEmpty(value);
+        private _computeCanClear(readOnly: boolean, isRequired: boolean, value: string): boolean {
+            return !readOnly && !isRequired && !StringEx.isNullOrEmpty(value);
         }
 
-        private _computeCanBrowseReference(isReadOnly: boolean): boolean {
-            return !isReadOnly;
+        private _computeCanBrowseReference(readOnly: boolean): boolean {
+            return !readOnly;
         }
     }
 }

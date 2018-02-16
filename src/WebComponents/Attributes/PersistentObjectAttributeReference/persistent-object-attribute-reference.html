@@ -5,8 +5,8 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-reference.css" />
         <template is="dom-if" if="[[!editing]]">
-            <a href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" on-tap="_open" target$="[[target]]">
-                <span>[[attribute.displayValue]]</span>
+            <a href$="[[href]]" title$="[[_computeTitle(attribute.displayValue, sensitive)]]" disabled$="[[!href]]" on-tap="_open" target$="[[target]]">
+                <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
                 <template is="dom-if" if="[[href]]">
                     <vi-icon source="ArrowUpRight" class="size-h4"></vi-icon>
                 </template>
@@ -17,11 +17,11 @@
             <template is="dom-if" if="[[attribute.selectInPlace]]">
                 <template is="dom-if" if="[[!selectInPlaceAsRadio]]">
                     <vi-persistent-object-attribute-edit attribute="[[attribute]]" reverse-content>
-                        <vi-select id="selectInPlace" content class="flex" options="[[options]]" selected-option="{{objectId}}" readonly$="[[attribute.isReadOnly]]" placeholder="[[placeholder]]"></vi-select>
-                        <button on-tap="_openSelect" hidden$="[[!_computeCanOpenSelect(attribute.isReadOnly, options)]]">
+                        <vi-select id="selectInPlace" content class="flex" options="[[options]]" selected-option="{{objectId}}" readonly$="[[readOnly]]" placeholder="[[placeholder]]" sensitive="[[sensitive]]"></vi-select>
+                        <button on-tap="_openSelect" hidden$="[[!_computeCanOpenSelect(readOnly, options)]]">
                             <vi-icon source="CaretDown"></vi-icon>
                         </button>
-                        <a class="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
+                        <a class="button" href$="[[href]]" title$="[[_computeTitle(attribute.displayValue, sensitive)]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
                             <vi-icon source="ArrowUpRight"></vi-icon>
                         </a>
                         <template is="dom-if" if="[[canAddNewReference]]" restamp>
@@ -48,8 +48,8 @@
             </template>
             <template is="dom-if" if="[[!attribute.selectInPlace]]">
                 <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                    <input content value="{{filter::input}}" on-blur="_filterBlur" readonly$="[[attribute.isReadOnly]]" autocomplete="off" placeholder="[[placeholder]]">
-                    <a class="button" href$="[[href]]" title$="[[attribute.displayValue]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
+                    <input content value="{{filter::input}}" on-blur="_filterBlur" readonly$="[[readOnly]]" autocomplete="off" placeholder="[[placeholder]]" sensitive$="[[sensitive]]">
+                    <a class="button" href$="[[href]]" title$="[[_computeTitle(attribute.displayValue, sensitive)]]" disabled$="[[!href]]" tabindex="-1" on-tap="_open" target$="[[target]]">
                         <vi-icon source="ArrowUpRight"></vi-icon>
                     </a>
                     <template is="dom-if" if="[[canBrowseReference]]" restamp>

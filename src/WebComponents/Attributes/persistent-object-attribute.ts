@@ -49,6 +49,7 @@ namespace Vidyano.WebComponents.Attributes {
         nonEdit: boolean;
         readOnly: boolean;
         disabled: boolean;
+        sensitive: boolean;
 
         protected _attributeValueChanged() {
             this.value = this.attribute.value !== undefined ? this.attribute.value : null;
@@ -79,8 +80,12 @@ namespace Vidyano.WebComponents.Attributes {
             return !nonEdit && isEditing;
         }
 
-        private _computeIsReadOnly(isReadOnly: boolean, disabled: boolean): boolean {
-            return isReadOnly || disabled;
+        private _computeIsReadOnly(isReadOnly: boolean, disabled: boolean, sensitive: boolean): boolean {
+            return isReadOnly || disabled || sensitive;
+        }
+
+        private _computeSensitive(isSensitive: boolean, isAppSensitive: boolean, type: string): boolean {
+            return isSensitive && isAppSensitive && type !== "AsDetail";
         }
 
         private _computePlaceholder(attribute: Vidyano.PersistentObjectAttribute): string {
@@ -156,12 +161,21 @@ namespace Vidyano.WebComponents.Attributes {
                 info.properties["readOnly"] = {
                     type: Boolean,
                     reflectToAttribute: true,
-                    computed: "_computeIsReadOnly(attribute.isReadOnly, disabled)"
+                    computed: "_computeIsReadOnly(attribute.isReadOnly, disabled, sensitive)"
                 };
                 info.properties["required"] = {
                     type: Boolean,
                     reflectToAttribute: true,
                     computed: "attribute.isRequired"
+                };
+                info.properties["appSensitive"] = {
+                    type: Boolean,
+                    readOnly: true
+                };
+                info.properties["sensitive"] = {
+                    type: Boolean,
+                    reflectToAttribute: true,
+                    computed: "_computeSensitive(attribute.isSensitive, isAppSensitive, attribute.type)"
                 };
                 info.properties["value"] = {
                     type: Object,
@@ -192,6 +206,7 @@ namespace Vidyano.WebComponents.Attributes {
                 info.forwardObservers.push("attribute.displayValue");
                 info.forwardObservers.push("attribute.isRequired");
                 info.forwardObservers.push("attribute.isReadOnly");
+                info.forwardObservers.push("attribute.isSensitive");
                 info.forwardObservers.push("attribute.options");
                 info.forwardObservers.push("attribute.validationError");
                 info.forwardObservers.push("attribute.parent.isFrozen");
@@ -206,6 +221,8 @@ namespace Vidyano.WebComponents.Attributes {
 
                 info.hostAttributes = info.hostAttributes || {};
                 info.hostAttributes["tabindex"] = "-1";
+
+                info.sensitive = true;
 
                 const ctor = WebComponent.register(obj, info, prefix);
 

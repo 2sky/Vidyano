@@ -77,6 +77,11 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: false
             },
+            sensitive: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: false
+            },
             placeholder: String
         },
         listeners: {
@@ -414,8 +419,8 @@ namespace Vidyano.WebComponents {
             return !hasOptions || disableFiltering;
         }
 
-        private _disablePopup(readonly: boolean, disabled: boolean): boolean {
-            return readonly || disabled;
+        private _disablePopup(readonly: boolean, disabled: boolean, sensitive: boolean): boolean {
+            return readonly || disabled || sensitive;
         }
 
         private _showGroup(item: ISelectItem): boolean {

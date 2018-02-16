@@ -1,14 +1,43 @@
 @import "../_vars.scss";
 
 $footerHeight: var(--theme-h1);
+$background-color: #2b3940;
 
 :host {
-    border-top: 1px solid transparent;
-    @include layout-horizontal();
-    background-color: rgba(255, 255, 255, 0.08);
-    border-top-color: rgba(255, 255, 255, 0.08);
+    display: block;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    .username {
+        line-height: calc(var(--theme-h2) - 2px);
+        background-color: var(--vi-user--background-color, $background-color);
+        margin-bottom: 1px;
+        white-space: nowrap;
+
+        span {
+            padding: 0 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 12px;
+        }
+    }
+
+    .actions {
+        @include layout-horizontal();
+        @include layout-around-justified();
+        background-color: var(--vi-user--background-color, $background-color);
+
+        button {
+            height: var(--theme-h2) !important;
+            line-height: var(--theme-h2) !important;
+            cursor: pointer;
+            fill: #f0f0f0;
+            --vi-icon-height: var(--theme-h4);
+            --vi-icon-width: var(--theme-h4);
+        }
+    }
 
     button {
+        width: $footerHeight;
         height: $footerHeight !important;
         line-height: $footerHeight !important;
         cursor: pointer;
@@ -49,7 +78,7 @@ $footerHeight: var(--theme-h1);
     }
 
     &[collapsed] {
-        #signedIn{
+        #signedIn {
             display: none;
         }
 

@@ -7,26 +7,26 @@
         <link rel="stylesheet" href="persistent-object-attribute-translated-string.css" />
         <template is="dom-if" if="[[!editing]]">
             <template is="dom-if" if="[[!multiline]]">
-                <span>[[attribute.displayValue]]</span>
+                <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
             </template>
             <template is="dom-if" if="[[multiline]]">
                 <vi-scroller>
-                    <pre>[[attribute.displayValue]]</pre>
+                    <pre sensitive$="[[sensitive]]">[[attribute.displayValue]]</pre>
                 </vi-scroller>
             </template>
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]" reverse-content$="[[multiline]]">
                 <template is="dom-if" if="[[!multiline]]">
-                    <input content class="flex" value="{{value::input}}" type="text" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off" placeholder="[[placeholder]]">
+                    <input content class="flex" value="{{value::input}}" type="text" on-blur="_editInputBlur" readonly$="[[readOnly]]" autocomplete="off" placeholder="[[placeholder]]" sensitive$="[[sensitive]]">
                 </template>
                 <template is="dom-if" if="[[multiline]]">
                     <vi-scroller content class="fit">
-                        <pre id="multiline">[[attribute.value]]</pre>
+                        <pre id="multiline" sensitive$="[[sensitive]]">[[attribute.value]]</pre>
                     </vi-scroller>
                 </template>
                 <template is="dom-if" if="[[canShowDialog]]">
-                    <button on-tap="_showLanguagesDialog" tabindex="-1">
+                    <button on-tap="_showLanguagesDialog" tabindex="-1" hidden$="[[sensitive]]">
                         <vi-icon source="TranslatedString"></vi-icon>
                     </button>
                 </template>

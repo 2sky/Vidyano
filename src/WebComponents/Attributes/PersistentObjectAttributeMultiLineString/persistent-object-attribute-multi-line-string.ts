@@ -33,7 +33,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _computeCodeMirror(attribute: Vidyano.PersistentObjectAttribute): string {
-            const codeMirror = attribute ? attribute.getTypeHint("language") : null;
+            const codeMirror = attribute ? attribute.getTypeHint("language", null) : null;
             if (codeMirror)
                 this.importHref(this.resolveUrl("../../CodeMirror/code-mirror.html"));
 
@@ -42,6 +42,10 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _computeIsCodeMirrorReadOnly(readOnly: boolean, editing: boolean): boolean {
             return readOnly || !editing;
+        }
+
+        private _useCodeMirror(codeMirror: boolean, sensitive: boolean): boolean {
+            return codeMirror && !sensitive;
         }
     }
 }

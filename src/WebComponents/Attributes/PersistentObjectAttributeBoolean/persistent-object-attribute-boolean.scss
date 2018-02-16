@@ -14,6 +14,10 @@
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
     }
 
+     span[sensitive] {
+         @apply(--vi-app--sensitive);
+     }
+
     @apply(--vi-persistent-object-attribute-boolean);
 }
 
