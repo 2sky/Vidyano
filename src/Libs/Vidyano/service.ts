@@ -649,7 +649,7 @@ namespace Vidyano {
             if (result.initial != null)
                 this._initial = this.hooks.onConstructPersistentObject(this, result.initial);
 
-            if (result.userName !== this.registerUserName) {
+            if (result.userName !== this.registerUserName || result.userName === this.defaultUserName) {
                 this._setUserName(result.userName);
 
                 if (result.session)
