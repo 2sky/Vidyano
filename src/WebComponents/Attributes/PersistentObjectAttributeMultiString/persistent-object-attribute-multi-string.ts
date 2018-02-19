@@ -30,7 +30,8 @@ namespace Vidyano.WebComponents.Attributes {
                 type: Boolean,
                 reflectToAttribute: true
             },
-            placeholder: String
+            placeholder: String,
+            sensitive: Boolean
         }
     })
     export class PersistentObjectAttributeMultiStringItem extends WebComponent {
@@ -38,6 +39,7 @@ namespace Vidyano.WebComponents.Attributes {
         private _focusQueued: boolean;
         isNew: boolean;
         isReadOnly: boolean;
+        sensitive: boolean;
 
         constructor(public value: string) {
             super();
@@ -104,7 +106,10 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _computeStrings(value: string, readOnly: boolean, sensitive: boolean): PersistentObjectAttributeMultiStringItem[] {
             const strings = value ? value.split("\n").filter(v => !!v.length).map((v: string, n: number) => this.strings && this.strings[n] && this.strings[n].value === v ? this.strings[n] : new PersistentObjectAttributeMultiStringItem(v)) : [];
-            strings.forEach(s => s.isReadOnly = readOnly || sensitive);
+            strings.forEach(s => {
+                s.isReadOnly = readOnly || sensitive;
+                s.sensitive = sensitive;
+            });
 
             return strings;
         }

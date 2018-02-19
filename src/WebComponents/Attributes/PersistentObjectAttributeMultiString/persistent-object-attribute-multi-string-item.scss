@@ -4,24 +4,32 @@
     @include layout-horizontal();
     margin-bottom: 2px;
 
-    input {
-        height: calc(var(--theme-h2) - 2px);
-        line-height: calc(var(--theme-h2) - 2px);
-        -moz-transition: border-color 0.2s ease-in-out;
-        -o-transition: border-color 0.2s ease-in-out;
-        -webkit-transition: border-color 0.2s ease-in-out;
-        transition: border-color 0.2s ease-in-out;
-        border: none;
-        padding: 0 6px;
+    .inputhost {
+        border: 1px solid var(--theme-light-border);
         box-sizing: border-box;
-        outline: none;
 
-        &:focus {
-            border-color: var(--theme-color-lighter);
-        }
+        input {
+            height: calc(var(--theme-h2) - 2px);
+            line-height: calc(var(--theme-h2) - 2px);
+            -moz-transition: border-color 0.2s ease-in-out;
+            -o-transition: border-color 0.2s ease-in-out;
+            -webkit-transition: border-color 0.2s ease-in-out;
+            transition: border-color 0.2s ease-in-out;
+            padding: 0 6px;
+            border: none;
+            outline: none;
 
-        &:disabled {
-            background-color: #eee;
+            &:focus {
+                border-color: var(--theme-color-lighter);
+            }
+
+            &:disabled {
+                background-color: #eee;
+            }
+
+            &[sensitive] {
+                @apply(--vi-app--sensitive);
+            }
         }
     }
 
@@ -45,8 +53,8 @@
             visibility: hidden;
         }
 
-        input {
-            border: 1px dashed var(--theme-light-border);
+        .inputhost {
+            border-style: dashed;
         }
 
         vi-persistent-object-attribute-edit {
@@ -58,11 +66,5 @@
         vi-icon {
             display: none;
         }
-    }
-}
-
-:host-context([sensitive]) {
-    input {
-        @apply(--vi-app--sensitive);
     }
 }
