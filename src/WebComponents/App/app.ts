@@ -176,11 +176,6 @@ namespace Vidyano.WebComponents {
                 value: 25,
                 reflectToAttribute: true
             },
-            profilerLoaded: {
-                type: Boolean,
-                readOnly: true,
-                value: false
-            },
             isProfiling: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -277,7 +272,6 @@ namespace Vidyano.WebComponents {
         readonly keys: string; private _setKeys: (keys: string) => void;
         readonly currentRoute: AppRoute; private _setCurrentRoute: (route: AppRoute) => void;
         readonly barebone: boolean; private _setBarebone: (barebone: boolean) => void;
-        readonly profilerLoaded: boolean; private _setProfilerLoaded: (val: boolean) => void;
         readonly updateAvailable: boolean; private _setUpdateAvailable: (updateAvailable: boolean) => void;
         programUnit: ProgramUnit;
         uri: string;
