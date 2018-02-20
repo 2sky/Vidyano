@@ -895,6 +895,7 @@ declare namespace Vidyano {
         onAction(args: ExecuteActionArgs): Promise<PersistentObject>;
         onOpen(obj: ServiceObject, replaceCurrent?: boolean, fromAction?: boolean): void;
         onClose(obj: ServiceObject): void;
+        onConstructApplication(application: IServiceApplication): Application;
         onConstructPersistentObject(service: Service, po: any): PersistentObject;
         onConstructPersistentObjectAttributeTab(service: Service, groups: linqjs.Enumerable<PersistentObjectAttributeGroup>, key: string, id: string, name: string, layout: any, parent: PersistentObject, columnCount: number, isVisible: boolean): PersistentObjectAttributeTab;
         onConstructPersistentObjectQueryTab(service: Service, query: Query): PersistentObjectQueryTab;

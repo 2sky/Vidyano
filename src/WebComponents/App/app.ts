@@ -1103,6 +1103,13 @@ namespace Vidyano.WebComponents {
             return Enumerable.from(queryChartConfigs).firstOrDefault(c => c.type === type);
         }
 
+        onConstructApplication(application: IServiceApplication): Application {
+            const app = super.onConstructApplication(application);
+            this.app.sensitive = app.hasSensitive;
+
+            return app;
+        }
+
         onConstructQuery(service: Service, query: any, parent?: Vidyano.PersistentObject, asLookup: boolean = false, maxSelectedItems?: number): Vidyano.Query {
             const newQuery = super.onConstructQuery(service, query, parent, asLookup, maxSelectedItems);
 

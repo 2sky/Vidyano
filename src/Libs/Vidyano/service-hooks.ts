@@ -40,6 +40,10 @@
             // Noop
         }
 
+        onConstructApplication(application: IServiceApplication): Application {
+            return new Application(this.service, application);
+        }
+
         onConstructPersistentObject(service: Service, po: any): PersistentObject {
             return new PersistentObject(service, po);
         }
