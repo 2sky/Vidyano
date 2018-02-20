@@ -102,7 +102,7 @@ namespace Vidyano.WebComponents {
 
             this._setIsSignedIn(isSignedIn);
             this._setUserName(isSignedIn ? this.service.application.friendlyUserName : null);
-            this._setHasSensitive(this.service.application.hasSensitive);
+            this._setHasSensitive(this.service.application && this.service.application.hasSensitive);
             this._setHasFeedback(isSignedIn && !!this.service.application.feedbackId && this.service.application.feedbackId !== "00000000-0000-0000-0000-000000000000");
             this._setHasUserSettings(isSignedIn && !!this.service.application.userSettingsId && this.service.application.userSettingsId !== "00000000-0000-0000-0000-000000000000");
             this._setHasProfiler(isSignedIn && this.service.application.canProfile);
