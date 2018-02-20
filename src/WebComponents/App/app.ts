@@ -226,7 +226,6 @@ namespace Vidyano.WebComponents {
             sensitive: {
                 type: Boolean,
                 reflectToAttribute: true,
-                value: true,
                 observer: "_sensitiveChanged"
             }
         },
@@ -565,6 +564,10 @@ namespace Vidyano.WebComponents {
         }
 
         private _sensitiveChanged(sensitive: boolean) {
+            const currentSensitiveCookie = !!BooleanEx.parse(Vidyano.cookie("sensitive"));
+            if (currentSensitiveCookie !== sensitive)
+                Vidyano.cookie("sensitive", String(sensitive));
+
             this.fire("sensitive-changed", sensitive, { bubbles: false });
         }
 
@@ -1105,7 +1108,7 @@ namespace Vidyano.WebComponents {
 
         onConstructApplication(application: IServiceApplication): Application {
             const app = super.onConstructApplication(application);
-            this.app.sensitive = app.hasSensitive;
+            this.app.sensitive = app.hasSensitive && BooleanEx.parse(Vidyano.cookie("sensitive")) !== false;
 
             return app;
         }
