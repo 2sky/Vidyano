@@ -2,10 +2,11 @@
 
 $footerHeight: var(--theme-h1);
 $background-color: #2b3940;
+$border-color: mix(white, $background-color, 7.5%);
 
 :host {
     display: block;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid $border-color;
 
     .username {
         line-height: calc(var(--theme-h2) - 2px);
@@ -33,6 +34,16 @@ $background-color: #2b3940;
             fill: #f0f0f0;
             --vi-icon-height: var(--theme-h4);
             --vi-icon-width: var(--theme-h4);
+
+            &#signIn {
+                border-left: 1px solid $border-color;
+                color: white;
+
+                > vi-icon {
+                    height: $footerHeight !important;
+                    margin-left: var(--theme-h5);
+                }
+            }
         }
     }
 
@@ -41,15 +52,6 @@ $background-color: #2b3940;
         height: $footerHeight !important;
         line-height: $footerHeight !important;
         cursor: pointer;
-
-        &#signIn {
-            @include theme-color-button();
-
-            > vi-icon {
-                height: $footerHeight !important;
-                margin-left: var(--theme-h5);
-            }
-        }
 
         &#settings {
             width: $footerHeight;
@@ -78,11 +80,22 @@ $background-color: #2b3940;
     }
 
     &[collapsed] {
-        #signedIn {
+        .actions {
+            @include layout-vertical();
+
+            button {
+                height: var(--theme-h1) !important;
+                line-height: var(--theme-h1) !important;
+            }
+        }
+
+        .username {
             display: none;
         }
 
         #signIn {
+            border-left: none !important;
+
             & > span {
                 display: none;
             }

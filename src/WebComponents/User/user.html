@@ -3,43 +3,20 @@
 <dom-module id="vi-user">
     <template>
         <link rel="stylesheet" href="user.css" />
-        <!--<template is="dom-if" if="[[isSignedIn]]">
-            <div id="signedIn" class="horizontal layout center-justified flex">
-                <span>[[userName]]</span>
-            </div>
-            <vi-popup-menu right-align>
-                <button id="settings" header is="vi-button">
-                    <vi-icon source="Up"></vi-icon>
-                </button>
-                <template is="dom-if" if="[[canUserSettings]]">
-                    <vi-popup-menu-item icon="Configure" label="[[translateMessage('UserSettings', isAttached)]]" on-tap="userSettings"></vi-popup-menu-item>
-                </template>
-                <template is="dom-if" if="[[canFeedback]]">
-                    <vi-popup-menu-item icon="UserFeedback" label="[[translateMessage('Feedback', isAttached)]]" on-tap="feedback"></vi-popup-menu-item>
-                </template>
-                <template is="dom-if" if="[[canProfile]]">
-                    <vi-popup-menu-item icon="Profiler" label="Profiler" on-tap="_showProfiler"></vi-popup-menu-item>
-                </template>
-                <template is="dom-if" if="[[!service.windowsAuthentication]]">
-                    <vi-popup-menu-item icon="SignOut" label="[[translateMessage('SignOut', isAttached)]]" on-tap="signOut"></vi-popup-menu-item>
-                </template>
-            </vi-popup-menu>
-        </template>
-        <template is="dom-if" if="[[!isSignedIn]]">
-            <button is="vi-button" id="signIn" class="flex" on-tap="signIn">
-                <span>[[translateMessage('SignIn', isAttached)]]</span>
-                <vi-icon source="SignIn"></vi-icon>
-            </button>
-        </template>-->
-        <div class="username horizontal layout center-justified">
+        <div class="username horizontal layout center-justified" hidden$="[[!isSignedIn]]">
             <span>[[userName]]</span>
         </div>
         <div class="actions">
             <button is="vi-button" icon="Invisible" inverse="[[!isAppSensitive]]" title="[[translateMessage('Privacy', isAttached)]]" on-tap="_toggleSensitive"></button>
-            <button is="vi-button" icon="Profiler" inverse title="[[translateMessage('Profiler', isAttached)]]" hidden$="[[!canProfile]]" on-tap="_showProfiler"></button>
-            <button is="vi-button" icon="UserFeedback" inverse title="[[translateMessage('Feedback', isAttached)]]" hidden$="[[!canFeedback]]" on-tap="feedback"></button>
-            <button is="vi-button" icon="Configure" inverse title="[[translateMessage('UserSettings', isAttached)]]" hidden$="[[!canUserSettings]]" on-tap="userSettings"></button>
-            <button is="vi-button" icon="SignOut" inverse title="[[translateMessage('SignOut', isAttached)]]" hidden$="[[service.windowsAuthentication]]" on-tap="signOut"></button>
+            <template is="dom-if" if="[[isSignedIn]]">
+                <button is="vi-button" icon="Profiler" inverse title="[[translateMessage('Profiler', isAttached)]]" hidden$="[[!canProfile]]" on-tap="_showProfiler"></button>
+                <button is="vi-button" icon="UserFeedback" inverse title="[[translateMessage('Feedback', isAttached)]]" hidden$="[[!canFeedback]]" on-tap="feedback"></button>
+                <button is="vi-button" icon="Configure" inverse title="[[translateMessage('UserSettings', isAttached)]]" hidden$="[[!canUserSettings]]" on-tap="userSettings"></button>
+                <button is="vi-button" icon="SignOut" inverse title="[[translateMessage('SignOut', isAttached)]]" hidden$="[[service.windowsAuthentication]]" on-tap="signOut"></button>
+            </template>
+            <template is="dom-if" if="[[!isSignedIn]]">
+                <button is="vi-button" class="flex" id="signIn" icon="SignIn" label="[[signInLabel]]" inverse title="[[signInLabel]]" hidden$="[[isSignedIn]]" on-tap="signIn"></button>
+            </template>
         </div>
     </template>
 </dom-module>

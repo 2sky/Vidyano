@@ -12,6 +12,10 @@ namespace Vidyano.WebComponents {
                 type: String,
                 readOnly: true
             },
+            signInLabel: {
+                type: String,
+                computed: "_computeSignInLabel(isAttached, collapsed)"
+            },
             canFeedback: {
                 type: Boolean,
                 readOnly: true
@@ -26,7 +30,8 @@ namespace Vidyano.WebComponents {
             },
             collapsed: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: false
             },
             appSensitive: {
                 type: Boolean,
@@ -46,6 +51,13 @@ namespace Vidyano.WebComponents {
         readonly canUserSettings: boolean; private _setCanUserSettings: (val: boolean) => void;
         readonly canProfile: boolean; private _setCanProfile: (val: boolean) => void;
         readonly userName: string; private _setUserName: (val: string) => void;
+
+        private _computeSignInLabel(isAttached: boolean, collapsed: boolean): string {
+            if (!isAttached)
+                return;
+
+            return collapsed ? "": this.translateMessage("SignIn");
+        }
 
         signIn() {
             this.app.redirectToSignIn();
