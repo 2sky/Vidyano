@@ -1,6 +1,11 @@
 ﻿namespace Vidyano {
     "use strict";
 
+    export interface IServiceApplication {
+        application: IServicePersistentObject;
+        hasSensitive: boolean;
+    }
+
     export class Application extends PersistentObject {
         private _userId: string;
         private _friendlyUserName: string;
@@ -15,9 +20,10 @@
         private _routes: IRoutes;
         private _poRe: RegExp;
         private _queryRe: RegExp;
-        programUnits: ProgramUnit[];
+        readonly programUnits: ProgramUnit[];
+        readonly hasSensitive: boolean;
 
-        constructor(service: Service, application: IServicePersistentObject) {
+        constructor(service: Service, { application, hasSensitive }: IServiceApplication) {
             super(service, application);
 
             this._userId = this.getAttributeValue("UserId");
@@ -42,6 +48,8 @@
             const pus = <{ hasManagement: boolean; units: any[] }>JSON.parse(this.getAttributeValue("ProgramUnits"));
             this._hasManagement = pus.hasManagement;
             this.programUnits = Enumerable.from(pus.units).select(unit => new ProgramUnit(this.service, this.routes, unit)).toArray();
+
+            this.hasSensitive = !!hasSensitive;
         }
 
         get userId(): string {

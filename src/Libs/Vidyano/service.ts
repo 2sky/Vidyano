@@ -626,7 +626,7 @@ namespace Vidyano {
             if (result.application == null)
                 throw "Unknown error";
 
-            this._setApplication(new Application(this, result.application));
+            this._setApplication(new Application(this, result));
 
             const resourcesQuery = this.application.getQuery("Resources");
             if (resourcesQuery)

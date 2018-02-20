@@ -16,15 +16,19 @@ namespace Vidyano.WebComponents {
                 type: String,
                 computed: "_computeSignInLabel(isAttached, collapsed)"
             },
-            canFeedback: {
+            hasSensitive: {
                 type: Boolean,
                 readOnly: true
             },
-            canUserSettings: {
+            hasFeedback: {
                 type: Boolean,
                 readOnly: true
             },
-            canProfile: {
+            hasUserSettings: {
+                type: Boolean,
+                readOnly: true
+            },
+            hasProfiler: {
                 type: Boolean,
                 readOnly: true
             },
@@ -47,9 +51,10 @@ namespace Vidyano.WebComponents {
     export class User extends WebComponent {
         readonly service: Vidyano.Service; private _setService: (service: Vidyano.Service) => void;
         readonly isSignedIn: boolean; private _setIsSignedIn: (val: boolean) => void;
-        readonly canFeedback: boolean; private _setCanFeedback: (val: boolean) => void;
-        readonly canUserSettings: boolean; private _setCanUserSettings: (val: boolean) => void;
-        readonly canProfile: boolean; private _setCanProfile: (val: boolean) => void;
+        readonly hasSensitive: boolean; private _setHasSensitive: (val: boolean) => void;
+        readonly hasFeedback: boolean; private _setHasFeedback: (val: boolean) => void;
+        readonly hasUserSettings: boolean; private _setHasUserSettings: (val: boolean) => void;
+        readonly hasProfiler: boolean; private _setHasProfiler: (val: boolean) => void;
         readonly userName: string; private _setUserName: (val: string) => void;
 
         private _computeSignInLabel(isAttached: boolean, collapsed: boolean): string {
@@ -97,9 +102,10 @@ namespace Vidyano.WebComponents {
 
             this._setIsSignedIn(isSignedIn);
             this._setUserName(isSignedIn ? this.service.application.friendlyUserName : null);
-            this._setCanFeedback(isSignedIn && !!this.service.application.feedbackId && this.service.application.feedbackId !== "00000000-0000-0000-0000-000000000000");
-            this._setCanUserSettings(isSignedIn && !!this.service.application.userSettingsId && this.service.application.userSettingsId !== "00000000-0000-0000-0000-000000000000");
-            this._setCanProfile(isSignedIn && this.service.application.canProfile);
+            this._setHasSensitive(this.service.application.hasSensitive);
+            this._setHasFeedback(isSignedIn && !!this.service.application.feedbackId && this.service.application.feedbackId !== "00000000-0000-0000-0000-000000000000");
+            this._setHasUserSettings(isSignedIn && !!this.service.application.userSettingsId && this.service.application.userSettingsId !== "00000000-0000-0000-0000-000000000000");
+            this._setHasProfiler(isSignedIn && this.service.application.canProfile);
         }
     }
 }

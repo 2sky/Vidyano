@@ -489,6 +489,10 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
+    interface IServiceApplication {
+        application: IServicePersistentObject;
+        hasSensitive: boolean;
+    }
     class Application extends PersistentObject {
         private _userId;
         private _friendlyUserName;
@@ -503,8 +507,9 @@ declare namespace Vidyano {
         private _routes;
         private _poRe;
         private _queryRe;
-        programUnits: ProgramUnit[];
-        constructor(service: Service, application: IServicePersistentObject);
+        readonly programUnits: ProgramUnit[];
+        readonly hasSensitive: boolean;
+        constructor(service: Service, {application, hasSensitive}: IServiceApplication);
         readonly userId: string;
         readonly friendlyUserName: string;
         readonly feedbackId: string;
