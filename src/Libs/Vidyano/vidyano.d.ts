@@ -414,6 +414,7 @@ declare namespace Vidyano {
     interface IServicePersistentObject {
         type?: string;
         breadcrumb?: string;
+        isBreadcrumbSensitive?: boolean;
         attributes?: IServicePersistentObjectAttribute[];
         stateBehavior?: "OpenInEdit" | "StayInEdit" | "AsDialog";
     }
@@ -432,6 +433,7 @@ declare namespace Vidyano {
         private _isDeleted;
         private _tabs;
         private _isFrozen;
+        readonly isBreadcrumbSensitive: boolean;
         fullTypeName: string;
         label: string;
         objectId: string;

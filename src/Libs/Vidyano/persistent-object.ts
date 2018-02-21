@@ -9,6 +9,7 @@ namespace Vidyano {
     export interface IServicePersistentObject {
         type?: string;
         breadcrumb?: string;
+        isBreadcrumbSensitive?: boolean;
         attributes?: IServicePersistentObjectAttribute[];
         stateBehavior?: "OpenInEdit" | "StayInEdit" | "AsDialog";
     }
@@ -28,6 +29,7 @@ namespace Vidyano {
         private _isDeleted: boolean;
         private _tabs: PersistentObjectTab[];
         private _isFrozen: boolean = false;
+        readonly isBreadcrumbSensitive: boolean;
 
         fullTypeName: string;
         label: string;
@@ -61,6 +63,7 @@ namespace Vidyano {
             this.queryLayoutMode = po.queryLayoutMode === "FullPage" ? PersistentObjectLayoutMode.FullPage : PersistentObjectLayoutMode.MasterDetail;
             this.objectId = po.objectId;
             this._breadcrumb = po.breadcrumb;
+            this.isBreadcrumbSensitive = po.isBreadcrumbSensitive;
             this.setNotification(po.notification, po.notificationType, po.notificationDuration, true);
             this.isNew = !!po.isNew;
             this.newOptions = po.newOptions;
