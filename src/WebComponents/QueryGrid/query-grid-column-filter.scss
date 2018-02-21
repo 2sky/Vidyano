@@ -264,4 +264,10 @@
             opacity: 0.5;
         }
     }
+
+    &[sensitive] {
+        vi-checkbox[distinct-type="matching"], vi-checkbox[distinct-type="remaining"] {
+            @apply(--vi-app--sensitive);
+        }
+    }
 }

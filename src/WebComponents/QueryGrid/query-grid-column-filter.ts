@@ -94,6 +94,11 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 computed: "!column.canFilter",
                 reflectToAttribute: true
+            },
+            sensitive: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "column.column.isSensitive"
             }
         },
         observers: [
@@ -154,6 +159,11 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 computed: "!column.canFilter",
                 reflectToAttribute: true
+            },
+            sensitive: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "column.column.isSensitive"
             }
         },
         observers: [
