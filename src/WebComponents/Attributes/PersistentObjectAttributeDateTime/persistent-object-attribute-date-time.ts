@@ -214,17 +214,7 @@
             else
                 newDate = "—";
 
-            const selectionStart = this.dateInput.selectionStart;
-            const selectionEnd = this.dateInput.selectionEnd;
-
-            if (newDate !== this.dateInput.value)
-                this.dateInput.value = newDate;
-
-            if (selectionStart > 0)
-                this.dateInput.selectionStart = selectionStart;
-
-            if (selectionEnd > 0)
-                this.dateInput.selectionEnd = selectionEnd;
+            this._setInputValue(this.dateInput, newDate);
         }
 
         private _renderTime(selectedTime: Date, hasDateComponent: boolean, hasTimeComponent: boolean, readOnly: boolean, editing: boolean) {
@@ -239,17 +229,28 @@
             else
                 newTime = hasDateComponent ? "" : "—";
 
-            const selectionStart = this.timeInput.selectionStart;
-            const selectionEnd = this.timeInput.selectionEnd;
+            this._setInputValue(this.timeInput, newTime);
+        }
 
-            if (newTime !== this.timeInput.value)
-                this.timeInput.value = newTime;
+        private _setInputValue(input: HTMLInputElement, value: string) {
+            if (input.value === value)
+                return;
 
-            if (selectionStart > 0)
-                this.timeInput.selectionStart = selectionStart;
+            const selection = document.activeElement === input ? { start: 0, end: 0 } : null;
+            if (selection != null) {
+                selection.start = input.selectionStart;
+                selection.end = input.selectionEnd;
+            }
 
-            if (selectionEnd > 0)
-                this.timeInput.selectionEnd = selectionEnd;
+            input.value = value;
+
+            if (selection != null) {
+                if (selection.start > 0)
+                    input.selectionStart = selection.start;
+
+                if (selection.end > 0)
+                    input.selectionEnd = selection.end;
+            }
         }
 
         private _clear() {
