@@ -404,6 +404,7 @@ namespace Vidyano.WebComponents {
         private _app: Vidyano.WebComponents.App;
         readonly service: Vidyano.Service;
         readonly translations: { [key: string]: string; };
+        protected readonly isAppSensitive: boolean;
         className: string;
         classList: DOMTokenList;
         tagName: string;

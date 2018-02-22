@@ -38,7 +38,8 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_updatePersistentObject(persistentObjectId, persistentObjectObjectId, isAttached)"
+            "_updatePersistentObject(persistentObjectId, persistentObjectObjectId, isAttached)",
+            "_updateTitle(persistentObject.isBreadcrumbSensitive, isAppSensitive)"
         ],
         listeners: {
             "app-route-activate": "_activate",
@@ -51,7 +52,8 @@ namespace Vidyano.WebComponents {
             },
             "ctrl+s": "_save",
             "esc": "_cancelSave"
-        }
+        },
+        sensitive: true
     })
     export class PersistentObjectPresenter extends WebComponent implements IConfigurable {
         private _cacheEntry: PersistentObjectAppCacheEntry;
@@ -180,7 +182,14 @@ namespace Vidyano.WebComponents {
                 }
             }
 
-            this.fire("title-changed", { title: persistentObject ? persistentObject.breadcrumb : null }, { bubbles: true });
+            this._updateTitle(persistentObject.isBreadcrumbSensitive, this.isAppSensitive);
+        }
+
+        private _updateTitle(isBreadcrumbSensitive: boolean, isAppSensitive: boolean) {
+            if (!this.persistentObject)
+                return;
+
+            this.fire("title-changed", { title: isBreadcrumbSensitive && isAppSensitive ? null : this.persistentObject.breadcrumb }, { bubbles: true });
         }
 
         private async _renderPersistentObject(persistentObject: Vidyano.PersistentObject) {
