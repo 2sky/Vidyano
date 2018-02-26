@@ -98,6 +98,10 @@
             this._setCurrentDate(moment(new Date()));
         }
 
+        get isOpen(): boolean {
+            return (<Popup>this.$.popup).open;
+        }
+
         private _zoomChanged(zoom: string) {
             if (zoom === "days") {
                 let dayNames = Vidyano.CultureInfo.currentCulture.dateFormat.shortDayNames.slice();

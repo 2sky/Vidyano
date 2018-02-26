@@ -69,6 +69,7 @@
         private _isDateFilled: boolean;
         private _isTimeFilled: boolean;
         private _skipBlurRefreshUpdate: boolean;
+        private _pendingRefresh: boolean;
         readonly isInvalid: boolean; private _setIsInvalid: (invalid: boolean) => void;
         readonly hasTimeComponent: boolean;
         readonly hasDateComponent: boolean;
@@ -199,7 +200,18 @@
             else
                 this._setIsInvalid(false);
 
-            this.attribute.setValue(value, document.activeElement !== this.dateInput && document.activeElement !== this.timeInput);
+            let allowRefresh = this.monthMode;
+            if (!allowRefresh && !this.isInvalid) {
+                allowRefresh = value && !this.value;
+                if (!allowRefresh) {
+                    allowRefresh = (this.hasTimeComponent && (<TimePicker>this.$$("#timepicker")).isOpen) || (this.hasDateComponent && (<DatePicker>this.$$("#datepicker")).isOpen);
+                    if (!allowRefresh)
+                        allowRefresh = document.activeElement !== this.dateInput && document.activeElement !== this.timeInput;
+                }
+            }
+
+            this._pendingRefresh = this.attribute.triggersRefresh && !allowRefresh;
+            this.attribute.setValue(value, allowRefresh);
         }
 
         private _renderDate(selectedDate: Date, hasDateComponent: boolean, readOnly: boolean, editing: boolean) {
@@ -351,6 +363,9 @@
             this._renderTime(this.selectedTime, this.hasDateComponent, this.hasTimeComponent, this.readOnly, this.editing);
 
             this._setIsInvalid(false);
+
+            if (this._pendingRefresh)
+                this._guardedSetValue(this.value);
         }
 
         private _computeHasComponent(target: Vidyano.PersistentObjectAttribute, component: string): boolean {

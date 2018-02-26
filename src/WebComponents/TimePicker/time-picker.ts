@@ -34,6 +34,10 @@
             this._updateTime();
         }
 
+        get isOpen(): boolean {
+            return (<Popup>this.$.popup).open;
+        }
+
         private _timeChanged() {
             this._updateTime();
         }
