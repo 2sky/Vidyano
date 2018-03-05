@@ -65,6 +65,9 @@ namespace Vidyano {
 
         async newObject(): Promise<PersistentObject> {
             const po = await this.details.actions["New"].execute({ throwExceptions: true, skipOpen: true });
+            if (!po)
+                return null;
+
             po.ownerQuery = null;
             po.ownerDetailAttribute = this;
 
