@@ -63,7 +63,7 @@
                             <template is="dom-repeat" items="[[attribute.objects]]" as="obj">
                                 <div class="row" hidden$="[[obj.isDeleted]]">
                                     <div class="delete-button">
-                                        <button is="vi-button" inverse on-tap="_delete" disabled$="[[_computeDeleteDisabled(attribute.parent.isFrozen,obj.isReadOnly)]]">
+                                        <button is="vi-button" inverse on-tap="_delete" disabled$="[[_computeDeleteDisabled(attribute.parent.isFrozen, obj.isReadOnly)]]">
                                             <vi-icon source="Action_Delete"></vi-icon>
                                         </button>
                                     </div>

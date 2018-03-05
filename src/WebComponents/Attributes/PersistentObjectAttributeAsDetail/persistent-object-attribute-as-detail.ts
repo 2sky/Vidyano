@@ -152,16 +152,12 @@ namespace Vidyano.WebComponents.Attributes {
             this._setInitializing(false);
         }
 
-        private _rowAdded(e: CustomEvent) {
-            const row = (<HTMLElement>e.target).parentElement;
-            this.async(() => {
-                row.scrollIntoView(false);
-            });
-        }
-
         private async _add(e: TapEvent) {
             try {
                 const po = await this.attribute.newObject();
+                if (!po)
+                    return;
+
                 if (po.stateBehavior.indexOf("OpenAsDialog") < 0)
                     await this.__add(po);
                 else {
@@ -183,6 +179,10 @@ namespace Vidyano.WebComponents.Attributes {
         private async __add(po: Vidyano.PersistentObject) {
             this.push("attribute.objects", po);
             this.set("activeObject", po);
+
+            Polymer.dom(this).flush();
+            this.async(() => (<Scroller>this.$.body).verticalScrollOffset = (<Scroller>this.$.body).innerHeight);
+
             po.parent = this.attribute.parent;
 
             if (this.attribute.lookupAttribute && po.attributes[this.attribute.lookupAttribute]) {
@@ -262,9 +262,6 @@ namespace Vidyano.WebComponents.Attributes {
                 readOnly: true
             }
         },
-        observers: [
-            "_scrollNewDetailRowIntoView(serviceObject, columns, editing, isAttached)"
-        ],
         forwardObservers: [
             "serviceObject.lastUpdated"
         ],
@@ -290,11 +287,6 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _getAttributeForColumn(obj: Vidyano.PersistentObject, column: QueryColumn): Vidyano.PersistentObjectAttribute {
             return obj.attributes[column.name];
-        }
-
-        private _scrollNewDetailRowIntoView(serviceObject: Vidyano.PersistentObject, columns: Vidyano.QueryColumn[], editing: boolean, isAttached: boolean) {
-            if (editing && isAttached && !!serviceObject && serviceObject.isNew && !!columns)
-                this.scrollIntoView(false);
         }
 
         private _computeSoftEdit(serviceObject: Vidyano.PersistentObject): boolean {

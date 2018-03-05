@@ -41,6 +41,12 @@ namespace Vidyano.WebComponents {
         tab: Vidyano.PersistentObjectAttributeTab;
         autofocus: boolean;
 
+        detached() {
+            super.detached();
+
+            this._attributePresenters = this._autofocusTarget = null;
+        }
+
         private _computeColumns(size: ISize, defaultColumnCount: number): number {
             if (defaultColumnCount)
                 return defaultColumnCount;
@@ -61,6 +67,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _attributeLoaded(e: CustomEvent, detail: { attribute: Vidyano.PersistentObjectAttribute }) {
+            if (!this.autofocus)
+                return;
+
             if (!this._attributePresenters)
                 this._attributePresenters = [];
 
@@ -72,10 +81,13 @@ namespace Vidyano.WebComponents {
 
             this._attributePresenters = this._attributePresenters.sort((attr1, attr2) => attr1.attribute.offset - attr2.attribute.offset);
             this._autofocusTarget = Enumerable.from(this._attributePresenters).firstOrDefault(a => !a.hidden && !a.disabled && !a.readOnly);
-            if (!this.autofocus || !this._autofocusTarget)
+            if (!this._autofocusTarget)
                 return;
 
             if (document.activeElement && document.activeElement.tagName === "INPUT")
+                return;
+
+            if (!!this._autofocusTarget.findParent(e => e instanceof Vidyano.WebComponents.PersistentObjectAttributePresenter))
                 return;
 
             this._autofocusTarget.focus();
