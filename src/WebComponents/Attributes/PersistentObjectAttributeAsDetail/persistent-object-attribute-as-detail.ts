@@ -17,7 +17,7 @@ namespace Vidyano.WebComponents.Attributes {
                 computed: "_computeNewActionPinned(size.height, newAction)"
             },
             deleteAction: {
-                type: Object,
+                type: Boolean,
                 readOnly: true
             },
             size: {
@@ -27,7 +27,7 @@ namespace Vidyano.WebComponents.Attributes {
             canDelete: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeCanDelete(editing, deleteAction, attribute.objects)"
+                computed: "_computeCanDelete(editing, deleteAction, attribute.objects, attribute)"
             },
             initializing: {
                 type: Boolean,
@@ -42,7 +42,7 @@ namespace Vidyano.WebComponents.Attributes {
         },
         observers: [
             "_updateWidths(columns, size.width, deleteAction, editing, isAttached)",
-            "_updateActions(attribute.details.actions, editing, readOnly)"
+            "_updateActions(attribute.details.actions, editing, readOnly, attribute)"
         ],
         forwardObservers: [
             "attribute.objects.*.isDeleted"
@@ -54,7 +54,7 @@ namespace Vidyano.WebComponents.Attributes {
         private _initialActiveObjectSet: boolean;
         readonly initializing: boolean; private _setInitializing: (init: boolean) => void;
         readonly newAction: Vidyano.Action; private _setNewAction: (action: Vidyano.Action) => void;
-        readonly deleteAction: Vidyano.Action; private _setDeleteAction: (action: Vidyano.Action) => void;
+        readonly deleteAction: boolean; private _setDeleteAction: (action: boolean) => void;
         attribute: Vidyano.PersistentObjectAttributeAsDetail;
         newActionPinned: boolean;
 
@@ -66,8 +66,8 @@ namespace Vidyano.WebComponents.Attributes {
             return Enumerable.from(columns).where(c => !c.isHidden).toArray();
         }
 
-        private _computeCanDelete(editing: boolean, deleteAction: Vidyano.Action, objects: Vidyano.PersistentObject[]): boolean {
-            return editing && !!deleteAction && !!objects && objects.some(o => !o.isDeleted);
+        private _computeCanDelete(editing: boolean, deleteAction: boolean, objects: Vidyano.PersistentObject[], attribute: Vidyano.PersistentObjectAttributeAsDetail): boolean {
+            return editing && deleteAction && (attribute.parent.isNew || (!!objects && objects.some(o => !o.isDeleted)));
         }
 
         private _computeNewActionPinned(height: number, newAction: Vidyano.Action): boolean {
@@ -87,9 +87,13 @@ namespace Vidyano.WebComponents.Attributes {
             return contentHeight + this._inlineAddHeight > this.$.table.offsetHeight - this.$.head.offsetHeight;
         }
 
-        private _updateActions(actions: Vidyano.Action[], editing: boolean, readOnly: boolean) {
+        private _computeDeleteDisabled(frozen: boolean, readOnly: boolean): boolean {
+            return frozen || readOnly;
+        }
+
+        private _updateActions(actions: Vidyano.Action[], editing: boolean, readOnly: boolean, attribute: Vidyano.PersistentObjectAttributeAsDetail) {
             this._setNewAction(editing && !readOnly ? actions["New"] || null : null);
-            this._setDeleteAction(editing && !readOnly ? actions["Delete"] || null : null);
+            this._setDeleteAction(editing && !readOnly && (attribute.parent.isNew || !!actions["Delete"]));
         }
 
         private _updateWidths(columns: QueryColumn[], width: number, deleteAction: Vidyano.Action, editing: boolean, isAttached: boolean) {
@@ -206,7 +210,9 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _delete(e: TapEvent) {
             const obj = <Vidyano.PersistentObject>e.model.obj;
-            if (!obj.isNew)
+            if (obj.isReadOnly)
+                return;
+            else if (!obj.isNew)
                 obj.isDeleted = true;
             else
                 this.splice("attribute.objects", this.attribute.objects.indexOf(obj), 1);
