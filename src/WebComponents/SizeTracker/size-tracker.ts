@@ -25,15 +25,6 @@ namespace Vidyano.WebComponents {
     })();
 
     let observer: IResizeObserver;
-    if (typeof ResizeObserver !== "undefined") {
-        observer = new ResizeObserver(entries => {
-            entries.forEach(e => {
-                const tracker = <SizeTracker>Enumerable.from(e.target.children).firstOrDefault(e => e instanceof SizeTracker);
-                if (tracker)
-                    tracker["_triggerSizeChanged"](e.contentRect);
-            });
-        });
-    }
 
     @WebComponent.register({
         properties: {
