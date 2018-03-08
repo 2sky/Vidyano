@@ -357,7 +357,7 @@ namespace Vidyano.WebComponents {
                 else if (item instanceof Vidyano.ProgramUnitItemPersistentObject)
                     this.app.cacheRemove(new PersistentObjectAppCacheEntry((<Vidyano.ProgramUnitItemPersistentObject>item).persistentObjectId, (<Vidyano.ProgramUnitItemPersistentObject>item).persistentObjectObjectId));
 
-                if (this.app.noHistory) {
+                if (this.app.noHistory && !(item instanceof Vidyano.ProgramUnitItemUrl)) {
                     e.preventDefault();
                     this.app.changePath(item.path);
                 }

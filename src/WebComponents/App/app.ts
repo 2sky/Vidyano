@@ -128,7 +128,8 @@ namespace Vidyano.WebComponents {
             },
             path: {
                 type: String,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: ""
             },
             service: {
                 type: Object,
@@ -661,7 +662,7 @@ namespace Vidyano.WebComponents {
                 return;
 
             const anchorParent = this.findParent((e: HTMLElement) => e.tagName === "A" && !!(<HTMLAnchorElement>e).href, e.target as HTMLElement) as HTMLAnchorElement;
-            if (anchorParent && anchorParent.href.startsWith(Path.routes.root) && !anchorParent.hasAttribute("download") && !(anchorParent.getAttribute("rel") || "").contains("external")) {
+            if (anchorParent && anchorParent.href.startsWith(Path.routes.root || "") && !anchorParent.hasAttribute("download") && !(anchorParent.getAttribute("rel") || "").contains("external")) {
                 let path = anchorParent.href.slice(Path.routes.root.length);
                 if (path.startsWith("#!/"))
                     path = path.substr(3);
