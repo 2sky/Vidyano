@@ -34,6 +34,13 @@
                 position: relative;
                 border: 1px solid var(--theme-light-border);
                 box-sizing: border-box;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding: 0 var(--theme-h5);
+
+                > span {
+                    padding: 0;
+                }
             }
 
             vi-persistent-object-attribute-validation-error:not([hidden]) + div {
