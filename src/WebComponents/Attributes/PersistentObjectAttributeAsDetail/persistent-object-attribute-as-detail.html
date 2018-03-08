@@ -51,7 +51,7 @@
                         </div>
                         <template is="dom-if" if="[[newAction]]">
                             <div class="row add inline layout horizontal" hidden$="[[newActionPinned]]">
-                                <button is="vi-button" inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add" disabled$="[[attribute.parent.isFrozen]]"></button>
+                                <button is="vi-button" inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add" disabled$="[[!_canAdd(attribute.parent.isFrozen, isAdding)]]" busy="[[isAdding]]"></button>
                                 <template is="dom-if" if="[[!newActionPinned]]" restamp>
                                     <content select="button"></content>
                                 </template>

@@ -38,6 +38,10 @@ namespace Vidyano.WebComponents.Attributes {
             activeObject: {
                 type: Object,
                 value: null
+            },
+            isAdding: {
+                type: Boolean,
+                readOnly: true
             }
         },
         observers: [
@@ -55,6 +59,7 @@ namespace Vidyano.WebComponents.Attributes {
         readonly initializing: boolean; private _setInitializing: (init: boolean) => void;
         readonly newAction: Vidyano.Action; private _setNewAction: (action: Vidyano.Action) => void;
         readonly deleteAction: boolean; private _setDeleteAction: (action: boolean) => void;
+        readonly isAdding: boolean; private _setIsAdding: (isAdding: boolean) => void;
         attribute: Vidyano.PersistentObjectAttributeAsDetail;
         newActionPinned: boolean;
 
@@ -154,18 +159,45 @@ namespace Vidyano.WebComponents.Attributes {
 
         private async _add(e: TapEvent) {
             try {
+                this._setIsAdding(true);
                 const po = await this.attribute.newObject();
                 if (!po)
                     return;
 
-                if (po.stateBehavior.indexOf("OpenAsDialog") < 0)
-                    await this.__add(po);
+                if (po.stateBehavior.indexOf("OpenAsDialog") < 0) {
+                    if (this.attribute.lookupAttribute && po.attributes[this.attribute.lookupAttribute]) {
+                        const lookupAttribute = <Vidyano.PersistentObjectAttributeWithReference>po.attributes[this.attribute.lookupAttribute];
+                        lookupAttribute.lookup.search();
+
+                        lookupAttribute.lookup.maxSelectedItems = 0;
+                        const items = <QueryResultItem[]>await this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(lookupAttribute.lookup));
+                        if (items && items.length > 0) {
+                            const objects = [po];
+
+                            let item = items.shift();
+                            do {
+                                await lookupAttribute.changeReference([item]);
+                                item = items.shift();
+                                if (!!item) {
+                                    const po2 = await this.attribute.newObject();
+                                    await (<Vidyano.PersistentObjectAttributeWithReference>po2.getAttribute(this.attribute.lookupAttribute)).changeReference([item]);
+                                    objects.push(po2);
+                                }
+                            }
+                            while (items.length > 0);
+
+                            await this._finalizeAdd(...objects);
+                        }
+                    }
+                    else
+                        await this._finalizeAdd(po);
+                }
                 else {
                     await this.app.importComponent("PersistentObjectDialog");
                     this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, {
                         saveLabel: this.app.service.actionDefinitions.get("AddReference").displayName,
                         save: (po, close) => {
-                            this.__add(po);
+                            this._finalizeAdd(po);
                             close();
                         }
                     }));
@@ -174,38 +206,30 @@ namespace Vidyano.WebComponents.Attributes {
             catch (e) {
                 this.attribute.parent.setNotification(e);
             }
+            finally {
+                this._setIsAdding(false);
+            }
         }
 
-        private async __add(po: Vidyano.PersistentObject) {
-            this.push("attribute.objects", po);
-            this.set("activeObject", po);
+        private async _finalizeAdd(...objects: Vidyano.PersistentObject[]) {
+            objects.forEach(po => {
+                po.parent = this.attribute.parent;
+                this.push("attribute.objects", po);
+            });
+            this.set("activeObject", objects[objects.length - 1]);
 
             Polymer.dom(this).flush();
             this.async(() => (<Scroller>this.$.body).verticalScrollOffset = (<Scroller>this.$.body).innerHeight);
 
-            po.parent = this.attribute.parent;
+            this.attribute.isValueChanged = true;
+            this.attribute.parent.triggerDirty();
 
-            if (this.attribute.lookupAttribute && po.attributes[this.attribute.lookupAttribute]) {
-                const lookupAttribute = <Vidyano.PersistentObjectAttributeWithReference>po.attributes[this.attribute.lookupAttribute];
-                lookupAttribute.lookup.search();
+            if (this.attribute.triggersRefresh)
+                await this.attribute._triggerAttributeRefresh(true);
+        }
 
-                const result = await this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(lookupAttribute.lookup));
-                if (result) {
-                    await lookupAttribute.changeReference(result);
-
-                    if (this.attribute.triggersRefresh)
-                        await this.attribute._triggerAttributeRefresh(true);
-                }
-                else
-                    this.pop("attribute.objects");
-            }
-            else {
-                this.attribute.isValueChanged = true;
-                this.attribute.parent.triggerDirty();
-
-                if (this.attribute.triggersRefresh)
-                    await this.attribute._triggerAttributeRefresh(true);
-            }
+        private _canAdd(isFrozen: boolean, isAdding: boolean): boolean {
+            return !isFrozen && !isAdding;
         }
 
         private _delete(e: TapEvent) {
