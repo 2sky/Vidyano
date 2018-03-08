@@ -419,6 +419,10 @@ namespace Vidyano.WebComponents {
             return !hasOptions || disableFiltering;
         }
 
+        private _computeInputTabIndex(hasOptions: boolean, disableFiltering: boolean): string {
+            return this._isReadonlyInput(hasOptions, disableFiltering) ? "-1" : "0";
+        }
+
         private _disablePopup(readonly: boolean, disabled: boolean, sensitive: boolean): boolean {
             return readonly || disabled || sensitive;
         }

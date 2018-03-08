@@ -78,6 +78,10 @@ namespace Vidyano.WebComponents.Attributes {
             if (!this.isReadOnly && !this.isNew)
                 this.fire("multi-string-item-value-changed", null);
         }
+
+        private _computeTabIndex(isReadOnly: boolean): string {
+            return isReadOnly ? "-1" : null;
+        }
     }
 
     @PersistentObjectAttribute.register({

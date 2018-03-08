@@ -80,8 +80,12 @@ namespace Vidyano.WebComponents.Attributes {
             return !nonEdit && isEditing;
         }
 
-        private _computeIsReadOnly(isReadOnly: boolean, disabled: boolean, sensitive: boolean): boolean {
+        private _computeReadOnly(isReadOnly: boolean, disabled: boolean, sensitive: boolean): boolean {
             return isReadOnly || disabled || sensitive;
+        }
+
+        private _computeReadOnlyTabIndex(readOnly: boolean): string {
+            return readOnly ? "-1" : null;
         }
 
         private _computeSensitive(isSensitive: boolean, isAppSensitive: boolean, type: string): boolean {
@@ -161,7 +165,12 @@ namespace Vidyano.WebComponents.Attributes {
                 info.properties["readOnly"] = {
                     type: Boolean,
                     reflectToAttribute: true,
-                    computed: "_computeIsReadOnly(attribute.isReadOnly, disabled, sensitive)"
+                    computed: "_computeReadOnly(attribute.isReadOnly, disabled, sensitive)"
+                };
+                info.properties["readOnlyTabIndex"] = {
+                    type: String,
+                    reflectToAttribute: true,
+                    computed: "_computeReadOnlyTabIndex(readOnly)"
                 };
                 info.properties["required"] = {
                     type: Boolean,

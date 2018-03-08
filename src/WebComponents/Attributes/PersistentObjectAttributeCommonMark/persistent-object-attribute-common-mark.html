@@ -11,7 +11,7 @@
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <textarea content value="{{value::input}}" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" sensitive$="[[sensitive]]" on-blur="_editTextAreaBlur" readonly$="[[readOnly]]"></textarea>
+                <textarea content value="{{value::input}}" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" sensitive$="[[sensitive]]" on-blur="_editTextAreaBlur" readonly$="[[readOnly]]" tabindex$="[[readOnlytTabIndex]]"></textarea>
             </<vi-persistent-object-attribute-edit attribute="[[attribute]]">
         </template>
     </template>
