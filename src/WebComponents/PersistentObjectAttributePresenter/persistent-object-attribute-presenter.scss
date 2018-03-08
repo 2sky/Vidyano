@@ -4,11 +4,6 @@
     display: block;
     white-space: nowrap;
     color: #222;
-    opacity: 0;
-    -moz-transition: opacity ease-out 0.3s;
-    -o-transition: opacity ease-out 0.3s;
-    -webkit-transition: opacity ease-out 0.3s;
-    transition: opacity ease-out 0.3s;
     position: relative;
 
     @for $i from 1 through 10 {
@@ -17,13 +12,13 @@
         }
     }
 
-    &:not([loading]) {
-        opacity: 1;
-    }
-
     #content {
         @include layout-horizontal();
         @include flex();
+
+        &:empty {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
 
         .attribute {
             @include flex();
