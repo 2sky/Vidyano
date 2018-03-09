@@ -175,14 +175,14 @@ namespace Vidyano.WebComponents.Attributes {
                             const objects = [po];
 
                             let item = items.shift();
+                            await lookupAttribute.changeReference([item]);
                             do {
-                                await lookupAttribute.changeReference([item]);
-                                item = items.shift();
-                                if (!!item) {
-                                    const po2 = await this.attribute.newObject();
-                                    await (<Vidyano.PersistentObjectAttributeWithReference>po2.getAttribute(this.attribute.lookupAttribute)).changeReference([item]);
-                                    objects.push(po2);
-                                }
+                                if (!(item = items.shift()))
+                                    break;
+
+                                const po2 = await this.attribute.newObject();
+                                await (<Vidyano.PersistentObjectAttributeWithReference>po2.getAttribute(this.attribute.lookupAttribute)).changeReference([item]);
+                                objects.push(po2);
                             }
                             while (items.length > 0);
 
