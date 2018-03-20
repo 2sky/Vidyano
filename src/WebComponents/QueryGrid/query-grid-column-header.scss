@@ -3,11 +3,11 @@
 :host {
     display: block;
     box-sizing: border-box;
-    min-width: var(--vi-query-grid-minimum-column-width);
+    min-width: var(--vi-query-grid--minimum-column-width);
     border-right: 1px solid var(--theme-light-border);
     @include relative();
 
-    &[disable-sort] > div:first-child {
+    &[disable-sort] .label {
         cursor: default;
 
         & > label {
@@ -15,19 +15,20 @@
         }
     }
 
-    &:not([sorting]) > div:first-child {
+    &:not([sorting]) .label {
         padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
     }
 
-    > div:first-child {
+    .label {
+        @include layout-horizontal();
+        @include relative();
         height: var(--vi-query-grid-header-height, --theme-h2);
-        padding: 0 var(--theme-h3) 0 var(--vi-query-grid-cell-padding, --theme-h5);
+        padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
         cursor: pointer;
         position: relative;
         color: #808080;
         white-space: nowrap;
         overflow: hidden;
-        @include relative();
 
         > label {
             display: block;
@@ -42,23 +43,42 @@
         }
 
         > vi-icon {
-            position: absolute;
-            right: var(--theme-h5);
-            top: 0;
             fill: var(--theme-color);
             line-height: var(--theme-h2);
             height: var(--theme-h2);
+            --vi-icon-height: 12px;
         }
     }
 
-    &:not([disable-sort]) > div:first-child {
-        @include theme-color-button-inverse();
+    vi-popup-menu {
+        --vi-popup-menu-item-height: var(--theme-h2);
+        --vi-popup-menu-item-icon-width: var(--theme-h2);
+        --vi-icon-height: 14px;
+    }
 
-        &:hover {
-            > vi-icon {
-                fill: var(--theme-color-darker);
-            }
+    button[icon="CaretDown"] {
+        position: relative;
+        width: var(--theme-h3);
+        height: var(--theme-h2);
+        line-height: var(--theme-h2);
+        padding: 0;
+        fill: var(--theme-color-light) !important;
+        --vi-icon-width: 14px;
+        --vi-icon-height: 14px;
+
+        &:after {
+            position: absolute;
+            left: 0;
+            top: 2px;
+            bottom: 2px;
+            width: 1px;
+            content: " ";
+            background-color: #f0f0f0;
         }
+    }
+
+    &:not([disable-sort]) .label {
+        @include theme-color-button-inverse();
 
         &:active {
             > label {
@@ -84,7 +104,7 @@
         transform: translate3d(0.25em, 0, 0);
     }
 
-    &.resizing .resizer, .resizer:hover{
+    &.resizing .resizer, .resizer:hover {
         &::after {
             position: absolute;
             left: calc(var(--theme-h5) / 2);

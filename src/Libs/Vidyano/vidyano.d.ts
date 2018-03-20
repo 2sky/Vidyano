@@ -609,6 +609,7 @@ declare namespace Vidyano {
         private _id;
         private _sortDirection;
         private _canSort;
+        private _canGroupBy;
         private _canFilter;
         private _canListDistincts;
         private _isSensitive;
@@ -631,6 +632,7 @@ declare namespace Vidyano {
         readonly label: string;
         readonly canFilter: boolean;
         readonly canSort: boolean;
+        readonly canGroupBy: boolean;
         readonly canListDistincts: boolean;
         readonly isSensitive: boolean;
         readonly isSorting: boolean;
@@ -736,14 +738,8 @@ declare namespace Vidyano {
         inverse: boolean;
     }
     interface IQueryGroupingInfo {
-        groupedBy: string;
-        type: string;
-        groups: {
-            name: string;
-            start: number;
-            count: number;
-            end: number;
-        }[];
+        readonly groupedBy: string;
+        groups?: QueryResultItemGroup[];
     }
     interface IServiceQueryChart {
         label: string;
@@ -757,6 +753,7 @@ declare namespace Vidyano {
         columns: Vidyano.QueryColumn[];
         items: Vidyano.QueryResultItem[];
         groupingInfo: IQueryGroupingInfo;
+        groupedBy: string;
         notification: string;
         notificationType: Vidyano.NotificationType;
         notificationDuration: number;
@@ -788,6 +785,7 @@ declare namespace Vidyano {
         private _isFiltering;
         private _columnObservers;
         private _hasMore;
+        private _groupingInfo;
         persistentObject: PersistentObject;
         columns: QueryColumn[];
         id: string;
@@ -804,7 +802,6 @@ declare namespace Vidyano {
         top: number;
         continuation: string;
         items: QueryResultItem[];
-        groupingInfo: IQueryGroupingInfo;
         selectAll: IQuerySelectAll;
         constructor(service: Service, query: any, parent?: PersistentObject, asLookup?: boolean, maxSelectedItems?: number);
         readonly isSystem: boolean;
@@ -819,6 +816,8 @@ declare namespace Vidyano {
         private _setCharts(charts);
         currentChart: QueryChart;
         defaultChartName: string;
+        readonly groupingInfo: IQueryGroupingInfo;
+        private _setGroupingInfo(groupingInfo);
         readonly lastUpdated: Date;
         private _setLastUpdated(date?);
         selectedItems: QueryResultItem[];
@@ -831,6 +830,8 @@ declare namespace Vidyano {
         sortOptions: ISortOption[];
         readonly totalItem: QueryResultItem;
         private _setTotalItem(item);
+        group(column: QueryColumn): Promise<QueryResultItem[]>;
+        group(by: string): Promise<QueryResultItem[]>;
         reorder(before: QueryResultItem, item: QueryResultItem, after: QueryResultItem): Promise<QueryResultItem[]>;
         private _setSortOptionsFromService(options);
         private _setTotalItems(items);
@@ -840,6 +841,7 @@ declare namespace Vidyano {
         _setResult(result: IServiceQueryResult): void;
         getColumn(name: string): QueryColumn;
         getItemsInMemory(start: number, length: number): QueryResultItem[];
+        getItemsByIndex(...indexes: number[]): Promise<QueryResultItem[]>;
         getItems(start: number, length?: number, skipQueue?: boolean): Promise<QueryResultItem[]>;
         search(delay?: number): Promise<QueryResultItem[]>;
         search(options: {
@@ -849,6 +851,7 @@ declare namespace Vidyano {
         }): Promise<QueryResultItem[]>;
         clone(asLookup?: boolean): Query;
         private _updateColumns(_columns?);
+        private _updateGroupingInfo(groupingInfo);
         private _queryColumnPropertyChanged(sender, args);
         private _updateItems(items, reset?);
         _notifyItemSelectionChanged(item: QueryResultItem): void;
@@ -990,7 +993,7 @@ declare namespace Vidyano {
         private _getApplication(data?);
         getQuery(id: string, asLookup?: boolean): Promise<Query>;
         getPersistentObject(parent: PersistentObject, id: string, objectId?: string, isNew?: boolean): Promise<PersistentObject>;
-        executeQuery(parent: PersistentObject, query: Query, asLookup?: boolean, throwExceptions?: boolean): Promise<any>;
+        executeQuery(parent: PersistentObject, query: Query, asLookup?: boolean, throwExceptions?: boolean): Promise<IServiceQueryResult>;
         executeAction(action: string, parent: PersistentObject, query: Query, selectedItems: Array<QueryResultItem>, parameters?: any, skipHooks?: boolean): Promise<PersistentObject>;
         getReport(token: string, {filter, orderBy, top, skip, hideIds, hideType}?: IReportOptions): Promise<any[]>;
         getInstantSearch(search: string): Promise<IInstantSearchResult[]>;
@@ -1337,5 +1340,27 @@ declare namespace Vidyano {
 declare namespace Vidyano {
     namespace ClientOperations {
         function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
+    }
+}
+declare namespace Vidyano {
+    interface IServiceQueryResultItemGroup {
+        name: string;
+        count: number;
+    }
+    class QueryResultItemGroup implements IServiceQueryResultItemGroup {
+        readonly query: Query;
+        private _start;
+        private _end;
+        private _name;
+        private _count;
+        private _items;
+        isCollapsed: boolean;
+        constructor(query: Query, group: IServiceQueryResultItemGroup, _start: number, _end: number);
+        readonly name: string;
+        readonly count: number;
+        readonly start: number;
+        readonly end: number;
+        readonly items: QueryResultItem[];
+        update(group: IServiceQueryResultItemGroup, start: number, end: number): void;
     }
 }

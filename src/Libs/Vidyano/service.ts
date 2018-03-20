@@ -690,7 +690,7 @@ namespace Vidyano {
             return this.hooks.onConstructPersistentObject(this, result.result);
         }
 
-        async executeQuery(parent: PersistentObject, query: Query, asLookup: boolean = false, throwExceptions?: boolean): Promise<any> {
+        async executeQuery(parent: PersistentObject, query: Query, asLookup: boolean = false, throwExceptions?: boolean): Promise<IServiceQueryResult> {
             const data = this._createData("executeQuery");
             data.query = query._toServiceObject();
 

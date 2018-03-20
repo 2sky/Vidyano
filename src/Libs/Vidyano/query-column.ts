@@ -17,6 +17,7 @@ namespace Vidyano {
         private _id: string;
         private _sortDirection: SortDirection;
         private _canSort: boolean;
+        private _canGroupBy: boolean;
         private _canFilter: boolean;
         private _canListDistincts: boolean;
         private _isSensitive: boolean;
@@ -41,6 +42,7 @@ namespace Vidyano {
             this._id = col.id;
             this.displayAttribute = col.displayAttribute;
             this._canSort = !!col.canSort;
+            this._canGroupBy = !!col.canGroupBy;
             this._canFilter = !!col.canFilter;
             this._canListDistincts = !!col.canListDistincts;
             this._isSensitive = !!col.isSensitive;
@@ -87,6 +89,10 @@ namespace Vidyano {
 
         get canSort(): boolean {
             return this._canSort;
+        }
+
+        get canGroupBy(): boolean {
+            return this._canGroupBy;
         }
 
         get canListDistincts(): boolean {

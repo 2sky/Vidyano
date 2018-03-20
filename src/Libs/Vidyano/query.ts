@@ -20,14 +20,8 @@ namespace Vidyano {
     }
 
     export interface IQueryGroupingInfo {
-        groupedBy: string;
-        type: string;
-        groups: {
-            name: string;
-            start: number;
-            count: number;
-            end: number;
-        }[];
+        readonly groupedBy: string;
+        groups?: QueryResultItemGroup[];
     }
 
     export interface IServiceQueryChart {
@@ -43,6 +37,7 @@ namespace Vidyano {
         columns: Vidyano.QueryColumn[];
         items: Vidyano.QueryResultItem[];
         groupingInfo: IQueryGroupingInfo;
+        groupedBy: string;
         notification: string;
         notificationType: Vidyano.NotificationType;
         notificationDuration: number;
@@ -141,6 +136,7 @@ namespace Vidyano {
         private _isFiltering: boolean;
         private _columnObservers: Common.ISubjectDisposer[];
         private _hasMore: boolean = null;
+        private _groupingInfo: IQueryGroupingInfo;
 
         persistentObject: PersistentObject;
         columns: QueryColumn[];
@@ -158,7 +154,6 @@ namespace Vidyano {
         top: number;
         continuation: string;
         items: QueryResultItem[];
-        groupingInfo: IQueryGroupingInfo;
         selectAll: IQuerySelectAll;
 
         constructor(service: Service, query: any, public parent?: PersistentObject, asLookup: boolean = false, public maxSelectedItems?: number) {
@@ -182,7 +177,6 @@ namespace Vidyano {
             this.pageSize = query.pageSize;
             this.skip = query.skip;
             this.top = query.top;
-            this.groupingInfo = query.groupingInfo;
 
             this.persistentObject = query.persistentObject instanceof Vidyano.PersistentObject ? query.persistentObject : service.hooks.onConstructPersistentObject(service, query.persistentObject);
             this.singularLabel = this.persistentObject.label;
@@ -218,6 +212,9 @@ namespace Vidyano {
                 this._labelWithTotalItems = this.label;
                 this._lastUpdated = new Date();
             }
+
+            if (query instanceof Vidyano.Query && query.groupingInfo)
+                this._setGroupingInfo({ groupedBy: query.groupingInfo.groupedBy });
         }
 
         get isSystem(): boolean {
@@ -300,6 +297,18 @@ namespace Vidyano {
 
             if (this.charts && defaultChart && !this.currentChart)
                 this.currentChart = this.charts.firstOrDefault(c => c.name === this._defaultChartName);
+        }
+
+        get groupingInfo(): IQueryGroupingInfo {
+            return this._groupingInfo;
+        }
+
+        private _setGroupingInfo(groupingInfo: IQueryGroupingInfo) {
+            const oldValue = this._groupingInfo;
+            if (oldValue === groupingInfo)
+                return;
+
+            this.notifyPropertyChanged("groupingInfo", this._groupingInfo = groupingInfo, oldValue);
         }
 
         get lastUpdated(): Date {
@@ -416,6 +425,23 @@ namespace Vidyano {
             this.notifyPropertyChanged("sortOptions", this._sortOptions = options, oldSortOptions);
         }
 
+        async group(column: QueryColumn): Promise<QueryResultItem[]>;
+        async group(by: string): Promise<QueryResultItem[]>;
+        async group(columnOrBy: (string | QueryColumn)): Promise<QueryResultItem[]> {
+            const column = columnOrBy instanceof Vidyano.QueryColumn ? columnOrBy : this.getColumn(columnOrBy);
+            const by = columnOrBy instanceof Vidyano.QueryColumn ? columnOrBy.name : columnOrBy;
+
+            if (this.groupingInfo && this.groupingInfo.groupedBy === by)
+                return;
+
+            this._updateGroupingInfo({
+                groupedBy: by,
+                groups: []
+            });
+
+            return this.search();
+        }
+
         async reorder(before: QueryResultItem, item: QueryResultItem, after: QueryResultItem): Promise<QueryResultItem[]> {
             if (!this.canReorder)
                 throw "Unable to reorder, canReorder is set to false.";
@@ -489,6 +515,8 @@ namespace Vidyano {
             }
 
             result["sortOptions"] = this.sortOptions ? this.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ") : "";
+            if (this.groupingInfo && this.groupingInfo.groupedBy)
+                result["groupedBy"] = this.groupingInfo.groupedBy;
 
             if (this.persistentObject)
                 result.persistentObject = this.persistentObject.toServiceObject();
@@ -503,15 +531,6 @@ namespace Vidyano {
 
             this.continuation = result.continuation;
             this.pageSize = result.pageSize || 0;
-
-            this.groupingInfo = result.groupingInfo;
-            if (this.groupingInfo) {
-                let start = 0;
-                this.groupingInfo.groups.forEach(g => {
-                    g.start = start;
-                    g.end = (start = start + g.count) - 1;
-                });
-            }
 
             if (this.pageSize > 0) {
                 if (result.totalItems === -1) {
@@ -530,6 +549,7 @@ namespace Vidyano {
             this.hasSearched = true;
             this._updateColumns(result.columns);
             this._updateItems(Enumerable.from(result.items).select(item => this.service.hooks.onConstructQueryResultItem(this.service, item, this)).toArray());
+            this._updateGroupingInfo(result.groupingInfo);
             this._setSortOptionsFromService(result.sortOptions);
 
             this._setTotalItem(result.totalItem != null ? this.service.hooks.onConstructQueryResultItem(this.service, result.totalItem, this) : null);
@@ -570,9 +590,43 @@ namespace Vidyano {
                 endPage--;
 
             if (startPage === endPage && this._queriedPages.indexOf(startPage) >= 0)
-                return Enumerable.from(this.items).skip(start).take(length).toArray();
+                return this.items.slice(start, length);
 
             return null;
+        }
+
+        async getItemsByIndex(...indexes: number[]): Promise<QueryResultItem[]> {
+            if (!indexes || !indexes.length)
+                return [];
+
+            if (this.pageSize > 0) {
+                const pages = indexes.sort((i1, i2) => i1 - i2).reduce((pages, index) => {
+                    const page = Math.floor(index / this.pageSize);
+                    if (this._queriedPages.indexOf(page) < 0) {
+                        let prevPage = page;
+                        while (pages[prevPage - 1] >= 0)
+                            prevPage--;
+
+                        if (prevPage === page)
+                            pages[page] = this.pageSize;
+                        else {
+                            pages[page] = 0;
+                            pages[prevPage] += this.pageSize;
+                        }
+                    }
+
+                    return pages;
+                }, []);
+
+                await Promise.all(Object.keys(pages).map(page => parseInt(page)).map(page => {
+                    if (pages[page] >= 0)
+                        return this.getItems(page * this.pageSize, pages[page]);
+                    else
+                        return Promise.resolve(null);
+                }));
+            }
+
+            return indexes.map(i => this.items[i]);
         }
 
         async getItems(start: number, length: number = this.pageSize, skipQueue: boolean = false): Promise<QueryResultItem[]> {
@@ -657,6 +711,8 @@ namespace Vidyano {
                                 (<any>item)._isSelected = true;
                         }
                     }
+
+                    this._updateGroupingInfo(result.groupingInfo);
 
                     if (isChanged) {
                         const result = await this.getItems(start, length, true);
@@ -778,6 +834,28 @@ namespace Vidyano {
             }
 
             this._setCanFilter(this.actions.some(a => a.name === "Filter") && this.columns.some(c => c.canFilter));
+        }
+
+        private _updateGroupingInfo(groupingInfo: IQueryGroupingInfo) {
+            if (!groupingInfo) {
+                this._setGroupingInfo(null);
+                return;
+            }
+
+            const currentGroupingInfo = this.groupingInfo;
+            this._setGroupingInfo(groupingInfo || null);
+            if (this.groupingInfo) {
+                let start = 0;
+                this.groupingInfo.groups = this.groupingInfo.groups.map(g => new QueryResultItemGroup(this, g, start, (start = start + g.count) - 1));
+            }
+
+            if (currentGroupingInfo) {
+                currentGroupingInfo.groups.forEach(oldGroup => {
+                    const newGroup = Enumerable.from(this.groupingInfo.groups).firstOrDefault(g => g.name === oldGroup.name);
+                    if (newGroup)
+                        newGroup.isCollapsed = oldGroup.isCollapsed;
+                });
+            }
         }
 
         private _queryColumnPropertyChanged(sender: Vidyano.QueryColumn, args: Vidyano.Common.PropertyChangedArgs) {

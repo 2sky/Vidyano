@@ -36,6 +36,10 @@ namespace Vidyano.WebComponents {
             return this._column.canSort;
         }
 
+        get canGroupBy(): boolean {
+            return this._column.canGroupBy;
+        }
+
         get canFilter(): boolean {
             return this._column.canFilter;
         }
@@ -156,6 +160,7 @@ namespace Vidyano.WebComponents {
     export abstract class QueryGridTable {
         private _host: HTMLTableElement;
         private _section: HTMLTableSectionElement;
+        private _rowCount: number;
         rows: QueryGridTableRow[] = [];
 
         constructor(is: string, public grid: QueryGrid) {
@@ -177,6 +182,14 @@ namespace Vidyano.WebComponents {
                 }
 
                 Polymer.dom(this._section).appendChild(fragment);
+
+                this._rowCount = this.rows.length;
+            }
+            else if (this._rowCount > rowCount) {
+                do {
+                    this._clearRow(--this._rowCount);
+                }
+                while (--this._rowCount > rowCount);
             }
 
             return Promise.all(this.rows.map(row => row.updateColumnCount(columnCount)));
@@ -186,12 +199,20 @@ namespace Vidyano.WebComponents {
 
         protected abstract _addRow(index: number): QueryGridTableRow;
 
+        protected _clearRow(rowIndex: number) {
+            // Noop
+        }
+
         get host(): HTMLTableElement {
             return this._host;
         }
 
         get section(): HTMLTableSectionElement {
             return this._section;
+        }
+
+        get firstRow(): QueryGridTableRow {
+            return this.rows[0];
         }
     }
 
@@ -240,8 +261,18 @@ namespace Vidyano.WebComponents {
             return new Vidyano.WebComponents.QueryGridTableDataRow(this);
         }
 
+        protected _clearRow(rowIndex: number) {
+            (<QueryGridTableDataRow>this.rows[rowIndex]).setItem(undefined);
+        }
+
         protected _createSection(): HTMLTableSectionElement {
-            return <HTMLTableSectionElement><any>Polymer.dom(this.host).appendChild(new Vidyano.WebComponents.QueryGridTableDataBody(this));
+            const body = <HTMLTableSectionElement>Polymer.dom(this.host).appendChild(new Vidyano.WebComponents.QueryGridTableDataBody(this));
+
+            return body;
+        }
+
+        get firstRow(): QueryGridTableRow {
+            return (<QueryGridTableDataRow[]>this.rows).filter(r => r.type === "data")[0];
         }
     }
 
@@ -329,31 +360,38 @@ namespace Vidyano.WebComponents {
     export class QueryGridTableDataRow extends QueryGridTableRow {
         private _itemPropertyChangedListener: Vidyano.Common.ISubjectDisposer;
         private _itemQueryPropertyChangedListener: Vidyano.Common.ISubjectDisposer;
+        private _groupHeader: QueryGridTableDataColumnGroupHeader;
+        private _groupIndent: QueryGridTableDataColumnGroupIndent;
         private _selector: QueryGridTableDataColumnSelector;
         private _actions: QueryGridTableDataColumnActions;
-        private _item: Vidyano.QueryResultItem;
+        private _item: QueryResultItem;
+        private _group: QueryResultItemGroup;
+        private _type: ("group" | "data");
         private _columnCount: number;
         private _firstCellWithPendingUpdates: number;
         private _isSelected: boolean;
-        private _noData: boolean;
         private _columnsInUse: number;
         private _extraClass: string;
+        private _placeholder: boolean;
         columns: QueryGridTableDataColumn[];
 
         constructor(table: QueryGridTableData) {
             super("vi-query-grid-table-data-row", table);
 
-            this._noData = true;
-            this.host.setAttribute("no-data", "");
-
             const specialColumns = document.createDocumentFragment();
 
+            Polymer.dom(specialColumns).appendChild((this._groupHeader = new Vidyano.WebComponents.QueryGridTableDataColumnGroupHeader(this)).host);
+            Polymer.dom(specialColumns).appendChild((this._groupIndent = new Vidyano.WebComponents.QueryGridTableDataColumnGroupIndent(this)).host);
             Polymer.dom(specialColumns).appendChild((this._selector = new Vidyano.WebComponents.QueryGridTableDataColumnSelector(this)).host);
             Polymer.dom(specialColumns).appendChild((this._actions = new Vidyano.WebComponents.QueryGridTableDataColumnActions(this)).host);
 
             this.host.insertBefore(specialColumns, this.host.firstChild);
 
             Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
+        }
+
+        get groupHeader(): QueryGridTableDataColumnGroupHeader {
+            return this._groupHeader;
         }
 
         get selector(): QueryGridTableDataColumnSelector {
@@ -364,65 +402,141 @@ namespace Vidyano.WebComponents {
             return this._actions;
         }
 
-        get noData(): boolean {
-            return this._noData;
+        get type(): ("group" | "data") {
+            return this._type;
         }
 
-        get item(): Vidyano.QueryResultItem {
+        private _setType(type: ("group" | "data")) {
+            if (type === this._type)
+                return;
+
+            const oldType = this._type;
+            this._type = type;
+
+            if (type)
+                this.host.setAttribute("type", type);
+            else if (!!oldType)
+                this.host.removeAttribute("type");
+
+            if (this.type !== "data")
+                this._item = this.selector.item = this.actions.item = null;
+
+            if (this.type !== "group")
+                this._group = null;
+        }
+
+        private _setPlaceholder(placeholder: boolean) {
+            if (this._placeholder === placeholder)
+                return;
+
+            if (this._placeholder = placeholder)
+                this.host.setAttribute("placeholder", "");
+            else
+                this.host.removeAttribute("placeholder");
+        }
+
+        get item(): QueryResultItem {
             return this._item;
         }
 
-        setItem(item: Vidyano.QueryResultItem, columns: QueryGridColumn[], lastPinnedIndex?: number): boolean {
-            if (this._item !== item) {
-                if (this._itemPropertyChangedListener) {
-                    this._itemPropertyChangedListener();
-                    this._itemPropertyChangedListener = null;
+        private _setItem(item: QueryResultItem) {
+            if (this._item === item)
+                return;
 
-                    this._itemQueryPropertyChangedListener();
-                    this._itemQueryPropertyChangedListener = null;
-                }
+            if (this._itemPropertyChangedListener) {
+                this._itemPropertyChangedListener();
+                this._itemPropertyChangedListener = null;
 
-                this._item = this.selector.item = this.actions.item = item;
-
-                if (this._noData !== !item) {
-                    if (this._noData = !item)
-                        this.host.setAttribute("no-data", "");
-                    else
-                        this.host.removeAttribute("no-data");
-                }
-
-                let extraClass = this.item ? this.item.getTypeHint("extraclass") : null;
-                if (this._extraClass && extraClass !== this._extraClass) {
-                    this.host.classList.remove(...this._extraClass.split(" "));
-                    this._extraClass = null;
-                }
-
-                if (!!this._item) {
-                    this._itemPropertyChangedListener = this._item.propertyChanged.attach(this._itemPropertyChanged.bind(this));
-                    this._itemQueryPropertyChangedListener = this._item.query.propertyChanged.attach(this._itemQueryPropertyChanged.bind(this));
-
-                    if (extraClass) {
-                        this.host.classList.add(...extraClass.split(" "));
-                        this._extraClass = extraClass;
-                    }
-                }
-
-                this._updateIsSelected();
+                this._itemQueryPropertyChangedListener();
+                this._itemQueryPropertyChangedListener = null;
             }
 
-            // Cleanup extra columns first
-            if (columns && columns.length < this._columnCount)
-                this.columns.slice(columns.length, this.columns.length).forEach(gridColumn => gridColumn.setItem(null, null, false));
-
-            this._firstCellWithPendingUpdates = -1;
-            this.columns.slice(0, columns ? this._columnCount = columns.length : this._columnCount).forEach((gridColumn, index) => {
-                if (!gridColumn.setItem(item, columns ? columns[index] : null, lastPinnedIndex === index) && this._firstCellWithPendingUpdates < 0)
-                    this._firstCellWithPendingUpdates = index;
-            });
-
-            return this._firstCellWithPendingUpdates >= 0;
+            if (this._item = item)
+                this._setType("data");
         }
 
+        get group(): QueryResultItemGroup {
+            return this._group;
+        }
+
+        private _setGroup(group: QueryResultItemGroup) {
+            if (this._group = group)
+                this._setType("group");
+        }
+
+        setItem(group: QueryResultItemGroup): boolean;
+        setItem(item: QueryResultItem, columns: QueryGridColumn[], lastPinnedIndex?: number): boolean;
+        setItem(itemOrGroup: (QueryResultItem | QueryResultItemGroup), columns?: QueryGridColumn[], lastPinnedIndex?: number): boolean {
+            if (!itemOrGroup) {
+                this._setGroup(null);
+                this._setItem(null);
+
+                if (itemOrGroup !== null)
+                    this._setType(null);
+                else {
+                    this._setPlaceholder(true);
+                    this._setType("data");
+                }
+
+                return false;
+            } else {
+                this._setPlaceholder(false);
+
+                if (itemOrGroup instanceof QueryResultItem) {
+                    this._setPlaceholder(false);
+
+                    if (this.group)
+                        this._setGroup(null);
+
+                    const item = itemOrGroup;
+                    if (item !== this.item) {
+                        this._setItem(this.selector.item = this.actions.item = item);
+
+                        let extraClass = this.item ? this.item.getTypeHint("extraclass") : null;
+                        if (this._extraClass && extraClass !== this._extraClass) {
+                            this.host.classList.remove(...this._extraClass.split(" "));
+                            this._extraClass = null;
+                        }
+
+                        if (!!this.item) {
+                            this._itemPropertyChangedListener = this.item.propertyChanged.attach(this._itemPropertyChanged.bind(this));
+                            this._itemQueryPropertyChangedListener = this.item.query.propertyChanged.attach(this._itemQueryPropertyChanged.bind(this));
+
+                            if (extraClass) {
+                                this.host.classList.add(...extraClass.split(" "));
+                                this._extraClass = extraClass;
+                            }
+                        }
+
+                        this._updateIsSelected();
+                    }
+
+                    // Cleanup extra columns first
+                    if (columns && columns.length < this._columnCount)
+                        this.columns.slice(columns.length, this.columns.length).forEach(gridColumn => gridColumn.setItem(null, null, false));
+
+                    this._firstCellWithPendingUpdates = -1;
+                    this.columns.slice(0, columns ? this._columnCount = columns.length : this._columnCount).forEach((gridColumn, index) => {
+                        if (!gridColumn.setItem(item instanceof QueryResultItem ? item : null, columns ? columns[index] : null, lastPinnedIndex === index) && this._firstCellWithPendingUpdates < 0)
+                            this._firstCellWithPendingUpdates = index;
+                    });
+
+                    return this._firstCellWithPendingUpdates >= 0;
+                } else if (itemOrGroup instanceof QueryResultItemGroup) {
+                    if (this.item)
+                        this._setItem(null);
+
+                    this._setGroup(this._groupHeader.group = itemOrGroup);
+                    this._groupHeader.host.setAttribute("colspan", this.host.children.length.toString());
+                }
+            }
+
+            return false;
+        }
+
+        /*
+         * Returns true if the row has any cells with pending updates.
+         */
         updatePendingCellUpdates(): boolean {
             if (this._firstCellWithPendingUpdates < 0)
                 return false;
@@ -440,6 +554,15 @@ namespace Vidyano.WebComponents {
             }
 
             return true;
+        }
+
+        transform(x: number) {
+            const transform = x ? `translate(${x}px, 0)` : "";
+
+            this.table.grid.transform(transform, this._groupHeader.host);
+            this.table.grid.transform(transform, this._groupIndent.host);
+            this.table.grid.transform(transform, this._selector.host);
+            this.table.grid.transform(transform, this._actions.host);
         }
 
         private async _tap(e: TapEvent) {
@@ -807,8 +930,82 @@ namespace Vidyano.WebComponents {
         }
     }
 
+    export class QueryGridTableDataColumnGroupHeader extends QueryGridTableColumn {
+        private _groupIcon: Icon;
+        private _label: HTMLLabelElement;
+        private _group: QueryResultItemGroup;
+        private _collapsed: boolean;
+
+        constructor(private _row: QueryGridTableDataRow, private _sticky = false) {
+            super("vi-query-grid-table-data-column-group-header", document.createElement("div"), true);
+
+            const elements = document.createDocumentFragment();
+
+            elements.appendChild(this._groupIcon = new Vidyano.WebComponents.Icon("QueryGrid_Group_Row"));
+            this._groupIcon.classList.add("style-scope", "vi-query-grid");
+
+            elements.appendChild(this._label = document.createElement("label"));
+            this.cell.appendChild(elements);
+
+            Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
+        }
+
+        private _setCollapsed(collapsed: boolean) {
+            if (this._collapsed === collapsed)
+                return;
+
+            if (this._collapsed = collapsed)
+                this.host.setAttribute("collapsed", "");
+            else
+                this.host.removeAttribute("collapsed");
+        }
+
+        get group(): QueryResultItemGroup {
+            return this._group;
+        }
+
+        set group(group: QueryResultItemGroup) {
+            this._setCollapsed(group ? group.isCollapsed : false);
+
+            if (this._group === group)
+                return;
+
+            this._group = group;
+            if (!!group) {
+                let label = this.group.name;
+                if (StringEx.isNullOrWhiteSpace(label))
+                    label = label == null ? group.query.service.getTranslatedMessage("DistinctNullValue") : group.query.service.getTranslatedMessage("DistinctEmptyValue");
+
+                this._label.textContent = `${label} (${group.count})`;
+            }
+            else
+                this._label.textContent = "";
+        }
+
+        updateCollapsed() {
+            this._setCollapsed(this.group.isCollapsed);
+        }
+
+        private _tap(e: TapEvent) {
+            e.stopPropagation();
+            if (!this.group)
+                return;
+
+            this.group.isCollapsed = !this.group.isCollapsed;
+            this._setCollapsed(this.group.isCollapsed);
+
+            this._row.table.grid.fire("group-collapsed-changed", this.group, { bubbles: false });
+        }
+    }
+
+    export class QueryGridTableDataColumnGroupIndent extends QueryGridTableColumn {
+        constructor(private _row: QueryGridTableDataRow, private _sticky = false) {
+            super("vi-query-grid-table-data-column-group-indent", document.createElement("div"), true);
+        }
+    }
+
     export class QueryGridTableDataColumnSelector extends QueryGridTableColumn {
-        private _item: QueryResultItem;
+        item: QueryResultItem;
 
         constructor(private _row: QueryGridTableDataRow) {
             super("vi-query-grid-table-data-column-selector", new Vidyano.WebComponents.Icon("Selected"), true);
@@ -817,47 +1014,28 @@ namespace Vidyano.WebComponents {
             this._row.table.grid.async(() => Polymer.dom(this.host).appendChild(document.createElement("paper-ripple")));
         }
 
-        get item(): Vidyano.QueryResultItem {
-            return this._item;
-        }
-
-        set item(item: Vidyano.QueryResultItem) {
-            if (this._item !== item)
-                this._item = item;
-        }
-
         private _tap(e: TapEvent) {
-            if (this._item) {
-                const event = e.detail.preventer || e.detail.sourceEvent;
-
-                this._row.table.grid.fire("item-select", {
-                    item: this.item,
-                    shift: !!event && event instanceof MouseEvent ? event.shiftKey : false,
-                    ctrl: this._row.table.grid.app.configuration.getSetting("vi-query-grid.single-click", "true").toLowerCase() === "true" || (!!event && event instanceof MouseEvent ? event.ctrlKey : true)
-                }, { bubbles: false });
-            }
-
             e.stopPropagation();
+            if (!this.item)
+                return;
+
+            const event = e.detail.preventer || e.detail.sourceEvent;
+            this._row.table.grid.fire("item-select", {
+                item: this.item,
+                shift: !!event && event instanceof MouseEvent ? event.shiftKey : false,
+                ctrl: this._row.table.grid.app.configuration.getSetting("vi-query-grid.single-click", "true").toLowerCase() === "true" || (!!event && event instanceof MouseEvent ? event.ctrlKey : true)
+            }, { bubbles: false });
         }
     }
 
     export class QueryGridTableDataColumnActions extends QueryGridTableColumn {
-        private _item: QueryResultItem;
+        item: QueryResultItem;
 
         constructor(private _row: QueryGridTableDataRow) {
             super("vi-query-grid-table-data-column-actions", new Vidyano.WebComponents.Icon("EllipsisVertical"), true);
 
             Polymer.Gestures.add(this.host, "tap", this._tap.bind(this));
             this._row.table.grid.async(() => Polymer.dom(this.host).appendChild(document.createElement("paper-ripple")));
-        }
-
-        get item(): Vidyano.QueryResultItem {
-            return this._item;
-        }
-
-        set item(item: Vidyano.QueryResultItem) {
-            if (this._item !== item)
-                this._item = item;
         }
 
         private _tap(e: TapEvent) {
@@ -889,7 +1067,10 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 computed: "query.isBusy"
             },
-            query: Object,
+            query: {
+                type: Object,
+                observer: "_queryChanged"
+            },
             _settings: {
                 type: Object,
                 computed: "_computeSettings(query.columns)"
@@ -900,7 +1081,12 @@ namespace Vidyano.WebComponents {
             },
             _items: {
                 type: Object,
-                computed: "_computeItems(query.items, viewportSize, _verticalScrollOffset, rowHeight, query.lastUpdated)"
+                computed: "_computeItems(query.items, collapsedGroups, viewportSize, _verticalScrollOffset, rowHeight, query.lastUpdated)"
+            },
+            collapsedGroups: {
+                type: Object,
+                readOnly: true,
+                value: null
             },
             canReorder: {
                 type: Boolean,
@@ -955,6 +1141,11 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 computed: "query.canFilter"
             },
+            hasGrouping: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            },
             hasTotalItem: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -984,7 +1175,7 @@ namespace Vidyano.WebComponents {
         },
         observers: [
             "_updateTables(_items, _columns, canReorder)",
-            "_updateVerticalSpacer(query.totalItems, rowHeight)",
+            "_updateVerticalSpacer(rowHeight, query.lastUpdated)",
             "_updateOutOfViewColumns(_columns, viewportSize, _horizontalScrollOffset, columnWidthsCalculated)"
         ],
         forwardObservers: [
@@ -1003,12 +1194,15 @@ namespace Vidyano.WebComponents {
         listeners: {
             "item-select": "_itemSelect",
             "item-actions": "_itemActions",
+            "group-collapsed-changed": "_groupCollapsedChanged",
             "column-widths-updated": "_columnWidthsUpdated",
-            "dataHeaderHost.contextmenu": "_contextmenuColumn",
             "dataHost.contextmenu": "_contextmenuData",
             "scroll": "_preventScroll",
             "drag-start": "_dragStart",
-            "drag-end": "_dragEnd"
+            "drag-end": "_dragEnd",
+            "toggle-pin": "_togglePin",
+            "hide-column": "_hideColumn",
+            "configure-columns": "_configureColumns"
         },
         keybindings: {
             "pagedown": "_pageDown",
@@ -1034,7 +1228,7 @@ namespace Vidyano.WebComponents {
         private _verticalScrollOffset: number;
         private _horizontalScrollOffset: number;
         private _horizontalScrollOffsetCurrent: number;
-        private _items: Vidyano.QueryResultItem[];
+        private _items: (QueryResultItem | QueryResultItemGroup)[];
         private _columns: QueryGridColumn[];
         private _hasPendingUpdates: boolean;
         private _itemOpening: Vidyano.QueryResultItem;
@@ -1042,7 +1236,6 @@ namespace Vidyano.WebComponents {
         private _minimumColumnWidth: number;
         private _remainderWidth: number;
         private _settings: QueryGridUserSettings;
-        private _columnMenuColumn: QueryGridColumn;
         private _lastUpdated: Date;
         private _reorderRow: QueryGridTableDataRow;
         private _outOfViewColumnsWorkerHandle: number;
@@ -1050,6 +1243,8 @@ namespace Vidyano.WebComponents {
         readonly rowHeight: number; private _setRowHeight: (rowHeight: number) => void;
         readonly initializing: boolean; private _setInitializing: (initializing: boolean) => void;
         readonly isReordering: boolean; private _setIsReordering: (reodering: boolean) => void;
+        readonly hasGrouping: boolean; private _setHasGrouping: (hasGrouping: boolean) => void;
+        readonly collapsedGroups: QueryResultItemGroup[]; private _setCollapsedGroups: (groups: QueryResultItemGroup[]) => void;
         readonly hasTotalItem: boolean;
         canReorder: boolean;
         viewportSize: ISize;
@@ -1080,8 +1275,6 @@ namespace Vidyano.WebComponents {
 
         detached() {
             super.detached();
-
-            this._columnMenuColumn = null;
 
             if (this._tableData) {
                 const headerFragment = document.createDocumentFragment();
@@ -1119,9 +1312,8 @@ namespace Vidyano.WebComponents {
                         if (cell.column && cell.column.isPinned)
                             this.transform("", cell.cell.parentElement);
                     });
-                    this.transform("", row.selector.host);
-                    this.transform("", row.actions.host);
 
+                    row.transform(0);
                     row.setItem(null, null);
                 });
 
@@ -1144,8 +1336,13 @@ namespace Vidyano.WebComponents {
             return <PopupCore>this.$.actions;
         }
 
-        private get _columnMenu(): PopupMenu {
-            return <PopupMenu>this.$.columnMenu;
+        private _queryChanged(query: Vidyano.Query) {
+            if (!query || !query.groupingInfo) {
+                this._setCollapsedGroups(null);
+                return;
+            }
+
+            this._setCollapsedGroups(query.groupingInfo.groups.filter(g => g.isCollapsed));
         }
 
         private _initializingChanged() {
@@ -1188,8 +1385,7 @@ namespace Vidyano.WebComponents {
                     });
 
                     if (row instanceof QueryGridTableDataRow) {
-                        this.transform(`translate(${horizontalScrollOffset}px, 0)`, row.selector.host);
-                        this.transform(`translate(${horizontalScrollOffset}px, 0)`, row.actions.host);
+                        row.transform(horizontalScrollOffset);
                     }
                 });
             });
@@ -1226,18 +1422,21 @@ namespace Vidyano.WebComponents {
             if (horizontalScrollOffset > 0)
                 this.$.moreLeft.removeAttribute("hidden");
 
+            columns = columns.filter(c => !c.isHidden && !c.isPinned);
+
+            this.toggleAttribute("hidden", horizontalScrollOffset === 0, this.$.moreLeft);
+            this.toggleAttribute("hidden", !columns.some(c => c.calculatedOffset + this._tableHeader.host.offsetLeft - horizontalScrollOffset > viewportSize.width), this.$.moreRight);
+
             this._outOfViewColumnsWorkerHandle = window.requestIdleCallback(() => {
                 if (!this.isAttached)
                     return;
 
-                columns = columns.filter(c => !c.isHidden && !c.isPinned);
-                const offset = parseInt(this.getComputedStyleValue("--vi-query-grid--more-left-offset")) - this._tableHeader.host.offsetLeft;
-
+                const offset = parseInt(this.getComputedStyleValue("--vi-query-grid--data-offset"));
                 const left: PopupMenuItem[] = [];
                 const right: PopupMenuItem[] = [];
 
                 columns.forEach(c => {
-                    if (c.calculatedOffset - horizontalScrollOffset < offset)
+                    if (c.calculatedOffset - horizontalScrollOffset < 0)
                         left.push(<PopupMenuItem>Polymer.dom(this.$.moreLeftContent).querySelector(`vi-popup-menu-item[name="${c.name}"]`) || new Vidyano.WebComponents.PopupMenuItem(c.label, null, () => this._bringColumnIntoView(c)));
                     else if (c.calculatedOffset + this._tableHeader.host.offsetLeft - horizontalScrollOffset > viewportSize.width)
                         right.push(<PopupMenuItem>Polymer.dom(this.$.moreRightContent).querySelector(`vi-popup-menu-item[name="${c.name}"]`) || new Vidyano.WebComponents.PopupMenuItem(c.label, null, () => this._bringColumnIntoView(c, true)));
@@ -1251,9 +1450,6 @@ namespace Vidyano.WebComponents {
 
                 Polymer.dom(this.$.moreLeftContent).flush();
                 Polymer.dom(this.$.moreRightContent).flush();
-
-                this.toggleAttribute("hidden", !left.length, this.$.moreLeft);
-                this.toggleAttribute("hidden", !right.length, this.$.moreRight);
             });
         }
 
@@ -1261,12 +1457,17 @@ namespace Vidyano.WebComponents {
             if (rightAlign)
                 this._horizontalScrollOffset = column.calculatedOffset + column.calculatedWidth - this.viewportSize.width + this.$.headerControls.offsetWidth + this.$.moreRight.offsetWidth - 1;
             else
-                this._horizontalScrollOffset = column.calculatedOffset - parseInt(this.getComputedStyleValue("--vi-query-grid--more-left-offset")) + this.$.headerControls.offsetWidth - this.$.moreLeft.offsetWidth - 1;
+                this._horizontalScrollOffset = column.calculatedOffset - parseInt(this.getComputedStyleValue("--vi-query-grid--data-offset")) + this.$.headerControls.offsetWidth - this.$.moreLeft.offsetWidth - 1;
         }
 
-        private _computeItems(items: Vidyano.QueryResultItem[], viewportSize: ISize, verticalScrollOffset: number, rowHeight: number, lastUpdated: Date): Vidyano.QueryResultItem[] {
+        private _computeItems(items: Vidyano.QueryResultItem[], collapsedGroups: Vidyano.QueryResultItemGroup[], viewportSize: ISize, verticalScrollOffset: number, rowHeight: number, lastUpdated: Date): (Vidyano.QueryResultItem | Vidyano.QueryResultItemGroup)[] {
             if (!rowHeight || !viewportSize.height)
                 return [];
+
+            this._setHasGrouping(!!this.query.groupingInfo && !!this.query.groupingInfo.groups);
+            const groups = this.hasGrouping && items.length > 0 ? this.query.groupingInfo.groups : [];
+
+            const totalItems = this._calculateTotalItems();
 
             if (verticalScrollOffset > 0 && (!items || items.length === 0) && this.offsetParent != null) {
                 (<Scroller>this.$.scroller).scrollToTop();
@@ -1301,9 +1502,67 @@ namespace Vidyano.WebComponents {
                 this._virtualTableOffset = (this._virtualTableStartIndex * rowHeight) / this._verticalSpacerCorrection;
             }
 
-            const newItems = items.slice(this._virtualTableStartIndex, this._virtualTableStartIndex + maxTableRowCount).filter(item => !!item);
-            if (newItems.length !== maxTableRowCount && this.query.totalItems && (!(this._virtualTableStartIndex in items) || !((this._virtualTableStartIndex + maxTableRowCount) in items)))
-                this.debounce(`QueryGrid.Query.${this.query.id}.GetItems`, () => this.query.getItems(this._virtualTableStartIndex), 250);
+            const itemsStartIndex = this._virtualTableStartIndex;
+            const itemsEndIndex = Math.min(itemsStartIndex + maxTableRowCount, totalItems);
+            const missingItemIndexes: number[] = [];
+
+            let newItems: (QueryResultItem | QueryResultItemGroup)[];
+            if (!this.hasGrouping) {
+                newItems = items.slice(itemsStartIndex, itemsEndIndex);
+                if (Object.keys(newItems).length !== maxTableRowCount) {
+                    for (let i = itemsStartIndex; i < itemsEndIndex; i++) {
+                        if (!items[i])
+                            missingItemIndexes.push(i);
+                    }
+                }
+
+                if (this.query.hasMore && itemsEndIndex > totalItems - 10)
+                    missingItemIndexes.push(totalItems);
+            }
+            else {
+                newItems = new Array(this.query.totalItems);
+                newItems.splice(0, items.length, ...items);
+
+                groups.forEach((group, index) => newItems.splice(group.start + index, 0, group));
+
+                let collapsedItemCount = 0;
+                groups.forEach((group, groupIndex) => {
+                    const groupStart = group.start + groupIndex - collapsedItemCount;
+                    const groupEnd = groupStart + group.count;
+
+                    if (!group.isCollapsed) {
+                        const start = Math.max(groupStart, itemsStartIndex);
+                        const end = Math.min(groupEnd, itemsEndIndex);
+
+                        if (end - start > 0) {
+                            for (let i = start; i < end; i++) {
+                                const itemIndex = i - groupIndex + collapsedItemCount;
+                                if (!items[itemIndex])
+                                    missingItemIndexes.push(itemIndex);
+                            }
+                        }
+
+                        return;
+                    }
+
+                    newItems.splice(groupStart + 1, group.count);
+                    collapsedItemCount += group.count;
+                });
+
+                newItems = newItems.slice(itemsStartIndex, itemsEndIndex + 1);
+            }
+
+            if (missingItemIndexes.length > 0) {
+                const missing = itemsEndIndex - itemsStartIndex;
+                for (let i = 0; i < missing; i++) {
+                    if (!!newItems[i])
+                        continue;
+
+                    newItems[i] = null;
+                }
+
+                this.debounce(`QueryGrid.Query.${this.query.id}.getItemsByIndex`, () => this.query.getItemsByIndex(...missingItemIndexes), 250);
+            }
             else if (newVirtualTableStartIndex === undefined && this._items && this._items.length === newItems.length && lastUpdated === this._lastUpdated)
                 return this._items;
 
@@ -1376,9 +1635,19 @@ namespace Vidyano.WebComponents {
             }));
         }
 
-        private _updateVerticalSpacer(totalItems: number, rowHeight: number) {
+        private _calculateTotalItems(): number {
+            let totalItems = this.query.totalItems;
+            if (this.query.groupingInfo) {
+                totalItems += this.query.groupingInfo.groups.length;
+                this.query.groupingInfo.groups.filter(group => group.isCollapsed).forEach(group => totalItems -= group.count);
+            }
+
+            return totalItems;
+        }
+
+        private _updateVerticalSpacer(rowHeight: number) {
             this._requestAnimationFrame(() => {
-                const newHeight = totalItems * rowHeight;
+                const newHeight = this._calculateTotalItems() * rowHeight;
                 this.$.verticalSpacer.style.height = `${newHeight}px`;
 
                 this._verticalSpacerCorrection = (newHeight - this.viewportSize.height) / (this.$.verticalSpacer.clientHeight - this.viewportSize.height);
@@ -1442,8 +1711,13 @@ namespace Vidyano.WebComponents {
                     }
 
                     this._updateColumnWidths().then(() => {
+                        this.updateDataOffset();
+
                         resolve(true);
                     });
+
+                    if (this.hasGrouping && this._items.some(i => !(i instanceof Vidyano.QueryResultItem)))
+                        this._tableData.host.style.minWidth = `${this.$.dataHeaderHost.scrollWidth}px`;
                 });
             });
         }
@@ -1478,7 +1752,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _updateColumnWidths(): Promise<any> {
-            if (!this._columns.some(c => !c.calculatedWidth) || !this._tableData || !this._tableData.rows || this._tableData.rows.length === 0 || (<QueryGridTableDataRow>this._tableData.rows[0]).noData) {
+            if (this._columns.some(c => !!c.calculatedWidth) || !this._tableData || !this._tableData.rows || !this._tableData.firstRow) {
                 if (this.query && !this.query.isBusy && this.query.items.length === 0) {
                     this._tableData.host.style.minWidth = `${this.$.dataHeaderHost.scrollWidth}px`;
                     this._setInitializing(false);
@@ -1508,41 +1782,42 @@ namespace Vidyano.WebComponents {
                             tables.push(this._tableFooter);
 
                         tables.some(table => {
-                            if (table.rows && table.rows.length > 0) {
-                                let offset = 0;
+                            const firstRow = table.firstRow;
+                            if (!firstRow)
+                                return;
 
-                                return table.rows[0].columns.filter(cell => !!cell.column && !cell.column.calculatedWidth).some(cell => {
-                                    if (hasWidthsStyle) {
-                                        this._style.setStyle("ColumnWidths", "");
-                                        hasWidthsStyle = false;
-                                    }
+                            let offset = 0;
+                            return firstRow.columns.filter(cell => !!cell.column && !cell.column.calculatedWidth).some(cell => {
+                                if (hasWidthsStyle) {
+                                    this._style.setStyle("ColumnWidths", "");
+                                    hasWidthsStyle = false;
+                                }
 
-                                    let width = parseInt(cell.column.width);
-                                    if (isNaN(width)) {
-                                        width = cell.cell.offsetWidth;
-                                        /* If grid is not visible, don't calculate the width */
-                                        if (!width || this.offsetParent === null /* Visibility check */ || getComputedStyle(cell.cell).display === "none")
-                                            return layoutUpdating = true; // Layout is still updating
-                                    }
+                                let width = parseInt(cell.column.width);
+                                if (isNaN(width)) {
+                                    width = cell.cell.offsetWidth;
+                                    /* If grid is not visible, don't calculate the width */
+                                    if (!width || this.offsetParent === null /* Visibility check */ || getComputedStyle(cell.cell).display === "none")
+                                        return layoutUpdating = true; // Layout is still updating
+                                }
 
-                                    if (!this._minimumColumnWidth)
-                                        this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid-minimum-column-width"));
+                                if (!this._minimumColumnWidth)
+                                    this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid--minimum-column-width"));
 
-                                    width = Math.max(width + 10, this._minimumColumnWidth);
-                                    if (width !== columnWidths[cell.column.name]) {
-                                        columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
-                                        invalidateColumnWidths = true;
-                                    }
+                                width = Math.max(width + 10, this._minimumColumnWidth);
+                                if (width !== columnWidths[cell.column.name]) {
+                                    columnWidths[cell.column.name] = Math.max(width, columnWidths[cell.column.name] || 0);
+                                    invalidateColumnWidths = true;
+                                }
 
-                                    columnOffsets[cell.column.name] = offset;
-                                    offset += columnWidths[cell.column.name];
+                                columnOffsets[cell.column.name] = offset;
+                                offset += columnWidths[cell.column.name];
 
-                                    if (!columnWidths[cell.column.name]) {
-                                        invalidateColumnWidths = false;
-                                        return true;
-                                    }
-                                });
-                            }
+                                if (!columnWidths[cell.column.name]) {
+                                    invalidateColumnWidths = false;
+                                    return true;
+                                }
+                            });
                         });
 
                         if (!layoutUpdating && invalidateColumnWidths) {
@@ -1617,13 +1892,18 @@ namespace Vidyano.WebComponents {
                 this._updateTableDataPendingUpdates();
             }
 
-            // Update the offset of the .more.left popup
-            const offset = this._tableHeader.host.offsetLeft + Enumerable.from(this._columns).where(c => !c.isHidden && c.isPinned).sum(c => !detail || detail.column !== c ? c.calculatedWidth : detail.columnWidth);
-            this.customStyle["--vi-query-grid--more-left-offset"] = `${offset}px`;
-            this.updateStyles();
+            this.updateDataOffset();
 
             if (e)
                 e.stopPropagation();
+        }
+
+        private updateDataOffset() {
+            const headerHost = this.$.dataHeaderHost;
+            const thead = <HTMLElement>this._tableHeader.host.firstChild;
+
+            this.customStyle["--vi-query-grid--data-offset"] = `${thead.getBoundingClientRect().left - headerHost.getBoundingClientRect().left}px`;
+            this.updateStyles();
         }
 
         private _requestAnimationFrame(action: () => void): number {
@@ -1694,6 +1974,9 @@ namespace Vidyano.WebComponents {
         }
 
         private async _itemActions(e: CustomEvent, detail: { row: QueryGridTableDataRow; host: HTMLElement; position: IPosition; }) {
+            if (!(detail.row.item instanceof Vidyano.QueryResultItem))
+                return;
+
             if (detail.row.item.getTypeHint("extraclass", "").split(" ").map(c => c.toUpperCase()).some(c => c === "DISABLED" || c === "READONLY"))
                 return;
 
@@ -1743,6 +2026,29 @@ namespace Vidyano.WebComponents {
             detail.row.host.removeAttribute("hover");
         }
 
+        private _groupCollapsedChanged(e: CustomEvent, group: QueryResultItemGroup) {
+            this._updateVerticalSpacer(this.rowHeight);
+
+            this._lastUpdated = null;
+            this._setCollapsedGroups(this.query.groupingInfo.groups.filter(group => group.isCollapsed));
+        }
+
+        private _groupingToggleCollapse(e: TapEvent) {
+            const collapse = (<PopupMenuItem>e.currentTarget).icon === "QueryGrid_Group_Collapse";
+            this.query.groupingInfo.groups.forEach(g => g.isCollapsed = collapse);
+
+            this.fire("group-collapsed-changed", null, { bubbles: false });
+
+            const groupRows = (<QueryGridTableDataRow[]>this._tableData.rows).filter(r => !!r.group);
+            groupRows.forEach(g => g.groupHeader.updateCollapsed());
+
+            (<Scroller>this.$.scroller).scrollToTop();
+        }
+
+        private _groupingRemove(e: TapEvent) {
+            this.query.group("");
+        }
+
         private _contextmenuData(e: MouseEvent): boolean {
             if (e.which !== 3 || e.shiftKey || e.ctrlKey ||
                 !this.query || this.query.asLookup || this.asLookup)
@@ -1777,42 +2083,19 @@ namespace Vidyano.WebComponents {
             this._actionMenu.close();
         }
 
-        private _contextmenuColumn(e: MouseEvent): boolean {
-            if (e.ctrlKey) {
-                e.preventDefault();
-                return true;
-            }
-
-            let src: HTMLElement | QueryGridColumnHeader = <HTMLElement>e.target;
-            while (src && src.tagName !== "VI-QUERY-GRID-COLUMN-HEADER")
-                src = src.parentElement;
-
-            const column = this._columnMenuColumn = src instanceof QueryGridColumnHeader ? src.column : null;
-            const togglePin = <PopupMenuItem>this.$.columnMenuTogglePin;
-
-            if (column) {
-                togglePin.removeAttribute("hidden");
-                togglePin.label = column.isPinned ? this.translations.Unpin : this.translations.Pin;
-                togglePin.checked = column.isPinned;
-            }
-            else
-                togglePin.setAttribute("hidden", "");
-
-            e.preventDefault();
+        private _togglePin(e: CustomEvent, column: QueryGridColumn) {
             e.stopPropagation();
 
-            return false;
-        }
-
-        private _togglePin() {
-            if (!this._columnMenuColumn) {
-                console.error("No column was previously set");
-                return;
-            }
-
-            this._columnMenuColumn.isPinned = !this._columnMenuColumn.isPinned;
+            column.isPinned = !column.isPinned;
             this._horizontalScrollOffset = 0;
 
+            this._settings.save();
+        }
+
+        private _hideColumn(e: CustomEvent, column: QueryGridColumn) {
+            e.stopPropagation();
+
+            column.isHidden = true;
             this._settings.save();
         }
 
@@ -1849,7 +2132,8 @@ namespace Vidyano.WebComponents {
             if (!this.query || this.initializing)
                 return;
 
-            this._verticalScrollOffset = Math.min(this._verticalScrollOffset + this.rowHeight, this.rowHeight * this.query.totalItems - this.viewportSize.height);
+            const totalItems = !this.hasGrouping ? this.query.totalItems : this.query.groupingInfo.groups.length + this.query.totalItems;
+            this._verticalScrollOffset = Math.min(this._verticalScrollOffset + this.rowHeight, this.rowHeight * totalItems - this.viewportSize.height);
         }
 
         private _pageDown(e: Event) {
@@ -1860,7 +2144,8 @@ namespace Vidyano.WebComponents {
                 return;
 
             const rows = Math.floor(this.viewportSize.height / this.rowHeight) - 2;
-            this._verticalScrollOffset = Math.min(this._verticalScrollOffset + rows * this.rowHeight, this.rowHeight * this.query.totalItems - this.viewportSize.height);
+            const totalItems = !this.hasGrouping ? this.query.totalItems : this.query.groupingInfo.groups.length + this.query.totalItems;
+            this._verticalScrollOffset = Math.min(this._verticalScrollOffset + rows * this.rowHeight, this.rowHeight * totalItems - this.viewportSize.height);
         }
 
         private _preventScroll(e: Event) {

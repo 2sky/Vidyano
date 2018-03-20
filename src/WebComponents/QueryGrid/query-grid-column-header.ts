@@ -3,7 +3,7 @@
 
     @WebComponent.register({
         properties: {
-            disableSort: {
+            canSort: {
                 type: Boolean,
                 reflectToAttribute: true,
                 readOnly: true
@@ -13,10 +13,23 @@
                 reflectToAttribute: true,
                 readOnly: true,
                 value: null
+            },
+            canGroupBy: {
+                type: Boolean,
+                readOnly: true
+            },
+            isPinned: {
+                type: Boolean,
+                readOnly: true
+            },
+            groupByLabel: {
+                type: String,
+                readOnly: true
             }
         },
         listeners: {
-            "upgrade-filter-proxy": "_onUpgradeFilterProxy"
+            "upgrade-filter-proxy": "_onUpgradeFilterProxy",
+            "contextmenu": "_onContextmenu"
         }
     })
     export class QueryGridColumnHeader extends WebComponent implements IConfigurable {
@@ -27,11 +40,14 @@
         private _labelTextNode: Text;
         private _filter: QueryGridColumnFilterProxyBase;
         private _sorting: string;
-        readonly disableSort: boolean; private _setDisableSort: (disable: boolean) => void;
+        readonly canSort: boolean; private _setCanSort: (canSort: boolean) => void;
+        readonly canGroupBy: boolean; private _setCanGroupBy: (canGroupBy: boolean) => void;
         readonly sorting: string; private _setSorting: (sorting: string) => void;
+        readonly isPinned: boolean; private _setIsPinned: (isPinned: boolean) => void;
+        readonly groupByLabel: string; private _setGroupByLabel: (groupByLabel: string) => void;
 
         attached() {
-            this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid-minimum-column-width"));
+            this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid--minimum-column-width"));
 
             super.attached();
 
@@ -69,8 +85,11 @@
                 this._columnObserver = this.column.column.propertyChanged.attach(this._columnPropertyChanged.bind(this));
 
                 this._updateLabel(column.label);
+                this._setCanGroupBy(column.canGroupBy);
                 this._updateSortingIcon(column.sortDirection);
-                this._setDisableSort(!column.canSort);
+                this._setCanSort(column.canSort);
+                this._setIsPinned(column.isPinned);
+                this._setGroupByLabel(this.translateMessage("GroupByColumn", column.label));
             }
             else {
                 this._updateLabel("");
@@ -78,28 +97,67 @@
             }
         }
 
+        private _onContextmenu(e: MouseEvent): boolean {
+            if (e.ctrlKey)
+                return true;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            (<PopupMenu>this.$.menu).popup();
+
+            return false;
+        }
+
         private _sort(e: Event) {
             if (!this._column.canSort || this._column.query.canReorder)
                 return;
 
-            const multiSort = (<any>e).detail.sourceEvent.ctrlKey;
             let newSortingDirection: SortDirection;
-            switch (this._column.sortDirection) {
-                case SortDirection.Ascending: {
-                    newSortingDirection = SortDirection.Descending;
-                    break;
-                }
-                case SortDirection.Descending: {
-                    newSortingDirection = multiSort && this._column.query.sortOptions.length > 1 ? SortDirection.None : SortDirection.Ascending;
-                    break;
-                }
-                case SortDirection.None: {
-                    newSortingDirection = SortDirection.Ascending;
-                    break;
+            let multiSort = false;
+            if (e.currentTarget instanceof Vidyano.WebComponents.PopupMenuItem) {
+                newSortingDirection = e.currentTarget.icon === "SortAsc" ? SortDirection.Ascending : SortDirection.Descending;
+            }
+            else {
+                multiSort = (<any>e).detail.sourceEvent.ctrlKey;
+                switch (this._column.sortDirection) {
+                    case SortDirection.Ascending: {
+                        newSortingDirection = SortDirection.Descending;
+                        break;
+                    }
+                    case SortDirection.Descending: {
+                        newSortingDirection = multiSort && this._column.query.sortOptions.length > 1 ? SortDirection.None : SortDirection.Ascending;
+                        break;
+                    }
+                    case SortDirection.None: {
+                        newSortingDirection = SortDirection.Ascending;
+                        break;
+                    }
                 }
             }
 
             this._column.column.sort(newSortingDirection, multiSort);
+        }
+
+        private _group() {
+            this.column.query.group(this.column.column);
+        }
+
+        private _togglePin() {
+            this.fire("toggle-pin", this.column);
+            this._setIsPinned(this.column.isPinned);
+        }
+
+        private _computePinLabel(isPinned: boolean): string {
+            return isPinned ? this.translations.Unpin : this.translations.Pin;
+        }
+
+        private _hide() {
+            this.fire("hide-column", this.column);
+        }
+
+        private _configure() {
+            this.fire("configure-columns", null);
         }
 
         private _columnPropertyChanged(sender: Vidyano.QueryColumn, args: Vidyano.Common.PropertyChangedArgs) {

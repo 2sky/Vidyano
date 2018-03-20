@@ -18,16 +18,21 @@
         <vi-style id="style" key="vi-query-grid"></vi-style>
         <div class="vertical layout fit">
             <header id="dataHeaderHost" class="horizontal layout">
-                <header class="horizontal layout" id="headerControls">
+                <div class="horizontal layout" id="headerControls">
+                    <template is="dom-if" if="[[hasGrouping]]">
+                        <vi-popup-menu id="grouping" disabled$="[[isBusy]]">
+                            <button is="vi-button" header icon="QueryGrid_Group" inverse disabled$="[[isBusy]]"></button>
+                            <vi-popup-menu-item icon="QueryGrid_Group_Collapse" label="Collapse all" on-tap="_groupingToggleCollapse"></vi-popup-menu-item>
+                            <vi-popup-menu-item icon="QueryGrid_Group_Expand" label="Expand all" on-tap="_groupingToggleCollapse"></vi-popup-menu-item>
+                            <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
+                            <vi-popup-menu-item icon="Remove" label="Remove grouping" on-tap="_groupingRemove"></vi-popup-menu-item>
+                        </vi-popup-menu>
+                    </template>
                     <vi-query-grid-select-all query="[[query]]" hidden$="[[!canSelect]]"></vi-query-grid-select-all>
                     <template is="dom-if" if="[[canFilter]]">
                         <vi-query-grid-filters id="filters" query="[[query]]"></vi-query-grid-filters>
                     </template>
-                </header>
-                <vi-popup-menu id="columnMenu" context-menu-only>
-                    <vi-popup-menu-item id="columnMenuTogglePin" icon="Pin" on-tap="_togglePin"></vi-popup-menu-item>
-                    <vi-popup-menu-item id="columnMenuConfigure" label="[[translateMessage('Manage', isAttached)]]" icon="Configure" on-tap="_configureColumns"></vi-popup-menu-item>
-                </vi-popup-menu>
+                </div>
                 <vi-popup id="moreLeft" class="more left" hidden>
                     <button is="vi-button" header inverse icon="ChevronLeft"></button>
                     <vi-scroller id="moreLeftContent" content no-horizontal></vi-scroller>
@@ -52,5 +57,43 @@
         <vi-popup-core id="actions" on-tap="_closeActions"></vi-popup-core>
     </template>
 </dom-module>
+
+<vi-icon name="QueryGrid_Group_Row">
+    <svg viewBox="0 0 32 32">
+        <g>
+            <path d="M 24 8 L 8 24 L 24 24 L 24 8 z " />
+        </g>
+    </svg>
+</vi-icon>
+
+<vi-icon name="QueryGrid_Group">
+    <svg viewBox="0 0 32 32">
+        <g>
+            <path d="M 2 8 L 2 14 L 22 14 L 22 8 L 2 8 z M 10 18 L 10 24 L 30 24 L 30 18 L 10 18 z " />
+        </g>
+    </svg>
+</vi-icon>
+
+<vi-icon name="QueryGrid_Group_Collapse">
+    <svg viewBox="0 0 32 32">
+        <g>
+            <path d="M 10,3 H 22 L 16,9 Z" />
+            <path d="m 6,11.666666 h 20 v 3 H 6 Z" />
+            <path d="m 6,17.333333 h 20 v 3 H 6 Z" />
+            <path d="m 16,23 -6,6 h 12 z" />
+        </g>
+    </svg>
+</vi-icon>
+
+<vi-icon name="QueryGrid_Group_Expand">
+    <svg viewBox="0 0 32 32">
+        <g>
+            <path d="M 10,9 H 22 L 16,3 Z" />
+            <path d="m 6,11.666666 h 20 v 3 H 6 Z" />
+            <path d="m 6,17.333333 h 20 v 3 H 6 Z" />
+            <path d="M 16,29 10,23 H 22 Z" />
+        </g>
+    </svg>
+</vi-icon>
 
 <script src="query-grid.js"></script>
