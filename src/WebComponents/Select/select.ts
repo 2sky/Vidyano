@@ -67,6 +67,10 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: false
             },
+            isReadonlyInput: {
+                type: Boolean,
+                computed: "_computeIsReadonlyInput(hasOptions, keepUnmatched, disableFiltering)"
+            },
             disabled: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -415,12 +419,12 @@ namespace Vidyano.WebComponents {
             return item1 != null && item2 != null && item1.option === item2.option;
         }
 
-        private _isReadonlyInput(hasOptions: boolean, disableFiltering: boolean): boolean {
-            return !hasOptions || disableFiltering;
+        private _computeIsReadonlyInput(hasOptions: boolean, keepUnmatched: boolean, disableFiltering: boolean): boolean {
+            return !keepUnmatched && (!hasOptions || disableFiltering);
         }
 
-        private _computeInputTabIndex(hasOptions: boolean, disableFiltering: boolean): string {
-            return this._isReadonlyInput(hasOptions, disableFiltering) ? "-1" : "0";
+        private _computeInputTabIndex(isReadonlyInput: boolean): string {
+            return isReadonlyInput ? "-1" : "0";
         }
 
         private _disablePopup(readonly: boolean, disabled: boolean, sensitive: boolean): boolean {
