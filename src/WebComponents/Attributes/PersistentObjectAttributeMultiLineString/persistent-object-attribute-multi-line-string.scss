@@ -6,6 +6,8 @@
 
     textarea {
         resize: none;
+        white-space: pre-wrap;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
     }
 
     pre, textarea {
