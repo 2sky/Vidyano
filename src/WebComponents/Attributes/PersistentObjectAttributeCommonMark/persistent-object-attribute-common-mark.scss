@@ -16,4 +16,9 @@
             @apply(--vi-app--sensitive);
         }
     }
+
+    textarea {
+        white-space: pre-wrap;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
 }
