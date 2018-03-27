@@ -1175,7 +1175,7 @@ namespace Vidyano.WebComponents {
         },
         observers: [
             "_updateTables(_items, _columns, canReorder)",
-            "_updateVerticalSpacer(rowHeight, query.lastUpdated)",
+            "_updateVerticalSpacer(rowHeight, viewportSize, query.lastUpdated)",
             "_updateOutOfViewColumns(_columns, viewportSize, _horizontalScrollOffset, columnWidthsCalculated)"
         ],
         forwardObservers: [
@@ -1656,7 +1656,7 @@ namespace Vidyano.WebComponents {
             return totalItems;
         }
 
-        private _updateVerticalSpacer(rowHeight: number) {
+        private _updateVerticalSpacer(rowHeight: number, viewportSize: ISize) {
             this._requestAnimationFrame(() => {
                 const newHeight = this._calculateTotalItems() * rowHeight;
                 this.$.verticalSpacer.style.height = `${newHeight}px`;
@@ -2038,7 +2038,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _groupCollapsedChanged(e: CustomEvent, group: QueryResultItemGroup) {
-            this._updateVerticalSpacer(this.rowHeight);
+            this._updateVerticalSpacer(this.rowHeight, this.viewportSize);
 
             this._lastUpdated = null;
             this._setCollapsedGroups(this.query.groupingInfo.groups.filter(group => group.isCollapsed));
