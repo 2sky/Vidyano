@@ -127,8 +127,8 @@
 
             tr[is="vi-query-grid-table-data-row"] {
                 padding: 0 !important;
-                line-height: var(--theme-h2);
-                height: var(--theme-h2);
+                line-height: var(--query-grid--row-height);
+                height: var(--query-grid--row-height);
 
                 &.sortable-chosen.sortable-ghost {
                     opacity: 0;
@@ -141,15 +141,15 @@
                     > * {
                         padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
                         min-height: var(--theme-h2);
-                        height: var(--theme-h2);
-                        line-height: var(--theme-h2);
+                        height: var(--query-grid--row-height);
+                        line-height: var(--query-grid--row-height);
                         box-sizing: border-box;
                         overflow: hidden;
                         white-space: nowrap;
                         text-overflow: ellipsis;
 
                         vi-icon {
-                            height: var(--theme-h2);
+                            height: var(--query-grid--row-height);
                         }
                     }
 
@@ -173,7 +173,7 @@
                     > vi-icon {
                         @include layout-horizontal();
                         @include layout-center-center();
-                        height: var(--theme-h2);
+                        height: var(--query-grid--row-height);
                         width: var(--theme-h2);
                         padding: 0;
 

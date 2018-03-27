@@ -918,7 +918,7 @@ namespace Vidyano.WebComponents {
             },
             rowHeight: {
                 type: Number,
-                readOnly: true
+                computed: "_computeRowHeight(query, app)"
             },
             noSelection: {
                 type: Boolean,
@@ -1047,7 +1047,7 @@ namespace Vidyano.WebComponents {
         private _reorderRow: QueryGridTableDataRow;
         private _outOfViewColumnsWorkerHandle: number;
         readonly columnWidthsCalculated: boolean; private _setColumnWidthsCalculated: (val: boolean) => void;
-        readonly rowHeight: number; private _setRowHeight: (rowHeight: number) => void;
+        readonly rowHeight: number;;
         readonly initializing: boolean; private _setInitializing: (initializing: boolean) => void;
         readonly isReordering: boolean; private _setIsReordering: (reodering: boolean) => void;
         readonly hasTotalItem: boolean;
@@ -1129,6 +1129,19 @@ namespace Vidyano.WebComponents {
             }
         }
 
+        private _computeRowHeight(query: Vidyano.Query): number {
+            if (!this.isAttached || !this.query)
+                return;
+
+            const config = this.app.configuration.getQueryConfig(query);
+            const rowHeight = config && config.rowHeight ? config.rowHeight : parseInt(getComputedStyle(this).lineHeight);
+
+            this.customStyle["--query-grid--row-height"] = `${rowHeight}px`;
+            this.updateStyles();
+
+            return rowHeight;
+        }
+
         isColumnInView(column: QueryGridColumn): boolean {
             if (column.isPinned || !column.calculatedOffset)
                 return true;
@@ -1153,8 +1166,6 @@ namespace Vidyano.WebComponents {
         }
 
         private _viewportSizeChanged(viewportSize: ISize) {
-            this._setRowHeight(parseInt(getComputedStyle(this).lineHeight));
-
             if (this._hasPendingUpdates)
                 this._updateTableDataPendingUpdates();
 

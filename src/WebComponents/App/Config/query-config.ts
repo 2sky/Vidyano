@@ -30,6 +30,10 @@ namespace Vidyano.WebComponents {
             selectAll: {
                 type: Boolean,
                 reflectToAttribute: true
+            },
+            rowHeight: {
+                type: Number,
+                reflectToAttribute: true
             }
         }
     })
@@ -41,5 +45,6 @@ namespace Vidyano.WebComponents {
         fileDropAttribute: string;
         hideHeader: boolean;
         selectAll: boolean;
+        rowHeight: number;
     }
 }
