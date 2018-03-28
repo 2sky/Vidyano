@@ -9,16 +9,21 @@
         <div id="image">
             <span class="flex">No image found</span>
         </div>
-        <vi-scroller no-horizontal>
-            <div id="side">
-                <header>
-                    <content select="[label='sign-in']"></content><h1>[[label]]</h1>
-                </header>
-                <main>
-                    <content></content>
-                </main>
-            </div>
-        </vi-scroller>
+        <div id="sideHost" class="layout vertical">
+            <vi-scroller no-horizontal class="flex">
+                <div id="side">
+                    <header>
+                        <content select="[label='sign-in']"></content><h1>[[label]]</h1>
+                    </header>
+                    <main>
+                        <content select=":not([sign-in-footer])"></content>
+                    </main>
+                </div>
+            </vi-scroller>
+            <footer>
+                <content select="[sign-in-footer]"></content>
+            </footer>
+        </div>
     </template>
 </dom-module>
 
