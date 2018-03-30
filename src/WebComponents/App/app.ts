@@ -904,6 +904,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _configureContextmenu(e: MouseEvent) {
+            if (!this.service || !this.service.application)
+                return;
+
             let configurableParent: IConfigurable;
 
             if (!this.service.application.hasManagement || window.getSelection().toString()) {
