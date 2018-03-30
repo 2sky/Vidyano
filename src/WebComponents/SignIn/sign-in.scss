@@ -79,8 +79,14 @@
             display: none;
         }
 
-        vi-scroller {
+        #sideHost {
             @include fit();
+        }
+    }
+
+    footer ::content {
+        [sign-in-footer] {
+            width: auto !important;
         }
     }
 }
