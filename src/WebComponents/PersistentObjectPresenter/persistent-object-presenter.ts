@@ -180,9 +180,9 @@ namespace Vidyano.WebComponents {
                     await this.app.importComponent("PersistentObject");
                     this._renderPersistentObject(persistentObject);
                 }
-            }
 
-            this._updateTitle(persistentObject.isBreadcrumbSensitive, this.isAppSensitive);
+                this._updateTitle(persistentObject.isBreadcrumbSensitive, this.isAppSensitive);
+            }
         }
 
         private _updateTitle(isBreadcrumbSensitive: boolean, isAppSensitive: boolean) {
