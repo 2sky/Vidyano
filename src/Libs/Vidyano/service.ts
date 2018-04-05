@@ -1236,6 +1236,7 @@ namespace Vidyano {
         registerPersistentObjectId?: string;
         registerUser?: string;
         forgotPassword?: boolean;
+        getCredentialType?: boolean;
     }
 
     export interface IForgotPassword {

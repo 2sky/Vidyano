@@ -1022,6 +1022,7 @@ declare namespace Vidyano {
         registerPersistentObjectId?: string;
         registerUser?: string;
         forgotPassword?: boolean;
+        getCredentialType?: boolean;
     }
     interface IForgotPassword {
         notification: string;

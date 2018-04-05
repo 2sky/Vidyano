@@ -182,7 +182,8 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 computed: "_computeIsProfiling(service.isSignedIn, service.profile)"
             },
-            signInImage: String,
+            signInLogo: String,
+            signInBackground: String,
             showMenu: {
                 type: Boolean,
                 computed: "_computeShowMenu(service.application, noMenu, currentRoute)"
@@ -1255,6 +1256,11 @@ namespace Vidyano.WebComponents {
         }
 
         onRedirectToSignIn(keepUrl: boolean) {
+            if (keepUrl && this.app.path.startsWith("SignIn/")) {
+                this.app.changePath(this.app.path);
+                return;
+            }
+
             this.app.changePath("SignIn" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path).replace(/SignIn\/?/, "")).replace(/\./g, "%2E") : ""), true);
         }
 

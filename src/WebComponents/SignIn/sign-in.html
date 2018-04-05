@@ -6,24 +6,83 @@
 <dom-module id="vi-sign-in">
     <template>
         <link rel="stylesheet" href="sign-in.css" />
-        <div id="image">
-            <span class="flex">No image found</span>
+        <div id="background">
+            <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 1440 810" preserveAspectRatio="xMinYMin slice" aria-hidden="true">
+                <g>
+                    <path fill="#ffffff" fill-opacity="0.025" d="M441.8,1526c307-432.2,221.8-1019.9-190.3-1312.6s-995-179.6-1302,252.6L441.8,1526z" />
+                    <path fill="#ffffff" fill-opacity="0.025" d="M697.5,1707.6C1109.7,1127.3,995.3,338.3,442-54.8S-894-295.9-1306.2,284.4L697.5,1707.6z" />
+                    <path fill="#ffffff" fill-opacity="0.025" d="M972.6,1903.1C1498.1,1163.4,1352.3,157.6,647-343.3S-1055.9-650.8-1581.3,88.9L972.6,1903.1z" />
+                </g>
+                <g>
+                    <path fill="#ffffff" fill-opacity="0.025" d="M2882.7,678.3C2470,345.6,1878.2,394.9,1561,788.4s-239.8,982.3,173,1315L2882.7,678.3z" />
+                    <path fill="#ffffff" fill-opacity="0.025" d="M3079.5,434.1C2525.3-12.6,1730.8,53.6,1304.9,582s-322,1318.9,232.2,1765.6L3079.5,434.1z" />
+                    <path fill="#ffffff" fill-opacity="0.025" d="M3291.3,171.4c-706.4-569.4-1719.2-485-2262.1,188.5s-410.4,1681.1,296,2250.5L3291.3,171.4z" />
+                </g>
+            </svg>
         </div>
-        <div id="sideHost" class="layout vertical">
-            <vi-scroller no-horizontal class="flex">
-                <div id="side">
-                    <header>
-                        <content select="[label='sign-in']"></content><h1>[[label]]</h1>
-                    </header>
-                    <main>
-                        <content select=":not([sign-in-footer])"></content>
-                    </main>
-                </div>
-            </vi-scroller>
-            <footer>
-                <content select="[sign-in-footer]"></content>
-            </footer>
+        <div class="dialog">
+            <div class="loader" hidden$="[[!isBusy]]"></div>
+            <header>
+                <img id="logo" src$="[[logo]]" />
+            </header>
+            <main>
+                <section class="username" active$="[[_isStep('username', step)]]">
+                    <h1>[[_translate(translations, "SignInTo", label)]]</h1>
+                    <template is="dom-if" if="[[hasVidyano]]">
+                        <input id="username" type="text" placeholder="[[_translate(translations, 'UserName')]]" value="{{userName::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
+                        <label class="description">[[description]]</label>
+                        <div class="actions layout horizontal-reverse justified">
+                            <button is="vi-button" label="[[_translate(translations, 'Next')]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
+                            <template is="dom-if" if="[[hasRegister]]">
+                                <button is="vi-button" label="[[_translate(translations, 'Register')]]" inverse on-tap="_register" disabled$="[[isBusy]]"></button>
+                            </template>
+                        </div>
+                        <div class="splitter">
+                            <span>[[_translate(translations, 'Or')]]</span>
+                        </div>
+                    </template>
+                    <template is="dom-if" if="[[hasOther]]">
+                        <div class="brands">
+                            <template is="dom-repeat" items="[[_providers(service.providers)]]" as="provider">
+                                <button is="vi-button" class="brand" brand$="[[provider.name]]" disabled$="[[isBusy]]">
+                                    <div class="logo"></div>
+                                    <span>[[_translate(translations, 'SignInUsing')]] [[provider.parameters.label]]</span>
+                                </button>
+                            </template>
+                        </div>
+                    </template>
+                </section>
+                <section class="password" active$="[[_isStep('password', step)]]">
+                    <div class="layout horizontal user wrap">
+                        <vi-icon source="Action_viImpersonate"></vi-icon>
+                        <h3>[[userName]]</h3>
+                        <button is="vi-button" label="([[_translate(translations, 'NotYou')]])" inverse on-tap="_reset" disabled$="[[isBusy]]"></button>
+                    </div>
+                    <h1>[[_translate(translations, 'EnterPassword')]]</h1>
+                    <input id="password" type="password" placeholder="[[_translate(translations, 'Password')]]" value="{{password::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
+                    <vi-checkbox label="[[_translate(translations, 'StaySignedIn')]]" disabled$="[[isBusy]]" checked="{{staySignedIn}}"></vi-checkbox>
+                    <div class="actions layout horizontal-reverse justified">
+                        <button is="vi-button" label="[[_translate(translations, 'Next')]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
+                        <template is="dom-if" if="[[hasForgot]]">
+                            <button is="vi-button" label="[[_translate(translations, 'ForgotPassword')]]" inverse on-tap="_forgot" disabled$="[[isBusy]]"></button>
+                        </template>
+                    </div>
+                </section>
+                <section class="twofactor" active$="[[_isStep('twofactor', step)]]">
+                    <div class="layout horizontal user wrap">
+                        <vi-icon source="Action_viImpersonate"></vi-icon>
+                        <h3>[[userName]]</h3>
+                        <button is="vi-button" label="([[_translate(translations, 'NotYou')]])" inverse on-tap="_reset" disabled$="[[isBusy]]"></button>
+                    </div>
+                    <h1>[[_translate(translations, 'EnterTwoFactorCode')]]</h1>
+                    <input id="twofactor" type="text" placeholder="[[_translate(translations, 'Password')]]" value="{{twoFactorCode::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
+                    <div class="actions layout horizontal-reverse justified">
+                        <button is="vi-button" label="[[_translate(translations, 'Next')]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
+                    </div>
+                </section>
+            </main>
         </div>
+        <content select="[sign-in-footer]"></content>
     </template>
 </dom-module>
 
