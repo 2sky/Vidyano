@@ -956,6 +956,7 @@ declare namespace Vidyano {
         private _createUri(method);
         private _createData(method, data?);
         private _getMs();
+        postJSON(method: string, data: any): Promise<any>;
         private _postJSON(url, data);
         private _postJSONProcess(data, result, requestMethod, createdRequest, requestStart, elapsedMs);
         private _getJSON(url, headers?);

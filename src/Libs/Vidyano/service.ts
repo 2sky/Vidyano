@@ -76,6 +76,10 @@ namespace Vidyano {
             return Service._getMs();
         }
 
+        postJSON(method: string, data: any): Promise<any> {
+            return this._postJSON(this._createUri(method), data);
+        }
+
         private _postJSON(url: string, data: any): Promise<any> {
             const createdRequest = new Date();
             if (this.profile) {
