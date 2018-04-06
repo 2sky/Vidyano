@@ -698,19 +698,15 @@ namespace Vidyano.WebComponents {
 
             let currentPath = this.path;
             this._routeUpdater = this._routeUpdater.then(async () => {
-                if (this.service["_initial"] != null) {
-                    const initial = this.service["_initial"];
-                    this.service["_initial"] = null;
+                const initial: Vidyano.PersistentObject = this.service["_initial"];
+                if (initial != null) {
+                    const initialPath = `SignIn/${initial.type}`;
+                    const currentPathWithoutRoot = Vidyano.WebComponents.App.removeRootPath(currentPath);
 
-                    await this.importComponent("PersistentObjectDialog");
-                    const dialog = new Vidyano.WebComponents.PersistentObjectDialog(initial, {
-                        noHeader: !initial.breadcrumb,
-                        noCancel: true
-                    });
-
-                    dialog.noCancelOnEscKey = dialog.noCancelOnOutsideClick = true;
-
-                    await this.showDialog(dialog);
+                    if (initialPath !== currentPathWithoutRoot) {
+                        const returnPath = currentPathWithoutRoot && !currentPathWithoutRoot.startsWith("SignIn") ? currentPathWithoutRoot : "";
+                        this.changePath(`${initialPath}/${returnPath}`);
+                    }
                 }
 
                 if (currentPath !== this.path)
@@ -787,7 +783,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _computeShowMenu(application: Vidyano.Application, noMenu: boolean, currentRoute: Vidyano.WebComponents.AppRoute): boolean {
-            const showMenu = application && !noMenu && currentRoute != null;
+            const showMenu = application && !noMenu && currentRoute != null && !currentRoute.route.startsWith("SignIn") && !currentRoute.route.startsWith("SignOut");
             if (showMenu)
                 this.importComponent("Menu");
 

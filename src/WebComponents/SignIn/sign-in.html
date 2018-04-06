@@ -44,7 +44,7 @@
                     <template is="dom-if" if="[[hasOther]]">
                         <div class="brands">
                             <template is="dom-repeat" items="[[_providers(service.providers)]]" as="provider">
-                                <button is="vi-button" class="brand" brand$="[[provider.name]]" disabled$="[[isBusy]]">
+                                <button is="vi-button" class="brand" brand$="[[provider.name]]" disabled$="[[isBusy]]" on-tap="_authenticateExternal">
                                     <div class="logo"></div>
                                     <span>[[_translate(translations, 'SignInUsing')]] [[provider.parameters.label]]</span>
                                 </button>
@@ -75,12 +75,40 @@
                         <button is="vi-button" label="([[_translate(translations, 'NotYou')]])" inverse on-tap="_reset" disabled$="[[isBusy]]"></button>
                     </div>
                     <h1>[[_translate(translations, 'EnterTwoFactorCode')]]</h1>
-                    <input id="twofactor" type="text" placeholder="[[_translate(translations, 'Password')]]" value="{{twoFactorCode::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
+                    <input id="twofactor" type="text" placeholder="[[_translate(translations, 'TwoFactorCode')]]" value="{{twoFactorCode::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
+                    <vi-checkbox label="[[_translate(translations, 'StaySignedIn')]]" disabled$="[[isBusy]]" checked="{{staySignedIn}}"></vi-checkbox>
                     <div class="actions layout horizontal-reverse justified">
-                        <button is="vi-button" label="[[_translate(translations, 'Next')]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
+                        <button is="vi-button" label="[[_translate(translations, 'SignIn')]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
+                        <button is="vi-button" label="[[_translate(translations, 'Previous')]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
                     </div>
                 </section>
+                <section class="register" active$="[[_isStep('register', step)]]">
+                    <template is="dom-if" if="[[!register]]">
+                        <vi-spinner></vi-spinner>
+                    </template>
+                    <template is="dom-if" if="[[register]]">
+                        <h1>[[register.breadcrumb]]</h1>
+                        <vi-persistent-object-tab-presenter tab="[[register.tabs.0]]"></vi-persistent-object-tab-presenter>
+                        <div class="actions layout horizontal-reverse justified">
+                            <button is="vi-button" label="[[_translate(translations, 'RegisterSave')]]" on-tap="_register" disabled$="[[register.isBusy]]"></button>
+                            <button is="vi-button" label="[[_translate(translations, 'SignIn')]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
+                        </div>
+                    </template>
+                </section>
+                <section class="initial" active$="[[_isStep('initial', step)]]">
+                    <template is="dom-if" if="[[initial]]">
+                        <h1>[[initial.breadcrumb]]</h1>
+                        <vi-persistent-object-tab-presenter tab="[[initial.tabs.0]]"></vi-persistent-object-tab-presenter>
+                        <div class="actions layout horizontal-reverse justified">
+                            <button is="vi-button" label="[[initial.actions.EndEdit.displayName]]" on-tap="_finishInitial" disabled$="[[register.isBusy]]"></button>
+                            <button is="vi-button" label="[[translations.SignOut]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
+                        </div>
+                    </template>
+                </section>
             </main>
+            <footer hidden$="[[!notification]]" type$="[[notification.type]]">
+                <span>[[notification.text]]</span>
+            </footer>
         </div>
         <content select="[sign-in-footer]"></content>
     </template>

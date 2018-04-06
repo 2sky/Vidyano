@@ -1,5 +1,11 @@
 @import "../_vars.scss";
 
+@mixin color-notification($color) {
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+    background-color: $color;
+    fill: $color;
+}
+
 @font-face {
     font-family: "viBrands";
     src: url(data:font/truetype;charset=utf-8;base64,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) format('truetype');
@@ -82,7 +88,7 @@
                     }
                 }
 
-                &.password {
+                &.password, &.twofactor {
                     input, h1 {
                         margin: var(--theme-h3) 0 0 0;
                     }
@@ -140,7 +146,8 @@
                     line-height: var(--theme-h2);
 
                     &[inverse] {
-                        padding: 0;
+                        padding: 0 var(--theme-h5);
+                        margin-left: calc(var(--theme-h5) * -1);
                     }
                 }
             }
@@ -260,6 +267,41 @@
                     }
                 }
             }
+
+            vi-persistent-object-tab-presenter {
+                margin-top: var(--theme-h3);
+                min-height: calc(var(--theme-h2) * 3);
+                max-height: 80vh;
+                --vi-persistent-object-group--attribute-padding: 0;
+
+                > vi-persistent-object-tab {
+                    position: static;
+                    width: 100%;
+                }
+            }
+        }
+
+        footer {
+            position: relative;
+            color: white;
+            padding: var(--theme-h4);
+            box-shadow: inset 0px 6px 4px 0px rgba(0, 0, 0, 0.15);
+            
+            &[type="error"], &[type="Error"], &[type="0"] {
+                @include color-notification(var(--theme-color-error));
+            }
+
+            &[type="notice"], &[type="Notice"], &[type="1"] {
+                @include color-notification(var(--theme-color-notice));
+            }
+
+            &[type="ok"], &[type="OK"], &[type="2"] {
+                @include color-notification(var(--theme-color-ok));
+            }
+
+            &[type="warning"], &[type="Warning"], &[type="3"] {
+                @include color-notification(var(--theme-color-warning));
+            }
         }
     }
 
@@ -313,7 +355,7 @@
     &[is-desktop], &[is-tablet] {
         .dialog {
             width: 400px;
-            min-height: 250px;
+            min-height: 360px;
         }
     }
 }

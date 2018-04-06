@@ -1,9 +1,10 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    declare type Step = "username" | "password" | "twofactor" | "authenticating" | "redirecting";
+    declare type Step = "username" | "password" | "twofactor" | "authenticating" | "register" | "initial";
 
     interface ISignInRouteParameters {
+        stateOrReturnUrl: string;
         returnUrl: string;
     }
 
@@ -11,6 +12,11 @@
         exception: string;
         redirectUri: string;
         usePassword: boolean;
+    }
+
+    interface INotification {
+        text: string;
+        type: NotificationType;
     }
 
     @WebComponent.register({
@@ -68,6 +74,11 @@
                 readOnly: true,
                 value: null
             },
+            initial: {
+                type: Object,
+                readOnly: true,
+                value: null
+            },
             error: {
                 type: String,
                 notify: true
@@ -80,13 +91,22 @@
             description: {
                 type: String,
                 readOnly: true
+            },
+            notification: {
+                type: Object,
+                readOnly: true,
+                value: null
             }
         },
         listeners: {
             "app-route-activate": "_activate",
             "app-route-deactivate": "_deactivate"
         },
-        mediaQueryAttributes: true
+        mediaQueryAttributes: true,
+        forwardObservers: [
+            "register.isBusy",
+            "initial.isBusy"
+        ]
     })
     export class SignIn extends WebComponent {
         private _isWarned: boolean;
@@ -98,7 +118,9 @@
         readonly hasForgot: boolean; private _setHasForgot: (hasForgot: boolean) => void;
         readonly hasRegister: boolean; private _setHasRegister: (hasRegister: boolean) => void;
         readonly register: Vidyano.PersistentObject; private _setRegister: (register: Vidyano.PersistentObject) => void;
+        readonly initial: Vidyano.PersistentObject; private _setInitial: (initial: Vidyano.PersistentObject) => void;
         readonly description: string; private _setDescription: (description: string) => void;
+        readonly notification: INotification; private _setNotification: (notification: INotification) => void;
         error: string;
         background: string;
         step: Step
@@ -153,9 +175,56 @@
         }
 
         private async _activate(e: CustomEvent, { parameters }: { parameters: ISignInRouteParameters; }) {
-            this._setReturnUrl(decodeURIComponent(parameters.returnUrl || ""));
+            if (parameters.stateOrReturnUrl) {
+                if (/^(register)$/i.test(parameters.stateOrReturnUrl)) {
+                    this._setReturnUrl(decodeURIComponent(parameters.returnUrl || ""));
+                    this.step = "register";
+                    this._setNotification(null);
 
-            this.userName = (this.app.service.userName !== this.app.service.defaultUserName ? this.app.service.userName : "") || "";
+                    this._setIsBusy(true);
+                    try {
+                        this.app.importComponent("PersistentObjectTabPresenter");
+
+                        const registerService = new Service(this.app.service.serviceUri, this.service.hooks);
+                        await registerService.initialize(true);
+
+                        registerService.staySignedIn = false;
+                        await registerService.signInUsingCredentials(this.app.service.providers.Vidyano.registerUser, "");
+                        const register = await registerService.getPersistentObject(null, this.app.service.providers.Vidyano.registerPersistentObjectId, undefined, true);
+
+                        register.beginEdit();
+                        register.stateBehavior = "StayInEdit";
+
+                        this._setRegister(register);
+                    }
+                    catch (error) {
+                        this.error = error;
+                    }
+                    finally {
+                        this._setIsBusy(false);
+                        return;
+                    }
+                }
+                else {
+                    const initial: Vidyano.PersistentObject = this.service["_initial"];
+                    if (initial) {
+                        this.app.importComponent("PersistentObjectTabPresenter");
+                        this._setReturnUrl(decodeURIComponent(parameters.returnUrl || ""));
+                        this.step = "initial";
+
+                        initial.beginEdit();
+                        initial.stateBehavior = "StayInEdit";
+
+                        this._setInitial(initial);
+
+                        return;
+                    }
+                }
+            }
+
+            this._setReturnUrl(decodeURIComponent(parameters.returnUrl || parameters.stateOrReturnUrl || ""));
+
+            this.userName = (this.app.service.userName !== this.app.service.defaultUserName && this.app.service.userName !== this.app.service.registerUserName ? this.app.service.userName : "") || "";
             this.staySignedIn = Vidyano.cookie("staySignedIn", { force: true }) === "true";
 
             this._setHasVidyano(!!this.app.service.providers.Vidyano);
@@ -185,17 +254,12 @@
                 return;
             }// TODO: Check flow
             else if (this.app.service.providers && Object.keys(this.app.service.providers).length === 1 && !this.app.service.providers.Vidyano) {
-                Vidyano.cookie("returnUrl", this.returnUrl, { expires: 1, force: true });
-                this.step = "redirecting";
-                this.app.service.signInExternal(Object.keys(this.app.service.providers)[0]);
+                this._authenticateExternal(Object.keys(this.app.service.providers)[0]);
                 return;
             }
 
             if (!this.service.isSignedIn)
                 this.step = this.hasVidyano && this.userName ? "password" : "username";
-            else {
-                // TODO
-            }
         }
 
         private _deactivate() {
@@ -217,26 +281,47 @@
         }
 
         private async _register() {
-            this._setIsBusy(true);
+            if (this.step !== "register") {
+                this.app.changePath("SignIn/Register", false);
+                return;
+            }
 
             try {
-                const imports = this.app.importComponent("PersistentObjectTab", "PersistentObjectAttributePresenter", "PersistentObjectDialog");
-                await this.service.signInUsingCredentials(this.app.service.providers.Vidyano.registerUser, null);
-                const register = await this.service.getPersistentObject(null, this.app.service.providers.Vidyano.registerPersistentObjectId);
-                register.beginEdit();
-                await imports;
+                await this.register.save();
+                this._setNotification(this.register.notification ? {
+                    text: this.register.notification,
+                    type: this.register.notificationType
+                } : null);
 
-                this._setIsBusy(false);
-
-                if (register.stateBehavior.indexOf("OpenAsDialog") >= 0) {
-                    await this.app.showDialog(new PersistentObjectDialog(register, {
-                        saveLabel: this.translations["RegisterSave"]
-                    }));
-                } else
-                    this._setRegister(register);
+                this.userName = "";
+                this.app.changePath("SignIn", true);
             }
-            catch (e) {
-                this.app.showAlert(e, NotificationType.Error);
+            catch (error) {
+                this._setNotification({
+                    text: error,
+                    type: NotificationType.Error
+                });
+            }
+        }
+
+        private async _finishInitial() {
+            try {
+                this._setIsBusy(true);
+
+                await this.initial.save();
+                this._setNotification(this.initial.notification ? {
+                    text: this.initial.notification,
+                    type: this.initial.notificationType
+                } : null);
+
+                this._setInitial(this.service["_initial"] = null);
+                this.app.changePath(this.returnUrl || "", true);
+            }
+            catch (error) {
+                this._setNotification({
+                    text: error,
+                    type: NotificationType.Error
+                });
             }
             finally {
                 this._setIsBusy(false);
@@ -255,6 +340,13 @@
 
                     case "password": {
                         if (!StringEx.isNullOrEmpty(this.password))
+                            this._authenticate();
+
+                        break;
+                    }
+
+                    case "twofactor": {
+                        if (!StringEx.isNullOrEmpty(this.twoFactorCode))
                             this._authenticate();
 
                         break;
@@ -290,9 +382,6 @@
                         });
 
                         if (credentialType.redirectUri) {
-                            this.step = "redirecting";
-                            Polymer.dom(this).flush();
-
                             document.location.assign(credentialType.redirectUri);
                             return;
                         }
@@ -327,6 +416,33 @@
             }
         }
 
+        private _authenticateExternal(e: TapEvent | string) {
+            const key = typeof e === "string" ? e : e.model.provider.key;
+
+            this._setIsBusy(true);
+            setTimeout(() => {
+                Vidyano.cookie("returnUrl", this.returnUrl, { expires: 1, force: true });
+                this.app.service.signInExternal(key);
+            }, 2000);
+        }
+
+        private _back() {
+            if (this.step === "twofactor") {
+                this.step = "password";
+                this.password = this.twoFactorCode = "";
+            }
+            else if (this.step === "register") {
+                this.app.changePath("SignIn" + (this.returnUrl ? `/${this.returnUrl}` : ""));
+                this._setRegister(null);
+            }
+            else if (this.step === "initial") {
+                this.app.changePath("SignOut/SignIn" + (this.returnUrl ? `/${this.returnUrl}` : ""));
+                this._setInitial(this.service["_initial"] = null);
+            }
+
+            this._setNotification(null);
+        }
+
         private _focus(element: string | HTMLInputElement, attempt: number = 0) {
             const input = typeof element === "string" ? <HTMLInputElement>this.$$(`#${element}`) : <HTMLInputElement>element;
             if (input) {
@@ -350,6 +466,7 @@
         private _providers(providers: { [name: string]: IProviderParameters }): { name: string; parameters: IProviderParameters; }[] {
             return Object.keys(providers).filter(key => key !== "Vidyano").map(key => {
                 return {
+                    key: key,
                     name: key.toLowerCase(),
                     parameters: this.service.providers[key]
                 };
