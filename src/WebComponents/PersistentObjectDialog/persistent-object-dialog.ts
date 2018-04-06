@@ -76,8 +76,8 @@ namespace Vidyano.WebComponents {
                 if (StringEx.isNullOrWhiteSpace(this.persistentObject.notification) || this.persistentObject.notificationType !== NotificationType.Error) {
                     if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") !== -1) {
                         try {
-                            const po2 = await this.persistentObject.queueWork(() => this.app.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId));
-                            this.app.service.hooks.onOpen(po2, true);
+                            const po2 = await this.persistentObject.queueWork(() => this.persistentObject.service.getPersistentObject(this.persistentObject.parent, this.persistentObject.id, this.persistentObject.objectId));
+                            this.persistentObject.service.hooks.onOpen(po2, true);
                             this.close(this.persistentObject);
                         }
                         catch (e) {

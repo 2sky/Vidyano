@@ -195,7 +195,7 @@ namespace Vidyano.WebComponents.Attributes {
                 else {
                     await this.app.importComponent("PersistentObjectDialog");
                     this.app.showDialog(new Vidyano.WebComponents.PersistentObjectDialog(po, {
-                        saveLabel: this.app.service.actionDefinitions.get("AddReference").displayName,
+                        saveLabel: po.service.actionDefinitions.get("AddReference").displayName,
                         save: (po, close) => {
                             this._finalizeAdd(po);
                             close();

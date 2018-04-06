@@ -112,7 +112,7 @@ namespace Vidyano.WebComponents {
             if (!this.fileDrop)
                 return;
 
-            (<AppServiceHooks>this.app.service.hooks).onQueryFileDrop(this.query, details.name, details.contents);
+            (<AppServiceHooks>this.query.service.hooks).onQueryFileDrop(this.query, details.name, details.contents);
         }
 
         private _refresh() {

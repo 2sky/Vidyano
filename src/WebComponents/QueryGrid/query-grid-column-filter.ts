@@ -50,7 +50,7 @@ namespace Vidyano.WebComponents {
                     return value.substr(indexOfPipe + parseInt(value.substr(0, indexOfPipe), 10) + 1);
             }
 
-            return value == null ? this.app.service.getTranslatedMessage("DistinctNullValue") : this.app.service.getTranslatedMessage("DistinctEmptyValue");
+            return value == null ? this.queryColumn.service.getTranslatedMessage("DistinctNullValue") : this.queryColumn.service.getTranslatedMessage("DistinctEmptyValue");
         }
 
         protected get label(): string {

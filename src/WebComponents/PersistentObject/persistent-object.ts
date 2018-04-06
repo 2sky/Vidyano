@@ -133,10 +133,10 @@
                 this.selectedMasterTab = this._cacheEntry.selectedMasterTab || this._computeMasterTabs(this.persistentObject, this.persistentObject.tabs)[0] || null;
                 this.selectedDetailTab = this._cacheEntry.selectedDetailTab || this._computeDetailTabs(this.persistentObject, this.persistentObject.tabs)[0] || null;
 
-                if (this.app.service.application.userSettings["PersistentObjectSettings"] &&
-                    this.app.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id] &&
-                    this.app.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id]["master-detail"]) {
-                        this.masterWidth = this.app.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id]["master-detail"];
+                if (persistentObject.service.application.userSettings["PersistentObjectSettings"] &&
+                    persistentObject.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id] &&
+                    persistentObject.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id]["master-detail"]) {
+                    this.masterWidth = persistentObject.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id]["master-detail"];
                 }
                 else
                     this.masterWidth = "40%";
@@ -301,11 +301,11 @@
                     this.masterWidth = (100 / this.offsetWidth * px).toString() + "%";
                 }
 
-                const persistentObjectSettings = this.app.service.application.userSettings["PersistentObjectSettings"] || (this.app.service.application.userSettings["PersistentObjectSettings"] = {});
+                const persistentObjectSettings = this.persistentObject.service.application.userSettings["PersistentObjectSettings"] || (this.persistentObject.service.application.userSettings["PersistentObjectSettings"] = {});
                 const thisPersistentObjectSettings = persistentObjectSettings[this.persistentObject.id] || (persistentObjectSettings[this.persistentObject.id] = {});
                 thisPersistentObjectSettings["master-detail"] = this.masterWidth;
 
-                this.app.service.application.saveUserSettings();
+                this.persistentObject.service.application.saveUserSettings();
                 this.app.isTracking = false;
             }
 
