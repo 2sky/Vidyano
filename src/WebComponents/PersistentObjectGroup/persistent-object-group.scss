@@ -2,7 +2,7 @@
 
 :host {
     display: block;
-    padding: 0 calc(var(--theme-h4) / 2);
+    padding: 0 var(--vi-persistent-object-group--attribute-padding, var(--theme-h5));
 
     &[loading] {
         visibility: hidden;
@@ -33,7 +33,7 @@
         tr {
             td {
                 vertical-align: top;
-                padding: 0 calc(var(--theme-h4) / 2);
+                padding: 0 var(--vi-persistent-object-group--attribute-padding, var(--theme-h5));
             }
         }
     }
