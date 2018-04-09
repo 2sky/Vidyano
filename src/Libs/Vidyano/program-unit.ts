@@ -56,7 +56,7 @@
                 });
             }
 
-            if (this.openFirst && this.items.length > 0) {
+            if (this.openFirst && this.items.length > 0 && !(this.items[0] instanceof ProgramUnitItemUrl)) {
                 this.path = this.items[0].path;
 
                 if (this.items[0].title === this.title)
