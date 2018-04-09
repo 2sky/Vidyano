@@ -286,7 +286,7 @@
             color: white;
             padding: var(--theme-h4);
             box-shadow: inset 0px 6px 4px 0px rgba(0, 0, 0, 0.15);
-            
+
             &[type="error"], &[type="Error"], &[type="0"] {
                 @include color-notification(var(--theme-color-error));
             }
@@ -375,15 +375,6 @@
     footer ::content {
         [sign-in-footer] {
             width: auto !important;
-        }
-    }
-}
-
-/* Small devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-    :host {
-        vi-scroller {
-            width: 400px;
         }
     }
 }

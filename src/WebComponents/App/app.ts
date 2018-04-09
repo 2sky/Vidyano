@@ -703,9 +703,9 @@ namespace Vidyano.WebComponents {
                     const initialPath = `SignIn/${initial.type}`;
                     const currentPathWithoutRoot = Vidyano.WebComponents.App.removeRootPath(currentPath);
 
-                    if (initialPath !== currentPathWithoutRoot) {
+                    if (!currentPathWithoutRoot.startsWith(initialPath)) {
                         const returnPath = currentPathWithoutRoot && !currentPathWithoutRoot.startsWith("SignIn") ? currentPathWithoutRoot : "";
-                        this.changePath(`${initialPath}/${returnPath}`);
+                        this.changePath(`${initialPath}/${encodeURIComponent(returnPath)}`);
                     }
                 }
 
