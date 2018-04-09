@@ -69,7 +69,7 @@ namespace Vidyano.WebComponents {
             },
             isReadonlyInput: {
                 type: Boolean,
-                computed: "_computeIsReadonlyInput(hasOptions, keepUnmatched, disableFiltering)"
+                computed: "_computeIsReadonlyInput(readonly, hasOptions, keepUnmatched, disableFiltering)"
             },
             disabled: {
                 type: Boolean,
@@ -419,8 +419,8 @@ namespace Vidyano.WebComponents {
             return item1 != null && item2 != null && item1.option === item2.option;
         }
 
-        private _computeIsReadonlyInput(hasOptions: boolean, keepUnmatched: boolean, disableFiltering: boolean): boolean {
-            return !keepUnmatched && (!hasOptions || disableFiltering);
+        private _computeIsReadonlyInput(readonly: boolean, hasOptions: boolean, keepUnmatched: boolean, disableFiltering: boolean): boolean {
+            return readonly || (!keepUnmatched && (!hasOptions || disableFiltering));
         }
 
         private _computeInputTabIndex(isReadonlyInput: boolean): string {
