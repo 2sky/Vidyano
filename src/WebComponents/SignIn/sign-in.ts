@@ -464,6 +464,9 @@
         }
 
         private _computeSaveInitialLabel(po: Vidyano.PersistentObject): string {
+            if (!po)
+                return null;
+
             let label: string;
             const endEdit = po.getAction("EndEdit") || po.getAction("Save");
             if (endEdit)
