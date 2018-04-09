@@ -83,7 +83,14 @@
                 type: String,
                 observer: "_backgroundChanged"
             },
-            logo: String,
+            logo: {
+                type: String,
+                value: ""
+            },
+            label: {
+                type: String,
+                value: null
+            },
             description: {
                 type: String,
                 readOnly: true

@@ -23,6 +23,9 @@
         <div class="dialog">
             <div class="loader" hidden$="[[!isBusy]]"></div>
             <header>
+                <template is="dom-if" if="[[!logo]]">
+                    <h1>[[label]]</h1>
+                </template>
                 <img id="logo" src$="[[logo]]" />
             </header>
             <main>
@@ -37,9 +40,11 @@
                                 <button is="vi-button" label="[[translateMessage('Register')]]" inverse on-tap="_register" disabled$="[[isBusy]]"></button>
                             </template>
                         </div>
-                        <div class="splitter">
-                            <span>[[translateMessage('Or')]]</span>
-                        </div>
+                        <template is="dom-if" if="[[hasOther]]">
+                            <div class="splitter">
+                                <span>[[translateMessage('Or')]]</span>
+                            </div>
+                        </template>
                     </template>
                     <template is="dom-if" if="[[hasOther]]">
                         <div class="brands">

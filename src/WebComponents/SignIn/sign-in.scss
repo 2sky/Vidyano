@@ -35,10 +35,20 @@
         }
     }
 
-    #logo {
-        margin-bottom: var(--theme-h4);
+    header {
+        padding: var(--theme-h2) var(--theme-h2) var(--theme-h4) var(--theme-h2);
 
-        &:not([src]) {
+        h1 {
+            margin: 0;
+            color: var(--theme-color);
+            text-shadow: 2px 2px #eee;
+
+            &:empty {
+                display: none;
+            }
+        }
+
+        #logo:not([src]) {
             display: none;
         }
     }
@@ -68,10 +78,6 @@
                 background-color: var(--theme-color-dark);
                 animation: loading 2s linear infinite;
             }
-        }
-
-        header {
-            padding: var(--theme-h2) var(--theme-h2) 0 var(--theme-h2);
         }
 
         main {
