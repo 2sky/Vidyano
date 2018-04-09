@@ -76,6 +76,10 @@
     span[sensitive] {
         @apply(--vi-app--sensitive);
     }
+
+    &:not([full-edit])[read-only] .column {
+        background-color: var(--theme-read-only);
+    }
 }
 
 :host-context(vi-persistent-object-attribute-as-detail:not([editing])) {

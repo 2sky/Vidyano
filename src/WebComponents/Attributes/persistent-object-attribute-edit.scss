@@ -32,6 +32,18 @@
         }
     }
 
+    &[read-only] {
+        .box {
+            background-color: var(--theme-read-only);
+        }
+
+        .box {
+            .buttons {
+                background-color: transparent;
+            }
+        }
+    }
+
     &[reverse-content] {
         .box {
             @include layout-horizontal-reverse();

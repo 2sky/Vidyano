@@ -40,4 +40,10 @@
             }
         }
     }
+
+    &[read-only] {
+        input, textarea {
+            background-color: var(--theme-read-only-color);
+        }
+    }
 }

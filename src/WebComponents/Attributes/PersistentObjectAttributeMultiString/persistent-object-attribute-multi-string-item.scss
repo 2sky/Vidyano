@@ -66,5 +66,9 @@
         vi-icon {
             display: none;
         }
+
+        input {
+            background-color: var(--theme-read-only);
+        }
     }
 }

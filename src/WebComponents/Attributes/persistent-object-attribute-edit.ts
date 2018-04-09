@@ -22,6 +22,11 @@ namespace Vidyano.WebComponents.Attributes {
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "_computeSensitive(attribute.isSensitive, isAppSensitive)"
+            },
+            readOnly: {
+                type: Boolean,
+                computed: "attribute.isReadOnly",
+                reflectToAttribute: true
             }
         },
         listeners: {
@@ -31,7 +36,8 @@ namespace Vidyano.WebComponents.Attributes {
         forwardObservers: [
             "attribute.isSensitive",
             "attribute.validationError",
-            "attribute.parent.isFrozen"
+            "attribute.parent.isFrozen",
+            "attribute.isReadOnly"
         ],
         sensitive: true
     })

@@ -78,11 +78,8 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private async _showLanguagesDialog() {
-            if (this.readOnly)
-                return;
-
             const result = await this.app.showDialog(new Vidyano.WebComponents.Attributes.PersistentObjectAttributeTranslatedStringDialog(this.attribute.label, this.strings.slice(), this.multiline, this.readOnly));
-            if (!result)
+            if (this.readOnly || !result)
                 return;
 
             const newData = {};
