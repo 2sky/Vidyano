@@ -116,9 +116,9 @@
         readonly register: Vidyano.PersistentObject; private _setRegister: (register: Vidyano.PersistentObject) => void;
         readonly initial: Vidyano.PersistentObject; private _setInitial: (initial: Vidyano.PersistentObject) => void;
         readonly description: string; private _setDescription: (description: string) => void;
-        readonly notification: INotification; private _setNotification: (notification: INotification) => void;
+        private readonly notification: INotification; private _setNotification: (notification: INotification) => void;
+        private step: Step;
         background: string;
-        step: Step
         userName: string;
         password: string;
         staySignedIn: boolean;
@@ -499,7 +499,7 @@
             if (!detail.size.height)
                 return;
 
-            const tabPresenter = <PersistentObjectTabPresenter>e.currentTarget
+            const tabPresenter = <PersistentObjectTabPresenter>e.currentTarget;
             tabPresenter.style.height = `${detail.size.height}px`;
         }
     }
