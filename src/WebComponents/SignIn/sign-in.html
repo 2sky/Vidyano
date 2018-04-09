@@ -102,7 +102,7 @@
                         <h1>[[initial.breadcrumb]]</h1>
                         <vi-persistent-object-tab-presenter tab="[[initial.tabs.0]]" on-vi-persistent-object-tab-inner-size-changed="_tabInnerSizeChanged"></vi-persistent-object-tab-presenter>
                         <div class="actions layout horizontal-reverse justified">
-                            <button is="vi-button" label="[[initial.actions.EndEdit.displayName]]" on-tap="_finishInitial" disabled$="[[register.isBusy]]"></button>
+                            <button is="vi-button" label="[[_computeSaveInitialLabel(initial)]]" on-tap="_finishInitial" disabled$="[[register.isBusy]]"></button>
                             <button is="vi-button" label="[[translations.SignOut]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
                         </div>
                     </template>
