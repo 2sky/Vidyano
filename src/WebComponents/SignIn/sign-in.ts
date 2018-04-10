@@ -131,9 +131,9 @@
         staySignedIn: boolean;
         twoFactorCode: string;
 
-        translateMessage(key: string, ...args: string[]): string {
-            let msg = super.translateMessage(key, ...args);
-            if (msg === key) {
+        private _translate(translations: { [key: string]: string; }, key: string, ...args: string[]): string {
+            let msg = translations[key];
+            if (!msg) {
                 if (!this._isWarned) {
                     console.warn("It seems like you are connected to an older backend version of Vidyano. You must upgrade your backend before your sign in dialog will be fully translated.");
                     this._isWarned = true;
@@ -141,31 +141,21 @@
 
                 if (!this._fallbackTranslations) {
                     this._fallbackTranslations = {
-                        "CancelSignIn": "Cancel",
-                        "Default": "Default",
                         "ForgotPassword": "Forgot password?",
-                        "Language": "Language",
-                        "MustBeSignedIn": "You must be signed in before you can use this application.",
-                        "No": "No",
                         "Or": "Or",
                         "Password": "Password",
                         "Register": "New here? Create an account",
                         "RegisterSave": "Register",
-                        "RetrySignIn": "Retry",
                         "SignIn": "Sign in",
-                        "SignInError": "An error occurred while signing in",
                         "SignInUsing": "Sign in using",
-                        "SigningIn": "Signing in ...",
                         "StaySignedIn": "Stay signed in",
                         "EnterTwoFactorCode": "Enter two-factor code",
                         "TwoFactorCode": "Two-factor code",
                         "UserName": "User name",
-                        "Yes": "Yes",
                         "SignInTo": "Sign in to {0}",
                         "Next": "Next",
                         "Previous": "Previous",
                         "EnterPassword": "Enter password",
-                        "Welcome": "Welcome",
                         "NotYou": "Not you?"
                     };
                 }
