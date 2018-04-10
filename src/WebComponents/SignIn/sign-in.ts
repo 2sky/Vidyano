@@ -249,8 +249,31 @@
                 return;
             }
 
-            if (!this.service.isSignedIn)
+            if (!this.service.isSignedIn) {
+                if (this.userName && this.service.providers.Vidyano.getCredentialType) {
+                    this._setIsBusy(true);
+                    this.step = "username";
+
+                    try {
+                        const credentialType = await this.service.postJSON("authenticate/GetCredentialType", {
+                            userName: this.userName
+                        });
+
+                        if (credentialType.redirectUri) {
+                            document.location.assign(credentialType.redirectUri);
+                            return;
+                        }
+                    }
+                    catch (error) {
+                        this._error(error);
+                    }
+                    finally {
+                        this._setIsBusy(false);
+                    }
+                }
+
                 this.step = this.hasVidyano && this.userName ? "password" : "username";
+            }
         }
 
         private _deactivate() {
