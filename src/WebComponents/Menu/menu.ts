@@ -383,6 +383,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _hasMatch(item: ProgramUnitItem, search: string): boolean {
+            if (!item)
+                return false;
+
             if (item.title.toUpperCase().contains(search))
                 return true;
 
