@@ -48,7 +48,8 @@
                 <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
                 <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
                 <vi-app-route class="fit" route="SignIn(/:stateOrReturnUrl*)(/:returnUrl*)" allow-signed-out>
-                    <vi-sign-in label="[[label]]" logo="[[signInLogo]]" background="[[signInBackground]]">
+                    <vi-sign-in label="[[label]]" logo="[[signInLogo]]">
+                        <content select="[sign-in-background]"></content>
                         <content select="[sign-in-footer]"></content>
                     </vi-sign-in>
                 </vi-app-route>

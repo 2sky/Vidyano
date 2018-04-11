@@ -79,10 +79,6 @@
                 readOnly: true,
                 value: null
             },
-            background: {
-                type: String,
-                observer: "_backgroundChanged"
-            },
             logo: {
                 type: String,
                 value: ""
@@ -125,7 +121,6 @@
         readonly description: string; private _setDescription: (description: string) => void;
         private readonly notification: INotification; private _setNotification: (notification: INotification) => void;
         private step: Step;
-        background: string;
         userName: string;
         password: string;
         staySignedIn: boolean;
@@ -505,14 +500,6 @@
 
             if (attempt < 10)
                 setTimeout(() => this._focus(input || element, attempt + 1), 100);
-        }
-
-        private _backgroundChanged() {
-            this.$.background.style.backgroundImage = this.background ? "url(" + this.background + ")" : undefined;
-            if (this.background)
-                this.$.background.classList.add("has-image");
-            else
-                this.$.background.classList.remove("has-image");
         }
 
         private _providers(providers: { [name: string]: IProviderParameters }): { name: string; parameters: IProviderParameters; }[] {

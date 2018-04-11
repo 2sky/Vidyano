@@ -16,7 +16,6 @@
     @include layout-center-center();
     @include noSelection();
     position: relative;
-    background: linear-gradient(45deg, var(--theme-color-dark) 0%,var(--theme-color) 100%);
 
     #background {
         @include fit();
@@ -25,14 +24,18 @@
         background-position: center center;
         overflow: hidden;
 
-        > svg {
+        .default {
+            background: linear-gradient(45deg, var(--theme-color-dark) 0%, var(--theme-color) 100%);
+
+            svg {
             height: 100%;
             width: 100%;
         }
 
-        &.has-image > svg {
+            &:not(:only-child) {
             display: none;
         }
+    }
     }
 
     header {

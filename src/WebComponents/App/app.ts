@@ -183,7 +183,6 @@ namespace Vidyano.WebComponents {
                 computed: "_computeIsProfiling(service.isSignedIn, service.profile)"
             },
             signInLogo: String,
-            signInBackground: String,
             showMenu: {
                 type: Boolean,
                 computed: "_computeShowMenu(service.application, noMenu, currentRoute)"
