@@ -32,7 +32,7 @@
                 <img id="logo" src$="[[logo]]" />
             </header>
             <main>
-                <section class="username" active$="[[_isStep('username', step)]]">
+                <section class="username">
                     <h1>[[_translate(translations, "SignInTo", label)]]</h1>
                     <template is="dom-if" if="[[hasVidyano]]">
                         <input id="username" type="text" placeholder="[[_translate(translations, 'UserName')]]" value="{{userName::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
@@ -60,7 +60,7 @@
                         </div>
                     </template>
                 </section>
-                <section class="password" active$="[[_isStep('password', step)]]">
+                <section class="password">
                     <div class="layout horizontal user wrap">
                         <vi-icon source="Action_viImpersonate"></vi-icon>
                         <h3>[[userName]]</h3>
@@ -76,7 +76,7 @@
                         </template>
                     </div>
                 </section>
-                <section class="twofactor" active$="[[_isStep('twofactor', step)]]">
+                <section class="twofactor">
                     <div class="layout horizontal user wrap">
                         <vi-icon source="Action_viImpersonate"></vi-icon>
                         <h3>[[userName]]</h3>
@@ -90,7 +90,7 @@
                         <button is="vi-button" label="[[_translate(translations, 'Previous')]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
                     </div>
                 </section>
-                <section class="register" active$="[[_isStep('register', step)]]">
+                <section class="register">
                     <h1>[[register.breadcrumb]]</h1>
                     <vi-scroller>
                         <vi-persistent-object-tab-presenter tab="[[register.tabs.0]]" on-vi-persistent-object-tab-inner-size-changed="_tabInnerSizeChanged"></vi-persistent-object-tab-presenter>
@@ -100,7 +100,7 @@
                         <button is="vi-button" label="[[_translate(translations, 'SignIn')]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
                     </div>
                 </section>
-                <section class="initial" active$="[[_isStep('initial', step)]]">
+                <section class="initial">
                     <template is="dom-if" if="[[initial]]">
                         <h1>[[initial.breadcrumb]]</h1>
                         <vi-persistent-object-tab-presenter tab="[[initial.tabs.0]]" on-vi-persistent-object-tab-inner-size-changed="_tabInnerSizeChanged"></vi-persistent-object-tab-presenter>

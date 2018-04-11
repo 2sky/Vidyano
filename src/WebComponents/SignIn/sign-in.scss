@@ -28,14 +28,14 @@
             background: linear-gradient(45deg, var(--theme-color-dark) 0%, var(--theme-color) 100%);
 
             svg {
-            height: 100%;
-            width: 100%;
-        }
+                height: 100%;
+                width: 100%;
+            }
 
             &:not(:only-child) {
-            display: none;
+                display: none;
+            }
         }
-    }
     }
 
     header {
@@ -87,7 +87,7 @@
             section {
                 padding: 0 var(--theme-h2) var(--theme-h2) var(--theme-h2);
 
-                &:not([active]) {
+                &:not(.active) {
                     display: none !important;
                 }
 

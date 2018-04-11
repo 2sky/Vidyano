@@ -296,7 +296,12 @@
             this._setNotification(null);
         }
 
-        private _stepChanged(step: Step) {
+        private _stepChanged(step: Step, oldStep: Step) {
+            if (oldStep)
+                (Polymer.dom(this.root).querySelector(`section.${oldStep}`) as HTMLElement).classList.remove("active");
+
+            (Polymer.dom(this.root).querySelector(`section.${step}`) as HTMLElement).classList.add("active");
+
             Polymer.dom(this).flush();
             this._focus(step as string);
         }
