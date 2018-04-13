@@ -447,10 +447,7 @@ namespace Vidyano {
             if (oldUserName === val)
                 return;
 
-            if (this.staySignedIn)
-                Vidyano.cookie("userName", val, { expires: 365 });
-            else
-                Vidyano.cookie("userName", val);
+            Vidyano.cookie("userName", val, { expires: this.staySignedIn ? 365 : 30 });
 
             this.notifyPropertyChanged("userName", val, oldUserName);
         }
