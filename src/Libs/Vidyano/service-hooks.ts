@@ -153,5 +153,9 @@
         onRetryAction(retry: IRetryAction): Promise<string> {
             return Promise.resolve(null);
         }
+
+        onGetAttributeDisplayValue(attribute: Vidyano.PersistentObjectAttribute, value: any): string {
+            return undefined;
+        }
     }
 }

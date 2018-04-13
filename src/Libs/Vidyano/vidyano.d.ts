@@ -923,6 +923,7 @@ declare namespace Vidyano {
         onRefreshFromResult(po: PersistentObject): void;
         onUpdateAvailable(): void;
         onRetryAction(retry: IRetryAction): Promise<string>;
+        onGetAttributeDisplayValue(attribute: Vidyano.PersistentObjectAttribute, value: any): string;
     }
 }
 declare namespace Vidyano {

@@ -162,6 +162,8 @@
         get displayValue(): string {
             if (this._displayValueSource === this._serviceValue)
                 return !StringEx.isNullOrEmpty(this._displayValue) ? this._displayValue : "—";
+            else
+                this._displayValueSource = this._serviceValue;
 
             let format = this.getTypeHint("DisplayFormat", "{0}");
 
@@ -189,6 +191,11 @@
                     value = value.substr(0, value.length - 3);
             } else if (value != null && (this.type === "User" || this.type === "NullableUser") && this.options.length > 0)
                 value = this.options[0];
+            else {
+                const calculated = this.service.hooks.onGetAttributeDisplayValue(this, value);
+                if (typeof calculated !== "undefined")
+                    return (this._displayValue = calculated);
+            }
 
             if (format === "{0}") {
                 if (this.type === "Date" || this.type === "NullableDate")
@@ -197,7 +204,6 @@
                     format = "{0:" + CultureInfo.currentCulture.dateFormat.shortDatePattern + " " + CultureInfo.currentCulture.dateFormat.shortTimePattern + "}";
             }
 
-            this._displayValueSource = this._serviceValue;
             return !StringEx.isNullOrEmpty(this._displayValue = value != null ? StringEx.format(format, value) : null) ? this._displayValue : "—";
         }
 
