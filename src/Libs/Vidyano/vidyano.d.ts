@@ -265,9 +265,8 @@ declare namespace Vidyano {
         isRequired?: boolean;
         isSensitive?: boolean;
         rules?: string;
-        visibility: PersistentObjectAttributeVisibility;
+        visibility: "Always" | "Read" | "New" | "Never";
     }
-    type PersistentObjectAttributeVisibility = "Always" | "Read" | "New" | "Never" | "Query" | "Read, Query" | "Read, New" | "Query, New";
     class PersistentObjectAttribute extends ServiceObject {
         parent: PersistentObject;
         private _isSystem;
@@ -286,8 +285,6 @@ declare namespace Vidyano {
         private _isReadOnly;
         private _isValueChanged;
         private _isSensitive;
-        private _visibility;
-        private _isVisible;
         protected _shouldRefresh: boolean;
         private _refreshValue;
         id: string;
@@ -298,6 +295,7 @@ declare namespace Vidyano {
         type: string;
         toolTip: string;
         rules: string;
+        visibility: string;
         typeHints: any;
         editTemplateKey: string;
         templateKey: string;
@@ -311,8 +309,8 @@ declare namespace Vidyano {
         readonly tabKey: string;
         tab: PersistentObjectAttributeTab;
         readonly isSystem: boolean;
-        visibility: PersistentObjectAttributeVisibility;
         readonly isVisible: boolean;
+        private _setIsVisible(visibility);
         validationError: string;
         readonly isRequired: boolean;
         private _setIsRequired(isRequired);
@@ -487,7 +485,6 @@ declare namespace Vidyano {
         clearRegisteredInputs(attributeName?: string): void;
         toServiceObject(skipParent?: boolean): any;
         refreshFromResult(result: PersistentObject, resultWins?: boolean): void;
-        refreshTabsAndGroups(...changedAttributes: PersistentObjectAttribute[]): void;
         triggerDirty(): boolean;
         _triggerAttributeRefresh(attr: PersistentObjectAttribute, immediate?: boolean): Promise<boolean>;
         _prepareAttributesForRefresh(sender: PersistentObjectAttribute): void;

@@ -10,10 +10,8 @@
         isRequired?: boolean;
         isSensitive?: boolean;
         rules?: string;
-        visibility: PersistentObjectAttributeVisibility;
+        visibility: "Always" | "Read" | "New" | "Never";
     }
-
-    export type PersistentObjectAttributeVisibility = "Always" | "Read" | "New" | "Never" | "Query" | "Read, Query" | "Read, New" | "Query, New";
 
     export class PersistentObjectAttribute extends ServiceObject {
         private _isSystem: boolean;
@@ -32,8 +30,6 @@
         private _isReadOnly: boolean;
         private _isValueChanged: boolean;
         private _isSensitive: boolean;
-        private _visibility: PersistentObjectAttributeVisibility;
-        private _isVisible: boolean;
 
         protected _shouldRefresh: boolean = false;
         private _refreshValue: string;
@@ -46,6 +42,7 @@
         type: string;
         toolTip: string;
         rules: string;
+        visibility: string;
         typeHints: any;
         editTemplateKey: string;
         templateKey: string;
@@ -123,31 +120,13 @@
             return this._isSystem;
         }
 
-        get visibility(): PersistentObjectAttributeVisibility {
-            return this._visibility;
-        }
-
-        set visibility(visibility: PersistentObjectAttributeVisibility) {
-            if (this._visibility === visibility)
-                return;
-
-            const oldIsVisible = this._isVisible;
-            const newIsVisible = visibility.indexOf("Always") >= 0 || visibility.indexOf(this.parent.isNew ? "New" : "Read") >= 0;
-            if (newIsVisible !== oldIsVisible)
-                this._isVisible = newIsVisible;
-
-            const oldVisibility = this._visibility;
-            this.notifyPropertyChanged("visibility", this._visibility = visibility, oldVisibility);
-
-            if (newIsVisible !== oldIsVisible) {
-                this.notifyPropertyChanged("isVisible", this._isVisible, oldIsVisible);
-                if (typeof oldVisibility !== "boolean" && this.parent.tabs)
-                    this.parent.refreshTabsAndGroups(this);
-            }
-        }
-
         get isVisible(): boolean {
-            return this._isVisible;
+            return this.visibility.indexOf("Always") >= 0 || this.visibility.indexOf(this.parent.isNew ? "New" : "Read") >= 0;
+        }
+
+        private _setIsVisible(visibility: string) {
+            const isVisible = visibility.indexOf("Always") >= 0 || visibility.indexOf(this.parent.isNew ? "New" : "Read") >= 0;
+            this.notifyPropertyChanged("isVisible", isVisible, !isVisible);
         }
 
         get validationError(): string {
@@ -360,7 +339,7 @@
             this._setIsReadOnly(resultAttr.isReadOnly);
             this._setIsRequired(resultAttr.isRequired);
             if (this.visibility !== resultAttr.visibility) {
-                this.visibility = resultAttr.visibility;
+                this._setIsVisible(this.visibility = resultAttr.visibility);
                 visibilityChanged = true;
             }
 
