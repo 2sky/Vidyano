@@ -4,6 +4,7 @@
     overflow: hidden;
     @include layout-horizontal();
     @include relative();
+
     --vi-scroller-thumb-color: #888;
     --vi-scroller-thumb-hover-color: #777;
     --vi-scroller-thumb-size: var(--theme-h5);
@@ -78,7 +79,7 @@
         position: absolute;
         background-color: transparent;
         display: none;
-        z-index: 99999;
+        z-index: 1;
 
         &:before {
             position: absolute;
@@ -197,43 +198,37 @@
         padding-bottom: var(--vi-scroller-thumb-capture-size);
     }
 
-    > .shadows {
+    > .scroll-shadow {
+        position: absolute;
+        -webkit-box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
+        box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
+        bottom: 0;
+        height: var(--theme-h2);
+        -moz-border-radius: 100%;
+        border-radius: 100%;
+        left: calc(var(--theme-h2) * -1);
+        right: calc(var(--theme-h2) * -1);
         pointer-events: none;
-        overflow: hidden;
-        z-index: 999;
 
-        > .scroll-shadow {
-            position: absolute;
-            -webkit-box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
-            box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
+        &.top {
+            top: 0;
+            -webkit-transform: translateY(-48px);
+            transform: translateY(calc(var(--theme-h2) * -1.5));
+        }
+
+        &.bottom {
             bottom: 0;
-            height: var(--theme-h2);
-            -moz-border-radius: 100%;
-            border-radius: 100%;
-            left: calc(var(--theme-h2) * -1);
-            right: calc(var(--theme-h2) * -1);
-            pointer-events: none;
-
-            &.top {
-                top: 0;
-                -webkit-transform: translateY(-48px);
-                transform: translateY(calc(var(--theme-h2) * -1.5));
-            }
-
-            &.bottom {
-                bottom: 0;
-                -webkit-transform: translateY(48px);
-                transform: translateY(calc(var(--theme-h2) * 1.5));
-            }
+            -webkit-transform: translateY(48px);
+            transform: translateY(calc(var(--theme-h2) * 1.5));
         }
     }
 
-    &[scroll-top-shadow] > .shadows > .scroll-shadow.top {
+    &[scroll-top-shadow] > .scroll-shadow.top {
         -webkit-transform: translateY(-32px);
         transform: translateY(calc(var(--theme-h2) * -1));
     }
 
-    &[scroll-bottom-shadow] > .shadows > .scroll-shadow.bottom {
+    &[scroll-bottom-shadow] > .scroll-shadow.bottom {
         -webkit-transform: translateY(32px);
         transform: translateY(var(--theme-h2));
     }
@@ -242,6 +237,7 @@
         > #wrapper::-webkit-scrollbar {
             display: none;
         }
+
         // Edge also reports being webkit
         > #wrapper {
             -ms-overflow-style: none;
