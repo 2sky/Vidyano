@@ -25,6 +25,10 @@
                 type: String,
                 computed: "_computeLabel(group, groupIndex, translations)"
             },
+            noLabel: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             loading: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -88,7 +92,7 @@
                 });
             }
 
-            let itemsChecksum: string = `${columns}`;
+            let itemsChecksum: string = `${this.group.parent.type};${this.group.parent.objectId};${columns}`;
             const items = Enumerable.from(this._items).orderBy(item => item.attribute.offset).doAction(item => {
                 itemsChecksum = `${itemsChecksum}${item.attribute.offset};${item.attribute.name};${item.height};${item.width};`;
             }).toArray();

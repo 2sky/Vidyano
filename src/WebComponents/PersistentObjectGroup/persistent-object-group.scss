@@ -19,10 +19,10 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+    }
 
-        &:empty {
-            display: none;
-        }
+    &[no-label] label, label:empty {
+        display: none;
     }
 
     table {
