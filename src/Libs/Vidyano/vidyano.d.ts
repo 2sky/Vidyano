@@ -84,10 +84,15 @@ declare namespace Vidyano {
             (sender: TSource, detail: TDetail): void;
         }
         class Observable<T> {
+            private _paused;
+            private _enqueueNotifications;
+            private _notificationQueue;
             private _propertyChangedNotifier;
             propertyChanged: Vidyano.Common.Subject<T, Vidyano.Common.PropertyChangedArgs>;
-            constructor();
+            constructor(paused?: boolean);
             protected notifyPropertyChanged(propertyName: string, newValue: any, oldValue?: any): void;
+            protected monitorPropertyChanged(): void;
+            protected pausePropertyChanged(enqueue?: boolean): void;
         }
         interface IPropertyChangedObserver<T> extends ISubjectObserver<T, Vidyano.Common.PropertyChangedArgs> {
         }

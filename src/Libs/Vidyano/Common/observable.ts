@@ -41,20 +41,65 @@
             (sender: TSource, detail: TDetail): void;
         }
 
+        interface IEnqueuedPropertyChangedNotification {
+            newValue: any;
+            oldValue: any;
+        }
+
         export class Observable<T> {
+            private _paused: boolean;
+            private _enqueueNotifications: boolean;
+            private _notificationQueue: { [property: string]: IEnqueuedPropertyChangedNotification; };
             private _propertyChangedNotifier: Vidyano.Common.ISubjectNotifier<T, Vidyano.Common.PropertyChangedArgs>;
             propertyChanged: Vidyano.Common.Subject<T, Vidyano.Common.PropertyChangedArgs>;
 
-            constructor() {
+            constructor(paused?: boolean) {
+                this._paused = paused;
                 this.propertyChanged = new Vidyano.Common.Subject<T, Vidyano.Common.PropertyChangedArgs>(this._propertyChangedNotifier = { notify: undefined });
             }
 
             protected notifyPropertyChanged(propertyName: string, newValue: any, oldValue?: any) {
+                if (this._paused) {
+                    if (!this._enqueueNotifications)
+                        return;
+
+                    if (!this._notificationQueue)
+                        this._notificationQueue = {};
+
+                    const existingNotification = this._notificationQueue[propertyName];
+                    if (existingNotification)
+                        existingNotification.newValue = newValue;
+                    else
+                        this._notificationQueue[propertyName] = { newValue: newValue, oldValue: oldValue };
+
+                    return;
+                }
+
                 this._propertyChangedNotifier.notify(<T><any>this, {
                     propertyName: propertyName,
                     newValue: newValue,
                     oldValue: oldValue
                 });
+            }
+
+            protected monitorPropertyChanged() {
+                this._paused = false;
+                this._enqueueNotifications = false;
+
+                if (this._notificationQueue) {
+                    const queue = this._notificationQueue;
+                    this._notificationQueue = null;
+
+                    Object.keys(queue).forEach(property => {
+                        const notification = queue[property];
+                        this.notifyPropertyChanged(property, notification.newValue, notification.oldValue);
+                    });
+                }
+            }
+
+            protected pausePropertyChanged(enqueue: boolean = false) {
+                this._paused = true;
+                this._enqueueNotifications = enqueue;
             }
         }
 
