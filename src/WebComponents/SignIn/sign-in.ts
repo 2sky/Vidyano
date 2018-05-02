@@ -255,6 +255,7 @@
                         });
 
                         if (credentialType.redirectUri) {
+                            Vidyano.cookie("returnUrl", this.returnUrl, { expires: 1, force: true });
                             document.location.assign(credentialType.redirectUri);
                             return;
                         }
