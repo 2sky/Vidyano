@@ -129,11 +129,11 @@
                 <iron-collapse opened$="[[!register]]">
                     <div>
                         <label for="user">[[_translate(translations, 'UserName', isAttached)]]</label>
-                        <input value="{{userName::input}}" id="user" type="text" disabled$="[[isBusy]]" on-keydown="_keydown" autocomplete="off" error$="[[userNameError]]">
+                        <input value="{{userName::input}}" id="user" type="text" disabled$="[[isBusy]]" on-keydown="_keydown" autocomplete="username" error$="[[userNameError]]">
                     </div>
                     <div>
                         <label for="pass">[[_translate(translations, 'Password', isAttached)]]</label>
-                        <input value="{{password::input}}" id="pass" type="password" disabled$="[[isBusy]]" on-keydown="_keydown">
+                        <input value="{{password::input}}" id="pass" type="password" disabled$="[[isBusy]]" on-keydown="_keydown" autocomplete="current-password">
                     </div>
                     <template is="dom-if" if="[[twoFactorAuthentication]]">
                         <div>

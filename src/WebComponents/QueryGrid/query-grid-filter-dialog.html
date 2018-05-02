@@ -28,9 +28,9 @@
         <vi-persistent-object-attribute-edit attribute="[[attribute]]" class="flex" reverse>
             <button is="vi-button" icon="Folder" on-tap="_toggleGrouping" inverse tabindex="-1"></button>
             <div content class="layout horizontal flex">
-                <input class="flex" value="{{group::input}}" hidden$="[[!grouping]]" id="groupInput" />
+                <input class="flex group" value="{{group::input}}" hidden$="[[!grouping]]" />
                 <vi-icon source="ChevronRight" hidden$="[[!grouping]]"></vi-icon>
-                <input class="flex" value="{{name::input}}" id="nameInput" />
+                <input class="flex name" value="{{name::input}}" />
             </div>
         </vi-persistent-object-attribute-edit>
     </template>

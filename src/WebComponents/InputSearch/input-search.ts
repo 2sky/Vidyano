@@ -71,7 +71,7 @@ namespace Vidyano.WebComponents {
         }
 
         focus() {
-            this.$.input.focus();
+            this.$$("input").focus();
         }
     }
 }

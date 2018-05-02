@@ -93,7 +93,7 @@
         }
 
         private _groupingChanged(grouping: boolean, previous?: boolean) {
-            const input = <HTMLInputElement>this.$[grouping ? "groupInput" : "nameInput"];
+            const input = <HTMLInputElement>this.$$(`input.${grouping ? "group" : "name"}`);
 
             input.selectionStart = 0;
             if (grouping && previous !== false && input.value)

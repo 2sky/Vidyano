@@ -31,6 +31,7 @@
         <iron-media-query query="(max-width: 479px)" query-matches="{{isPhone}}"></iron-media-query>
         <iron-media-query query="(min-width: 480px) and (max-width: 839px)" query-matches="{{isTablet}}"></iron-media-query>
         <iron-media-query query="(min-width: 840px)" query-matches="{{isDesktop}}"></iron-media-query>
+        <input id="catchautofill" style="position: fixed; visibility: hidden; left: -100vw;" />
         <vi-profiler service="[[service]]" hidden$="[[!isProfiling]]"></vi-profiler>
         <template is="dom-if" if="[[!barebone]]" restamp>
             <template is="dom-if" if="[[showMenu]]" restamp>
