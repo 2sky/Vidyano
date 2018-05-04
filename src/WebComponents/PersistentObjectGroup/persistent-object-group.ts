@@ -226,7 +226,7 @@
                 if (layout !== this._layout)
                     return;
 
-                if (currentLayout)
+                if (currentLayout && currentLayout.parentElement)
                     Polymer.dom(this.root).replaceChild(layoutFragment, currentLayout);
                 else
                     Polymer.dom(this.root).appendChild(layoutFragment);
