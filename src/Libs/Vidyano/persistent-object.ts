@@ -397,92 +397,8 @@ namespace Vidyano {
                 }
             });
 
-            if (changedAttributes.length > 0) {
-                const tabGroupsChanged = new Set<PersistentObjectAttributeTab>();
-                const tabGroupAttributesChanged = new Set<PersistentObjectAttributeGroup>();
-                let tabsRemoved = false;
-                let tabsAdded = false;
-                changedAttributes.forEach(attr => {
-                    let tab = <PersistentObjectAttributeTab>Enumerable.from(this.tabs).firstOrDefault(t => t instanceof PersistentObjectAttributeTab && t.key === attr.tabKey);
-                    if (!tab) {
-                        if (!attr.isVisible)
-                            return;
-
-                        const groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this)];
-                        groups[0].index = 0;
-
-                        const serviceTab = this._lastResult.tabs[attr.tabKey];
-                        attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tabKey, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
-                        this.tabs.push(tab);
-                        tabsAdded = true;
-                        return;
-                    }
-
-                    let group = Enumerable.from(tab.groups).firstOrDefault(g => g.key === attr.groupKey);
-                    if (!group && attr.isVisible) {
-                        group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this);
-                        tab.groups.push(group);
-                        tab.groups.sort((g1, g2) => Enumerable.from(g1.attributes).min(a => a.offset) - Enumerable.from(g2.attributes).min(a => a.offset));
-                        tab.groups.forEach((g, n) => g.index = n);
-
-                        tabGroupsChanged.add(tab);
-                    }
-                    else if (attr.isVisible && attr.parent) {
-                        if (group.attributes.indexOf(attr) < 0) {
-                            group.attributes.push(attr);
-                            tabGroupAttributesChanged.add(group);
-
-                            tab.attributes.push(attr);
-
-                            tab.attributes[attr.name] = group.attributes[attr.name] = attr;
-                            group.attributes.sort((x, y) => x.offset - y.offset);
-                        }
-                    }
-                    else if (group) {
-                        group.attributes.remove(attr);
-                        delete group.attributes[attr.name];
-
-                        tab.attributes.remove(attr);
-                        delete tab.attributes[attr.name];
-
-                        if (group.attributes.length === 0) {
-                            tab.groups.remove(group);
-                            tabGroupsChanged.add(tab);
-
-                            if (tab.groups.length === 0) {
-                                this.tabs.remove(tab);
-                                tabsRemoved = true;
-                                return;
-                            }
-                            else
-                                tab.groups.forEach((g, n) => g.index = n);
-                        }
-                        else
-                            tabGroupAttributesChanged.add(group);
-                    }
-                });
-
-                if (tabsAdded) {
-                    const attrTabs = <PersistentObjectAttributeTab[]>this.tabs.filter(t => t instanceof PersistentObjectAttributeTab);
-                    attrTabs.sort((t1, t2) => Enumerable.from(t1.groups).selectMany(g => g.attributes).min(a => a.offset) - Enumerable.from(t2.groups).selectMany(g => g.attributes).min(a => a.offset));
-
-                    const queryTabs = <PersistentObjectQueryTab[]>this.tabs.filter(t => t instanceof PersistentObjectQueryTab);
-                    queryTabs.sort((q1, q2) => q1.query.offset - q2.query.offset);
-
-                    this.tabs = this.service.hooks.onSortPersistentObjectTabs(this, attrTabs, queryTabs);
-                }
-                else if (tabsRemoved)
-                    this.tabs = this.tabs.slice();
-
-                if (tabGroupsChanged.size > 0)
-                    tabGroupsChanged.forEach(tab => tab.groups = tab.groups.slice());
-
-                if (tabGroupAttributesChanged.size > 0) {
-                    tabGroupAttributesChanged.forEach(group => {
-                        group.attributes = group.attributes.slice();
-                    });
-                }
-            }
+            if (changedAttributes.length > 0)
+                this.refreshTabsAndGroups(...changedAttributes);
 
             this.setNotification(result.notification, result.notificationType, result.notificationDuration);
             this._setIsDirty(isDirty, true);
@@ -505,6 +421,93 @@ namespace Vidyano {
 
             this.service.hooks.onRefreshFromResult(this);
             this._setLastUpdated(new Date());
+        }
+
+        refreshTabsAndGroups(...changedAttributes: PersistentObjectAttribute[]) {
+            const tabGroupsChanged = new Set<PersistentObjectAttributeTab>();
+            const tabGroupAttributesChanged = new Set<PersistentObjectAttributeGroup>();
+            let tabsRemoved = false;
+            let tabsAdded = false;
+            changedAttributes.forEach(attr => {
+                let tab = <PersistentObjectAttributeTab>Enumerable.from(this.tabs).firstOrDefault(t => t instanceof PersistentObjectAttributeTab && t.key === attr.tabKey);
+                if (!tab) {
+                    if (!attr.isVisible)
+                        return;
+
+                    const groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this)];
+                    groups[0].index = 0;
+
+                    const serviceTab = this._lastResult.tabs[attr.tabKey];
+                    attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tabKey, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
+                    this.tabs.push(tab);
+                    tabsAdded = true;
+                    return;
+                }
+
+                let group = Enumerable.from(tab.groups).firstOrDefault(g => g.key === attr.groupKey);
+                if (!group && attr.isVisible) {
+                    group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this);
+                    tab.groups.push(group);
+                    tab.groups.sort((g1, g2) => Enumerable.from(g1.attributes).min(a => a.offset) - Enumerable.from(g2.attributes).min(a => a.offset));
+                    tab.groups.forEach((g, n) => g.index = n);
+
+                    tabGroupsChanged.add(tab);
+                }
+                else if (attr.isVisible && attr.parent) {
+                    if (group.attributes.indexOf(attr) < 0) {
+                        group.attributes.push(attr);
+                        tabGroupAttributesChanged.add(group);
+
+                        tab.attributes.push(attr);
+
+                        tab.attributes[attr.name] = group.attributes[attr.name] = attr;
+                        group.attributes.sort((x, y) => x.offset - y.offset);
+                    }
+                }
+                else if (group) {
+                    group.attributes.remove(attr);
+                    delete group.attributes[attr.name];
+
+                    tab.attributes.remove(attr);
+                    delete tab.attributes[attr.name];
+
+                    if (group.attributes.length === 0) {
+                        tab.groups.remove(group);
+                        tabGroupsChanged.add(tab);
+
+                        if (tab.groups.length === 0) {
+                            this.tabs.remove(tab);
+                            tabsRemoved = true;
+                            return;
+                        }
+                        else
+                            tab.groups.forEach((g, n) => g.index = n);
+                    }
+                    else
+                        tabGroupAttributesChanged.add(group);
+                }
+            });
+
+            if (tabsAdded) {
+                const attrTabs = <PersistentObjectAttributeTab[]>this.tabs.filter(t => t instanceof PersistentObjectAttributeTab);
+                attrTabs.sort((t1, t2) => Enumerable.from(t1.groups).selectMany(g => g.attributes).min(a => a.offset) - Enumerable.from(t2.groups).selectMany(g => g.attributes).min(a => a.offset));
+
+                const queryTabs = <PersistentObjectQueryTab[]>this.tabs.filter(t => t instanceof PersistentObjectQueryTab);
+                queryTabs.sort((q1, q2) => q1.query.offset - q2.query.offset);
+
+                this.tabs = this.service.hooks.onSortPersistentObjectTabs(this, attrTabs, queryTabs);
+            }
+            else if (tabsRemoved)
+                this.tabs = this.tabs.slice();
+
+            if (tabGroupsChanged.size > 0)
+                tabGroupsChanged.forEach(tab => tab.groups = tab.groups.slice());
+
+            if (tabGroupAttributesChanged.size > 0) {
+                tabGroupAttributesChanged.forEach(group => {
+                    group.attributes = group.attributes.slice();
+                });
+            }
         }
 
         triggerDirty(): boolean {
