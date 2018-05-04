@@ -480,8 +480,10 @@ namespace Vidyano.WebComponents {
         protected _focusElement(element: string | HTMLElement, maxAttempts?: number, interval?: number, attempt: number = 0) {
             const input = typeof element === "string" ? <HTMLElement>this.$$(`#${element}`) : <HTMLElement>element;
             if (input) {
+                const activeElement = document.activeElement;
                 input.focus();
-                if (document.activeElement === input)
+
+                if (activeElement !== document.activeElement)
                     return;
             }
 
