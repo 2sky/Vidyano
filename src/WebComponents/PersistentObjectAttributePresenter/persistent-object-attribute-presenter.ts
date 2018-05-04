@@ -127,7 +127,7 @@ namespace Vidyano.WebComponents {
 
         queueFocus() {
             const activeElement = document.activeElement;
-            this.focus();
+            this._focusElement(this);
 
             if (activeElement !== document.activeElement)
                 this._focusQueued = true;
@@ -277,15 +277,7 @@ namespace Vidyano.WebComponents {
                 if (this._focusQueued) {
                     Polymer.dom(focusTarget).flush();
 
-                    const activeElement = document.activeElement;
-                    let retry = 0;
-                    const interval = setInterval(() => {
-                        if (++retry > 20 || document.activeElement !== activeElement)
-                            return clearInterval(interval);
-
-                        focusTarget.focus();
-                    }, 25);
-
+                    this._focusElement(focusTarget);
                     this._focusQueued = false;
                 }
             }
@@ -328,7 +320,7 @@ namespace Vidyano.WebComponents {
             if (!target)
                 return;
 
-            target.focus();
+            this._focusElement(target);
         }
 
         private _loadingChanged(loading: boolean) {

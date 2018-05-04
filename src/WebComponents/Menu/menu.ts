@@ -154,7 +154,7 @@ namespace Vidyano.WebComponents {
 
         private _focusSearch() {
             const inputSearch = <InputSearch>Polymer.dom(this.root).querySelector("#collapsedInputSearch");
-            inputSearch.focus();
+            this._focusElement(inputSearch);
         }
 
         private _catchInputSearchTap(e: TapEvent) {

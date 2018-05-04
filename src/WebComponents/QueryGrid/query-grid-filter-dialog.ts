@@ -101,7 +101,7 @@
             else
                 input.selectionEnd = 0;
 
-            input.focus();
+            this._focusElement(input);
         }
 
         private _toggleGrouping() {

@@ -35,7 +35,7 @@ namespace Vidyano.WebComponents {
 
         private _initializingChanged(value: boolean) {
             if (!value)
-                this.$.search.focus();
+                this._focusElement(this.$.search);
         }
 
         private _selectedItemsChanged() {

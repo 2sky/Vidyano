@@ -133,7 +133,7 @@ namespace Vidyano.WebComponents.Attributes {
             if (!target)
                 return;
 
-            target.focus();
+            this._focusElement(target);
         }
 
         static register(info: IWebComponentRegistrationInfo | Function = {}, prefix?: string): any {

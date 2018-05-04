@@ -220,7 +220,7 @@ namespace Vidyano.WebComponents {
                     this._setLoading(false);
 
                     const input = <InputSearch><any>this.$.search;
-                    input.focus();
+                    this._focusElement(input);
                 }
                 catch (e) {
                     this._setLoading(false);

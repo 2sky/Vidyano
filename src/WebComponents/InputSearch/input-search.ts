@@ -31,7 +31,7 @@ namespace Vidyano.WebComponents {
             super.attached();
 
             if (this.autofocus)
-                this.focus();
+                this._focusElement(this);
         }
 
         private _searchKeypressed(e: KeyboardEvent) {
@@ -63,7 +63,7 @@ namespace Vidyano.WebComponents {
 
         private _stop_tap(e: TapEvent) {
             e.stopPropagation();
-            this.focus();
+            this._focusElement(this);
         }
 
         private _computeHasValue(value: string): boolean {
@@ -71,7 +71,7 @@ namespace Vidyano.WebComponents {
         }
 
         focus() {
-            this.$$("input").focus();
+            this._focusElement(this.$$("input"));
         }
     }
 }

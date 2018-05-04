@@ -304,7 +304,7 @@
             (Polymer.dom(this.root).querySelector(`section.${step}`) as HTMLElement).classList.add("active");
 
             Polymer.dom(this).flush();
-            this._focus(step as string);
+            this._focusElement(step as string);
         }
 
         private _isStep(step: Step): boolean {
@@ -467,7 +467,7 @@
                     type: result.notificationType
                 });
 
-                this._focus("password");
+                this._focusElement(this.$.password);
             }
             catch (error) {
                 this._error(error);
@@ -494,18 +494,6 @@
                 text: error,
                 type: Vidyano.NotificationType.Error
             } : null);
-        }
-
-        private _focus(element: string | HTMLInputElement, attempt: number = 0) {
-            const input = typeof element === "string" ? <HTMLInputElement>this.$$(`#${element}`) : <HTMLInputElement>element;
-            if (input) {
-                input.focus();
-                if (document.activeElement === input)
-                    return;
-            }
-
-            if (attempt < 10)
-                setTimeout(() => this._focus(input || element, attempt + 1), 100);
         }
 
         private _providers(providers: { [name: string]: IProviderParameters }): { name: string; parameters: IProviderParameters; }[] {

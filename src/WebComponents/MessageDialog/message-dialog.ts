@@ -69,7 +69,7 @@
                     return;
 
                 if (document.activeElement !== button)
-                    button.focus();
+                    this._focusElement(button);
                 else
                     clearInterval(focus);
             }, 100);
@@ -103,7 +103,7 @@
             if (!button)
                 return;
 
-            button.focus();
+            this._focusElement(button);
         }
 
         private _keyboardNextAction() {

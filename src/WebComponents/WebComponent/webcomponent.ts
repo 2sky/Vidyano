@@ -477,6 +477,18 @@ namespace Vidyano.WebComponents {
             return <HTMLElement>Polymer.dom(source).querySelector(selector);
         }
 
+        protected _focusElement(element: string | HTMLElement, maxAttempts?: number, interval?: number, attempt: number = 0) {
+            const input = typeof element === "string" ? <HTMLElement>this.$$(`#${element}`) : <HTMLElement>element;
+            if (input) {
+                input.focus();
+                if (document.activeElement === input)
+                    return;
+            }
+
+            if (attempt < (maxAttempts || 10))
+                setTimeout(() => this._focusElement(input || element, maxAttempts, interval, attempt + 1), interval || 100);
+        }
+
         protected _escapeHTML(val: string): string {
             const span = document.createElement("span");
             span.innerText = val;

@@ -63,7 +63,7 @@ namespace Vidyano.WebComponents {
 
         private _autofocus(autofocus: boolean, isEditing: boolean) {
             if (autofocus && isEditing && this._autofocusTarget)
-                this.async(() => this._autofocusTarget.focus());
+                this._focusElement(this._autofocusTarget);
         }
 
         private _attributeLoaded(e: CustomEvent, detail: { attribute: Vidyano.PersistentObjectAttribute }) {
@@ -90,7 +90,7 @@ namespace Vidyano.WebComponents {
             if (!!this._autofocusTarget.findParent(e => e instanceof Vidyano.WebComponents.PersistentObjectAttributePresenter))
                 return;
 
-            this._autofocusTarget.focus();
+            this._focusElement(this._autofocusTarget);
         }
 
         private _innerSizeChanged(size: ISize) {

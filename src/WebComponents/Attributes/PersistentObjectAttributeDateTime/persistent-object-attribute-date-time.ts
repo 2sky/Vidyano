@@ -282,7 +282,7 @@
                             (<MaskedInput><any>this.timeInput).fire("filled", { value: this.timeInput.value });
                         }
 
-                        this.timeInput.focus();
+                        this._focusElement(this.timeInput);
                         this.timeInput.selectionStart = 0;
                         this.timeInput.selectionEnd = this.timeInput.value.length;
                     }
@@ -318,7 +318,7 @@
 
             if (input === this.timeInput && (e.keyCode === Vidyano.WebComponents.Keyboard.KeyCodes.backspace || e.keyCode === Vidyano.WebComponents.Keyboard.KeyCodes.leftarrow)) {
                 if (input.selectionStart === 0 && input.selectionEnd === 0 && this.hasDateComponent) {
-                    this.dateInput.focus();
+                    this._focusElement(this.dateInput);
                     this.dateInput.selectionStart = this.dateInput.selectionEnd = this.dateInput.value.length;
 
                     e.stopImmediatePropagation();
@@ -330,7 +330,7 @@
 
             if (input === this.dateInput && input.value && e.keyCode === Vidyano.WebComponents.Keyboard.KeyCodes.rightarrow) {
                 if (input.selectionStart === input.value.length && input.selectionEnd === input.value.length && this.hasTimeComponent) {
-                    this.timeInput.focus();
+                    this._focusElement(this.timeInput);
                     this.timeInput.selectionStart = this.timeInput.selectionEnd = 0;
 
                     e.stopImmediatePropagation();
