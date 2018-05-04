@@ -75,7 +75,7 @@ namespace Vidyano.WebComponents {
 
             const presenter = <Vidyano.WebComponents.PersistentObjectAttributePresenter>e.target;
             this._attributePresenters.push(presenter);
-            
+
             if (this._attributePresenters.length < this.tab.attributes.length)
                 return;
 
