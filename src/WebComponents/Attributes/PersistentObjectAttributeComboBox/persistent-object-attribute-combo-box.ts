@@ -58,5 +58,9 @@ namespace Vidyano.WebComponents.Attributes {
         private _computeCanAdd(newValue: string, options: string[]): boolean {
             return newValue != null && options && !options.some(o => o === newValue);
         }
+
+        protected _onFocus(e: FocusEvent) {
+            this._focusElement(this.$$("vi-select"));
+        }
     }
 }

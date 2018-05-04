@@ -89,7 +89,8 @@ namespace Vidyano.WebComponents {
             placeholder: String
         },
         listeners: {
-            "keydown": "_keydown"
+            "keydown": "_keydown",
+            "focus": "_onFocus"
         },
         observers: [
             "_computeSuggestionFeedback(inputValue, suggestion, filtering)"
@@ -109,6 +110,13 @@ namespace Vidyano.WebComponents {
         keepUnmatched: boolean;
         readonly: boolean;
         groupSeparator: string;
+
+        constructor() {
+            super();
+
+            if (!this.hasAttribute("tabindex"))
+                this.setAttribute("tabindex", "0");
+        }
 
         open() {
             if (this.readonly || !this.items || this.items.length === 0)
@@ -182,6 +190,10 @@ namespace Vidyano.WebComponents {
                     e.preventDefault();
                 }
             }
+        }
+
+        private _onFocus() {
+            this.$$("input").focus();
         }
 
         private _keyup(e: KeyboardEvent) {
