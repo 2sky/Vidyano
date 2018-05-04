@@ -75,7 +75,7 @@ namespace Vidyano.WebComponents {
 
             const presenter = <Vidyano.WebComponents.PersistentObjectAttributePresenter>e.target;
             this._attributePresenters.push(presenter);
-
+            
             if (this._attributePresenters.length < this.tab.attributes.length)
                 return;
 
@@ -87,7 +87,7 @@ namespace Vidyano.WebComponents {
             if (document.activeElement && document.activeElement.tagName === "INPUT")
                 return;
 
-            if (!!this._autofocusTarget.findParent(e => e instanceof Vidyano.WebComponents.PersistentObjectAttributePresenter))
+            if (!!this.findParent(e => e instanceof Vidyano.WebComponents.PersistentObjectAttributePresenter, this._autofocusTarget.parentElement))
                 return;
 
             this._focusElement(this._autofocusTarget);
