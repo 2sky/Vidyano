@@ -1241,6 +1241,7 @@ namespace Vidyano.WebComponents {
                 const cacheEntry = <PersistentObjectFromActionAppCacheEntry>this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(parent));
                 if (cacheEntry instanceof PersistentObjectFromActionAppCacheEntry && cacheEntry.fromActionIdReturnPath) {
                     if (App.removeRootPath(this.app.getUrlForFromAction(cacheEntry.fromActionId)) === App.removeRootPath(this.app.path)) {
+                        this.app.cacheRemove(cacheEntry);
                         if (this.app.noHistory)
                             this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
                         else
