@@ -120,6 +120,8 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _itemValueNew(e: Event, detail: { value: string }) {
             this.value = `${this.value || ""}\n${detail.value}`;
+
+            Polymer.dom(this).flush();
             this._focusElement(this.strings[this.strings.length - 1].input);
 
             e.stopPropagation();
