@@ -1527,7 +1527,7 @@ namespace Vidyano.WebComponents {
                     }
                 }
 
-                if (this.query.hasMore && itemsEndIndex > totalItems - 10)
+                if (this.query.hasMore && totalItems != null && itemsEndIndex > totalItems - 10)
                     missingItemIndexes.push(totalItems);
             }
             else {
