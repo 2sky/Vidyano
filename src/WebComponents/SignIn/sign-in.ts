@@ -259,11 +259,11 @@
                             document.location.assign(credentialType.redirectUri);
                             return;
                         }
+
+                        this._setIsBusy(false);
                     }
                     catch (error) {
                         this._error(error);
-                    }
-                    finally {
                         this._setIsBusy(false);
                     }
                 }

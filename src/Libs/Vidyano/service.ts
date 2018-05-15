@@ -95,7 +95,14 @@ namespace Vidyano {
                 r.overrideMimeType("application/json; charset=utf-8");
                 r.onload = async () => {
                     if (r.status !== 200) {
-                        reject(r.statusText);
+                        if (r.status === 429) {
+                            setTimeout(() => {
+                                this._postJSON(url, data).then(result => resolve(result), err => reject(err));
+                            }, parseInt(r.getResponseHeader("retry-after") || "5") * 1000 + 1000);
+                            return;
+                        }
+
+                        reject(`${r.statusText} (${r.status})`);
                         return;
                     }
 
@@ -137,7 +144,7 @@ namespace Vidyano {
 
                     this._postJSONProcess(data, result, requestMethod, createdRequest, requestStart, result.profiler ? r.getResponseHeader("X-ElapsedMilliseconds") : undefined);
                 };
-                r.onerror = () => { reject(r.statusText); };
+                r.onerror = () => { reject(`${r.statusText} (${r.status})`); };
 
                 r.send(JSON.stringify(data));
             });

@@ -363,7 +363,7 @@
 
     &[is-desktop], &[is-tablet] {
         .dialog {
-            width: 400px;
+            min-width: 400px;
             min-height: 360px;
         }
     }
