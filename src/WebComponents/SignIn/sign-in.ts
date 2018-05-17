@@ -255,8 +255,10 @@
                         });
 
                         if (credentialType.redirectUri) {
-                            Vidyano.cookie("returnUrl", this.returnUrl, { expires: 1, force: true });
-                            document.location.assign(credentialType.redirectUri);
+                            setTimeout(() => {
+                                Vidyano.cookie("returnUrl", this.returnUrl, { expires: 1, force: true });
+                                document.location.assign(credentialType.redirectUri);
+                            }, 500);
                             return;
                         }
 
@@ -413,7 +415,10 @@
                         });
 
                         if (credentialType.redirectUri) {
-                            document.location.assign(credentialType.redirectUri);
+                            setTimeout(() => {
+                                Vidyano.cookie("returnUrl", this.returnUrl, { expires: 1, force: true });
+                                document.location.assign(credentialType.redirectUri);
+                            }, 500);
                             return;
                         }
                     }
@@ -438,11 +443,11 @@
                     this.app.changePath(decodeURIComponent(this.returnUrl || ""));
                     this.app.service.staySignedIn = this.staySignedIn;
                 }
+
+                this._setIsBusy(false);
             }
             catch (error) {
                 this._error(error);
-            }
-            finally {
                 this._setIsBusy(false);
             }
         }
@@ -454,7 +459,7 @@
             setTimeout(() => {
                 Vidyano.cookie("returnUrl", this.returnUrl, { expires: 1, force: true });
                 this.app.service.signInExternal(key);
-            }, 2000);
+            }, 500);
         }
 
         private async _forgot() {

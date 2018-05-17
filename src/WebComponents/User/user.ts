@@ -69,6 +69,7 @@ namespace Vidyano.WebComponents {
         }
 
         signOut() {
+            Vidyano.cookie("userName", null);
             this.app.redirectToSignOut(false);
         }
 
