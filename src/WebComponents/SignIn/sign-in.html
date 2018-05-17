@@ -92,9 +92,7 @@
                 </section>
                 <section class="register">
                     <h1>[[register.breadcrumb]]</h1>
-                    <vi-scroller>
-                        <vi-persistent-object-tab-presenter tab="[[register.tabs.0]]" on-vi-persistent-object-tab-inner-size-changed="_tabInnerSizeChanged"></vi-persistent-object-tab-presenter>
-                    </vi-scroller>
+                    <vi-persistent-object-tab-presenter tab="[[register.tabs.0]]" on-vi-persistent-object-tab-inner-size-changed="_tabInnerSizeChanged"></vi-persistent-object-tab-presenter>
                     <div class="actions layout horizontal-reverse justified">
                         <button is="vi-button" label="[[_translate(translations, 'RegisterSave')]]" on-tap="_register" disabled$="[[register.isBusy]]"></button>
                         <button is="vi-button" label="[[_translate(translations, 'SignIn')]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
