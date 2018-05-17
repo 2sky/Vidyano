@@ -292,7 +292,6 @@
                 margin-top: var(--theme-h3);
                 min-height: calc(var(--theme-h2) * 3);
                 max-height: 80vh;
-                --vi-persistent-object-group--attribute-padding: 0;
 
                 > vi-persistent-object-tab {
                     position: static;
