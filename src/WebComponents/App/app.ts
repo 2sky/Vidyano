@@ -1048,7 +1048,7 @@ namespace Vidyano.WebComponents {
                 }
             }
 
-            _gaq.push(["_setCustomVar", 1, "UserId", this.app.service.application.userId, 1]);
+            _gaq.push(["_setCustomVar", 1, "UserId", this.getTrackUserId(), 1]);
             _gaq.push(["_setCustomVar", 2, "Page", page, 2]);
             _gaq.push(["_setCustomVar", 3, "Type", type, 2]);
             _gaq.push(["_setCustomVar", 4, "Option", option, 2]);
@@ -1066,8 +1066,12 @@ namespace Vidyano.WebComponents {
 
             this._initializeGoogleAnalytics();
 
-            _gaq.push(["_setCustomVar", 1, "UserId", this.app.service.application.userId, 1]);
+            _gaq.push(["_setCustomVar", 1, "UserId", this.getTrackUserId(), 1]);
             _gaq.push(["_trackPageview", path]);
+        }
+
+        getTrackUserId(): string {
+            return ""; // e.g. this.app.service.application.userId
         }
 
         getPersistentObjectConfig(persistentObject: Vidyano.PersistentObject, persistentObjectConfigs: PersistentObjectConfig[]): PersistentObjectConfig {
