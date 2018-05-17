@@ -92,7 +92,7 @@
                 item = JSON.parse(item);
                 if (item.exp && new Date(item.exp) < now) {
                     window.localStorage.removeItem(key);
-                    return null;
+                    return key.endsWith("/authToken") ? "Expired" : null;
                 }
 
                 return decode(item.val);

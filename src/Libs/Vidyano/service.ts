@@ -468,7 +468,6 @@ namespace Vidyano {
         }
 
         private get authToken(): string {
-
             return Vidyano.cookie("authToken");
         }
 
@@ -579,13 +578,15 @@ namespace Vidyano {
         }
 
         signInUsingDefaultCredentials(): Promise<Application> {
-            this._setUserName(this._clientData.defaultUser);
+            this._setUserName(this.defaultUserName);
 
             return this._getApplication();
         }
 
         signOut(skipAcs?: boolean): Promise<boolean> {
-            this._setUserName(null);
+            if (this.userName === this.defaultUserName || this.userName === this.registerUserName)
+                this._setUserName(null);
+
             this.authToken = null;
             this._setApplication(null);
 
