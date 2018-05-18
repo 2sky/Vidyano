@@ -289,7 +289,7 @@
             }
 
             vi-persistent-object-tab-presenter {
-                margin-top: var(--theme-h3);
+                margin: var(--theme-h3) calc(var(--theme-h4) * -1) 0 calc(var(--theme-h4) * -1);
                 min-height: calc(var(--theme-h2) * 3);
                 max-height: 80vh;
 
