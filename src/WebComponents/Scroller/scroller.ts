@@ -277,7 +277,6 @@
             const wrapper = this.$.wrapper;
 
             if (detail.state === "start") {
-                this.app.isTracking = true;
                 this._setScrolling("vertical");
                 this._trackStart = this._verticalScrollTop;
             }
@@ -288,7 +287,6 @@
             else if (detail.state === "end") {
                 this._setScrolling(null);
                 this._trackStart = undefined;
-                this.app.isTracking = false;
             }
 
             e.preventDefault();
@@ -301,7 +299,6 @@
             const wrapper = this.$.wrapper;
 
             if (detail.state === "start") {
-                this.app.isTracking = true;
                 this._setScrolling("horizontal");
                 this._trackStart = this._horizontalScrollLeft;
             }
@@ -312,7 +309,6 @@
             else if (detail.state === "end") {
                 this._setScrolling(null);
                 this._trackStart = undefined;
-                this.app.isTracking = false;
             }
 
             e.preventDefault();
