@@ -18,7 +18,7 @@
         <vi-style id="style" key="vi-query-grid"></vi-style>
         <div class="vertical layout fit">
             <header id="dataHeaderHost" class="horizontal layout">
-                <div class="horizontal layout" id="headerControls">
+                <div class="horizontal layout relative" id="headerControls">
                     <template is="dom-if" if="[[hasGrouping]]">
                         <vi-popup-menu id="grouping" disabled$="[[isBusy]]">
                             <button is="vi-button" header icon="QueryGrid_Group" inverse disabled$="[[isBusy]]"></button>
@@ -32,15 +32,18 @@
                     <template is="dom-if" if="[[canFilter]]">
                         <vi-query-grid-filters id="filters" query="[[query]]"></vi-query-grid-filters>
                     </template>
+                    <vi-size-tracker size="{{headerControlsSize}}"></vi-size-tracker>
                 </div>
-                <vi-popup id="moreLeft" class="more left" hidden>
-                    <button is="vi-button" header inverse icon="ChevronLeft"></button>
-                    <vi-scroller id="moreLeftContent" content no-horizontal></vi-scroller>
-                </vi-popup>
-                <vi-popup id="moreRight" class="more right" hidden>
-                    <button is="vi-button" header inverse icon="ChevronRight"></button>
-                    <vi-scroller id="moreRightContent" content no-horizontal></vi-scroller>
-                </vi-popup>
+                <div id="dataHeaderHostColumns">
+                    <vi-popup id="moreLeft" class="more left" hidden>
+                        <button is="vi-button" header inverse icon="ChevronLeft"></button>
+                        <vi-scroller id="moreLeftContent" content no-horizontal></vi-scroller>
+                    </vi-popup>
+                    <vi-popup id="moreRight" class="more right" hidden>
+                        <button is="vi-button" header inverse icon="ChevronRight"></button>
+                        <vi-scroller id="moreRightContent" content no-horizontal></vi-scroller>
+                    </vi-popup>
+                </div>
             </header>
             <div class="horizontal layout flex relative">
                 <vi-size-tracker size="{{viewportSize}}"></vi-size-tracker>

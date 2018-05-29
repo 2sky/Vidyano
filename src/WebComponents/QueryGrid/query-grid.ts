@@ -1102,6 +1102,10 @@ namespace Vidyano.WebComponents {
                 type: Object,
                 observer: "_viewportSizeChanged"
             },
+            headerControlsSize: {
+                type: Object,
+                observer: "_headerControlsSizeChanged"
+            },
             rowHeight: {
                 type: Number,
                 computed: "_computeRowHeight(query, app)"
@@ -1248,6 +1252,7 @@ namespace Vidyano.WebComponents {
         readonly hasTotalItem: boolean;
         canReorder: boolean;
         viewportSize: ISize;
+        headerControlsSize: ISize;
         query: Vidyano.Query;
         asLookup: boolean;
 
@@ -1262,7 +1267,7 @@ namespace Vidyano.WebComponents {
 
                     this._tableHeader.grid = this._tableData.grid = this._tableFooter.grid = this;
 
-                    Polymer.dom(this.$.dataHeaderHost).appendChild(this._tableHeader.host);
+                    Polymer.dom(this.$.dataHeaderHostColumns).appendChild(this._tableHeader.host);
                     Polymer.dom(this.$.dataHost).appendChild(this._tableData.host);
                     Polymer.dom(this.$.dataFooterHost).appendChild(this._tableFooter.host);
 
@@ -1372,6 +1377,11 @@ namespace Vidyano.WebComponents {
             }
         }
 
+        private _headerControlsSizeChanged(size: ISize) {
+            this.customStyle["--vi-query-grid--data-offset"] = `${size.width}px`;
+            this.updateStyles();
+        }
+
         private _verticalScrollOffsetChanged(verticalScrollOffset: number) {
             if (!this.query)
                 return;
@@ -1386,8 +1396,7 @@ namespace Vidyano.WebComponents {
             if (this._actionMenu.open)
                 this._actionMenu.close();
 
-            this.transform(`translate(${-(this._horizontalScrollOffsetCurrent = horizontalScrollOffset)}px, 0)`, this._tableHeader.host);
-            this.transform(`translate(${-(this._horizontalScrollOffsetCurrent = horizontalScrollOffset)}px, 0)`, this._tableFooter.host);
+            this._tableFooter.host.style.marginLeft = this._tableHeader.host.style.marginLeft = `-${this._horizontalScrollOffsetCurrent = horizontalScrollOffset}px`;
             [this._tableHeader, this._tableData, this._tableFooter].forEach(table => {
                 table.rows.forEach(row => {
                     row.columns.forEach(column => {
@@ -1436,20 +1445,19 @@ namespace Vidyano.WebComponents {
             columns = columns.filter(c => !c.isHidden && !c.isPinned);
 
             this.toggleAttribute("hidden", horizontalScrollOffset === 0, this.$.moreLeft);
-            this.toggleAttribute("hidden", !columns.some(c => c.calculatedOffset + this._tableHeader.host.offsetLeft - horizontalScrollOffset > viewportSize.width), this.$.moreRight);
+            this.toggleAttribute("hidden", !columns.some(c => c.calculatedOffset + this.headerControlsSize.width - horizontalScrollOffset > viewportSize.width), this.$.moreRight);
 
             this._outOfViewColumnsWorkerHandle = window.requestIdleCallback(() => {
                 if (!this.isAttached)
                     return;
 
-                const offset = parseInt(this.getComputedStyleValue("--vi-query-grid--data-offset"));
                 const left: PopupMenuItem[] = [];
                 const right: PopupMenuItem[] = [];
 
                 columns.forEach(c => {
                     if (c.calculatedOffset - horizontalScrollOffset < 0)
                         left.push(<PopupMenuItem>Polymer.dom(this.$.moreLeftContent).querySelector(`vi-popup-menu-item[name="${c.name}"]`) || new Vidyano.WebComponents.PopupMenuItem(c.label, null, () => this._bringColumnIntoView(c)));
-                    else if (c.calculatedOffset + this._tableHeader.host.offsetLeft - horizontalScrollOffset > viewportSize.width)
+                    else if (c.calculatedOffset + this.headerControlsSize.width - horizontalScrollOffset > viewportSize.width)
                         right.push(<PopupMenuItem>Polymer.dom(this.$.moreRightContent).querySelector(`vi-popup-menu-item[name="${c.name}"]`) || new Vidyano.WebComponents.PopupMenuItem(c.label, null, () => this._bringColumnIntoView(c, true)));
                 });
 
@@ -1468,7 +1476,7 @@ namespace Vidyano.WebComponents {
             if (rightAlign)
                 this._horizontalScrollOffset = column.calculatedOffset + column.calculatedWidth - this.viewportSize.width + this.$.headerControls.offsetWidth + this.$.moreRight.offsetWidth - 1;
             else
-                this._horizontalScrollOffset = column.calculatedOffset - parseInt(this.getComputedStyleValue("--vi-query-grid--data-offset")) + this.$.headerControls.offsetWidth - this.$.moreLeft.offsetWidth - 1;
+                this._horizontalScrollOffset = column.calculatedOffset + this.$.headerControls.offsetWidth - this.headerControlsSize.width - this.$.moreLeft.offsetWidth - 1;
         }
 
         private _computeItems(items: Vidyano.QueryResultItem[], collapsedGroups: Vidyano.QueryResultItemGroup[], viewportSize: ISize, verticalScrollOffset: number, rowHeight: number, lastUpdated: Date): (Vidyano.QueryResultItem | Vidyano.QueryResultItemGroup)[] {
@@ -1610,7 +1618,7 @@ namespace Vidyano.WebComponents {
                         start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                     if (!this._tableHeader)
-                        Polymer.dom(this.$.dataHeaderHost).appendChild((this._tableHeader = new Vidyano.WebComponents.QueryGridTableHeader(this)).host);
+                        Polymer.dom(this.$.dataHeaderHostColumns).appendChild((this._tableHeader = new Vidyano.WebComponents.QueryGridTableHeader(this)).host);
 
                     if (!this._tableData)
                         Polymer.dom(this.$.dataHost).appendChild((this._tableData = new Vidyano.WebComponents.QueryGridTableData(this)).host);
@@ -1721,11 +1729,7 @@ namespace Vidyano.WebComponents {
                         console.info(`Data Updated: ${timeTaken}ms`);
                     }
 
-                    this._updateColumnWidths().then(() => {
-                        this.updateDataOffset();
-
-                        resolve(true);
-                    });
+                    this._updateColumnWidths().then(() => resolve(true));
 
                     if (this.hasGrouping && this._items.some(i => !(i instanceof Vidyano.QueryResultItem)))
                         this._tableData.host.style.minWidth = `${this.$.dataHeaderHost.scrollWidth}px`;
@@ -1903,18 +1907,8 @@ namespace Vidyano.WebComponents {
                 this._updateTableDataPendingUpdates();
             }
 
-            this.updateDataOffset();
-
             if (e)
                 e.stopPropagation();
-        }
-
-        private updateDataOffset() {
-            const headerHost = this.$.dataHeaderHost;
-            const thead = <HTMLElement>this._tableHeader.host.firstChild;
-
-            this.customStyle["--vi-query-grid--data-offset"] = `${thead.getBoundingClientRect().left - headerHost.getBoundingClientRect().left}px`;
-            this.updateStyles();
         }
 
         private _requestAnimationFrame(action: () => void): number {

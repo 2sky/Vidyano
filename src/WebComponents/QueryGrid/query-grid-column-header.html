@@ -1,7 +1,7 @@
 <dom-module id="vi-query-grid-column-header">
     <template>
         <link rel="stylesheet" href="query-grid-column-header.css" />
-        <div class="layout horizontal">
+        <div class="layout horizontal relative">
             <div on-tap="_sort" class="label flex relative">
                 <label id="label"></label>
                 <vi-icon id="sortingIcon" source="[[sorting]]" hidden$="[[!sorting]]"></vi-icon>
