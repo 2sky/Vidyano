@@ -134,7 +134,7 @@ namespace Vidyano.WebComponents {
             let maxContentHeight = "none";
 
             if (this._currentOrientation === "vertical") {
-                if (alignRight ? (targetRect.right - contentWidth) < 0 : targetRect.left + (transformedRect ? transformedRect.left : 0) + contentWidth <= boundWidth) {
+                if (alignRight ? (targetRect.right + (transformedRect ? transformedRect.right : 0) - contentWidth) < 0 : targetRect.left + (transformedRect ? transformedRect.left : 0) + contentWidth <= boundWidth) {
                     // Left-align
                     let left = targetRect.left;
                     if (this.boundingTarget && transformedRect && (left + transformedRect.left < boundLeft))
