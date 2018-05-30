@@ -132,7 +132,6 @@ namespace Vidyano.WebComponents {
             const alignRight = alignments.indexOf("RIGHT") >= 0;
 
             let maxContentHeight = "none";
-
             if (this._currentOrientation === "vertical") {
                 if (alignRight ? (targetRect.right + (transformedRect ? transformedRect.right : 0) - contentWidth) < 0 : targetRect.left + (transformedRect ? transformedRect.left : 0) + contentWidth <= boundWidth) {
                     // Left-align
@@ -205,25 +204,20 @@ namespace Vidyano.WebComponents {
                     content.classList.remove("left");
                 }
 
-                if (targetRect.top + contentHeight < boundHeight || targetRect.top + contentHeight >= windowHeight) {
-                    // Top-align
-                    content.style.top = targetRect.top + "px";
-                    content.style.bottom = "auto";
+                content.style.top = targetRect.top + "px";
+                content.style.bottom = "auto";
 
-                    content.classList.add("top");
-                    content.classList.remove("bottom");
+                content.classList.add("top");
+                content.classList.remove("bottom");
 
-                    maxContentHeight = `${windowHeight - targetRect.top}px`;
-                }
-                else {
-                    // Bottom-align
-                    content.style.top = "auto";
-                    content.style.bottom = Math.max(windowHeight - targetRect.bottom, 0) + "px";
+                if (targetRect.top + contentHeight > boundHeight || targetRect.top + contentHeight > windowHeight) {
+                    let newTop = Math.min(boundHeight, windowHeight) - contentHeight;
+                    if (newTop < 0) {
+                        newTop = 0;
+                        maxContentHeight = `${Math.min(boundHeight, windowHeight)}px`;
+                    }
 
-                    content.classList.add("bottom");
-                    content.classList.remove("top");
-
-                    maxContentHeight = content.style.bottom;
+                    content.style.top = `${newTop}px`;
                 }
             }
 
