@@ -32,7 +32,7 @@
                     <template is="dom-if" if="[[canFilter]]">
                         <vi-query-grid-filters id="filters" query="[[query]]"></vi-query-grid-filters>
                     </template>
-                    <vi-size-tracker size="{{headerControlsSize}}"></vi-size-tracker>
+                    <vi-size-tracker size="{{headerControlsSize}}" trigger-zero></vi-size-tracker>
                 </div>
                 <div id="dataHeaderHostColumns">
                     <vi-popup id="moreLeft" class="more left" hidden>
