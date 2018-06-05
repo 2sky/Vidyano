@@ -41,6 +41,7 @@
             border-spacing: 0 !important;
             vertical-align: top;
             background-color: white;
+            margin-left: var(--query-grid-table--horizontal-scroll-offset);
 
             tr {
                 padding: 0 !important;

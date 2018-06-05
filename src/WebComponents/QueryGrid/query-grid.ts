@@ -1396,7 +1396,9 @@ namespace Vidyano.WebComponents {
             if (this._actionMenu.open)
                 this._actionMenu.close();
 
-            this._tableFooter.host.style.marginLeft = this._tableHeader.host.style.marginLeft = `-${this._horizontalScrollOffsetCurrent = horizontalScrollOffset}px`;
+            this.customStyle["--query-grid-table--horizontal-scroll-offset"] = `-${this._horizontalScrollOffsetCurrent = horizontalScrollOffset}px`;
+            this.updateStyles();
+
             [this._tableHeader, this._tableData, this._tableFooter].forEach(table => {
                 table.rows.forEach(row => {
                     row.columns.forEach(column => {
