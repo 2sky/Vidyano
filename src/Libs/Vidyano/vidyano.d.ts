@@ -282,6 +282,7 @@ declare namespace Vidyano {
         private _serviceOptions;
         private _displayValueSource;
         private _displayValue;
+        private _rules;
         private _validationError;
         private _tab;
         private _tabKey;
@@ -302,7 +303,6 @@ declare namespace Vidyano {
         offset: number;
         type: string;
         toolTip: string;
-        rules: string;
         typeHints: any;
         editTemplateKey: string;
         templateKey: string;
@@ -319,6 +319,8 @@ declare namespace Vidyano {
         visibility: PersistentObjectAttributeVisibility;
         readonly isVisible: boolean;
         validationError: string;
+        readonly rules: string;
+        private _setRules(rules);
         readonly isRequired: boolean;
         private _setIsRequired(isRequired);
         readonly isReadOnly: boolean;
