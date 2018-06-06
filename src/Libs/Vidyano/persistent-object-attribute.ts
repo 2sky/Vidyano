@@ -23,6 +23,7 @@
         private _serviceOptions: string[];
         private _displayValueSource: any;
         private _displayValue: string;
+        private _rules: string;
         private _validationError: string;
         private _tab: PersistentObjectAttributeTab;
         private _tabKey: string;
@@ -45,7 +46,6 @@
         offset: number;
         type: string;
         toolTip: string;
-        rules: string;
         typeHints: any;
         editTemplateKey: string;
         templateKey: string;
@@ -72,7 +72,7 @@
             this._isSensitive = !!attr.isSensitive;
             this.offset = attr.offset || 0;
             this.toolTip = attr.toolTip;
-            this.rules = attr.rules;
+            this._rules = attr.rules;
             this.validationError = attr.validationError || null;
             this.typeHints = attr.typeHints || {};
             this.editTemplateKey = attr.editTemplateKey;
@@ -159,6 +159,16 @@
             const oldValidationError = this._validationError;
             if (oldValidationError !== error)
                 this.notifyPropertyChanged("validationError", this._validationError = error, oldValidationError);
+        }
+
+        get rules(): string {
+            return this._rules;
+        }
+
+        private _setRules(rules: string) {
+            const oldRules = this._rules;
+            if (oldRules !== rules)
+                this.notifyPropertyChanged("rules", this._rules = rules, oldRules);
         }
 
         get isRequired(): boolean {
@@ -359,6 +369,7 @@
 
             this._setOptions(resultAttr._serviceOptions);
             this._setIsReadOnly(resultAttr.isReadOnly);
+            this._setRules(resultAttr.rules);
             this._setIsRequired(resultAttr.isRequired);
             if (this.visibility !== resultAttr.visibility) {
                 this.visibility = resultAttr.visibility;
