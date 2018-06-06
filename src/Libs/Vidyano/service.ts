@@ -885,7 +885,8 @@ namespace Vidyano {
                     iframe.onload = function (e: Event) {
                         // NOTE: The second load event gets fired when the response to the form submission is received. The implementation detects whether the actual payload is embedded in a <textarea> element, and prepares the required conversions to be made in that case.
                         iframe.onload = function (e: Event) {
-                            const doc = this.contentDocument || this.contentWindow.document,
+                            const frame = <HTMLIFrameElement>this;
+                            const doc = frame.contentDocument || frame.contentWindow.document,
                                 root = doc.documentElement ? doc.documentElement : doc.body,
                                 textarea = root.getElementsByTagName("textarea")[0],
                                 type = textarea ? textarea.getAttribute("data-type") : null,
