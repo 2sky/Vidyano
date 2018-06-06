@@ -2,7 +2,7 @@
   "name": "vidyano",
   "private": true,
   "devDependencies": {
-    "dts-generator": "2.0.0",
+    "dts-generator": "^2.1.0",
     "grunt": "0.4.5",
     "grunt-bower-task": "0.4.0",
     "grunt-contrib-clean": "^1.0.0",
@@ -12,10 +12,10 @@
     "grunt-git-revision": "^0.0.1",
     "grunt-sass": "^1.1.0",
     "grunt-text-replace": "^0.4.0",
-    "grunt-ts": "^6.0.0-beta.16",
+    "grunt-ts": "^6.0.0-beta.19",
     "grunt-tslint": "4.0.1",
+    "tslib": "^1.9.2",
     "tslint": "4.4.2",
-    "typescript": "^2.4.1",
-    "tslib": "^1.6.0"
+    "typescript": "^2.9.1"
   }
 }
