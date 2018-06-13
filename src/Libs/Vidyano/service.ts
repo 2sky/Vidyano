@@ -549,12 +549,19 @@ namespace Vidyano {
 
             this._setUserName(this.userName || this._clientData.defaultUser);
 
-            if (!StringEx.isNullOrEmpty(this.authToken) || ((this._clientData.defaultUser || this.windowsAuthentication) && !skipDefaultCredentialLogin))
-                return this._getApplication();
-            else {
-                this._setIsSignedIn(!!this.application);
-                return this.application;
+            let application: Application;
+            if (!StringEx.isNullOrEmpty(this.authToken) || ((this._clientData.defaultUser || this.windowsAuthentication) && !skipDefaultCredentialLogin)) {
+                try {
+                    application = await this._getApplication();
+                }
+                catch (e) {
+                    application = null;
+                }
             }
+            else
+                this._setIsSignedIn(!!this.application);
+
+            return application;
         }
 
         signInExternal(providerName: string) {
@@ -564,17 +571,30 @@ namespace Vidyano {
             document.location.href = this.providers[providerName].requestUri;
         }
 
-        signInUsingCredentials(userName: string, password: string, code?: string): Promise<Application> {
+        signInUsingCredentials(userName: string, password: string, staySignedIn?: boolean): Promise<Application>;
+        signInUsingCredentials(userName: string, password: string, code?: string, staySignedIn?: boolean): Promise<Application>;
+        signInUsingCredentials(userName: string, password: string, codeOrStaySignedIn?: string | boolean, staySignedIn?: boolean): Promise<Application> {
             this._setUserName(userName);
 
             const data = this._createData("getApplication");
             data.userName = userName;
             data.password = password;
 
-            if (code)
-                data.code = code;
+            if (typeof codeOrStaySignedIn === "string")
+                data.code = codeOrStaySignedIn;
 
-            return this._getApplication(data);
+            try {
+                const application = this._getApplication(data);
+                if (application && this.isSignedIn) {
+                    const ssi = (typeof codeOrStaySignedIn === "boolean" && codeOrStaySignedIn) || (typeof staySignedIn === "boolean" && staySignedIn);
+                    Vidyano.cookie("staySignedIn", (this.staySignedIn = ssi) ? "true" : null, { force: true, expires: 365 });
+                }
+
+                return application;
+            }
+            catch (e) {
+                throw e;
+            }
         }
 
         signInUsingDefaultCredentials(): Promise<Application> {
@@ -618,14 +638,14 @@ namespace Vidyano {
 
         private async _getApplication(data: any = this._createData("")): Promise<Application> {
             if (!(data.authToken || data.accessToken || data.password) && this.userName && this.userName !== this.defaultUserName && this.userName !== this.registerUserName) {
-                this._setUserName(this.defaultUserName);
+                if (this.defaultUserName)
+                    this._setUserName(this.defaultUserName);
+
                 if (!this.userName && !this.hooks.onSessionExpired())
                     throw "Session expired";
 
                 data.userName = this.userName;
             }
-
-            Vidyano.cookie("staySignedIn", this.staySignedIn ? "true" : null, { force: true, expires: 365 });
 
             const result = await this._postJSON(this._createUri("GetApplication"), data);
 

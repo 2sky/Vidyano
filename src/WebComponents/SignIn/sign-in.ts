@@ -427,9 +427,8 @@
                 }
                 else if (this.step === "password") {
                     try {
-                        await this.app.service.signInUsingCredentials(this.userName, this.password);
+                        await this.app.service.signInUsingCredentials(this.userName, this.password, this.staySignedIn);
                         this.app.changePath(decodeURIComponent(this.returnUrl || ""));
-                        this.app.service.staySignedIn = this.staySignedIn;
                     }
                     catch (e) {
                         if (e === "Two-factor authentication enabled for user.")
@@ -439,9 +438,8 @@
                     }
                 }
                 else if (this.step === "twofactor") {
-                    await this.app.service.signInUsingCredentials(this.userName, this.password, this.twoFactorCode);
+                    await this.app.service.signInUsingCredentials(this.userName, this.password, this.twoFactorCode, this.staySignedIn);
                     this.app.changePath(decodeURIComponent(this.returnUrl || ""));
-                    this.app.service.staySignedIn = this.staySignedIn;
                 }
 
                 this._setIsBusy(false);
