@@ -1,4 +1,14 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
+    let versionReplace = grunt.option("vidyano-version");
+    if (grunt.option("vidyano-version-prerelease") === "master") {
+        versionReplace += "-<%= meta.revision %>";
+        grunt.option("vidyano-version-prerelease", "-<%= meta.revision %>");
+    }
+    else if (grunt.option("vidyano-version-prerelease"))
+        versionReplace += grunt.option("vidyano-version-prerelease");
+
+    grunt.option("vidyano-version-full", versionReplace);
+
     grunt.initConfig({
         bower: {
             install: {
@@ -62,7 +72,7 @@ module.exports = function(grunt) {
                 src: "**",
                 dest: "dist/Vidyano.Web2/src/",
                 expand: true,
-                filter: function(src) {
+                filter: function (src) {
                     if (src.indexOf("demo") >= 0 || src.endsWith(".min.css") || src.indexOf("Test") >= 0)
                         return false;
 
@@ -99,7 +109,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     src: 'dist/Vidyano.Web2/src/**/*.js',
-                    filter: function(src) {
+                    filter: function (src) {
                         if (src.endsWith("bignumber.js") || src.endsWith("lertify.js") || src.endsWith(".min.js"))
                             return false;
 
@@ -119,22 +129,36 @@ module.exports = function(grunt) {
             vidyanoVersion: {
                 src: ['dist\\Vidyano.Web2\\src\\Libs\\Vidyano\\vidyano.js'],
                 overwrite: true,
-                replacements: [{from: '"latest"', to: '"' + grunt.option("vidyano-version") + (grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : "") + '-<%= meta.revision %>"'}]
+                replacements: [{ from: '"latest"', to: '"' + grunt.option("vidyano-version-full") + '"' }]
             },
-            nugetVersion: {
+            assemblyVersion: {
                 src: ['dist\\Vidyano.Web2\\Properties\\AssemblyInfo.cs'],
                 overwrite: true,
                 replacements: [
-                    {from: "0.0.0", to: grunt.option("vidyano-version")},
-                    {from: "-prerelease", to: grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : ""}
+                    { from: "0.0.0", to: grunt.option("vidyano-version") },
+                    { from: "-prerelease", to: (grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : "") }
                 ]
             },
-            nugetVersionRevert: {
+            assemblyVersionRevert: {
                 src: ['dist\\Vidyano.Web2\\Properties\\AssemblyInfo.cs'],
                 overwrite: true,
                 replacements: [
-                    {from: grunt.option("vidyano-version"), to: "0.0.0"},
-                    {from: 'AssemblyInformationalVersion("0.0.0' + (grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : ""), to: 'AssemblyInformationalVersion("0.0.0-prerelease'}
+                    { from: grunt.option("vidyano-version"), to: "0.0.0" },
+                    { from: 'AssemblyInformationalVersion("0.0.0' + (grunt.option("vidyano-version-prerelease") ? "-" + grunt.option("vidyano-version-prerelease") : ""), to: 'AssemblyInformationalVersion("0.0.0-prerelease' }
+                ]
+            },
+            nugetPackageVersion: {
+                src: ['dist\\Vidyano.Web2\\Vidyano.Web2.nuspec', 'dist\\Vidyano.Web2\\Vidyano.Web2.Definition.nuspec'],
+                overwrite: true,
+                replacements: [
+                    { from: "$version$", to: grunt.option("vidyano-version-full") }
+                ]
+            },
+            nugetPackageVersionRevert: {
+                src: ['dist\\Vidyano.Web2\\Vidyano.Web2.nuspec', 'dist\\Vidyano.Web2\\Vidyano.Web2.Definition.nuspec'],
+                overwrite: true,
+                replacements: [
+                    { from: grunt.option("vidyano-version-full"), to: "$version$" }
                 ]
             }
         }
@@ -157,7 +181,8 @@ module.exports = function(grunt) {
         "copy:dist",
         "revision",
         "replace:vidyanoVersion",
-        "replace:nugetVersion",
+        "replace:assemblyVersion",
+        "replace:nugetPackageVersion",
         "uglify",
         "cssmin",
         "dtsGenerator"
@@ -176,7 +201,9 @@ module.exports = function(grunt) {
     ]);
 
     grunt.registerTask("nugetrevert", [
-        "replace:nugetVersionRevert",
+        "revision",
+        "replace:assemblyVersionRevert",
+        "replace:nugetPackageVersionRevert"
     ]);
 
     grunt.loadNpmTasks("grunt-bower-task");
