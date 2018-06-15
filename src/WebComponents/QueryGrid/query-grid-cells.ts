@@ -79,8 +79,12 @@ namespace Vidyano.WebComponents {
         }
 
         private _update(value: QueryResultItemValue, oldValue: QueryResultItemValue) {
-            if (!!value && !!oldValue && value.getValue() === oldValue.getValue())
-                return;
+            if (!!value && !!oldValue && value.getValue() === oldValue.getValue()) {
+                const oldHints = oldValue.column.typeHints;
+                const hints = value.column.typeHints;
+                if ((!oldHints && !hints) || (hints && oldHints && JSON.stringify(value.column.typeHints) === JSON.stringify(oldValue.column.typeHints)))
+                    return;
+            }
 
             if (!value) {
                 if (this._icon) {
