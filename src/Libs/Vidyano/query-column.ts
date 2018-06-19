@@ -178,8 +178,12 @@ namespace Vidyano {
             return PersistentObjectAttribute.prototype.getTypeHint.apply(this, arguments);
         }
 
-        async refreshDistincts(): Promise<IQueryColumnDistincts> {
-            const result = await this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query, null, { ColumnName: this.name, AsLookup: this.query.asLookup });
+        async refreshDistincts(search?: string): Promise<IQueryColumnDistincts> {
+            const parameters: any = { ColumnName: this.name, AsLookup: this.query.asLookup };
+            if (search)
+                parameters.Search = search;
+
+            const result = await this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query, null, parameters);
             this.query.columns.filter(q => q !== this).forEach(col => {
                 if (col.distincts)
                     col.distincts.isDirty = true;

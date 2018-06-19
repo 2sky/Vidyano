@@ -37,11 +37,14 @@
                             <template is="dom-if" if="[[loading]]">
                                 <vi-spinner></vi-spinner>
                             </template>
-                            <vi-list class="flex" id="distincts" items="[[distincts]]" as="item">
+                            <vi-list class="flex" id="distincts" items="[[_filteredDistincts(distincts, searchText)]]" as="item">
                                 <template>
                                     <div>
                                         <template is="dom-if" if="[[item.type]]">
-                                            <vi-checkbox checked="{{item.checked}}" label="[[item.displayValue]]" distinct-type$="[[item.type]]" on-tap="_distinctClick"></vi-checkbox>
+                                            <div class="layout horizontal item" on-tap="_distinctClick">
+                                                <vi-checkbox checked="{{item.checked}}"></vi-checkbox>
+                                                <span class="flex" distinct-type$="[[item.type]]" inner-h-t-m-l="[[_distinctDisplayValue(item.displayValue, searchText)]]"></span>
+                                            </div>
                                         </template>
                                         <template is="dom-if" if="[[!item.type]]">
                                             <div class="hasMore">

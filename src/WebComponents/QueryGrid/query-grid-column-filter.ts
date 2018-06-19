@@ -154,7 +154,10 @@ namespace Vidyano.WebComponents {
                 readOnly: true,
                 reflectToAttribute: true
             },
-            searchText: String,
+            searchText: {
+                type: String,
+                observer: "_searchTextChanged"
+            },
             disabled: {
                 type: Boolean,
                 computed: "!column.canFilter",
@@ -205,6 +208,9 @@ namespace Vidyano.WebComponents {
             if (!this.column.canFilter)
                 return;
 
+            const input = <InputSearch><any>this.$.search;
+            this._focusElement(input);
+
             const popup = <Vidyano.WebComponents.Popup>this.$.filter;
             popup.boundingTarget = this.findParent<QueryGrid>(p => p instanceof Vidyano.WebComponents.QueryGrid).parentElement;
             popup.closeDelay = parseInt(this.app.configuration.getSetting("vi-query-grid-column-filter.close-delay", "750"));
@@ -218,9 +224,6 @@ namespace Vidyano.WebComponents {
                     distinctsList.style.minWidth = this.offsetWidth + "px";
 
                     this._setLoading(false);
-
-                    const input = <InputSearch><any>this.$.search;
-                    this._focusElement(input);
                 }
                 catch (e) {
                     this._setLoading(false);
@@ -232,6 +235,43 @@ namespace Vidyano.WebComponents {
                 distinctsList.style.minWidth = this.offsetWidth + "px";
                 distinctsList.scrollTop = 0;
             }
+        }
+
+        private _searchTextChanged(searchText: string, oldSearchText: string) {
+            if (!searchText && !oldSearchText)
+                return;
+
+            if (this.queryColumn && this.queryColumn.distincts && this.queryColumn.distincts.hasMore) {
+                this._setLoading(true);
+
+                this.debounce(`QueryGridColumnFilter.Query.${this.queryColumn.query.id}._searchTextChanged`, async () => {
+                    if (this.searchText !== searchText)
+                        return;
+
+                    try {
+                        await this.column.column.refreshDistincts(searchText);
+                        if (this.searchText === searchText)
+                            this._renderDistincts();
+                    }
+                    finally {
+                        if (this.searchText === searchText)
+                            this._setLoading(false);
+                    }
+                }, 250);
+            }
+        }
+
+        private _filteredDistincts(distincts: IQueryGridColumnFilterDistinct[], searchText: string): IQueryGridColumnFilterDistinct[] {
+            if (!searchText)
+                return distincts;
+
+            searchText = searchText.toLowerCase();
+            return distincts.filter(d => {
+                if (!d.displayValue)
+                    return false;
+
+                return d.displayValue.toLowerCase().contains(searchText);
+            });
         }
 
         private _distinctClick(e: TapEvent) {
@@ -263,7 +303,7 @@ namespace Vidyano.WebComponents {
 
             try {
                 await this.column.query.search();
-                await this.column.column.refreshDistincts();
+                await this.column.column.refreshDistincts(this.searchText);
             }
             finally {
                 this._setLoading(false);
@@ -309,12 +349,19 @@ namespace Vidyano.WebComponents {
             this.updateStyles();
         }
 
-        private async _search() {
-            if (StringEx.isNullOrEmpty(this.searchText))
-                return;
+        private _distinctDisplayValue(displayValue: string, searchText: string): string {
+            if (!searchText)
+                return displayValue;
 
-            this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.concat(["1|@" + this.searchText]);
-            this.searchText = "";
+            const exp = new RegExp(`(${searchText})`, "gi");
+            return displayValue.replace(exp, "<span class='style-scope vi-query-grid-column-filter match'>$1</span>");
+        }
+
+        private async _search() {
+            if (this.searchText) {
+                this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.concat(["1|@" + this.searchText]);
+                this.searchText = "";
+            }
 
             this._renderDistincts();
             if (!await this.column.query.search())

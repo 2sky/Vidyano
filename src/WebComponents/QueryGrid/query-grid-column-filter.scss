@@ -197,27 +197,42 @@
             cursor: default;
             font-weight: normal;
 
-            vi-checkbox {
-                line-height: var(--theme-h3);
-                height: var(--theme-h3);
-                padding: 0 var(--theme-h5);
+            .item {
+                cursor: pointer;
 
                 &:hover {
                     background-color: var(--vi-query-grid-column-filter-distinct-hover-color, --theme-color-faint);
                 }
-            }
 
-            vi-checkbox[checked] {
-                --vi-checkbox-checked-color: green;
-            }
+                vi-checkbox {
+                    @include layout-horizontal();
+                    line-height: var(--theme-h3);
+                    height: var(--theme-h3);
+                    padding: 0 0 0 var(--theme-h5);
+                    pointer-events: none;
+                }
 
-            &[inversed] vi-checkbox[checked] {
-                --vi-checkbox-checked-color: darkred;
-            }
+                vi-checkbox[checked] {
+                    --vi-checkbox-checked-color: green;
+                }
 
-            vi-checkbox {
-                &[distinct-type="remaining"] {
-                    color: var(--vi-query-grid-column-filter-distinct-remaining-color, #aaa);
+                &[inversed] vi-checkbox[checked] {
+                    --vi-checkbox-checked-color: darkred;
+                }
+
+                span {
+                    vertical-align: top;
+                    line-height: var(--theme-h3);
+                    height: var(--theme-h3);
+
+                    &[distinct-type="remaining"] {
+                        color: var(--vi-query-grid-column-filter-distinct-remaining-color, #aaa);
+                    }
+
+                    .match {
+                        color: var(--theme-color);
+                        font-weight: 600;
+                    }
                 }
             }
 
