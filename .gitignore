@@ -228,3 +228,5 @@ ModelManifest.xml
 *.nupkg
 *.map
 /\$RECYCLE\.BIN/
+
+package-lock.json

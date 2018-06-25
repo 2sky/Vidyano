@@ -1,5 +1,5 @@
 @import "../libs/layout/_layout.scss";
-@import "colors.scss";
+@import "_colors.scss";
 
 $notification-error: #a80511;
 $notification-warning: #e5a300;
@@ -7,10 +7,10 @@ $notification-notice: #48545e;
 $notification-ok: #339f7b;
 
 @mixin default-variables() {
-    --theme-color-error: $notification-error;
-    --theme-color-warning: $notification-warning;
-    --theme-color-notice: $notification-notice;
-    --theme-color-ok: $notification-ok;
+    --theme-color-error: #a80511;
+    --theme-color-warning: #e5a300;
+    --theme-color-notice: #48545e;
+    --theme-color-ok: #339f7b;
 
     --theme-h1: 40px;
     --theme-h2: 32px;

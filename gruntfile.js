@@ -21,9 +21,6 @@ module.exports = function (grunt) {
         },
         sass: {
             development: {
-                options: {
-                    paths: ["importfolder"]
-                },
                 files: [{
                     expand: true,
                     src: ["src/WebComponents/**/*.scss"],
