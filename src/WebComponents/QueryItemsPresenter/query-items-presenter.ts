@@ -108,11 +108,13 @@ namespace Vidyano.WebComponents {
             this._setLoading(false);
         }
 
-        private _onFileDropped(e: CustomEvent, details: IFileDropDetails) {
+        private async _onFileDropped(e: CustomEvent, details: IFileDropDetails[]) {
             if (!this.fileDrop)
                 return;
 
-            (<AppServiceHooks>this.query.service.hooks).onQueryFileDrop(this.query, details.name, details.contents);
+            for (let detail of details) {
+                await (<AppServiceHooks>this.query.service.hooks).onQueryFileDrop(this.query, detail.name, detail.contents);
+            }
         }
 
         private _refresh() {

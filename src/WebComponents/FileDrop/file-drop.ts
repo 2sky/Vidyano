@@ -45,24 +45,29 @@ namespace Vidyano.WebComponents {
             this._setDragOver(false);
         }
 
-        private _drop(e: DragEvent) {
+        private async _drop(e: DragEvent) {
             e.preventDefault();
             e.stopPropagation();
             this._setDragOver(false);
 
-            const file = e.dataTransfer.files[0];
-            if (!file)
+            if (!e.dataTransfer.files[0])
                 return;
 
-            const reader = new FileReader();
-            reader.onload = loadEvent => {
-                this.fire("file-dropped", <IFileDropDetails>{
-                    name: file.name,
-                    contents: (<any>loadEvent.target).result.match(/,(.*)$/)[1]
-                });
-            };
+            const readers = Array.from(e.dataTransfer.files).map(file => {
+                return new Promise((resolve: (details: IFileDropDetails) => void) => {
+                    const reader = new FileReader();
+                    reader.onload = loadEvent => {
+                        resolve({
+                            name: file.name,
+                            contents: (<any>loadEvent.target).result.match(/,(.*)$/)[1]
+                        });
+                    };
 
-            reader.readAsDataURL(e.dataTransfer.files[0]);
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            this.fire("file-dropped", await Promise.all(readers));
         }
     }
 }
