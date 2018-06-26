@@ -4,7 +4,7 @@
     background-color: $bgColor;
     color: $fgColor;
     fill: $fgColor;
-    --vi-spinner-color: $fgColor;
+    --vi-spinner-color: #{$fgColor};
 
     &:not([disabled]):hover {
         background-color: $bgHoverColor;

@@ -3,7 +3,7 @@
 $min-main-width: 400px;
 
 :host {
-    --vi-persistent-object-dialog-base-width-base: $min-main-width;
+    --vi-persistent-object-dialog-base-width-base: #{$min-main-width};
 
     main {
         padding: var(--theme-h4) var(--theme-h4) 0 var(--theme-h4);
