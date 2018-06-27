@@ -32,7 +32,7 @@ namespace Vidyano.Web2
         private static readonly object syncRoot = new object();
 
         private static readonly string Web2Home = Environment.GetEnvironmentVariable("WEB2_HOME");
-        private static readonly bool UseWeb2Home = Web2Home != null && ConfigurationManager.AppSettings["Vidyano.UseWeb2Home"] == "True";
+        internal static readonly bool UseWeb2Home = Web2Home != null && ConfigurationManager.AppSettings["Vidyano.UseWeb2Home"] == "True";
 
         public static bool Compress = true;
 
@@ -47,7 +47,7 @@ namespace Vidyano.Web2
         }
 
         [AcceptVerbs("GET")]
-        public HttpResponseMessage Get(string id = null)
+        public HttpResponseMessage Get(string id = null, string branch = null)
         {
             if (UseWeb2Home && string.IsNullOrEmpty(id))
                 return new HttpResponseMessage { Content = new StringContent(File.ReadAllText(HostingEnvironment.MapPath("~/index.html")), Encoding.UTF8, "text/html") };
@@ -63,11 +63,12 @@ namespace Vidyano.Web2
                     id = "Libs/webcomponentsjs/" + id;
 
                 // NOTE: In development we serve the files directly from disk
-                var filePath = Path.Combine(Web2Home, id);
+                var srcFolder = Path.Combine(Web2Home, branch + "/src");
+                var filePath = Path.Combine(srcFolder, id);
                 switch (extension)
                 {
                     case ".html":
-                        var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), true, false);
+                        var html = Vulcanizer.Generate(id, File.ReadAllText(filePath), true, false, srcFolder);
                         return new HttpResponseMessage { Content = new StringContent(html, Encoding.UTF8, mediaTypes[extension]) }.AddVersion(id);
 
                     case ".css":

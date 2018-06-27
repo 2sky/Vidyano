@@ -28,7 +28,7 @@ namespace Vidyano.Web2
             };
             private static readonly Regex linkPolymerRe = new Regex("<link.*?href=\".+?(" + string.Join("|", polymerDependencies) + ")\\.html\".*?>");
 
-            public static string Generate(string path, string html, bool useLocalFileSystem = false, bool stripPolymerLinks = true)
+            public static string Generate(string path, string html, bool useLocalFileSystem = false, bool stripPolymerLinks = true, string web2homeFolder = null)
             {
                 var directory = Path.GetDirectoryName(path);
                 if (!string.IsNullOrEmpty(directory))
@@ -76,7 +76,7 @@ namespace Vidyano.Web2
                     var id = directory + match.Groups[1].Value;
                     if (UseWeb2Home)
                     {
-                        var file = Path.Combine(Web2Home, id);
+                        var file = Path.Combine(web2homeFolder, id);
                         if (File.Exists(file))
                             return "<style>" + File.ReadAllText(file) + "</style>";
                     }

@@ -12,12 +12,18 @@ namespace Vidyano.Web2
 
         public static void MapVidyanoWeb2Route(this RouteCollection routes, string routeTemplate = "web2/")
         {
+            if (Web2Controller.UseWeb2Home)
+                routes.MapHttpRoute("VidyanoWeb2 Branch", routeTemplate + "branch/{branch}/{*id}", new { controller = "Web2", action = "Get", branch = "master", id = RouteParameter.Optional });
+
             routes.MapHttpRoute("VidyanoWeb2 Vulcanize", routeTemplate + "vulcanize/{*id}", new { controller = "Web2", action = "Vulcanize", id = RouteParameter.Optional });
             routes.MapHttpRoute("VidyanoWeb2", routeTemplate + "{*id}", new { controller = "Web2", action = "Get", id = RouteParameter.Optional });
         }
 
         public static void MapVidyanoWeb2Route(this HttpRouteCollection routes, string routeTemplate = "web2/")
         {
+            if (Web2Controller.UseWeb2Home)
+                routes.MapHttpRoute("VidyanoWeb2 Branch", routeTemplate + "branch/{branch}/{*id}", new { controller = "Web2", action = "Get", id = RouteParameter.Optional });
+
             routes.MapHttpRoute("VidyanoWeb2 Vulcanize", routeTemplate + "vulcanize/{*id}", new { controller = "Web2", action = "Vulcanize", id = RouteParameter.Optional });
             routes.MapHttpRoute("VidyanoWeb2", routeTemplate + "{*id}", new { controller = "Web2", action = "Get", id = RouteParameter.Optional });
         }
