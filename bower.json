@@ -1,5 +1,5 @@
 {
-  "name": "Vidyano",
+  "name": "vidyano",
   "private": true,
   "license": "MIT",
   "ignore": [
@@ -58,7 +58,7 @@
     }
   },
   "dependencies": {
-    "es6-promise": "^3.0.2",
+    "es6-promise": "^4.2.4",
     "polymer": "polymer/polymer#1.10.1",
     "paper-ripple": "polymerelements/paper-ripple#^1.0.8",
     "marked-element": "polymerelements/marked-element#^1.0.2",
