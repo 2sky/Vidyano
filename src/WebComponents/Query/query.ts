@@ -14,7 +14,12 @@
             },
             label: {
                 type: String,
-                computed: "_computeLabel(query.labelWithTotalItems, query.filters.currentFilter)"
+                computed: "_computeLabel(query.labelWithTotalItems, currentFilter)"
+            },
+            currentFilter: {
+                type: Object,
+                computed: "query.filters.currentFilter",
+                value: null
             },
             hideHeader: {
                 type: Boolean,
