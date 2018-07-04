@@ -571,9 +571,9 @@ namespace Vidyano {
             document.location.href = this.providers[providerName].requestUri;
         }
 
-        signInUsingCredentials(userName: string, password: string, staySignedIn?: boolean): Promise<Application>;
-        signInUsingCredentials(userName: string, password: string, code?: string, staySignedIn?: boolean): Promise<Application>;
-        signInUsingCredentials(userName: string, password: string, codeOrStaySignedIn?: string | boolean, staySignedIn?: boolean): Promise<Application> {
+        async signInUsingCredentials(userName: string, password: string, staySignedIn?: boolean): Promise<Application>;
+        async signInUsingCredentials(userName: string, password: string, code?: string, staySignedIn?: boolean): Promise<Application>;
+        async signInUsingCredentials(userName: string, password: string, codeOrStaySignedIn?: string | boolean, staySignedIn?: boolean): Promise<Application> {
             this._setUserName(userName);
 
             const data = this._createData("getApplication");
@@ -584,7 +584,7 @@ namespace Vidyano {
                 data.code = codeOrStaySignedIn;
 
             try {
-                const application = this._getApplication(data);
+                const application = await this._getApplication(data);
                 if (application && this.isSignedIn) {
                     const ssi = (typeof codeOrStaySignedIn === "boolean" && codeOrStaySignedIn) || (typeof staySignedIn === "boolean" && staySignedIn);
                     Vidyano.cookie("staySignedIn", (this.staySignedIn = ssi) ? "true" : null, { force: true, expires: 365 });
