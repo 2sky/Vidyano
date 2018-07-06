@@ -10,7 +10,7 @@ namespace Vidyano {
         private _lastAuthTokenUpdate: Date = new Date();
         private _isUsingDefaultCredentials: boolean;
         private _clientData: IServiceClientData;
-        private _language: ILanguage;
+        private _language: ServiceLanguage;
         private _languages: ILanguage[];
         private _windowsAuthentication: boolean;
         private _providers: { [name: string]: IProviderParameters };
@@ -396,7 +396,7 @@ namespace Vidyano {
                 return;
 
             const oldLanguage = this._language;
-            this.notifyPropertyChanged("language", this._language = l, oldLanguage);
+            this.notifyPropertyChanged("language", this._language = new ServiceLanguage(l), oldLanguage);
         }
 
         get requestedLanguage(): string {
@@ -668,8 +668,12 @@ namespace Vidyano {
             this.language = Enumerable.from(this._languages).firstOrDefault(l => l.culture === result.userLanguage) || Enumerable.from(this._languages).firstOrDefault(l => l.isDefault);
 
             const clientMessagesQuery = this.application.getQuery("ClientMessages");
-            if (clientMessagesQuery)
-                clientMessagesQuery.items.forEach(msg => this.language.messages[msg.getValue("Key")] = msg.getValue("Value"));
+            if (clientMessagesQuery) {
+                const newMessages = { ...this.language.messages };
+                clientMessagesQuery.items.forEach(msg => newMessages[msg.getValue("Key")] = msg.getValue("Value"));
+
+                this.notifyPropertyChanged("language.messages", this.language.messages = newMessages, this.language.messages);
+            }
 
             this.actionDefinitions.toEnumerable().forEach(kvp => this.language.messages[`Action_${kvp.key}`] = kvp.value.displayName);
 

@@ -627,6 +627,7 @@ namespace Vidyano.WebComponents {
 
             info.forwardObservers = info.forwardObservers || [];
             info.forwardObservers.push("service.language");
+            info.forwardObservers.push("service.language.messages");
 
             Enumerable.from(info.forwardObservers).groupBy(path => {
                 const functionIndex = path.indexOf("(");

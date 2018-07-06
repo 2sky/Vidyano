@@ -1378,3 +1378,15 @@ declare namespace Vidyano {
         update(group: IServiceQueryResultItemGroup, start: number, end: number): void;
     }
 }
+declare namespace Vidyano {
+    class ServiceLanguage extends Vidyano.Common.Observable<ServiceObject> implements ILanguage {
+        private _language;
+        constructor(_language: ILanguage);
+        readonly culture: string;
+        readonly name: string;
+        readonly isDefault: boolean;
+        messages: {
+            [key: string]: string;
+        };
+    }
+}
