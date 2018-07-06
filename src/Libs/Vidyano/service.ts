@@ -513,7 +513,11 @@ namespace Vidyano {
         }
 
         async initialize(skipDefaultCredentialLogin: boolean = false): Promise<Application> {
-            this._clientData = await this.hooks.onInitialize(await (this._getJSON(this._createUri("GetClientData?v=2"))));
+            let url = "GetClientData?v=2";
+            if (this.requestedLanguage)
+                url = `${url}&lang=${this.requestedLanguage}`;
+
+            this._clientData = await this.hooks.onInitialize(await (this._getJSON(this._createUri(url))));
 
             if (this._clientData.exception)
                 throw this._clientData.exception;
