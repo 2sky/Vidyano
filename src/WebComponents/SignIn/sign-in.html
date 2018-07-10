@@ -33,19 +33,19 @@
             </header>
             <main>
                 <section class="username">
-                    <h1>[[_translate(translations, "SignInTo", label)]]</h1>
+                    <h1>[[translateMessage("SignInTo", label, translations)]]</h1>
                     <template is="dom-if" if="[[hasVidyano]]">
-                        <input id="username" type="text" placeholder="[[_translate(translations, 'UserName')]]" value="{{userName::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
+                        <input id="username" type="text" placeholder="[[translations.UserName]]" value="{{userName::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
                         <label class="description">[[description]]</label>
                         <div class="actions layout horizontal-reverse justified">
-                            <button is="vi-button" label="[[_translate(translations, 'Next')]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
+                            <button is="vi-button" label="[[translations.Next]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
                             <template is="dom-if" if="[[hasRegister]]">
-                                <button is="vi-button" label="[[_translate(translations, 'Register')]]" inverse on-tap="_register" disabled$="[[isBusy]]"></button>
+                                <button is="vi-button" label="[[translations.Register]]" inverse on-tap="_register" disabled$="[[isBusy]]"></button>
                             </template>
                         </div>
                         <template is="dom-if" if="[[hasOther]]">
                             <div class="splitter">
-                                <span>[[_translate(translations, 'Or')]]</span>
+                                <span>[[translations.Or]]</span>
                             </div>
                         </template>
                     </template>
@@ -54,7 +54,7 @@
                             <template is="dom-repeat" items="[[_providers(service.providers)]]" as="provider">
                                 <button is="vi-button" class="brand" brand$="[[provider.name]]" disabled$="[[isBusy]]" on-tap="_authenticateExternal">
                                     <div class="logo"></div>
-                                    <span>[[_translate(translations, 'SignInUsing')]] [[provider.parameters.label]]</span>
+                                    <span>[[translations.SignInUsing]] [[provider.parameters.label]]</span>
                                 </button>
                             </template>
                         </div>
@@ -64,15 +64,15 @@
                     <div class="layout horizontal user wrap">
                         <vi-icon source="Action_viImpersonate"></vi-icon>
                         <h3>[[userName]]</h3>
-                        <button is="vi-button" label="([[_translate(translations, 'NotYou')]])" inverse on-tap="_back" disabled$="[[isBusy]]"></button>
+                        <button is="vi-button" label="([[translations.NotYou]])" inverse on-tap="_back" disabled$="[[isBusy]]"></button>
                     </div>
-                    <h1>[[_translate(translations, 'EnterPassword')]]</h1>
-                    <input id="password" type="password" placeholder="[[_translate(translations, 'Password')]]" value="{{password::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
-                    <vi-checkbox label="[[_translate(translations, 'StaySignedIn')]]" disabled$="[[isBusy]]" checked="{{staySignedIn}}"></vi-checkbox>
+                    <h1>[[translations.EnterPassword]]</h1>
+                    <input id="password" type="password" placeholder="[[translations.Password]]" value="{{password::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
+                    <vi-checkbox label="[[translations.StaySignedIn]]" disabled$="[[isBusy]]" checked="{{staySignedIn}}"></vi-checkbox>
                     <div class="actions layout horizontal-reverse justified">
-                        <button is="vi-button" label="[[_translate(translations, 'Next')]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
+                        <button is="vi-button" label="[[translations.Next]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
                         <template is="dom-if" if="[[hasForgot]]">
-                            <button is="vi-button" label="[[_translate(translations, 'ForgotPassword')]]" inverse on-tap="_forgot" disabled$="[[isBusy]]"></button>
+                            <button is="vi-button" label="[[translations.ForgotPassword]]" inverse on-tap="_forgot" disabled$="[[isBusy]]"></button>
                         </template>
                     </div>
                 </section>
@@ -80,22 +80,22 @@
                     <div class="layout horizontal user wrap">
                         <vi-icon source="Action_viImpersonate"></vi-icon>
                         <h3>[[userName]]</h3>
-                        <button is="vi-button" label="([[_translate(translations, 'NotYou')]])" inverse on-tap="_back" disabled$="[[isBusy]]"></button>
+                        <button is="vi-button" label="([[translations.NotYou]])" inverse on-tap="_back" disabled$="[[isBusy]]"></button>
                     </div>
-                    <h1>[[_translate(translations, 'EnterTwoFactorCode')]]</h1>
-                    <input id="twofactor" type="text" placeholder="[[_translate(translations, 'TwoFactorCode')]]" value="{{twoFactorCode::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
-                    <vi-checkbox label="[[_translate(translations, 'StaySignedIn')]]" disabled$="[[isBusy]]" checked="{{staySignedIn}}"></vi-checkbox>
+                    <h1>[[translations.EnterTwoFactorCode]]</h1>
+                    <input id="twofactor" type="text" placeholder="[[translations.TwoFactorCode]]" value="{{twoFactorCode::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
+                    <vi-checkbox label="[[translations.StaySignedIn]]" disabled$="[[isBusy]]" checked="{{staySignedIn}}"></vi-checkbox>
                     <div class="actions layout horizontal-reverse justified">
-                        <button is="vi-button" label="[[_translate(translations, 'SignIn')]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
-                        <button is="vi-button" label="[[_translate(translations, 'Previous')]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
+                        <button is="vi-button" label="[[translations.SignIn]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
+                        <button is="vi-button" label="[[translations.Previous]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
                     </div>
                 </section>
                 <section class="register">
                     <h1>[[register.breadcrumb]]</h1>
                     <vi-persistent-object-tab-presenter tab="[[register.tabs.0]]" on-vi-persistent-object-tab-inner-size-changed="_tabInnerSizeChanged"></vi-persistent-object-tab-presenter>
                     <div class="actions layout horizontal-reverse justified">
-                        <button is="vi-button" label="[[_translate(translations, 'RegisterSave')]]" on-tap="_register" disabled$="[[register.isBusy]]"></button>
-                        <button is="vi-button" label="[[_translate(translations, 'SignIn')]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
+                        <button is="vi-button" label="[[translations.RegisterSave]]" on-tap="_register" disabled$="[[register.isBusy]]"></button>
+                        <button is="vi-button" label="[[translations.SignIn]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
                     </div>
                 </section>
                 <section class="initial">

@@ -108,8 +108,6 @@
         ]
     })
     export class SignIn extends WebComponent {
-        private _isWarned: boolean;
-        private _fallbackTranslations: { [key: string]: string; };
         readonly returnUrl: string; private _setReturnUrl: (returnUrl: string) => void;
         readonly isBusy: boolean; private _setIsBusy: (val: boolean) => void;
         readonly hasVidyano: boolean; private _setHasVidyano: (hasVidyano: boolean) => void;
@@ -125,41 +123,6 @@
         password: string;
         staySignedIn: boolean;
         twoFactorCode: string;
-
-        private _translate(translations: { [key: string]: string; }, key: string, ...args: string[]): string {
-            let msg = translations[key];
-            if (!msg) {
-                if (!this._isWarned) {
-                    console.warn("It seems like you are connected to an older backend version of Vidyano. You must upgrade your backend before your sign in dialog will be fully translated.");
-                    this._isWarned = true;
-                }
-
-                if (!this._fallbackTranslations) {
-                    this._fallbackTranslations = {
-                        "ForgotPassword": "Forgot password?",
-                        "Or": "Or",
-                        "Password": "Password",
-                        "Register": "New here? Create an account",
-                        "RegisterSave": "Register",
-                        "SignIn": "Sign in",
-                        "SignInUsing": "Sign in using",
-                        "StaySignedIn": "Stay signed in",
-                        "EnterTwoFactorCode": "Enter two-factor code",
-                        "TwoFactorCode": "Two-factor code",
-                        "UserName": "User name",
-                        "SignInTo": "Sign in to {0}",
-                        "Next": "Next",
-                        "Previous": "Previous",
-                        "EnterPassword": "Enter password",
-                        "NotYou": "Not you?"
-                    };
-                }
-
-                msg = this._fallbackTranslations[key];
-            }
-
-            return StringEx.format(msg, ...args);
-        }
 
         private async _activate(e: CustomEvent, { parameters }: { parameters: ISignInRouteParameters; }) {
             if (parameters.stateOrReturnUrl) {

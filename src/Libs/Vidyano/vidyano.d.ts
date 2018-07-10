@@ -934,6 +934,7 @@ declare namespace Vidyano {
         onUpdateAvailable(): void;
         onRetryAction(retry: IRetryAction): Promise<string>;
         onGetAttributeDisplayValue(attribute: Vidyano.PersistentObjectAttribute, value: any): string;
+        setDefaultTranslations(languages: ILanguage[]): void;
     }
 }
 declare namespace Vidyano {
@@ -992,7 +993,7 @@ declare namespace Vidyano {
         private _setUserName;
         readonly defaultUserName: string;
         readonly registerUserName: string;
-        private authToken;
+        authToken: string;
         profile: boolean;
         readonly profiledRequests: IServiceRequest[];
         private _setProfiledRequests;

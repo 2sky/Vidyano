@@ -33,6 +33,13 @@
         <iron-media-query query="(min-width: 840px)" query-matches="{{isDesktop}}"></iron-media-query>
         <input id="catchautofill" style="position: fixed; visibility: hidden; left: -100vw;" />
         <vi-profiler service="[[service]]" hidden$="[[!isProfiling]]"></vi-profiler>
+        <template is="dom-if" if="[[sessionLost]]">
+            <div id="sessionLost" class="layout horizontal" on-tap="_reload">
+                <vi-icon source="Notification_Warning"></vi-icon>
+                <p>[[translations.SessionLost]]</p>
+                <button is="vi-button" class="self-center" label="[[translations.Reload]]"></button>
+            </div>
+        </template>
         <template is="dom-if" if="[[!barebone]]" restamp>
             <template is="dom-if" if="[[showMenu]]" restamp>
                 <vi-menu menu label="[[label]]" program-units="[[service.application.programUnits]]" active-program-unit="[[programUnit]]">

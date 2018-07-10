@@ -228,6 +228,12 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 observer: "_sensitiveChanged"
+            },
+            sessionLost: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true,
+                value: false
             }
         },
         observers: [
@@ -273,6 +279,7 @@ namespace Vidyano.WebComponents {
         readonly currentRoute: AppRoute; private _setCurrentRoute: (route: AppRoute) => void;
         readonly barebone: boolean; private _setBarebone: (barebone: boolean) => void;
         readonly updateAvailable: boolean; private _setUpdateAvailable: (updateAvailable: boolean) => void;
+        readonly sessionLost: boolean; private _setSessionLost: (sessionLost: boolean) => void;
         programUnit: ProgramUnit;
         uri: string;
         hooks: string;
@@ -345,17 +352,34 @@ namespace Vidyano.WebComponents {
             if (!event)
                 event = <StorageEvent>window.event;
 
-            if (event.newValue == null || Vidyano.cookiePrefix !== event.newValue)
+            if (event.newValue == null || (!event.newValue.startsWith("{") && Vidyano.cookiePrefix !== event.newValue))
                 return;
+            else if (event.newValue.startsWith("{")) {
+                const value = JSON.parse(event.newValue);
+                if (Vidyano.cookiePrefix !== value.cookiePrefix)
+                    return;
+            }
 
             if (event.key === "vi-signOut" && this.service && this.service.isSignedIn)
-                this.redirectToSignOut();
+                this._setSessionLost(true);
+            else if (this.sessionLost && event.key === "vi-setAuthToken") {
+                const authTokenInfo = JSON.parse(event.newValue);
+
+                this.service.authToken = authTokenInfo.authToken;
+                this._setSessionLost(false);
+            }
             else if (event.key === "vi-updateAvailable") {
                 if (this.service != null)
                     this.service.hooks.onUpdateAvailable();
                 else
                     this._updateAvailable();
             }
+        }
+
+        private _reload(e: TapEvent) {
+            e.stopPropagation();
+
+            document.location.reload();
         }
 
         get configuration(): AppConfig {

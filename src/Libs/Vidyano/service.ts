@@ -467,16 +467,22 @@ namespace Vidyano {
             return !!this._providers && this._providers["Vidyano"] ? this._providers["Vidyano"].registerUser || null : null;
         }
 
-        private get authToken(): string {
+        get authToken(): string {
             return Vidyano.cookie("authToken");
         }
 
-        private set authToken(val: string) {
+        set authToken(val: string) {
+            const oldAuthToken = this.authToken;
 
             if (this.staySignedIn)
                 Vidyano.cookie("authToken", val, { expires: 14 });
             else
                 Vidyano.cookie("authToken", val);
+
+            if (!oldAuthToken && val) {
+                localStorage.setItem("vi-setAuthToken", JSON.stringify({ cookiePrefix: Vidyano.cookiePrefix, authToken: val }));
+                localStorage.removeItem("vi-setAuthToken");
+            }
         }
 
         get profile(): boolean {
@@ -528,6 +534,8 @@ namespace Vidyano {
             }
             this._languages = languages;
             this.language = Enumerable.from(this._languages).firstOrDefault(l => l.isDefault) || this._languages[0];
+
+            this.hooks.setDefaultTranslations(this.languages);
 
             this._providers = {};
             for (const provider in this._clientData.providers) {

@@ -157,5 +157,43 @@
         onGetAttributeDisplayValue(attribute: Vidyano.PersistentObjectAttribute, value: any): string {
             return undefined;
         }
+
+        setDefaultTranslations(languages: ILanguage[]) {
+            const messages = {
+                "ForgotPassword": "Forgot password?",
+                "Or": "Or",
+                "Password": "Password",
+                "Register": "New here? Create an account",
+                "RegisterSave": "Register",
+                "SignIn": "Sign in",
+                "SignInUsing": "Sign in using",
+                "StaySignedIn": "Stay signed in",
+                "EnterTwoFactorCode": "Enter two-factor code",
+                "TwoFactorCode": "Two-factor code",
+                "UserName": "User name",
+                "SignInTo": "Sign in to {0}",
+                "Next": "Next",
+                "Previous": "Previous",
+                "EnterPassword": "Enter password",
+                "NotYou": "Not you?",
+                "SessionLost": "You signed out in another tab or window. Reload to refresh your session.",
+                "Reload": "Reload"
+            };
+            const messagesKeys = Object.keys(messages);
+            let warned = false;
+
+            languages.forEach(lang => {
+                messagesKeys.forEach(key => {
+                    if (!(key in lang.messages)) {
+                        lang.messages[key] = messages[key];
+
+                        if (!warned) {
+                            console.warn("It seems like you are connected to an older backend version of Vidyano. You must upgrade your backend before all messages will be fully translated.");
+                            warned = true;
+                        }
+                    }
+                });
+            });
+        }
     }
 }
