@@ -353,7 +353,7 @@ namespace Vidyano.WebComponents {
             if (!searchText)
                 return displayValue;
 
-            searchText = searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+            searchText = searchText.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
             const exp = new RegExp(`(${searchText})`, "gi");
             return displayValue.replace(exp, "<span class='style-scope vi-query-grid-column-filter match'>$1</span>");
         }
