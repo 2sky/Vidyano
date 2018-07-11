@@ -73,7 +73,16 @@ namespace Vidyano.Web2
 
                     case ".css":
                     case ".js":
-                        return new HttpResponseMessage { Content = new StringContent(File.ReadAllText(filePath), Encoding.UTF8, mediaTypes[extension]) };
+                        {
+                            var js = File.ReadAllText(filePath);
+                            if (id == "Libs/Vidyano/vidyano.js" || id == "ServiceWorker/service-worker.js")
+                            {
+                                var lastUpdated = new DirectoryInfo(srcFolder).GetFiles("*.*", SearchOption.AllDirectories).OrderByDescending(f => f.LastWriteTime).First();
+                                js = js.Replace("\"latest\"", "\"latest." + lastUpdated.LastWriteTime.ToLongTimeString().Replace(":", ".") + "\"");
+                            }
+
+                            return new HttpResponseMessage { Content = new StringContent(js, Encoding.UTF8, mediaTypes[extension]) };
+                        }
                 }
             }
 
