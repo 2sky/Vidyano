@@ -5,6 +5,7 @@ namespace Vidyano.WebComponents.Attributes {
         properties: {
             characterCasing: {
                 type: String,
+                readOnly: true,
                 observer: "_characterCasingChanged"
             },
             editInputStyle: {
@@ -23,26 +24,38 @@ namespace Vidyano.WebComponents.Attributes {
                 type: Array,
                 computed: "_computeFilteredSuggestions(suggestions, value)"
             },
-            inputtype: String,
-            maxlength: Number,
+            inputtype: {
+                type: String,
+                readOnly: true
+            },
+            maxlength: {
+                type: Number,
+                readOnly: true
+            },
+            link: {
+                type: String,
+                readOnly: true
+            }
         },
     })
     export class PersistentObjectAttributeString extends PersistentObjectAttribute {
         private _suggestionsSeparator: string;
         readonly editInputStyle: string; private _setEditInputStyle: (style: string) => void;
         readonly suggestions: string[]; private _setSuggestions: (suggestions: string[]) => void;
-        characterCasing: string;
-        inputtype: string;
-        maxlength: number;
+        readonly inputtype: string; private _setInputtype: (inputtype: string) => void;
+        readonly characterCasing: string; private _setCharacterCasing: (characterCasing: string) => void;
+        readonly maxlength: number; private _setMaxlength: (maxlength: number) => void;
+        readonly link: string; private _setLink: (link: string) => void;
 
         protected _attributeChanged() {
             super._attributeChanged();
 
             if (this.attribute instanceof Vidyano.PersistentObjectAttribute) {
-                this.characterCasing = this.attribute.getTypeHint("CharacterCasing", "Normal");
-                this.inputtype = this.attribute.getTypeHint("InputType", "text");
+                this._setCharacterCasing(this.attribute.getTypeHint("CharacterCasing", "Normal"));
+                this._setInputtype(this.attribute.getTypeHint("InputType", "text"));
                 const maxlength = parseInt(this.attribute.getTypeHint("MaxLength", "0"), 10);
-                this.maxlength = maxlength > 0 ? maxlength : null;
+                this._setMaxlength(maxlength > 0 ? maxlength : null);
+                this._setLink(this.attribute.getTypeHint("Link", "").toLowerCase());
 
                 this._suggestionsSeparator = this.attribute.getTypeHint("SuggestionsSeparator");
                 if (this._suggestionsSeparator != null && this.attribute.options != null && this.attribute.options.length > 0) {
@@ -116,6 +129,24 @@ namespace Vidyano.WebComponents.Attributes {
                 this._setEditInputStyle("text-transform: lowercase;");
             else
                 this._setEditInputStyle(undefined);
+        }
+
+        private _computeLinkTitle(displayValue: string, sensitive: boolean): string {
+            return !sensitive ? displayValue : "";
+        }
+
+        private _computeLink(value: string, link: string): string {
+            if (!value)
+                return "";
+
+            if (link === "email")
+                return `mailto:${value}`;
+
+            return value;
+        }
+
+        private _isLink(link: string, value: string): boolean {
+            return !!link && !!value;
         }
     }
 }

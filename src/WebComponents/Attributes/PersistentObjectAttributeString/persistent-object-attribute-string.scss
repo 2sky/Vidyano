@@ -51,4 +51,49 @@
             }
         }
     }
+
+    a {
+        @include layout-horizontal();
+        text-decoration: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        fill: var(--vi-persistent-object-attribute-foreground, --theme-color);
+
+        &:focus {
+            outline: 0;
+        }
+
+        &:visited {
+            color: var(--vi-persistent-object-attribute-foreground, --theme-color);
+            fill: var(--vi-persistent-object-attribute-foreground, --theme-color);
+        }
+
+        &:hover {
+            color: var(--vi-persistent-object-attribute-foreground, --theme-color-light);
+            fill: var(--vi-persistent-object-attribute-foreground, --theme-color-light);
+        }
+
+        &[disabled] {
+            color: var(--vi-persistent-object-attribute-foreground, #333) !important
+        }
+
+        &[href] {
+            cursor: pointer;
+        }
+
+        span {
+            -ms-text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            color: var(--vi-persistent-object-attribute-foreground, --theme-color);
+        }
+
+        vi-icon {
+            margin: 0 var(--theme-h5);
+            min-width: var(--theme-h4);
+            height: 1em;
+            transform: translateY(2px);
+        }
+    }
 }

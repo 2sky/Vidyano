@@ -4,11 +4,27 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-string.css" />
         <template is="dom-if" if="[[!editing]]">
-            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+            <template is="dom-if" if="[[!_isLink(link, attribute.value)]]">
+                <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+            </template>
+            <template is="dom-if" if="[[_isLink(link, attribute.value)]]">
+                <a href$="[[_computeLink(attribute.value, link)]]" title$="[[_computeLinkTitle(attribute.displayValue, sensitive)]]" rel="external noopener" target="_blank">
+                    <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+                    <template is="dom-if" if="[[attribute.value]]">
+                        <vi-icon source="ArrowUpRight" class="size-h4"></vi-icon>
+                    </template>
+                    <div class="spacer"></div>
+                </a>
+            </template>
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <input content value="{{value::input}}" type$="[[inputtype]]" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" sensitive$="[[sensitive]]" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]" tabindex$="[[readOnlyTabIndex]]" placeholder="[[placeholder]]">
+                <template is="dom-if" if="[[_isLink(link, attribute.value)]]">
+                    <a class="button" href$="[[_computeLink(attribute.value, link)]]" title$="[[_computeLinkTitle(attribute.displayValue, sensitive)]]" tabindex="-1" rel="external noopener" target="_blank">
+                        <vi-icon source="ArrowUpRight"></vi-icon>
+                    </a>
+                </template>
                 <content select=".button, button, vi-popup:not([content])"></content>
                 <template is="dom-if" if="[[hasSuggestions]]">
                     <vi-popup id="suggestions" class="button" content-align="right">
