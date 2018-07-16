@@ -722,15 +722,8 @@ namespace Vidyano.WebComponents {
             let currentPath = this.path;
             this._routeUpdater = this._routeUpdater.then(async () => {
                 const initial: Vidyano.PersistentObject = this.service["_initial"];
-                if (initial != null) {
-                    const initialPath = `SignIn/${initial.type}`;
-                    const currentPathWithoutRoot = Vidyano.WebComponents.App.removeRootPath(currentPath);
-
-                    if (!currentPathWithoutRoot.startsWith(initialPath)) {
-                        const returnPath = currentPathWithoutRoot && !currentPathWithoutRoot.startsWith("SignIn") ? currentPathWithoutRoot : "";
-                        this.changePath(`${initialPath}/${encodeURIComponent(returnPath)}`);
-                    }
-                }
+                if (initial != null)
+                    await (<AppServiceHooks>this.service.hooks).onInitial(initial);
 
                 if (currentPath !== this.path)
                     return;
@@ -1311,6 +1304,16 @@ namespace Vidyano.WebComponents {
 
             await this.app.importComponent("SelectReferenceDialog");
             return this.app.showDialog(new Vidyano.WebComponents.SelectReferenceDialog(query, false, false, true));
+        }
+
+        async onInitial(initial: Vidyano.PersistentObject) {
+            const initialPath = `SignIn/${initial.type}`;
+            const currentPathWithoutRoot = Vidyano.WebComponents.App.removeRootPath(this.app.path);
+
+            if (!currentPathWithoutRoot.startsWith(initialPath)) {
+                const returnPath = currentPathWithoutRoot && !currentPathWithoutRoot.startsWith("SignIn") ? currentPathWithoutRoot : "";
+                this.app.changePath(`${initialPath}/${encodeURIComponent(returnPath)}`);
+            }
         }
 
         async onSessionExpired(): Promise<boolean> {
