@@ -5,7 +5,7 @@ module.exports = function (grunt) {
         grunt.option("vidyano-version-prerelease", "-<%= meta.revision %>");
     }
     else if (grunt.option("vidyano-version-prerelease"))
-        versionReplace += grunt.option("vidyano-version-prerelease");
+        versionReplace += ("-" + grunt.option("vidyano-version-prerelease"));
 
     grunt.option("vidyano-version-full", versionReplace);
 
