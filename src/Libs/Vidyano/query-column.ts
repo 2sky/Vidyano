@@ -183,7 +183,14 @@ namespace Vidyano {
             if (search)
                 parameters.Search = search;
 
-            const result = await this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query, null, parameters);
+            let result: PersistentObject;
+            try {
+                result = await this.service.executeAction("QueryFilter.RefreshColumn", this.query.parent, this.query.clone(), null, parameters);
+            }
+            catch (e) {
+                return this.distincts;
+            }
+
             this.query.columns.filter(q => q !== this).forEach(col => {
                 if (col.distincts)
                     col.distincts.isDirty = true;
