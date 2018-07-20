@@ -71,7 +71,7 @@ namespace Vidyano.WebComponents {
                 this.options.save(this.persistentObject, () => this.close(this.persistentObject));
             else {
                 const wasNew = this.persistentObject.isNew;
-                await this.persistentObject.save();
+                await this.persistentObject.dialogSaveAction.execute();
 
                 if (StringEx.isNullOrWhiteSpace(this.persistentObject.notification) || this.persistentObject.notificationType !== NotificationType.Error) {
                     if (wasNew && this.persistentObject.ownerAttributeWithReference == null && this.persistentObject.stateBehavior.indexOf("OpenAfterNew") !== -1) {
@@ -108,7 +108,7 @@ namespace Vidyano.WebComponents {
 
             let label = this.options.saveLabel;
             if (!label) {
-                const endEdit = this.persistentObject.getAction("EndEdit") || this.persistentObject.getAction("Save");
+                const endEdit = this.persistentObject.dialogSaveAction;
                 if (endEdit)
                     label = endEdit.displayName;
             }

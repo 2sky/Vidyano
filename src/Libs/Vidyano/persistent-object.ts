@@ -12,6 +12,7 @@ namespace Vidyano {
         isBreadcrumbSensitive?: boolean;
         attributes?: IServicePersistentObjectAttribute[];
         stateBehavior?: "OpenInEdit" | "StayInEdit" | "AsDialog";
+        dialogSaveAction?: string;
     }
 
     export class PersistentObject extends ServiceObjectWithActions {
@@ -41,6 +42,7 @@ namespace Vidyano {
         newOptions: string;
         ignoreCheckRules: boolean;
         stateBehavior: string;
+        dialogSaveAction: Action;
         parent: PersistentObject;
         ownerDetailAttribute: PersistentObjectAttributeAsDetail;
         ownerAttributeWithReference: PersistentObjectAttributeWithReference;
@@ -111,6 +113,8 @@ namespace Vidyano {
                 this.beginEdit();
 
             this._initializeActions();
+            this.dialogSaveAction = po.dialogSaveAction ? this.getAction(po.dialogSaveAction) : (this.getAction("EndEdit") || this.getAction("Save"));
+
             this.service.hooks.onRefreshFromResult(this);
             this._setLastUpdated(new Date());
         }

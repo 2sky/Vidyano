@@ -426,6 +426,7 @@ declare namespace Vidyano {
         isBreadcrumbSensitive?: boolean;
         attributes?: IServicePersistentObjectAttribute[];
         stateBehavior?: "OpenInEdit" | "StayInEdit" | "AsDialog";
+        dialogSaveAction?: string;
     }
     class PersistentObject extends ServiceObjectWithActions {
         private _isSystem;
@@ -453,6 +454,7 @@ declare namespace Vidyano {
         newOptions: string;
         ignoreCheckRules: boolean;
         stateBehavior: string;
+        dialogSaveAction: Action;
         parent: PersistentObject;
         ownerDetailAttribute: PersistentObjectAttributeAsDetail;
         ownerAttributeWithReference: PersistentObjectAttributeWithReference;
