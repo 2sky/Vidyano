@@ -119,8 +119,11 @@ namespace Vidyano {
         }
 
         set block(block: boolean) {
+            const oldCanExecute = this.canExecute;
             this._block = block;
-            this.notifyPropertyChanged("canExecute", this._block = block, this._canExecute);
+
+            if (this.canExecute !== oldCanExecute)
+                this.notifyPropertyChanged("canExecute", this.canExecute, oldCanExecute);
         }
 
         get isVisible(): boolean {
