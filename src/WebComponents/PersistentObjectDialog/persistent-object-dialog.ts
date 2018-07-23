@@ -34,7 +34,8 @@ namespace Vidyano.WebComponents {
             }
         },
         forwardObservers: [
-            "persistentObject.isBusy"
+            "persistentObject.isBusy",
+            "persistentObject.dialogSaveAction.canExecute"
         ],
         hostAttributes: {
             "dialog": ""
@@ -91,6 +92,10 @@ namespace Vidyano.WebComponents {
                         this.close(this.persistentObject);
                 }
             }
+        }
+
+        private _canSave(isBusy: boolean, canExecute: boolean): boolean {
+            return !isBusy && canExecute;
         }
 
         private _cancel() {
