@@ -162,7 +162,7 @@ namespace Vidyano.WebComponents {
             if(this._skipObserver)
                 return;
 
-            this._setCanExecute(this.item ? this.action.definition.selectionRule(1) : this.action.canExecute);
+            this._setCanExecute(this.item ? this.action.definition.selectionRule(1) : canExecute);
             this._setHidden(!this.action.isVisible);
             this._setOptions(this.action.options && this.action.options.length > 0 ? this.action.options.map((value: string, index: number) => {
                 return {
