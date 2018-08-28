@@ -729,8 +729,17 @@ namespace Vidyano {
                 data.parent = parent.toServiceObject();
 
             const result = await this._postJSON(this._createUri("GetPersistentObject"), data);
-            if (result.exception || (result.result && result.result.notification && result.result.notificationType === "Error"))
-                throw result.exception || result.result.notification;
+            if (result.exception)
+                throw result.exception;
+            else if (result.result && result.result.notification) {
+                if (result.result.notificationDuration) {
+                    this.hooks.onShowNotification(result.result.notification, NotificationType[<string>result.result.notificationType], result.result.notificationDuration);
+                    result.result.notification = null;
+                    result.result.notificationDuration = 0;
+                }
+                else if (result.result.notificationType === "Error")
+                    throw result.result.notification;
+            }
 
             return this.hooks.onConstructPersistentObject(this, result.result);
         }
