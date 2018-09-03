@@ -245,12 +245,14 @@
     }
 
     &:not([is-web-kit]) {
-        > #wrapper {
-            margin-right: calc(var(--theme-scrollbar-width) * -1);
-            margin-bottom: calc(var(--theme-scrollbar-width) * -1);
+        &[scroll-bottom-shadow], &[scroll-top-shadow] {
+            > #wrapper {
+                margin-right: calc(var(--theme-scrollbar-width) * -1);
+                margin-bottom: calc(var(--theme-scrollbar-width) * -1);
 
-            > #content {
-                padding-bottom: var(--theme-scrollbar-width);
+                > #content {
+                    padding-bottom: var(--theme-scrollbar-width);
+                }
             }
         }
     }
