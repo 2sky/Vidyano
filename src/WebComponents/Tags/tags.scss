@@ -1,0 +1,53 @@
+﻿@import "../_vars.scss";
+
+:host {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    [sensitive] {
+        @apply(--vi-app--sensitive);
+    }
+
+    .tagsContainer {
+        flex-wrap: wrap;
+        cursor: text;
+        padding-left: 3px;      
+
+        .wrapContainer {
+            flex-wrap: wrap;
+        }
+
+        input {
+            border: none;
+            outline: none;
+            max-width: 250px;
+            width: var(--tags-input--width, 30px);
+            min-width: 8px;
+        }
+
+        .tag {
+            background-color: var(--theme-color);
+            margin-right: 5px;
+            margin-top: 3px;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            justify-content: center;
+
+            .tagValue {
+                margin-left: 5px;
+                margin-right: 5px;
+                max-width: 250px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .delete {
+                padding: 8px 5px 3px 0px;
+                cursor: pointer;
+                fill: white;
+            }
+        }
+    }
+}

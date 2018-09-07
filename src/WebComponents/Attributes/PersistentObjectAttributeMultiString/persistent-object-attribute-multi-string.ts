@@ -90,10 +90,30 @@ namespace Vidyano.WebComponents.Attributes {
             strings: {
                 type: Array,
                 computed: "_computeStrings(value, attribute.isReadOnly, sensitive)"
-            }
+            },
+            isTags: {
+                type: Boolean,
+                readOnly: true,
+                value: false
+            },
+            suggestions: {
+                type: Array,
+                readOnly: true
+            },
+            hasSuggestions: {
+                type: Boolean,
+                computed: "_computeHasSuggestions(filteredSuggestions, readOnly)"
+            },
+            filteredSuggestions: {
+                type: Array,
+                computed: "_computeFilteredSuggestions(suggestions, strings)"
+            },
+            editMode: Boolean
         },
         observers: [
-            "_render(strings, editing, isAttached)"
+            "_render(strings, editing, isAttached)",
+            "_onStringsChange(strings.splices)",
+            "_onEditingChange(editing, sensitive)"
         ],
         listeners: {
             "multi-string-item-value-new": "_itemValueNew",
@@ -105,8 +125,31 @@ namespace Vidyano.WebComponents.Attributes {
         ]
     })
     export class PersistentObjectAttributeMultiString extends PersistentObjectAttribute {
+
+        readonly isTags: boolean; private _setIsTags: (value: boolean) => void; 
+        readonly suggestions: string[]; private _setSuggestions: (suggestions: string[]) => void;
         strings: PersistentObjectAttributeMultiStringItem[];
+        private editMode: boolean;
+        private hasSuggestions: boolean;
+
         private _setNewString: (newString: PersistentObjectAttributeMultiStringItem) => void;
+
+        protected _attributeChanged() {
+            super._attributeChanged();
+            if (this.attribute.typeHints.istags != undefined) {
+                this._setIsTags(this.attribute.typeHints.istags);
+            }
+            if (this.attribute.options != null && this.attribute.options.length > 0) {
+                this._setSuggestions((<string[]>this.attribute.options).filter(o => !StringEx.isNullOrEmpty(o) ));
+            }
+          
+        }
+
+        private _onStringsChange() {
+            if (this.isTags) {
+                this.value = this.strings.filter(s => !!s.value).map(s => s.value).join("\n");
+            }
+        }
 
         private _computeStrings(value: string, readOnly: boolean, sensitive: boolean): PersistentObjectAttributeMultiStringItem[] {
             const strings = value ? value.split("\n").filter(v => !!v.length).map((v: string, n: number) => this.strings && this.strings[n] && this.strings[n].value === v ? this.strings[n] : new PersistentObjectAttributeMultiStringItem(v)) : [];
@@ -114,7 +157,6 @@ namespace Vidyano.WebComponents.Attributes {
                 s.isReadOnly = readOnly || sensitive;
                 s.sensitive = sensitive;
             });
-
             return strings;
         }
 
@@ -143,7 +185,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _render(strings: PersistentObjectAttributeMultiStringItem[], editing: boolean, isAttached: boolean) {
-            if (!editing || !isAttached)
+            if (!editing || !isAttached || this.isTags)
                 return;
 
             Polymer.dom(this).flush();
@@ -160,6 +202,33 @@ namespace Vidyano.WebComponents.Attributes {
                 if (strings.indexOf(c) < 0)
                     Polymer.dom(stringsContainer).removeChild(c);
             });
+        }
+
+        private _addSuggestionTag(e: TapEvent) {
+            const newItem = new Attributes.PersistentObjectAttributeMultiStringItem(e.model.suggestion);
+            newItem.sensitive = this.sensitive;
+            newItem.isReadOnly = this.readOnly;
+            this.push("strings", newItem)
+        }
+
+        private _computeFilteredSuggestions(suggestions: string[], strings: Attributes.PersistentObjectAttributeMultiStringItem[]): string[] {
+            if (!suggestions || suggestions.length === 0)
+                return [];
+
+            let tempArray = [];
+            strings.forEach(tag => tempArray.push(tag.value));
+            return suggestions.filter(s => tempArray.indexOf(s) < 0);
+        }
+
+        private _onEditingChange() {
+            if (!this.readOnly && !this.sensitive && this.hasSuggestions)
+                this.editMode = this.editing
+
+            else this.editMode = false
+        }
+
+        private _computeHasSuggestions(suggestions: string[], readOnly: boolean): boolean {
+            return !readOnly && suggestions && suggestions.length > 0;
         }
     }
 }

@@ -1,0 +1,32 @@
+﻿<dom-module id="vi-tags">
+    <template>
+        <link rel="stylesheet" href="tags.css" />
+        <template is="dom-if" if="[[editMode]]">
+            <vi-scroller class="flex tagsContainer" editing$="[[editing]]" on-tap="_pasFocus" no-horizontal>
+                <div class="layout horizontal wrapContainer">
+                    <template is="dom-repeat" items="[[tags]]" as="tag">
+                        <div class="layout horizontal tag">
+                            <span class="tagValue" sensitive$="[[sensitive]]">[[tag.value]]</span>
+                            <div on-tap="_onDeleteTap" class="delete">
+                                <vi-icon source="Remove"></vi-icon>
+                            </div>
+                        </div>
+                    </template>
+                    <input type="text" name="TagsInput" value="{{input::input}}" on-keyup="_checkKeyPress" on-blur="_onInputBlur" id="tagsInput" sensitive$="[[sensitive]]" />
+                </div>
+            </vi-scroller>
+        </template>
+        <template is="dom-if" if="[[!editMode]]">
+            <vi-scroller class="flex tagsContainer" editing$="[[editing]]" no-horizontal>
+                <div class="layout horizontal wrapContainer">
+                    <template is="dom-repeat" items="[[tags]]" as="tag">
+                        <div class="layout horizontal tag">
+                            <span class="tagValue" sensitive$="[[sensitive]]">[[tag.value]]</span>
+                        </div>
+                    </template>
+                </div>
+            </vi-scroller>
+        </template>
+    </template>
+</dom-module>
+<script src="tags.js"></script>
