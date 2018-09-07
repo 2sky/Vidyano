@@ -104,6 +104,10 @@
     "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeString/persistent-object-attribute-string.scss"
   },
   {
+    "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeTagString/persistent-object-attribute-tag-string.css",
+    "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeTagString/persistent-object-attribute-tag-string.scss"
+  },
+  {
     "outputFile": "src/WebComponents/Attributes/PersistentObjectAttributeTranslatedString/persistent-object-attribute-translated-string-dialog.css",
     "inputFile": "src/WebComponents/Attributes/PersistentObjectAttributeTranslatedString/persistent-object-attribute-translated-string-dialog.scss"
   },
@@ -378,5 +382,9 @@
   {
     "outputFile": "src/WebComponents/Website/website.css",
     "inputFile": "src/WebComponents/Website/website.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/Tags/tags.css",
+    "inputFile": "src/WebComponents/Tags/tags.scss"
   }
 ]

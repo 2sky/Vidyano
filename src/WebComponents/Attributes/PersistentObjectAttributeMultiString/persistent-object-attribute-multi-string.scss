@@ -27,4 +27,25 @@
     pre[sensitive] {
         @apply(--vi-app--sensitive);
     }
+
+
+    #suggestions {
+        margin-left: -24px;
+        align-items: flex-start;
+
+        ul {
+            list-style: none;
+            padding: 0px;
+            margin: 0px;
+
+            li {
+                padding-left: 10px;
+                padding-right: 10px;
+
+                &:hover {
+                    background-color: var(--theme-color-faint);
+                }
+            }
+        }
+    }
 }
