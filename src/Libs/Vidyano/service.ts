@@ -758,7 +758,28 @@ namespace Vidyano {
                 if (result.exception)
                     throw result.exception;
 
-                return result.result;
+                const queryResult = <IServiceQueryResult>result.result;
+                if (queryResult.continuation) {
+                    const wanted = <number>data.query.top || queryResult.pageSize;
+
+                    while (queryResult.continuation && queryResult.items.length < wanted) {
+                        data.query.continuation = queryResult.continuation;
+                        data.query.top = wanted - queryResult.items.length;
+
+                        const innerResult = await this._postJSON(this._createUri("ExecuteQuery"), data);
+                        if (innerResult.exception)
+                            throw innerResult.exception;
+
+                        const innerQueryResult = <IServiceQueryResult>innerResult.result;
+                        queryResult.items.push(...innerQueryResult.items);
+                        queryResult.continuation = innerQueryResult.continuation;
+                    }
+
+                    if (!queryResult.continuation)
+                        queryResult.totalItems = query.items.length + queryResult.items.length;
+                }
+
+                return queryResult;
             }
             catch (e) {
                 query.setNotification(e);
