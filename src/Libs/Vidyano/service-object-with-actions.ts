@@ -62,8 +62,10 @@
             if (oldNotification !== notification)
                 this.notifyPropertyChanged("notification", this._notification = notification, oldNotification);
 
-            if (!skipShowNotification && this.notificationDuration)
+            if (!skipShowNotification && this.notificationDuration) {
                 this.service.hooks.onShowNotification(notification, type, duration);
+                this.setNotification();
+            }
         }
 
         queueWork<T>(work: () => Promise<T>, blockActions: boolean = true): Promise<T> {
