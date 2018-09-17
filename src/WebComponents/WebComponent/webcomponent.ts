@@ -439,6 +439,10 @@ namespace Vidyano.WebComponents {
             return <T><any>element;
         }
 
+        protected sleep(milliseconds: number): Promise<never> {
+            return new Promise(resolve => setTimeout(resolve, milliseconds));
+        }
+
         translateMessage(key: string, ...params: string[]): string {
             if (!this.app || !this.app.service)
                 return key;
