@@ -1,8 +1,4 @@
-﻿<!--last-of-date$="[[entry.lastOfDate]]"-->
-
-
-
-<dom-module id="vi-audit">
+﻿<dom-module id="vi-audit">
     <template>
         <link rel="stylesheet" href="audit.css" />
         <header>
@@ -17,13 +13,18 @@
             <main>
                 <template is="dom-repeat" items="[[groups]]" as="group">
                     <div class="group">
-                        <a class="date layout horizontal">
-                            <div class="day">[[group.day]]</div>
-                            <div>
-                                <div class="dayOfWeek">[[group.dayOfWeek]]</div>
-                                <div class="monthYear">[[group.monthYear]]</div>
-                            </div>
-                        </a>
+                        <template is="dom-if" if="[[group.today]]">
+                            <a class="today"><h1>[[translations.Today]]</h1></a>
+                        </template>
+                        <template is="dom-if" if="[[!group.today]]">
+                            <a class="date layout horizontal" hidden$="[[group.today]]">
+                                <div class="day">[[group.day]]</div>
+                                <div>
+                                    <div class="dayOfWeek">[[group.dayOfWeek]]</div>
+                                    <div class="monthYear">[[group.monthYear]]</div>
+                                </div>
+                            </a>
+                        </template>
                         <template is="dom-repeat" items="[[group.entries]]" as="entry" filter="[[_filterEntry(filter)]]">
                             <a href$="[[entry.href]]" class="entry" on-tap="_open">
                                 <div class="time">

@@ -2,6 +2,7 @@
     "use strict";
 
     interface ILogEntryGroup {
+        today: boolean;
         date: Date;
         day: number;
         dayOfWeek: string;
@@ -121,7 +122,9 @@
                 const createdOn = <Date>item.values.CreatedOn;
 
                 if (!this._lastGroup || this._lastGroup.date.getDate() !== createdOn.getDate() || this._lastGroup.date.getMonth() !== createdOn.getMonth() || this._lastGroup.date.getFullYear() !== createdOn.getFullYear()) {
+                    const today = new Date();
                     this._lastGroup = {
+                        today: today.getDate() === createdOn.getDate() && today.getMonth() === createdOn.getMonth() && today.getFullYear() === createdOn.getFullYear(),
                         date: createdOn,
                         day: createdOn.getDate(),
                         dayOfWeek: StringEx.format("{0:dddd}", createdOn),

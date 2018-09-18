@@ -62,6 +62,13 @@
         color: #333;
         fill: #333;
 
+        a.today > h1 {
+            padding: 0;
+            font-size: 26px;
+            margin: var(--theme-h4) 0;
+            font-weight: 600;
+        }
+
         .date {
             padding: var(--theme-h4) 0;
 
