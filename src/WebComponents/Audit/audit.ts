@@ -31,7 +31,7 @@
 
     interface ILogEntryChange {
         name: string;
-        value: string
+        value: string;
     }
 
     type AuditPersistentObject = Vidyano.PersistentObject & {
@@ -172,7 +172,7 @@
                     return {
                         name: a.label,
                         value: a.displayValue
-                    }
+                    };
                 });
 
                 logEntry.outData = this.service.hooks.onConstructPersistentObject(this.service, <Vidyano.IServicePersistentObject>JSON.parse(poOut.getAttributeValue("Data")).result);
