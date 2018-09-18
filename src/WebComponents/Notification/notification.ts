@@ -33,6 +33,10 @@
             isOverflowing: {
                 type: Boolean,
                 readOnly: true
+            },
+            noClose: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         forwardObservers: [

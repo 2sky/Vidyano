@@ -13,7 +13,7 @@
             </template>
             <span id="text" inner-h-t-m-l="[[_textInline(text)]]"></span>
         </div>
-        <button is="vi-button" id="close" on-tap="_close">
+        <button is="vi-button" id="close" on-tap="_close" hidden$="[[noClose]]">
             <vi-icon source="Notification_Close"></vi-icon>
         </button>
     </template>
