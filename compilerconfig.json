@@ -16,6 +16,10 @@
     "inputFile": "src/WebComponents/App/app.scss"
   },
   {
+    "outputFile": "src/WebComponents/Audit/audit.css",
+    "inputFile": "src/WebComponents/Audit/audit.scss"
+  },
+  {
     "outputFile": "src/WebComponents/AppRoute/app-route.css",
     "inputFile": "src/WebComponents/AppRoute/app-route.scss"
   },

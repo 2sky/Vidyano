@@ -178,6 +178,8 @@
 
                 return super.onAction(args);
             }
+            else if (args.action === "viAudit")
+                this.app.importComponent("Audit");
 
             return super.onAction(args);
         }
