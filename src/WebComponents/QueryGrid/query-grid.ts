@@ -743,13 +743,6 @@ namespace Vidyano.WebComponents {
     export class QueryGridTableDataColumn extends QueryGridTableColumn {
         private _item: Vidyano.QueryResultItem;
         private _hasPendingUpdate: boolean;
-        private _foreground: { currentValue?: any; originalValue?: any } = {};
-        private _fontWeight: { currentValue?: any; originalValue?: any } = {};
-        private _textAlign: { currentValue?: any; originalValue?: any } = {};
-        private _extraClass: string;
-        private _typeHints: any;
-        private _textNode: Text;
-        private _textNodeValue: string;
         private _customCellTemplate: PolymerTemplate;
         private _customCellTemplateInstance: TemplateInstance;
         private _customCellTemplateType: string;
@@ -784,21 +777,15 @@ namespace Vidyano.WebComponents {
         private _render(): boolean {
             if (this.column) {
                 if (this._lastColumnType !== this.column.type) {
-                    if (this._customCellTemplateInstance) {
+                    const customCellTemplate = QueryGridCellTemplate.Load(this.column.type);
+
+                    if (this._customCellTemplateInstance && customCellTemplate !== this._customCellTemplate) {
                         Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
                         this._customCellTemplateInstance = this._customCellTemplateType = null;
                     }
 
-                    if (this._customCellTemplate = QueryGridCellTemplate.Load(this.column.type)) {
-                        this._lastColumnType = this.column.type;
-
-                        if (this._textNode) {
-                            this.cell.removeChild(this._textNode);
-                            this._textNode = null;
-                        }
-                    }
-                    else
-                        this._lastColumnType = null;
+                    this._customCellTemplate = customCellTemplate;
+                    this._lastColumnType = this.column.type;
                 }
             }
             else
@@ -806,14 +793,8 @@ namespace Vidyano.WebComponents {
 
             if (!this._item || !this.column) {
                 if (this.hasContent) {
-                    if (this._textNode) {
-                        if (this._textNodeValue !== "")
-                            this._textNode.nodeValue = this._textNodeValue = "";
-                    }
-                    else if (this._customCellTemplateInstance) {
-                        Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
-                        this._customCellTemplateInstance = this._customCellTemplateType = null;
-                    }
+                    Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
+                    this._customCellTemplateInstance = this._customCellTemplateType = null;
 
                     this._setHasContent(false);
                 }
@@ -825,102 +806,19 @@ namespace Vidyano.WebComponents {
                 return false;
 
             const itemValue = this._item.getFullValue(this.column.name);
-            let value: any;
+            if (!this._customCellTemplateInstance || this._customCellTemplateType !== this.column.type) {
+                Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
+                this._customCellTemplateInstance = this._customCellTemplate.stamp({ value: itemValue });
+                this._customCellTemplateType = this.column.type;
 
-            // Render Text
-            if (!this._customCellTemplate) {
-                this._typeHints = Vidyano.extend({}, this._item.typeHints, itemValue ? itemValue.typeHints : undefined);
-                value = this._item.getValue(this.column.name);
-                if (value != null && (this.column.type === "Boolean" || this.column.type === "NullableBoolean"))
-                    value = this._item.query.service.getTranslatedMessage(value ? this._getTypeHint("truekey", "True") : this._getTypeHint("falsekey", "False"));
-                else if (this.column.type === "YesNo")
-                    value = this._item.query.service.getTranslatedMessage(value ? this._getTypeHint("truekey", "Yes") : this._getTypeHint("falsekey", "No"));
-                else if (this.column.type === "Time" || this.column.type === "NullableTime") {
-                    if (typeof value === "string") {
-                        value = value.trimEnd("0").trimEnd(".");
-                        if (value.startsWith("0:"))
-                            value = value.substr(2);
-                        if (value.endsWith(":00"))
-                            value = value.substr(0, value.length - 3);
-                    }
-                }
-
-                if (value != null) {
-                    let format = this._getTypeHint("displayformat", null);
-                    if (format == null || format === "{0}") {
-                        switch (this.column.type) {
-                            case "Date":
-                            case "NullableDate":
-                                format = null;
-                                value = value.localeFormat(CultureInfo.currentCulture.dateFormat.shortDatePattern, true);
-                                break;
-
-                            case "DateTime":
-                            case "NullableDateTime":
-                            case "DateTimeOffset":
-                            case "NullableDateTimeOffset":
-                                format = null;
-                                value = value.localeFormat(CultureInfo.currentCulture.dateFormat.shortDatePattern + " " + CultureInfo.currentCulture.dateFormat.shortTimePattern, true);
-                                break;
-                        }
-                    }
-
-                    if (StringEx.isNullOrEmpty(format))
-                        value = value.localeFormat ? value.localeFormat() : value.toLocaleString();
-                    else
-                        value = StringEx.format(format, value);
-                }
-                else
-                    value = "";
-
-                const foreground = this._getTypeHint("foreground", null);
-                if (foreground !== this._foreground.currentValue) {
-                    if (this._foreground.originalValue === undefined)
-                        this._foreground.originalValue = this.cell.style.color;
-
-                    this.cell.style.color = this._foreground.currentValue = foreground || this._foreground.originalValue;
-                }
-
-                const textAlign = this._getTypeHint("horizontalcontentalignment", null);
-                if (textAlign !== this._textAlign.currentValue)
-                    this.cell.style.textAlign = this._textAlign.currentValue = textAlign || this._textAlign.originalValue;
-
-                const extraClass = this.column.column.getTypeHint("extraclass", undefined, value && itemValue.typeHints, true);
-                if (extraClass !== this._extraClass) {
-                    if (!StringEx.isNullOrEmpty(this._extraClass))
-                        this.cell.classList.remove(...this._extraClass.split(" "));
-
-                    this._extraClass = extraClass;
-                    if (!StringEx.isNullOrEmpty(extraClass))
-                        this.cell.classList.add(...this._extraClass.split(" "));
-                }
-
-                if (this._textNode) {
-                    if (this._textNodeValue !== value)
-                        this._textNode.nodeValue = this._textNodeValue = <string>value;
-                }
-                else
-                    Polymer.dom(this.cell).appendChild(this._textNode = document.createTextNode(this._textNodeValue = <string>value));
+                Polymer.dom(this.cell).appendChild(this._customCellTemplateInstance.root);
             }
-            else if (this._customCellTemplate) {
-                if (!this._customCellTemplateInstance || this._customCellTemplateType !== this.column.type) {
-                    Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
-                    this._customCellTemplateInstance = this._customCellTemplate.stamp({ value: itemValue });
-                    this._customCellTemplateType = this.column.type;
+            else
+                (<any>this._customCellTemplateInstance).value = itemValue;
 
-                    Polymer.dom(this.cell).appendChild(this._customCellTemplateInstance.root);
-                }
-                else
-                    (<any>this._customCellTemplateInstance).value = itemValue;
-            }
-
-            this._setHasContent(!!value);
+            this._setHasContent(true);
 
             return true;
-        }
-
-        protected _getTypeHint(name: string, defaultValue?: string): string {
-            return this.column.column.getTypeHint(name, defaultValue, this._typeHints, true);
         }
     }
 
