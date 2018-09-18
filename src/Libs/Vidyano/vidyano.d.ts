@@ -270,6 +270,7 @@ declare namespace Vidyano {
         isReadOnly?: boolean;
         isRequired?: boolean;
         isSensitive?: boolean;
+        isValueChanged: boolean;
         rules?: string;
         visibility: PersistentObjectAttributeVisibility;
     }
