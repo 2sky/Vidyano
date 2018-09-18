@@ -160,7 +160,7 @@
                     (<Vidyano.PersistentObjectAttributeWithReference>logEntry.obj.getAttribute("OutgoingDataReference")).getPersistentObject()
                 ]);
 
-                logEntry.inData = this.service.hooks.onConstructPersistentObject(this.service, <Vidyano.IServicePersistentObject>JSON.parse(poIn.getAttributeValue("Data")).parent);
+                logEntry.inData = this.service.hooks.onConstructPersistentObject(this.service, <Vidyano.IServicePersistentObject>this._getInData(poIn).parent);
                 logEntry.changes = logEntry.inData.attributes.filter(a => a.isValueChanged).map(a => {
                     return {
                         name: a.label,
@@ -168,12 +168,51 @@
                     };
                 });
 
-                logEntry.outData = this.service.hooks.onConstructPersistentObject(this.service, <Vidyano.IServicePersistentObject>JSON.parse(poOut.getAttributeValue("Data")).result);
+                logEntry.outData = this.service.hooks.onConstructPersistentObject(this.service, <Vidyano.IServicePersistentObject>this._getOutData(poOut).result);
 
                 this.set(`groups.${this.groups.length - 1}.entries.${entryIndex}.busy`, false);
             }
 
             done();
+        }
+
+        private _getInData(poIn: Vidyano.PersistentObject): any {
+            const data = <string>poIn.getAttributeValue("Data");
+            if (data[0] === "{")
+                return JSON.parse(data);
+
+            const dataLines = data.split("\r\n");
+            const boundary = dataLines[0];
+            const blocks: string[][] = [];
+            for (let line of dataLines) {
+                if (line.startsWith(boundary)) {
+                    blocks.push([]);
+                    continue;
+                }
+
+                blocks[blocks.length - 1].push(line);
+            }
+
+            const dataBlockIndex = blocks.findIndex(block => block[0].contains(`name="data"`));
+            const dataBlock = blocks[dataBlockIndex];
+            const dataLineIndex = dataBlock.findIndex(line => line[0] === "{");
+
+            return JSON.parse(dataBlock.slice(dataLineIndex).join("\r\n"));
+        }
+
+        private _getOutData(poOut: Vidyano.PersistentObject): any {
+            const data = <string>poOut.getAttributeValue("Data");
+            if (data[0] === "{")
+                return JSON.parse(data);
+
+            const div = document.createElement("div");
+            div.innerHTML = data;
+
+            let value = div.querySelector("textarea").value;
+            if (value.startsWith("<![CDATA["))
+                value = value.substring("<![CDATA[".length, value.length - "]]>".length);
+
+            return JSON.parse(value);
         }
 
         private _filterEntry(filter: string): (entry: ILogEntry) => boolean {
