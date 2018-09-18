@@ -136,7 +136,12 @@
                 if (persistentObject.service.application.userSettings["PersistentObjectSettings"] &&
                     persistentObject.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id] &&
                     persistentObject.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id]["master-detail"]) {
-                    this.masterWidth = persistentObject.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id]["master-detail"];
+
+                    let masterWidth = persistentObject.service.application.userSettings["PersistentObjectSettings"][this.persistentObject.id]["master-detail"];
+                    if (isNaN(parseInt(masterWidth)))
+                        masterWidth = "40%";
+
+                    this.masterWidth = masterWidth;
                 }
                 else
                     this.masterWidth = "40%";
@@ -253,7 +258,7 @@
             return tabs && tabs.length > 0;
         }
 
-        private _tabselect(e: CustomEvent, detail: { name?: string; tab?: Vidyano.PersistentObjectTab}) {
+        private _tabselect(e: CustomEvent, detail: { name?: string; tab?: Vidyano.PersistentObjectTab }) {
             if (!detail.tab)
                 detail.tab = Enumerable.from(this.masterTabs).firstOrDefault(t => t.name === detail.name) || Enumerable.from(this.detailTabs).firstOrDefault(t => t.name === detail.name);
 
@@ -298,7 +303,8 @@
 
                 if (this.masterWidth.endsWith("px")) {
                     const px = parseInt(this.masterWidth);
-                    this.masterWidth = (100 / this.offsetWidth * px).toString() + "%";
+                    const newMasterWidth = 100 / this.offsetWidth * px;
+                    this.masterWidth = `${!isNaN(newMasterWidth) ? newMasterWidth.toString() : "40"}%`;
                 }
 
                 const persistentObjectSettings = this.persistentObject.service.application.userSettings["PersistentObjectSettings"] || (this.persistentObject.service.application.userSettings["PersistentObjectSettings"] = {});
