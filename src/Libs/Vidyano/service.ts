@@ -865,7 +865,7 @@ namespace Vidyano {
                 }
 
                 const inputs = parent.getRegisteredInputs();
-                if (inputs.count() === 0) {
+                if (inputs.count() === 0 || !inputs.select(i => parent.getAttribute(i.key)).toArray().some(a => a.isValueChanged)) {
                     const result = await this._postJSON(this._createUri("ExecuteAction"), data);
                     return await executeThen(result);
                 }
