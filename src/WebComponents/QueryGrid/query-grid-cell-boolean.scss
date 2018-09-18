@@ -6,7 +6,7 @@
     display: block;
 
     > * {
-        height: var(--theme-h2);
-        line-height: var(--theme-h2);
+        height: var(--query-grid--row-height);
+        line-height: var(--query-grid--row-height);
     }
 }
