@@ -1,19 +1,15 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    interface IEntry {
-        type: "Date" | "LogEntry";
-    }
-
-    interface IEntryDate extends IEntry {
-        type: "Date";
+    interface ILogEntryGroup {
+        date: Date;
         day: number;
         dayOfWeek: string;
         monthYear: string;
+        entries: ILogEntry[];
     }
 
-    interface ILogEntry extends IEntry {
-        type: "LogEntry";
+    interface ILogEntry {
         item: Vidyano.QueryResultItem;
         obj: Vidyano.PersistentObject;
         actionName: string;
@@ -25,7 +21,6 @@
         changes: ILogEntryChange[];
         inData: Vidyano.PersistentObject;
         outData: Vidyano.PersistentObject;
-        lastOfDate?: boolean;
         href: string;
     }
 
@@ -35,7 +30,7 @@
     }
 
     type AuditPersistentObject = Vidyano.PersistentObject & {
-        __audit_entries__?: IEntry[];
+        __audit_groups__?: ILogEntryGroup[];
         __audit_verticalScrollOffset__?: number;
         __audit_filter__?: string;
     };
@@ -47,7 +42,7 @@
                 type: Object,
                 computed: "_computeQuery(persistentObject)"
             },
-            entries: {
+            groups: {
                 type: Array,
                 readOnly: true
             },
@@ -70,8 +65,8 @@
     })
     export class Audit extends WebComponent {
         private _updating: Promise<any>;
-        private _lastDate: Date;
-        private readonly entries: IEntry[]; private _setEntries: (entries: IEntry[]) => void;
+        private _lastGroup: ILogEntryGroup;
+        private readonly groups: ILogEntryGroup[]; private _setGroups: (groups: ILogEntryGroup[]) => void;
         private verticalScrollOffset: number;
         private search: string;
         private readonly filter: string; private _setFilter: (filter: string) => void;
@@ -119,32 +114,28 @@
             let done: () => void;
             this._updating = new Promise((resolve) => done = resolve);
 
-            this._setEntries(persistentObject.__audit_entries__ || (persistentObject.__audit_entries__ = []));
+            this._setGroups(persistentObject.__audit_groups__ || (persistentObject.__audit_groups__ = []));
 
-            const newItems = items.slice(this.entries.length);
+            const newItems = items.slice(this.groups.reduce((prev, curr) => prev + curr.entries.length, 0));
             for (let item of newItems) {
                 const createdOn = <Date>item.values.CreatedOn;
 
-                if (!this._lastDate || this._lastDate.getDate() !== createdOn.getDate() || this._lastDate.getMonth() !== createdOn.getMonth() || this._lastDate.getFullYear() !== createdOn.getFullYear()) {
-                    this._lastDate = createdOn;
-                    const dateEntry: IEntryDate = {
-                        type: "Date",
+                if (!this._lastGroup || this._lastGroup.date.getDate() !== createdOn.getDate() || this._lastGroup.date.getMonth() !== createdOn.getMonth() || this._lastGroup.date.getFullYear() !== createdOn.getFullYear()) {
+                    this._lastGroup = {
+                        date: createdOn,
                         day: createdOn.getDate(),
                         dayOfWeek: StringEx.format("{0:dddd}", createdOn),
-                        monthYear: StringEx.format("{0:MMMM yyyy}", createdOn)
+                        monthYear: StringEx.format("{0:MMMM yyyy}", createdOn),
+                        entries: []
                     };
 
-                    if (this.entries.length > 0)
-                        this.set(`items.${this.entries.length - 1}.lastOfDate`, true);
-
-                    this.push("entries", dateEntry);
+                    this.push("groups", this._lastGroup);
                 }
 
                 const actionName = (<string>item.getValue("Action")).replace("PersistentObject.", "");
                 const action = this.service.actionDefinitions.get(actionName);
 
                 const logEntry: ILogEntry = {
-                    type: "LogEntry",
                     item: item,
                     obj: null,
                     actionName: actionName,
@@ -158,7 +149,9 @@
                     outData: null,
                     href: this.computePath(`${this.app.programUnit.name}/PersistentObject.${item.query.persistentObject.id}/${item.id}`)
                 };
-                this.push("entries", logEntry);
+
+                const entryIndex = this.groups[this.groups.length - 1].entries.length;
+                this.push(`groups.${this.groups.length - 1}.entries`, logEntry);
 
                 item.query.parent = null;
                 logEntry.obj = await item.getPersistentObject();
@@ -177,29 +170,26 @@
 
                 logEntry.outData = this.service.hooks.onConstructPersistentObject(this.service, <Vidyano.IServicePersistentObject>JSON.parse(poOut.getAttributeValue("Data")).result);
 
-                this.set(`entries.${this.entries.length - 1}.busy`, false);
+                this.set(`groups.${this.groups.length - 1}.entries.${entryIndex}.busy`, false);
             }
 
             done();
         }
 
-        private _is(entry: IEntry, type: string, filter: string): boolean {
-            if (entry.type !== type)
+        private _filterEntry(filter: string): (entry: ILogEntry) => boolean {
+            if (!this.filter)
+                return () => true;
+
+            filter = this.filter.toLowerCase();
+            return entry => {
+                if (entry.changes.some(c => c.name.toLowerCase().contains(filter) || c.value.toLowerCase().contains(filter)))
+                    return true;
+
+                if (entry.outData && entry.outData.notification && entry.outData.notification.toLowerCase().contains(filter))
+                    return true;
+
                 return false;
-
-            if (!filter || entry.type !== "LogEntry")
-                return true;
-
-            filter = filter.toLowerCase();
-
-            const logEntry = <ILogEntry>entry;
-            if (logEntry.changes.some(c => c.name.toLowerCase().contains(filter) || c.value.toLowerCase().contains(filter)))
-                return true;
-
-            if (logEntry.outData && logEntry.outData.notification && logEntry.outData.notification.toLowerCase().contains(filter))
-                return true;
-
-            return false;
+            };
         }
 
         private _entryActionIcon(item: ILogEntry): string {

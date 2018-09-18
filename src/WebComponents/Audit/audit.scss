@@ -58,16 +58,9 @@
     }
 
     main {
-        padding: var(--theme-h3);
+        padding: var(--theme-h5) var(--theme-h3) var(--theme-h3) var(--theme-h3);
         color: #333;
         fill: #333;
-
-        .today {
-            @include self-center();
-            line-height: var(--theme-h1);
-            color: #333;
-            font-size: 22px;
-        }
 
         .date {
             padding: var(--theme-h4) 0;
@@ -92,6 +85,10 @@
                 line-height: calc(var(--theme-h1) / 2);
                 transform: translateY(-4px);
             }
+
+            &:last-of-type {
+                display: none !important;
+            }
         }
 
         vi-spinner {
@@ -110,6 +107,12 @@
 
                 label {
                     cursor: pointer;
+                }
+            }
+
+            &:not(:last-of-type) {
+                .line {
+                    bottom: -28px !important;
                 }
             }
 
@@ -146,12 +149,6 @@
 
                 + div {
                     @include flex();
-                }
-            }
-
-            &:not([last-of-date]):not(:last-of-type) {
-                .line {
-                    bottom: -28px !important;
                 }
             }
 
