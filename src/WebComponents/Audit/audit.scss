@@ -58,6 +58,7 @@
     }
 
     main {
+        @include noSelection();
         padding: var(--theme-h5) var(--theme-h3) var(--theme-h3) var(--theme-h3);
         color: #333;
         fill: #333;
@@ -103,9 +104,6 @@
         }
 
         .entry {
-            @include layout-horizontal();
-            padding: var(--theme-h4);
-            text-decoration: none;
             color: #333 !important;
 
             &:hover {
@@ -115,16 +113,31 @@
                 label {
                     cursor: pointer;
                 }
+
+                .expand {
+                    @include layout-horizontal();
+                }
             }
 
             &:not(:last-of-type) {
                 .line {
-                    bottom: -28px !important;
+                    bottom: -16px !important;
                 }
             }
 
-            .time {
-                position: relative;
+            a {
+                padding: var(--theme-h4) var(--theme-h4) var(--theme-h4) 0;
+                text-decoration: none;
+                color: #333 !important;
+            }
+
+            .timeline {
+                margin: var(--theme-h4) 0 0 var(--theme-h4);
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: var(--theme-h4);
 
                 .dot {
                     position: relative;
@@ -143,12 +156,18 @@
                     position: absolute;
                     top: var(--theme-h4);
                     left: var(--theme-h5);
-                    bottom: -8px;
+                    bottom: 0;
                     content: "";
                     border-left: 2px solid #eee;
                     width: 1px;
                     z-index: 1;
                 }
+            }
+
+            .time {
+                padding-left: var(--theme-h2);
+                width: 100px;
+                box-sizing: border-box;
 
                 span {
                     font-weight: 600;
@@ -160,8 +179,6 @@
             }
 
             .content {
-                padding-left: var(--theme-h4);
-
                 vi-icon.icon {
                     @include self-start();
                     width: var(--theme-h2);
@@ -200,6 +217,11 @@
                         }
                     }
 
+                    > pre {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
                     &:not(:first-of-type) {
                         line-height: var(--theme-h2);
                     }
@@ -228,6 +250,56 @@
                         fill: var(--theme-color-warning);
                         color: var(--theme-color-warning);
                     }
+                }
+            }
+
+            .expand {
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                display: none;
+                @include layout-center-center();
+                width: var(--theme-h1);
+                background: var(--theme-color-lighter);
+
+                vi-icon {
+                    --vi-icon-width: 24px;
+                    --vi-icon-height: 24px;
+                    fill: var(--theme-color);
+                    transform: none;
+                    transition: transform 0.3s ease-out;
+
+                    &[expanded] {
+                        transform: rotate(180deg);
+                    }
+                }
+            }
+
+            .info {
+                padding: var(--theme-h4) var(--theme-h4) var(--theme-h4) 0;
+                margin: var(--theme-h4) 0 0 var(--theme-h2);
+                border-top: 1px solid #f0f0f0;
+
+                .infoItem {
+                    padding: var(--theme-h5) var(--theme-h5) 0 0;
+                }
+
+                label {
+                    display: block;
+                    color: #aaa;
+                    font-size: 12px;
+
+                    + span {
+                        display: block;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                }
+
+                &:not([expanded]) {
+                    display: none !important;
                 }
             }
         }

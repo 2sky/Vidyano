@@ -23,6 +23,9 @@
         inData: Vidyano.PersistentObject;
         outData: Vidyano.PersistentObject;
         href: string;
+        groupIndex: number;
+        entryIndex: number;
+        expanded?: boolean;
     }
 
     interface ILogEntryChange {
@@ -150,11 +153,12 @@
                     changes: [],
                     inData: null,
                     outData: null,
-                    href: this.computePath(`${this.app.programUnit.name}/PersistentObject.${item.query.persistentObject.id}/${item.id}`)
+                    href: this.computePath(`${this.app.programUnit.name}/PersistentObject.${item.query.persistentObject.id}/${item.id}`),
+                    groupIndex: this.groups.length - 1,
+                    entryIndex: this.groups[this.groups.length - 1].entries.length
                 };
 
-                const entryIndex = this.groups[this.groups.length - 1].entries.length;
-                this.push(`groups.${this.groups.length - 1}.entries`, logEntry);
+                this.push(`groups.${logEntry.groupIndex}.entries`, logEntry);
 
                 item.query.parent = null;
                 logEntry.obj = await item.getPersistentObject();
@@ -173,7 +177,7 @@
 
                 logEntry.outData = this.service.hooks.onConstructPersistentObject(this.service, <Vidyano.IServicePersistentObject>this._getOutData(poOut).result);
 
-                this.set(`groups.${this.groups.length - 1}.entries.${entryIndex}.busy`, false);
+                this.set(`groups.${this.groups.length - 1}.entries.${logEntry.entryIndex}.busy`, false);
             }
 
             done();
@@ -255,6 +259,31 @@
 
         private _filter() {
             this._setFilter(this.search);
+        }
+
+        private _expand(e: TapEvent) {
+            const entry = <ILogEntry>e.model.entry;
+            this.set(`groups.${entry.groupIndex}.entries.${entry.entryIndex}.expanded`, !entry.expanded);
+
+            e.stopPropagation();
+            e.detail.sourceEvent.stopPropagation();
+        }
+
+        private _expandIcon(entry: ILogEntry, expanded: boolean): string {
+            return expanded ? "CaretDown" : "CaretUp";
+        }
+
+        private _moreInfo(entry: ILogEntry): Vidyano.PersistentObjectAttribute[] {
+            return Enumerable.from(entry.obj.attributes).orderBy(attr => attr.offset).where(attr => {
+                return attr.name !== "CreatedOn" &&
+                    attr.name !== "User" &&
+                    attr.name !== "OriginalUser" &&
+                    attr.name !== "IncomingDataLength" &&
+                    attr.name !== "IncomingDataReference" &&
+                    attr.name !== "OutgoingDataLength" &&
+                    attr.name !== "OutgoingDataReference" &&
+                    !!attr.value;
+            }).toArray();
         }
     }
 }
