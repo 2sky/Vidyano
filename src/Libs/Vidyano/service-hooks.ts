@@ -176,18 +176,19 @@
                 "Previous": "Previous",
                 "EnterPassword": "Enter password",
                 "NotYou": "Not you?",
-                "SessionLost": "You signed out in another tab or window. Reload to refresh your session.",
-                "Reload": "Reload"
+                "SessionLost": ["You signed out in another tab or window. Reload to refresh your session.", false],
+                "Reload": ["Reload", false]
             };
             const messagesKeys = Object.keys(messages);
             let warned = false;
 
             languages.forEach(lang => {
                 messagesKeys.forEach(key => {
+                    const [value, warn] = !Array.isArray(messages[key]) ? [messages[key], true] : messages[key];
                     if (!(key in lang.messages)) {
-                        lang.messages[key] = messages[key];
+                        lang.messages[key] = value;
 
-                        if (!warned) {
+                        if (!warned && warn) {
                             console.warn("It seems like you are connected to an older backend version of Vidyano. You must upgrade your backend before all messages will be fully translated.");
                             warned = true;
                         }
