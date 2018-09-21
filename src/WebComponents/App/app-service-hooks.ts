@@ -73,7 +73,7 @@
         getPersistentObjectConfig(persistentObject: Vidyano.PersistentObject, persistentObjectConfigs: PersistentObjectConfig[]): PersistentObjectConfig {
             const persistentObjectConfigsEnum = Enumerable.from(persistentObjectConfigs);
             return persistentObjectConfigsEnum.firstOrDefault(c => (c.id === persistentObject.id || c.type === persistentObject.type || c.type === persistentObject.fullTypeName) && c.objectId === persistentObject.objectId) ||
-                persistentObjectConfigsEnum.firstOrDefault(c => c.id === persistentObject.id || c.type === persistentObject.type || c.type === persistentObject.fullTypeName);
+                persistentObjectConfigsEnum.firstOrDefault(c => !c.objectId && (c.id === persistentObject.id || c.type === persistentObject.type || c.type === persistentObject.fullTypeName));
         }
 
         getAttributeConfig(attribute: Vidyano.PersistentObjectAttribute, attributeConfigs: PersistentObjectAttributeConfig[]): PersistentObjectAttributeConfig {
