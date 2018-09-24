@@ -68,7 +68,7 @@ namespace Vidyano.WebComponents {
 
             const config = this.app.configuration.getQueryConfig(query);
 
-            this._setFileDrop(!!config && !!config.fileDropAttribute && !!query.actions["New"]);
+            this._setFileDrop(!!config && !!config.fileDropAttribute && !!query.actions[config.fileDropAction]);
             this._setTemplated(!!config && config.hasTemplate);
 
             if (this.templated) {
