@@ -360,9 +360,9 @@
 
         async onQueryFileDrop(query: Vidyano.Query, name: string, contents: string): Promise<boolean> {
             const config = this.app.configuration.getQueryConfig(query);
-            const newAction = <Vidyano.Action>query.actions["New"];
+            const fileDropAction = <Vidyano.Action>query.actions[config.fileDropAction];
 
-            const po = await newAction.execute({ skipOpen: true });
+            const po = await fileDropAction.execute({ skipOpen: true });
             return query.queueWork(async () => {
                 const fileDropAttribute = po.getAttribute(config.fileDropAttribute);
                 if (!fileDropAttribute)
