@@ -1,6 +1,21 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
+    @WebComponent.register()
+    export class ScrollbarTest extends WebComponent {
+        isScrollbarHidden: boolean;
+
+        attached() {
+            super.attached();
+            this.isScrollbarHidden = this.$.wrapper.clientWidth === 100;
+        }
+    }
+
+    const test = new Vidyano.WebComponents.ScrollbarTest();
+    document.body.appendChild(test);
+    const isScrollbarHidden = test.isScrollbarHidden;
+    document.body.removeChild(test);
+
     interface IZenscroll {
         toY(y: number);
     }
@@ -110,10 +125,11 @@
                 readOnly: true,
                 reflectToAttribute: true
             },
-            isWebKit: {
+            hideScrollbar: {
                 type: Boolean,
+                readOnly: true,
                 reflectToAttribute: true,
-                computed: "_computeIsWebKit(isAttached)"
+                value: () => !isScrollbarHidden
             }
         },
         forwardObservers: [
@@ -157,12 +173,11 @@
         verticalScrollOffset: number;
         forceScrollbars: boolean;
         noScrollShadow: boolean;
-        isWebKit: boolean;
 
         attached() {
             super.attached();
 
-            if (!this.isWebKit) {
+            if (!isScrollbarHidden) {
                 this.customStyle["--theme-scrollbar-width"] = `${scrollbarWidth()}px`;
                 this.updateStyles();
             }
@@ -199,7 +214,7 @@
         }
 
         private _outerSizeChanged(e: Event, detail: { width: number; height: number }) {
-            this._setHiddenScrollbars(!this.isWebKit && !parseInt(this.getComputedStyleValue("--theme-scrollbar-width")));
+            this._setHiddenScrollbars(!isScrollbarHidden && !parseInt(this.getComputedStyleValue("--theme-scrollbar-width")));
 
             this._setOuterWidth(detail.width);
             this._setOuterHeight(detail.height);
@@ -236,7 +251,7 @@
 
             this._setVertical(!noVertical && height > 0);
 
-            if (!this.isWebKit)
+            if (!isScrollbarHidden)
                 innerHeight -= scrollbarWidth();
 
             const verticalScrollTop = verticalScrollOffset === 0 ? 0 : Math.round((1 / ((innerHeight - outerHeight) / verticalScrollOffset)) * this._verticalScrollSpace);
@@ -265,7 +280,7 @@
 
             this._setHorizontal(!noHorizontal && width > 0);
 
-            if (!this.isWebKit)
+            if (!isScrollbarHidden)
                 innerWidth -= scrollbarWidth();
 
             const horizontalScrollLeft = horizontalScrollOffset === 0 ? 0 : Math.round((1 / ((innerWidth - outerWidth) / horizontalScrollOffset)) * this._horizontalScrollSpace);
@@ -384,10 +399,6 @@
 
                 e.stopPropagation();
             }
-        }
-
-        private _computeIsWebKit(): boolean {
-            return "WebkitAppearance" in document.documentElement.style;
         }
     }
 }
