@@ -4,7 +4,6 @@
     overflow: hidden;
     @include layout-horizontal();
     @include relative();
-
     --vi-scroller-thumb-color: #888;
     --vi-scroller-thumb-hover-color: #777;
     --vi-scroller-thumb-size: var(--theme-h5);
@@ -17,6 +16,11 @@
         @include relative();
         overflow: auto;
         outline: none !important;
+        -ms-overflow-style: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
 
     &[no-horizontal]:not([no-vertical]) {
@@ -233,18 +237,7 @@
         transform: translateY(var(--theme-h2));
     }
 
-    &[is-web-kit] {
-        > #wrapper::-webkit-scrollbar {
-            display: none;
-        }
-
-        // Edge also reports being webkit
-        > #wrapper {
-            -ms-overflow-style: none;
-        }
-    }
-
-    &:not([is-web-kit]) {
+    &[hide-scrollbar] {
         &[scroll-bottom-shadow], &[scroll-top-shadow] {
             > #wrapper {
                 margin-right: calc(var(--theme-scrollbar-width) * -1);
