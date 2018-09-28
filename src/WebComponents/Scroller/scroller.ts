@@ -11,11 +11,6 @@
         }
     }
 
-    const test = new Vidyano.WebComponents.ScrollbarTest();
-    document.body.appendChild(test);
-    const isScrollbarHidden = test.isScrollbarHidden;
-    document.body.removeChild(test);
-
     interface IZenscroll {
         toY(y: number);
     }
@@ -120,16 +115,10 @@
                 type: Boolean,
                 reflectToAttribute: true
             },
-            hiddenScrollbars: {
+            hideNativeScrollbar: {
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true
-            },
-            hideScrollbar: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true,
-                value: () => !isScrollbarHidden
             }
         },
         forwardObservers: [
@@ -147,6 +136,7 @@
     })
     export class Scroller extends WebComponent {
         private static _minBarSize: number = 40;
+        private static _hideNativeScrollbars: boolean;
         private _verticalScrollHeight: number;
         private _verticalScrollTop: number;
         private _verticalScrollSpace: number;
@@ -167,6 +157,7 @@
         readonly scrollTopShadow: boolean; private _setScrollTopShadow: (val: boolean) => void;
         readonly scrollBottomShadow: boolean; private _setScrollBottomShadow: (val: boolean) => void;
         readonly hiddenScrollbars: boolean; private _setHiddenScrollbars: (val: boolean) => void;
+        readonly hideNativeScrollbar: boolean; private _setHideNativeScrollbar: (val: boolean) => void;
         noHorizontal: boolean;
         noVertical: boolean;
         horizontalScrollOffset: number;
@@ -175,9 +166,23 @@
         noScrollShadow: boolean;
 
         attached() {
+            if (typeof Vidyano.WebComponents.Scroller._hideNativeScrollbars !== "boolean") {
+                const display = this.style.display;
+                this.style.display = "none";
+
+                const test = new Vidyano.WebComponents.ScrollbarTest();
+                document.body.appendChild(test);
+                Vidyano.WebComponents.Scroller._hideNativeScrollbars = !test.isScrollbarHidden;
+                document.body.removeChild(test);
+
+                this.style.display = display;
+            }
+
+            this._setHideNativeScrollbar(Vidyano.WebComponents.Scroller._hideNativeScrollbars);
+
             super.attached();
 
-            if (!isScrollbarHidden) {
+            if (this.hideNativeScrollbar) {
                 this.customStyle["--theme-scrollbar-width"] = `${scrollbarWidth()}px`;
                 this.updateStyles();
             }
@@ -214,8 +219,6 @@
         }
 
         private _outerSizeChanged(e: Event, detail: { width: number; height: number }) {
-            this._setHiddenScrollbars(!isScrollbarHidden && !parseInt(this.getComputedStyleValue("--theme-scrollbar-width")));
-
             this._setOuterWidth(detail.width);
             this._setOuterHeight(detail.height);
 
@@ -251,7 +254,7 @@
 
             this._setVertical(!noVertical && height > 0);
 
-            if (!isScrollbarHidden)
+            if (this.hideNativeScrollbar)
                 innerHeight -= scrollbarWidth();
 
             const verticalScrollTop = verticalScrollOffset === 0 ? 0 : Math.round((1 / ((innerHeight - outerHeight) / verticalScrollOffset)) * this._verticalScrollSpace);
@@ -280,7 +283,7 @@
 
             this._setHorizontal(!noHorizontal && width > 0);
 
-            if (!isScrollbarHidden)
+            if (this.hideNativeScrollbar)
                 innerWidth -= scrollbarWidth();
 
             const horizontalScrollLeft = horizontalScrollOffset === 0 ? 0 : Math.round((1 / ((innerWidth - outerWidth) / horizontalScrollOffset)) * this._horizontalScrollSpace);
