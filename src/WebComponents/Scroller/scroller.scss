@@ -73,12 +73,6 @@
         opacity: 0;
     }
 
-    &[hidden-scrollbars] {
-        .scrollbar-parent {
-            opacity: 0 !important;
-        }
-    }
-
     > .scrollbar-parent {
         position: absolute;
         background-color: transparent;
@@ -237,15 +231,16 @@
         transform: translateY(var(--theme-h2));
     }
 
-    &[hide-scrollbar] {
-        &[scroll-bottom-shadow], &[scroll-top-shadow] {
+    &[hide-native-scrollbar] {
+        &[vertical] {
             > #wrapper {
                 margin-right: calc(var(--theme-scrollbar-width) * -1);
-                margin-bottom: calc(var(--theme-scrollbar-width) * -1);
+            }
+        }
 
-                > #content {
-                    padding-bottom: var(--theme-scrollbar-width);
-                }
+        &[horizontal] {
+            > #wrapper {
+                margin-bottom: calc(var(--theme-scrollbar-width) * -1);
             }
         }
     }
