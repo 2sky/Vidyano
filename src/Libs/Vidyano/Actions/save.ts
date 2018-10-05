@@ -6,6 +6,11 @@
             constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions) {
                 super(service, definition, owner);
                 this.dependentActions = ["CancelSave"];
+                this.canExecute = this.parent.isDirty || this.parent.isNew;
+            }
+
+            _onParentIsDirtyChanged(isDirty: boolean) {
+                this.canExecute = isDirty;
             }
 
             protected async _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
