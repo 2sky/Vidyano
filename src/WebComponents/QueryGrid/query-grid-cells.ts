@@ -111,7 +111,7 @@ namespace Vidyano.WebComponents {
                     this._textNode.nodeValue = this._textNodeValue = <string>value;
             }
             else
-                Polymer.dom(this).appendChild(this._textNode = document.createTextNode(this._textNodeValue = <string>value));
+                Polymer.dom(this.root).appendChild(this._textNode = document.createTextNode(this._textNodeValue = <string>value));
         }
     }
 
