@@ -1,0 +1,7 @@
+@import "../_vars.scss";
+
+:host {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

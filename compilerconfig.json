@@ -276,6 +276,10 @@
     "inputFile": "src/WebComponents/QueryGrid/query-grid-cell-boolean.scss"
   },
   {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-cell-default.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-cell-default.scss"
+  },
+  {
     "outputFile": "src/WebComponents/QueryGrid/query-grid-cell-image.css",
     "inputFile": "src/WebComponents/QueryGrid/query-grid-cell-image.scss"
   },

@@ -171,7 +171,8 @@
                         }
 
                         &[is="vi-query-grid-table-data-column"] {
-                            > div {
+                            > * {
+                                display: block;
                                 padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
                                 height: var(--query-grid--row-height);
                                 line-height: var(--query-grid--row-height);

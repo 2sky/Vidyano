@@ -749,7 +749,7 @@ namespace Vidyano.WebComponents {
         private _lastColumnType: string;
 
         constructor(private _row: QueryGridTableDataRow) {
-            super("vi-query-grid-table-data-column", document.createElement("div"));
+            super("vi-query-grid-table-data-column");
         }
 
         get item(): Vidyano.QueryResultItem {
@@ -774,15 +774,28 @@ namespace Vidyano.WebComponents {
             return !(this._hasPendingUpdate = !this._render());
         }
 
+        private _empty() {
+            if (!this.cell)
+                return;
+
+            this._customCellTemplateInstance = this._customCellTemplateType = null;
+            Polymer.dom(this.host).removeChild(this.cell);
+            this.cell = null;
+        }
+
+        private _setScopedStyle() {
+            Enumerable.from(this.host.children).forEach(c => {
+                c.classList.add("style-scope", "vi-query-grid");
+            });
+        }
+
         private _render(): boolean {
             if (this.column) {
                 if (this._lastColumnType !== this.column.type) {
                     const customCellTemplate = QueryGridCellTemplate.Load(this.column.type);
 
-                    if (this._customCellTemplateInstance && customCellTemplate !== this._customCellTemplate) {
-                        Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
-                        this._customCellTemplateInstance = this._customCellTemplateType = null;
-                    }
+                    if (this._customCellTemplateInstance && customCellTemplate !== this._customCellTemplate)
+                        this._empty();
 
                     this._customCellTemplate = customCellTemplate;
                     this._lastColumnType = this.column.type;
@@ -793,9 +806,7 @@ namespace Vidyano.WebComponents {
 
             if (!this._item || !this.column) {
                 if (this.hasContent) {
-                    Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
-                    this._customCellTemplateInstance = this._customCellTemplateType = null;
-
+                    this._empty();
                     this._setHasContent(false);
                 }
 
@@ -807,11 +818,21 @@ namespace Vidyano.WebComponents {
 
             const itemValue = this._item.getFullValue(this.column.name);
             if (!this._customCellTemplateInstance || this._customCellTemplateType !== this.column.type) {
-                Vidyano.WebComponents.WebComponent.prototype.empty(this.cell);
+                this._empty();
                 this._customCellTemplateInstance = this._customCellTemplate.stamp({ value: itemValue });
                 this._customCellTemplateType = this.column.type;
 
-                Polymer.dom(this.cell).appendChild(this._customCellTemplateInstance.root);
+                if (this._customCellTemplateInstance.root.childElementCount === 1) {
+                    this.host.appendChild(this._customCellTemplateInstance.root);
+                    this.cell = <HTMLElement>this.host.firstElementChild;
+                }
+                else {
+                    this.cell = document.createElement("div");
+                    this.cell.appendChild(this._customCellTemplateInstance.root);
+                    Polymer.dom(this.host).appendChild(this.cell);
+                }
+
+                this._setScopedStyle();
             }
             else
                 (<any>this._customCellTemplateInstance).value = itemValue;
@@ -1213,7 +1234,7 @@ namespace Vidyano.WebComponents {
                 Enumerable.from(this._tableData.rows).forEach((row: QueryGridTableDataRow) => {
                     row.columns.forEach(cell => {
                         if (cell.column && cell.column.isPinned)
-                            this.transform("", cell.cell.parentElement);
+                            this.transform("", cell.cell);
                     });
 
                     row.transform(0);
