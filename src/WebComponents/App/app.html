@@ -118,7 +118,7 @@
                     <vi-audit class="flex" persistent-object="[[persistentObject]]"></vi-audit>
                 </template>
             </vi-persistent-object-config>
-            <content select="vi-app-setting, vi-persistent-object-config, vi-persistent-object-attribute-config, vi-persistent-object-tab-config, vi-program-unit-config, vi-query-config, vi-query-chart-config"></content>
+            <content select="vi-app-setting, vi-spinner-config, vi-persistent-object-config, vi-persistent-object-attribute-config, vi-persistent-object-tab-config, vi-program-unit-config, vi-query-config, vi-query-chart-config"></content>
         </vi-app-config>
         <template is="dom-if" if="[[service.application.hasManagement]]">
             <vi-popup-menu id="viConfigure" ctrl-key context-menu-only></vi-popup-menu>
@@ -146,4 +146,5 @@
 <script src="Config/program-unit-config.js"></script>
 <script src="Config/query-config.js"></script>
 <script src="Config/query-chart-config.js"></script>
+<script src="Config/spinner-config.js"></script>
 <script src="Config/app-config.js"></script>

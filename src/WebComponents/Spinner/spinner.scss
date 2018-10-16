@@ -49,6 +49,10 @@ $animation-time: 1s;
             left: 2.5%;
         }
     }
+
+    ::content > * {
+        vertical-align: top;
+    }
 }
 
 @keyframes loadAnimation {
