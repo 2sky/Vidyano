@@ -51,7 +51,7 @@
 
         #switch {
             background-color: white;
-            transform: translateX(var(--theme-h3));
+            transform: translateX(calc(var(--theme-h2) - var(--theme-h4) + 2px));
         }
     }
 }
