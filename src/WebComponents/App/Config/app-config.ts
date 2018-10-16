@@ -106,6 +106,10 @@ namespace Vidyano.WebComponents {
             return (<AppServiceHooks>this.app.service.hooks).getQueryChartConfig(type, this._queryChartConfigs);
         }
 
+        getSpinnerConfig(): SpinnerConfig {
+            return <SpinnerConfig>this.queryEffectiveChildren(`vi-spinner-config`) || null;
+        }
+
         private _getConfigs<T>(type: any): linqjs.Enumerable<T> {
             return <linqjs.Enumerable<T>>Enumerable.from(Polymer.dom(this).children).where(c => c.tagName !== "TEMPLATE").selectMany(element => {
                 if (element.tagName === "CONTENT")
