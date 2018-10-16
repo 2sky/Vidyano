@@ -53,7 +53,7 @@ namespace Vidyano.WebComponents {
 
         attached() {
             if (!this._customTemplate)
-                this._customTemplate = <PolymerTemplate><any>this.querySelector("template[is='dom-template']");
+                this._customTemplate = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
 
             super.attached();
         }
