@@ -90,6 +90,7 @@ interface PolymerTrackDetail {
 }
 
 interface PolymerTemplate extends Node {
+    render();
     stamp: (model: any) => TemplateInstance;
 }
 
