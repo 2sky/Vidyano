@@ -196,7 +196,7 @@
         private async _initializeZenscroll(): Promise<any> {
             if (!this._zenscroll) {
                 await this.importHref(this.resolveUrl("zenscroller.html"));
-                this._zenscroll = zenscroll.createScroller(this.$.wrapper, 500, 0);
+                this._zenscroll = zenscroll.createScroller(this.scroller, 500, 0);
             }
         }
 
@@ -206,7 +206,7 @@
                 this._zenscroll.toY(offsetTop);
             }
             else
-                this.$.wrapper.scrollTop = offsetTop;
+                this.scroller.scrollTop = offsetTop;
         }
 
         async scrollToBottom(animated?: boolean) {
@@ -215,7 +215,7 @@
                 this._zenscroll.toY(this.innerHeight);
             }
             else
-                this.$.wrapper.scrollTop = this.innerHeight;
+                this.scroller.scrollTop = this.innerHeight;
         }
 
         private _outerSizeChanged(e: Event, detail: { width: number; height: number }) {
@@ -292,15 +292,13 @@
         }
 
         private _trackVertical(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
-            const wrapper = this.$.wrapper;
-
             if (detail.state === "start") {
                 this._setScrolling("vertical");
                 this._trackStart = this._verticalScrollTop;
             }
             else if (detail.state === "track") {
                 const newVerticalScrollTop = this._trackStart + detail.dy;
-                wrapper.scrollTop = newVerticalScrollTop === 0 ? 0 : (this.innerHeight - this.outerHeight) * ((1 / this._verticalScrollSpace) * newVerticalScrollTop);
+                this.scroller.scrollTop = newVerticalScrollTop === 0 ? 0 : (this.innerHeight - this.outerHeight) * ((1 / this._verticalScrollSpace) * newVerticalScrollTop);
             }
             else if (detail.state === "end") {
                 this._setScrolling(null);
@@ -314,15 +312,13 @@
         }
 
         private _trackHorizontal(e: CustomEvent, detail: PolymerTrackDetail) {
-            const wrapper = this.$.wrapper;
-
             if (detail.state === "start") {
                 this._setScrolling("horizontal");
                 this._trackStart = this._horizontalScrollLeft;
             }
             else if (detail.state === "track") {
                 const newHorizontalScrollLeft = this._trackStart + detail.dx;
-                wrapper.scrollLeft = newHorizontalScrollLeft === 0 ? 0 : (this.innerWidth - this.outerWidth) * ((1 / this._horizontalScrollSpace) * newHorizontalScrollLeft);
+                this.scroller.scrollLeft = newHorizontalScrollLeft === 0 ? 0 : (this.innerWidth - this.outerWidth) * ((1 / this._horizontalScrollSpace) * newHorizontalScrollLeft);
             }
             else if (detail.state === "end") {
                 this._setScrolling(null);
@@ -348,28 +344,25 @@
         }
 
         private _updateScrollOffsets() {
-            const wrapper = this.$.wrapper;
             if (this.vertical)
-                this._setAtTop((this.verticalScrollOffset = wrapper.scrollTop) === 0);
+                this._setAtTop((this.verticalScrollOffset = this.scroller.scrollTop) === 0);
 
             if (this.horizontal)
-                this.horizontalScrollOffset = wrapper.scrollLeft;
+                this.horizontalScrollOffset = this.scroller.scrollLeft;
         }
 
         private _verticalScrollOffsetChanged(newVerticalScrollOffset: number) {
-            const wrapper = this.$.wrapper;
-            if (wrapper.scrollTop === newVerticalScrollOffset)
+            if (this.scroller.scrollTop === newVerticalScrollOffset)
                 return;
 
-            wrapper.scrollTop = newVerticalScrollOffset;
+            this.scroller.scrollTop = newVerticalScrollOffset;
         }
 
         private _horizontalScrollOffsetChanged(newHorizontalScrollOffset: number) {
-            const wrapper = this.$.wrapper;
-            if (wrapper.scrollLeft === newHorizontalScrollOffset)
+            if (this.scroller.scrollLeft === newHorizontalScrollOffset)
                 return;
 
-            wrapper.scrollLeft = newHorizontalScrollOffset;
+            this.scroller.scrollLeft = newHorizontalScrollOffset;
         }
 
         private _mouseenter() {
@@ -384,9 +377,9 @@
             const event = <MouseEvent>e.detail.sourceEvent;
             if (event.offsetY) {
                 if (event.offsetY > this._verticalScrollTop + this._verticalScrollHeight)
-                    this.$.wrapper.scrollTop += this.$.wrapper.scrollHeight * 0.1;
+                    this.scroller.scrollTop += this.scroller.scrollHeight * 0.1;
                 else if (event.offsetY < this._verticalScrollTop)
-                    this.$.wrapper.scrollTop -= this.$.wrapper.scrollHeight * 0.1;
+                    this.scroller.scrollTop -= this.scroller.scrollHeight * 0.1;
 
                 e.stopPropagation();
             }
@@ -396,9 +389,9 @@
             const event = <MouseEvent>e.detail.sourceEvent;
             if (event.offsetX) {
                 if (event.offsetX > this._horizontalScrollLeft + this._horizontalScrollLeft)
-                    this.$.wrapper.scrollLeft += this.$.wrapper.scrollWidth * 0.1;
+                    this.scroller.scrollLeft += this.scroller.scrollWidth * 0.1;
                 else if (event.offsetX < this._horizontalScrollLeft)
-                    this.$.wrapper.scrollLeft -= this.$.wrapper.scrollWidth * 0.1;
+                    this.scroller.scrollLeft -= this.scroller.scrollWidth * 0.1;
 
                 e.stopPropagation();
             }
