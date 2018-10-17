@@ -152,7 +152,8 @@
             width: var(--vi-scroller-thumb-capture-size);
             top: 0;
             bottom: 0;
-            right: 0;
+            right: var(--vi-scroller-vertical-scrollbar-right, 0);
+            left: var(--vi-scroller-vertical-scrollbar-left, initial);
         }
     }
 
