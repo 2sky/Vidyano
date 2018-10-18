@@ -37,7 +37,7 @@
         private _isVisible: boolean;
 
         protected _shouldRefresh: boolean = false;
-        private _refreshValue: string;
+        private _refreshServiceValue: string;
 
         id: string;
         name: string;
@@ -376,7 +376,7 @@
                 visibilityChanged = true;
             }
 
-            if (resultWins || (this.value !== resultAttr.value && (this.isReadOnly || this._refreshValue !== resultAttr.value))) {
+            if (resultWins || (this.value !== resultAttr.value && (this.isReadOnly || this._refreshServiceValue !== resultAttr._serviceValue))) {
                 const oldDisplayValue = this.displayValue;
                 const oldValue = this.value;
 
@@ -385,10 +385,12 @@
 
                 this.notifyPropertyChanged("value", this.value, oldValue);
                 this.notifyPropertyChanged("displayValue", this.displayValue, oldDisplayValue);
+
+                this.isValueChanged = resultAttr.isValueChanged;
             }
 
-            this._refreshValue = undefined;
-            this.isValueChanged = resultAttr.isValueChanged;
+            this._refreshServiceValue = undefined;
+
             this.triggersRefresh = resultAttr.triggersRefresh;
             this.validationError = resultAttr.validationError || null;
 

@@ -549,7 +549,7 @@ namespace Vidyano {
 
         _prepareAttributesForRefresh(sender: PersistentObjectAttribute) {
             Enumerable.from(this.attributes).where(a => a.id !== sender.id).forEach(attr => {
-                (<any>attr)._refreshValue = (<any>attr).value;
+                (<any>attr)._refreshServiceValue = (<any>attr)._serviceValue;
                 if (attr instanceof PersistentObjectAttributeWithReference) {
                     const attrWithRef = <any>attr;
                     attrWithRef._refreshObjectId = attrWithRef.objectId;

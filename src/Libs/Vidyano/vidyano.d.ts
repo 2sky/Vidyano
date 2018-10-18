@@ -1,6 +1,6 @@
 /// <reference path="../Typings/bignumber.js/bignumber.d.ts" />
 /// <reference path="../Typings/es6-shim/es6-shim.d.ts" />
-/// <reference path="../Typings/linq/linq.d.ts" />
+/// <reference path="../Typings/Linq/linq.d.ts" />
 /// <reference path="../Typings/PromiseQueue/promise-queue.d.ts" />
 /// <reference path="../Typings/Vidyano.Common/vidyano.common.d.ts" />
 declare namespace Vidyano {
@@ -295,7 +295,7 @@ declare namespace Vidyano {
         private _visibility;
         private _isVisible;
         protected _shouldRefresh: boolean;
-        private _refreshValue;
+        private _refreshServiceValue;
         id: string;
         name: string;
         label: string;
@@ -1321,6 +1321,7 @@ declare namespace Vidyano {
     namespace Actions {
         class Save extends Action {
             constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions);
+            _onParentIsDirtyChanged(isDirty: boolean): void;
             protected _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject>;
         }
     }
@@ -1355,11 +1356,6 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
-    namespace ClientOperations {
-        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
-    }
-}
-declare namespace Vidyano {
     interface IServiceQueryResultItemGroup {
         name: string;
         count: number;
@@ -1391,5 +1387,10 @@ declare namespace Vidyano {
         messages: {
             [key: string]: string;
         };
+    }
+}
+declare namespace Vidyano {
+    namespace ClientOperations {
+        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
     }
 }
