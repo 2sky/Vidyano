@@ -337,7 +337,7 @@ namespace Vidyano.WebComponents {
          * Toggles the named boolean attribute on the host element, adding the attribute if bool is truthy and removing it if bool is falsey.
          * If node is specified, sets the attribute on node instead of the host element.
          */
-        toggleAttribute: (name: string, bool: boolean, node?: Node | WebComponent) => void;
+        toggleAttribute: (name: string, bool: boolean, node?: Node | WebComponent) => boolean;
 
         /**
          * Key-value pairs for the custom styles on the element.
@@ -863,8 +863,13 @@ namespace Vidyano.WebComponents {
 
             const wc = Polymer(wcPrototype);
             for (const method in obj) {
-                if (obj.hasOwnProperty(method) && method !== "getName" && method !== "registerOverride" && method !== "_finalizeRegistration" && method !== "publish")
-                    wc[method] = obj[method];
+                if (obj.hasOwnProperty(method) && method !== "getName" && method !== "registerOverride" && method !== "_finalizeRegistration" && method !== "publish") {
+                    const descriptor = Object.getOwnPropertyDescriptor(obj, method);
+                    if (descriptor.value)
+                        wc[method] = obj[method];
+                    else
+                        Object.defineProperty(wc, method, descriptor);
+                }
             }
 
             if (ns)
