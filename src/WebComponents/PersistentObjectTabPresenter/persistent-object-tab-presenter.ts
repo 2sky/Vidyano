@@ -4,6 +4,14 @@ namespace Vidyano.WebComponents {
     @WebComponent.register({
         properties: {
             tab: Object,
+            columns: {
+                type: Number,
+                reflectToAttribute: true
+            },
+            maxColumns: {
+                type: Number,
+                reflectToAttribute: true
+            },
             loading: {
                 type: Boolean,
                 reflectToAttribute: true,
@@ -29,6 +37,8 @@ namespace Vidyano.WebComponents {
         readonly loading: boolean; private _setLoading: (loading: boolean) => void;
         readonly templated: boolean; private _setTemplated: (templated: boolean) => void;
         tab: Vidyano.PersistentObjectTab;
+        columns: number;
+        maxColumns: number;
 
         private async _renderTab(tab: Vidyano.PersistentObjectTab, isAttached: boolean) {
             if (!isAttached || this._renderedTab === tab)
@@ -77,6 +87,9 @@ namespace Vidyano.WebComponents {
                     const attributeTab = new WebComponents.PersistentObjectTab();
                     attributeTab.className = childClassName;
                     attributeTab.tab = <Vidyano.PersistentObjectAttributeTab>tab;
+                    attributeTab.columns = this.columns != null ? this.columns : tab.columnCount;
+                    if (this.maxColumns)
+                        attributeTab.maxColumns = this.maxColumns;
 
                     Polymer.dom(this).appendChild(attributeTab);
 

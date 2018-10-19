@@ -1,0 +1,63 @@
+﻿<dom-module id="vi-flyout">
+    <template>
+        <link rel="stylesheet" href="flyout.css" />
+        <div id="backdrop"></div>
+        <div id="panel" class="layout vertical relative">
+            <header class="relative">
+                <div class="title">
+                    <span>[[persistentObject.breadcrumb]]</span>
+                    <button is="vi-button" class="close" icon="Remove" inverse on-tap="close"></button>
+                </div>
+            </header>
+            <template is="dom-if" if="[[persistentObject]]">
+                <div class="flex layout vertical persistent-object">
+                    <main class="layout vertical flex">
+                        <template is="dom-if" if="[[persistentObjectTabs]]" restamp>
+                            <vi-persistent-object-tab-bar tabs="[[persistentObjectTabs]]" selected-tab="{{persistentObjectTab}}"></vi-persistent-object-tab-bar>
+                        </template>
+                        <vi-persistent-object-tab-presenter class="flex" tab="[[persistentObjectTab]]" max-columns="2"></vi-persistent-object-tab-presenter>
+                    </main>
+                    <footer>
+                        <div class="actions layout horizontal-reverse">
+                            <div class="layout horizontal">
+                                <template is="dom-repeat" items="[[persistentObject.actions]]" as="action" filter="_isActionUnpinned">
+                                    <dr-action-button action="[[action]]"></dr-action-button>
+                                </template>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            </template>
+            <template is="dom-if" if="[[busy]]">
+                <vi-spinner></vi-spinner>
+            </template>
+            <template is="dom-if" if="[[message]]">
+                <div class="flex layout vertical message">
+                    <!--<header>
+                        <div class="title">
+                            <span>[[message.title]]</span>
+                            <button is="vi-button" class="close" icon="Remove" inverse on-tap="close"></button>
+                        </div>
+                    </header>-->
+                    <main class="flex layout vertical center-center" rich$="[[message.rich]]">
+                        <template is="dom-if" if="[[message.rich]]">
+                            <marked-element markdown="[[message.message]]"></marked-element>
+                        </template>
+                        <template is="dom-if" if="[[!message.rich]]">
+                            <pre>[[message.message]]</pre>
+                        </template>
+                        <div class="actions layout horizontal-reverse center-center">
+                            <div class="layout horizontal">
+                                <template is="dom-repeat" items="[[message.actions]]" as="action">
+                                    <button is="vi-button" on-tap="_onMessageAction" label="[[action]]" type$="[[_getMessageActionType(message, index)]]" inverse="[[!_isActiveMessageAction(activeMessageAction, index)]]" on-blur="_blur"></button>
+                                </template>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </template>
+        </div>
+    </template>
+</dom-module>
+
+<script src="flyout.js"></script>

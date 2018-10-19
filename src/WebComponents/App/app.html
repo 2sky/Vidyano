@@ -13,6 +13,7 @@
 <link rel="import" href="../Button/button.html" />
 <link rel="import" href="../Dialog/dialog.html" />
 <link rel="import" href="../Error/error.html" />
+<link rel="import" href="../Flyout/flyout.html" />
 <link rel="import" href="../Grid/grid.html" />
 <link rel="import" href="../Icon/icon.html" />
 <link rel="import" href="../Popup/popup.html" />
@@ -66,6 +67,9 @@
                 </vi-app-route>
             </vi-app-route-presenter>
         </template>
+        <div id="flyouts">
+            <content select="vi-flyout"></content>
+        </div>
         <vi-app-config>
             <vi-persistent-object-attribute-config type="CommonMark" height="3"></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="Reference" height="attr.selectInPlace && attr.getTypeHint('inputtype', '', undefined, true) === 'radio' ? 0 : 1"></vi-persistent-object-attribute-config>

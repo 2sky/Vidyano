@@ -12,7 +12,7 @@
                     <vi-size-tracker size="{{innerSize}}"></vi-size-tracker>
                     <div class="groups">
                         <template is="dom-repeat" items="[[tab.groups]]" as="group">
-                            <vi-persistent-object-group group="[[group]]" group-index="[[index]]" columns="[[columns]]"></vi-persistent-object-group>
+                            <vi-persistent-object-group group="[[group]]" group-index="[[index]]" columns="[[_computeColumnCount(columns, size, tab.columnCount)]]"></vi-persistent-object-group>
                         </template>
                     </div>
                 </div>

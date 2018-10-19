@@ -6,7 +6,13 @@ namespace Vidyano.WebComponents {
             tab: Object,
             columns: {
                 type: Number,
-                computed: "_computeColumns(size, tab.columnCount)"
+                reflectToAttribute: true,
+                value: null
+            },
+            maxColumns: {
+                type: Number,
+                reflectToAttribute: true,
+                value: 4
             },
             size: Object,
             innerSize: {
@@ -39,6 +45,8 @@ namespace Vidyano.WebComponents {
         private _attributePresenters: Vidyano.WebComponents.PersistentObjectAttributePresenter[];
         private _autofocusTarget: Vidyano.WebComponents.PersistentObjectAttributePresenter;
         tab: Vidyano.PersistentObjectAttributeTab;
+        columns: number;
+        maxColumns: number;
         autofocus: boolean;
 
         detached() {
@@ -47,16 +55,19 @@ namespace Vidyano.WebComponents {
             this._attributePresenters = this._autofocusTarget = null;
         }
 
-        private _computeColumns(size: ISize, defaultColumnCount: number): number {
-            if (defaultColumnCount)
-                return defaultColumnCount;
+        private _computeColumnCount(columns: number, size: ISize, defaultColumnCount: number): number {
+            if (defaultColumnCount || columns)
+                return defaultColumnCount || columns;
+
+            if (this.maxColumns > 4 && size.width >= 2000)
+                return Math.min(Math.floor(size.width / 500), this.maxColumns);
 
             if (size.width >= 1500)
-                return 4;
+                return Math.min(4, this.maxColumns);
             else if (size.width > 1000)
-                return 3;
+                return Math.min(3, this.maxColumns);
             else if (size.width > 500)
-                return 2;
+                return Math.min(2, this.maxColumns);
 
             return 1;
         }

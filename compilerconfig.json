@@ -152,6 +152,10 @@
     "inputFile": "src/WebComponents/FileDrop/file-drop.scss"
   },
   {
+    "outputFile": "src/WebComponents/Flyout/flyout.css",
+    "inputFile": "src/WebComponents/Flyout/flyout.scss"
+  },
+  {
     "outputFile": "src/WebComponents/Grid/grid.css",
     "inputFile": "src/WebComponents/Grid/grid.scss"
   },

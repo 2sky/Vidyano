@@ -1,0 +1,190 @@
+@import"../_vars.scss";
+
+:host {
+    position: fixed;
+    top: 2px;
+    right: -40px;
+    bottom: 0;
+    opacity: 0;
+    visibility: hidden;
+    z-index: -1;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(.1,.9,.2,1);
+
+    #panel {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: var(--vi-flyout-width, 50vw);
+        background-color: white;
+        box-shadow: -30px 0px 30px -30px rgba(0,0,0,0.2);
+        animation-fill-mode: forwards;
+        animation-timing-function: cubic-bezier(.1,.9,.2,1);
+        margin-right: calc((var(--theme-h4) * 2) * var(--vi-flyout-index));
+        transition: margin-right 0.2s cubic-bezier(.1,.9,.2,1);
+
+        header {
+            background-color: #3d3d3d;
+            height: var(--theme-h0);
+            line-height: var(--theme-h0);
+
+            button.close {
+                position: absolute;
+                top: 0;
+                right: 0;
+                fill: white;
+                --vi-icon-width: 20px;
+                --vi-icon-height: 20px;
+                width: var(--theme-h2);
+                height: var(--theme-h2);
+            }
+
+            .title {
+                padding: 0 var(--theme-h4);
+                font-size: 18px;
+                color: white;
+
+                span {
+                    display: block;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+
+        footer {
+            padding: var(--theme-h4);
+            border-top: 1px solid var(--theme-light-border);
+        }
+
+        .persistent-object {
+            vi-persistent-object-tab-bar {
+                margin-bottom: var(--theme-h5);
+            }
+
+            dr-grid {
+                margin: var(--theme-h4);
+            }
+        }
+
+        .actions {
+            dr-action-button, button {
+                height: var(--theme-h2);
+                line-height: var(--theme-h2);
+
+                &:not(:last-of-type) {
+                    margin-right: var(--theme-h5);
+                }
+            }
+        }
+
+        .message {
+            main {
+                line-height: var(--theme-h2);
+
+                &:not([rich]) {
+                    pre {
+                        white-space: pre-wrap;
+
+                        a {
+                            color: inherit;
+                        }
+                    }
+                }
+
+                &[rich] {
+                    marked-element {
+                        overflow: auto;
+                        padding: var(--theme-h4);
+
+                        ::content {
+                            p {
+                                margin: 0.5em 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &[visibility] {
+        animation-name: fadeIn;
+        animation-duration: 0.3s;
+
+        #panel {
+            animation-name: flyIn;
+            animation-duration: 0.3s;
+        }
+    }
+
+    &:not([visibility]) {
+        animation-name: fadeOut;
+        animation-duration: 0.2s;
+
+        #panel {
+            animation-name: flyOut;
+            animation-duration: 0.2s;
+        }
+    }
+
+    &[visibility="modal"], &:not(:only-child) {
+        left: -40px;
+
+        #backdrop {
+            @include fit();
+            background-color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        z-index: 999;
+        visibility: visible;
+    }
+
+    100% {
+        opacity: 1;
+        z-index: 999;
+        visibility: visible;
+    }
+}
+
+@keyframes flyIn {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    100% {
+        transform: translate3d(-40px, 0, 0);
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        z-index: 999;
+        visibility: visible;
+    }
+
+    100% {
+        opacity: 0;
+        z-index: -1;
+        visibility: hidden;
+    }
+}
+
+@keyframes flyOut {
+    0% {
+        transform: translate3d(-40px, 0, 0);
+    }
+
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+}

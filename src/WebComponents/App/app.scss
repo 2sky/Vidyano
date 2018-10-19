@@ -89,6 +89,10 @@
         }
     }
 
+    #flyouts {
+        background-color: white;
+    }
+
     [dialog] {
         @include layout-vertical();
         @apply(--theme-shadow);
