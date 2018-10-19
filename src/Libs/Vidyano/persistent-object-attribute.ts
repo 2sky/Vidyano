@@ -376,7 +376,7 @@
                 visibilityChanged = true;
             }
 
-            if (resultWins || (this.value !== resultAttr.value && (this.isReadOnly || this._refreshServiceValue !== resultAttr._serviceValue))) {
+            if (resultWins || (this._serviceValue !== resultAttr._serviceValue && (this.isReadOnly || this._refreshServiceValue !== resultAttr._serviceValue))) {
                 const oldDisplayValue = this.displayValue;
                 const oldValue = this.value;
 

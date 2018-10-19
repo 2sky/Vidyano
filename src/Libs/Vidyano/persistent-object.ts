@@ -286,7 +286,7 @@ namespace Vidyano {
                         return false;
 
                     const wasNew = this.isNew;
-                    this.refreshFromResult(po);
+                    this.refreshFromResult(po, true);
 
                     if (StringEx.isNullOrWhiteSpace(this.notification) || this.notificationType !== NotificationType.Error) {
                         this._setIsDirty(false);
