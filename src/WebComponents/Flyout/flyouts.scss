@@ -1,0 +1,18 @@
+﻿@import"../_vars.scss";
+
+:host {
+    @include layout-horizontal-reverse();
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 999;
+
+    #backdrop {
+        position: fixed;
+    }
+
+    #flyouts {
+        height: 100vh;
+    }
+}

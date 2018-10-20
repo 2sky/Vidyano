@@ -1,7 +1,24 @@
 namespace Vidyano.WebComponents {
+    let _flyoutsContainer: Flyouts;
     let _flyouts: Vidyano.WebComponents.Flyout[] = [];
+    let _peektimer: number;
 
     export type FlyoutVisibility = "open" | "modal";
+
+    @Vidyano.WebComponents.WebComponent.register({
+    })
+    export class Flyouts extends Vidyano.WebComponents.WebComponent {
+        attached() {
+            _flyoutsContainer = this;
+            super.attached();
+        }
+
+        private _unpeek() {
+            clearTimeout(_peektimer);
+            for (let i = 0; i < _flyouts.length; i++)
+                _flyouts[i].removeAttribute("peek");
+        }
+    }
 
     @Vidyano.WebComponents.WebComponent.register({
         properties: {
@@ -69,11 +86,11 @@ namespace Vidyano.WebComponents {
             "esc": "close",
             "tab": "_keyboardNextMessageAction",
             "right": "_keyboardNextMessageAction",
-            "left": "_keyboardPreviousMessageAction",
-            "hover": "_hover"
+            "left": "_keyboardPreviousMessageAction"
         }
     })
     export class Flyout extends Vidyano.WebComponents.WebComponent {
+        private _peektimer: number;
         private _promise: { resolve: (result?: any) => void; reject: (error?: any) => void; };
         private _busyTimer: number;
         readonly index: number; private _setIndex: (index: number) => void;
@@ -90,11 +107,16 @@ namespace Vidyano.WebComponents {
             const newFlyout = new Vidyano.WebComponents.Flyout();
             newFlyout.setAttribute("hidden", "");
 
-            const app = <App>document.querySelector("vi-app");
-            Polymer.dom(app).appendChild(newFlyout);
-            Polymer.dom(app).flush();
+            Polymer.dom(_flyoutsContainer).appendChild(newFlyout);
+            Polymer.dom(_flyoutsContainer).flush();
 
             _flyouts.push(newFlyout);
+
+            _flyoutsContainer.customStyle["--vi-flyouts-count"] = _flyouts.length.toString();
+            newFlyout.customStyle["vi-flyout-index"] = _flyouts.length.toString();
+
+            _flyoutsContainer.updateStyles();
+            newFlyout.updateStyles();
 
             return newFlyout;
         }
@@ -287,7 +309,7 @@ namespace Vidyano.WebComponents {
                 this._promise.resolve(result);
 
             this._updateIndex(1);
-            setTimeout(() => Polymer.dom(this.app).removeChild(this), 200);
+            setTimeout(() => Polymer.dom(_flyoutsContainer).removeChild(this), 200);
         }
 
         private _updateIndex(sliceTop: number = 0) {
@@ -295,6 +317,33 @@ namespace Vidyano.WebComponents {
                 _flyouts.splice(_flyouts.length - 1, 1);
 
             _flyouts.forEach((flyout: Flyout, index) => flyout._setIndex(_flyouts.length - index - sliceTop));
+        }
+
+        private _peek() {
+            clearTimeout(_peektimer);
+            const myIndex = _flyouts.indexOf(this);
+            if (myIndex === _flyouts.length - 1) {
+                for (let i = 0; i < _flyouts.length; i++)
+                    _flyouts[i].removeAttribute("peek");
+            }
+            else {
+                _peektimer = setTimeout(() => {
+                    for (let i = 0; i < _flyouts.length; i++) {
+                        if (i <= myIndex)
+                            _flyouts[i].setAttribute("peek", "");
+                        else
+                            _flyouts[i].removeAttribute("peek");
+                    }
+                }, _flyouts.some(f => f.hasAttribute("peek")) ? 200 : 400);
+            }
+        }
+
+        private _unpeek() {
+            clearTimeout(_peektimer);
+            _peektimer = setTimeout(() => {
+                for (let i = 0; i < _flyouts.length; i++)
+                    _flyouts[i].removeAttribute("peek");
+            }, 100);
         }
     }
 }

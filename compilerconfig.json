@@ -156,6 +156,10 @@
     "inputFile": "src/WebComponents/Flyout/flyout.scss"
   },
   {
+    "outputFile": "src/WebComponents/Flyout/flyouts.css",
+    "inputFile": "src/WebComponents/Flyout/flyouts.scss"
+  },
+  {
     "outputFile": "src/WebComponents/Grid/grid.css",
     "inputFile": "src/WebComponents/Grid/grid.scss"
   },
