@@ -11,6 +11,11 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 readOnly: true,
                 notify: true
+            },
+            modal: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true
             }
         },
         listeners: {
@@ -20,6 +25,7 @@ namespace Vidyano.WebComponents {
     })
     export class Flyouts extends Vidyano.WebComponents.WebComponent {
         readonly isOpen: boolean; private _setIsOpen: (open: boolean) => void;
+        readonly modal: boolean; private _setModal: (modal: boolean) => void;
 
         attached() {
             _flyoutsContainer = this;
@@ -27,16 +33,22 @@ namespace Vidyano.WebComponents {
         }
 
         private _flyoutOpening(e: CustomEvent, flyout: Flyout) {
-            flyout.customStyle["vi-flyout-index"] = _flyouts.length.toString();
-            flyout.updateStyles();
+            if (_flyouts.indexOf(flyout) < 0) {
+                flyout.customStyle["vi-flyout-index"] = _flyouts.length.toString();
+                flyout.updateStyles();
 
-            _flyouts.push(flyout);
-            this._flyoutsChanged();
+                _flyouts.push(flyout);
+                this._flyoutsChanged();
+            }
+
+            this._setModal(_flyouts.length > 1 || _flyouts.some(f => f.visibility === "modal"));
         }
 
-        private _flyoutClosing(e: CustomEvent, , flyout: Flyout) {
+        private _flyoutClosing(e: CustomEvent, flyout: Flyout) {
             _flyouts.remove(flyout);
             this._flyoutsChanged();
+
+            this._setModal(_flyouts.length > 1 || _flyouts.some(f => f.visibility === "modal"));
         }
 
         private _flyoutsChanged() {
