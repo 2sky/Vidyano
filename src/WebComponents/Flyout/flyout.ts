@@ -6,11 +6,44 @@ namespace Vidyano.WebComponents {
     export type FlyoutVisibility = "open" | "modal";
 
     @Vidyano.WebComponents.WebComponent.register({
+        properties: {
+            isOpen: {
+                type: Boolean,
+                readOnly: true,
+                notify: true
+            }
+        },
+        listeners: {
+            "flyout-opening": "_flyoutOpening",
+            "flyout-closing": "_flyoutClosing"
+        }
     })
     export class Flyouts extends Vidyano.WebComponents.WebComponent {
+        readonly isOpen: boolean; private _setIsOpen: (open: boolean) => void;
+
         attached() {
             _flyoutsContainer = this;
             super.attached();
+        }
+
+        private _flyoutOpening(e: CustomEvent, flyout: Flyout) {
+            flyout.customStyle["vi-flyout-index"] = _flyouts.length.toString();
+            flyout.updateStyles();
+
+            _flyouts.push(flyout);
+            this._flyoutsChanged();
+        }
+
+        private _flyoutClosing(e: CustomEvent, , flyout: Flyout) {
+            _flyouts.remove(flyout);
+            this._flyoutsChanged();
+        }
+
+        private _flyoutsChanged() {
+            this._setIsOpen(_flyouts.length > 0);
+
+            this.customStyle["--vi-flyouts-count"] = _flyouts.length.toString();
+            this.updateStyles();
         }
 
         private _unpeek() {
@@ -109,14 +142,6 @@ namespace Vidyano.WebComponents {
 
             Polymer.dom(_flyoutsContainer).appendChild(newFlyout);
             Polymer.dom(_flyoutsContainer).flush();
-
-            _flyouts.push(newFlyout);
-
-            _flyoutsContainer.customStyle["--vi-flyouts-count"] = _flyouts.length.toString();
-            newFlyout.customStyle["vi-flyout-index"] = _flyouts.length.toString();
-
-            _flyoutsContainer.updateStyles();
-            newFlyout.updateStyles();
 
             return newFlyout;
         }
@@ -290,7 +315,7 @@ namespace Vidyano.WebComponents {
 
         private _visibilityChanged(visibility: FlyoutVisibility) {
             this.removeAttribute("hidden");
-            this.fire("flyout-visibility-changed", visibility);
+            this.fire("flyout-opening", this)
         }
 
         private _blur(e: FocusEvent) {
@@ -314,7 +339,7 @@ namespace Vidyano.WebComponents {
 
         private _updateIndex(sliceTop: number = 0) {
             if (sliceTop)
-                _flyouts.splice(_flyouts.length - 1, 1);
+                this.fire("flyout-closing", this);
 
             _flyouts.forEach((flyout: Flyout, index) => flyout._setIndex(_flyouts.length - index - sliceTop));
         }

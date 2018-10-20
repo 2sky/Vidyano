@@ -67,7 +67,7 @@
                 </vi-app-route>
             </vi-app-route-presenter>
         </template>
-        <vi-flyouts></vi-flyouts>
+        <vi-flyouts is-open="{{flyoutOpen}}"></vi-flyouts>
         <vi-app-config>
             <vi-persistent-object-attribute-config type="CommonMark" height="3"></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="Reference" height="attr.selectInPlace && attr.getTypeHint('inputtype', '', undefined, true) === 'radio' ? 0 : 1"></vi-persistent-object-attribute-config>

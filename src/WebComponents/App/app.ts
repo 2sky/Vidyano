@@ -182,6 +182,10 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 computed: "_computeIsProfiling(service.isSignedIn, service.profile)"
             },
+            flyoutOpen: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             signInLogo: String,
             showMenu: {
                 type: Boolean,
