@@ -139,6 +139,7 @@
             background-color: white;
             opacity: calc(0.25 + var(--vi-flyout-index) * (0.5 / var(--vi-flyouts-count)));
             transition: opacity 0.2s ease;
+            cursor: pointer;
 
             &:hover {
                 transition-delay: 0.2s;

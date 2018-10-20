@@ -319,6 +319,17 @@ namespace Vidyano.WebComponents {
             _flyouts.forEach((flyout: Flyout, index) => flyout._setIndex(_flyouts.length - index - sliceTop));
         }
 
+        private _openPeek(e: TapEvent) {
+            for (let i = 0; i < _flyouts.length; i++)
+                _flyouts[i].removeAttribute("peek");
+
+            const myIndex = _flyouts.indexOf(this);
+            while (_flyouts.length - 1 > myIndex) {
+                const top = _flyouts[_flyouts.length - 1];
+                top.close();
+            }
+        }
+
         private _peek() {
             clearTimeout(_peektimer);
             const myIndex = _flyouts.indexOf(this);
