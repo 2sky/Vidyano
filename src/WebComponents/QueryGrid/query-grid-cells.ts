@@ -43,9 +43,9 @@ namespace Vidyano.WebComponents {
             this._typeHints = Vidyano.extend({}, itemValue.item.typeHints, itemValue ? itemValue.typeHints : undefined);
             value = itemValue.item.getValue(itemValue.column.name);
             if (value != null && (itemValue.column.type === "Boolean" || itemValue.column.type === "NullableBoolean"))
-                value = itemValue.item.query.service.getTranslatedMessage(value ? itemValue.column.getTypeHint("truekey", "True") : itemValue.column.getTypeHint("falsekey", "False"));
+                value = itemValue.item.query.service.getTranslatedMessage(value ? this._getTypeHint(itemValue.column, "truekey", "True") : this._getTypeHint(itemValue.column, "falsekey", "False"));
             else if (itemValue.column.type === "YesNo")
-                value = itemValue.item.query.service.getTranslatedMessage(value ? itemValue.column.getTypeHint("truekey", "Yes") : itemValue.column.getTypeHint("falsekey", "No"));
+                value = itemValue.item.query.service.getTranslatedMessage(value ? this._getTypeHint(itemValue.column, "truekey", "Yes") : this._getTypeHint(itemValue.column, "falsekey", "No"));
             else if (itemValue.column.type === "Time" || itemValue.column.type === "NullableTime") {
                 if (typeof value === "string") {
                     value = value.trimEnd("0").trimEnd(".");
@@ -57,7 +57,7 @@ namespace Vidyano.WebComponents {
             }
 
             if (value != null) {
-                let format = itemValue.column.getTypeHint("displayformat", null);
+                let format = this._getTypeHint(itemValue.column, "displayformat", null);
                 if (format == null || format === "{0}") {
                     switch (itemValue.column.type) {
                         case "Date":
@@ -84,7 +84,7 @@ namespace Vidyano.WebComponents {
             else
                 value = "";
 
-            const foreground = itemValue.column.getTypeHint("foreground", null);
+            const foreground = this._getTypeHint(itemValue.column, "foreground", null);
             if (foreground !== this._foreground.currentValue) {
                 if (this._foreground.originalValue === undefined)
                     this._foreground.originalValue = this.style.color;
@@ -92,7 +92,7 @@ namespace Vidyano.WebComponents {
                 this.style.color = this._foreground.currentValue = foreground || this._foreground.originalValue;
             }
 
-            const textAlign = itemValue.column.getTypeHint("horizontalcontentalignment", null);
+            const textAlign = this._getTypeHint(itemValue.column, "horizontalcontentalignment", null);
             if (textAlign !== this._textAlign.currentValue)
                 this.style.textAlign = this._textAlign.currentValue = textAlign || this._textAlign.originalValue;
 
@@ -112,6 +112,10 @@ namespace Vidyano.WebComponents {
             }
             else
                 Polymer.dom(this.root).appendChild(this._textNode = document.createTextNode(this._textNodeValue = <string>value));
+        }
+
+        private _getTypeHint(column: Vidyano.QueryColumn, name: string, defaultValue?: string): string {
+            return column.getTypeHint(name, defaultValue, this._typeHints, true);
         }
     }
 
