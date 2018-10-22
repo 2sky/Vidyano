@@ -27,7 +27,8 @@
     border: none;
     outline: none;
     --vi-spinner-size: 1.5em;
-    --vi-button-color: var(--theme-color);
+    --vi-button--color: var(--theme-color);
+    border-radius: var(--vi-button--border-radius, 0);
 
     /* elevation values from http://codepen.io/shyndman/pen/c5394ddf2e8b2a5c9185904b57421cdb */
     &[elevation] {
@@ -106,7 +107,7 @@
 
     &[type=""], &:not([type]) {
         &:not([inverse]) {
-            background-color: var(--vi-button-color);
+            background-color: var(--vi-button--color);
             color: white;
             fill: white;
             --vi-spinner-color: white;
@@ -123,16 +124,17 @@
 
         &[inverse] {
             background-color: transparent;
-            color: var(--vi-button-color);
-            fill: var(--vi-button-color);
-            --vi-spinner-color: var(--vi-button-color);
+            color: var(--vi-button--color);
+            fill: var(--vi-button--color);
+            --vi-spinner-color: var(--vi-button--color);
 
             &:not([disabled]):hover {
                 &::before {
                     @include fit();
                     content: " ";
-                    background-color: var(--vi-button-color);
+                    background-color: var(--vi-button--color);
                     opacity: 0.1;
+                    border-radius: var(--vi-button--border-radius, 0);
                 }
             }
 
@@ -177,12 +179,12 @@
 vi-popup[open] > [toggle] button[is="vi-button"][header] {
     &[type=""], &:not([type]) {
         &:not([inverse]) {
-            background-color: var(--vi-button-color);
+            background-color: var(--vi-button--color);
             filter: brightness(85%);
         }
 
         &[inverse] {
-            background-color: var(--vi-button-color);
+            background-color: var(--vi-button--color);
             filter: brightness(20%);
         }
     }

@@ -42,7 +42,7 @@
 
         button {
             width: var(--theme-h1);
-            --vi-button-color: var(--vi-app--button-color, var(--theme-foreground));
+            --vi-button--color: var(--vi-app--button-color, var(--theme-foreground));
         }
     }
 }

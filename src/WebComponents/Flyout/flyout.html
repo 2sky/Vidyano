@@ -10,11 +10,10 @@
 
 <dom-module id="vi-flyout">
     <template>
-        <link rel="stylesheet" href="flyout.css" /><header class="relative">
-            <div class="title">
-                <span>[[persistentObject.breadcrumb]]</span>
-                <button is="vi-button" class="close" icon="Remove" inverse on-tap="close"></button>
-            </div>
+        <link rel="stylesheet" href="flyout.css" />
+        <header class="layout horizontal center">
+            <span class="title flex">[[persistentObject.breadcrumb]]</span>
+            <button is="vi-button" class="close" icon="Remove" inverse on-tap="close"></button>
         </header>
         <template is="dom-if" if="[[persistentObject]]">
             <div class="flex layout vertical persistent-object">
