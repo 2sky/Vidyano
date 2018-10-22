@@ -17,7 +17,7 @@
 
         attached() {
             super.attached();
-            
+
             if (typeof this.spinnerConfig === "undefined") {
                 this.spinnerConfig = this.app.configuration.getSpinnerConfig();
                 if (this.spinnerConfig) {
