@@ -12,18 +12,6 @@ $notification-ok: #339f7b;
     --theme-color-notice: #{$notification-notice};
     --theme-color-ok: #{$notification-ok};
 
-    --theme-h0: 64px;
-    --theme-h1: 40px;
-    --theme-h2: 32px;
-    --theme-h3: 22px;
-    --theme-h4: 12px;
-    --theme-h5: 6px;
-
-    --theme-foreground: #333;
-    --theme-light-border: #ddd;
-    --theme-dark-border: darken(#EAEAEA, 15%);
-    --theme-read-only: #f7f7f7;
-
     --theme-shadow: #{'{
         -webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
         -moz-box-shadow:    0 0 4px 0 rgba(0, 0, 0, 0.5);

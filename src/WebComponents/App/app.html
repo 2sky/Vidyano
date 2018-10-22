@@ -8,6 +8,7 @@
 <link rel="import" href="../../Libs/paper-ripple/paper-ripple.html" />
 <link rel="import" href="../WebComponent/webcomponent.html" />
 <link rel="import" href="../Spinner/spinner.html" />
+<link rel="import" href="../AppHeader/app-header.html" />
 <link rel="import" href="../AppRoutePresenter/app-route-presenter.html" />
 <link rel="import" href="../AppRoute/app-route.html" />
 <link rel="import" href="../Button/button.html" />
@@ -42,30 +43,35 @@
             </div>
         </template>
         <template is="dom-if" if="[[!barebone]]" restamp>
-            <template is="dom-if" if="[[showMenu]]" restamp>
-                <vi-menu menu label="[[label]]" program-units="[[service.application.programUnits]]" active-program-unit="[[programUnit]]">
-                    <content select="[label]:not([label='sign-in'])"></content>
-                </vi-menu>
-            </template>
-            <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
-            <vi-app-route-presenter class="flex">
-                <vi-app-route route=""></vi-app-route>
-                <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
-                <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
-                <vi-app-route route="PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
-                <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
-                <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
-                <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
-                <vi-app-route class="fit" route="SignIn(/:stateOrReturnUrl*)(/:returnUrl*)" allow-signed-out>
-                    <vi-sign-in label="[[label]]" logo="[[signInLogo]]">
-                        <content select="[sign-in-background]"></content>
-                        <content select="[sign-in-footer]"></content>
-                    </vi-sign-in>
-                </vi-app-route>
-                <vi-app-route route="SignOut(/)(:returnUrl*)" allow-signed-out>
-                    <vi-sign-out></vi-sign-out>
-                </vi-app-route>
-            </vi-app-route-presenter>
+            <vi-app-header label="[[label]]" hidden$="[[!showMenu]]">
+                <content select="[label]:not([label='sign-in'])"></content>
+            </vi-app-header>
+            <main class="flex">
+                <template is="dom-if" if="[[showMenu]]" restamp>
+                    <vi-menu menu label="[[label]]" program-units="[[service.application.programUnits]]" active-program-unit="[[programUnit]]">
+                        <content select="[label]:not([label='sign-in'])"></content>
+                    </vi-menu>
+                </template>
+                <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
+                <vi-app-route-presenter class="flex">
+                    <vi-app-route route=""></vi-app-route>
+                    <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
+                    <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
+                    <vi-app-route route="PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                    <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                    <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                    <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
+                    <vi-app-route class="fit" route="SignIn(/:stateOrReturnUrl*)(/:returnUrl*)" allow-signed-out>
+                        <vi-sign-in label="[[label]]" logo="[[signInLogo]]">
+                            <content select="[sign-in-background]"></content>
+                            <content select="[sign-in-footer]"></content>
+                        </vi-sign-in>
+                    </vi-app-route>
+                    <vi-app-route route="SignOut(/)(:returnUrl*)" allow-signed-out>
+                        <vi-sign-out></vi-sign-out>
+                    </vi-app-route>
+                </vi-app-route-presenter>
+            </main>
         </template>
         <vi-flyouts is-open="{{flyoutOpen}}"></vi-flyouts>
         <vi-app-config>

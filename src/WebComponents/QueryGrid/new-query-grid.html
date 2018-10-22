@@ -1,0 +1,71 @@
+﻿<dom-module id="vi-new-query-grid">
+    <template>
+        <link rel="stylesheet" href="new-query-grid.css" />
+        <div id="headerHost">
+            <header class="inline layout horizontal">
+                <template is="dom-repeat" items="[[columns]]" as="column" id="headers">
+                    <vi-new-query-grid-header column="[[column]]"></vi-new-query-grid-header>
+                </template>
+            </header>
+            <div class="actionsPlaceholder"></div>
+        </div>
+        <div id="dataHost" class="flex relative">
+            <div id="dataWrapper" class="fit" on-scroll="_scroll">
+                <vi-size-tracker on-sizechanged="_outerSizeChanged"></vi-size-tracker>
+                <iron-list id="dataList" items="[[query.items]]" as="item" class="fit">
+                    <template>
+                        <vi-new-query-grid-row item="[[item]]" columns="[[columns]]" index="[[index]]"></vi-new-query-grid-row>
+                    </template>
+                </iron-list>
+            </div>
+            <div class="top scroll-shadow"></div>
+            <div class="bottom scroll-shadow"></div>
+            <div class="horizontal scrollbar-parent" on-tap="_horizontalScrollbarParentTap">
+                <div id="horizontal" class="scrollbar" on-track="_trackHorizontal" on-mousedown="_trapEvent"></div>
+            </div>
+            <div class="vertical scrollbar-parent" on-tap="_verticalScrollbarParentTap">
+                <div id="vertical" class="scrollbar" on-track="_trackVertical" on-mousedown="_trapEvent"></div>
+            </div>
+        </div>
+        <div hidden>
+            <content select="vi-new-query-grid-column"></content>
+        </div>
+    </template>
+</dom-module>
+
+<dom-module id="vi-new-query-grid-header">
+    <template>
+        <link rel="stylesheet" href="new-query-grid-header.css" />
+        <span>[[column.column.label]]</span>
+    </template>
+</dom-module>
+
+<dom-module id="vi-new-query-grid-row">
+    <template>
+        <link rel="stylesheet" href="new-query-grid-row.css" />
+        <div id="cells" class="layout horizontal">
+            <template is="dom-repeat" items="[[columns]]" as="column">
+                <vi-new-query-grid-cell item="[[item]]" persistent-object="[[persistentObject]]" column="[[column]]"></vi-new-query-grid-cell>
+            </template>
+        </div>
+        <div id="actions" class="layout horizontal">
+            <template is="dom-if" if="[[!index]]">
+                <vi-size-tracker on-sizechanged="_actionsSizechanged"></vi-size-tracker>
+            </template>
+            <template is="dom-repeat" items="[[actions]]" as="action">
+                <dr-action-button action="[[action]]" item="[[item]]" inverse></dr-action-button>
+            </template>
+        </div>
+    </template>
+</dom-module>
+
+<dom-module id="vi-new-query-grid-cell">
+    <template>
+        <link rel="stylesheet" href="new-query-grid-cell.css" />
+        <content></content>
+    </template>
+</dom-module>
+
+<dom-module id="vi-new-query-grid-column"></dom-module>
+
+<script src="new-query-grid.js"></script>

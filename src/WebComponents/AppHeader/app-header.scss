@@ -1,0 +1,48 @@
+﻿@import"../_vars.scss";
+
+:host {
+    @include relative();
+    @include layout-horizontal();
+    @include layout-justified();
+    height: var(--vi-app--header-height);
+    line-height: calc(var(--vi-app--header-height));
+    background-color: var(--vi-app--header-background, white);
+    box-sizing: content-box;
+    border-top: 2px solid var(--theme-color);
+    border-bottom: 2px solid var(--vi-app--border-color);
+    @apply(--vi-app-header);
+
+    h1 {
+        margin: 0;
+        color: var(--theme-foreground);
+        padding-left: var(--theme-h4);
+        font-size: 18px;
+    }
+
+    .search {
+        vi-input-search {
+            width: 40vw;
+            transition: opacity 0.2s ease;
+            background-color: rgba(0, 0, 0, 0.015);
+            border-radius: var(--theme-h5);
+            height: var(--vi-app-header--search-height, var(--theme-h1));
+            line-height: var(--vi-app-header--search-height, var(--theme-h1));
+
+            &:not([focused]) {
+                opacity: 0.75;
+            }
+        }
+    }
+
+    .actions {
+        vi-overflow {
+            height: var(--vi-app--header-height);
+            line-height: calc(var(--vi-app--header-height));
+        }
+
+        button {
+            width: var(--theme-h1);
+            --vi-button-color: var(--vi-app--button-color, var(--theme-foreground));
+        }
+    }
+}

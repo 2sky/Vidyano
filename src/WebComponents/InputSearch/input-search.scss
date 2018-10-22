@@ -12,10 +12,10 @@
         -moz-box-sizing: border-box;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
-        padding-right: var(--theme-h2);
-        padding-left: var(--theme-h5);
+        padding-right: var(--theme-h5);
+        padding-left: var(--theme-h2);
         background-color: transparent;
-        color: white;
+        color: var(--theme-foreground);
         width: 100%;
 
         &::-webkit-input-placeholder {
@@ -37,7 +37,6 @@
     button {
         position: absolute;
         top: 1px;
-        right: 1px;
         bottom: 1px;
         border: none;
         outline: none;
@@ -46,6 +45,14 @@
         width: var(--theme-h2);
         background-color: transparent;
         margin: 1px 1px 1px 0;
+
+        &.search {
+            left: 1px;
+        }
+
+        &.reset {
+            right: 1px;
+        }
 
         @apply(--vi-input-search-button);
     }

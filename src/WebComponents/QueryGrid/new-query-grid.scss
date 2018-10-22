@@ -1,0 +1,230 @@
+@import"../_vars.scss";
+
+:host {
+    @include layout-vertical();
+    position: relative;
+    color: var(--theme-foreground);
+    overflow: hidden;
+    --query-grid--row-height: var(--theme-h1);
+    --dr-grid--header-height: var(--theme-h1);
+
+    #headerHost {
+        height: var(--dr-grid--header-height);
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        header {
+            position: relative;
+            background-color: #eaeef0;
+            border-radius: 4px 4px 0 0;
+            min-width: 100%;
+
+            dr-grid-header:last-of-type {
+                margin-right: var(--dr-grid-actions-width);
+            }
+        }
+
+        // Hide this placeholder while header has no items
+        .actionsPlaceholder {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            height: var(--dr-grid--header-height);
+            width: var(--dr-grid-actions-width);
+            background-color: #eaeef0;
+        }
+    }
+
+    #dataWrapper {
+        overflow: auto;
+    }
+
+    #headerHost, #dataWrapper {
+        -ms-overflow-style: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    #dataHost {
+        overflow: hidden;
+    }
+
+    // Scroller styles
+    --vi-scroller-thumb-color: #888;
+    --vi-scroller-thumb-hover-color: #777;
+    --vi-scroller-thumb-size: var(--theme-h5);
+    --vi-scroller-thumb-hover-size: calc(var(--theme-h5) + 2px);
+    --vi-scroller-thumb-capture-size: calc(var(--theme-h4) + 2px);
+    --vi-scroller-thumb-parent-hover-size: calc(var(--theme-h5) + 6px);
+
+    &:not([force-scrollbars]):not([hovering]):not([scrolling]) .scrollbar-parent .scrollbar {
+        opacity: 0;
+    }
+
+    .scrollbar-parent {
+        position: absolute;
+        background-color: transparent;
+        display: none;
+        z-index: 1;
+
+        &:before {
+            position: absolute;
+            content: " ";
+            background-color: transparent;
+            transition: all 0.2s ease-in-out;
+        }
+
+        &.vertical:before {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: var(--vi-scroller-thumb-parent-hover-size);
+        }
+
+        &.horizontal:before {
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: var(--vi-scroller-thumb-parent-hover-size);
+        }
+
+        .scrollbar {
+            position: absolute;
+            opacity: 1;
+            transition: opacity 0.2s ease-in-out;
+
+            &:after {
+                content: " ";
+                position: absolute;
+                background-color: var(--vi-scroller-thumb-color);
+                border-radius: var(--theme-h5);
+            }
+
+            &#vertical {
+                top: 0;
+                right: 0;
+                width: var(--vi-scroller-thumb-capture-size);
+
+                &:after {
+                    right: 2px;
+                    top: 0;
+                    bottom: 0;
+                    width: var(--vi-scroller-thumb-size);
+                    transition: width 0.2s ease-in-out;
+                }
+            }
+
+            &#horizontal {
+                left: 0;
+                bottom: 0;
+                height: var(--vi-scroller-thumb-capture-size);
+
+                &:after {
+                    bottom: 2px;
+                    left: 0;
+                    right: 0;
+                    height: var(--vi-scroller-thumb-size);
+                    transition: height 0.2s ease-in-out;
+                }
+            }
+        }
+
+        &.horizontal {
+            height: var(--vi-scroller-thumb-capture-size);
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        &.vertical {
+            width: var(--vi-scroller-thumb-capture-size);
+            top: 0;
+            bottom: 0;
+            right: var(--vi-scroller-vertical-scrollbar-right, 0);
+            left: var(--vi-scroller-vertical-scrollbar-left, initial);
+        }
+    }
+
+    &[horizontal] .scrollbar-parent.horizontal, &[vertical] .scrollbar-parent.vertical {
+        display: block;
+    }
+
+    &[scrolling] {
+        #dataWrapper {
+            pointer-events: none;
+        }
+    }
+
+    &[vertical][scrolling="vertical"] .scrollbar-parent.vertical, .scrollbar-parent.vertical:hover,
+    &[horizontal][scrolling="horizontal"] .scrollbar-parent.horizontal, .scrollbar-parent.horizontal:hover {
+        &:before {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .scrollbar:after {
+            background-color: var(--vi-scroller-thumb-hover-color);
+        }
+
+        .scrollbar#vertical:after {
+            width: var(--vi-scroller-thumb-hover-size);
+        }
+
+        .scrollbar#horizontal:after {
+            height: var(--vi-scroller-thumb-hover-size);
+        }
+    }
+
+    .scroll-shadow {
+        position: absolute;
+        -webkit-box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
+        box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
+        bottom: 0;
+        height: var(--theme-h2);
+        -moz-border-radius: 100%;
+        border-radius: 100%;
+        left: calc(var(--theme-h2) * -1);
+        right: calc(var(--theme-h2) * -1);
+        pointer-events: none;
+
+        &.top {
+            top: 0;
+            -webkit-transform: translateY(-48px);
+            transform: translateY(calc(var(--theme-h2) * -1.5));
+        }
+
+        &.bottom {
+            bottom: 0;
+            -webkit-transform: translateY(48px);
+            transform: translateY(calc(var(--theme-h2) * 1.5));
+        }
+    }
+
+    &[scroll-top-shadow] .scroll-shadow.top {
+        -webkit-transform: translateY(-32px);
+        transform: translateY(calc(var(--theme-h2) * -1));
+    }
+
+    &[scroll-bottom-shadow] .scroll-shadow.bottom {
+        -webkit-transform: translateY(32px);
+        transform: translateY(var(--theme-h2));
+    }
+
+    &[hide-native-scrollbar] {
+        #headerHost, #dataWrapper {
+            margin-bottom: calc(var(--theme-scrollbar-width) * -1);
+        }
+
+        #dataWrapper {
+            margin-right: calc(var(--theme-scrollbar-width) * -1);
+        }
+    }
+}
+
+:host-context([flyout]) {
+    .actionsPlaceholder {
+        visibility: hidden;
+    }
+}

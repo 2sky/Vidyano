@@ -16,6 +16,10 @@
     "inputFile": "src/WebComponents/App/app.scss"
   },
   {
+    "outputFile": "src/WebComponents/AppHeader/app-header.css",
+    "inputFile": "src/WebComponents/AppHeader/app-header.scss"
+  },
+  {
     "outputFile": "src/WebComponents/Audit/audit.css",
     "inputFile": "src/WebComponents/Audit/audit.scss"
   },
@@ -278,6 +282,22 @@
   {
     "outputFile": "src/WebComponents/Query/query.css",
     "inputFile": "src/WebComponents/Query/query.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/new-query-grid.css",
+    "inputFile": "src/WebComponents/QueryGrid/new-query-grid.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/new-query-grid-cell.css",
+    "inputFile": "src/WebComponents/QueryGrid/new-query-grid-cell.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/new-query-grid-header.css",
+    "inputFile": "src/WebComponents/QueryGrid/new-query-grid-header.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/new-query-grid-row.css",
+    "inputFile": "src/WebComponents/QueryGrid/new-query-grid-row.scss"
   },
   {
     "outputFile": "src/WebComponents/QueryGrid/query-grid-cell-boolean.css",

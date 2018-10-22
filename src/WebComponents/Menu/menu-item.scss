@@ -7,9 +7,9 @@ $backgroundColor: $blue-grey-900;
     @include relative();
     box-sizing: border-box;
 	display: block;
-	line-height: var(--theme-h2);
-    color: var(--vi-menu-color, $color);
-    fill: var(--vi-menu-color, $color);
+	line-height: var(--vi-menu--line-height, var(--theme-h1));
+    color: var(--vi-menu--color);
+    fill: var(--vi-menu--color);
     cursor: pointer;
 
     span.match {
@@ -22,7 +22,7 @@ $backgroundColor: $blue-grey-900;
         @include relative();
         padding-right: var(--theme-h5);
         text-decoration: none;
-        color: var(--vi-menu-color, $color);
+        color: var(--vi-menu--color);
         white-space: nowrap;
         -ms-text-overflow: ellipsis;
         -o-text-overflow: ellipsis;
@@ -40,7 +40,7 @@ $backgroundColor: $blue-grey-900;
             --vi-icon-width: 1em;
             --vi-icon-height: 1em;
             margin-left: calc(var(--theme-h3) * var(--vi-menu-item-indent-level, 0));
-            fill: var(--vi-menu-color, $color);
+            fill: var(--vi-menu--color);
     		-moz-transition: transform 0.2s ease;
     		-o-transition: transform 0.2s ease;
     		-webkit-transition: transform 0.2s ease;
@@ -74,12 +74,14 @@ $backgroundColor: $blue-grey-900;
     }
 
     &.program-unit {
-		background-color: transparent;
+        border-bottom: 1px solid var(--vi-app--border-color);
 
         > .title {
+            font-size: 14px;
+            line-height: var(--vi-menu--program-unit-line-height, 50px);
+            color: var(--vi-menu--color);
             font-weight: 600;
-            color: var(--vi-menu-color, $color);
-            text-transform: uppercase;
+            border-left: 3px solid transparent;
 
             > vi-icon {
                 display: none;
@@ -87,6 +89,13 @@ $backgroundColor: $blue-grey-900;
                 + span {
                     margin-left: var(--theme-h4);
                 }
+            }
+        }
+
+        &[expand] {
+            > .title {
+                color: var(--vi-menu--color--active, var(--theme-color));
+                border-left-color: var(--vi-menu--color--active, var(--theme-color));
             }
         }
 

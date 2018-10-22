@@ -215,7 +215,7 @@ namespace Vidyano.WebComponents {
             themeColor: {
                 type: String,
                 reflectToAttribute: true,
-                value: "#4682B4"
+                value: "#5c7bf0"
             },
             themeAccentColor: {
                 type: String,

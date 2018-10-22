@@ -12,7 +12,8 @@
         outline: none !important;
     }
 
-    ::content > vi-query-grid, vi-file-drop ::content > vi-query-grid {
+    ::content > vi-new-query-grid, vi-new-query-grid, vi-file-drop ::content > vi-new-query-grid,
+    ::content > vi-query-grid, vi-query-grid, vi-file-drop ::content > vi-query-grid {
         @include flex();
     }
 }

@@ -83,7 +83,7 @@ namespace Vidyano.WebComponents {
                     if (query !== this.query || this._renderedQuery === query || !!query.currentChart)
                         return;
 
-                    const grid = new Vidyano.WebComponents.QueryGrid();
+                    const grid = new Vidyano.WebComponents.NewQueryGrid();
                     this._renderedQuery = grid.query = this.query;
                     Polymer.dom(this).appendChild(grid);
                 }

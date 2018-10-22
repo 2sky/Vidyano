@@ -1,0 +1,69 @@
+﻿@import "../_vars.scss";
+
+:host {
+    @include layout-horizontal();
+    position: relative;
+    z-index: 0;
+    background-color: #fefefe;
+    width: auto !important;
+    min-width: 100%;
+    border-bottom: 1px solid var(--dr-border-color);
+    height: var(--query-grid--row-height);
+
+    .cell > * {
+        padding: 0 var(--theme-h4);
+    }
+
+    &::after {
+        @include fit();
+        content: " ";
+        box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.025);
+        opacity: 0;
+        transition: opacity 100ms ease-out;
+        pointer-events: none;
+    }
+
+    &[can-read]{
+        cursor: pointer;
+
+        &:hover {
+            z-index: 1;
+            background-color: white;
+
+            &::after {
+                opacity: 1;
+            }
+        }
+    }
+
+    #cells {
+        line-height: calc(var(--query-grid--row-height) - 1px);
+        height: calc(var(--query-grid--row-height) - 1px);
+
+        dr-grid-cell:last-of-type {
+            margin-right: var(--dr-grid-actions-width);
+        }
+    }
+
+    #actions {
+        position: absolute;
+        z-index: 1;
+        height: calc(var(--query-grid--row-height) - 1px);
+        line-height: calc(var(--query-grid--row-height) - 1px);
+        background-color: #fefefe;
+        padding: 0 var(--vi-scroller-thumb-capture-size);
+        box-sizing: border-box;
+
+        dr-action-button {
+            line-height: var(--query-grid--row-height);
+            width: var(--query-grid--row-height);
+            padding: 0;
+        }
+    }
+}
+
+:host-context([flyout]) {
+    #actions {
+        visibility: hidden;
+    }
+}

@@ -21,21 +21,14 @@
 :host {
     @include relative();
     cursor: pointer;
-    -moz-transition-property: fill, color, background-color;
-    -o-transition-property: fill, color, background-color;
-    -webkit-transition-property: fill, color, background-color;
     transition-property: fill, color, background-color;
-    -moz-transition-duration: 0.1s;
-    -o-transition-duration: 0.1s;
-    -webkit-transition-duration: 0.1s;
     transition-duration: 0.1s;
-    -moz-transition-timing-function: ease-out;
-    -o-transition-timing-function: ease-out;
-    -webkit-transition-timing-function: ease-out;
     transition-timing-function: ease-out;
     border: none;
     outline: none;
     --vi-spinner-size: 1.5em;
+    --vi-button-color: var(--theme-color);
+
     /* elevation values from http://codepen.io/shyndman/pen/c5394ddf2e8b2a5c9185904b57421cdb */
     &[elevation] {
         transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -113,13 +106,13 @@
 
     &[type=""], &:not([type]) {
         &:not([inverse]) {
-            background-color: var(--theme-color);
+            background-color: var(--vi-button-color);
             color: white;
             fill: white;
             --vi-spinner-color: white;
 
             &:not([disabled]):hover {
-                background-color: var(--theme-color-light);
+                filter: brightness(50%);
             }
 
             &:not([busy])[disabled] {
@@ -130,15 +123,15 @@
 
         &[inverse] {
             background-color: transparent;
-            color: var(--theme-color);
-            fill: var(--theme-color);
-            --vi-spinner-color: var(--theme-color);
+            color: var(--vi-button-color);
+            fill: var(--vi-button-color);
+            --vi-spinner-color: var(--vi-button-color);
 
             &:not([disabled]):hover {
                 &::before {
                     @include fit();
                     content: " ";
-                    background-color: var(--theme-color);
+                    background-color: var(--vi-button-color);
                     opacity: 0.1;
                 }
             }
@@ -184,11 +177,13 @@
 vi-popup[open] > [toggle] button[is="vi-button"][header] {
     &[type=""], &:not([type]) {
         &:not([inverse]) {
-            background-color: var(--theme-color-light);
+            background-color: var(--vi-button-color);
+            filter: brightness(85%);
         }
 
         &[inverse] {
-            background-color: var(--theme-color-faint);
+            background-color: var(--vi-button-color);
+            filter: brightness(20%);
         }
     }
 

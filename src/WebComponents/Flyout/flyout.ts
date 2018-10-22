@@ -63,6 +63,13 @@ namespace Vidyano.WebComponents {
             for (let i = 0; i < _flyouts.length; i++)
                 _flyouts[i].removeAttribute("peek");
         }
+
+        static closeAll() {
+            for (let i = _flyouts.length - 1; i >= 0; i--) {
+                const flyout = _flyouts[i];
+                flyout.close();
+            }
+        }
     }
 
     @Vidyano.WebComponents.WebComponent.register({
@@ -147,6 +154,10 @@ namespace Vidyano.WebComponents {
         persistentObjectPromise: Promise<Vidyano.PersistentObject>;
         persistentObjectTab: Vidyano.PersistentObjectTab;
         visibility: FlyoutVisibility;
+
+        private constructor() {
+            super();
+        }
 
         static Create(): Flyout {
             const newFlyout = new Vidyano.WebComponents.Flyout();
@@ -249,11 +260,6 @@ namespace Vidyano.WebComponents {
         private _persistentObjectChanged(persistentObject: Vidyano.PersistentObject) {
             if (persistentObject) {
                 setTimeout(() => {
-                    if (persistentObject.getAction("Edit") && !persistentObject.isEditing && !(persistentObject.stateBehavior || "").toLowerCase().contains("stayinedit")) {
-                        persistentObject.stateBehavior = `StayInEdit,${persistentObject.stateBehavior || ""}`;
-                        persistentObject.beginEdit();
-                    }
-
                     this.persistentObjectTab = persistentObject.tabs[0];
                 }, 1);
             }

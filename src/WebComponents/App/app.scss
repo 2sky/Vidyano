@@ -2,14 +2,30 @@
 
 :host {
     @include default-variables();
-    @include layout-horizontal();
+    @include layout-vertical();
     position: relative;
     overflow-x: hidden;
     font-family: 'Open Sans', Arial, Helvetica, sans-serif;
     font-size: 13px;
     color: var(--theme-foreground);
     fill: var(--theme-foreground);
+    background: var(--theme-background);
     outline: none;
+
+    --theme-h1: 40px;
+    --theme-h2: 32px;
+    --theme-h3: 22px;
+    --theme-h4: 12px;
+    --theme-h5: 6px;
+
+    --theme-background: #FFFFFF;
+    --theme-foreground: #454f54;
+    --theme-light-border: #ddd;
+    --theme-dark-border: darken(#EAEAEA, 15%);
+    --theme-read-only: #f7f7f7;
+
+    --vi-app--header-height: 60px;
+    --vi-app--border-color: #f3f3f3;
 
     @for $c from 1 through length($list-colors) {
         $color: nth($list-colors, $c);
@@ -37,6 +53,10 @@
 
     &[is-desktop] ::content [hide-desktop] {
         display: none !important;
+    }
+
+    main {
+        @include layout-horizontal();
     }
 
     &[is-profiling] {
