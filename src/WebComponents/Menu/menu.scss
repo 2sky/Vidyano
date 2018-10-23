@@ -7,10 +7,23 @@ $backgroundColor: $blue-grey-900;
     @include layout-vertical();
     @include relative();
     @include noSelection();
-    border-right: 2px solid var(--vi-app--border-color);
     color: var(--vi-menu--color, var(--theme-foreground));
-
+    box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.175);
+    z-index: 1;
     @apply(--vi-menu);
+
+    header {
+        background-color: var(--theme-color);
+        min-height: var(--vi-app--header-height);
+
+        h1 {
+            margin: 0;
+            color: white;
+            padding-left: var(--theme-h4);
+            font-size: 18px;
+            line-height: calc(var(--vi-app--header-height));
+        }
+    }
 
     &:not([collapsed]) {
         width: var(--vi-menu--expand-width, 17em);
@@ -76,41 +89,6 @@ $backgroundColor: $blue-grey-900;
 
             & + vi-menu-item {
                 margin-top: var(--theme-h5);
-            }
-        }
-    }
-
-    &[collapsed] {
-        width: var(--theme-h1);
-
-        .programUnits.vi-menu.style-scope {
-            :not(.program-unit) + .subItems {
-                display: none;
-            }
-
-            vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
-                display: block;
-            }
-
-            .subItems[content] {
-                vi-menu-item {
-                    padding-right: var(--theme-h4);
-                }
-
-                &[item-count="1"] > vi-menu-item {
-                    height: var(--theme-h1);
-                    line-height: var(--theme-h1);
-                }
-
-                &:not([has-group-items]) > vi-menu-item {
-                    padding-left: var(--theme-h5);
-                }
-            }
-        }
-
-        vi-popup {
-            [content] {
-                background-color: var(--vi-menu-background, $backgroundColor);
             }
         }
     }
@@ -198,5 +176,57 @@ $backgroundColor: $blue-grey-900;
 
     &[is-resizing] #resizer, #resizer:hover {
         background-color: #333;
+    }
+}
+
+:host-context([flyout-open]):hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+    background: white;
+}
+
+:host-context([flyout-open]):not(:hover), :host[collapsed]:not(:hover) {
+    width: var(--theme-h1);
+}
+
+:host-context([flyout-open]):not(:hover), :host[collapsed] {
+    header {
+        > * {
+            visibility: hidden;
+        }
+    }
+
+    .programUnits.vi-menu.style-scope {
+        :not(.program-unit) + .subItems {
+            display: none;
+        }
+
+        vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
+            display: block;
+        }
+
+        .subItems[content] {
+            vi-menu-item {
+                padding-right: var(--theme-h4);
+            }
+
+            &[item-count="1"] > vi-menu-item {
+                height: var(--theme-h1);
+                line-height: var(--theme-h1);
+            }
+
+            &:not([has-group-items]) > vi-menu-item {
+                padding-left: var(--theme-h5);
+            }
+        }
+    }
+
+    vi-popup {
+        [content] {
+            background-color: var(--vi-menu-background, $backgroundColor);
+        }
     }
 }

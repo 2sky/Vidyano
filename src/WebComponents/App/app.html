@@ -43,16 +43,15 @@
             </div>
         </template>
         <template is="dom-if" if="[[!barebone]]" restamp>
-            <vi-app-header label="[[label]]" hidden$="[[!showMenu]]">
-                <content select="[label]:not([label='sign-in'])"></content>
-            </vi-app-header>
-            <main class="flex">
-                <template is="dom-if" if="[[showMenu]]" restamp>
-                    <vi-menu menu label="[[label]]" program-units="[[service.application.programUnits]]" active-program-unit="[[programUnit]]">
-                        <content select="[label]:not([label='sign-in'])"></content>
-                    </vi-menu>
-                </template>
-                <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
+            <template is="dom-if" if="[[showMenu]]" restamp>
+                <vi-menu menu label="[[label]]" program-units="[[service.application.programUnits]]" active-program-unit="[[programUnit]]">
+                    <content select="[label]:not([label='sign-in'])"></content>
+                </vi-menu>
+            </template>
+            <main class="flex layout vertical">
+                <vi-app-header label="[[label]]" hidden$="[[!showMenu]]">
+                    <content select="[label]:not([label='sign-in'])"></content>
+                </vi-app-header>
                 <vi-app-route-presenter class="flex">
                     <vi-app-route route=""></vi-app-route>
                     <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
@@ -71,6 +70,7 @@
                         <vi-sign-out></vi-sign-out>
                     </vi-app-route>
                 </vi-app-route-presenter>
+                <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
             </main>
         </template>
         <vi-flyouts is-open="{{flyoutOpen}}"></vi-flyouts>

@@ -7,7 +7,7 @@ $backgroundColor: $blue-grey-900;
     @include relative();
     box-sizing: border-box;
 	display: block;
-	line-height: var(--vi-menu--line-height, var(--theme-h1));
+	line-height: var(--vi-menu--line-height, var(--theme-h2));
     color: var(--vi-menu--color);
     fill: var(--vi-menu--color);
     cursor: pointer;
@@ -98,39 +98,41 @@ $backgroundColor: $blue-grey-900;
                 border-left-color: var(--vi-menu--color--active, var(--theme-color));
             }
         }
+	}
+}
 
-        &[collapsed] {
-            > .title {
-                padding: 0 !important;
-                line-height: var(--theme-h1);
-                height: var(--theme-h1);
+:host-context([flyout-open]), :host[collapsed] {
+    &.program-unit {
+        > .title {
+            padding: 0 !important;
+            line-height: var(--theme-h1);
+            height: var(--theme-h1);
+            width: var(--theme-h1);
+            text-align: center;
+
+            > vi-icon[has-resource] {
+                display: block;
                 width: var(--theme-h1);
-                text-align: center;
+                -moz-transform: rotate(0);
+    			-ms-transform: rotate(0);
+    			-o-transform: rotate(0);
+    			-webkit-transform: rotate(0);
+    			transform: rotate(0);
 
-                > vi-icon[has-resource] {
-                    display: block;
-                    width: var(--theme-h1);
-                    -moz-transform: rotate(0);
-    			    -ms-transform: rotate(0);
-    			    -o-transform: rotate(0);
-    			    -webkit-transform: rotate(0);
-    			    transform: rotate(0);
-
-                    & + span {
-                        display: none;
-                    }
-                }
-
-                > span {
-                    margin-left: 0 !important;
-                }
-            }
-
-            &:not([header]) {
-                > .title {
+                & + span {
                     display: none;
                 }
             }
+
+            > span {
+                margin-left: 0 !important;
+            }
         }
-	}
+
+        &:not([header]) {
+            > .title {
+                display: none;
+            }
+        }
+    }
 }

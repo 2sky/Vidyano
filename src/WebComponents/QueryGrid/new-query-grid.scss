@@ -12,10 +12,11 @@
         height: var(--dr-grid--header-height);
         overflow-x: auto;
         overflow-y: hidden;
+        border-bottom: 1px solid var(--vi-app--border-color);
 
         header {
             position: relative;
-            background-color: #eaeef0;
+            background-color: white;
             border-radius: 4px 4px 0 0;
             min-width: 100%;
 

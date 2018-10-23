@@ -7,6 +7,12 @@
 <dom-module id="vi-menu">
     <template>
         <link rel="stylesheet" href="menu.css" />
+        <header>
+            <div class="label flex">
+                <h1>[[label]]</h1>
+                <content select="[label]"></content>
+            </div>
+        </header>
         <!--<header>
             <template is="dom-if" if="[[!collapsed]]">
                 <vi-input-search value="{{filter}}" on-search="_search"></vi-input-search>

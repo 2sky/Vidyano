@@ -4,12 +4,11 @@
 <dom-module id="vi-app-header">
     <template>
         <link rel="stylesheet" href="app-header.css" />
-        <div class="label flex"><h1>[[label]]</h1><content select="[label]"></content></div>
         <div class="search flex layout horizontal center">
-            <vi-input-search></vi-input-search>
+            <vi-input-search class="flex"></vi-input-search>
         </div>
-        <div class="flex actions layout horizontal end-justified">
-            <vi-overflow class="flex">
+        <div class="actions layout horizontal end-justified">
+            <vi-overflow class="inline" style="width: 175px;">
                 <button is="vi-button" icon="Invisible" inverse="[[!isAppSensitive]]" title="[[translations.Privacy)]]" hidden$="[[!hasSensitive]]" on-tap="_toggleSensitive"></button>
                 <template is="dom-if" if="[[isSignedIn]]">
                     <button is="vi-button" icon="Profiler" inverse title="[[translations.Profiler]]" hidden$="[[!hasProfiler]]" on-tap="_showProfiler"></button>

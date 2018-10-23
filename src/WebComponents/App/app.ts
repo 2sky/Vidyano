@@ -215,7 +215,7 @@ namespace Vidyano.WebComponents {
             themeColor: {
                 type: String,
                 reflectToAttribute: true,
-                value: "#5c7bf0"
+                value: "#03A9F4"
             },
             themeAccentColor: {
                 type: String,
@@ -985,6 +985,9 @@ namespace Vidyano.WebComponents {
             this.customStyle[`--theme-${target}-darker`] = appColor.darker;
             this.customStyle[`--theme-${target}-faint`] = appColor.faint;
             this.customStyle[`--theme-${target}-semi-faint`] = appColor.semiFaint;
+
+            if (target === "color")
+                this.customStyle[`--theme-foreground`] = appColor.foreground;
 
             this.updateStyles();
         }

@@ -4,6 +4,7 @@
     @include layout-vertical();
 
     header {
+        background-color: white;
         padding: var(--theme-h3) var(--theme-h2);
 
         h1 {
@@ -17,7 +18,7 @@
     }
 
     main {
-        padding: 0 var(--theme-h2) var(--theme-h2) var(--theme-h2);
+        padding: var(--theme-h2);
     }
 }
 
