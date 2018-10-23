@@ -986,8 +986,10 @@ namespace Vidyano.WebComponents {
             this.customStyle[`--theme-${target}-faint`] = appColor.faint;
             this.customStyle[`--theme-${target}-semi-faint`] = appColor.semiFaint;
 
-            if (target === "color")
+            if (target === "color") {
                 this.customStyle[`--theme-foreground`] = appColor.foreground;
+                this.customStyle[`--theme-foreground-light`] = appColor.foregroundLight;
+            }
 
             this.updateStyles();
         }

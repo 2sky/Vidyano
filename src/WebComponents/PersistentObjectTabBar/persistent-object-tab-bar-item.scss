@@ -1,24 +1,28 @@
 @import "../_vars.scss";
 
 :host {
-    line-height: var(--theme-h1);
-    height: var(--theme-h1);
     align-items: flex-end;
     cursor: pointer !important;
-    padding: 0 var(--theme-h4);
     border-bottom: 3px solid transparent;
     box-sizing: border-box;
     white-space: nowrap;
     overflow: hidden;
-    color: var(--theme-color);
-    fill: var(--theme-color);
+    height: var(--theme-h1);
 
-    &:hover {
-        background-color: var(--theme-color-faint);
+    &:hover:not([is-selected]) {
+        border-bottom-color: var(--theme-color-light);
+
+        span {
+            color: var(--theme-color-light);
+        }
     }
 
     span {
+        color: var(--theme-foreground-light);
         line-height: calc(var(--theme-h1) - 3px);
+        text-transform: uppercase;
+        font-weight: 600;
+        padding: 0 var(--theme-h4);
 
         &.badge {
             background-color: var(--theme-color-lighter);
@@ -31,9 +35,13 @@
     }
 
     &[is-selected] {
+        background-color: var(--vi-persistent-object-tab-bar-item--selected-background-color, white);
         border-bottom-color: var(--theme-color);
 
         span {
+            color: var(--theme-color);
+            fill: var(--theme-color);
+
             &.badge {
                 background-color: var(--theme-color);
             }
@@ -41,6 +49,14 @@
             &:not(.badge) {
                 font-weight: 600;
             }
+        }
+    }
+
+    &[overflow] {
+        border-bottom: none;
+
+        span {
+            line-height: var(--theme-h1);
         }
     }
 }

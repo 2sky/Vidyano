@@ -22,6 +22,7 @@
         private _dark: string;
         private _darker: string;
         private _foreground: string;
+        private _foregroundLight: string;
 
         constructor(private _base: string) {
             const rgb = this._hexToRgb(_base);
@@ -35,6 +36,7 @@
 
             const baseHsl = this._rgbToHsl(rgb);
             this._foreground = this._rgbToHex(this._hslToRgb({ h: baseHsl.h, s: 0.29, l: 0.29 }));
+            this._foregroundLight = this._rgbToHex(this._hslToRgb({ h: baseHsl.h, s: 0.29, l: 0.43 }));
         }
 
         get faint(): string {
@@ -67,6 +69,10 @@
 
         get foreground(): string {
             return this._foreground;
+        }
+
+        get foregroundLight(): string {
+            return this._foregroundLight;
         }
 
         private _rgbToHsl(rgb: IRGB): IHSL {

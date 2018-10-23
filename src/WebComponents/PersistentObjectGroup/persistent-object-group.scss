@@ -2,7 +2,14 @@
 
 :host {
     display: block;
-    padding: 0 var(--vi-persistent-object-group--attribute-padding, var(--theme-h5));
+    padding: var(--vi-persistent-object-group--attribute-padding, var(--theme-h4));
+    padding-bottom: var(--vi-persistent-object-group--attribute-padding, var(--theme-h3));
+    background-color: #fefefe;
+    border: 1px solid #eee;
+
+    &:not(:last-of-type) {
+        margin-bottom: var(--theme-h3);
+    }
 
     &[loading] {
         visibility: hidden;
@@ -14,7 +21,6 @@
         font-size: 15px;
         font-weight: 600;
         text-transform: uppercase;
-        padding: var(--theme-h4) var(--theme-h5) 0 calc(var(--theme-h5) - 1px);
         color: var(--theme-color);
         overflow: hidden;
         white-space: nowrap;
@@ -33,7 +39,7 @@
         tr {
             td {
                 vertical-align: top;
-                padding: 0 var(--vi-persistent-object-group--attribute-padding, var(--theme-h5));
+                padding: 0 var(--vi-persistent-object-group--attribute-padding, var(--theme-h4));
             }
         }
     }

@@ -7,6 +7,7 @@ $backgroundColor: $blue-grey-900;
     @include layout-vertical();
     @include relative();
     @include noSelection();
+    background-color: var(--vi-menu--background, white);
     color: var(--vi-menu--color, var(--theme-foreground));
     box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.175);
     z-index: 1;
@@ -25,71 +26,31 @@ $backgroundColor: $blue-grey-900;
         }
     }
 
-    &:not([collapsed]) {
+    .content {
         width: var(--vi-menu--expand-width, 17em);
+        transition: transform 0.3s cubic-bezier(.1,.9,.2,1);
+        will-change: transform;
 
-        vi-scroller[vertical][hovering] + #resizer {
-            width: calc(var(--theme-h5) / 2);
+        .programUnits {
+            opacity: 1;
+            transition: opacity 0.3s cubic-bezier(.1,.9,.2,1);
+            will-change: opacity;
         }
+    }
 
-        #add {
-            height: var(--theme-h2);
-            line-height: var(--theme-h2);
-            padding-left: calc(var(--theme-h4) * 2);
-            cursor: pointer;
-            font-style: italic;
+    vi-scroller[vertical][hovering] + #resizer {
+        width: calc(var(--theme-h5) / 2);
+    }
 
-            &:hover {
-                background-color: rgba(0, 0, 0, 0.1);
-            }
-        }
+    #add {
+        height: var(--theme-h2);
+        line-height: var(--theme-h2);
+        padding-left: calc(var(--theme-h4) * 2);
+        cursor: pointer;
+        font-style: italic;
 
-        .instantSearch {
-            position: relative;
-            margin-bottom: var(--theme-h5);
-            padding: var(--theme-h5) 0;
-            background-color: rgba(0,0,0,0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-
-            a {
-                cursor: pointer;
-                color: var(--vi-menu-color, $color);
-                line-height: var(--theme-h2);
-                padding: 0 var(--theme-h4);
-                text-decoration: none;
-                overflow: hidden;
-                text-overflow: ellipsis;
-
-                div {
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    padding-right: var(--theme-h5);
-                }
-
-                span {
-                    &.match {
-                        color: #FFDD00;
-                        font-weight: bold;
-                    }
-
-                    &.label {
-                        font-size: 11px;
-                        font-weight: 100;
-                        text-transform: uppercase;
-                        line-height: var(--theme-h2);
-                        transform: translateY(1px);
-                    }
-                }
-
-                &:hover {
-                    background-color: rgba(0, 0, 0, 0.1);
-                }
-            }
-
-            & + vi-menu-item {
-                margin-top: var(--theme-h5);
-            }
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
         }
     }
 
@@ -145,22 +106,6 @@ $backgroundColor: $blue-grey-900;
         }
     }
 
-    &[collapsed] {
-        header {
-            vi-icon[header] {
-                fill: var(--vi-menu-color, $color);
-                width: var(--theme-h1);
-                height: var(--theme-h1);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                box-sizing: border-box;
-            }
-        }
-
-        #resizer {
-            display: none;
-        }
-    }
-
     #resizer {
         position: absolute;
         top: 0;
@@ -179,54 +124,46 @@ $backgroundColor: $blue-grey-900;
     }
 }
 
-:host-context([flyout-open]):hover {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 1;
-    background: white;
-}
+:host-context([flyout-open]), :host[collapsed] {
+    min-width: var(--theme-h1);
 
-:host-context([flyout-open]):not(:hover), :host[collapsed]:not(:hover) {
-    width: var(--theme-h1);
-}
-
-:host-context([flyout-open]):not(:hover), :host[collapsed] {
-    header {
-        > * {
-            visibility: hidden;
-        }
+    .content {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        background-color: var(--vi-menu--background, white);
+        box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.175);
+        cursor: pointer;
     }
 
-    .programUnits.vi-menu.style-scope {
-        :not(.program-unit) + .subItems {
+    #resizer {
+        display: none;
+    }
+
+    #collapsed  {
+        display: block;
+    }
+
+    &:not(:hover) {
+        header > * {
             display: none;
         }
 
-        vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
-            display: block;
+        .programUnits {
+            opacity: 0;
         }
 
-        .subItems[content] {
-            vi-menu-item {
-                padding-right: var(--theme-h4);
-            }
-
-            &[item-count="1"] > vi-menu-item {
-                height: var(--theme-h1);
-                line-height: var(--theme-h1);
-            }
-
-            &:not([has-group-items]) > vi-menu-item {
-                padding-left: var(--theme-h5);
-            }
+        .content {
+            transform: translate3d(calc(-100% + var(--theme-h1)), 0, 0);
         }
     }
 
-    vi-popup {
-        [content] {
-            background-color: var(--vi-menu-background, $backgroundColor);
+    &:hover {
+        z-index: 999;
+
+        .content {
+            width: var(--vi-menu--expand-width, 17em);
         }
     }
 }

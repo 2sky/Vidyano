@@ -2,7 +2,6 @@
 
 :host {
     @include layout-horizontal();
-    background-color: var(--vi-app-route-presenter--background, #F4F8F9);
 
     vi-error {
         margin: calc(var(--theme-h1) * 2) 0;

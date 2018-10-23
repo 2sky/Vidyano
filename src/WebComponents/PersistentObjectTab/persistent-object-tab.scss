@@ -9,6 +9,6 @@
 
     .groups {
         display: block;
-        padding-bottom: var(--theme-h4);
+        padding: var(--vi-persistent-object-tab--padding, 0 0 var(--theme-h4) 0);
     }
 }

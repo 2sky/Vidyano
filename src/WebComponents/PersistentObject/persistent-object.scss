@@ -3,7 +3,33 @@
 $tabsBG: #f1f1f1;
 
 :host {
-    --vi-action-bar-style: #{'{
+    @include layout-vertical();
+
+    header {
+        background-color: var(--vi-persistent-object--header-background, white);
+        padding: var(--theme-h3) var(--theme-h2) 0 var(--theme-h2);
+        border-bottom: 1px solid var(--theme-light-border);
+
+        h1 {
+            line-height: var(--theme-h1);
+            font-weight: 600;
+            margin: 0 0 var(--theme-h4) 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    main {
+        background-color: var(--vi-persistent-object--main-background, #F4F8F9);
+
+        vi-action-bar {
+            margin: var(--theme-h5) 0;
+        }
+    }
+
+
+    /*--vi-action-bar-style: #{'{
         padding-top: 3px;
         border-bottom: 1px solid '$tabsBG';
     }'};
@@ -139,5 +165,5 @@ $tabsBG: #f1f1f1;
         > header, > div {
             visibility: hidden;
         }
-    }
+    }*/
 }

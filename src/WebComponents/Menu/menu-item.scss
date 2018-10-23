@@ -100,39 +100,3 @@ $backgroundColor: $blue-grey-900;
         }
 	}
 }
-
-:host-context([flyout-open]), :host[collapsed] {
-    &.program-unit {
-        > .title {
-            padding: 0 !important;
-            line-height: var(--theme-h1);
-            height: var(--theme-h1);
-            width: var(--theme-h1);
-            text-align: center;
-
-            > vi-icon[has-resource] {
-                display: block;
-                width: var(--theme-h1);
-                -moz-transform: rotate(0);
-    			-ms-transform: rotate(0);
-    			-o-transform: rotate(0);
-    			-webkit-transform: rotate(0);
-    			transform: rotate(0);
-
-                & + span {
-                    display: none;
-                }
-            }
-
-            > span {
-                margin-left: 0 !important;
-            }
-        }
-
-        &:not([header]) {
-            > .title {
-                display: none;
-            }
-        }
-    }
-}

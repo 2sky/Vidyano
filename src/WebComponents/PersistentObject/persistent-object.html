@@ -7,7 +7,15 @@
 <dom-module id="vi-persistent-object">
     <template>
         <link rel="stylesheet" href="persistent-object.css" />
-        <div class="horizontal layout flex content">
+        <header>
+            <h1 sensitive$="[[persistentObject.isBreadcrumbSensitive]]">[[persistentObject.breadcrumb]]</h1>
+            <vi-persistent-object-tab-bar tabs="[[masterTabs]]" selected-tab="{{selectedMasterTab}}"></vi-persistent-object-tab-bar>
+        </header>
+        <main class="layout vertical flex">
+            <!--<vi-action-bar service-object="[[selectedMasterTab.target]]" hidden$="[[_hideActionBar(selectedMasterTab)]]"></vi-action-bar>-->
+            <vi-persistent-object-details-content class="vertical layout flex detail" tab="{{selectedMasterTab}}" hide-action-bar></vi-persistent-object-details-content>
+        </main>
+        <!--<div class="horizontal layout flex content">
             <div class="vertical layout master">
                 <vi-action-bar service-object="[[selectedMasterTab.target]]" hidden$="[[_hideActionBar(selectedMasterTab)]]"></vi-action-bar>
                 <vi-notification service-object="[[selectedMasterTab.target]]"></vi-notification>
@@ -25,7 +33,7 @@
         <header class="layout horizontal center">
             <span class="flex" sensitive$="[[persistentObject.isBreadcrumbSensitive]]">[[persistentObject.breadcrumb]]</span>
             <vi-spinner block color="white" hidden$="[[!isBusy]]"></vi-spinner>
-        </header>
+        </header>-->
     </template>
 </dom-module>
 
@@ -33,6 +41,7 @@
     <template>
         <style>
             :host {
+                --vi-persistent-object-tab--padding: var(--theme-h3) var(--theme-h2);
                 --theme-color: var(--theme-accent-color);
                 --theme-color-light: var(--theme-accent-color-light);
                 --theme-color-lighter: var(--theme-accent-color-lighter);

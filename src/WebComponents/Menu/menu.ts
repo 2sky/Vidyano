@@ -247,11 +247,6 @@ namespace Vidyano.WebComponents {
                 type: Number,
                 computed: "_computeSubLevel(level)"
             },
-            collapsed: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
             programUnit: {
                 type: Object,
                 observer: "_programUnitChanged"
@@ -301,7 +296,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_updateItemTitle(item, filter, filtering, collapsed)",
+            "_updateItemTitle(item, filter, filtering)",
             "_updateIndentVariable(level)",
             "_updateOpened(filtering, item, expand)"
         ],
@@ -314,7 +309,6 @@ namespace Vidyano.WebComponents {
         collapseGroupsOnTap: boolean;
         item: Vidyano.ProgramUnitItem;
         programUnit: Vidyano.ProgramUnit;
-        collapsed: boolean;
         filter: string;
         filtering: boolean;
         hidden: boolean;
@@ -397,13 +391,11 @@ namespace Vidyano.WebComponents {
             if (!this.classList.contains("program-unit"))
                 return;
 
-            this._setExpand(this.item && (this.item === this.programUnit || this.collapsed));
+            this._setExpand(this.item && (this.item === this.programUnit));
         }
 
-        private _updateItemTitle(item: Vidyano.ProgramUnitItem, filter: string, filtering: boolean, collapsed: boolean) {
-            if (item instanceof Vidyano.ProgramUnit && collapsed)
-                this.$.title.textContent = item.title[0];
-            else if (filtering && this._hasMatch(item, this.filter.toUpperCase())) {
+        private _updateItemTitle(item: Vidyano.ProgramUnitItem, filter: string, filtering: boolean) {
+            if (filtering && this._hasMatch(item, this.filter.toUpperCase())) {
                 const exp = new RegExp(`(${filter})`, "gi");
                 this.$.title.innerHTML = item.title.replace(exp, "<span class='style-scope vi-menu-item match'>$1</span>");
             }
