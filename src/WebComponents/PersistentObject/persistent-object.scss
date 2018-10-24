@@ -4,6 +4,7 @@ $tabsBG: #f1f1f1;
 
 :host {
     @include layout-vertical();
+    --vi-persistent-object-tab--padding: var(--theme-h3) var(--theme-h2);
 
     header {
         background-color: var(--vi-persistent-object--header-background, white);

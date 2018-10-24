@@ -34,10 +34,9 @@
             margin-left: var(--theme-h4);
             width: var(--theme-h1);
             height: var(--theme-h1);
-            fill: var(--vi-app--header-foreground, white);
             --vi-icon-width: 20px;
             --vi-icon-height: 20px;
-            --vi-button--color: var(--theme-foreground);
+            --vi-button--color: white;
             --vi-button--border-radius: 50%;
         }
     }
@@ -48,12 +47,9 @@
     }
 
     .persistent-object {
-        vi-persistent-object-tab-bar {
-            margin-bottom: var(--theme-h5);
-        }
-
-        vi-new-query-grid {
-            margin: var(--theme-h4);
+        vi-persistent-object-tab-presenter {
+            background-color: var(--vi-persistent-object--main-background, #F4F8F9);
+            --vi-persistent-object-tab--padding: var(--theme-h4);
         }
     }
 

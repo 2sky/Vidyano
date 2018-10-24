@@ -8,5 +8,9 @@
         > vi-persistent-object-tab, > vi-query-items-presenter {
             @include fit();
         }
+
+        > vi-query-items-presenter {
+            padding: var(--vi-persistent-object-tab--padding);
+        }
     }
 }

@@ -288,13 +288,19 @@
     main {
         animation-fill-mode: forwards;
         animation-timing-function: cubic-bezier(.1,.9,.2,1);
+        animation-duration: 0.3s;
+    }
+
+    &.animate {
+        main {
+            animation-name: slideRight;
+        }
     }
 
     &[flyout-open]:not([menu-collapsed]) {
         main {
             right: calc((var(--vi-app-menu--width) - var(--theme-h1)) * -1);
-            animation-name: slideLeft;
-            animation-duration: 0.3s;
+            animation-name: slideLeft !important;
         }
     }
 }
@@ -306,5 +312,17 @@
 
     100% {
         transform: translate3d(calc((var(--vi-app-menu--width) - var(--theme-h1)) * -1), 0, 0);
+    }
+}
+
+@keyframes slideRight {
+    0% {
+        transform: translate3d(calc((var(--vi-app-menu--width) - var(--theme-h1)) * -1), 0, 0);
+        right: calc((var(--vi-app-menu--width) - var(--theme-h1)) * -1);
+    }
+
+    100% {
+        transform: none;
+        right: 0;
     }
 }

@@ -184,7 +184,8 @@ namespace Vidyano.WebComponents {
             },
             flyoutOpen: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                observer: "_updateAnimate"
             },
             menuCollapsed: {
                 type: Boolean,
@@ -1023,6 +1024,10 @@ namespace Vidyano.WebComponents {
 
             this.$$("#update").classList.remove("show");
             this.async(() => this._setUpdateAvailable(false), 500);
+        }
+
+        private _updateAnimate() {
+            this.classList.add("animate");
         }
 
         static removeRootPath(path: string = ""): string {
