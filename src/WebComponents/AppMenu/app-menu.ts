@@ -8,7 +8,8 @@ namespace Vidyano.WebComponents {
             programUnits: Array,
             collapsed: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                notify: true
             },
             collapsedWithGlobalSearch: {
                 type: Boolean,
@@ -49,7 +50,7 @@ namespace Vidyano.WebComponents {
             "reset-filter": "_resetFilter"
         }
     })
-    export class Menu extends WebComponent {
+    export class AppMenu extends WebComponent {
         private static _minResizeWidth: number;
         private _resizeWidth: number;
         readonly isResizing: boolean; private _setIsResizing: (val: boolean) => void;
@@ -65,16 +66,20 @@ namespace Vidyano.WebComponents {
         attached() {
             super.attached();
 
-            this.hideSearch = this.app.configuration.getSetting("vi-menu.hide-search", "false").toLowerCase() === "true";
+            this.hideSearch = this.app.configuration.getSetting("vi-app-menu.hide-search", "false").toLowerCase() === "true";
 
-            if (!Menu._minResizeWidth)
-                Menu._minResizeWidth = this.offsetWidth;
+            if (!AppMenu._minResizeWidth)
+                AppMenu._minResizeWidth = this.offsetWidth;
 
             const menuWidth = parseInt(Vidyano.cookie("menu-width"));
-            if (menuWidth)
-                this.customStyle["--vi-menu--expand-width"] = `${menuWidth}px`;
-
-            this.updateStyles();
+            if (menuWidth) {
+                this.app.customStyle["--vi-app-menu--width"] = `${menuWidth}px`;
+                this.app.updateStyles();
+            }
+            else {
+                this.app.customStyle["--vi-app-menu--width"] = `${this.offsetWidth}px`;
+                this.app.updateStyles();
+            }
 
             this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
         }
@@ -99,7 +104,7 @@ namespace Vidyano.WebComponents {
 
                         const exp = new RegExp(`(${filter})`, "gi");
                         this._setInstantSearchResults(results.length > 0 ? results.map(r => {
-                            r["match"] = r.breadcrumb.replace(exp, "<span class='style-scope vi-menu match'>$1</span>");
+                            r["match"] = r.breadcrumb.replace(exp, "<span class='style-scope vi-app-menu match'>$1</span>");
                             r["href"] = `${Vidyano.Path.routes.rootPath}PersistentObject.${r.id}/${r.objectId}`;
 
                             return r;
@@ -165,18 +170,25 @@ namespace Vidyano.WebComponents {
         private _onResize(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
             if (detail.state === "start") {
                 this.app.isTracking = true;
-                this._resizeWidth = Math.max(Menu._minResizeWidth, this.offsetWidth);
-                this.customStyle["--vi-menu--expand-width"] = `${this._resizeWidth}px`;
+                this._resizeWidth = Math.max(AppMenu._minResizeWidth, this.offsetWidth);
+                this.customStyle["--vi-app-menu--width"] = `${this._resizeWidth}px`;
                 this.updateStyles();
                 this._setIsResizing(true);
             }
             else if (detail.state === "track") {
-                this._resizeWidth = Math.max(Menu._minResizeWidth, this._resizeWidth + detail.ddx);
-                this.customStyle["--vi-menu--expand-width"] = `${this._resizeWidth}px`;
+                this._resizeWidth = Math.max(AppMenu._minResizeWidth, this._resizeWidth + detail.ddx);
+                this.customStyle["--vi-app-menu--width"] = `${this._resizeWidth}px`;
                 this.updateStyles();
             }
             else if (detail.state === "end") {
                 Vidyano.cookie("menu-width", String(this._resizeWidth));
+
+                this.app.customStyle["--vi-app-menu--width"] = `${this._resizeWidth}px`;
+                this.app.updateStyles();
+
+                this.customStyle["--vi-app-menu--width"] = null;
+                this.updateStyles();
+
                 this._setIsResizing(false);
                 this.app.isTracking = false;
             }
@@ -304,7 +316,7 @@ namespace Vidyano.WebComponents {
             "tap": "_tap"
         }
     })
-    export class MenuItem extends WebComponent {
+    export class AppMenuItem extends WebComponent {
         readonly expand: boolean; private _setExpand: (val: boolean) => void;
         collapseGroupsOnTap: boolean;
         item: Vidyano.ProgramUnitItem;
@@ -315,7 +327,7 @@ namespace Vidyano.WebComponents {
         filterParent: ProgramUnitItem;
 
         private _updateIndentVariable(level: number) {
-            this.customStyle["--vi-menu-item-indent-level"] = level.toString();
+            this.customStyle["--vi-app-menu-item--indent-level"] = level.toString();
             this.updateStyles();
         }
 
@@ -327,7 +339,7 @@ namespace Vidyano.WebComponents {
             if (!this.collapseGroupsOnTap)
                 this._setExpand(false);
 
-            Array.prototype.forEach.call(Polymer.dom(this.root).querySelectorAll("vi-menu-item[has-items]"), (item: MenuItem) => item._collapseRecursive());
+            Array.prototype.forEach.call(Polymer.dom(this.root).querySelectorAll("vi-app-menu-item[has-items]"), (item: AppMenuItem) => item._collapseRecursive());
         }
 
         private _tap(e: Event) {
@@ -353,7 +365,7 @@ namespace Vidyano.WebComponents {
                     this.app.changePath(item.path);
                 }
 
-                if (this.filtering && this.app.configuration.getSetting("vi-menu.sticky-search", "false").toLowerCase() !== "true")
+                if (this.filtering && this.app.configuration.getSetting("vi-app-menu.sticky-search", "false").toLowerCase() !== "true")
                     this.fire("reset-filter", null);
             }
 
@@ -397,7 +409,7 @@ namespace Vidyano.WebComponents {
         private _updateItemTitle(item: Vidyano.ProgramUnitItem, filter: string, filtering: boolean) {
             if (filtering && this._hasMatch(item, this.filter.toUpperCase())) {
                 const exp = new RegExp(`(${filter})`, "gi");
-                this.$.title.innerHTML = item.title.replace(exp, "<span class='style-scope vi-menu-item match'>$1</span>");
+                this.$.title.innerHTML = item.title.replace(exp, "<span class='style-scope vi-app-menu-item match'>$1</span>");
             }
             else
                 this.$.title.textContent = item.title;

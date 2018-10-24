@@ -186,6 +186,10 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true
             },
+            menuCollapsed: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
             signInLogo: String,
             showMenu: {
                 type: Boolean,
@@ -805,7 +809,7 @@ namespace Vidyano.WebComponents {
         private _computeShowMenu(application: Vidyano.Application, noMenu: boolean, currentRoute: Vidyano.WebComponents.AppRoute): boolean {
             const showMenu = application && !noMenu && currentRoute != null && !currentRoute.route.startsWith("SignIn") && !currentRoute.route.startsWith("SignOut");
             if (showMenu)
-                this.importComponent("Menu");
+                this.importComponent("AppMenu");
 
             return showMenu;
         }
@@ -1004,7 +1008,7 @@ namespace Vidyano.WebComponents {
             this.async(() => this.$$("#update").classList.add("show"), 100);
         }
 
-        private _refreshForUpdate() {
+       private _refreshForUpdate() {
             document.location.reload(true);
         }
 

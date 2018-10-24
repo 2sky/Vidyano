@@ -20,8 +20,12 @@
     "inputFile": "src/WebComponents/AppHeader/app-header.scss"
   },
   {
-    "outputFile": "src/WebComponents/Audit/audit.css",
-    "inputFile": "src/WebComponents/Audit/audit.scss"
+    "outputFile": "src/WebComponents/AppMenu/app-menu.css",
+    "inputFile": "src/WebComponents/AppMenu/app-menu.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/AppMenu/app-menu-item.css",
+    "inputFile": "src/WebComponents/AppMenu/app-menu-item.scss"
   },
   {
     "outputFile": "src/WebComponents/AppRoute/app-route.css",
@@ -128,6 +132,10 @@
     "inputFile": "src/WebComponents/Attributes/persistent-object-attribute-edit.scss"
   },
   {
+    "outputFile": "src/WebComponents/Audit/audit.css",
+    "inputFile": "src/WebComponents/Audit/audit.scss"
+  },
+  {
     "outputFile": "src/WebComponents/Button/button.css",
     "inputFile": "src/WebComponents/Button/button.scss"
   },
@@ -178,14 +186,6 @@
   {
     "outputFile": "src/WebComponents/List/list.css",
     "inputFile": "src/WebComponents/List/list.scss"
-  },
-  {
-    "outputFile": "src/WebComponents/Menu/menu-item.css",
-    "inputFile": "src/WebComponents/Menu/menu-item.scss"
-  },
-  {
-    "outputFile": "src/WebComponents/Menu/menu.css",
-    "inputFile": "src/WebComponents/Menu/menu.scss"
   },
   {
     "outputFile": "src/WebComponents/MessageDialog/message-dialog.css",

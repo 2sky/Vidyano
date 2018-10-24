@@ -4,7 +4,7 @@
         <button class="search" on-tap="_searchClick" hidden$="[[hasValue]]">
             <vi-icon source="Search"></vi-icon>
         </button>
-        <input class="flex" placeholder="[[translateMessage('FilterSearchHint', isAttached)]]" value="{{value::input}}" on-keypress="_searchKeypressed" on-focus="_input_focused" on-blur="_input_blurred" autofocus$="[[autofocus]]" role="search">
+        <input class="flex" placeholder="[[translations.FilterSearchHint]]" value="{{value::input}}" on-keypress="_searchKeypressed" on-focus="_input_focused" on-blur="_input_blurred" autofocus$="[[autofocus]]" role="search">
         <button class="reset" on-tap="_resetClick" hidden$="[[!hasValue]]">
             <vi-icon source="SearchReset"></vi-icon>
         </button>

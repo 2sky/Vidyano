@@ -1,12 +1,10 @@
 <link rel="import" href="../Button/button.html" />
 <link rel="import" href="../InputSearch/input-search.html" />
-<link rel="import" href="../Popup/popup.html" />
 <link rel="import" href="../Scroller/scroller.html" />
-<link rel="import" href="../User/user.html" />
 
-<dom-module id="vi-menu">
+<dom-module id="vi-app-menu">
     <template>
-        <link rel="stylesheet" href="menu.css" />
+        <link rel="stylesheet" href="app-menu.css" />
         <div class="content flex layout vertical">
             <header>
                 <div class="label flex">
@@ -14,20 +12,9 @@
                     <content select="[label]"></content>
                 </div>
             </header>
-            <!--<header>
-                <template is="dom-if" if="[[!collapsed]]">
-                    <vi-input-search value="{{filter}}" on-search="_search"></vi-input-search>
-                </template>
-                <template is="dom-if" if="[[collapsedWithGlobalSearch]]">
-                    <vi-popup orientation="horizontal" content-align="right" sticky on-popup-opened="_focusSearch">
-                        <vi-icon header source="Search"></vi-icon>
-                        <vi-input-search id="collapsedInputSearch" content collapsed value="{{filter}}" on-tap="_catchInputSearchTap" on-search="_search"></vi-input-search>
-                    </vi-popup>
-                </template>
-            </header>-->
             <vi-scroller class="flex programUnits" no-horizontal>
                 <template is="dom-repeat" items="[[programUnits]]" as="programUnit">
-                    <vi-menu-item class="program-unit" item="[[programUnit]]" filter="[[filter]]" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]" items="[[programUnit.items]]" collapse-groups-on-tap></vi-menu-item>
+                    <vi-app-menu-item class="program-unit" item="[[programUnit]]" filter="[[filter]]" program-unit="[[activeProgramUnit]]" collapsed="[[collapsed]]" items="[[programUnit.items]]" collapse-groups-on-tap></vi-app-menu-item>
                     <template is="dom-if" if="[[_computeIsFirstRunProgramUnit(app.service.application, programUnit)]]">
                         <div id="add" on-tap="_add">+ Add menu item</div>
                     </template>
@@ -42,19 +29,19 @@
     </template>
 </dom-module>
 
-<dom-module id="vi-menu-item">
+<dom-module id="vi-app-menu-item">
     <template>
-        <link rel="stylesheet" href="menu-item.css" />
+        <link rel="stylesheet" href="app-menu-item.css" />
         <a class="title" href$="[[href]]" target$="_blank" rel$="[[rel]]">
             <vi-icon source="[[icon]]"></vi-icon>
             <span class="flex" id="title" on-mouseenter="_titleMouseenter"></span>
         </a>
         <iron-collapse id="subItems" class="subItems" hidden$="[[!hasItems]]" no-animation>
             <template is="dom-repeat" items="[[items]]" as="subItem">
-                <vi-menu-item item="[[subItem]]" items="[[subItem.items]]" level="[[subLevel]]" filter="[[filter]]" filter-parent="[[item]]"></vi-menu-item>
+                <vi-app-menu-item item="[[subItem]]" items="[[subItem.items]]" level="[[subLevel]]" filter="[[filter]]" filter-parent="[[item]]"></vi-app-menu-item>
             </template>
         </iron-collapse>
     </template>
 </dom-module>
 
-<script src="menu.js"></script>
+<script src="app-menu.js"></script>

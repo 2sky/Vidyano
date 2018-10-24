@@ -4,7 +4,7 @@
     @include layout-vertical();
 
     header {
-        background-color: white;
+        background-color: var(--vi-query--header-background, white);
         padding: var(--theme-h3) var(--theme-h2);
 
         h1 {
@@ -19,6 +19,7 @@
 
     main {
         padding: var(--theme-h2);
+        background-color: var(--vi-query--main-background, #F4F8F9);
     }
 }
 

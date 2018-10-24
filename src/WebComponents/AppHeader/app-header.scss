@@ -40,3 +40,13 @@
         }
     }
 }
+
+:host-context([flyout-open]) {
+    .actions {
+        display: none;
+    }
+
+    .search {
+        margin-right: var(--vi-app--flyout-width);
+    }
+}

@@ -1,0 +1,164 @@
+@import "../vars.scss";
+
+$color: #FAFAFA;
+$backgroundColor: $blue-grey-900;
+
+:host {
+    @include layout-vertical();
+    @include relative();
+    @include noSelection();
+    z-index: 1;
+    @apply(--vi-app-menu);
+
+    header {
+        background-color: var(--theme-color);
+        min-height: var(--vi-app--header-height);
+
+        h1 {
+            margin: 0;
+            color: white;
+            padding-left: var(--theme-h4);
+            font-size: 18px;
+            line-height: calc(var(--vi-app--header-height));
+        }
+    }
+
+    vi-scroller[vertical][hovering] + #resizer {
+        width: calc(var(--theme-h5) / 2);
+    }
+
+    #add {
+        height: var(--theme-h2);
+        line-height: var(--theme-h2);
+        padding-left: calc(var(--theme-h4) * 2);
+        cursor: pointer;
+        font-style: italic;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    header, footer {
+        display: block;
+        line-height: var(--theme-h1);
+        flex-shrink: 0;
+    }
+
+    header {
+        border-bottom: 1px solid var(--vi-app--border-color);
+    }
+
+    .content {
+        background-color: var(--vi-app-menu--background, white);
+        color: var(--vi-app-menu--color, var(--theme-foreground));
+        box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.175);
+        width: var(--vi-app-menu--width);
+        transition: transform 0.3s cubic-bezier(.1,.9,.2,1);
+
+        .programUnits {
+            opacity: 1;
+            transition: opacity 0.3s cubic-bezier(.1,.9,.2,1);
+        }
+    }
+
+    #resizer {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: var(--theme-h5);
+        background-color: transparent;
+        cursor: ew-resize;
+        z-index: 99;
+        opacity: 0.5;
+        transform: translateX(calc(var(--theme-h5) / 2));
+    }
+
+    &[is-resizing] #resizer, #resizer:hover {
+        background-color: #333;
+    }
+
+    #toggleCollapse {
+        fill: var(--theme-foreground);
+        line-height: var(--theme-h1);
+        height: var(--theme-h1);
+
+        > vi-icon {
+            width: var(--theme-h2);
+            transform: rotate(180deg);
+        }
+    }
+
+    &[collapsed] {
+        min-width: var(--theme-h1);
+
+        .content {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: var(--vi-menu--background, white);
+            box-shadow: 0 0 12px 0px rgba(0, 0, 0, 0.175);
+        }
+
+        #resizer {
+            display: none;
+        }
+
+        #collapsed  {
+            display: block;
+        }
+
+        &:not(:hover) {
+            header > * {
+                display: none;
+            }
+
+            .programUnits {
+                opacity: 0;
+            }
+
+            .content {
+                transform: translate3d(calc(-100% + var(--theme-h1)), 0, 0);
+            }
+        }
+
+        &:hover {
+            z-index: 999;
+
+            .content {
+                width: var(--vi-menu--expand-width, 17em);
+            }
+        }
+    }
+}
+
+:host-context([flyout-open]) {
+    #toggleCollapse {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    #resizer {
+        display: none;
+    }
+}
+
+:host-context([flyout-open]):not([collapsed]) {
+    .programUnits {
+        opacity: 0;
+    }
+}
+
+:host-context([flyout-open]):not([collapsed]):hover {
+    z-index: 999;
+
+    .content {
+        transform: translate3d(calc(100% - var(--theme-h1)), 0, 0);
+
+        .programUnits {
+            opacity: 1;
+        }
+    }
+}

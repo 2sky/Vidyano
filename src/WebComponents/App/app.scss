@@ -26,6 +26,8 @@
 
     --vi-app--header-height: 50px;
     --vi-app--border-color: #f3f3f3;
+    --vi-app-menu--width: 17em;
+    --vi-app--flyout-width: 50vw;
 
     @for $c from 1 through length($list-colors) {
         $color: nth($list-colors, $c);
@@ -281,5 +283,28 @@
                 transform: translate(-50%, 0px);
             }
         }
+    }
+
+    main {
+        animation-fill-mode: forwards;
+        animation-timing-function: cubic-bezier(.1,.9,.2,1);
+    }
+
+    &[flyout-open]:not([menu-collapsed]) {
+        main {
+            right: calc((var(--vi-app-menu--width) - var(--theme-h1)) * -1);
+            animation-name: slideLeft;
+            animation-duration: 0.3s;
+        }
+    }
+}
+
+@keyframes slideLeft {
+    0% {
+        transform: none;
+    }
+
+    100% {
+        transform: translate3d(calc((var(--vi-app-menu--width) - var(--theme-h1)) * -1), 0, 0);
     }
 }
