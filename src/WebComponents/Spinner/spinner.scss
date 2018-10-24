@@ -1,7 +1,5 @@
 @import "../_vars.scss";
 
-$animation-time: 1s;
-
 :host {
     display: block;
     position: relative;
@@ -15,60 +13,41 @@ $animation-time: 1s;
         transform: translate(calc(var(--vi-spinner-size, var(--theme-h2)) / -2), calc(var(--vi-spinner-size, var(--theme-h2)) / -2));
     }
 
-    .box {
-        width: 45%;
-        height: 45%;
-        background: var(--vi-spinner-color, rgba(127, 127, 127, 1));
-        opacity: 0.1;
-        animation: loadAnimation $animation-time linear infinite;
-
-        &:nth-of-type(1) {
-            position: absolute;
-            top: 2.5%;
-            left: 2.5%;
-            animation-delay: -($animation-time / 4 ) * 3;
-        }
-
-        &:nth-of-type(2) {
-            position: absolute;
-            top: 2.5%;
-            right: 2.5%;
-            animation-delay: -($animation-time / 4 ) * 2;
-        }
-
-        &:nth-of-type(3) {
-            position: absolute;
-            bottom: 2.5%;
-            right: 2.5%;
-            animation-delay: -($animation-time / 4);
-        }
-
-        &:nth-of-type(4) {
-            position: absolute;
-            bottom: 2.5%;
-            left: 2.5%;
-        }
+    .spinner {
+        animation: rotator 1.4s linear infinite;
     }
 
-    ::content > * {
-        vertical-align: top;
+    .path {
+        stroke-dasharray: 187;
+        stroke-dashoffset: 0;
+        transform-origin: center;
+        stroke: var(--vi-spinner-color, var(--theme-color));
+        animation: dash 1.4s ease-in-out infinite;
     }
 }
 
-@keyframes loadAnimation {
+@keyframes rotator {
     0% {
-        opacity: 0.1;
-    }
-
-    30% {
-        opacity: 1;
-    }
-
-    90% {
-        opacity: 0.1;
+        transform: rotate(0deg);
     }
 
     100% {
-        opacity: 0.1;
+        transform: rotate(270deg);
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dashoffset: 187;
+    }
+
+    50% {
+        stroke-dashoffset: 46;
+        transform: rotate(135deg);
+    }
+
+    100% {
+        stroke-dashoffset: 187;
+        transform: rotate(450deg);
     }
 }
