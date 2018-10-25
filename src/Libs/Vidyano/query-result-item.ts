@@ -14,8 +14,10 @@
 
             this.id = item.id;
 
-            if (item.values)
-                this.rawValues = Enumerable.from(item.values).select(v => service.hooks.onConstructQueryResultItemValue(this.service, this, v)).memoize();
+            if (item.values) {
+                const columnNames = query.columns.map(c => c.name);
+                this.rawValues = Enumerable.from(item.values).where(v => columnNames.indexOf(v.key) >= 0).select(v => service.hooks.onConstructQueryResultItemValue(this.service, this, v)).memoize();
+            }
             else
                 this.rawValues = Enumerable.empty<QueryResultItemValue>();
 

@@ -803,7 +803,7 @@ namespace Vidyano {
             while (i--) {
                 if (_columnsEnum.firstOrDefault(c => columns[i].name === c.name) == null) {
                     let column = columns.splice(i, 1)[0];
-                    columns[column.name] = undefined;
+                    columns[column.name] = null;
                     columnsChanged = true;
                 }
             }
@@ -822,10 +822,10 @@ namespace Vidyano {
             });
 
             if (columnsChanged) {
-                if (this.columns !== columns)
-                    this.columns = columns;
+                const newColumns = columns.slice();
+                columns.forEach(c => newColumns[c.name] = c);
 
-                this.notifyPropertyChanged("columns", this.columns, oldColumns);
+                this.notifyPropertyChanged("columns", this.columns = newColumns, oldColumns);
                 if (this._columnObservers)
                     this._columnObservers.forEach(c => c());
 
