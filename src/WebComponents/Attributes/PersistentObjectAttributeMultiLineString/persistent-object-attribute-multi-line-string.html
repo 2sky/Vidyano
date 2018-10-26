@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="persistent-object-attribute-multi-line-string.css" />
         <template is="dom-if" if="[[!_useCodeMirror(codeMirror, sensitive)]]">
             <template is="dom-if" if="[[!editing]]">
-                <vi-scroller no-horizontal class="flex">
+                <vi-scroller no-horizontal class="flex" allow-native>
                     <pre sensitive$="[[sensitive]]">[[attribute.displayValue]]</pre>
                 </vi-scroller>
             </template>

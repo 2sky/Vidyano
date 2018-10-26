@@ -232,7 +232,7 @@
         transform: translateY(var(--theme-h2));
     }
 
-    &[hide-native-scrollbar] {
+    &[hide-native-scrollbar]:not([allow-native]) {
         &[vertical] {
             > #wrapper {
                 margin-right: calc(var(--theme-scrollbar-width) * -1);
@@ -244,5 +244,9 @@
                 margin-bottom: calc(var(--theme-scrollbar-width) * -1);
             }
         }
+    }
+
+    &[hide-native-scrollbar][allow-native] > .scrollbar-parent {
+        display: none !important;
     }
 }
