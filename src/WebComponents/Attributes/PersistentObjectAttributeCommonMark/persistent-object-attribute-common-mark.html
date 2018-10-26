@@ -5,7 +5,7 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-common-mark.css" />
         <template is="dom-if" if="[[!editing]]">
-            <vi-scroller class="flex">
+            <vi-scroller class="flex" allow-native>
                 <marked-element markdown="[[attribute.displayValue]]" sensitive$="[[sensitive]]"></marked-element>
             </vi-scroller>
         </template>
