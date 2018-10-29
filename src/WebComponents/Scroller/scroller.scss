@@ -17,6 +17,7 @@
         overflow: auto;
         outline: none !important;
         -ms-overflow-style: none;
+        scrollbar-width: none;
 
         &::-webkit-scrollbar {
             display: none;

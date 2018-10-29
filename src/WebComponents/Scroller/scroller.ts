@@ -172,6 +172,7 @@
 
                 const test = new Vidyano.WebComponents.ScrollbarTest();
                 document.body.appendChild(test);
+                Polymer.dom(test).flush();
                 Vidyano.WebComponents.Scroller._hideNativeScrollbars = !test.isScrollbarHidden;
                 document.body.removeChild(test);
 
