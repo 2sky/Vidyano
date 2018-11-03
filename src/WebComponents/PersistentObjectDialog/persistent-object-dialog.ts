@@ -9,7 +9,7 @@ namespace Vidyano.WebComponents {
         cancel?: (close: () => void) => void;
     }
 
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             persistentObject: Object,
             tab: {

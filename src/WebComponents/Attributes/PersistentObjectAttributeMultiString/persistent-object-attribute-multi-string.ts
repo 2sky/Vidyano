@@ -1,7 +1,7 @@
 namespace Vidyano.WebComponents.Attributes {
     "use strict";
 
-    @Sortable.register
+    @WebComponent.register()
     export class PersistentObjectAttributeMultiStringItems extends Sortable {
         protected _dragEnd() {
             this.fire("reorder-strings", {}, { bubbles: true });
@@ -84,7 +84,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
     }
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             maxlength: Number,
             strings: {

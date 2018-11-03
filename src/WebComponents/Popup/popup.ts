@@ -379,20 +379,6 @@ namespace Vidyano.WebComponents {
 
     @WebComponent.register({
         properties: {
-            disabled: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            open: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true,
-                notify: true
-            },
-            sticky: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
             autoSizeContent: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -401,15 +387,6 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 value: false
-            },
-            contentAlign: {
-                type: String,
-                reflectToAttribute: true
-            },
-            orientation: {
-                type: String,
-                reflectToAttribute: true,
-                value: "auto"
             },
             closeDelay: {
                 type: Number,

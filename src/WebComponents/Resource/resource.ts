@@ -3,6 +3,28 @@ namespace Vidyano.WebComponents {
 
     const resources: { [name: string]: Resource } = {};
 
+    @WebComponent.registerAbstract({
+        properties: {
+            name: {
+                type: String,
+                observer: "_nameChanged"
+            },
+            model: {
+                type: Object,
+                observer: "_load"
+            },
+            source: {
+                type: String,
+                reflectToAttribute: true,
+                observer: "_load"
+            },
+            hasResource: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true
+            }
+        }
+    })
     export abstract class Resource extends WebComponent {
         private _loadedSource: string;
         readonly hasResource: boolean; private _setHasResource: (value: boolean) => void;
@@ -45,36 +67,6 @@ namespace Vidyano.WebComponents {
                 this._setHasResource(resource != null);
                 this._loadedSource = this.source;
             }
-        }
-
-        static register(info: IWebComponentRegistrationInfo | Function = {}): any {
-            if (typeof info === "function")
-                return Resource.register({})(info);
-
-            return (obj: Function) => {
-                info.properties = info.properties || {};
-
-                info.properties["name"] = {
-                    type: String,
-                    observer: "_nameChanged"
-                };
-                info.properties["model"] = {
-                    type: Object,
-                    observer: "_load"
-                };
-                info.properties["source"] = {
-                    type: String,
-                    reflectToAttribute: true,
-                    observer: "_load"
-                };
-                info.properties["hasResource"] = {
-                    type: Boolean,
-                    reflectToAttribute: true,
-                    readOnly: true
-                };
-
-                return WebComponent.register(obj, info);
-            };
         }
 
         static LoadFragment(source: string | Resource, tagName: string): DocumentFragment {

@@ -1,7 +1,7 @@
 namespace Vidyano.WebComponents.Attributes {
     "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             canToggle: {
                 type: Boolean,
@@ -44,7 +44,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
     }
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             booleanOptions: {
                 type: Array,

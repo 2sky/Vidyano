@@ -276,7 +276,7 @@ namespace Vidyano.WebComponents {
         }
     }
 
-    @Sortable.register({
+    @WebComponent.register({
         extends: "tbody"
     })
     export class QueryGridTableDataBody extends Sortable {

@@ -600,12 +600,15 @@ namespace Vidyano.WebComponents {
 
             info.properties = wcPrototype.properties || {};
 
-            for (const prop in info.properties) {
-                if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed)) {
-                    if (wcPrototype.properties[prop].computed[0] !== "!")
-                        info.properties[prop]["computed"] = "_forwardComputed(" + wcPrototype.properties[prop].computed + ")";
-                    else
-                        info.properties[prop]["computed"] = "_forwardNegate(" + wcPrototype.properties[prop].computed.substring(1) + ")";
+            for (const p in <PolymerProperties>info.properties) {
+                const prop = info.properties[p];
+                if (typeof prop === "object") {
+                    if (prop.computed && !/\)$/.test(prop.computed)) {
+                        if (prop.computed[0] !== "!")
+                            prop.computed = "_forwardComputed(" + prop.computed + ")";
+                        else
+                            prop.computed = "_forwardNegate(" + prop.computed.substring(1) + ")";
+                    }
                 }
             }
 
@@ -878,14 +881,78 @@ namespace Vidyano.WebComponents {
             return wc;
         }
 
-        static register(arg1?: IWebComponentRegistrationInfo | Function, arg2?: string | IWebComponentRegistrationInfo, arg3?: string): (obj: any) => void {
-            if (!arg1 || typeof arg1 === "object") {
-                return (obj: Function) => {
-                    return WebComponent._register(obj, <IWebComponentRegistrationInfo>arg1, <string>arg2, arg3);
+        private static registrations: { [key: string]: IWebComponentRegistrationInfo; } = {};
+        static register(info?: IWebComponentRegistrationInfo, prefix?: string, ns?: string): (obj: any) => void;
+        static register(target: Function, info: IWebComponentRegistrationInfo, prefix?: string, ns?: string): (obj: any) => void;
+        static register(infoOrTarget?: IWebComponentRegistrationInfo | Function, prefixOrInfo?: string | IWebComponentRegistrationInfo, prefixOrNs?: string, ns?: string): (obj: any) => void {
+            if (!infoOrTarget || typeof infoOrTarget === "object") {
+                return (target: Function) => {
+                    const info: IWebComponentRegistrationInfo = Vidyano.WebComponents.WebComponent._cloneInfo(WebComponent.registrations[Object.getPrototypeOf(target).name] || {});
+
+                    const targetInfo = <IWebComponentRegistrationInfo>infoOrTarget;  
+                    if (targetInfo) {
+                        if (targetInfo.properties)
+                            info.properties = info.properties ? Vidyano.extend(info.properties, targetInfo.properties) : targetInfo.properties;
+
+                        if (targetInfo.hostAttributes)
+                            info.hostAttributes = info.hostAttributes ? Vidyano.extend(info.hostAttributes, targetInfo.hostAttributes) : targetInfo.hostAttributes;
+
+                        if (targetInfo.listeners)
+                            info.listeners = info.listeners ? Vidyano.extend(info.listeners, targetInfo.listeners) : targetInfo.listeners;
+
+                        if (targetInfo.keybindings)
+                            info.keybindings = info.keybindings ? Vidyano.extend(info.keybindings, targetInfo.keybindings) : targetInfo.keybindings;
+
+                        if (targetInfo.observers)
+                            info.observers ? info.observers.push(...targetInfo.observers) : (info.observers = targetInfo.observers);
+
+                        if (targetInfo.behaviors)
+                            info.behaviors ? info.behaviors.push(...targetInfo.behaviors) : (info.behaviors = targetInfo.behaviors);
+
+                        if (targetInfo.forwardObservers)
+                            info.forwardObservers ? info.forwardObservers.push(...targetInfo.forwardObservers) : (info.forwardObservers = targetInfo.forwardObservers);
+
+                        if (typeof targetInfo.mediaQueryAttributes !== "undefined")
+                            info.mediaQueryAttributes = targetInfo.mediaQueryAttributes;
+
+                        if (typeof targetInfo.sensitive !== "undefined")
+                            info.sensitive = targetInfo.sensitive;
+
+                        if (typeof targetInfo.extends !== "undefined")
+                            info.extends = targetInfo.extends;
+                    }
+
+                    const prefix = <string>prefixOrInfo;
+                    const ns = prefixOrNs;
+                    const wc = WebComponent._register(target, Vidyano.WebComponents.WebComponent._cloneInfo(info), prefix, ns);
+                    WebComponent.registrations[wc.name] = info;
+
+                    return wc;
                 };
             }
-            else if (typeof arg1 === "function")
+            else if (typeof infoOrTarget === "function")
                 return WebComponent._register.apply(this, arguments);
+        }
+
+        static registerAbstract(info?: IWebComponentRegistrationInfo, prefix?: string, ns?: string): (obj: any) => void {
+            return (target: Function) => {
+                WebComponent.registrations[Object(target).name] = info;
+            };
+        }
+
+        private static _cloneInfo(info: IWebComponentRegistrationInfo): IWebComponentRegistrationInfo {
+            const clonedInfo: IWebComponentRegistrationInfo = {};
+
+            for (let key in info) {
+                if (Array.isArray(info[key]))
+                    clonedInfo[key] = info[key].slice();
+                else if (typeof info[key] === "object")
+                    Object.assign(clonedInfo[key] = {}, info[key]);
+                else
+                    clonedInfo[key] = info[key];
+            }
+
+            return clonedInfo;
         }
     }
 }

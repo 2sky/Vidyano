@@ -1,7 +1,7 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
-    @Resource.register
+    @WebComponent.register()
     export class Icon extends Resource {
         constructor(source?: string) {
             super();

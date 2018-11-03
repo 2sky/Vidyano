@@ -1,7 +1,7 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
-    @Resource.register
+    @WebComponent.register()
     export class QueryGridCellTemplate extends Resource {
         static Load(source: string): PolymerTemplate {
             const cellTemplate = <QueryGridCellTemplate>Resource.LoadResource(source, "VI-QUERY-GRID-CELL-TEMPLATE") || <QueryGridCellTemplate>Resource.LoadResource("Default", "VI-QUERY-GRID-CELL-TEMPLATE");

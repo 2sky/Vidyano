@@ -192,14 +192,20 @@ namespace Vidyano.WebComponents {
         }
 
         private _getAttributeTypeImportInfo(type: string): { filename: string; synonyms?: string[]; } {
+            const typeSynonyms: { [key: string]: string[]; } = {
+                "Boolean": ["YesNo"],
+                "DropDown": ["Enum"],
+                "String": ["Guid", "NullableGuid"],
+                "User": ["NullableUser"]
+            };
+
             let synonyms: string[];
-            for (const key in Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms) {
-                const typeSynonyms = Vidyano.WebComponents.Attributes.PersistentObjectAttribute.typeSynonyms[key];
+            for (const key in typeSynonyms) {
                 if (key === type)
-                    synonyms = typeSynonyms;
-                else if (typeSynonyms.indexOf(type) >= 0) {
+                    synonyms = typeSynonyms[key];
+                else if (typeSynonyms[key].indexOf(type) >= 0) {
                     type = key;
-                    synonyms = typeSynonyms;
+                    synonyms = typeSynonyms[key];
                 }
             }
 

@@ -1,6 +1,29 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    @WebComponent.registerAbstract({
+        properties: {
+            noHeader: {
+                type: Boolean,
+                reflectToAttribute: true
+            }
+        },
+        listeners: {
+            "sizechanged": "_dialogSizeChanged",
+            "iron-overlay-closed": "_onClosed"
+        },
+        behaviors: [
+            Polymer["IronOverlayBehavior"],
+            Polymer["IronResizableBehavior"]
+        ],
+        hostAttributes: {
+            "dialog": "",
+            "with-backdrop": ""
+        },
+        keybindings: {
+            "esc": "_esc"
+        }
+    })
     export abstract class Dialog extends WebComponent {
         private _sizeTracker: Vidyano.WebComponents.SizeTracker;
         private _translatePosition: IPosition;
@@ -113,39 +136,6 @@ namespace Vidyano.WebComponents {
 
             this._translatePosition = null;
             this.style.webkitTransform = this.style.transform = "";
-        }
-
-        static register(info: IWebComponentRegistrationInfo | Function = {}, prefix?: string): any {
-            if (typeof info === "function")
-                return Dialog.register({})(info);
-
-            return (obj: Function) => {
-                info.properties = info.properties || {};
-
-                info.properties["noHeader"] = {
-                    type: Boolean,
-                    reflectToAttribute: true
-                };
-
-                info.listeners = info.listeners || {};
-                info.listeners["sizechanged"] = "_dialogSizeChanged";
-                info.listeners["iron-overlay-closed"] = "_onClosed";
-
-                info.behaviors = info.behaviors || [];
-                info.behaviors.push(Polymer["IronOverlayBehavior"]);
-                info.behaviors.push(Polymer["IronResizableBehavior"]);
-
-                info.hostAttributes = info.hostAttributes || {};
-                info.hostAttributes["dialog"] = "";
-                info.hostAttributes["with-backdrop"] = "";
-
-                info.keybindings = info.keybindings || {};
-                info.keybindings["esc"] = {
-                    listener: "_esc"
-                };
-
-                return WebComponent.register(obj, info, prefix);
-            };
         }
     }
 }

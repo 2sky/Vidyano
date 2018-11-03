@@ -1,7 +1,7 @@
 namespace Vidyano.WebComponents.Attributes {
     "use strict";
 
-    @PersistentObjectAttribute.register
+    @WebComponent.register()
     export class PersistentObjectAttributePassword extends WebComponents.Attributes.PersistentObjectAttribute {
         private _editInputBlur() {
             if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)

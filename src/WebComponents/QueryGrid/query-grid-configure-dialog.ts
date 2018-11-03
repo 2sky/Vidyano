@@ -1,7 +1,7 @@
 ﻿namespace Vidyano.WebComponents {
     "use strict";
 
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             grid: Object,
             _columnElements: {
@@ -78,7 +78,7 @@
         }
     }
 
-    @Sortable.register({
+    @WebComponent.register({
         extends: "ul"
     })
     export class QueryGridConfigureDialogColumnList extends Sortable {

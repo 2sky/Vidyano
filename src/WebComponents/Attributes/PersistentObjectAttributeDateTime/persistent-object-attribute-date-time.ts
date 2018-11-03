@@ -1,7 +1,7 @@
 ﻿namespace Vidyano.WebComponents.Attributes {
     "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             selectedDate: Object,
             selectedTime: Object,

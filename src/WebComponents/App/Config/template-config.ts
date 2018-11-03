@@ -1,6 +1,18 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    @WebComponent.registerAbstract({
+        properties: {
+            hasTemplate: {
+                type: Boolean,
+                readOnly: true
+            },
+            as: {
+                type: String,
+                reflectToAttribute: true
+            }
+        }
+    })
     export abstract class TemplateConfig<T> extends WebComponent {
         private _template: PolymerTemplate;
         readonly hasTemplate: boolean; private _setHasTemplate: (val: boolean) => void;
@@ -22,20 +34,6 @@ namespace Vidyano.WebComponents {
             model[as] = !!asModel ? asModel(obj) : obj;
 
             return this._template.stamp(model).root;
-        }
-
-        static register(info?: IWebComponentRegistrationInfo, prefix?: string): (obj: any) => void {
-            info.properties = info.properties || {};
-            info.properties["hasTemplate"] = {
-                type: Boolean,
-                readOnly: true
-            };
-            info.properties["as"] = {
-                type: String,
-                reflectToAttribute: true
-            };
-
-            return WebComponent.register(info, prefix);
         }
     }
 }

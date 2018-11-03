@@ -14,7 +14,7 @@
         rich?: boolean;
     }
 
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             options: {
                 type: Object,

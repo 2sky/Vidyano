@@ -1,7 +1,7 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             retry: Object,
             tab: {

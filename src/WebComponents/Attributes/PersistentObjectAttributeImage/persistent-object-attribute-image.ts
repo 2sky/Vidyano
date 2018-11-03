@@ -1,7 +1,7 @@
 namespace Vidyano.WebComponents.Attributes {
     "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             hasValue: {
                 type: Boolean,
@@ -114,7 +114,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
     }
 
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             label: String,
             src: String,
