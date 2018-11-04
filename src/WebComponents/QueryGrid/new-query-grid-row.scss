@@ -4,11 +4,18 @@
     @include layout-horizontal();
     position: relative;
     z-index: 0;
-    background-color: #fefefe;
     width: auto !important;
     min-width: 100%;
     border-bottom: 1px solid var(--dr-border-color);
-    height: var(--query-grid--row-height);
+    height: var(--vi-new-query-grid--row-height);
+
+    &.odd {
+        background-color: var(--vi-new-query-grid-row--odd-background, var(--theme-odd));
+    }
+
+    &:not(.odd) {
+        background-color: var(--vi-new-query-grid-row--even-background, var(--theme-even));
+    }
 
     .cell > * {
         padding: 0 var(--theme-h4);
@@ -37,10 +44,10 @@
     }
 
     #cells {
-        line-height: calc(var(--query-grid--row-height) - 1px);
-        height: calc(var(--query-grid--row-height) - 1px);
+        line-height: calc(var(--vi-new-query-grid--row-height) - 1px);
+        height: calc(var(--vi-new-query-grid--row-height) - 1px);
 
-        dr-grid-cell:last-of-type {
+        vi-new-query-grid-cell:last-of-type {
             margin-right: var(--dr-grid-actions-width);
         }
     }
@@ -48,22 +55,16 @@
     #actions {
         position: absolute;
         z-index: 1;
-        height: calc(var(--query-grid--row-height) - 1px);
-        line-height: calc(var(--query-grid--row-height) - 1px);
+        height: calc(var(--vi-new-query-grid--row-height) - 1px);
+        line-height: calc(var(--vi-new-query-grid--row-height) - 1px);
         background-color: #fefefe;
-        padding: 0 var(--vi-scroller-thumb-capture-size);
+        padding: 0 var(--vi-scroller--thumb-capture-size);
         box-sizing: border-box;
 
-        dr-action-button {
-            line-height: var(--query-grid--row-height);
-            width: var(--query-grid--row-height);
+        vi-action-button {
+            line-height: var(--vi-new-query-grid--row-height);
+            width: var(--vi-new-query-grid--row-height);
             padding: 0;
         }
-    }
-}
-
-:host-context([flyout]) {
-    #actions {
-        visibility: hidden;
     }
 }

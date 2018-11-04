@@ -25,15 +25,21 @@
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "_computeHideHeader(query, app)"
+            },
+            preview: {
+                type: Object,
+                readOnly: true
             }
         },
         forwardObservers: [
+            "query.isBusy",
             "query.labelWithTotalItems",
             "query.filters.currentFilter.name"
         ]
     })
     export class Query extends WebComponent {
         private _cacheEntry: QueryAppCacheEntry;
+        readonly preview: Vidyano.PersistentObject; private _setPreview: (preview: Vidyano.PersistentObject) => void;
         query: Vidyano.Query;
 
         attached() {
@@ -69,6 +75,27 @@
 
             const config = app.configuration.getQueryConfig(query);
             return !!config && !!config.hideHeader;
+        }
+
+        private _open(e: CustomEvent, item: Vidyano.QueryResultItem) {
+            e.stopPropagation();
+
+            const panel = <PersistentObjectSlideInPanel>this.$.preview;
+            panel.persistentObjectLoader = item.getPersistentObject();
+        }
+
+        private _close(e: CustomEvent) {
+            e.stopPropagation();
+
+            const panel = <PersistentObjectSlideInPanel>this.$.preview;
+            panel.open = false;
+
+            setTimeout(() => {
+                if (panel.persistentObjectLoader)
+                    return;
+
+                panel.persistentObject = panel.persistentObjectLoader = null;
+            }, 300);
         }
     }
 }

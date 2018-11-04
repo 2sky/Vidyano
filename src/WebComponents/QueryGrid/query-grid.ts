@@ -596,19 +596,16 @@ namespace Vidyano.WebComponents {
                 }
 
                 this.table.grid["_itemOpening"] = this.item;
-                const flyout = Vidyano.WebComponents.Flyout.Instances.length === 1 && Vidyano.WebComponents.Flyout.Instances[0].item.query === this.item.query ?
-                    Vidyano.WebComponents.Flyout.Instances[0] : Vidyano.WebComponents.Flyout.Create();
 
-                flyout.showQueryResultItem(this.item);
-                //const po = await this.item.getPersistentObject();
-                //if (!po)
-                //    return;
+                const po = await this.item.getPersistentObject();
+                if (!po)
+                    return;
 
-                //if (this.table.grid["_itemOpening"] === this.item) {
-                //    this.table.grid["_itemOpening"] = undefined;
+                if (this.table.grid["_itemOpening"] === this.item) {
+                    this.table.grid["_itemOpening"] = undefined;
 
-                //    this.item.query.service.hooks.onOpen(po);
-                //}
+                    this.item.query.service.hooks.onOpen(po);
+                }
             }
         }
 

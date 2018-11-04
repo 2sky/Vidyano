@@ -133,32 +133,3 @@ $backgroundColor: $blue-grey-900;
         }
     }
 }
-
-:host-context([flyout-open]) {
-    #toggleCollapse {
-        opacity: 0.5;
-        pointer-events: none;
-    }
-
-    #resizer {
-        display: none;
-    }
-}
-
-:host-context([flyout-open]):not([collapsed]) {
-    .programUnits {
-        opacity: 0;
-    }
-}
-
-:host-context([flyout-open]):not([collapsed]):hover {
-    z-index: 999;
-
-    .content {
-        transform: translate3d(calc(100% - var(--theme-h1)), 0, 0);
-
-        .programUnits {
-            opacity: 1;
-        }
-    }
-}

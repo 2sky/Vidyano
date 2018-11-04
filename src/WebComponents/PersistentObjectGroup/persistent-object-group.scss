@@ -4,8 +4,6 @@
     display: block;
     padding: var(--vi-persistent-object-group--attribute-padding, var(--theme-h4));
     padding-bottom: var(--vi-persistent-object-group--attribute-padding, var(--theme-h3));
-    background-color: #fefefe;
-    border: 1px solid #eee;
 
     &:not(:last-of-type) {
         margin-bottom: var(--theme-h3);

@@ -1,30 +1,64 @@
 @import "../_vars.scss";
 
 :host {
-    @include layout-vertical();
+    @include layout-horizontal();
 
-    header {
-        background-color: var(--vi-query--header-background, white);
-        padding: var(--theme-h3) var(--theme-h2);
+    .query {
+        header {
+            padding: var(--theme-h3) var(--theme-h2);
 
-        h1 {
-            line-height: var(--theme-h1);
-            font-weight: 600;
-            margin: 0;
-            white-space: nowrap;
+            h1 {
+                line-height: var(--theme-h1);
+                font-weight: 600;
+                margin: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
+        main {
+            padding: var(--theme-h2);
             overflow: hidden;
-            text-overflow: ellipsis;
         }
     }
 
-    main {
-        padding: var(--theme-h2);
-        background-color: var(--vi-query--main-background, #F4F8F9);
-    }
-}
+    #preview {
+        --vi-slide-in--width: auto;
 
-:host-context([flyout-open]) {
-    vi-query-items-presenter {
-        margin-right: 50vw;
+        header {
+            @include layout-horizontal();
+            height: var(--vi-app--header-height);
+            line-height: var(--vi-app--header-height);
+            padding: 0 var(--theme-h4);
+
+            .title {
+                color: var(--vi-app--header-foreground, var(--theme-foreground));
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-weight: 600;
+                font-size: 20px;
+            }
+
+            button.close {
+                margin-left: var(--theme-h4);
+                width: var(--theme-h1);
+                height: var(--theme-h1);
+                --vi-icon-width: 20px;
+                --vi-icon-height: 20px;
+                --vi-button--color: var(--theme-foreground);
+                --vi-button--border-radius: 50%;
+            }
+        }
+
+        #tab {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+
+            &:not(.loading) {
+                opacity: 1;
+            }
+        }
     }
 }

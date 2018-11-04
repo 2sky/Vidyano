@@ -1,15 +1,9 @@
 @import "../_vars.scss";
 
 :host {
-    overflow: hidden;
     @include layout-horizontal();
     @include relative();
-    --vi-scroller-thumb-color: #888;
-    --vi-scroller-thumb-hover-color: #777;
-    --vi-scroller-thumb-size: var(--theme-h5);
-    --vi-scroller-thumb-hover-size: calc(var(--theme-h5) + 2px);
-    --vi-scroller-thumb-capture-size: calc(var(--theme-h4) + 2px);
-    --vi-scroller-thumb-parent-hover-size: calc(var(--theme-h5) + 6px);
+    overflow: hidden;
 
     > #wrapper {
         @include flex();
@@ -91,14 +85,14 @@
             top: 0;
             right: 0;
             bottom: 0;
-            width: var(--vi-scroller-thumb-parent-hover-size);
+            width: var(--vi-scroller--thumb-parent-hover-size);
         }
 
         &.horizontal:before {
             left: 0;
             right: 0;
             bottom: 0;
-            height: var(--vi-scroller-thumb-parent-hover-size);
+            height: var(--vi-scroller--thumb-parent-hover-size);
         }
 
         .scrollbar {
@@ -109,20 +103,19 @@
             &:after {
                 content: " ";
                 position: absolute;
-                background-color: var(--vi-scroller-thumb-color);
-                border-radius: var(--theme-h5);
+                background-color: var(--vi-scroller--thumb-color);
             }
 
             &#vertical {
                 top: 0;
                 right: 0;
-                width: var(--vi-scroller-thumb-capture-size);
+                width: var(--vi-scroller--thumb-capture-size);
 
                 &:after {
-                    right: 2px;
+                    right: 0;
                     top: 0;
                     bottom: 0;
-                    width: var(--vi-scroller-thumb-size);
+                    width: var(--vi-scroller--thumb-size);
                     transition: width 0.2s ease-in-out;
                 }
             }
@@ -130,27 +123,27 @@
             &#horizontal {
                 left: 0;
                 bottom: 0;
-                height: var(--vi-scroller-thumb-capture-size);
+                height: var(--vi-scroller--thumb-capture-size);
 
                 &:after {
-                    bottom: 2px;
+                    bottom: 0;
                     left: 0;
                     right: 0;
-                    height: var(--vi-scroller-thumb-size);
+                    height: var(--vi-scroller--thumb-size);
                     transition: height 0.2s ease-in-out;
                 }
             }
         }
 
         &.horizontal {
-            height: var(--vi-scroller-thumb-capture-size);
+            height: var(--vi-scroller--thumb-capture-size);
             left: 0;
             right: 0;
             bottom: 0;
         }
 
         &.vertical {
-            width: var(--vi-scroller-thumb-capture-size);
+            width: var(--vi-scroller--thumb-capture-size);
             top: 0;
             bottom: 0;
             right: var(--vi-scroller-vertical-scrollbar-right, 0);
@@ -182,20 +175,20 @@
         }
 
         .scrollbar:after {
-            background-color: var(--vi-scroller-thumb-hover-color);
+            background-color: var(--vi-scroller--thumb-hover-color);
         }
 
         .scrollbar#vertical:after {
-            width: var(--vi-scroller-thumb-hover-size);
+            width: var(--vi-scroller--thumb-hover-size);
         }
 
         .scrollbar#horizontal:after {
-            height: var(--vi-scroller-thumb-hover-size);
+            height: var(--vi-scroller--thumb-hover-size);
         }
     }
 
     &[horizontal] > #wrapper > #content > div {
-        padding-bottom: var(--vi-scroller-thumb-capture-size);
+        padding-bottom: var(--vi-scroller--thumb-capture-size);
     }
 
     > .scroll-shadow {

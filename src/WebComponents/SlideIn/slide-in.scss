@@ -1,0 +1,123 @@
+﻿@import "../_vars.scss";
+
+$slideInOffset: 40px;
+$slideInWidth: 50vw;
+
+:host {
+    ::content [vi-slide-in] {
+        @include layout-horizontal();
+        @include relative();
+
+        > #content {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            opacity: 0;
+            background-color: white;
+            animation-fill-mode: forwards;
+            animation-timing-function: cubic-bezier(.1,.9,.2,1);
+
+            ::content > * {
+                @include flex();
+            }
+        }
+
+        &[state="opening"], &[state="open"] {
+            width: var(--vi-slide-in--width, $slideInWidth);
+
+            > #content {
+                animation-duration: 0.3s;
+            }
+        }
+
+        &[state="closing"] {
+            max-width: 0;
+
+            > #content {
+                animation-duration: 0.2s;
+                width: var(--vi-slide-in--closing-width);
+            }
+        }
+
+        &[direction="rtl"] {
+            > #content {
+                right: -$slideInOffset;
+            }
+
+            &[state="opening"] > #content, &[state="open"] > #content {
+                animation-name: SlideInShowRtl;
+            }
+
+            &[state="closing"] > #content {
+                animation-name: SlideInHideRtl;
+            }
+        }
+
+        &[direction="ltr"] {
+            > #content {
+                left: -$slideInOffset;
+            }
+
+            &[state="opening"] > #content, &[state="open"] > #content {
+                animation-name: SlideInShowLtr;
+            }
+
+            &[state="closing"] > #content {
+                animation-name: SlideInHideLtr;
+            }
+        }
+
+        &[state="closed"] {
+            display: none !important;
+        }
+    }
+}
+
+@keyframes SlideInShowRtl {
+    0% {
+        opacity: 0;
+        right: -$slideInOffset;
+    }
+
+    100% {
+        opacity: 1;
+        right: 0;
+    }
+}
+
+@keyframes SlideInHideRtl {
+    0% {
+        opacity: 1;
+        right: 0;
+    }
+
+    100% {
+        opacity: 0;
+        right: -$slideInOffset;
+    }
+}
+
+@keyframes SlideInShowLtr {
+    0% {
+        opacity: 0;
+        left: -$slideInOffset;
+    }
+
+    100% {
+        opacity: 1;
+        left: 0;
+    }
+}
+
+@keyframes SlideInHideLtr {
+    0% {
+        opacity: 1;
+        left: 0;
+    }
+
+    100% {
+        opacity: 0;
+        left: -$slideInOffset;
+    }
+}

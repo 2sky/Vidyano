@@ -250,9 +250,9 @@ namespace Vidyano.WebComponents {
 
                 if (rowRect.bottom > parentBoundingRect.height || detail.index === this.query.items.length - 1) {
                     const cellWidths = [].concat.apply([], this._physicalRows.map(row => row.getCellWidths()));
-                    Enumerable.from(cellWidths).groupBy(cw => cw.column.name, cw => cw).forEach(cwg => {
+                    Enumerable.from(cellWidths).groupBy(cw => cw.column.name, cw => cw).forEach((cwg, index) => {
                         const width = Math.max(cwg.max(cw => cw.width), headers[cwg.key()]);
-                        this.customStyle[`--vi-new-query-grid-attribute-${cwg.key()}-width`] = `${width}px`;
+                        this.customStyle[`--vi-new-query-grid-attribute-${cwg.key().replace(".", "-")}-width`] = `${width}px`;
                     });
 
                     this.updateStyles();
@@ -305,7 +305,7 @@ namespace Vidyano.WebComponents {
             if (!column)
                 return;
 
-            this.style.width = `var(--vi-new-query-grid-attribute-${this.column.name}-width)`;
+            this.style.width = `var(--vi-new-query-grid-attribute-${this.column.name.replace(".", "-")}-width)`;
             this.updateStyles();
         }
     }
@@ -314,7 +314,10 @@ namespace Vidyano.WebComponents {
         properties: {
             item: Object,
             columns: Array,
-            index: Number,
+            index: {
+                type: Number,
+                observer: "_indexChanged"
+            },
             canRead: {
                 type: Boolean,
                 computed: "item.query.canRead",
@@ -339,10 +342,7 @@ namespace Vidyano.WebComponents {
             if (!this.item.query.canRead)
                 return;
 
-            const flyout = Vidyano.WebComponents.Flyout.Instances.length === 1 && Vidyano.WebComponents.Flyout.Instances[0].item.query === this.item.query ?
-                Vidyano.WebComponents.Flyout.Instances[0] : Vidyano.WebComponents.Flyout.Create();
-
-            flyout.showQueryResultItem(this.item);
+            this.fire("open", this.item);
         }
 
         private _fireAttached(item: Vidyano.QueryResultItem, index: number, isAttached: boolean) {
@@ -354,6 +354,10 @@ namespace Vidyano.WebComponents {
             const grid = <NewQueryGrid>this.findParent(e => e instanceof NewQueryGrid);
             grid.customStyle["--vi-new-query-grid-actions-width"] = `${detail.width}px`;
             grid.updateStyles();
+        }
+
+        private _indexChanged(index: number) {
+            this.toggleClass("odd", !!((index + 1) % 2));
         }
 
         private _computeActions(query: Vidyano.Query): Vidyano.Action[] {
@@ -438,7 +442,7 @@ namespace Vidyano.WebComponents {
             if (!column)
                 return;
 
-            this.style.width = `var(--vi-new-query-grid-attribute-${this.column.name}-width)`;
+            this.style.width = `var(--vi-new-query-grid-attribute-${this.column.name.replace(".", "-")}-width)`;
             this.updateStyles();
         }
     }

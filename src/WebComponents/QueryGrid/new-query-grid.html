@@ -48,7 +48,7 @@
                 <vi-new-query-grid-cell item="[[item]]" persistent-object="[[persistentObject]]" column="[[column]]"></vi-new-query-grid-cell>
             </template>
         </div>
-        <div id="actions" class="layout horizontal">
+        <div id="actions" class="layout horizontal" hidden>
             <template is="dom-if" if="[[!index]]">
                 <vi-size-tracker on-sizechanged="_actionsSizechanged"></vi-size-tracker>
             </template>

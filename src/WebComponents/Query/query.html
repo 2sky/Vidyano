@@ -1,16 +1,20 @@
 ﻿<link rel="import" href="../ActionBar/action-bar.html" />
 <link rel="import" href="../Notification/notification.html" />
 <link rel="import" href="../QueryItemsPresenter/query-items-presenter.html" />
+<link rel="import" href="../PersistentObjectSlideInPanel/persistent-object-slide-in-panel.html" />
 
 <dom-module id="vi-query">
     <template>
         <link rel="stylesheet" href="query.css" />
-        <header hidden$="[[hideHeader]]">
-            <h1>[[label]]</h1>
-        </header>
-        <main class="layout horizontal flex">
-            <vi-query-items-presenter class="flex" query="[[query]]"></vi-query-items-presenter>
-        </main>
+        <div class="layout vertical flex query">
+            <header hidden$="[[hideHeader]]">
+                <h1>[[label]]</h1>
+            </header>
+            <main class="layout horizontal flex">
+                <vi-query-items-presenter class="flex" query="[[query]]" on-open="_open"></vi-query-items-presenter>
+            </main>
+        </div>
+        <vi-persistent-object-slide-in-panel id="preview" persistent-object="[[preview]]" class="flex"></vi-persistent-object-slide-in-panel>
         <!--<template is="dom-if" if="[[!hideHeader]]">
             <vi-notification service-object="[[query]]"></vi-notification>
             <vi-action-bar class="horizontal layout center" service-object="[[query]]" hidden$="[[noActions]]"></vi-action-bar>

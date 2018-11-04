@@ -7,7 +7,7 @@ $backgroundColor: $blue-grey-900;
     @include relative();
     box-sizing: border-box;
 	display: block;
-	line-height: var(--vi-app-menu--line-height, var(--theme-h2));
+	line-height: var(--vi-app-menu--line-height, var(--theme-h1));
     color: var(--vi-app-menu--color);
     fill: var(--vi-app-menu--color);
     cursor: pointer;
@@ -31,11 +31,11 @@ $backgroundColor: $blue-grey-900;
         outline: none;
 
         &:hover {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: rgba(0, 0, 0, 0.025);
         }
 
         > vi-icon {
-            height: var(--theme-h2);
+            height: var(--vi-app-menu--line-height, var(--theme-h1));
             width: var(--theme-h3);
             --vi-icon-width: 1em;
             --vi-icon-height: 1em;

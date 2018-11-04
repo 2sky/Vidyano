@@ -8,7 +8,7 @@
     line-height: calc(var(--vi-app--header-height));
     background-color: var(--vi-app--header-background, var(--theme-foreground));
     box-sizing: content-box;
-    padding: 0 var(--theme-h3);
+    padding: 0 var(--theme-h3) 0 calc(var(--vi-app-menu--width) + var(--theme-h3));
     @apply(--vi-app-header);
 
     .search {
@@ -38,15 +38,5 @@
         .username {
             color: var(--vi-app--button-color, white);
         }
-    }
-}
-
-:host-context([flyout-open]) {
-    .actions {
-        display: none;
-    }
-
-    .search {
-        margin-right: var(--vi-app--flyout-width);
     }
 }

@@ -15,7 +15,6 @@
 <link rel="import" href="../Button/button.html" />
 <link rel="import" href="../Dialog/dialog.html" />
 <link rel="import" href="../Error/error.html" />
-<link rel="import" href="../Flyout/flyout.html" />
 <link rel="import" href="../Grid/grid.html" />
 <link rel="import" href="../Icon/icon.html" />
 <link rel="import" href="../Popup/popup.html" />
@@ -44,39 +43,40 @@
             </div>
         </template>
         <template is="dom-if" if="[[!barebone]]" restamp>
-            <main class="fit layout horizontal">
-                <template is="dom-if" if="[[showMenu]]" restamp>
-                    <vi-app-menu menu label="[[label]]" program-units="[[service.application.programUnits]]" active-program-unit="[[programUnit]]" collapsed="{{menuCollapsed}}">
-                        <content select="[label]:not([label='sign-in'])"></content>
-                    </vi-app-menu>
-                </template>
-                <div class="flex layout vertical">
-                    <vi-app-header label="[[label]]" hidden$="[[!showMenu]]">
-                        <content select="[label]:not([label='sign-in'])"></content>
-                    </vi-app-header>
-                    <vi-app-route-presenter class="flex">
-                        <vi-app-route route=""></vi-app-route>
-                        <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
-                        <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
-                        <vi-app-route route="PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
-                        <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
-                        <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
-                        <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
-                        <vi-app-route class="fit" route="SignIn(/:stateOrReturnUrl*)(/:returnUrl*)" allow-signed-out>
-                            <vi-sign-in label="[[label]]" logo="[[signInLogo]]">
-                                <content select="[sign-in-background]"></content>
-                                <content select="[sign-in-footer]"></content>
-                            </vi-sign-in>
-                        </vi-app-route>
-                        <vi-app-route route="SignOut(/)(:returnUrl*)" allow-signed-out>
-                            <vi-sign-out></vi-sign-out>
-                        </vi-app-route>
-                    </vi-app-route-presenter>
-                    <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
+            <div class="fit layout vertical">
+                <vi-app-header class="slide" label="[[label]]" hidden$="[[!showMenu]]">
+                    <content select="[label]:not([label='sign-in'])"></content>
+                </vi-app-header>
+                <div class="flex layout horizontal">
+                    <main class="flex layout horizontal">
+                        <template is="dom-if" if="[[showMenu]]" restamp>
+                            <vi-app-menu class="slide" menu label="[[label]]" program-units="[[service.application.programUnits]]" active-program-unit="[[programUnit]]" collapsed="{{menuCollapsed}}">
+                                <content select="[label]:not([label='sign-in'])"></content>
+                            </vi-app-menu>
+                        </template>
+                        <vi-app-route-presenter class="flex slide">
+                            <vi-app-route route=""></vi-app-route>
+                            <vi-app-route route="Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
+                            <vi-app-route route=":programUnitName/Query.:id" component="Vidyano.WebComponents.QueryPresenter"></vi-app-route>
+                            <vi-app-route route="PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                            <vi-app-route route=":programUnitName/PersistentObject.:id(/:objectId*)" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                            <vi-app-route route=":programUnitName/FromAction/:fromActionId" component="Vidyano.WebComponents.PersistentObjectPresenter"></vi-app-route>
+                            <vi-app-route route=":programUnitName(/)" component="Vidyano.WebComponents.ProgramUnitPresenter"></vi-app-route>
+                            <vi-app-route class="fit" route="SignIn(/:stateOrReturnUrl*)(/:returnUrl*)" allow-signed-out>
+                                <vi-sign-in label="[[label]]" logo="[[signInLogo]]">
+                                    <content select="[sign-in-background]"></content>
+                                    <content select="[sign-in-footer]"></content>
+                                </vi-sign-in>
+                            </vi-app-route>
+                            <vi-app-route route="SignOut(/)(:returnUrl*)" allow-signed-out>
+                                <vi-sign-out></vi-sign-out>
+                            </vi-app-route>
+                        </vi-app-route-presenter>
+                        <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
+                    </main>
                 </div>
-            </main>
+            </div>
         </template>
-        <vi-flyouts is-open="{{flyoutOpen}}"></vi-flyouts>
         <vi-app-config>
             <vi-persistent-object-attribute-config type="CommonMark" height="3"></vi-persistent-object-attribute-config>
             <vi-persistent-object-attribute-config type="Reference" height="attr.selectInPlace && attr.getTypeHint('inputtype', '', undefined, true) === 'radio' ? 0 : 1"></vi-persistent-object-attribute-config>

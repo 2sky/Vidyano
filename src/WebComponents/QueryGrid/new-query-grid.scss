@@ -5,18 +5,20 @@
     position: relative;
     color: var(--theme-foreground);
     overflow: hidden;
-    --query-grid--row-height: var(--theme-h1);
-    --dr-grid--header-height: var(--theme-h1);
+    --vi-new-query-grid--row-height: 48px;
+    --vi-new-query-grid--header-height: 48px;
+    border: var(--vi-new-query-grid--border, none);
 
     #headerHost {
-        height: var(--dr-grid--header-height);
+        height: var(--vi-new-query-grid--header-height);
         overflow-x: auto;
         overflow-y: hidden;
         border-bottom: 1px solid var(--vi-app--border-color);
 
         header {
             position: relative;
-            background-color: white;
+            background: var(--vi-new-query-grid--header-background, white);
+            color: var(--vi-new-query-grid--header-color, var(--theme-foreground));
             border-radius: 4px 4px 0 0;
             min-width: 100%;
 
@@ -31,7 +33,7 @@
             right: 0;
             top: 0;
             bottom: 0;
-            height: var(--dr-grid--header-height);
+            height: var(--vi-new-query-grid--header-height);
             width: var(--dr-grid-actions-width);
             background-color: #eaeef0;
         }
@@ -43,6 +45,7 @@
 
     #headerHost, #dataWrapper {
         -ms-overflow-style: none;
+        scrollbar-width: none;
 
         &::-webkit-scrollbar {
             display: none;
@@ -53,15 +56,8 @@
         overflow: hidden;
     }
 
-    // Scroller styles
-    --vi-scroller-thumb-color: #888;
-    --vi-scroller-thumb-hover-color: #777;
-    --vi-scroller-thumb-size: var(--theme-h5);
-    --vi-scroller-thumb-hover-size: calc(var(--theme-h5) + 2px);
-    --vi-scroller-thumb-capture-size: calc(var(--theme-h4) + 2px);
-    --vi-scroller-thumb-parent-hover-size: calc(var(--theme-h5) + 6px);
-
     &:not([force-scrollbars]):not([hovering]):not([scrolling]) .scrollbar-parent .scrollbar {
+        width: 0;
         opacity: 0;
     }
 
@@ -82,14 +78,14 @@
             top: 0;
             right: 0;
             bottom: 0;
-            width: var(--vi-scroller-thumb-parent-hover-size);
+            width: var(--vi-scroller--thumb-parent-hover-size);
         }
 
         &.horizontal:before {
             left: 0;
             right: 0;
             bottom: 0;
-            height: var(--vi-scroller-thumb-parent-hover-size);
+            height: var(--vi-scroller--thumb-parent-hover-size);
         }
 
         .scrollbar {
@@ -100,20 +96,19 @@
             &:after {
                 content: " ";
                 position: absolute;
-                background-color: var(--vi-scroller-thumb-color);
-                border-radius: var(--theme-h5);
+                background-color: var(--vi-scroller--thumb-color);
             }
 
             &#vertical {
                 top: 0;
                 right: 0;
-                width: var(--vi-scroller-thumb-capture-size);
+                width: var(--vi-scroller--thumb-capture-size);
 
                 &:after {
-                    right: 2px;
+                    right: 0;
                     top: 0;
                     bottom: 0;
-                    width: var(--vi-scroller-thumb-size);
+                    width: var(--vi-scroller--thumb-size);
                     transition: width 0.2s ease-in-out;
                 }
             }
@@ -121,27 +116,27 @@
             &#horizontal {
                 left: 0;
                 bottom: 0;
-                height: var(--vi-scroller-thumb-capture-size);
+                height: var(--vi-scroller--thumb-capture-size);
 
                 &:after {
-                    bottom: 2px;
+                    bottom: 0;
                     left: 0;
                     right: 0;
-                    height: var(--vi-scroller-thumb-size);
+                    height: var(--vi-scroller--thumb-size);
                     transition: height 0.2s ease-in-out;
                 }
             }
         }
 
         &.horizontal {
-            height: var(--vi-scroller-thumb-capture-size);
+            height: var(--vi-scroller--thumb-capture-size);
             left: 0;
             right: 0;
             bottom: 0;
         }
 
         &.vertical {
-            width: var(--vi-scroller-thumb-capture-size);
+            width: var(--vi-scroller--thumb-capture-size);
             top: 0;
             bottom: 0;
             right: var(--vi-scroller-vertical-scrollbar-right, 0);
@@ -162,19 +157,19 @@
     &[vertical][scrolling="vertical"] .scrollbar-parent.vertical, .scrollbar-parent.vertical:hover,
     &[horizontal][scrolling="horizontal"] .scrollbar-parent.horizontal, .scrollbar-parent.horizontal:hover {
         &:before {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: hsla(var(--theme-color-hue), 20%, 50%, 0.25);
         }
 
         .scrollbar:after {
-            background-color: var(--vi-scroller-thumb-hover-color);
+            background-color: var(--vi-scroller--thumb-hover-color);
         }
 
         .scrollbar#vertical:after {
-            width: var(--vi-scroller-thumb-hover-size);
+            width: var(--vi-scroller--thumb-hover-size);
         }
 
         .scrollbar#horizontal:after {
-            height: var(--vi-scroller-thumb-hover-size);
+            height: var(--vi-scroller--thumb-hover-size);
         }
     }
 
@@ -221,11 +216,5 @@
         #dataWrapper {
             margin-right: calc(var(--theme-scrollbar-width) * -1);
         }
-    }
-}
-
-:host-context([flyout]) {
-    .actionsPlaceholder {
-        visibility: hidden;
     }
 }

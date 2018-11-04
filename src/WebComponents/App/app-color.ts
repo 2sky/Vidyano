@@ -21,8 +21,11 @@
         private _light: string;
         private _dark: string;
         private _darker: string;
+        private _hue: number;
         private _foreground: string;
         private _foregroundLight: string;
+        private _themeOdd: string;
+        private _themeEven: string;
 
         constructor(private _base: string) {
             const rgb = this._hexToRgb(_base);
@@ -34,9 +37,13 @@
             this._dark = this._calculateVariant(rgb, 0.81, true);
             this._darker = this._calculateVariant(rgb, 0.52, true);
 
-            const baseHsl = this._rgbToHsl(rgb);
-            this._foreground = this._rgbToHex(this._hslToRgb({ h: baseHsl.h, s: 0.29, l: 0.29 }));
-            this._foregroundLight = this._rgbToHex(this._hslToRgb({ h: baseHsl.h, s: 0.29, l: 0.43 }));
+            this._hue = this._rgbToHsl(rgb).h;
+
+            this._foreground = this._rgbToHex(this._hslToRgb({ h: this._hue, s: 0.29, l: 0.29 }));
+            this._foregroundLight = this._rgbToHex(this._hslToRgb({ h: this._hue, s: 0.29, l: 0.43 }));
+
+            this._themeOdd = this._rgbToHex(this._hslToRgb({ h: this._hue, s: 0.35, l: 0.98 }))
+            this._themeEven = this._rgbToHex(this._hslToRgb({ h: this._hue, s: 1, l: 0.998 }))
         }
 
         get faint(): string {
@@ -67,12 +74,24 @@
             return this._darker;
         }
 
+        get hue(): number {
+            return this._hue;
+        }
+
         get foreground(): string {
             return this._foreground;
         }
 
         get foregroundLight(): string {
             return this._foregroundLight;
+        }
+
+        get themeOdd(): string {
+            return this._themeOdd;
+        }
+
+        get themeEven(): string {
+            return this._themeEven;
         }
 
         private _rgbToHsl(rgb: IRGB): IHSL {

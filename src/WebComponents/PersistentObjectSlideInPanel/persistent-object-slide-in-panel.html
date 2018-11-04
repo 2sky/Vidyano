@@ -1,0 +1,24 @@
+﻿<link rel="import" href="../SlideIn/slide-in.html" />
+
+<dom-module id="vi-persistent-object-slide-in-panel">
+    <template>
+        <link rel="stylesheet" href="persistent-object-slide-in-panel.css" />
+        <div class="flex layout vertical">
+            <vi-spinner hidden$="[[!loading]]"></vi-spinner>
+            <template is="dom-if" if="[[persistentObject]]">
+                <header class="layout horizontal center">
+                    <span class="title flex">[[persistentObject.breadcrumb]]</span>
+                    <button is="vi-button" class="close" icon="Remove" inverse on-tap="close"></button>
+                </header>
+                <main class="flex layout flex vertical">
+                    <template is="dom-if" if="[[tabs]]" restamp>
+                        <vi-persistent-object-tab-bar tabs="[[tab]]" selected-tab="{{tab}}"></vi-persistent-object-tab-bar>
+                    </template>
+                    <vi-persistent-object-tab-presenter class="flex" tab="[[tab]]"></vi-persistent-object-tab-presenter>
+                </main>
+            </template>
+        </div>
+    </template>
+</dom-module>
+
+<script src="persistent-object-slide-in-panel.js"></script>

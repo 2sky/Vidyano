@@ -5,11 +5,15 @@ $tabsBG: #f1f1f1;
 :host {
     @include layout-vertical();
     --vi-persistent-object-tab--padding: var(--theme-h3) var(--theme-h2);
+    --vi-persistent-object--master-width: 40%;
 
     header {
         background-color: var(--vi-persistent-object--header-background, white);
-        padding: var(--theme-h3) var(--theme-h2) 0 var(--theme-h2);
         border-bottom: 1px solid var(--theme-light-border);
+
+        .title {
+            padding: var(--theme-h3) var(--theme-h2) 0 var(--theme-h2);
+        }
 
         h1 {
             line-height: var(--theme-h1);
@@ -21,14 +25,82 @@ $tabsBG: #f1f1f1;
         }
     }
 
-    main {
-        background-color: var(--vi-persistent-object--main-background, #F4F8F9);
-
-        vi-action-bar {
-            margin: var(--theme-h5) 0;
+    .tabs {
+        > .master {
+            padding-left: var(--theme-h2);
+            box-sizing: border-box;
         }
     }
 
+    .content {
+        .master, .detail {
+            background-color: var(--vi-persistent-object--main-background, #F4F8F9);
+        }
+    }
+
+    &[layout-master-detail] {
+        .content {
+
+        }
+
+        .tabs {
+            .detail {
+                padding-left: 8px;
+            }
+        }
+
+        #splitter {
+            @include noSelection();
+            position: relative;
+            width: 8px;
+            background-color: var(--vi-persistent-object--main-background, #F4F8F9);
+
+            &::before {
+                position: absolute;
+                content: "";
+                width: 8px;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                opacity: 0.005;
+                background-color: black;
+                z-index: 3;
+                transition: opacity 0.3s ease;
+            }
+
+            &::after {
+                position: absolute;
+                content: "";
+                width: 6px;
+                height: calc(var(--theme-h2) * 2);
+                border-width: 0 1px;
+                border-style: solid;
+                border-color: black;
+                top: calc(50% - var(--theme-h2));
+                left: 1px;
+                box-sizing: border-box;
+                opacity: 0.1;
+                transition: opacity 0.3s ease, border-width 0.3s ease, ;
+            }
+
+            &:hover {
+                &::before {
+                    opacity: 0.1;
+                }
+
+                &::after {
+                    border-width: 0 2px;
+                    opacity: 0.3;
+                }
+            }
+
+            cursor: col-resize;
+        }
+
+        .master {
+            width: var(--vi-persistent-object--master-width);
+        }
+    }
 
     /*--vi-action-bar-style: #{'{
         padding-top: 3px;
@@ -36,7 +108,7 @@ $tabsBG: #f1f1f1;
     }'};
 
     @include layout-vertical-reverse();
-    --vi-persistent-object-master-width: 40%;
+    
 
     header {
         @include page-title();
@@ -68,42 +140,6 @@ $tabsBG: #f1f1f1;
 
     .tabs {
         height: var(--theme-h1);
-    }
-
-    &[layout-master-detail] {
-        .tabs > .detail {
-            margin-left: 4px;
-        }
-
-        #splitter {
-            @include noSelection();
-            position: relative;
-            width: 4px;
-            background-color: $tabsBG;
-
-            &::after {
-                position: absolute;
-                content: " ";
-                width: 7px;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                opacity: 0.01;
-                background-color: white;
-                z-index: 3;
-                -moz-transform: translateX(-3px);
-                -ms-transform: translateX(-3px);
-                -o-transform: translateX(-3px);
-                -webkit-transform: translateX(-3px);
-                transform: translateX(-3px);
-            }
-
-            cursor: col-resize;
-        }
-
-        .master {
-            width: var(--vi-persistent-object-master-width);
-        }
     }
 
     &[layout-details-only] {

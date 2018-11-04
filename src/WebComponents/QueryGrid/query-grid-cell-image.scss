@@ -6,7 +6,7 @@
     overflow: hidden;
 
     ::content .image {
-        height: calc(var(--theme-h2) - 2px);
+        height: var(--vi-query-grid-cell-image--height, calc(var(--vi-new-query-grid--row-height) - 2px));
         background-position: center center;
         background-size: contain;
         background-repeat: no-repeat;

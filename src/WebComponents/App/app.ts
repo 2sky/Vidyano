@@ -182,11 +182,6 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 computed: "_computeIsProfiling(service.isSignedIn, service.profile)"
             },
-            flyoutOpen: {
-                type: Boolean,
-                reflectToAttribute: true,
-                observer: "_updateAnimate"
-            },
             menuCollapsed: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -995,6 +990,11 @@ namespace Vidyano.WebComponents {
                 this.customStyle[`--theme-foreground`] = appColor.foreground;
                 this.customStyle[`--theme-foreground-light`] = appColor.foregroundLight;
             }
+
+            this.customStyle[`--theme-odd`] = appColor.themeOdd;
+            this.customStyle[`--theme-even`] = appColor.themeEven;
+
+            this.customStyle[`--theme-${target}-hue`] = appColor.hue.toString();
 
             this.updateStyles();
         }

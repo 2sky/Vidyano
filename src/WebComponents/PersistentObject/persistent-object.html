@@ -8,32 +8,25 @@
     <template>
         <link rel="stylesheet" href="persistent-object.css" />
         <header>
-            <h1 sensitive$="[[persistentObject.isBreadcrumbSensitive]]">[[persistentObject.breadcrumb]]</h1>
-            <vi-persistent-object-tab-bar tabs="[[masterTabs]]" selected-tab="{{selectedMasterTab}}"></vi-persistent-object-tab-bar>
+            <div class="layout horizontal title">
+                <h1 sensitive$="[[persistentObject.isBreadcrumbSensitive]]" class="flex">[[persistentObject.breadcrumb]]</h1>
+                <vi-action-bar service-object="[[persistentObject]]"></vi-action-bar>
+            </div>
+            <div class="layout horizontal tabs">
+                <div class="master">
+                    <vi-persistent-object-tab-bar tabs="[[masterTabs]]" selected-tab="{{selectedMasterTab}}"></vi-persistent-object-tab-bar>
+                </div>
+                <vi-persistent-object-details-header class="flex detail" tabs="[[detailTabs]]" tab="{{selectedDetailTab}}"></vi-persistent-object-details-header>
+            </div>
         </header>
-        <main class="layout vertical flex">
-            <!--<vi-action-bar service-object="[[selectedMasterTab.target]]" hidden$="[[_hideActionBar(selectedMasterTab)]]"></vi-action-bar>-->
-            <vi-persistent-object-details-content class="vertical layout flex detail" tab="{{selectedMasterTab}}" hide-action-bar></vi-persistent-object-details-content>
-        </main>
-        <!--<div class="horizontal layout flex content">
-            <div class="vertical layout master">
-                <vi-action-bar service-object="[[selectedMasterTab.target]]" hidden$="[[_hideActionBar(selectedMasterTab)]]"></vi-action-bar>
+        <div class="horizontal layout flex content">
+            <div class="layout vertical master">
                 <vi-notification service-object="[[selectedMasterTab.target]]"></vi-notification>
                 <vi-persistent-object-tab-presenter class="flex" tab="[[selectedMasterTab]]"></vi-persistent-object-tab-presenter>
             </div>
             <div id="splitter" on-track="_trackSplitter"></div>
             <vi-persistent-object-details-content class="vertical layout flex detail" tab="{{selectedDetailTab}}" hide-action-bar="[[_hideActionBar(selectedDetailTab)]]"></vi-persistent-object-details-content>
         </div>
-        <div class="horizontal layout tabs">
-            <div class="master">
-                <vi-persistent-object-tab-bar tabs="[[masterTabs]]" selected-tab="{{selectedMasterTab}}"></vi-persistent-object-tab-bar>
-            </div>
-            <vi-persistent-object-details-header class="flex detail" tabs="[[detailTabs]]" tab="{{selectedDetailTab}}"></vi-persistent-object-details-header>
-        </div>
-        <header class="layout horizontal center">
-            <span class="flex" sensitive$="[[persistentObject.isBreadcrumbSensitive]]">[[persistentObject.breadcrumb]]</span>
-            <vi-spinner block color="white" hidden$="[[!isBusy]]"></vi-spinner>
-        </header>-->
     </template>
 </dom-module>
 

@@ -164,14 +164,6 @@
     "inputFile": "src/WebComponents/FileDrop/file-drop.scss"
   },
   {
-    "outputFile": "src/WebComponents/Flyout/flyout.css",
-    "inputFile": "src/WebComponents/Flyout/flyout.scss"
-  },
-  {
-    "outputFile": "src/WebComponents/Flyout/flyouts.css",
-    "inputFile": "src/WebComponents/Flyout/flyouts.scss"
-  },
-  {
     "outputFile": "src/WebComponents/Grid/grid.css",
     "inputFile": "src/WebComponents/Grid/grid.scss"
   },
@@ -222,6 +214,10 @@
   {
     "outputFile": "src/WebComponents/PersistentObjectPresenter/persistent-object-presenter.css",
     "inputFile": "src/WebComponents/PersistentObjectPresenter/persistent-object-presenter.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/PersistentObjectSlideInPanel/persistent-object-slide-in-panel.css",
+    "inputFile": "src/WebComponents/PersistentObjectSlideInPanel/persistent-object-slide-in-panel.scss"
   },
   {
     "outputFile": "src/WebComponents/PersistentObjectTab/persistent-object-tab.css",
@@ -394,6 +390,10 @@
   {
     "outputFile": "src/WebComponents/SizeTracker/size-tracker.css",
     "inputFile": "src/WebComponents/SizeTracker/size-tracker.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/SlideIn/slide-in.css",
+    "inputFile": "src/WebComponents/SlideIn/slide-in.scss"
   },
   {
     "outputFile": "src/WebComponents/Spinner/spinner.css",
