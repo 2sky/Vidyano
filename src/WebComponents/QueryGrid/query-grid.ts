@@ -1234,7 +1234,7 @@ namespace Vidyano.WebComponents {
                 Enumerable.from(this._tableData.rows).forEach((row: QueryGridTableDataRow) => {
                     row.columns.forEach(cell => {
                         if (cell.column && cell.column.isPinned)
-                            this.transform("", cell.cell);
+                            this.transform("", cell.host);
                     });
 
                     row.transform(0);
