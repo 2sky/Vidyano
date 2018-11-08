@@ -89,6 +89,7 @@ $border-color: #ddd;
                 padding-left: var(--theme-h5);
                 line-height: calc(var(--theme-h2) - 2px);
                 height: calc(var(--theme-h2) - 2px);
+                white-space: nowrap;
 
                 &:not(.group) {
                     cursor: pointer;
