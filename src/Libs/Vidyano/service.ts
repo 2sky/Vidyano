@@ -16,6 +16,8 @@ namespace Vidyano {
         private _providers: { [name: string]: IProviderParameters };
         private _isSignedIn: boolean;
         private _application: Application;
+        private _userName: string;
+        private _authToken: string;
         private _profile: boolean;
         private _profiledRequests: IServiceRequest[];
         private _queuedClientOperations: ClientOperations.IClientOperation[] = [];
@@ -26,11 +28,13 @@ namespace Vidyano {
         environment: string = "Web";
         environmentVersion: string = "2";
 
-        constructor(public serviceUri: string, public hooks: ServiceHooks = new ServiceHooks()) {
+        constructor(public serviceUri: string, public hooks: ServiceHooks = new ServiceHooks(), public readonly isTransient: boolean = false) {
             super();
 
             (<any>this.hooks)._service = this;
-            this.staySignedIn = cookie("staySignedIn", { force: true }) === "true";
+
+            if (!isTransient)
+                this.staySignedIn = cookie("staySignedIn", { force: true }) === "true";
         }
 
         static set token(token: string) {
@@ -446,7 +450,7 @@ namespace Vidyano {
         }
 
         get userName(): string {
-            return Vidyano.cookie("userName");
+            return !this.isTransient ? Vidyano.cookie("userName") : this._userName;
         }
 
         private _setUserName(val: string) {
@@ -454,7 +458,10 @@ namespace Vidyano {
             if (oldUserName === val)
                 return;
 
-            Vidyano.cookie("userName", val, { expires: this.staySignedIn ? 365 : 30 });
+            if (!this.isTransient)
+                Vidyano.cookie("userName", val, { expires: this.staySignedIn ? 365 : 30 });
+            else
+                this._userName = val;
 
             this.notifyPropertyChanged("userName", val, oldUserName);
         }
@@ -468,21 +475,25 @@ namespace Vidyano {
         }
 
         get authToken(): string {
-            return Vidyano.cookie("authToken");
+            return !this.isTransient ? Vidyano.cookie("authToken") : this._authToken;
         }
 
         set authToken(val: string) {
-            const oldAuthToken = this.authToken;
+            if (!this.isTransient) {
+                const oldAuthToken = this.authToken;
 
-            if (this.staySignedIn)
-                Vidyano.cookie("authToken", val, { expires: 14 });
-            else
-                Vidyano.cookie("authToken", val);
+                if (this.staySignedIn)
+                    Vidyano.cookie("authToken", val, { expires: 14 });
+                else
+                    Vidyano.cookie("authToken", val);
 
-            if (!oldAuthToken && val) {
-                localStorage.setItem("vi-setAuthToken", JSON.stringify({ cookiePrefix: Vidyano.cookiePrefix, authToken: val }));
-                localStorage.removeItem("vi-setAuthToken");
+                if (!oldAuthToken && val) {
+                    localStorage.setItem("vi-setAuthToken", JSON.stringify({ cookiePrefix: Vidyano.cookiePrefix, authToken: val }));
+                    localStorage.removeItem("vi-setAuthToken");
+                }
             }
+            else
+                this._authToken = val;
         }
 
         get profile(): boolean {
@@ -597,7 +608,7 @@ namespace Vidyano {
 
             try {
                 const application = await this._getApplication(data);
-                if (application && this.isSignedIn) {
+                if (application && this.isSignedIn && !this.isTransient) {
                     const ssi = (typeof codeOrStaySignedIn === "boolean" && codeOrStaySignedIn) || (typeof staySignedIn === "boolean" && staySignedIn);
                     Vidyano.cookie("staySignedIn", (this.staySignedIn = ssi) ? "true" : null, { force: true, expires: 365 });
                 }

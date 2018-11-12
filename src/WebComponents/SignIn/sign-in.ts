@@ -134,7 +134,7 @@
                     try {
                         this.app.importComponent("PersistentObjectTabPresenter");
 
-                        const registerService = new Service(this.app.service.serviceUri, this.service.hooks);
+                        const registerService = new Service(this.app.service.serviceUri, this.service.hooks, true);
                         await registerService.initialize(true);
 
                         registerService.staySignedIn = false;

@@ -1,6 +1,6 @@
 /// <reference path="../Typings/bignumber.js/bignumber.d.ts" />
 /// <reference path="../Typings/es6-shim/es6-shim.d.ts" />
-/// <reference path="../Typings/Linq/linq.d.ts" />
+/// <reference path="../Typings/linq/linq.d.ts" />
 /// <reference path="../Typings/PromiseQueue/promise-queue.d.ts" />
 /// <reference path="../Typings/Vidyano.Common/vidyano.common.d.ts" />
 declare namespace Vidyano {
@@ -945,6 +945,7 @@ declare namespace Vidyano {
     class Service extends Vidyano.Common.Observable<Service> {
         serviceUri: string;
         hooks: ServiceHooks;
+        readonly isTransient: boolean;
         private static _getMs;
         private static _base64KeyStr;
         private static _token;
@@ -957,6 +958,8 @@ declare namespace Vidyano {
         private _providers;
         private _isSignedIn;
         private _application;
+        private _userName;
+        private _authToken;
         private _profile;
         private _profiledRequests;
         private _queuedClientOperations;
@@ -966,7 +969,7 @@ declare namespace Vidyano {
         actionDefinitions: linqjs.Dictionary<string, ActionDefinition>;
         environment: string;
         environmentVersion: string;
-        constructor(serviceUri: string, hooks?: ServiceHooks);
+        constructor(serviceUri: string, hooks?: ServiceHooks, isTransient?: boolean);
         static token: string;
         private _createUri;
         private _createData;
