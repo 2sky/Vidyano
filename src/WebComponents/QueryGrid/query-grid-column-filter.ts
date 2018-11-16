@@ -204,6 +204,12 @@ namespace Vidyano.WebComponents {
             }
         }
 
+        detached() {
+            super.detached();
+
+            this.searchText = "";
+        }
+
         private async _popupOpening(e: CustomEvent) {
             if (!this.column.canFilter)
                 return;
