@@ -116,6 +116,11 @@ interface TapEvent extends CustomEvent {
     model?: TemplateInstance | any;
 }
 
+interface PolymerAsync {
+    run: (callBack: Function, waitTime?: number) => number;
+    cancel: (handle: number) =>void;
+}
+
 interface PolymerGestures {
     add: (node: HTMLElement, eventName: string, handler: Function) => void;
     remove: (node: HTMLElement, eventName: string, handler: Function) => void;
@@ -139,6 +144,8 @@ declare var Polymer: {
     nop(): void;
 
     api: any;
+
+    Async: PolymerAsync;
 
     Gestures: PolymerGestures;
 };
