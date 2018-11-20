@@ -2,7 +2,7 @@
 
 :host {
     display: block;
-    padding: 0 var(--vi-persistent-object-group--attribute-padding, var(--theme-h5));
+    padding: 0 var(--vi-persistent-object-group--attribute-padding, var(--theme-h4));
 
     &[loading] {
         visibility: hidden;
@@ -25,16 +25,26 @@
         display: none;
     }
 
-    table {
-        width: 100%;
-        table-layout: fixed;
-        border-collapse: collapse;
+    #grid {
+        display: grid;
+        grid-template-areas: var(--vi-persistent-object-group--grid-areas);
+        grid-auto-columns: 1fr;
+        grid-gap: var(--vi-persistent-object-group--attribute-padding, var(--theme-h4));
 
-        tr {
-            td {
-                vertical-align: top;
-                padding: 0 var(--vi-persistent-object-group--attribute-padding, var(--theme-h5));
-            }
+        vi-persistent-object-attribute-presenter {
+            grid-area: var(--vi-persistent-object-group--attribute-area);
+        }
+    }
+}
+
+:host-context([is-ie]) {
+    padding: 0 var(--vi-persistent-object-group--attribute-padding, var(--theme-h5));
+
+    #grid {
+        display: -ms-grid;
+
+        vi-persistent-object-attribute-presenter {
+            margin: 0 var(--vi-persistent-object-group--attribute-padding, var(--theme-h5));
         }
     }
 }

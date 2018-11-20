@@ -5,8 +5,8 @@
         attribute: Vidyano.PersistentObjectAttribute;
         config: Vidyano.WebComponents.PersistentObjectAttributeConfig;
         presenter?: Vidyano.WebComponents.PersistentObjectAttributePresenter;
+        area?: string;
         x: number;
-        y?: number;
         width: number;
         height: number;
     }
@@ -49,6 +49,7 @@
         ]
     })
     export class PersistentObjectGroup extends WebComponent {
+        private _asyncHandles: number[] = [];
         private _items: IPersistentObjectGroupItem[];
         private _itemsChecksum: string;
         private _presentersLoading: number = 0;
@@ -56,6 +57,12 @@
         readonly loading: boolean; private _setLoading: (loading: boolean) => void;
         group: Vidyano.PersistentObjectAttributeGroup;
         columns: number;
+
+        detached() {
+            super.detached();
+
+            this._clearAsyncTasks();
+        }
 
         private _computeLabel(group: Vidyano.PersistentObjectAttributeGroup, groupIndex: number, translations: any): string {
             if (group.label && groupIndex === 0) {
@@ -73,23 +80,29 @@
             if (!attached || !columns || !attributes || attributes.length === 0)
                 return;
 
+            let oldItems: IPersistentObjectGroupItem[] = [];
             if (!attributes || attributes.length === 0)
                 this._items = [];
             else if (!this._items)
                 this._items = attributes.map(attr => this._itemFromAttribute(attr));
             else {
+                oldItems = this._items.slice();
                 const itemsEnum = Enumerable.from(this._items).memoize();
                 this._items = attributes.map(attr => {
                     let item = itemsEnum.firstOrDefault(i => i.attribute === attr);
                     if (item) {
                         item.x = item.attribute.column;
                         item.width = Math.min(columns, item.config.calculateWidth(item.attribute));
+
+                        oldItems.splice(oldItems.indexOf(item));
                     }
                     else
                         item = this._itemFromAttribute(attr);
 
                     return item;
                 });
+
+                this._clearAsyncTasks();
             }
 
             let itemsChecksum: string = `${this.group.parent.type};${this.group.parent.objectId};${columns}`;
@@ -97,142 +110,97 @@
                 itemsChecksum = `${itemsChecksum}${item.attribute.offset};${item.attribute.name};${item.height};${item.width};`;
             }).toArray();
 
-            if (this._itemsChecksum !== itemsChecksum)
-                this._itemsChecksum = itemsChecksum;
-            else
+            if (this._itemsChecksum === itemsChecksum)
                 return;
 
-            const layoutFragment = document.createDocumentFragment();
-            const layout = layoutFragment.appendChild(document.createElement("table"));
-            const rows: IPersistentObjectGroupRow[] = [];
-            const addRow = () => {
-                const newRow = {
-                    host: document.createElement("tr"),
-                    cells: new Array<HTMLTableCellElement>(columns)
-                };
+            this._clearAsyncTasks();
+            oldItems.filter(item => item.presenter.isAttached).forEach(item => Polymer.dom(this.$.grid).removeChild(item.presenter));
 
-                rows.push(newRow);
+            const areaRow = Enumerable.range(1, columns).select(_ => "");
+            const areas: string[][] = [];
 
-                layout.appendChild(newRow.host);
-                for (let c = 0; c < columns; c++)
-                    newRow.cells[c] = null;
-            };
+            let item = items.shift();
+            let column = 0, row = 0;
 
-            let groupX = 0;
-            let groupY = 0;
+            while (!!item) {
+                const itemHeight = Math.max(item.height, 1);
+                const itemX = item.x < columns ? item.x : null;
+                const itemWidth = itemX == null ? Math.min(item.width, columns) : Math.min(item.width, columns - itemX);
 
-            while (items.length > 0) {
-                let found = false;
-                for (let i = 0; i < items.length; i++) {
-                    const item = items[i];
-                    const itemHeight = Math.max(item.height, 1);
-
-                    if (item.x != null && groupX !== item.x) {
-                        if (groupX > item.x) {
-                            while (groupY < rows.length && rows[groupY].cells.reduce((v, c) => !!v || !!c, false))
-                                groupY++;
-                        }
-
-                        groupX = Math.min(item.x, this.columns - 1);
+                do {
+                    if (areas.length < row + itemHeight) {
+                        areas.push(areaRow.toArray());
+                        continue;
                     }
 
-                    while (rows.length < groupY + itemHeight)
-                        addRow();
-
-                    let canAdd = groupX + item.width <= this.columns;
-                    for (let xx = 0; item.x == null && canAdd && xx < item.width; xx++) {
-                        for (let yy = 0; yy < itemHeight; yy++) {
-                            if (rows[groupY + yy].cells[groupX + xx] || (xx === 0 && groupX + xx > 0 && !rows[groupY + yy].cells[groupX + xx - 1])) {
-                                canAdd = false;
-                                break;
-                            }
+                    if (itemX != null) {
+                        if (itemX < column) {
+                            column = itemX;
+                            row++;
+                            continue;
                         }
+                        else
+                            column = itemX;
                     }
 
-                    if (canAdd) {
-                        item.x = groupX;
-                        item.y = groupY;
-
-                        const cell = document.createElement("td");
-                        cell.colSpan = item.width;
-                        cell.rowSpan = itemHeight > 0 ? itemHeight : 0;
-
-                        rows[item.y].host.appendChild(cell);
-
-                        if (!item.presenter) {
-                            item.presenter = new Vidyano.WebComponents.PersistentObjectAttributePresenter();
-                            item.presenter.attribute = item.attribute;
-                        }
-
-                        cell.appendChild(item.presenter);
-
-                        for (let xx = 0; xx < item.width; xx++) {
-                            for (let yy = 0; yy < itemHeight; yy++) {
-                                rows[groupY + yy].cells[groupX + xx] = cell;
-                            }
-                        }
-
-                        items.splice(i, 1);
-
-                        groupX += item.width;
-                        if (groupX >= this.columns) {
-                            if (rows[groupY].cells.some(cell => cell && cell.rowSpan === 0)) {
-                                const totalRowHeight = Enumerable.from(rows[groupY].cells.filter(c => !!c)).max(cell => cell.rowSpan);
-                                rows[groupY].cells.forEach(cell => {
-                                    if (!cell.rowSpan)
-                                        cell.rowSpan = totalRowHeight;
-                                });
-                            }
-
-                            groupY += itemHeight;
-                            groupX = rows[groupY] ? Math.max(rows[groupY].cells.indexOf(null), 0) : 0;
-                        }
-
-                        found = true;
+                    if (!areas[row][column])
                         break;
+
+                    column++;
+                    if (column >= columns || column + itemWidth - 1 >= columns) {
+                        row++;
+                        column = itemX || 0;
+                    }
+                }
+                while (true);
+
+                for (let y = 0; y < itemHeight; y++) {
+                    for (let x = 0; x < itemWidth; x++)
+                        areas[row + y][column + x] = item.area;
+                }
+
+                if (!item.presenter) {
+                    item.presenter = new Vidyano.WebComponents.PersistentObjectAttributePresenter();
+                    item.presenter.attribute = item.attribute;
+                    item.presenter.customStyle[`--vi-persistent-object-group--attribute-area`] = item.area;
+
+                    if (this.app.isIe) {
+                        item.presenter.style.msGridRow = `${row + 1}`;
+                        item.presenter.style.msGridColumn = `${column + 1}`;
+                        item.presenter.style.msGridRowSpan = `${itemHeight}`;
+                        item.presenter.style.msGridColumnSpan = `${itemWidth}`;
                     }
                 }
 
-                if (items.length > 0 && !found) {
-                    while (true) {
-                        groupX++;
+                const renderItem = item;
+                const renderHandle = Polymer.Async.run(() => {
+                    Polymer.dom(this.$.grid).appendChild(renderItem.presenter);
+                    renderItem.presenter.updateStyles();
+                });
+                this._asyncHandles.push(renderHandle);
 
-                        if (groupX >= this.columns) {
-                            groupX = 0;
-                            groupY++;
-                            break;
-                        }
-
-                        while (rows.length <= groupY)
-                            addRow();
-
-                        if (!rows[groupY].cells[groupX])
-                            break;
-                    }
-                }
+                item = items.shift();
             }
 
-            rows.forEach(r => {
-                for (let i = columns - 1; i >= 0; i--) {
-                    if (!r.cells[i])
-                        r.cells[i] = document.createElement("td");
-                }
+            if (this.app.isIe) {
+                this.$.grid.style.msGridColumns = Enumerable.range(1, columns).select(_ => "1fr").toArray().join(" ");
+                this.$.grid.style.msGridRows = "auto";
+            }
 
-                r.cells.filter(c => !c.parentElement || c.parentElement === r.host).forEach(c => r.host.appendChild(c));
-            });
+            this.customStyle[`--vi-persistent-object-group--grid-areas`] = areas.map(r => `"${r.map(a => a || ".").join(" ")}"`).join(" ");
+            this.updateStyles();
 
-            const currentLayout = this._layout;
-            this.async(() => {
-                if (layout !== this._layout)
-                    return;
+            this._itemsChecksum = itemsChecksum;
+        }
 
-                if (currentLayout && currentLayout.parentElement)
-                    Polymer.dom(this.root).replaceChild(layoutFragment, currentLayout);
-                else
-                    Polymer.dom(this.root).appendChild(layoutFragment);
-            });
+        private _clearAsyncTasks() {
+            while (true) {
+                const handle = this._asyncHandles.shift();
+                if (!handle)
+                    break;
 
-            this._layout = layout;
+                Polymer.Async.cancel(handle);
+            }
         }
 
         private _itemFromAttribute(attribute: Vidyano.PersistentObjectAttribute): IPersistentObjectGroupItem {
@@ -241,6 +209,7 @@
             return {
                 attribute: attribute,
                 config: config,
+                area: attribute.name.replace(".", "_"),
                 x: attribute.column,
                 width: Math.min(this.columns, config.calculateWidth(attribute)),
                 height: config.calculateHeight(attribute)
