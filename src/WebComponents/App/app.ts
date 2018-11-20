@@ -202,7 +202,7 @@ namespace Vidyano.WebComponents {
             isIe: {
                 type: Boolean,
                 reflectToAttribute: true,
-                value: () => navigator.userAgent.indexOf('Trident/7') !== -1
+                value: () => navigator.userAgent.indexOf("Trident/7") !== -1
             },
             isTracking: {
                 type: Boolean,
