@@ -25,7 +25,7 @@ You can play around with a live demo at [demo.vidyano.com](https://demo.vidyano.
 Vidyano is constantly tested on real browsers to ensure all components work consistently cross browser.
 
 Big thanks to BrowserStack for providing this testing environment to us.
-![BrowserStack](/src/Test/browserstack-logo-600x315.png)
+[![BrowserStack](/src/Test/browserstack-logo-600x315.png)](http://browserstack.com/)
 
 ## Copyright and license
 
