@@ -199,6 +199,11 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true
             },
+            isIe: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: () => navigator.userAgent.indexOf('Trident/7') !== -1
+            },
             isTracking: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -280,6 +285,7 @@ namespace Vidyano.WebComponents {
         readonly barebone: boolean; private _setBarebone: (barebone: boolean) => void;
         readonly updateAvailable: boolean; private _setUpdateAvailable: (updateAvailable: boolean) => void;
         readonly sessionLost: boolean; private _setSessionLost: (sessionLost: boolean) => void;
+        readonly isIe: boolean;
         programUnit: ProgramUnit;
         uri: string;
         hooks: string;
