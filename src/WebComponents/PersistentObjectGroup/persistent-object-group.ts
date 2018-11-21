@@ -162,7 +162,7 @@
                 }
                 while (true);
 
-                if (item.height === 0) {
+                if (item.height === 0 && itemWidth !== columns) {
                     for (let x = 0; x < itemWidth; x++)
                         infiniteColumns[column + x] = item.area;
                 }
