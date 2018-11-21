@@ -39,7 +39,8 @@
                     this._calculateHeight = <any>new Function("attr", "return " + this.height);
             }
 
-            return this._calculateHeight(attr);
+            const height = this._calculateHeight(attr);
+            return typeof height !== "string" ? height : parseInt(height);
         }
 
         calculateWidth(attr: Vidyano.PersistentObjectAttribute): number {

@@ -121,6 +121,9 @@
 
             let item = items.shift();
             let column = 0, row = 0;
+            const infiniteColumns: {
+                [index: number]: string;
+            } = {};
 
             while (!!item) {
                 const itemHeight = Math.max(item.height, 1);
@@ -129,7 +132,12 @@
 
                 do {
                     if (areas.length < row + itemHeight) {
-                        areas.push(areaRow.toArray());
+                        const newRow = areaRow.toArray();
+                        areas.push(newRow);
+
+                        for (let x in infiniteColumns)
+                            newRow[x] = infiniteColumns[x];
+
                         continue;
                     }
 
@@ -153,6 +161,11 @@
                     }
                 }
                 while (true);
+
+                if (item.height === 0) {
+                    for (let x = 0; x < itemWidth; x++)
+                        infiniteColumns[column + x] = item.area;
+                }
 
                 for (let y = 0; y < itemHeight; y++) {
                     for (let x = 0; x < itemWidth; x++)
@@ -182,6 +195,16 @@
                 item = items.shift();
             }
 
+            let newRow: string[];
+            for (let x in infiniteColumns) {
+                if (!newRow) {
+                    newRow = areaRow.toArray();
+                    areas.push(newRow);
+                }
+
+                newRow[x] = infiniteColumns[x];
+            }
+
             if (this.app.isIe) {
                 this.$.grid.style.msGridColumns = Enumerable.range(1, columns).select(_ => "1fr").toArray().join(" ");
                 this.$.grid.style.msGridRows = "auto";
@@ -205,15 +228,23 @@
 
         private _itemFromAttribute(attribute: Vidyano.PersistentObjectAttribute): IPersistentObjectGroupItem {
             const config = this.app.configuration.getAttributeConfig(attribute);
-
-            return {
+            const item = {
                 attribute: attribute,
                 config: config,
-                area: attribute.name.replace(/[\. \(\)]/g, "_"),
+                area: attribute.name,
                 x: attribute.column,
                 width: Math.min(this.columns, config.calculateWidth(attribute)),
                 height: config.calculateHeight(attribute)
             };
+
+            item.area = item.area.split("").map(c => c.charCodeAt(0) > 255 || (c >= "0" && c <= "9") || (c >= "a" && c <= "z") || (c >= "A" && c <= "Z") ? c : "_").join("");
+            if (/[0-9]/.test(item.area[0]))
+                item.area = `_${item.area}`;
+
+            if (item.height > 10)
+                item.height = 1;
+
+            return item;
         }
 
         private _onAttributeLoading(e: CustomEvent) {
