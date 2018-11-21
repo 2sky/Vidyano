@@ -121,7 +121,7 @@
 
             let item = items.shift();
             let column = 0, row = 0;
-            const infiniteColumns: {
+            let infiniteColumns: {
                 [index: number]: string;
             } = {};
 
@@ -135,8 +135,14 @@
                         const newRow = areaRow.toArray();
                         areas.push(newRow);
 
-                        for (let x in infiniteColumns)
+                        let added = 0;
+                        for (let x in infiniteColumns) {
                             newRow[x] = infiniteColumns[x];
+                            added++;
+                        }
+
+                        if (added + itemWidth > columns)
+                            infiniteColumns = {};
 
                         continue;
                     }
