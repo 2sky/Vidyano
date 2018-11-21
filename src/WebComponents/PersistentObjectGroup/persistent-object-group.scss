@@ -33,6 +33,7 @@
 
         vi-persistent-object-attribute-presenter {
             grid-area: var(--vi-persistent-object-group--attribute-area);
+            overflow: hidden;
         }
     }
 }
