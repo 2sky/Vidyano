@@ -209,7 +209,7 @@
             return {
                 attribute: attribute,
                 config: config,
-                area: attribute.name.replace(".", "_"),
+                area: attribute.name.replace(/[\. \(\)]/g, "_"),
                 x: attribute.column,
                 width: Math.min(this.columns, config.calculateWidth(attribute)),
                 height: config.calculateHeight(attribute)
