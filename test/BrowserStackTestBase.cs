@@ -20,7 +20,6 @@ namespace Vidyano.Test
         private static HttpClient bsRest = new HttpClient();
         private static readonly JObject credentials;
         private static readonly JObject profiles;
-        public static string Build = "DEV";
         protected RemoteWebDriver driver;
 
         static BrowserStackTestBase()
@@ -56,12 +55,14 @@ namespace Vidyano.Test
                 capability.SetCapability(cap.Key, (string)cap.Value);
 
             capability.SetCapability("name", GetType().Name);
-            capability.SetCapability("build", Build);
+
+            var build = ciRest.GetAsync(new Uri((string)credentials["vidyano.ci.server"]).GetLeftPart(UriPartial.Authority) + "/api/latest").GetAwaiter().GetResult();
+            capability.SetCapability("build", build.Content.ReadAsStringAsync().GetAwaiter().GetResult());
 
             return capability;
         }
 
-        protected virtual void SignIn(string server, string key)
+        protected virtual void SignIn()
         {
             var username = driver.FindElement(By.Id("username"));
             username.SendKeys("Test");
@@ -70,8 +71,8 @@ namespace Vidyano.Test
             var password = driver.FindElement(By.Id("password"));
 
             var token = Guid.NewGuid().ToString();
-            var payload = new JObject(new JProperty("token", token), new JProperty("key", key)).ToString(Newtonsoft.Json.Formatting.None);
-            var result = ciRest.PostAsync(new Uri(server).GetLeftPart(UriPartial.Authority) + "/api/PreAuthenticate", 
+            var payload = new JObject(new JProperty("token", token), new JProperty("key", (string)credentials["vidyano.ci.preauthenticate.key"])).ToString(Newtonsoft.Json.Formatting.None);
+            var result = ciRest.PostAsync(new Uri((string)credentials["vidyano.ci.server"]).GetLeftPart(UriPartial.Authority) + "/api/PreAuthenticate", 
                 new StringContent(payload, Encoding.UTF8, "application/json")).GetAwaiter().GetResult();
 
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -88,7 +89,7 @@ namespace Vidyano.Test
             
             driver.Navigate().GoToUrl((string)credentials["vidyano.ci.server"]);
 
-            SignIn((string)credentials["vidyano.ci.server"], (string)credentials["vidyano.ci.preauthenticate.key"]);
+            SignIn();
         }
 
         [TearDown]
