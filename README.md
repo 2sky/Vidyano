@@ -1,5 +1,7 @@
 # Vidyano
 
+[![Build status](https://2sky.visualstudio.com/Vidyano/_apis/build/status/Vidyano-CI)](https://2sky.visualstudio.com/Vidyano/_build/latest?definitionId=4)
+
 *[Vidyano](http://www.vidyano.com) is .NET based application platform for building data-driven applications.*
 
 For instructions about _using_ Vidyano to develop applications, please refer to [www.vidyano.com](http://www.vidyano.com)
