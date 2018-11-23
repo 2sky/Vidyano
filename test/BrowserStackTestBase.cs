@@ -56,8 +56,14 @@ namespace Vidyano.Test
 
             capability.SetCapability("name", GetType().Name);
 
-            var build = ciRest.GetAsync(new Uri((string)credentials["vidyano.ci.server"]).GetLeftPart(UriPartial.Authority) + "/api/latest").GetAwaiter().GetResult();
-            capability.SetCapability("build", build.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+            var build = (string)credentials["build"];
+            if (string.IsNullOrEmpty(build))
+            {
+                var latest = ciRest.GetAsync(new Uri((string)credentials["vidyano.ci.server"]).GetLeftPart(UriPartial.Authority) + "/api/latest").GetAwaiter().GetResult();
+                build = latest.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            }
+
+            capability.SetCapability("build", build);
 
             return capability;
         }
