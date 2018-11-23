@@ -222,6 +222,7 @@ ModelManifest.xml
 /src/Libs/tslib/
 /src/Libs/webcomponentsjs/
 /src/Test/*.js
+/test/credentials.json
 /dist/Vidyano.Web2/src
 /dist/Vidyano.Web2/vidyano.d.ts
 /dist/packages/

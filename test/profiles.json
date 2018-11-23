@@ -1,0 +1,27 @@
+{
+  "default": {
+    "os": "Windows",
+    "os_version": "10",
+    "project": "vidyano",
+    "browserstack.local": "false",
+    "browserstack.selenium_version": "3.14.0"
+  },
+  "chrome": {
+    "browser": "chrome"
+  },
+  "safari": {
+    "browser": "safari",
+    "os": "OS X",
+    "os_version": "Mojave"
+  },
+  "firefox": {
+    "browser": "firefox"
+  },
+  "edge": {
+    "browser": "edge",
+    "browser_version": "insider preview"
+  },
+  "ie": {
+    "browser": "ie"
+  }
+}
