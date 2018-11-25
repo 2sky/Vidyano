@@ -18,15 +18,16 @@ namespace Vidyano.Test
     {
         private static HttpClient ciRest = new HttpClient();
         private static HttpClient bsRest = new HttpClient();
+        private static readonly string assemblyFolder = System.IO.Path.GetDirectoryName(typeof(BrowserStackTestBase).Assembly.Location);
         private static readonly JObject credentials;
         private static readonly JObject profiles;
+        private bool verifyBuild = true;
         protected RemoteWebDriver driver;
 
         static BrowserStackTestBase()
         {
-            var folder = System.IO.Path.GetDirectoryName(typeof(BrowserStackTestBase).Assembly.Location);
-            credentials = JObject.Parse(File.ReadAllText(System.IO.Path.Combine(folder, "credentials.json")));
-            profiles = JObject.Parse(File.ReadAllText(System.IO.Path.Combine(folder, "profiles.json")));
+            credentials = JObject.Parse(File.ReadAllText(System.IO.Path.Combine(assemblyFolder, "credentials.json")));
+            profiles = JObject.Parse(File.ReadAllText(System.IO.Path.Combine(assemblyFolder, "profiles.json")));
 
             var byteArray = Encoding.ASCII.GetBytes($"{(string)credentials["browserstack.user"]}:{(string)credentials["browserstack.key"]}");
             bsRest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
@@ -61,6 +62,7 @@ namespace Vidyano.Test
             {
                 var latest = ciRest.GetAsync(new Uri((string)credentials["vidyano.ci.server"]).GetLeftPart(UriPartial.Authority) + "/api/latest").GetAwaiter().GetResult();
                 build = latest.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                verifyBuild = true;
             }
 
             capability.SetCapability("build", build);
@@ -70,6 +72,11 @@ namespace Vidyano.Test
 
         protected virtual void SignIn()
         {
+            Assert.That(driver.FindElement(By.CssSelector("vi-app-route.active[route^=\"SignIn\"]")), Is.Not.Null, "No active sign in route found.");
+
+            if (verifyBuild)
+                Assert.That((bool)driver.ExecuteScript($"return Vidyano.version.endsWith('{File.ReadAllText(System.IO.Path.Combine(assemblyFolder, "version.txt"))}')"), Is.True, "Invalid test version.");
+
             var username = driver.FindElement(By.Id("username"));
             username.SendKeys("Test");
             username.SendKeys(Keys.Enter);
