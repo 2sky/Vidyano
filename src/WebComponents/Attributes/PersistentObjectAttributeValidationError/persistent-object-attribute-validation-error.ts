@@ -30,7 +30,7 @@ namespace Vidyano.WebComponents.Attributes {
             e.stopPropagation();
 
             this.app.showMessageDialog({
-                title: this.app.translateMessage(NotificationType[NotificationType.Error]),
+                title: this.app.translateMessage("Error"),
                 titleIcon: "Notification_Error",
                 actions: [this.translations.OK],
                 message: this.attribute.validationError

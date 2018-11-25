@@ -232,7 +232,7 @@ namespace Vidyano {
                     if (po.fullTypeName === "Vidyano.Notification") {
                         if (po.objectId != null && JSON.parse(po.objectId).dialog) {
                             this._setNotification();
-                            this.service.hooks.onMessageDialog(NotificationType[po.notificationType], po.notification, false, this.service.hooks.service.getTranslatedMessage("OK"));
+                            this.service.hooks.onMessageDialog(po.notificationType, po.notification, false, this.service.hooks.service.getTranslatedMessage("OK"));
                         }
                         else {
                             if (this.query && this.definition.refreshQueryOnCompleted)
@@ -305,7 +305,7 @@ namespace Vidyano {
             // Noop
         }
 
-        private _setNotification(notification: string = null, notificationType: NotificationType = NotificationType.Error, notificationDuration?: number) {
+        private _setNotification(notification: string = null, notificationType: NotificationType = "Error", notificationDuration?: number) {
             (this.query || this.parent).setNotification(notification, notificationType, notificationDuration);
         }
 

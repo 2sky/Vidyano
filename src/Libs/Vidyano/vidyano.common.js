@@ -372,7 +372,9 @@ BigNumber.prototype._netFormat = Number.prototype._netFormat = function Number$_
 /// Boolean extentions ////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 
-BooleanEx = window.BooleanEx || {};
+var BooleanEx;
+if (!BooleanEx)
+    BooleanEx = {};
 
 BooleanEx.parse = function Boolean$parse(str) {
     if (str == null)
@@ -742,7 +744,7 @@ var ExpressionParser = (function () {
     };
 
     return ep;
-})(window);
+})();
 
 ///////////////////////////////////////////////////////////////
 /// Unique ////////////////////////////////////////////////////
@@ -756,7 +758,7 @@ var Unique = (function () {
             return (n++).toString(36);
         }
     }
-})(window);
+})();
 
 ///////////////////////////////////////////////////////////////
 /// Helper Methods ////////////////////////////////////////////

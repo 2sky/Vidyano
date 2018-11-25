@@ -18,6 +18,7 @@
   },
   "include": [
     "_reference.ts",
+    "../../ServiceWorker/data-type.ts",
     "**/*.ts"
   ],
   "exclude": [

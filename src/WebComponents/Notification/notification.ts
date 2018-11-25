@@ -59,34 +59,9 @@
             if (!this.isOverflowing || (<HTMLElement>e.target).tagName === "A")
                 return;
 
-            let header: string;
-            let headerIcon: string;
-            switch (this._getIconType(this.type)) {
-                case NotificationType.Error: {
-                    header = this.app.translateMessage(NotificationType[NotificationType.Error]);
-                    headerIcon = NotificationType[NotificationType.Error];
-                    break;
-                }
-                case NotificationType.Notice: {
-                    header = this.app.translateMessage(NotificationType[NotificationType.Notice]);
-                    headerIcon = NotificationType[NotificationType.Notice];
-                    break;
-                }
-                case NotificationType.OK: {
-                    header = this.app.translateMessage(NotificationType[NotificationType.OK]);
-                    headerIcon = NotificationType[NotificationType.OK];
-                    break;
-                }
-                case NotificationType.Warning: {
-                    header = this.app.translateMessage(NotificationType[NotificationType.Warning]);
-                    headerIcon = NotificationType[NotificationType.Warning];
-                    break;
-                }
-            }
-
             this.app.showMessageDialog({
-                title: header,
-                titleIcon: "Notification_" + headerIcon,
+                title: this.app.translateMessage(this.type),
+                titleIcon: `Notification_${this.type}`,
                 message: this.text.replace(findNewLine, "<br />").replace(/class="style-scope vi-notification"/g, "class=\"style-scope vi-message-dialog\""),
                 rich: true,
                 actions: [this.translations.OK]
@@ -138,34 +113,8 @@
             return text == null || duration > 0;
         }
 
-        private _getIconType(type: NotificationType | string): NotificationType {
-            switch (type) {
-                case NotificationType[NotificationType.Error]:
-                case NotificationType.Error:
-                    return NotificationType.Error;
-                case NotificationType[NotificationType.Notice]:
-                case NotificationType.Notice:
-                    return NotificationType.Notice;
-                case NotificationType[NotificationType.OK]:
-                case NotificationType.OK:
-                    return NotificationType.OK;
-                case NotificationType[NotificationType.Warning]:
-                case NotificationType.Warning:
-                    return NotificationType.Warning;
-            }
-        }
-
-        private _computeIcon(type: NotificationType | string): string {
-            switch (this._getIconType(type)) {
-                case NotificationType.Error:
-                    return "Notification_Error";
-                case NotificationType.Notice:
-                    return "Notification_Notice";
-                case NotificationType.OK:
-                    return "Notification_OK";
-                case NotificationType.Warning:
-                    return "Notification_Warning";
-            }
+        private _computeIcon(type: NotificationType): string {
+            return `Notification_${this.type}`;
         }
     }
 }

@@ -43,10 +43,7 @@
             return this.actions[name];
         }
 
-        setNotification(notification: string = null, type: NotificationType = NotificationType.Error, duration: number = null, skipShowNotification?: boolean) {
-            if (typeof (type) === "string")
-                type = NotificationType[<string>type];
-
+        setNotification(notification: string = null, type: NotificationType = "Error", duration: number = null, skipShowNotification?: boolean) {
             if (notification != null && typeof notification === "object")
                 notification = notification["message"];
 

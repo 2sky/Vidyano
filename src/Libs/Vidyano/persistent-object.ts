@@ -6,15 +6,6 @@ namespace Vidyano {
         MasterDetail
     }
 
-    export interface IServicePersistentObject {
-        type?: string;
-        breadcrumb?: string;
-        isBreadcrumbSensitive?: boolean;
-        attributes?: IServicePersistentObjectAttribute[];
-        stateBehavior?: "OpenInEdit" | "StayInEdit" | "AsDialog";
-        dialogSaveAction?: string;
-    }
-
     export class PersistentObject extends ServiceObjectWithActions {
         private _isSystem: boolean;
         private _lastResult: any;
@@ -52,7 +43,7 @@ namespace Vidyano {
         attributes: PersistentObjectAttribute[];
         queries: Query[];
 
-        constructor(service: Service, po: IServicePersistentObject);
+        constructor(service: Service, po: Service.PersistentObject);
         constructor(service: Service, po: any) {
             super(service, (po._actionNames || po.actions || []).map(a => a === "Edit" && po.isNew ? "Save" : a), po.actionLabels);
 
@@ -288,7 +279,7 @@ namespace Vidyano {
                     const wasNew = this.isNew;
                     this.refreshFromResult(po, true);
 
-                    if (StringEx.isNullOrWhiteSpace(this.notification) || this.notificationType !== NotificationType.Error) {
+                    if (StringEx.isNullOrWhiteSpace(this.notification) || this.notificationType !== "Error") {
                         this._setIsDirty(false);
 
                         if (!wasNew) {
@@ -322,6 +313,9 @@ namespace Vidyano {
 
         toServiceObject(skipParent: boolean = false): any {
             const result = this.copyProperties(["id", "type", "objectId", "isNew", "isHidden", "bulkObjectIds", "securityToken", "isSystem"]);
+
+            if (this.ownerQuery)
+                result.ownerQueryId = this.ownerQuery.id;
 
             if (this.parent && !skipParent)
                 result.parent = this.parent.toServiceObject();

@@ -1,13 +1,13 @@
 ﻿namespace Vidyano {
     "use strict";
 
-    export class ServiceLanguage extends Vidyano.Common.Observable<ServiceObject> implements ILanguage {
-        constructor(private _language: ILanguage) {
+    export class Language extends Vidyano.Common.Observable<ServiceObject> implements Service.Language {
+        constructor(private _language: Service.Language, private _culture: string) {
             super();
         }
 
         get culture(): string {
-            return this._language.culture;
+            return this._culture;
         }
 
         get name(): string {

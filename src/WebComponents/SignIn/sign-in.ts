@@ -301,7 +301,7 @@
             catch (error) {
                 this._setNotification({
                     text: error,
-                    type: NotificationType.Error
+                    type: "Error"
                 });
             }
         }
@@ -322,7 +322,7 @@
             catch (error) {
                 this._setNotification({
                     text: error,
-                    type: NotificationType.Error
+                    type: "Error"
                 });
             }
             finally {
@@ -464,11 +464,11 @@
         private _error(error: string) {
             this._setNotification(error ? {
                 text: error,
-                type: Vidyano.NotificationType.Error
+                type: "Error"
             } : null);
         }
 
-        private _providers(providers: { [name: string]: IProviderParameters }): { name: string; parameters: IProviderParameters; }[] {
+        private _providers(providers: { [name: string]: Service.ProviderParameters }): { name: string; parameters: Service.ProviderParameters; }[] {
             return Object.keys(providers).filter(key => key !== "Vidyano").map(key => {
                 return {
                     key: key,

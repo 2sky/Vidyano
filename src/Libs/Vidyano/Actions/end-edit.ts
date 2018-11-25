@@ -19,7 +19,7 @@
 
             protected async _onExecute({ menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions }: IActionExecuteOptions): Promise<PersistentObject> {
                 await this.parent.save();
-                if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== NotificationType.Error) {
+                if (StringEx.isNullOrWhiteSpace(this.parent.notification) || this.parent.notificationType !== "Error") {
                     const edit = this.parent.actions["Edit"];
                     const endEdit = this.parent.actions["EndEdit"];
 

@@ -80,7 +80,7 @@
         }
 
         private _computeCanSearch(serviceObject: Vidyano.ServiceObjectWithActions): boolean {
-            return serviceObject instanceof Vidyano.Query && (<Vidyano.Query>serviceObject).actions["Filter"] != null;
+            return serviceObject instanceof Vidyano.Query && serviceObject.allowTextSearch;
         }
 
         private _computeNoActions(pinnedActions: Vidyano.Action[], unpinnedActions: Vidyano.Action[]): boolean {

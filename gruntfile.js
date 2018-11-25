@@ -33,7 +33,40 @@ module.exports = function (grunt) {
                 }]
             },
         },
+        run: {
+            dev: {
+                options: {
+                    cwd: "src/ServiceWorker/FilesGenerator"
+                },
+                args: [
+                    "files-generator.js"
+                ]
+            },
+            dist: {
+                options: {
+                    cwd: "src/ServiceWorker/FilesGenerator"
+                },
+                args: [
+                    "files-generator.js",
+                    "-dist"
+                ]
+            }
+        },
         ts: {
+            serviceworker_files_generator: {
+                cwd: 'src/ServiceWorker/FilesGenerator/',
+                tsconfig: 'src/ServiceWorker/FilesGenerator/tsconfig.json',
+                options: {
+                    fast: 'never'
+                }
+            },
+            serviceworker: {
+                cwd: 'src/ServiceWorker/',
+                tsconfig: 'src/ServiceWorker/tsconfig.json',
+                options: {
+                    fast: 'never'
+                }
+            },
             vidyano: {
                 cwd: 'src/Libs/Vidyano/',
                 tsconfig: 'src/Libs/Vidyano/tsconfig.json',
@@ -42,7 +75,8 @@ module.exports = function (grunt) {
                 }
             },
             webcomponents: {
-                tsconfig: "tsconfig.json",
+                cwd: 'src/WebComponents/',
+                tsconfig: "src/WebComponents/tsconfig.json",
                 options: {
                     fast: 'never'
                 }
@@ -67,6 +101,12 @@ module.exports = function (grunt) {
                 cwd: "node_modules/tslib",
                 src: "tslib.js",
                 dest: "src/Libs/tslib/",
+                expand: true
+            },
+            idb: {
+                cwd: "node_modules/idb/lib",
+                src: "idb.js",
+                dest: "src/Libs/idb/",
                 expand: true
             },
             dist: {
@@ -170,14 +210,24 @@ module.exports = function (grunt) {
         "bower:install",
         "sass",
         "copy:tslib",
-        "ts"
+        "copy:idb",
+        "ts:vidyano",
+        "ts:webcomponents",
+        "ts:serviceworker_files_generator",
+        "run:dev",
+        "ts:serviceworker"
     ]);
 
     grunt.registerTask("nuget", [
         "bower:install",
         "sass",
         "copy:tslib",
-        "ts",
+        "copy:idb",
+        "ts:vidyano",
+        "ts:webcomponents",
+        "ts:serviceworker_files_generator",
+        "run:dist",
+        "ts:serviceworker",
         "tslint",
         "clean",
         "copy:dist",
@@ -194,6 +244,7 @@ module.exports = function (grunt) {
         "bower:install",
         "sass",
         "copy:tslib",
+        "copy:idb",
         "ts",
         "clean",
         "copy:dist",
@@ -213,6 +264,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-cssmin");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-run');
     grunt.loadNpmTasks("grunt-sass");
     grunt.loadNpmTasks("grunt-text-replace");
     grunt.loadNpmTasks("grunt-git-revision");

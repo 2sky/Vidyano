@@ -8,10 +8,6 @@ namespace Vidyano {
         hasMore: boolean;
     }
 
-    export interface IServiceQueryColumn {
-        isSensitive?: boolean;
-    }
-
     export class QueryColumn extends ServiceObject {
         private _id: string;
         private _displayAttribute: string;
@@ -35,7 +31,7 @@ namespace Vidyano {
         width: string;
         typeHints: any;
 
-        constructor(service: Service, col: IServiceQueryColumn, query: Query);
+        constructor(service: Service, col: Service.QueryColumn, query: Query);
         constructor(service: Service, col: any, public query: Query) {
             super(service);
 
@@ -62,7 +58,7 @@ namespace Vidyano {
             this.isHidden = !!col.isHidden;
             this.width = col.width;
             this.typeHints = col.typeHints;
-            this._sortDirection = SortDirection.None;
+            this._sortDirection = "";
 
             query.propertyChanged.attach(this._queryPropertyChanged.bind(this));
         }
@@ -108,7 +104,7 @@ namespace Vidyano {
         }
 
         get isSorting(): boolean {
-            return this._sortDirection !== SortDirection.None;
+            return this._sortDirection !== "";
         }
 
         get sortDirection(): SortDirection {
@@ -220,11 +216,11 @@ namespace Vidyano {
                     return;
 
                 if (!sortOption) {
-                    if (direction !== SortDirection.None)
+                    if (direction !== "")
                         this.query.sortOptions = this.query.sortOptions.concat([{ column: this, name: this.name, direction: direction }]);
                 }
                 else {
-                    if (direction !== SortDirection.None) {
+                    if (direction !== "") {
                         sortOption.direction = direction;
                         this.query.sortOptions = this.query.sortOptions.slice();
                     }
@@ -232,7 +228,7 @@ namespace Vidyano {
                         this.query.sortOptions = this.query.sortOptions.filter(option => option !== sortOption);
                 }
             } else
-                this.query.sortOptions = direction !== SortDirection.None ? [{ column: this, name: this.name, direction: direction }] : [];
+                this.query.sortOptions = direction !== "" ? [{ column: this, name: this.name, direction: direction }] : [];
 
             try {
                 await this.query.search({ throwExceptions: true });
@@ -242,7 +238,7 @@ namespace Vidyano {
             }
 
             const querySettings = (this.service.application.userSettings["QuerySettings"] || (this.service.application.userSettings["QuerySettings"] = {}))[this.query.id] || {};
-            querySettings["sortOptions"] = this.query.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ");
+            querySettings["sortOptions"] = this.query.sortOptions.filter(option => option.direction !== "").map(option => option.name + option.direction).join("; ");
 
             this.service.application.userSettings["QuerySettings"][this.query.id] = querySettings;
             await this.service.application.saveUserSettings();
@@ -253,7 +249,7 @@ namespace Vidyano {
         private _queryPropertyChanged(sender: Vidyano.Query, args: Vidyano.Common.PropertyChangedArgs) {
             if (args.propertyName === "sortOptions") {
                 const sortOption = this.query.sortOptions ? this.query.sortOptions.filter(option => option.column === this)[0] : null;
-                this._setSortDirection(sortOption ? sortOption.direction : SortDirection.None);
+                this._setSortDirection(sortOption ? sortOption.direction : "");
             } else if (args.propertyName === "totalItem")
                 this._setTotal(sender.totalItem ? sender.totalItem.getFullValue(this.name) : null);
         }

@@ -289,7 +289,7 @@ namespace Vidyano.WebComponents {
         isTracking: boolean;
         sensitive: boolean;
 
-        attached() {
+        async attached() {
             super.attached();
 
             window.addEventListener("storage", this._onSessionStorage.bind(this), false);
@@ -502,24 +502,8 @@ namespace Vidyano.WebComponents {
             return this.showDialog(new Vidyano.WebComponents.MessageDialog(options));
         }
 
-        showAlert(notification: string, type: Vidyano.NotificationType = Vidyano.NotificationType.Notice, duration: number = 3000) {
-            switch (type) {
-                case NotificationType.Error:
-                    alertify.log(notification, "error", duration);
-                    break;
-
-                case NotificationType.OK:
-                    alertify.log(notification, "success", duration);
-                    break;
-
-                case NotificationType.Warning:
-                    alertify.log(notification, "warning", duration);
-                    break;
-
-                case NotificationType.Notice:
-                    alertify.log(notification, "notice", duration);
-                    break;
-            }
+        showAlert(notification: string, type: Vidyano.NotificationType = "Notice", duration: number = 3000) {
+            alertify.log(notification, type.toLowerCase(), duration);
         }
 
         importComponent(...components: string[]): Promise<any> {

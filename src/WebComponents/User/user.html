@@ -11,19 +11,16 @@
             <template is="dom-if" if="[[isSignedIn]]">
                 <button is="vi-button" icon="Profiler" inverse title="[[translateMessage('Profiler', isAttached)]]" hidden$="[[!hasProfiler]]" on-tap="_showProfiler"></button>
                 <button is="vi-button" icon="UserFeedback" inverse title="[[translateMessage('Feedback', isAttached)]]" hidden$="[[!hasFeedback]]" on-tap="feedback"></button>
+                <button is="vi-button" icon="Online" inverse title="[[translateMessage('Online', isAttached)]]" class="offline" on-tap="_showProfiler"></button>
                 <button is="vi-button" icon="Configure" inverse title="[[translateMessage('UserSettings', isAttached)]]" hidden$="[[!hasUserSettings]]" on-tap="userSettings"></button>
                 <button is="vi-button" icon="SignOut" inverse title="[[translateMessage('SignOut', isAttached)]]" hidden$="[[service.windowsAuthentication]]" on-tap="signOut"></button>
             </template>
             <template is="dom-if" if="[[!isSignedIn]]">
-                <button is="vi-button" class="flex" id="signIn" icon="SignIn" label="[[signInLabel]]" inverse title="[[signInLabel]]" hidden$="[[isSignedIn]]" on-tap="signIn"></button>
+                <button is="vi-button" class="flex signIn" icon="SignIn" label="[[signInLabel]]" inverse title="[[signInLabel]]" hidden$="[[isSignedIn]]" on-tap="signIn"></button>
             </template>
         </div>
     </template>
 </dom-module>
-
-<vi-icon name="Profiler">
-
-</vi-icon>
 
 <!-- Stopwatch by Samy Menai from the Noun Project-->
 <vi-icon name="Profiler">

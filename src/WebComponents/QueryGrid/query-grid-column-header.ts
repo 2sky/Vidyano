@@ -116,21 +116,21 @@
             let newSortingDirection: SortDirection;
             let multiSort = false;
             if (e.currentTarget instanceof Vidyano.WebComponents.PopupMenuItem) {
-                newSortingDirection = e.currentTarget.icon === "SortAsc" ? SortDirection.Ascending : SortDirection.Descending;
+                newSortingDirection = e.currentTarget.icon === "SortAsc" ? "ASC" : "DESC";
             }
             else {
                 multiSort = (<any>e).detail.sourceEvent.ctrlKey;
                 switch (this._column.sortDirection) {
-                    case SortDirection.Ascending: {
-                        newSortingDirection = SortDirection.Descending;
+                    case "ASC": {
+                        newSortingDirection = "DESC";
                         break;
                     }
-                    case SortDirection.Descending: {
-                        newSortingDirection = multiSort && this._column.query.sortOptions.length > 1 ? SortDirection.None : SortDirection.Ascending;
+                    case "DESC": {
+                        newSortingDirection = multiSort && this._column.query.sortOptions.length > 1 ? "" : "ASC";
                         break;
                     }
-                    case SortDirection.None: {
-                        newSortingDirection = SortDirection.Ascending;
+                    case "": {
+                        newSortingDirection = "ASC";
                         break;
                     }
                 }
@@ -173,7 +173,7 @@
         }
 
         private _updateSortingIcon(direction: Vidyano.SortDirection) {
-            this._setSorting(direction === SortDirection.Ascending ? "SortAsc" : (direction === SortDirection.Descending ? "SortDesc" : null));
+            this._setSorting(direction === "ASC" ? "SortAsc" : (direction === "DESC" ? "SortDesc" : null));
         }
 
         private _resizeTrack(e: TrackEvent, detail: PolymerTrackDetail) {
