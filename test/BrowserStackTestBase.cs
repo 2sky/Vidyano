@@ -19,17 +19,17 @@ namespace Vidyano.Test
         private static HttpClient ciRest = new HttpClient();
         private static HttpClient bsRest = new HttpClient();
         private static readonly string assemblyFolder = System.IO.Path.GetDirectoryName(typeof(BrowserStackTestBase).Assembly.Location);
-        private static readonly JObject credentials;
+        private static readonly JObject browserstack;
         private static readonly JObject profiles;
         private bool verifyBuild = true;
         protected RemoteWebDriver driver;
 
         static BrowserStackTestBase()
         {
-            credentials = JObject.Parse(File.ReadAllText(System.IO.Path.Combine(assemblyFolder, "credentials.json")));
+            browserstack = JObject.Parse(File.ReadAllText(System.IO.Path.Combine(assemblyFolder, "browserstack.json")));
             profiles = JObject.Parse(File.ReadAllText(System.IO.Path.Combine(assemblyFolder, "profiles.json")));
 
-            var byteArray = Encoding.ASCII.GetBytes($"{(string)credentials["browserstack.user"]}:{(string)credentials["browserstack.key"]}");
+            var byteArray = Encoding.ASCII.GetBytes($"{(string)browserstack["browserstack.user"]}:{(string)browserstack["browserstack.key"]}");
             bsRest.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
         }
 
@@ -46,8 +46,8 @@ namespace Vidyano.Test
         protected virtual DesiredCapabilities CreateCapability()
         {
             var capability = new DesiredCapabilities();
-            capability.SetCapability("browserstack.key", (string)credentials["browserstack.key"]);
-            capability.SetCapability("browserstack.user", (string)credentials["browserstack.user"]);
+            capability.SetCapability("browserstack.key", (string)browserstack["browserstack.key"]);
+            capability.SetCapability("browserstack.user", (string)browserstack["browserstack.user"]);
 
             foreach (var cap in (JObject)profiles["default"])
                 capability.SetCapability(cap.Key, (string)cap.Value);
@@ -57,10 +57,10 @@ namespace Vidyano.Test
 
             capability.SetCapability("name", GetType().Name);
 
-            var build = (string)credentials["build"];
+            var build = (string)browserstack["build"];
             if (string.IsNullOrEmpty(build))
             {
-                var latest = ciRest.GetAsync(new Uri((string)credentials["vidyano.ci.server"]).GetLeftPart(UriPartial.Authority) + "/api/latest").GetAwaiter().GetResult();
+                var latest = ciRest.GetAsync(new Uri((string)browserstack["vidyano.ci.server"]).GetLeftPart(UriPartial.Authority) + "/api/latest").GetAwaiter().GetResult();
                 build = latest.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 verifyBuild = true;
             }
@@ -84,8 +84,8 @@ namespace Vidyano.Test
             var password = driver.FindElement(By.Id("password"));
 
             var token = Guid.NewGuid().ToString();
-            var payload = new JObject(new JProperty("token", token), new JProperty("key", (string)credentials["vidyano.ci.preauthenticate.key"])).ToString(Newtonsoft.Json.Formatting.None);
-            var result = ciRest.PostAsync(new Uri((string)credentials["vidyano.ci.server"]).GetLeftPart(UriPartial.Authority) + "/api/PreAuthenticate", 
+            var payload = new JObject(new JProperty("token", token), new JProperty("key", (string)browserstack["vidyano.ci.preauthenticate.key"])).ToString(Newtonsoft.Json.Formatting.None);
+            var result = ciRest.PostAsync(new Uri((string)browserstack["vidyano.ci.server"]).GetLeftPart(UriPartial.Authority) + "/api/PreAuthenticate", 
                 new StringContent(payload, Encoding.UTF8, "application/json")).GetAwaiter().GetResult();
 
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -100,7 +100,7 @@ namespace Vidyano.Test
             driver = new RemoteWebDriver(new Uri("https://hub-cloud.browserstack.com/wd/hub/"), CreateCapability());
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
             
-            driver.Navigate().GoToUrl((string)credentials["vidyano.ci.server"]);
+            driver.Navigate().GoToUrl((string)browserstack["vidyano.ci.server"]);
 
             SignIn();
         }
@@ -108,10 +108,9 @@ namespace Vidyano.Test
         [TearDown]
         public void Cleanup()
         {
-            var context = NUnit.Framework.Internal.TestExecutionContext.CurrentContext;
-            if (context.CurrentResult.ResultState != NUnit.Framework.Interfaces.ResultState.Success)
+            if (TestContext.CurrentContext.Result.Outcome != NUnit.Framework.Interfaces.ResultState.Success)
             {
-                var error = new JObject { new JProperty("status", "failed"), new JProperty("reason", $"{context.CurrentResult.Message}\n{context.CurrentResult.StackTrace}") };
+                var error = new JObject { new JProperty("status", "failed"), new JProperty("reason", $"{TestContext.CurrentContext.Result.Message}\n{TestContext.CurrentContext.Result.StackTrace}") };
                 bsRest.PutAsync($"https://api.browserstack.com/automate/sessions/{driver.SessionId}.json",
                                 new StringContent(error.ToString(Newtonsoft.Json.Formatting.None),
                                 Encoding.UTF8, "application/json")).GetAwaiter().GetResult();
