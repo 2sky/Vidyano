@@ -276,12 +276,11 @@
             }
 
             const newServiceValue = Service.toServiceString(val, this.type);
-            let queuedTriggersRefresh = null;
 
             // If value is equal
             if (this._cachedValue === val || (this._serviceValue == null && StringEx.isNullOrEmpty(newServiceValue)) || this._serviceValue === newServiceValue) {
                 if (allowRefresh && this._shouldRefresh)
-                    queuedTriggersRefresh = await this._triggerAttributeRefresh();
+                    await this._triggerAttributeRefresh();
             }
             else {
                 const oldDisplayValue = this.displayValue;
@@ -295,7 +294,7 @@
 
                 if (this.triggersRefresh) {
                     if (allowRefresh)
-                        queuedTriggersRefresh = await this._triggerAttributeRefresh();
+                        await this._triggerAttributeRefresh();
                     else
                         this._shouldRefresh = true;
                 }

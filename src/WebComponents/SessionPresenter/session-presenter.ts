@@ -44,7 +44,7 @@ namespace Vidyano.WebComponents {
             if (session !== this.session)
                 return;
 
-            <HTMLElement>Polymer.dom(this).appendChild(this._customTemplate.stamp({ session: session }).root);
+            Polymer.dom(this).appendChild(this._customTemplate.stamp({ session: session }).root);
             Polymer.dom(this).flush();
         }
     }

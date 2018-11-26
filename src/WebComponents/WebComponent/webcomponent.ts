@@ -38,7 +38,7 @@ namespace Vidyano.WebComponents {
             seven = 55,
             eight = 56,
             nine = 57
-        };
+        }
 
         export let KeyIdentifiers = {
             "tab": "U+0009",

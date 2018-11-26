@@ -45,7 +45,7 @@ namespace Vidyano.WebComponents.Attributes {
                         const fr = new FileReader();
                         fr.readAsDataURL(input.files[0]);
                         fr.onload = () => {
-                            resolve(this.value = fr.result.match(/,(.*)$/)[1]);
+                            resolve(this.value = (<string>fr.result).match(/,(.*)$/)[1]);
                         };
                         fr.onerror = () => {
                             reject(fr.error);

@@ -13,8 +13,8 @@ namespace Vidyano {
     }
 
     export class QueryColumn extends ServiceObject {
-        private displayAttribute: string;
         private _id: string;
+        private _displayAttribute: string;
         private _sortDirection: SortDirection;
         private _canSort: boolean;
         private _canGroupBy: boolean;
@@ -40,11 +40,11 @@ namespace Vidyano {
             super(service);
 
             this._id = col.id;
-            this.displayAttribute = col.displayAttribute;
             this._canSort = !!col.canSort;
             this._canGroupBy = !!col.canGroupBy;
             this._canFilter = !!col.canFilter;
             this._canListDistincts = !!col.canListDistincts;
+            this._displayAttribute = col.displayAttribute;
             this._isSensitive = !!col.isSensitive;
             if (col instanceof QueryColumn) {
                 this._selectedDistincts = col._selectedDistincts;
@@ -97,6 +97,10 @@ namespace Vidyano {
 
         get canListDistincts(): boolean {
             return this._canListDistincts;
+        }
+
+        get displayAttribute(): string {
+            return this._displayAttribute;
         }
 
         get isSensitive(): boolean {

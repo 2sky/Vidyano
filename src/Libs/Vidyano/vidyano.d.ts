@@ -582,7 +582,6 @@ declare namespace Vidyano {
 }
 declare namespace Vidyano {
     class ProgramUnit extends ProgramUnitItem {
-        private _id;
         offset: number;
         openFirst: boolean;
         items: ProgramUnitItem[];
@@ -618,8 +617,8 @@ declare namespace Vidyano {
     }
     class QueryColumn extends ServiceObject {
         query: Query;
-        private displayAttribute;
         private _id;
+        private _displayAttribute;
         private _sortDirection;
         private _canSort;
         private _canGroupBy;
@@ -647,6 +646,7 @@ declare namespace Vidyano {
         readonly canSort: boolean;
         readonly canGroupBy: boolean;
         readonly canListDistincts: boolean;
+        readonly displayAttribute: string;
         readonly isSensitive: boolean;
         readonly isSorting: boolean;
         readonly sortDirection: SortDirection;
@@ -984,6 +984,7 @@ declare namespace Vidyano {
         readonly queuedClientOperations: ClientOperations.IClientOperation[];
         readonly application: Application;
         private _setApplication;
+        readonly initial: Vidyano.PersistentObject;
         language: ILanguage;
         requestedLanguage: string;
         readonly isSignedIn: boolean;
@@ -1360,6 +1361,11 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
+    namespace ClientOperations {
+        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
+    }
+}
+declare namespace Vidyano {
     interface IServiceQueryResultItemGroup {
         name: string;
         count: number;
@@ -1391,10 +1397,5 @@ declare namespace Vidyano {
         messages: {
             [key: string]: string;
         };
-    }
-}
-declare namespace Vidyano {
-    namespace ClientOperations {
-        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
     }
 }

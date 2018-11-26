@@ -1163,7 +1163,7 @@ namespace Vidyano.WebComponents {
         private _reorderRow: QueryGridTableDataRow;
         private _outOfViewColumnsWorkerHandle: number;
         readonly columnWidthsCalculated: boolean; private _setColumnWidthsCalculated: (val: boolean) => void;
-        readonly rowHeight: number;;
+        readonly rowHeight: number;
         readonly initializing: boolean; private _setInitializing: (initializing: boolean) => void;
         readonly isReordering: boolean; private _setIsReordering: (reodering: boolean) => void;
         readonly hasGrouping: boolean; private _setHasGrouping: (hasGrouping: boolean) => void;

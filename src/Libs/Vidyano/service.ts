@@ -391,6 +391,10 @@ namespace Vidyano {
                 this.profile = false;
         }
 
+        get initial(): Vidyano.PersistentObject {
+            return this._initial;
+        }
+
         get language(): ILanguage {
             return this._language;
         }

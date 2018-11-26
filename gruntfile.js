@@ -1,3 +1,5 @@
+const sass = require('node-sass');
+
 module.exports = function (grunt) {
     let versionReplace = grunt.option("vidyano-version");
     if (grunt.option("vidyano-version-prerelease") === "master") {
@@ -20,6 +22,9 @@ module.exports = function (grunt) {
             }
         },
         sass: {
+            options: {
+                implementation: sass
+            },
             development: {
                 files: [{
                     expand: true,

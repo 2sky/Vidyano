@@ -2,7 +2,6 @@
     "use strict";
 
     export class ProgramUnit extends ProgramUnitItem {
-        private _id: string;
         offset: number;
         openFirst: boolean;
         items: ProgramUnitItem[];
@@ -10,7 +9,6 @@
         constructor(service: Service, routes: IRoutes, unit: any) {
             super(service, unit, unit.name);
 
-            this._id = unit.id;
             this.offset = unit.offset;
             this.openFirst = unit.openFirst;
 

@@ -428,7 +428,6 @@ namespace Vidyano {
         async group(column: QueryColumn): Promise<QueryResultItem[]>;
         async group(by: string): Promise<QueryResultItem[]>;
         async group(columnOrBy: (string | QueryColumn)): Promise<QueryResultItem[]> {
-            const column = columnOrBy instanceof Vidyano.QueryColumn ? columnOrBy : this.getColumn(columnOrBy);
             const by = columnOrBy instanceof Vidyano.QueryColumn ? columnOrBy.name : columnOrBy;
 
             if (this.groupingInfo && this.groupingInfo.groupedBy === by)

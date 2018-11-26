@@ -156,15 +156,14 @@
                     }
                 }
                 else {
-                    const initial: Vidyano.PersistentObject = this.service["_initial"];
-                    if (initial) {
+                    if (this.service.initial) {
                         this.app.importComponent("PersistentObjectTabPresenter");
                         this._setReturnUrl(decodeURIComponent(parameters.returnUrl || ""));
 
-                        initial.beginEdit();
-                        initial.stateBehavior = "StayInEdit";
+                        this.service.initial.beginEdit();
+                        this.service.initial.stateBehavior = "StayInEdit";
 
-                        this._setInitial(initial);
+                        this._setInitial(this.service.initial);
                         this.step = "initial";
 
                         return;

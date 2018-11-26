@@ -8,6 +8,7 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "noEmitHelpers": true,
+    "noUnusedLocals": true,
     "outFile": "vidyano.js",
     "declaration": true
   },

@@ -202,7 +202,7 @@ namespace Vidyano {
         }
 
         protected async _onExecute(options: IActionExecuteOptions): Promise<PersistentObject> {
-            let { menuOption, parameters, selectedItems, skipOpen, noConfirmation, throwExceptions } = options;
+            let { menuOption, parameters, selectedItems, skipOpen, noConfirmation } = options;
             if (this.definition.confirmation && (!noConfirmation) && !await this.service.hooks.onActionConfirmation(this, menuOption))
                 return null;
 

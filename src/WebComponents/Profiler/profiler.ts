@@ -284,7 +284,7 @@ namespace Vidyano.WebComponents {
             });
 
             return flattenedEntries;
-        };
+        }
 
         private _computeEntryClassName(e: IServiceRequestProfilerEntry): string {
             let className = "entry";
