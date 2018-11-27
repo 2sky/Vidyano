@@ -130,7 +130,7 @@ namespace Vidyano.WebComponents {
             const scroller = <Scroller>this.$.timelineScroller;
 
             const rect = scroller.getBoundingClientRect();
-			const offsetX = e.pageX - rect.left - window.pageXOffset;
+            const offsetX = e.pageX - rect.left - window.pageXOffset;
             const mousePctg = 1 / scroller.outerWidth * offsetX;
 
             const isZoomIn = (e.wheelDelta || -e.detail) > 0;

@@ -1,13 +1,13 @@
 ﻿namespace Vidyano {
-	"use strict";
+    "use strict";
 
     export class CultureInfo {
         static currentCulture: CultureInfo;
         static invariantCulture: CultureInfo;
         static cultures: KeyValue<CultureInfo> = {};
 
-		constructor(public name: string, public numberFormat: ICultureInfoNumberFormat, public dateFormat: ICultureInfoDateFormat) {
-		}
+        constructor(public name: string, public numberFormat: ICultureInfoNumberFormat, public dateFormat: ICultureInfoDateFormat) {
+        }
     }
 
     export interface ICultureInfoNumberFormat {

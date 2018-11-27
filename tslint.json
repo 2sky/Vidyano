@@ -44,8 +44,7 @@
     "typedef-whitespace": [
       true,
       {
-        "call-signature": "nospace",
-        "index-signature": "space"
+        "call-signature": "nospace"
       }
     ],
     "variable-name": false,
