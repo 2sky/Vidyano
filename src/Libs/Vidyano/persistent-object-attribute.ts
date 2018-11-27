@@ -1,4 +1,4 @@
-﻿namespace Vidyano {
+namespace Vidyano {
     "use strict";
 
     export type PersistentObjectAttributeVisibility = "Always" | "Read" | "New" | "Never" | "Query" | "Read, Query" | "Read, New" | "Query, New";
@@ -54,6 +54,7 @@
         triggersRefresh: boolean;
         column: number;
         columnSpan: number;
+        input: HTMLInputElement;
 
         constructor(service: Service, attr: IServicePersistentObjectAttribute, parent: PersistentObject);
         constructor(service: Service, attr: any, public parent: PersistentObject) {
@@ -337,19 +338,6 @@
             }
 
             return defaultValue;
-        }
-
-        getRegisteredInput(): HTMLInputElement {
-            const inputKvp = this.parent.getRegisteredInputs().firstOrDefault(kvp => kvp.key === this.name);
-            return inputKvp ? inputKvp.value : null;
-        }
-
-        registerInput(input: HTMLInputElement) {
-            this.parent.registerInput(this.name, input);
-        }
-
-        clearRegisteredInput() {
-            this.parent.clearRegisteredInputs(this.name);
         }
 
         _toServiceObject() {

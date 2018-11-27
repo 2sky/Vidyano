@@ -31,7 +31,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _registerInput(attribute: Vidyano.PersistentObjectAttribute, isAttached: boolean) {
             if (this._inputAttribute) {
-                this._inputAttribute.clearRegisteredInput();
+                this._inputAttribute.input = null;
                 this._inputAttribute = null;
             }
 
@@ -42,7 +42,7 @@ namespace Vidyano.WebComponents.Attributes {
                 this._inputAttribute = attribute;
 
                 const input = document.createElement("input");
-                this._inputAttribute.registerInput(input);
+                this._inputAttribute.input = input;
                 input.type = "file";
                 input.accept = this.attribute.getTypeHint("accept");
 

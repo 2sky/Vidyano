@@ -23,7 +23,6 @@ namespace Vidyano {
         private securityToken: string;
         private _isEditing: boolean = false;
         private _isDirty: boolean = false;
-        private _inputs: linqjs.Dictionary<string, HTMLInputElement> = Enumerable.empty<string>().toDictionary(i => i, i => null);
         private _id: string;
         private _type: string;
         private _breadcrumb: string;
@@ -318,25 +317,6 @@ namespace Vidyano {
 
                 return true;
             });
-        }
-
-        getRegisteredInputs(): linqjs.Enumerable<linqjs.KeyValuePair<string, HTMLInputElement>> {
-            return this._inputs.toEnumerable().memoize();
-        }
-
-        hasRegisteredInput(attributeName: string): boolean {
-            return !!this._inputs.contains(attributeName);
-        }
-
-        registerInput(attributeName: string, input: HTMLInputElement) {
-            this._inputs.add(attributeName, input);
-        }
-
-        clearRegisteredInputs(attributeName?: string) {
-            if (attributeName)
-                this._inputs.remove(attributeName);
-            else
-                this._inputs.clear();
         }
 
         toServiceObject(skipParent: boolean = false): any {

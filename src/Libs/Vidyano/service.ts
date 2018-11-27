@@ -879,8 +879,8 @@ namespace Vidyano {
                     return await executeThen(result);
                 }
 
-                const inputs = parent.getRegisteredInputs();
-                if (inputs.count() === 0 || !inputs.select(i => parent.getAttribute(i.key)).toArray().some(a => a.isValueChanged)) {
+                const inputs = parent.attributes.filter(i => i.input != null).map(attribute => ({ attribute, input: attribute.input, replacement: <HTMLInputElement>null }));
+                if (!inputs.length || !inputs.some(i => i.attribute.isValueChanged)) {
                     const result = await this._postJSON(this._createUri("ExecuteAction"), data);
                     return await executeThen(result);
                 }
@@ -889,13 +889,9 @@ namespace Vidyano {
                 if (this.serviceUri.startsWith("http") && !this.serviceUri.startsWith(origin) + "/") {
                     data.parent = parent.toServiceObject();
 
-                    const inputsEnum = inputs.getEnumerator();
-                    while (inputsEnum.moveNext()) {
-                        const input = inputsEnum.current().value;
-                        const attribute = Enumerable.from(data.parent.attributes).first(a => a.name === inputsEnum.current().key);
-
+                    for (let i of inputs) {
                         await new Promise((resolve, reject) => {
-                            const file = input.files[0];
+                            const file = i.input.files[0];
                             if (!file) {
                                 resolve(true);
                                 return;
@@ -904,10 +900,10 @@ namespace Vidyano {
                             const reader = new FileReader();
 
                             reader.onload = event => {
-                                const fileName = attribute.value;
-                                attribute.value = (<any>event.target).result.match(/,(.*)$/)[1];
-                                if (attribute.type === "BinaryFile")
-                                    attribute.value = fileName + "|" + attribute.value;
+                                const fileName = i.attribute.value;
+                                i.attribute.value = (<any>event.target).result.match(/,(.*)$/)[1];
+                                if (i.attribute.type === "BinaryFile")
+                                    i.attribute.value = fileName + "|" + i.attribute.value;
 
                                 resolve(true);
                             };
@@ -946,14 +942,13 @@ namespace Vidyano {
                 clonedForm.appendChild(input);
                 clonedForm.style.display = "none";
 
-                inputs.where(item => item.value.value !== "").forEach(function (item) {
-                    const input = item.value;
-                    input.name = item.key;
-                    const replacement = document.createElement("input");
-                    replacement.type = "file";
-                    input.insertAdjacentElement("afterend", replacement);
-                    (<any>input).replacement = replacement;
-                    clonedForm.appendChild(input);
+                inputs.filter(i => i.input.value !== "").forEach(i => {
+                    i.input.name = i.attribute.name;
+                    i.replacement = document.createElement("input");
+                    i.replacement.type = "file";
+                    i.input.insertAdjacentElement("afterend", i.replacement);
+
+                    clonedForm.appendChild(i.input);
                 });
 
                 const createdRequest = new Date();
@@ -995,18 +990,17 @@ namespace Vidyano {
                 document.body.removeChild(clonedForm);
                 document.body.removeChild(iframe);
 
-                parent.clearRegisteredInputs();
-                inputs.forEach(item => {
-                    const replacement: HTMLInputElement = (<any>item.value).replacement;
-                    if (replacement != null) {
+                inputs.forEach(i => i.attribute.input = null);
+                inputs.forEach(i => {
+                    if (i.replacement != null) {
                         const tempParent = document.createElement("div");
-                        tempParent.innerHTML = item.value.outerHTML;
+                        tempParent.innerHTML = i.input.outerHTML;
                         const newInput = <HTMLInputElement>tempParent.querySelector("input");
-                        replacement.parentNode.replaceChild(newInput, replacement);
-                        parent.registerInput(item.key, newInput);
+                        i.replacement.parentNode.replaceChild(newInput, i.replacement);
+                        i.attribute.input = newInput;
                     }
                     else
-                        parent.registerInput(item.key, item.value);
+                        i.attribute.input = i.replacement;
                 });
 
                 return await executeThen(result);
