@@ -127,7 +127,7 @@ namespace Vidyano {
         private _canFilter: boolean;
         private _canRead: boolean;
         private _canReorder: boolean;
-        private _charts: linqjs.Enumerable<QueryChart> = null;
+        private _charts: QueryChart[] = null;
         private _defaultChartName: string = null;
         private _currentChart: QueryChart = null;
         private _lastUpdated: Date;
@@ -257,19 +257,19 @@ namespace Vidyano {
             return this._canReorder;
         }
 
-        get charts(): linqjs.Enumerable<QueryChart> {
+        get charts(): QueryChart[] {
             return this._charts;
         }
 
-        private _setCharts(charts: linqjs.Enumerable<QueryChart>) {
-            if (this._charts && charts && !this._charts.isEmpty() && this._charts.count() === charts.count() && this._charts.orderBy(c => c.name).toArray().join("\n") === charts.orderBy(c => c.name).toArray().join("\n"))
+        private _setCharts(charts: QueryChart[]) {
+            if (this._charts && charts && this._charts.length > 0 && this._charts.length === charts.length && this._charts.orderBy(c => c.name).join("\n") === charts.orderBy(c => c.name).join("\n"))
                 return;
 
             const oldCharts = this._charts;
-            this.notifyPropertyChanged("charts", this._charts = Enumerable.from(charts).memoize(), oldCharts);
+            this.notifyPropertyChanged("charts", this._charts = charts, oldCharts);
 
             if (charts && this.defaultChartName && !this.currentChart)
-                this.currentChart = this.charts.firstOrDefault(c => c.name === this._defaultChartName);
+                this.currentChart = this.charts.find(c => c.name === this._defaultChartName);
         }
 
         get currentChart(): QueryChart {
@@ -296,7 +296,7 @@ namespace Vidyano {
             this.notifyPropertyChanged("defaultChartName", this._defaultChartName = defaultChart !== undefined ? defaultChart : null, oldDefaultChart);
 
             if (this.charts && defaultChart && !this.currentChart)
-                this.currentChart = this.charts.firstOrDefault(c => c.name === this._defaultChartName);
+                this.currentChart = this.charts.find(c => c.name === this._defaultChartName);
         }
 
         get groupingInfo(): IQueryGroupingInfo {
@@ -365,7 +365,7 @@ namespace Vidyano {
                 this._isSelectionModifying = true;
                 const itemsToSelect = this.items.slice(from, ++to);
 
-                if (this.maxSelectedItems && Enumerable.from(this.selectedItems.concat(itemsToSelect)).distinct().count() > this.maxSelectedItems)
+                if (this.maxSelectedItems && this.selectedItems.concat(itemsToSelect).distinct().length > this.maxSelectedItems)
                     return;
 
                 // Detect if array has gaps
@@ -497,7 +497,7 @@ namespace Vidyano {
         }
 
         private _updateIsFiltering() {
-            let isFiltering = !!Enumerable.from(this.columns).firstOrDefault(c => !!c.selectedDistincts && !!c.selectedDistincts.firstOrDefault());
+            let isFiltering = !!this.columns.find(c => !!c.selectedDistincts && c.selectedDistincts.length > 0);
             if (isFiltering === this._isFiltering)
                 return;
 
@@ -520,7 +520,7 @@ namespace Vidyano {
             if (this.persistentObject)
                 result.persistentObject = this.persistentObject.toServiceObject();
 
-            result.columns = Enumerable.from(this.columns).select(col => col._toServiceObject()).toArray();
+            result.columns = this.columns.map(col => col._toServiceObject());
 
             return result;
         }
@@ -547,7 +547,7 @@ namespace Vidyano {
 
             this.hasSearched = true;
             this._updateColumns(result.columns);
-            this._updateItems(Enumerable.from(result.items).select(item => this.service.hooks.onConstructQueryResultItem(this.service, item, this)).toArray());
+            this._updateItems(result.items.map(item => this.service.hooks.onConstructQueryResultItem(this.service, item, this)));
             this._updateGroupingInfo(result.groupingInfo);
             this._setSortOptionsFromService(result.sortOptions);
 
@@ -555,14 +555,14 @@ namespace Vidyano {
 
             this.setNotification(result.notification, result.notificationType, result.notificationDuration);
 
-            if ((this._charts && this._charts.count() > 0) || (result.charts && result.charts.length > 0))
-                this._setCharts(Enumerable.from(result.charts).select(c => new QueryChart(this, c.label, c.name, c.options, c.type)).memoize());
+            if ((this._charts && this._charts.length > 0) || (result.charts && result.charts.length > 0))
+                this._setCharts(result.charts.map(c => new QueryChart(this, c.label, c.name, c.options, c.type)));
 
             this._setLastUpdated();
         }
 
         getColumn(name: string): QueryColumn {
-            return Enumerable.from(this.columns).firstOrDefault(c => c.name === name);
+            return this.columns.find(c => c.name === name);
         }
 
         getItemsInMemory(start: number, length: number): QueryResultItem[] {
@@ -578,7 +578,7 @@ namespace Vidyano {
             }
 
             if (this.pageSize <= 0 || length === 0)
-                return Enumerable.from(this.items).skip(start).take(length).toArray();
+                return this.items.slice(start, length - start);
 
             let startPage = Math.floor(start / this.pageSize);
             let endPage = Math.floor((start + length - 1) / this.pageSize);
@@ -666,7 +666,7 @@ namespace Vidyano {
                 clonedQuery.skip = skip;
 
             const work = async () => {
-                if (Enumerable.rangeTo(startPage, endPage).all(p => this._queriedPages.indexOf(p) >= 0))
+                if (!Array.from({ length: endPage - startPage }, (_, k) => k + startPage).some(p => this._queriedPages.indexOf(p) < 0))
                     return this.items.slice(start, start + length);
 
                 try {
@@ -764,8 +764,7 @@ namespace Vidyano {
                     return this.items;
                 }, false).then(items => {
                     if (selectedIds != null && selectedIds.length > 0) {
-                        const itemsEnum = Enumerable.from(items);
-                        const newSelectionItems = selectedIds.map(id => itemsEnum.firstOrDefault(i => i.id === id)).filter(i => i != null);
+                        const newSelectionItems = selectedIds.map(id => items.find(i => i.id === id)).filter(i => i != null);
                         if (newSelectionItems.length === selectedIds.length)
                             this.selectedItems = newSelectionItems;
                     }
@@ -796,11 +795,11 @@ namespace Vidyano {
             const columns = this.columns || [];
             let columnsChanged = columns !== this.columns;
 
-            const _columnsEnum = Enumerable.from(_columns || []);
+            const _columnsEnum = _columns || [];
             let i = columns.length;
 
             while (i--) {
-                if (_columnsEnum.firstOrDefault(c => columns[i].name === c.name) == null) {
+                if (_columnsEnum.find(c => columns[i].name === c.name) == null) {
                     let column = columns.splice(i, 1)[0];
                     columns[column.name] = null;
                     columnsChanged = true;
@@ -850,7 +849,7 @@ namespace Vidyano {
 
             if (currentGroupingInfo) {
                 currentGroupingInfo.groups.forEach(oldGroup => {
-                    const newGroup = Enumerable.from(this.groupingInfo.groups).firstOrDefault(g => g.name === oldGroup.name);
+                    const newGroup = this.groupingInfo.groups.find(g => g.name === oldGroup.name);
                     if (newGroup)
                         newGroup.isCollapsed = oldGroup.isCollapsed;
                 });

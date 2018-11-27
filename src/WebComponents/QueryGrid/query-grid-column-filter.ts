@@ -11,7 +11,7 @@ namespace Vidyano.WebComponents {
 
         protected _update() {
             const filtered = this.filtered;
-            if (this.filtered = !!this.queryColumn && !this.queryColumn.selectedDistincts.isEmpty()) {
+            if (this.filtered = !!this.queryColumn && this.queryColumn.selectedDistincts.length > 0) {
                 const objects = [];
                 const textSearch = [];
 
@@ -286,7 +286,7 @@ namespace Vidyano.WebComponents {
             if (this.queryColumn.selectedDistincts.indexOf(distinctValue) === -1)
                 this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.concat([distinctValue]);
             else
-                this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.except([distinctValue]);
+                this.queryColumn.selectedDistincts = this.queryColumn.selectedDistincts.filter(d => d !== distinctValue);
 
             this._updateFilters();
             this._updateDistincts();
@@ -298,7 +298,7 @@ namespace Vidyano.WebComponents {
             if (!this.queryColumn.query.filters)
                 return;
 
-            if (!this.queryColumn.selectedDistincts.isEmpty() && !this.queryColumn.query.filters.currentFilter) {
+            if (this.queryColumn.selectedDistincts.length > 0 && !this.queryColumn.query.filters.currentFilter) {
                 const filter = await this.queryColumn.query.filters.createNew();
                 this.queryColumn.query.filters.currentFilter = filter;
             }
@@ -321,17 +321,15 @@ namespace Vidyano.WebComponents {
                 return;
 
             const distinctType = !this.inversed ? "include" : "exclude";
-            const distinctsEnum = this.queryColumn.selectedDistincts.select(v => {
-                return {
-                    type: distinctType,
-                    value: v,
-                    displayValue: this._getDistinctDisplayValue(v),
-                    checked: true
-                };
-            });
+            let distincts = this.queryColumn.selectedDistincts.map(v => ({
+                type: distinctType,
+                value: v,
+                displayValue: this._getDistinctDisplayValue(v),
+                checked: true
+            }));
 
             if (this.queryColumn.distincts) {
-                const distincts = distinctsEnum.concat(this.queryColumn.distincts.matching.filter(v => this.queryColumn.selectedDistincts.indexOf(v) === -1).map(v => {
+                distincts = distincts.concat(this.queryColumn.distincts.matching.filter(v => this.queryColumn.selectedDistincts.indexOf(v) === -1).map(v => {
                     return {
                         type: "matching",
                         value: v,
@@ -347,10 +345,10 @@ namespace Vidyano.WebComponents {
                     };
                 }));
 
-                this.distincts = (this.queryColumn.distincts.hasMore ? distincts.concat([<any>{}]) : distincts).toArray();
+                this.distincts = (this.queryColumn.distincts.hasMore ? distincts.concat([<any>{}]) : distincts);
             }
             else
-                this.distincts = distinctsEnum.toArray();
+                this.distincts = distincts;
 
             this.updateStyles();
         }
@@ -384,7 +382,7 @@ namespace Vidyano.WebComponents {
 
             this.queryColumn.selectedDistinctsInversed = !this.queryColumn.selectedDistinctsInversed;
 
-            if (!this.queryColumn.selectedDistincts.isEmpty())
+            if (this.queryColumn.selectedDistincts.length > 0)
                 this._updateDistincts();
         }
 
@@ -394,7 +392,7 @@ namespace Vidyano.WebComponents {
                 return;
             }
 
-            this.queryColumn.selectedDistincts = Enumerable.empty<string>();
+            this.queryColumn.selectedDistincts = [];
             this._updateDistincts();
 
             WebComponents.Popup.closeAll();

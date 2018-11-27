@@ -1,5 +1,5 @@
 /// <reference path="../Typings/bignumber.js/bignumber.d.ts" />
-/// <reference path="../Typings/linq/linq.d.ts" />
+/// <reference path="../Typings/Linq/linq.d.ts" />
 /// <reference path="../Typings/PromiseQueue/promise-queue.d.ts" />
 /// <reference path="../Typings/Vidyano.Common/vidyano.common.d.ts" />
 declare type KeyValuePair<T, U> = {
@@ -9,6 +9,16 @@ declare type KeyValuePair<T, U> = {
 declare type KeyValue<T> = {
     [key: string]: T;
 };
+interface Array<T> {
+    orderBy<T>(this: T[], selector: (element: T) => number | string): T[];
+    orderBy<T>(this: T[], property: string): T[];
+    orderByDescending<T>(this: T[], selector: (element: T) => number): T[];
+    orderByDescending<T>(this: T[], property: string): T[];
+    groupBy<T>(this: T[], selector: (element: T) => string): KeyValuePair<string, T[]>[];
+    min<T>(this: T[], selector: (element: T) => number): number;
+    max<T>(this: T[], selector: (element: T) => number): number;
+    distinct<T, U>(this: T[], selector?: (element: T) => T | U): T[];
+}
 declare namespace Vidyano {
     class CultureInfo {
         name: string;
@@ -642,7 +652,7 @@ declare namespace Vidyano {
         readonly isSensitive: boolean;
         readonly isSorting: boolean;
         readonly sortDirection: SortDirection;
-        selectedDistincts: linqjs.Enumerable<string>;
+        selectedDistincts: string[];
         selectedDistinctsInversed: boolean;
         distincts: IQueryColumnDistincts;
         readonly total: QueryResultItemValue;
@@ -709,7 +719,7 @@ declare namespace Vidyano {
         private _isSelected;
         private _ignoreSelect;
         id: string;
-        rawValues: linqjs.Enumerable<QueryResultItemValue>;
+        rawValues: QueryResultItemValue[];
         typeHints: any;
         private _fullValuesByName;
         private _values;
@@ -817,7 +827,7 @@ declare namespace Vidyano {
         private _setHasMore;
         readonly canRead: boolean;
         readonly canReorder: boolean;
-        readonly charts: linqjs.Enumerable<QueryChart>;
+        readonly charts: QueryChart[];
         private _setCharts;
         currentChart: QueryChart;
         defaultChartName: string;

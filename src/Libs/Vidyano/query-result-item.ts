@@ -4,7 +4,7 @@
     export class QueryResultItem extends ServiceObject {
         private _ignoreSelect: boolean;
         id: string;
-        rawValues: linqjs.Enumerable<QueryResultItemValue>;
+        rawValues: QueryResultItemValue[];
         typeHints: any;
         private _fullValuesByName: any;
         private _values: any;
@@ -16,10 +16,10 @@
 
             if (item.values) {
                 const columnNames = query.columns.map(c => c.name);
-                this.rawValues = Enumerable.from(item.values).where(v => columnNames.indexOf(v.key) >= 0).select(v => service.hooks.onConstructQueryResultItemValue(this.service, this, v)).memoize();
+                this.rawValues = item.values.filter(v => columnNames.indexOf(v.key) >= 0).map(v => service.hooks.onConstructQueryResultItemValue(this.service, this, v));
             }
             else
-                this.rawValues = Enumerable.empty<QueryResultItemValue>();
+                this.rawValues = [];
 
             this.typeHints = item.typeHints;
         }
@@ -102,7 +102,7 @@
 
         _toServiceObject() {
             const result = this.copyProperties(["id"]);
-            result.values = this.rawValues.select(v => v._toServiceObject()).toArray();
+            result.values = this.rawValues.map(v => v._toServiceObject());
 
             return result;
         }

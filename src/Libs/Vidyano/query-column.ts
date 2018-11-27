@@ -25,7 +25,7 @@ namespace Vidyano {
         private _type: string;
         private _label: string;
         private _distincts: IQueryColumnDistincts;
-        private _selectedDistincts: linqjs.Enumerable<string>;
+        private _selectedDistincts: string[];
         private _selectedDistinctsInversed: boolean;
         private _total: QueryResultItemValue;
 
@@ -51,7 +51,7 @@ namespace Vidyano {
                 this._selectedDistinctsInversed = col._selectedDistinctsInversed;
             }
             else {
-                this._selectedDistincts = Enumerable.from(col.includes || col.excludes || []);
+                this._selectedDistincts = col.includes || col.excludes || [];
                 this._selectedDistinctsInversed = !!col.excludes && col.excludes.length > 0;
             }
             this._label = col.label;
@@ -115,14 +115,14 @@ namespace Vidyano {
             return this._sortDirection;
         }
 
-        get selectedDistincts(): linqjs.Enumerable<string> {
+        get selectedDistincts(): string[] {
             return this._selectedDistincts;
         }
 
-        set selectedDistincts(selectedDistincts: linqjs.Enumerable<string>) {
+        set selectedDistincts(selectedDistincts: string[]) {
             const oldSelectedIncludes = this._selectedDistincts;
 
-            this.notifyPropertyChanged("selectedDistincts", this._selectedDistincts = (selectedDistincts || Enumerable.empty<string>()).memoize(), oldSelectedIncludes);
+            this.notifyPropertyChanged("selectedDistincts", this._selectedDistincts = (selectedDistincts || []), oldSelectedIncludes);
             this.query.columns.forEach(c => {
                 if (c === this)
                     return;
@@ -172,8 +172,8 @@ namespace Vidyano {
 
         _toServiceObject() {
             const serviceObject = this.copyProperties(["id", "name", "label", "type", "displayAttribute"]);
-            serviceObject.includes = !this.selectedDistinctsInversed ? this.selectedDistincts.toArray() : [];
-            serviceObject.excludes = this.selectedDistinctsInversed ? this.selectedDistincts.toArray() : [];
+            serviceObject.includes = !this.selectedDistinctsInversed ? this.selectedDistincts : [];
+            serviceObject.excludes = this.selectedDistinctsInversed ? this.selectedDistincts : [];
 
             return serviceObject;
         }

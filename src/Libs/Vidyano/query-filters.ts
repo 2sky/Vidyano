@@ -13,7 +13,7 @@ namespace Vidyano {
             this._filtersAsDetail = <Vidyano.PersistentObjectAttributeAsDetail>this._filtersPO.attributes["Filters"];
             this._computeFilters(true);
 
-            const defaultFilter = Enumerable.from(this._filters).firstOrDefault(f => f.isDefault);
+            const defaultFilter = this._filters.find(f => f.isDefault);
             if (defaultFilter) {
                 this._skipSearch = true;
                 try {
@@ -46,29 +46,29 @@ namespace Vidyano {
             let doSearch;
             if (!!filter) {
                 if (!filter.persistentObject.isNew) {
-                    let columnsFilterData = Enumerable.from(JSON.parse(filter.persistentObject.getAttributeValue("Columns")));
+                    let columnsFilterData = <{ name: string; includes: string[]; excludes: string[]; }[]>JSON.parse(filter.persistentObject.getAttributeValue("Columns"));
                     this._query.columns.forEach(col => {
-                        let columnFilterData = columnsFilterData.firstOrDefault(c => c.name === col.name);
+                        let columnFilterData = columnsFilterData.find(c => c.name === col.name);
                         if (columnFilterData) {
                             if (columnFilterData.includes && columnFilterData.includes.length > 0)
-                                col.selectedDistincts = Enumerable.from(columnFilterData.includes);
+                                col.selectedDistincts = columnFilterData.includes;
                             else if (columnFilterData.excludes && columnFilterData.excludes.length > 0)
-                                col.selectedDistincts = Enumerable.from(columnFilterData.excludes);
+                                col.selectedDistincts = columnFilterData.excludes;
                             else
-                                col.selectedDistincts = Enumerable.from([]);
+                                col.selectedDistincts = [];
 
                             col.selectedDistinctsInversed = columnFilterData.excludes && columnFilterData.excludes.length > 0;
                             col.distincts = null;
 
-                            doSearch = doSearch || (col.selectedDistincts.isEmpty() === false);
+                            doSearch = doSearch || (col.selectedDistincts.length > 0);
                         }
                         else
-                            col.selectedDistincts = Enumerable.empty<string>();
+                            col.selectedDistincts = [];
                     });
                 }
             } else {
                 this._query.columns.forEach(col => {
-                    col.selectedDistincts = Enumerable.empty<string>();
+                    col.selectedDistincts = [];
                     col.selectedDistinctsInversed = false;
                     col.distincts = null;
                 });
@@ -104,15 +104,15 @@ namespace Vidyano {
             }));
 
             if (setDefaultFilter)
-                this._currentFilter = Enumerable.from(this._filters).firstOrDefault(f => f.persistentObject.getAttributeValue("IsDefault"));
+                this._currentFilter = this._filters.find(f => f.persistentObject.getAttributeValue("IsDefault"));
         }
 
         private _computeFilterData(): string {
-            return JSON.stringify(this._query.columns.filter(c => !c.selectedDistincts.isEmpty()).map(c => {
+            return JSON.stringify(this._query.columns.filter(c => c.selectedDistincts.length > 0).map(c => {
                 return {
                     name: c.name,
-                    includes: !c.selectedDistinctsInversed ? c.selectedDistincts.toArray() : [],
-                    excludes: c.selectedDistinctsInversed ? c.selectedDistincts.toArray() : []
+                    includes: !c.selectedDistinctsInversed ? c.selectedDistincts : [],
+                    excludes: c.selectedDistinctsInversed ? c.selectedDistincts : []
                 };
             }));
         }
@@ -122,7 +122,7 @@ namespace Vidyano {
         }
 
         getFilter(name: string): QueryFilter {
-            return Enumerable.from(this.filters).first(f => f.name === name);
+            return this.filters.find(f => f.name === name);
         }
 
         createNew(): Promise<QueryFilter> {
@@ -165,14 +165,14 @@ namespace Vidyano {
                     filter.persistentObject.setNotification(e, Vidyano.NotificationType.Error);
                 }
 
-                const newFilter = Enumerable.from(this._filtersAsDetail.objects).firstOrDefault(f => f.isNew);
+                const newFilter = this._filtersAsDetail.objects.find(f => f.isNew);
                 if (newFilter)
                     this._filtersAsDetail.objects.remove(filter.persistentObject = newFilter);
 
                 this._computeFilters();
 
                 if (!newFilter && filter.persistentObject.isNew)
-                    this.currentFilter = Enumerable.from(this.filters).firstOrDefault(f => f.name === filter.name);
+                    this.currentFilter = this.filters.find(f => f.name === filter.name);
 
                 return result;
             });

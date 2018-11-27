@@ -79,29 +79,30 @@ namespace Vidyano {
             this.queriesToRefresh = po.queriesToRefresh || [];
             this.parent = po.parent != null ? service.hooks.onConstructPersistentObject(service, po.parent) : null;
 
-            this.attributes = po.attributes ? Enumerable.from<PersistentObjectAttribute>(po.attributes).select(attr => this._createPersistentObjectAttribute(attr)).toArray() : [];
+            this.attributes = po.attributes ? (<PersistentObjectAttribute[]>po.attributes).map(attr => this._createPersistentObjectAttribute(attr)) : [];
             this.attributes.forEach(attr => this.attributes[attr.name] = attr);
 
-            this.queries = po.queries ? Enumerable.from<Query>(po.queries).select(query => service.hooks.onConstructQuery(service, query, this)).orderBy(q => q.offset).toArray() : [];
+            this.queries = po.queries ? (<Query[]>po.queries).map(query => service.hooks.onConstructQuery(service, query, this)).orderBy(q => q.offset) : [];
             this.queries.forEach(query => this.queries[query.name] = query);
 
             const visibility = this.isNew ? "New" : "Read";
-            const attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility === "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => attr.tabKey, attr => attr).select(attributesByTab => {
-                const groups = attributesByTab.orderBy(attr => attr.offset).groupBy(attr => attr.groupKey, attr => attr).select(attributesByGroup => {
-                    const newGroup = this.service.hooks.onConstructPersistentObjectAttributeGroup(service, attributesByGroup.key(), attributesByGroup.toArray(), this);
-                    attributesByGroup.forEach(attr => attr.group = newGroup);
+            const attributeTabs = po.tabs ? this.attributes.filter(attr => attr.visibility === "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => attr.tabKey).map(attributesByTab => {
+                const groups = attributesByTab.value.orderBy(attr => attr.offset).groupBy(attr => attr.groupKey).map(attributesByGroup => {
+                    const newGroup = this.service.hooks.onConstructPersistentObjectAttributeGroup(service, attributesByGroup.key, attributesByGroup.value, this);
+                    attributesByGroup.value.forEach(attr => attr.group = newGroup);
 
                     return newGroup;
-                }).toArray();
+                });
                 groups.forEach((g, n) => g.index = n);
 
-                const serviceTab = po.tabs[attributesByTab.key()] || {};
-                const newTab = this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, attributesByTab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
-                attributesByTab.forEach(attr => attr.tab = newTab);
+                const serviceTab = po.tabs[attributesByTab.key] || {};
+                const newTab = this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, attributesByTab.key, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
+                attributesByTab.value.forEach(attr => attr.tab = newTab);
 
                 return newTab;
-            })).toArray() : [];
-            this._tabs = this.service.hooks.onSortPersistentObjectTabs(this, <PersistentObjectAttributeTab[]>attributeTabs, Enumerable.from(this.queries).select(q => this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
+            }) : [];
+
+            this._tabs = this.service.hooks.onSortPersistentObjectTabs(this, <PersistentObjectAttributeTab[]>attributeTabs, this.queries.map(q => this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)));
 
             if (this._tabs.length === 0)
                 this._tabs = [this.service.hooks.onConstructPersistentObjectAttributeTab(service, [], "", "", "", null, this, 0, true)];
@@ -325,7 +326,7 @@ namespace Vidyano {
             if (this.parent && !skipParent)
                 result.parent = this.parent.toServiceObject();
             if (this.attributes)
-                result.attributes = Enumerable.from(this.attributes).select(attr => attr._toServiceObject()).toArray();
+                result.attributes = this.attributes.map(attr => attr._toServiceObject());
 
             return result;
         }
@@ -355,7 +356,7 @@ namespace Vidyano {
             });
 
             this.attributes.forEach(attr => {
-                let serviceAttr = Enumerable.from(result.attributes).firstOrDefault(serviceAttr => serviceAttr.id === attr.id);
+                let serviceAttr = result.attributes.find(serviceAttr => serviceAttr.id === attr.id);
                 if (serviceAttr) {
                     if (!(serviceAttr instanceof PersistentObjectAttribute))
                         serviceAttr = this._createPersistentObjectAttribute(serviceAttr);
@@ -397,7 +398,7 @@ namespace Vidyano {
 
             if (result.queriesToRefresh) {
                 result.queriesToRefresh.forEach(async id => {
-                    const query = Enumerable.from(this.queries).firstOrDefault(q => q.id === id || q.name === id);
+                    const query = this.queries.find(q => q.id === id || q.name === id);
                     if (query && (query.hasSearched || query.notification || query.totalItems != null))
                         await query.search();
                 });
@@ -413,7 +414,7 @@ namespace Vidyano {
             let tabsRemoved = false;
             let tabsAdded = false;
             changedAttributes.forEach(attr => {
-                let tab = <PersistentObjectAttributeTab>Enumerable.from(this.tabs).firstOrDefault(t => t instanceof PersistentObjectAttributeTab && t.key === attr.tabKey);
+                let tab = <PersistentObjectAttributeTab>this.tabs.find(t => t instanceof PersistentObjectAttributeTab && t.key === attr.tabKey);
                 if (!tab) {
                     if (!attr.isVisible)
                         return;
@@ -428,11 +429,11 @@ namespace Vidyano {
                     return;
                 }
 
-                let group = Enumerable.from(tab.groups).firstOrDefault(g => g.key === attr.groupKey);
+                let group = tab.groups.find(g => g.key === attr.groupKey);
                 if (!group && attr.isVisible) {
                     group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, [attr], this);
                     tab.groups.push(group);
-                    tab.groups.sort((g1, g2) => Enumerable.from(g1.attributes).min(a => a.offset) - Enumerable.from(g2.attributes).min(a => a.offset));
+                    tab.groups.sort((g1, g2) => g1.attributes.min(a => a.offset) - g2.attributes.min(a => a.offset));
                     tab.groups.forEach((g, n) => g.index = n);
 
                     tabGroupsChanged.add(tab);
@@ -474,7 +475,7 @@ namespace Vidyano {
 
             if (tabsAdded) {
                 const attrTabs = <PersistentObjectAttributeTab[]>this.tabs.filter(t => t instanceof PersistentObjectAttributeTab);
-                attrTabs.sort((t1, t2) => Enumerable.from(t1.groups).selectMany(g => g.attributes).min(a => a.offset) - Enumerable.from(t2.groups).selectMany(g => g.attributes).min(a => a.offset));
+                attrTabs.sort((t1, t2) => [].concat(...t1.groups.map(g => g.attributes)).min(a => a.offset) - [].concat(...t2.groups.map(g => g.attributes)).min(a => a.offset));
 
                 const queryTabs = <PersistentObjectQueryTab[]>this.tabs.filter(t => t instanceof PersistentObjectQueryTab);
                 queryTabs.sort((q1, q2) => q1.query.offset - q2.query.offset);
@@ -528,7 +529,7 @@ namespace Vidyano {
         }
 
         _prepareAttributesForRefresh(sender: PersistentObjectAttribute) {
-            Enumerable.from(this.attributes).where(a => a.id !== sender.id).forEach(attr => {
+            this.attributes.filter(a => a.id !== sender.id).forEach(attr => {
                 (<any>attr)._refreshServiceValue = (<any>attr)._serviceValue;
                 if (attr instanceof PersistentObjectAttributeWithReference) {
                     const attrWithRef = <any>attr;

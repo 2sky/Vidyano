@@ -16,8 +16,7 @@
                 this.items = [];
                 const usedGroups: { [key: string]: ProgramUnitItemGroup } = {};
 
-                const unitItems = Enumerable.from<any>(unit.items);
-                unitItems.forEach(itemData => {
+                unit.items.forEach(itemData => {
                     let itemsTarget = this.items;
 
                     if (!itemData.group) {

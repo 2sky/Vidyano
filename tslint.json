@@ -12,8 +12,7 @@
     "curly": false,
     "eofline": false,
     "forin": false,
-    "indent": [true, 4],
-    "interface-name": true,
+    "indent": [true, "spaces", 4],
     "jsdoc-format": true,
     "label-position": true,
     "max-line-length": [false, 140],
@@ -45,9 +44,8 @@
     "typedef-whitespace": [
       true,
       {
-        "callSignature": "noSpace",
-        "catchClause": "noSpace",
-        "indexSignature": "space"
+        "call-signature": "nospace",
+        "index-signature": "space"
       }
     ],
     "variable-name": false,
