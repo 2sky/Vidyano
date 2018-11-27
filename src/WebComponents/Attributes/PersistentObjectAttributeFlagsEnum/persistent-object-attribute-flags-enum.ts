@@ -39,7 +39,7 @@
         attribute: Vidyano.PersistentObjectAttribute;
         checked: boolean;
         label: string;
-        option: Vidyano.Common.IKeyValuePair;
+        option: PersistentObjectAttributeOption;
 
         private _checkedChanged() {
             if (this._skipCheckedChanged || !this.attribute)
@@ -49,7 +49,7 @@
             if (this.checked && myValue === 0)
                 this.attribute.value = this.option.value;
             else {
-                const currentOptions = Enumerable.from(<Vidyano.Common.IKeyValuePair[]>this.attribute.options);
+                const currentOptions = Enumerable.from(<PersistentObjectAttributeOption[]>this.attribute.options);
                 let currentValue = this.attribute.value ? this._values(this.attribute.value).sum(v => parseInt(currentOptions.first(o => o.value === v).key)) : 0;
                 if (this.checked)
                     currentValue |= myValue;
@@ -75,7 +75,7 @@
             }
         }
 
-        private _computeLabel(option: Vidyano.Common.IKeyValuePair): string {
+        private _computeLabel(option: PersistentObjectAttributeOption): string {
             return option.value;
         }
 
@@ -83,7 +83,7 @@
             try {
                 this._skipCheckedChanged = true;
 
-                const currentOptions = Enumerable.from(<Vidyano.Common.IKeyValuePair[]>this.attribute.options);
+                const currentOptions = Enumerable.from(<PersistentObjectAttributeOption[]>this.attribute.options);
                 const currentValue = this.attribute.value ? this._values(this.attribute.value).sum(v => parseInt(currentOptions.first(o => o.value === v).key)) : 0;
                 const myValue = parseInt(this.option.key);
 

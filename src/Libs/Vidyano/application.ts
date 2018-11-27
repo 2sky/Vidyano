@@ -47,7 +47,7 @@
 
             const pus = <{ hasManagement: boolean; units: any[] }>JSON.parse(this.getAttributeValue("ProgramUnits"));
             this._hasManagement = pus.hasManagement;
-            this.programUnits = Enumerable.from(pus.units).select(unit => new ProgramUnit(this.service, this.routes, unit)).toArray();
+            this.programUnits = pus.units.map(unit => new ProgramUnit(this.service, this.routes, unit));
 
             this.hasSensitive = !!hasSensitive;
         }

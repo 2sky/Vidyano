@@ -88,12 +88,12 @@ namespace Vidyano {
             const visibility = this.isNew ? "New" : "Read";
             const attributeTabs = po.tabs ? Enumerable.from<PersistentObjectTab>(Enumerable.from(this.attributes).where(attr => attr.visibility === "Always" || attr.visibility.contains(visibility)).orderBy(attr => attr.offset).groupBy(attr => attr.tabKey, attr => attr).select(attributesByTab => {
                 const groups = attributesByTab.orderBy(attr => attr.offset).groupBy(attr => attr.groupKey, attr => attr).select(attributesByGroup => {
-                    const newGroup = this.service.hooks.onConstructPersistentObjectAttributeGroup(service, attributesByGroup.key(), attributesByGroup, this);
+                    const newGroup = this.service.hooks.onConstructPersistentObjectAttributeGroup(service, attributesByGroup.key(), attributesByGroup.toArray(), this);
                     attributesByGroup.forEach(attr => attr.group = newGroup);
 
                     return newGroup;
-                }).memoize();
-                groups.toArray().forEach((g, n) => g.index = n);
+                }).toArray();
+                groups.forEach((g, n) => g.index = n);
 
                 const serviceTab = po.tabs[attributesByTab.key()] || {};
                 const newTab = this.service.hooks.onConstructPersistentObjectAttributeTab(service, groups, attributesByTab.key(), serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
@@ -104,7 +104,7 @@ namespace Vidyano {
             this._tabs = this.service.hooks.onSortPersistentObjectTabs(this, <PersistentObjectAttributeTab[]>attributeTabs, Enumerable.from(this.queries).select(q => this.service.hooks.onConstructPersistentObjectQueryTab(this.service, q)).toArray());
 
             if (this._tabs.length === 0)
-                this._tabs = [this.service.hooks.onConstructPersistentObjectAttributeTab(service, Enumerable.empty<PersistentObjectAttributeGroup>(), "", "", "", null, this, 0, true)];
+                this._tabs = [this.service.hooks.onConstructPersistentObjectAttributeTab(service, [], "", "", "", null, this, 0, true)];
 
             this._lastResult = po;
 
@@ -418,11 +418,11 @@ namespace Vidyano {
                     if (!attr.isVisible)
                         return;
 
-                    const groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this)];
+                    const groups = [this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, [attr], this)];
                     groups[0].index = 0;
 
                     const serviceTab = this._lastResult.tabs[attr.tabKey];
-                    attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, Enumerable.from(groups), attr.tabKey, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
+                    attr.tab = tab = this.service.hooks.onConstructPersistentObjectAttributeTab(this.service, groups, attr.tabKey, serviceTab.id, serviceTab.name, serviceTab.layout, this, serviceTab.columnCount, !this.isHidden);
                     this.tabs.push(tab);
                     tabsAdded = true;
                     return;
@@ -430,7 +430,7 @@ namespace Vidyano {
 
                 let group = Enumerable.from(tab.groups).firstOrDefault(g => g.key === attr.groupKey);
                 if (!group && attr.isVisible) {
-                    group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, Enumerable.from([attr]), this);
+                    group = this.service.hooks.onConstructPersistentObjectAttributeGroup(this.service, attr.groupKey, [attr], this);
                     tab.groups.push(group);
                     tab.groups.sort((g1, g2) => Enumerable.from(g1.attributes).min(a => a.offset) - Enumerable.from(g2.attributes).min(a => a.offset));
                     tab.groups.forEach((g, n) => g.index = n);

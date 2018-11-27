@@ -1,7 +1,9 @@
-namespace Vidyano {
+﻿namespace Vidyano {
     "use strict";
 
     export type PersistentObjectAttributeVisibility = "Always" | "Read" | "New" | "Never" | "Query" | "Read, Query" | "Read, New" | "Query, New";
+
+    export type PersistentObjectAttributeOption = KeyValuePair<string, string>;
 
     export interface IServicePersistentObjectAttribute {
         name: string;
@@ -43,7 +45,7 @@ namespace Vidyano {
         id: string;
         name: string;
         label: string;
-        options: string[] | Common.IKeyValuePair[];
+        options: string[] | PersistentObjectAttributeOption[];
         offset: number;
         type: string;
         toolTip: string;
@@ -207,14 +209,14 @@ namespace Vidyano {
             else if (this.type === "KeyValueList") {
                 if (this.options && this.options.length > 0) {
                     const isEmpty = StringEx.isNullOrEmpty(value);
-                    let option = Enumerable.from(<Common.IKeyValuePair[]>this.options).firstOrDefault(o => o.key === value || (isEmpty && StringEx.isNullOrEmpty(o.key)));
+                    let option = (<PersistentObjectAttributeOption[]>this.options).find(o => o.key === value || (isEmpty && StringEx.isNullOrEmpty(o.key)));
                     if (this.isRequired && option == null)
-                        option = Enumerable.from(<Common.IKeyValuePair[]>this.options).firstOrDefault(o => StringEx.isNullOrEmpty(o.key));
+                        option = (<PersistentObjectAttributeOption[]>this.options).find(o => StringEx.isNullOrEmpty(o.key));
 
                     if (option != null)
                         value = option.value;
                     else if (this.isRequired)
-                        value = this.options.length > 0 ? (<Common.IKeyValuePair>this.options[0]).value : null;
+                        value = this.options.length > 0 ? (<PersistentObjectAttributeOption>this.options[0]).value : null;
                 }
             }
             else if (value != null && (this.type === "Time" || this.type === "NullableTime")) {

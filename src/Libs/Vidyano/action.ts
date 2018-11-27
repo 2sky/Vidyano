@@ -305,7 +305,7 @@ namespace Vidyano {
         }
 
         static get(service: Service, name: string, owner: ServiceObjectWithActions): Action {
-            const definition = service.actionDefinitions.get(name);
+            const definition = service.actionDefinitions[name];
             if (definition != null) {
                 const hook = Actions[name];
                 return service.hooks.onConstructAction(service, hook != null ? new hook(service, definition, owner) : new Action(service, definition, owner));

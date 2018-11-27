@@ -53,7 +53,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
     })
     export class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
-        private _computeBooleanOptions(attribute: Vidyano.PersistentObjectAttribute): Common.IKeyValuePair[] {
+        private _computeBooleanOptions(attribute: Vidyano.PersistentObjectAttribute): KeyValuePair<boolean, string>[] {
             if (!attribute)
                 return [];
 

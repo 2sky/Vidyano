@@ -55,7 +55,7 @@ namespace Vidyano.WebComponents.Attributes {
             this.value = this.attribute.value !== undefined ? this.attribute.value : null;
         }
 
-        protected _optionsChanged(options: string[] | Common.IKeyValuePair[]) {
+        protected _optionsChanged(options: string[] | PersistentObjectAttributeOption[]) {
             // Noop
         }
 
@@ -96,7 +96,7 @@ namespace Vidyano.WebComponents.Attributes {
             return attribute ? this.attribute.getTypeHint("placeholder", "", void 0, true) : "";
         }
 
-        private _computeOptions(options: string[] | Common.IKeyValuePair[], isRequired: boolean, type: string): string[] | Common.IKeyValuePair[] {
+        private _computeOptions(options: string[] | PersistentObjectAttributeOption[], isRequired: boolean, type: string): string[] | PersistentObjectAttributeOption[] {
             if (!options || options.length === 0 || isRequired || ["KeyValueList", "DropDown", "ComboBox"].indexOf(type) === -1)
                 return options;
 
@@ -107,10 +107,10 @@ namespace Vidyano.WebComponents.Attributes {
                 return [null].concat(options);
             }
 
-            if ((<Common.IKeyValuePair[]>options).some(o => !o.key))
+            if ((<PersistentObjectAttributeOption[]>options).some(o => !o.key))
                 return options;
 
-            return [{ key: null, value: "" }].concat((<Common.IKeyValuePair[]>options));
+            return [{ key: null, value: "" }].concat((<PersistentObjectAttributeOption[]>options));
         }
 
         private _updateForegroundDataTypeHint(attribute: Vidyano.PersistentObjectAttribute, isEditing: boolean, isReadOnly: boolean) {

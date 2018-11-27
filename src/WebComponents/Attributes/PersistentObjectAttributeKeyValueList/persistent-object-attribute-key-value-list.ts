@@ -35,11 +35,11 @@ namespace Vidyano.WebComponents.Attributes {
             return attribute && attribute.getTypeHint("groupseparator", null, undefined, true);
         }
 
-        private _isRadioChecked(option: Vidyano.Common.IKeyValuePair, value: string): boolean {
+        private _isRadioChecked(option: PersistentObjectAttributeOption, value: string): boolean {
             return option == null && value == null || (option && option.key === value);
         }
 
-        private _radioLabel(option: Vidyano.Common.IKeyValuePair): string {
+        private _radioLabel(option: PersistentObjectAttributeOption): string {
             return !option.value ? "—" : option.value;
         }
 

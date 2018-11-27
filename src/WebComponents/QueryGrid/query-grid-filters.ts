@@ -160,7 +160,7 @@
         }
 
         private _computeFilterEditLabel(filter: QueryFilter): string {
-            return this.query.service.actionDefinitions.get("Edit").displayName;
+            return this.query.service.actionDefinitions["Edit"].displayName;
         }
 
         private _reset() {

@@ -23,8 +23,8 @@ namespace Vidyano {
         private _queuedClientOperations: ClientOperations.IClientOperation[] = [];
         private _initial: Vidyano.PersistentObject;
         staySignedIn: boolean;
-        icons: linqjs.Dictionary<string, string>;
-        actionDefinitions: linqjs.Dictionary<string, ActionDefinition>;
+        icons: KeyValue<string>;
+        actionDefinitions: KeyValue<ActionDefinition>;
         environment: string = "Web";
         environmentVersion: string = "2";
 
@@ -234,7 +234,7 @@ namespace Vidyano {
 
                     resolve(JSON.parse(r.responseText));
                 };
-                r.onerror = () => { reject(r.statusText || (Vidyano.NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || Vidyano.NoInternetMessage.messages.get("en")).message); };
+                r.onerror = () => { reject(r.statusText || (Vidyano.NoInternetMessage.messages[navigator.language.split("-")[0].toLowerCase()] || Vidyano.NoInternetMessage.messages["en"]).message); };
 
                 r.send();
             });
@@ -548,7 +548,7 @@ namespace Vidyano {
                 languages.push({ culture: name, name: this._clientData.languages[name].name, isDefault: this._clientData.languages[name].isDefault, messages: this._clientData.languages[name].messages });
             }
             this._languages = languages;
-            this.language = Enumerable.from(this._languages).firstOrDefault(l => l.isDefault) || this._languages[0];
+            this.language = this._languages.find(l => l.isDefault) || this._languages[0];
 
             this.hooks.setDefaultTranslations(this.languages);
 
@@ -685,14 +685,11 @@ namespace Vidyano {
             this._setApplication(this.hooks.onConstructApplication(result));
 
             const resourcesQuery = this.application.getQuery("Resources");
-            if (resourcesQuery)
-                this.icons = Enumerable.from(resourcesQuery.items).where((i => i.getValue("Type") === "Icon")).toDictionary(i => <string>i.getValue("Key"), i => <string>i.getValue("Data"));
-            else
-                this.icons = Enumerable.empty<string>().toDictionary(i => i, i => i);
+            this.icons = resourcesQuery ? Object.assign({}, ...resourcesQuery.items.filter(i => i.getValue("Type") === "Icon").map(i => ({ [i.getValue("Key")]: i.getValue("Data") }))) : {};
 
-            this.actionDefinitions = Enumerable.from(this.application.getQuery("Actions").items).toDictionary(i => <string>i.getValue("Name"), i => new ActionDefinition(this, i));
+            this.actionDefinitions = Object.assign({}, ...this.application.getQuery("Actions").items.map(i => ({ [i.getValue("Name")]: new ActionDefinition(this, i) })));
 
-            this.language = Enumerable.from(this._languages).firstOrDefault(l => l.culture === result.userLanguage) || Enumerable.from(this._languages).firstOrDefault(l => l.isDefault);
+            this.language = this._languages.find(l => l.culture === result.userLanguage) || this._languages.find(l => l.isDefault);
 
             const clientMessagesQuery = this.application.getQuery("ClientMessages");
             if (clientMessagesQuery) {
@@ -702,9 +699,9 @@ namespace Vidyano {
                 this.notifyPropertyChanged("language.messages", this.language.messages = newMessages, this.language.messages);
             }
 
-            this.actionDefinitions.toEnumerable().forEach(kvp => this.language.messages[`Action_${kvp.key}`] = kvp.value.displayName);
+            Object.keys(this.actionDefinitions).forEach(name => this.language.messages[`Action_${name}`] = this.actionDefinitions[name].displayName);
 
-            CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
+            CultureInfo.currentCulture = CultureInfo.cultures[result.userCultureInfo] || CultureInfo.cultures[result.userLanguage] || CultureInfo.invariantCulture;
 
             if (result.initial != null)
                 this._initial = this.hooks.onConstructPersistentObject(this, result.initial);

@@ -1,6 +1,15 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    export type SelectOption = KeyValuePair<any, string>;
+
+    export interface ISelectItem {
+        displayValue: string;
+        group: string;
+        groupFirst: boolean;
+        option: string | SelectOption;
+    }
+
     @WebComponent.register({
         properties: {
             options: {
@@ -105,7 +114,7 @@ namespace Vidyano.WebComponents {
         readonly suggestion: ISelectItem; private _setSuggestion: (suggestion: ISelectItem) => void;
         readonly filtering: boolean; private _setFiltering: (filtering: boolean) => void;
         readonly selectedItem: ISelectItem; private _setSelectedItem: (item: ISelectItem) => void;
-        ungroupedOptions: string[] | Common.IKeyValuePair[];
+        ungroupedOptions: string[] | SelectOption[];
         selectedOption: string;
         keepUnmatched: boolean;
         readonly: boolean;
@@ -237,14 +246,14 @@ namespace Vidyano.WebComponents {
             return !readonly && !!options && options.length > 0;
         }
 
-        private _computeUngroupedOptions(options: string[] | Common.IKeyValuePair[], groupSeparator: string): string[] | Common.IKeyValuePair[] {
+        private _computeUngroupedOptions(options: string[] | SelectOption[], groupSeparator: string): string[] | SelectOption[] {
             if (!groupSeparator || !options || options.length === 0)
                 return options;
 
             if ((<any[]>options).some(o => typeof o === "string"))
                 return (<string[]>options).map(o => o ? o.split(groupSeparator, 2)[1] : o);
             else
-                return (<Common.IKeyValuePair[]>options).map(kvp => {
+                return (<SelectOption[]>options).map(kvp => {
                     return {
                         key: kvp.key,
                         value: kvp && kvp.value ? kvp.value.split(groupSeparator, 2)[1] : ""
@@ -252,7 +261,7 @@ namespace Vidyano.WebComponents {
                 });
         }
 
-        private _computeItems(options: string[] | Common.IKeyValuePair[], ungroupedOptions: string[] | Common.IKeyValuePair[]): ISelectItem[] {
+        private _computeItems(options: string[] | SelectOption[], ungroupedOptions: string[] | SelectOption[]): ISelectItem[] {
             if (!options || options.length === 0)
                 return [];
 
@@ -268,7 +277,7 @@ namespace Vidyano.WebComponents {
                         return parts.length === 2 ? parts[0] || null : null;
                     }, o => o).toArray();
                 else {
-                    optionsByGroup = Enumerable.from(<Common.IKeyValuePair[]>options).groupBy(kvp => {
+                    optionsByGroup = Enumerable.from(<SelectOption[]>options).groupBy(kvp => {
                         const displayValue = kvp ? kvp.value : null;
                         const displayParts = displayValue ? displayValue.split(this.groupSeparator, 2) : [];
                         return displayParts.length === 2 ? displayParts[0] || null : null;
@@ -293,8 +302,8 @@ namespace Vidyano.WebComponents {
                     };
                 });
             else {
-                result = (<Common.IKeyValuePair[]>options).map((kvp, index) => {
-                    const ungroupedKvp = <Common.IKeyValuePair>ungroupedOptions[index];
+                result = (<SelectOption[]>options).map((kvp, index) => {
+                    const ungroupedKvp = <SelectOption>ungroupedOptions[index];
                     const group = groupFirstOptions ? groupFirstOptions.get(kvp) : null;
 
                     return {
@@ -333,9 +342,9 @@ namespace Vidyano.WebComponents {
                             suggestion = resultEnum.firstOrDefault(o => (<string>o.option).length === 0);
                     }
                     else {
-                        suggestion = resultEnum.firstOrDefault(o => (<Common.IKeyValuePair>o.option).key == null);
+                        suggestion = resultEnum.firstOrDefault(o => (<SelectOption>o.option).key == null);
                         if (!suggestion)
-                            suggestion = resultEnum.firstOrDefault(o => (<Common.IKeyValuePair>o.option).key.length === 0);
+                            suggestion = resultEnum.firstOrDefault(o => (<SelectOption>o.option).key.length === 0);
                     }
 
                     this._setSuggestion(suggestion);
@@ -363,9 +372,9 @@ namespace Vidyano.WebComponents {
             this.$.remainder.innerHTML = this._escapeHTML(suggestionRemainder).replace(" ", "&nbsp;");
         }
 
-        private _setSelectedOption(option: string | Common.IKeyValuePair, force?: boolean) {
+        private _setSelectedOption(option: string | SelectOption, force?: boolean) {
             if (option && typeof option !== "string")
-                option = (<Common.IKeyValuePair>option).key;
+                option = (<SelectOption>option).key;
 
             if (this.popup.open && !force) {
                 this._pendingSelectedOption = <string>option;
@@ -386,8 +395,8 @@ namespace Vidyano.WebComponents {
                     this._inputValue = <string>this.selectedItem.option;
                 }
                 else {
-                    this._setSelectedOption(Enumerable.from(<Common.IKeyValuePair[]>this.ungroupedOptions).firstOrDefault(o => o.key === (<Common.IKeyValuePair>this.selectedItem.option).key));
-                    this._inputValue = (<Common.IKeyValuePair>this.selectedItem.option).value;
+                    this._setSelectedOption(Enumerable.from(<SelectOption[]>this.ungroupedOptions).firstOrDefault(o => o.key === (<SelectOption>this.selectedItem.option).key));
+                    this._inputValue = (<SelectOption>this.selectedItem.option).value;
                 }
 
                 this._lastMatchedInputValue = this._inputValue;
@@ -416,7 +425,7 @@ namespace Vidyano.WebComponents {
                 if (!i.option || typeof i.option === "string")
                     return i.option === key;
                 else
-                    return (<Common.IKeyValuePair>i.option).key === key;
+                    return (<SelectOption>i.option).key === key;
             });
         }
 
@@ -446,13 +455,6 @@ namespace Vidyano.WebComponents {
         private _showGroup(item: ISelectItem): boolean {
             return item.group && item.groupFirst;
         }
-    }
-
-    export interface ISelectItem {
-        displayValue: string;
-        group: string;
-        groupFirst: boolean;
-        option: string | Common.IKeyValuePair;
     }
 
     @WebComponent.register({

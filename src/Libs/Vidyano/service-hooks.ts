@@ -48,16 +48,16 @@
             return new PersistentObject(service, po);
         }
 
-        onConstructPersistentObjectAttributeTab(service: Service, groups: linqjs.Enumerable<PersistentObjectAttributeGroup>, key: string, id: string, name: string, layout: any, parent: PersistentObject, columnCount: number, isVisible: boolean): PersistentObjectAttributeTab {
-            return new PersistentObjectAttributeTab(service, groups.toArray(), key, id, name, layout, parent, columnCount, isVisible);
+        onConstructPersistentObjectAttributeTab(service: Service, groups: PersistentObjectAttributeGroup[], key: string, id: string, name: string, layout: any, parent: PersistentObject, columnCount: number, isVisible: boolean): PersistentObjectAttributeTab {
+            return new PersistentObjectAttributeTab(service, groups, key, id, name, layout, parent, columnCount, isVisible);
         }
 
         onConstructPersistentObjectQueryTab(service: Service, query: Query): PersistentObjectQueryTab {
             return new PersistentObjectQueryTab(service, query);
         }
 
-        onConstructPersistentObjectAttributeGroup(service: Service, key: string, attributes: linqjs.Enumerable<PersistentObjectAttribute>, parent: PersistentObject): PersistentObjectAttributeGroup {
-            return new PersistentObjectAttributeGroup(service, key, attributes.toArray(), parent);
+        onConstructPersistentObjectAttributeGroup(service: Service, key: string, attributes: PersistentObjectAttribute[], parent: PersistentObject): PersistentObjectAttributeGroup {
+            return new PersistentObjectAttributeGroup(service, key, attributes, parent);
         }
 
         onConstructPersistentObjectAttribute(service: Service, attr: any, parent: PersistentObject): PersistentObjectAttribute {

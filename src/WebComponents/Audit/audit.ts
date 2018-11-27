@@ -139,7 +139,7 @@
                 }
 
                 const actionName = (<string>item.getValue("Action")).replace("PersistentObject.", "");
-                const action = this.service.actionDefinitions.get(actionName);
+                const action = this.service.actionDefinitions[actionName];
 
                 const logEntry: ILogEntry = {
                     item: item,

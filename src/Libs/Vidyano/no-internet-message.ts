@@ -2,7 +2,7 @@
     "use strict";
 
     export class NoInternetMessage {
-        static messages: linqjs.Dictionary<string, NoInternetMessage> = Enumerable.from<NoInternetMessage>([
+        static messages: KeyValue<NoInternetMessage> = Object.assign({}, ...[
             new NoInternetMessage("en", "Unable to connect to the server.", "Please check your internet connection settings and try again.", "Try again"),
             new NoInternetMessage("ar", "غير قادر على الاتصال بالخادم", "يرجى التحقق من إعدادات الاتصال بإنترنت ثم حاول مرة أخرى", "حاول مرة أخرى"),
             new NoInternetMessage("bg", "Не може да се свърже със сървъра", "Проверете настройките на интернет връзката и опитайте отново", "Опитайте отново"),
@@ -39,7 +39,7 @@
             new NoInternetMessage("tr", "Sunucuya bağlantı kurulamıyor", "Lütfen Internet bağlantı ayarlarınızı denetleyin ve yeniden deneyin", "Yeniden Deneyin"),
             new NoInternetMessage("uk", "Не вдалося підключитися до сервера", "Перевірте параметри підключення до Інтернету та повторіть спробу", "Спробуй ще раз"),
             new NoInternetMessage("vi", "Không thể kết nối đến máy chủ", "Hãy kiểm tra cài đặt kết nối internet của bạn và thử lại", "Thử lại")
-        ]).toDictionary((m: NoInternetMessage) => m.language, (m: NoInternetMessage) => m);
+        ].map(m => ({ [m.language]: m })));
 
         constructor(private language: string, public title: string, public message: string, public tryAgain: string) {
         }

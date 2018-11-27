@@ -29,7 +29,7 @@ namespace Vidyano.WebComponents.Attributes {
         readonly strings: ITranslatedString[]; private _setStrings: (strings: ITranslatedString[]) => void;
         multiline: boolean;
 
-        protected _optionsChanged(options: string[] | Common.IKeyValuePair[]) {
+        protected _optionsChanged(options: string[] | PersistentObjectAttributeOption[]) {
             super._optionsChanged(options);
 
             const strings: ITranslatedString[] = [];

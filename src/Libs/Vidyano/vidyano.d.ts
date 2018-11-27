@@ -2,6 +2,13 @@
 /// <reference path="../Typings/linq/linq.d.ts" />
 /// <reference path="../Typings/PromiseQueue/promise-queue.d.ts" />
 /// <reference path="../Typings/Vidyano.Common/vidyano.common.d.ts" />
+declare type KeyValuePair<T, U> = {
+    key: T;
+    value: U;
+};
+declare type KeyValue<T> = {
+    [key: string]: T;
+};
 declare namespace Vidyano {
     class CultureInfo {
         name: string;
@@ -9,7 +16,7 @@ declare namespace Vidyano {
         dateFormat: ICultureInfoDateFormat;
         static currentCulture: CultureInfo;
         static invariantCulture: CultureInfo;
-        static cultures: linqjs.Dictionary<string, CultureInfo>;
+        static cultures: KeyValue<CultureInfo>;
         constructor(name: string, numberFormat: ICultureInfoNumberFormat, dateFormat: ICultureInfoDateFormat);
     }
     interface ICultureInfoNumberFormat {
@@ -94,14 +101,6 @@ declare namespace Vidyano {
             protected pausePropertyChanged(enqueue?: boolean): void;
         }
         interface IPropertyChangedObserver<T> extends ISubjectObserver<T, Vidyano.Common.PropertyChangedArgs> {
-        }
-    }
-}
-declare namespace Vidyano {
-    namespace Common {
-        interface IKeyValuePair {
-            key: any;
-            value: string;
         }
     }
 }
@@ -255,12 +254,13 @@ declare namespace Vidyano {
         title: string;
         message: string;
         tryAgain: string;
-        static messages: linqjs.Dictionary<string, NoInternetMessage>;
+        static messages: KeyValue<NoInternetMessage>;
         constructor(language: string, title: string, message: string, tryAgain: string);
     }
 }
 declare namespace Vidyano {
     type PersistentObjectAttributeVisibility = "Always" | "Read" | "New" | "Never" | "Query" | "Read, Query" | "Read, New" | "Query, New";
+    type PersistentObjectAttributeOption = KeyValuePair<string, string>;
     interface IServicePersistentObjectAttribute {
         name: string;
         type: string;
@@ -299,7 +299,7 @@ declare namespace Vidyano {
         id: string;
         name: string;
         label: string;
-        options: string[] | Common.IKeyValuePair[];
+        options: string[] | PersistentObjectAttributeOption[];
         offset: number;
         type: string;
         toolTip: string;
@@ -310,6 +310,7 @@ declare namespace Vidyano {
         triggersRefresh: boolean;
         column: number;
         columnSpan: number;
+        input: HTMLInputElement;
         constructor(service: Service, attr: IServicePersistentObjectAttribute, parent: PersistentObject);
         readonly groupKey: string;
         group: PersistentObjectAttributeGroup;
@@ -332,9 +333,6 @@ declare namespace Vidyano {
         isValueChanged: boolean;
         readonly isSensitive: boolean;
         getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string;
-        getRegisteredInput(): HTMLInputElement;
-        registerInput(input: HTMLInputElement): void;
-        clearRegisteredInput(): void;
         _toServiceObject(): any;
         _refreshFromResult(resultAttr: PersistentObjectAttribute, resultWins: boolean): boolean;
         _triggerAttributeRefresh(immediate?: boolean): Promise<any>;
@@ -436,7 +434,6 @@ declare namespace Vidyano {
         private securityToken;
         private _isEditing;
         private _isDirty;
-        private _inputs;
         private _id;
         private _type;
         private _breadcrumb;
@@ -490,10 +487,6 @@ declare namespace Vidyano {
         beginEdit(): void;
         cancelEdit(): void;
         save(waitForOwnerQuery?: boolean): Promise<boolean>;
-        getRegisteredInputs(): linqjs.Enumerable<linqjs.KeyValuePair<string, HTMLInputElement>>;
-        hasRegisteredInput(attributeName: string): boolean;
-        registerInput(attributeName: string, input: HTMLInputElement): void;
-        clearRegisteredInputs(attributeName?: string): void;
         toServiceObject(skipParent?: boolean): any;
         refreshFromResult(result: PersistentObject, resultWins?: boolean): void;
         refreshTabsAndGroups(...changedAttributes: PersistentObjectAttribute[]): void;
@@ -914,9 +907,9 @@ declare namespace Vidyano {
         onClose(obj: ServiceObject): void;
         onConstructApplication(application: IServiceApplication): Application;
         onConstructPersistentObject(service: Service, po: any): PersistentObject;
-        onConstructPersistentObjectAttributeTab(service: Service, groups: linqjs.Enumerable<PersistentObjectAttributeGroup>, key: string, id: string, name: string, layout: any, parent: PersistentObject, columnCount: number, isVisible: boolean): PersistentObjectAttributeTab;
+        onConstructPersistentObjectAttributeTab(service: Service, groups: PersistentObjectAttributeGroup[], key: string, id: string, name: string, layout: any, parent: PersistentObject, columnCount: number, isVisible: boolean): PersistentObjectAttributeTab;
         onConstructPersistentObjectQueryTab(service: Service, query: Query): PersistentObjectQueryTab;
-        onConstructPersistentObjectAttributeGroup(service: Service, key: string, attributes: linqjs.Enumerable<PersistentObjectAttribute>, parent: PersistentObject): PersistentObjectAttributeGroup;
+        onConstructPersistentObjectAttributeGroup(service: Service, key: string, attributes: PersistentObjectAttribute[], parent: PersistentObject): PersistentObjectAttributeGroup;
         onConstructPersistentObjectAttribute(service: Service, attr: any, parent: PersistentObject): PersistentObjectAttribute;
         onConstructPersistentObjectAttributeWithReference(service: Service, attr: any, parent: PersistentObject): PersistentObjectAttributeWithReference;
         onConstructPersistentObjectAttributeAsDetail(service: Service, attr: any, parent: PersistentObject): PersistentObjectAttributeAsDetail;
@@ -964,8 +957,8 @@ declare namespace Vidyano {
         private _queuedClientOperations;
         private _initial;
         staySignedIn: boolean;
-        icons: linqjs.Dictionary<string, string>;
-        actionDefinitions: linqjs.Dictionary<string, ActionDefinition>;
+        icons: KeyValue<string>;
+        actionDefinitions: KeyValue<ActionDefinition>;
         environment: string;
         environmentVersion: string;
         constructor(serviceUri: string, hooks?: ServiceHooks, isTransient?: boolean);
@@ -1360,11 +1353,6 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
-    namespace ClientOperations {
-        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
-    }
-}
-declare namespace Vidyano {
     interface IServiceQueryResultItemGroup {
         name: string;
         count: number;
@@ -1396,5 +1384,10 @@ declare namespace Vidyano {
         messages: {
             [key: string]: string;
         };
+    }
+}
+declare namespace Vidyano {
+    namespace ClientOperations {
+        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
     }
 }

@@ -64,7 +64,7 @@
         }
 
         private _updateAttributes(): Vidyano.PersistentObjectAttribute[] {
-            const attributes = Enumerable.from(this.groups).selectMany(grp => grp.attributes).toArray();
+            const attributes = [].concat(...this.groups.map(grp => grp.attributes));
             attributes.forEach(attr => attributes[attr.name] = attr);
 
             return attributes;

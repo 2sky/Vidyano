@@ -32,7 +32,7 @@
             this._options = !StringEx.isNullOrWhiteSpace(options) ? options.split(";") : [];
 
             if (icon != null) {
-                const appIcon = service.icons.get(icon.objectId);
+                const appIcon = service.icons[icon.objectId];
                 if (StringEx.isNullOrWhiteSpace(appIcon))
                     return;
 
