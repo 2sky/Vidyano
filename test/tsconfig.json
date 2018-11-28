@@ -15,7 +15,7 @@
     "outFile": "scripts.js"
   },
   "include": [
-    "../src/**/*.d.ts",
+    "../dist/Vidyano.Web2/vidyano.d.ts",
     "Helpers/Vidyano.ts",
     "Helpers/QueryGrid.ts"
   ]
