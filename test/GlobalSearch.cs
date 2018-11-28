@@ -22,6 +22,8 @@ namespace Vidyano.Test
             input.SendKeys(search);
             input.SendKeys(Keys.Enter);
 
+            Assert.That(driver.FindElement(By.CssSelector("vi-query-grid:not(.initializing)")), Is.Not.Null);
+
             var firstRow = driver.FindElement(By.CssSelector("vi-query-grid tr[is='vi-query-grid-table-data-row']:first-of-type"));
             Assert.That(firstRow, Is.Not.Null, "Unable to find first data row.");
             Assert.That(driver.Title.StartsWith(search), Is.True, "Invalid title after search.");
