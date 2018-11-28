@@ -19,5 +19,8 @@
     "src/Libs/Typings/**/*.d.ts",
     "src/Libs/Vidyano/vidyano.d.ts",
     "src/WebComponents/**/*.ts"
+  ],
+  "exclude": [
+    "src/WebComponents/**/*.d.ts"
   ]
 }

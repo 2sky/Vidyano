@@ -1364,6 +1364,11 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
+    namespace ClientOperations {
+        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
+    }
+}
+declare namespace Vidyano {
     interface IServiceQueryResultItemGroup {
         name: string;
         count: number;
@@ -1395,10 +1400,5 @@ declare namespace Vidyano {
         messages: {
             [key: string]: string;
         };
-    }
-}
-declare namespace Vidyano {
-    namespace ClientOperations {
-        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
     }
 }
