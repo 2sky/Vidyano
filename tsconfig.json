@@ -11,8 +11,7 @@
     "emitDecoratorMetadata": false,
     "inlineSourceMap": true,
     "inlineSources": true,
-    "noEmitHelpers": true,
-    "declaration": true
+    "noEmitHelpers": true
   },
   "include": [
     "src/Libs/Shims/*.ts",

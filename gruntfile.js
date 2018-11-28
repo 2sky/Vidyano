@@ -92,7 +92,7 @@ module.exports = function (grunt) {
                 out: 'dist/Vidyano.Web2/vidyano.d.ts'
             },
             default: {
-                src: ['src/**/*.ts', '!src/Libs/Vidyano/vidyano.d.ts', 'node_modules/typescript/lib/lib.d.ts']
+                src: ['src/**/*.ts', '!src/Libs/Vidyano/vidyano.d.ts', '!src/Libs/WebComponents/**/*.d.ts', 'node_modules/typescript/lib/lib.d.ts']
             }
         },
         cssmin: {
