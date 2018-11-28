@@ -1,0 +1,24 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "es2015"
+    ],
+    "removeComments": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": false,
+    "inlineSourceMap": false,
+    "sourceMap": false,
+    "inlineSources": true,
+    "noEmitHelpers": true
+  },
+  "include": [
+    "**/*.ts",
+    "../src/Libs/Shims/*.ts",
+    "../src/Libs/Typings/**/*.d.ts",
+    "../src/Libs/Vidyano/vidyano.d.ts",
+    "../src/WebComponents/**/*.ts"
+  ]
+}

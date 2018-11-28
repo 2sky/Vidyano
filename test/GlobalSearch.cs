@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
 using System.Linq;
+using Vidyano.Test.Helpers;
 
 namespace Vidyano.Test
 {
@@ -22,14 +23,16 @@ namespace Vidyano.Test
             input.SendKeys(search);
             input.SendKeys(Keys.Enter);
 
-            Assert.That(driver.FindElement(By.CssSelector("vi-query-grid:not(.initializing)")), Is.Not.Null);
+            var grid = driver.FindGridByQueryName("Customers");
+            Assert.That(grid, Is.Not.Null, "Customers grid not found.");
 
-            var firstRow = driver.FindElement(By.CssSelector("vi-query-grid tr[is='vi-query-grid-table-data-row']:first-of-type"));
+            var firstRow = grid.FindElement(By.CssSelector("vi-query-grid tr[is='vi-query-grid-table-data-row']:first-of-type"));
             Assert.That(firstRow, Is.Not.Null, "Unable to find first data row.");
-            Assert.That(driver.Title.StartsWith(search), Is.True, "Invalid title after search.");
 
             var cells = firstRow.FindElements(By.TagName("vi-query-grid-cell-default"));
             Assert.That(cells.FirstOrDefault(c => c.Text.Contains(search)), Is.Not.Null, "No match found.");
+
+            Assert.That(driver.Title.StartsWith(search), Is.True, "Invalid title after search.");
         }
     }
 }

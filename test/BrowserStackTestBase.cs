@@ -103,7 +103,8 @@ namespace Vidyano.Test
         {
             driver = new RemoteWebDriver(new Uri("https://hub-cloud.browserstack.com/wd/hub/"), CreateCapability());
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
-            
+            driver.Manage().Timeouts().AsynchronousJavaScript = TimeSpan.FromSeconds(30);
+
             driver.Navigate().GoToUrl((string)browserstack["vidyano.ci.server"]);
 
             SignIn();
