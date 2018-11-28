@@ -75,7 +75,11 @@ namespace Vidyano.Test
             Assert.That(driver.FindElement(By.CssSelector("vi-app-route.active[route^=\"SignIn\"]")), Is.Not.Null, "No active sign in route found.");
 
             if (verifyBuild)
-                Assert.That((bool)driver.ExecuteScript($"return Vidyano.version.endsWith('{File.ReadAllText(System.IO.Path.Combine(assemblyFolder, "version.txt"))}')"), Is.True, "Invalid test version.");
+            {
+                var versionFile = System.IO.Path.Combine(assemblyFolder, "version.txt");
+                if (File.Exists(versionFile))
+                    Assert.That((bool)driver.ExecuteScript($"return Vidyano.version.endsWith('{File.ReadAllText(versionFile)}')"), Is.True, "Invalid test version.");
+            }
 
             var username = driver.FindElement(By.Id("username"));
             username.SendKeys("Test");
