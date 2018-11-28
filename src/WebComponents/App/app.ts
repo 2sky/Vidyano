@@ -455,7 +455,7 @@ namespace Vidyano.WebComponents {
         }
 
         cachePing(entry: Vidyano.WebComponents.AppCacheEntry): Vidyano.WebComponents.AppCacheEntry {
-            const cacheEntry = Enumerable.from(this._cache).lastOrDefault(e => entry.isMatch(e));
+            const cacheEntry = this._cache.slice().reverse().find(e => entry.isMatch(e));
             if (cacheEntry) {
                 this._cache.remove(cacheEntry);
                 this._cache.push(cacheEntry);
@@ -465,7 +465,7 @@ namespace Vidyano.WebComponents {
         }
 
         cacheRemove(key: Vidyano.WebComponents.AppCacheEntry) {
-            const entry = Enumerable.from(this._cache).firstOrDefault(e => key.isMatch(e));
+            const entry = this._cache.find(e => key.isMatch(e));
             if (entry)
                 this._cache.remove(entry);
         }
@@ -569,7 +569,7 @@ namespace Vidyano.WebComponents {
 
         private _distributeAppRoutes() {
             this._nodeObserver = Polymer.dom(this._appRoutePresenter).observeNodes(this._nodesChanged.bind(this));
-            Enumerable.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this._appRoutePresenter).appendChild(route));
+            Array.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this._appRoutePresenter).appendChild(route));
 
             if (this.noHistory)
                 this.changePath(this.path);
@@ -611,7 +611,7 @@ namespace Vidyano.WebComponents {
                 return;
 
             const doc = <HTMLDocument>await this.importHref(configs);
-            Enumerable.from(doc.body.childNodes).forEach(c => Polymer.dom(this).appendChild(c));
+            Array.from(doc.body.childNodes).forEach(c => Polymer.dom(this).appendChild(c));
         }
 
         private async _updateInitialize(...promises: Promise<any>[]) {
@@ -772,7 +772,7 @@ namespace Vidyano.WebComponents {
                         return;
                 }
 
-                Enumerable.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
+                Array.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
 
                 const redirect = await (<AppServiceHooks>this.app.service.hooks).onAppRouteChanging(newRoute, this.currentRoute);
                 if (redirect) {
@@ -796,7 +796,7 @@ namespace Vidyano.WebComponents {
             const mappedPathRoute = Vidyano.Path.match(Path.routes.rootPath + App.removeRootPath(path), true);
             if (application) {
                 if (mappedPathRoute && mappedPathRoute.params && mappedPathRoute.params.programUnitName)
-                    return Enumerable.from(application.programUnits).firstOrDefault(pu => pu.name === mappedPathRoute.params.programUnitName);
+                    return application.programUnits.find(pu => pu.name === mappedPathRoute.params.programUnitName);
                 else if (application.programUnits.length > 0)
                     return application.programUnits[0];
             }
@@ -857,7 +857,7 @@ namespace Vidyano.WebComponents {
                 currentKeys.push(key);
             });
 
-            this._setKeys(Enumerable.from(currentKeys).distinct().toArray().join(" "));
+            this._setKeys(currentKeys.distinct().join(" "));
         }
 
         private _unregisterKeybindings(registration: Keyboard.IKeybindingRegistration) {
@@ -873,7 +873,7 @@ namespace Vidyano.WebComponents {
                 }
             });
 
-            this._setKeys(Enumerable.from(currentKeys).distinct().toArray().join(" "));
+            this._setKeys(currentKeys.distinct().join(" "));
         }
 
         private _mediaQueryChanged(isDesktop: boolean, isTablet: boolean, isPhone: boolean) {
@@ -905,15 +905,15 @@ namespace Vidyano.WebComponents {
             }
 
             registrations = registrations.filter(reg => !reg.scope || (reg.scope instanceof AppRoute && (<AppRoute>reg.scope).active));
-            const highestPriorityRegs = Enumerable.from(registrations).groupBy(r => r.priority, r => r).orderByDescending(kvp => kvp.key()).firstOrDefault();
-            if (!highestPriorityRegs || highestPriorityRegs.isEmpty())
+            const highestPriorityRegs = registrations.groupBy(r => r.priority).orderByDescending(kvp => kvp.key)[0];
+            if (!highestPriorityRegs || !highestPriorityRegs.value.length)
                 return;
 
-            const regs = highestPriorityRegs.toArray();
-            if (regs.length > 1 && regs.some(r => !r.nonExclusive))
+            const regs = highestPriorityRegs;
+            if (regs.value.length > 1 && regs.value.some(r => !r.nonExclusive))
                 return;
 
-            regs.forEach(reg => {
+            regs.value.forEach(reg => {
                 reg.listener(e);
             });
         }

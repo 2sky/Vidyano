@@ -67,8 +67,8 @@ namespace Vidyano.WebComponents {
 
             this.hideSearch = this.app.configuration.getSetting("vi-menu.hide-search", "false").toLowerCase() === "true";
 
-            Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).forEach(element => Polymer.dom(this.$.footerElements).appendChild(element));
-            Enumerable.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).forEach(element => Polymer.dom(this.$.headerElements).appendChild(element));
+            Array.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).forEach(element => Polymer.dom(this.$.footerElements).appendChild(element));
+            Array.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).forEach(element => Polymer.dom(this.$.headerElements).appendChild(element));
 
             if (!Menu._minResizeWidth)
                 Menu._minResizeWidth = this.offsetWidth;
@@ -85,8 +85,8 @@ namespace Vidyano.WebComponents {
         detached() {
             super.detached();
 
-            Enumerable.from(Polymer.dom(this.$.footerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
-            Enumerable.from(Polymer.dom(this.$.headerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
+            Array.from(Polymer.dom(this.$.footerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
+            Array.from(Polymer.dom(this.$.headerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
         }
 
         private _filterChanged() {

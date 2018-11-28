@@ -87,7 +87,7 @@ namespace Vidyano.WebComponents {
     })
     export class ActionButton extends WebComponent {
         private _skipObserver: boolean;
-        readonly options: linqjs.KeyValuePair<number, string>[]; private _setOptions: (val: linqjs.KeyValuePair<number, string>[]) => void;
+        readonly options: KeyValuePair<number, string>[]; private _setOptions: (val: KeyValuePair<number, string>[]) => void;
         readonly canExecute: boolean; private _setCanExecute: (val: boolean) => void;
         readonly siblingIcon: boolean; private _setSiblingIcon: (val: boolean) => void;
         readonly hidden: boolean; private _setHidden: (val: boolean) => void;
@@ -197,10 +197,10 @@ namespace Vidyano.WebComponents {
         }
 
         private _computeSiblingIcon(overflow: boolean, isAttached: boolean) {
-            const siblingIcon = overflow && isAttached && this.parentElement != null && Enumerable.from(this.parentElement.children).firstOrDefault((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
+            const siblingIcon = overflow && isAttached && this.parentElement != null && Array.from(this.parentElement.children).find((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
             this._setSiblingIcon(siblingIcon);
             if (siblingIcon) {
-                Enumerable.from(this.parentElement.children).forEach((ab: ActionButton) => {
+                Array.from(this.parentElement.children).forEach((ab: ActionButton) => {
                     if (ab instanceof Vidyano.WebComponents.ActionButton && ab !== this)
                         ab._setSiblingIcon(true);
                 });

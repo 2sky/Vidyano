@@ -1,5 +1,4 @@
 /// <reference path="../Typings/bignumber.js/bignumber.d.ts" />
-/// <reference path="../Typings/Linq/linq.d.ts" />
 /// <reference path="../Typings/PromiseQueue/promise-queue.d.ts" />
 /// <reference path="../Typings/Vidyano.Common/vidyano.common.d.ts" />
 declare type KeyValuePair<T, U> = {
@@ -10,14 +9,16 @@ declare type KeyValue<T> = {
     [key: string]: T;
 };
 interface Array<T> {
+    distinct<T, U>(this: T[], selector?: (element: T) => T | U): T[];
+    groupBy<T>(this: T[], selector: (element: T) => string): KeyValuePair<string, T[]>[];
+    groupBy<T>(this: T[], selector: (element: T) => number): KeyValuePair<number, T[]>[];
     orderBy<T>(this: T[], selector: (element: T) => number | string): T[];
     orderBy<T>(this: T[], property: string): T[];
     orderByDescending<T>(this: T[], selector: (element: T) => number): T[];
     orderByDescending<T>(this: T[], property: string): T[];
-    groupBy<T>(this: T[], selector: (element: T) => string): KeyValuePair<string, T[]>[];
     min<T>(this: T[], selector: (element: T) => number): number;
     max<T>(this: T[], selector: (element: T) => number): number;
-    distinct<T, U>(this: T[], selector?: (element: T) => T | U): T[];
+    sum<T>(this: T[], selector: (element: T) => number): number;
 }
 declare namespace Vidyano {
     class CultureInfo {

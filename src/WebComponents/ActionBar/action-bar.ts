@@ -45,8 +45,8 @@
             return actions.filter(a => a.isPinned === pinned);
         }
 
-        private _computeHasCharts(charts: linqjs.Enumerable<Vidyano.QueryChart>, app: Vidyano.WebComponents.App): boolean {
-            return !!charts && !!charts.firstOrDefault(c => !!this.app.configuration.getQueryChartConfig(c.type));
+        private _computeHasCharts(charts: Vidyano.QueryChart[], app: Vidyano.WebComponents.App): boolean {
+            return !!charts && !!charts.find(c => !!this.app.configuration.getQueryChartConfig(c.type));
         }
 
         private _search() {
@@ -74,7 +74,7 @@
             if (actions.length === 0)
                 return true;
 
-            return Enumerable.from(actions).where(a => a.isVisible).count() === 0;
+            return !actions.filter(a => a.isVisible).length;
         }
     }
 }

@@ -110,13 +110,13 @@ namespace Vidyano.WebComponents {
             return <SpinnerConfig>this.queryEffectiveChildren(`vi-spinner-config`) || null;
         }
 
-        private _getConfigs<T>(type: any): linqjs.Enumerable<T> {
-            return <linqjs.Enumerable<T>>Enumerable.from(Polymer.dom(this).children).where(c => c.tagName !== "TEMPLATE").selectMany(element => {
+        private _getConfigs<T>(type: any): T[] {
+            return [].concat(...Array.from(Polymer.dom(this).children).filter(c => c.tagName !== "TEMPLATE").map(element => {
                 if (element.tagName === "CONTENT")
-                    return Enumerable.from(Polymer.dom(element).getDistributedNodes()).where(c => c.tagName !== "TEMPLATE").toArray();
+                    return Array.from(Polymer.dom(element).getDistributedNodes()).filter(c => c.tagName !== "TEMPLATE");
 
                 return [element];
-            }).where(child => child instanceof type).select(child => <T><any>child).memoize();
+            })).filter(child => child instanceof type).map(child => <T><any>child);
         }
     }
 }

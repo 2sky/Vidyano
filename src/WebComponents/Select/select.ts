@@ -269,24 +269,24 @@ namespace Vidyano.WebComponents {
 
             let groupFirstOptions: Map<any, any>;
             if (this.groupSeparator) {
-                let optionsByGroup: linqjs.Grouping<string, any>[];
+                let optionsByGroup: KeyValuePair<string, any>[];
 
                 if (!isKvp)
-                    optionsByGroup = Enumerable.from(<string[]>options).groupBy(o => {
+                    optionsByGroup = (<string[]>options).groupBy(o => {
                         const parts = o ? o.split(this.groupSeparator, 2) : [];
                         return parts.length === 2 ? parts[0] || null : null;
-                    }, o => o).toArray();
+                    });
                 else {
-                    optionsByGroup = Enumerable.from(<SelectOption[]>options).groupBy(kvp => {
+                    optionsByGroup = (<SelectOption[]>options).groupBy(kvp => {
                         const displayValue = kvp ? kvp.value : null;
                         const displayParts = displayValue ? displayValue.split(this.groupSeparator, 2) : [];
                         return displayParts.length === 2 ? displayParts[0] || null : null;
-                    }, o => o).toArray();
+                    });
                 }
 
                 groupFirstOptions = new Map();
                 optionsByGroup.forEach(g => {
-                    g.forEach((o, n) => groupFirstOptions.set(o, { name: g.key(), first: n === 0 }));
+                    g.value.forEach((o, n) => groupFirstOptions.set(o, { name: g.key, first: n === 0 }));
                 });
             }
 
@@ -332,19 +332,18 @@ namespace Vidyano.WebComponents {
                         this._setSuggestion(result[0] !== undefined ? result[0] : null);
                 }
                 else {
-                    const resultEnum = Enumerable.from(result);
                     let suggestion: ISelectItem;
                     if (result[0].option == null)
                         suggestion = result[0];
                     else if (typeof result[0].option === "string") {
-                        suggestion = resultEnum.firstOrDefault(o => o.option == null);
+                        suggestion = result.find(o => o.option == null);
                         if (!suggestion)
-                            suggestion = resultEnum.firstOrDefault(o => (<string>o.option).length === 0);
+                            suggestion = result.find(o => (<string>o.option).length === 0);
                     }
                     else {
-                        suggestion = resultEnum.firstOrDefault(o => (<SelectOption>o.option).key == null);
+                        suggestion = result.find(o => (<SelectOption>o.option).key == null);
                         if (!suggestion)
-                            suggestion = resultEnum.firstOrDefault(o => (<SelectOption>o.option).key.length === 0);
+                            suggestion = result.find(o => (<SelectOption>o.option).key.length === 0);
                     }
 
                     this._setSuggestion(suggestion);
@@ -391,11 +390,11 @@ namespace Vidyano.WebComponents {
 
             if (this.selectedItem) {
                 if (!this.selectedItem.option || typeof this.selectedItem.option === "string") {
-                    this._setSelectedOption(Enumerable.from(<string[]>this.ungroupedOptions).firstOrDefault(o => o === this.selectedItem.option));
+                    this._setSelectedOption((<string[]>this.ungroupedOptions).find(o => o === this.selectedItem.option));
                     this._inputValue = <string>this.selectedItem.option;
                 }
                 else {
-                    this._setSelectedOption(Enumerable.from(<SelectOption[]>this.ungroupedOptions).firstOrDefault(o => o.key === (<SelectOption>this.selectedItem.option).key));
+                    this._setSelectedOption((<SelectOption[]>this.ungroupedOptions).find(o => o.key === (<SelectOption>this.selectedItem.option).key));
                     this._inputValue = (<SelectOption>this.selectedItem.option).value;
                 }
 
@@ -421,7 +420,10 @@ namespace Vidyano.WebComponents {
         }
 
         private _getItem(key: string, items: ISelectItem[] = this.items): ISelectItem {
-            return Enumerable.from(items || []).firstOrDefault(i => {
+            if (!items)
+                return undefined;
+
+            return items.find(i => {
                 if (!i.option || typeof i.option === "string")
                     return i.option === key;
                 else

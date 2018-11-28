@@ -71,39 +71,35 @@
         }
 
         getPersistentObjectConfig(persistentObject: Vidyano.PersistentObject, persistentObjectConfigs: PersistentObjectConfig[]): PersistentObjectConfig {
-            const persistentObjectConfigsEnum = Enumerable.from(persistentObjectConfigs);
-            return persistentObjectConfigsEnum.firstOrDefault(c => (c.id === persistentObject.id || c.type === persistentObject.type || c.type === persistentObject.fullTypeName) && c.objectId === persistentObject.objectId) ||
-                persistentObjectConfigsEnum.firstOrDefault(c => !c.objectId && (c.id === persistentObject.id || c.type === persistentObject.type || c.type === persistentObject.fullTypeName));
+            return persistentObjectConfigs.find(c => (c.id === persistentObject.id || c.type === persistentObject.type || c.type === persistentObject.fullTypeName) && c.objectId === persistentObject.objectId) ||
+                persistentObjectConfigs.find(c => !c.objectId && (c.id === persistentObject.id || c.type === persistentObject.type || c.type === persistentObject.fullTypeName));
         }
 
         getAttributeConfig(attribute: Vidyano.PersistentObjectAttribute, attributeConfigs: PersistentObjectAttributeConfig[]): PersistentObjectAttributeConfig {
-            const attributeConfigsEnum = Enumerable.from(attributeConfigs);
-            return attributeConfigsEnum.firstOrDefault(c => c.parentObjectId === attribute.parent.objectId && c.parentId === attribute.parent.id && (c.name === attribute.name || c.type === attribute.type)) ||
-                attributeConfigsEnum.firstOrDefault(c => c.parentId === attribute.parent.id && (c.name === attribute.name || c.type === attribute.type)) ||
-                attributeConfigsEnum.firstOrDefault(c => c.name === attribute.name && c.type === attribute.type && !c.parentId) ||
-                attributeConfigsEnum.firstOrDefault(c => c.name === attribute.name && !c.parentId && !c.type) ||
-                attributeConfigsEnum.firstOrDefault(c => c.type === attribute.type && !c.parentId && !c.name);
+            return attributeConfigs.find(c => c.parentObjectId === attribute.parent.objectId && c.parentId === attribute.parent.id && (c.name === attribute.name || c.type === attribute.type)) ||
+                attributeConfigs.find(c => c.parentId === attribute.parent.id && (c.name === attribute.name || c.type === attribute.type)) ||
+                attributeConfigs.find(c => c.name === attribute.name && c.type === attribute.type && !c.parentId) ||
+                attributeConfigs.find(c => c.name === attribute.name && !c.parentId && !c.type) ||
+                attributeConfigs.find(c => c.type === attribute.type && !c.parentId && !c.name);
         }
 
         getTabConfig(tab: Vidyano.PersistentObjectTab, tabConfigs: PersistentObjectTabConfig[]): PersistentObjectTabConfig {
-            const tabConfigsEnum = Enumerable.from(tabConfigs);
-            return tabConfigsEnum.firstOrDefault(c => c.name === tab.name && (c.type === tab.parent.type || c.type === tab.parent.fullTypeName || c.id === tab.parent.id) && c.objectId === tab.parent.objectId) ||
-                tabConfigsEnum.firstOrDefault(c => c.name === tab.name && (c.type === tab.parent.type || c.type === tab.parent.fullTypeName || c.id === tab.parent.id));
+            return tabConfigs.find(c => c.name === tab.name && (c.type === tab.parent.type || c.type === tab.parent.fullTypeName || c.id === tab.parent.id) && c.objectId === tab.parent.objectId) ||
+                tabConfigs.find(c => c.name === tab.name && (c.type === tab.parent.type || c.type === tab.parent.fullTypeName || c.id === tab.parent.id));
         }
 
         getProgramUnitConfig(name: string, programUnitConfigs: ProgramUnitConfig[]): ProgramUnitConfig {
-            return Enumerable.from(programUnitConfigs).firstOrDefault(c => c.name === name);
+            return programUnitConfigs.find(c => c.name === name);
         }
 
         getQueryConfig(query: Vidyano.Query, queryConfigs: QueryConfig[]): QueryConfig {
-            const queryConfigsEnum = Enumerable.from(queryConfigs);
-            return queryConfigsEnum.firstOrDefault(c => c.id === query.id || c.name === query.name) ||
-                queryConfigsEnum.firstOrDefault(c => c.type === query.persistentObject.type) ||
-                queryConfigsEnum.firstOrDefault(c => !c.id && !c.name && !c.type);
+            return queryConfigs.find(c => c.id === query.id || c.name === query.name) ||
+                queryConfigs.find(c => c.type === query.persistentObject.type) ||
+                queryConfigs.find(c => !c.id && !c.name && !c.type);
         }
 
         getQueryChartConfig(type: string, queryChartConfigs: QueryChartConfig[]): QueryChartConfig {
-            return Enumerable.from(queryChartConfigs).firstOrDefault(c => c.type === type);
+            return queryChartConfigs.find(c => c.type === type);
         }
 
         onConstructApplication(application: IServiceApplication): Application {
@@ -165,7 +161,7 @@
                 // Only pass selected tab for actions on persistent objects
                 if (!args.query) {
                     let cacheEntry = new PersistentObjectAppCacheEntry(args.persistentObject);
-                    cacheEntry = <PersistentObjectAppCacheEntry>Enumerable.from(this.app.cacheEntries).firstOrDefault(ce => ce.isMatch(cacheEntry));
+                    cacheEntry = <PersistentObjectAppCacheEntry>this.app.cacheEntries.find(ce => ce.isMatch(cacheEntry));
 
                     if (cacheEntry && cacheEntry.selectedMasterTab) {
                         if (!args.parameters)

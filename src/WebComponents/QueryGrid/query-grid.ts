@@ -333,7 +333,7 @@ namespace Vidyano.WebComponents {
         }
 
         setColumns(columns: QueryGridColumn[]) {
-            const lastPinnedColumn = Enumerable.from(columns).lastOrDefault(c => c.isPinned);
+            const lastPinnedColumn = columns.slice().reverse().find(c => c.isPinned);
             this.columns.forEach((col, index) => col.setColumn(columns[index], columns[index] === lastPinnedColumn));
         }
 
@@ -348,7 +348,7 @@ namespace Vidyano.WebComponents {
         }
 
         setColumns(columns: QueryGridColumn[]) {
-            const lastPinnedColumn = Enumerable.from(columns).lastOrDefault(c => c.isPinned);
+            const lastPinnedColumn = columns.slice().reverse().find(c => c.isPinned);
             this.columns.forEach((col, index) => col.setColumn(columns[index], columns[index] === lastPinnedColumn));
         }
 
@@ -577,7 +577,7 @@ namespace Vidyano.WebComponents {
 
             let openaction = this.item.getTypeHint("openaction", null);
             if (openaction) {
-                const action = Enumerable.from(this.item.query.actions).firstOrDefault(a => a.name === openaction) || Vidyano.Action.get(this.item.service, openaction, this.item.query);
+                const action = this.item.query.actions.find(a => a.name === openaction) || Vidyano.Action.get(this.item.service, openaction, this.item.query);
                 if (action)
                     await action.execute({ selectedItems: [this.item] });
                 else
@@ -784,7 +784,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _setScopedStyle() {
-            Enumerable.from(this.host.children).forEach(c => {
+            Array.from(this.host.children).forEach(c => {
                 c.classList.add("style-scope", "vi-query-grid");
             });
         }
@@ -1231,7 +1231,7 @@ namespace Vidyano.WebComponents {
                     });
                 });
 
-                Enumerable.from(this._tableData.rows).forEach((row: QueryGridTableDataRow) => {
+                this._tableData.rows.forEach((row: QueryGridTableDataRow) => {
                     row.columns.forEach(cell => {
                         if (cell.column && cell.column.isPinned)
                             this.transform("", cell.host);
@@ -1342,10 +1342,9 @@ namespace Vidyano.WebComponents {
             if (!columns || columns.length === 0)
                 return [];
 
-            const visibleColumns = Enumerable.from(
-                columns).where(c => !c.isHidden).memoize();
-            const pinnedColumns = visibleColumns.where(c => c.isPinned).orderBy(c => c.offset).toArray();
-            const unpinnedColumns = visibleColumns.where(c => !c.isPinned).orderBy(c => c.offset).toArray();
+            const visibleColumns = columns.filter(c => !c.isHidden);
+            const pinnedColumns = visibleColumns.filter(c => c.isPinned).orderBy(c => c.offset);
+            const unpinnedColumns = visibleColumns.filter(c => !c.isPinned).orderBy(c => c.offset);
 
             columns = pinnedColumns.concat(unpinnedColumns);
             columns.forEach(c => c.reset());
@@ -1623,7 +1622,7 @@ namespace Vidyano.WebComponents {
                 const virtualTableOffset = this._virtualTableOffset;
 
                 this._requestAnimationFrame(() => {
-                    const lastPinnedColumnIndex = Enumerable.from(columns).lastIndexOf(c => c.isPinned);
+                    const lastPinnedColumnIndex = columns.length - columns.slice().reverse().findIndex(c => c.isPinned) - 1;
                     let hasPendingUpdates = this.isReordering || false;
 
                     let itemsIndex = 0;
@@ -1673,7 +1672,7 @@ namespace Vidyano.WebComponents {
                         start = Vidyano.WebComponents.QueryGrid.perf.now();
 
                     let hasPendingUpdates = false;
-                    Enumerable.from((<QueryGridTableDataRow[]>this._tableData.rows)).forEach(row => {
+                    (<QueryGridTableDataRow[]>this._tableData.rows).forEach(row => {
                         hasPendingUpdates = row.updatePendingCellUpdates() || hasPendingUpdates;
                     });
 
@@ -1804,7 +1803,7 @@ namespace Vidyano.WebComponents {
                 const width = detail.save ? "" : detail.columnWidth + "px";
                 [this._tableData, this._tableFooter].forEach(table => {
                     table.rows.forEach(r => {
-                        const col = Enumerable.from(r.columns).firstOrDefault(c => c.column === detail.column);
+                        const col = r.columns.find(c => c.column === detail.column);
                         if (col) {
                             col.cell.style.width = width;
 
@@ -1844,7 +1843,7 @@ namespace Vidyano.WebComponents {
         private _dragStart(e: CustomEvent) {
             e.stopPropagation();
 
-            const row = <QueryGridTableDataRow>Enumerable.from(this._tableData.rows).firstOrDefault(r => r.host.classList.contains("sortable-chosen"));
+            const row = <QueryGridTableDataRow>this._tableData.rows.find(r => r.host.classList.contains("sortable-chosen"));
             if (!row)
                 return;
 
@@ -1987,7 +1986,7 @@ namespace Vidyano.WebComponents {
             if (!src)
                 return true;
 
-            const row = Enumerable.from(this._tableData.rows).firstOrDefault(r => r.host === src);
+            const row = this._tableData.rows.find(r => r.host === src);
             if (!row)
                 return true;
 

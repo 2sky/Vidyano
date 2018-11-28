@@ -107,8 +107,8 @@ namespace Vidyano.WebComponents {
 
             let hasNPlusOne = false;
             entries.forEach(entry => {
-                const counts = Enumerable.from(entry.sql).groupBy(commandId => Enumerable.from(request.profiler.sql).firstOrDefault(s => s.commandId === commandId).commandText, s => s);
-                if (counts.firstOrDefault(c => c.count() > 1))
+                const counts = entry.sql.groupBy(commandId => request.profiler.sql.find(s => s.commandId === commandId).commandText);
+                if (counts.find(c => c.value.length > 1))
                     entry.hasNPlusOne = hasNPlusOne = true;
 
                 if (entry.entries && entry.entries.length > 0)
@@ -397,9 +397,8 @@ namespace Vidyano.WebComponents {
                 title.textContent = "SQL Statements";
                 info.appendChild(title);
 
-                const sqlEnum = Enumerable.from(this.selectedRequest.profiler.sql).memoize();
                 entry.sql.forEach(sqlCommandId => {
-                    const sql = sqlEnum.firstOrDefault(s => s.commandId === sqlCommandId);
+                    const sql = this.selectedRequest.profiler.sql.find(s => s.commandId === sqlCommandId);
                     if (!sql)
                         return;
 
@@ -440,7 +439,7 @@ namespace Vidyano.WebComponents {
                 title.textContent = "Exception";
                 info.appendChild(title);
 
-                const exception = Enumerable.from(this.selectedRequest.profiler.exceptions).firstOrDefault(e => e.id === entry.exception);
+                const exception = this.selectedRequest.profiler.exceptions.find(e => e.id === entry.exception);
                 if (exception) {
                     const exceptionPre = document.createElement("pre");
                     exceptionPre.textContent = exception.message;

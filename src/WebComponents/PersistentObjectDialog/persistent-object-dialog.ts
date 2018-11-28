@@ -125,7 +125,7 @@ namespace Vidyano.WebComponents {
             if (!persistentObject || !isAttached)
                 return null;
 
-            const tab = <Vidyano.PersistentObjectAttributeTab>Enumerable.from(persistentObject.tabs).firstOrDefault(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
+            const tab = <Vidyano.PersistentObjectAttributeTab>persistentObject.tabs.find(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
             tab.columnCount = tab.columnCount > 1 ? tab.columnCount : 1;
 
             const width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * tab.columnCount;

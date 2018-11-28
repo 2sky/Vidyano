@@ -82,7 +82,7 @@ namespace Vidyano.WebComponents {
 
             const fragment = document.createDocumentFragment();
 
-            Enumerable.from(Polymer.dom(resource).children).forEach((child: HTMLElement) => {
+            Array.from(Polymer.dom(resource).children).forEach((child: HTMLElement) => {
                 fragment.appendChild(child.cloneNode(true));
             });
 

@@ -91,7 +91,7 @@
             if (!filters)
                 return null;
 
-            const orderedFilters = Enumerable.from(filters).where(f => f.isLocked === isLocked).orderBy(f => f.name.split("\n", 2)[0].toLowerCase()).toArray();
+            const orderedFilters = filters.filter(f => f.isLocked === isLocked).orderBy(f => f.name.split("\n", 2)[0].toLowerCase());
             if (orderedFilters.length === 0)
                 return null;
 

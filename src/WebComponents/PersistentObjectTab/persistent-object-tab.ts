@@ -80,7 +80,7 @@ namespace Vidyano.WebComponents {
                 return;
 
             this._attributePresenters = this._attributePresenters.sort((attr1, attr2) => attr1.attribute.offset - attr2.attribute.offset);
-            this._autofocusTarget = Enumerable.from(this._attributePresenters).firstOrDefault(a => !a.hidden && !a.disabled && !a.readOnly);
+            this._autofocusTarget = this._attributePresenters.find(a => !a.hidden && !a.disabled && !a.readOnly);
             if (!this._autofocusTarget)
                 return;
 

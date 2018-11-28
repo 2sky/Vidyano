@@ -129,7 +129,7 @@ namespace Vidyano.WebComponents.Attributes {
 
         private _itemsOrderChanged() {
             const stringsContainer = <HTMLElement>Polymer.dom(this.root).querySelector("#strings");
-            this.value = Enumerable.from(stringsContainer.querySelectorAll("input")).where((i: HTMLInputElement) => !!i.value).select((i: HTMLInputElement) => i.value).toArray().join("\n");
+            this.value = Array.from(stringsContainer.querySelectorAll("input")).filter((i: HTMLInputElement) => !!i.value).map((i: HTMLInputElement) => i.value).join("\n");
         }
 
         private _itemValueChanged(e: Event) {
@@ -156,7 +156,7 @@ namespace Vidyano.WebComponents.Attributes {
                     Polymer.dom(stringsContainer).appendChild(s);
             });
 
-            Enumerable.from(stringsContainer.children).toArray().forEach((c: PersistentObjectAttributeMultiStringItem) => {
+            Array.from(stringsContainer.children).forEach((c: PersistentObjectAttributeMultiStringItem) => {
                 if (strings.indexOf(c) < 0)
                     Polymer.dom(stringsContainer).removeChild(c);
             });

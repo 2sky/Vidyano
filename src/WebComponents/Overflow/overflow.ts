@@ -14,7 +14,7 @@ namespace Vidyano.WebComponents {
         }
     })
     export class Overflow extends WebComponent {
-        private _overflownChildren: linqjs.Enumerable<HTMLElement>;
+        private _overflownChildren: HTMLElement[];
         private _visibibleSizeChangedSkip: { width: number; height: number };
         private _previousHeight: number;
         readonly hasOverflow: boolean; private _setHasOverflow: (val: boolean) => void;
@@ -41,17 +41,17 @@ namespace Vidyano.WebComponents {
                     Polymer.dom(child).removeAttribute("overflow");
                 });
 
-                this._setHasOverflow(children.toArray().some(child => child.offsetTop > 0));
+                this._setHasOverflow(children.some(child => child.offsetTop > 0));
             });
         }
 
-        protected _getChildren(): linqjs.Enumerable<HTMLElement> {
-            return Enumerable.from(Enumerable.from(Polymer.dom(this).children).where(c => c.tagName !== "TEMPLATE").selectMany(element => {
+        protected _getChildren(): HTMLElement[] {
+            return [].concat(...Array.from(Polymer.dom(this).children).filter(c => c.tagName !== "TEMPLATE").map(element => {
                 if (element.tagName === "CONTENT")
-                    return Enumerable.from(Polymer.dom(element).getDistributedNodes()).where(c => c.tagName !== "TEMPLATE").toArray();
+                    return Array.from(Polymer.dom(element).getDistributedNodes()).filter(c => c.tagName !== "TEMPLATE");
 
                 return [element];
-            }).select(child => <HTMLElement>child).toArray());
+            })).map(child => <HTMLElement>child);
         }
 
         private _popupOpening() {
@@ -71,7 +71,7 @@ namespace Vidyano.WebComponents {
 
             Polymer.dom(this).flush();
 
-            this._setHasOverflow(this._overflownChildren.toArray().some(child => child.offsetTop > 0));
+            this._setHasOverflow(this._overflownChildren.some(child => child.offsetTop > 0));
         }
 
         private async _popup(e: Event) {
@@ -93,7 +93,7 @@ namespace Vidyano.WebComponents {
             });
 
             Polymer.dom(this).flush();
-            this._setHasOverflow(children.toArray().some(child => child.offsetTop > 0));
+            this._setHasOverflow(children.some(child => child.offsetTop > 0));
         }
     }
 }

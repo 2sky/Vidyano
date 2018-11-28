@@ -633,19 +633,18 @@ namespace Vidyano.WebComponents {
             info.forwardObservers.push("service.language");
             info.forwardObservers.push("service.language.messages");
 
-            Enumerable.from(info.forwardObservers).groupBy(path => {
+            info.forwardObservers.groupBy(path => {
                 const functionIndex = path.indexOf("(");
                 return (functionIndex > 0 ? path.substr(functionIndex + 1) : path).split(".", 2)[0];
-            }, path => path).forEach(source => {
-                const methodName = "_observablePropertyObserver_" + source.key();
-                info.observers.push(methodName + "(" + source.key() + ", isAttached)");
+            }).forEach(source => {
+                const methodName = "_observablePropertyObserver_" + source.key;
+                info.observers.push(methodName + "(" + source.key + ", isAttached)");
 
-                const properties = source.toArray();
                 wcPrototype[methodName] = function (sourceObj: any, attached: boolean) {
                     if (sourceObj == null)
                         return;
 
-                    const forwardObserversCollectionName = `_forwardObservers_${source.key()}`;
+                    const forwardObserversCollectionName = `_forwardObservers_${source.key}`;
                     const forwardObservers = this[forwardObserversCollectionName] || (this[forwardObserversCollectionName] = []) || [];
 
                     while (forwardObservers.length > 0)
@@ -654,15 +653,15 @@ namespace Vidyano.WebComponents {
                     if (!attached)
                         return;
 
-                    properties.forEach(p => {
+                    source.value.forEach(p => {
                         const functionIndex = p.indexOf("(");
-                        const path = functionIndex > 0 ? p.substr(functionIndex + source.key().length + 2, p.length - (functionIndex + source.key().length + 2) - 1) : p.substr(source.key().length + 1);
+                        const path = functionIndex > 0 ? p.substr(functionIndex + source.key.length + 2, p.length - (functionIndex + source.key.length + 2) - 1) : p.substr(source.key.length + 1);
 
                         let observer = functionIndex > 0 ? this[p.substr(0, functionIndex)] : null;
                         if (observer)
                             observer = observer.bind(this);
 
-                        forwardObservers.push(this._forwardObservable(sourceObj, path, source.key(), observer));
+                        forwardObservers.push(this._forwardObservable(sourceObj, path, source.key, observer));
                         if (observer && sourceObj && attached) {
                             const valuePath = path.slice().split(".").reverse();
                             let value = sourceObj;
@@ -706,7 +705,7 @@ namespace Vidyano.WebComponents {
                                 if (e.detail.keyboardEvent.altKey && combo.indexOf("alt") < 0)
                                     combo = "alt+" + combo;
 
-                                const registrations = Enumerable.from(this._keybindingRegistrations).firstOrDefault(r => r.keys.some(k => k === combo));
+                                const registrations = this._keybindingRegistrations.find(r => r.keys.some(k => k === combo));
                                 if (!registrations)
                                     return;
 

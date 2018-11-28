@@ -17,11 +17,11 @@ namespace Vidyano.WebComponents {
     export class ChartSelector extends WebComponent {
         query: Vidyano.Query;
 
-        private _computeTypes(charts: linqjs.Enumerable<Vidyano.QueryChart>): ChartType[] {
-            if (!charts || charts.isEmpty())
+        private _computeTypes(charts: Vidyano.QueryChart[]): ChartType[] {
+            if (!charts || !charts.length)
                 return null;
 
-            return charts.groupBy(c => c.type, c => c).where(cg => !!this.app.configuration.getQueryChartConfig(cg.key())).select(ct => new ChartType(ct.key(), ct.toArray())).toArray();
+            return charts.groupBy(c => c.type).filter(cg => !!this.app.configuration.getQueryChartConfig(cg.key)).map(ct => new ChartType(ct.key, ct.value));
         }
 
         private _showGrid(e: TapEvent) {

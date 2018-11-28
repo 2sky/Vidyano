@@ -274,7 +274,7 @@
         }
 
         private _moreInfo(entry: ILogEntry): Vidyano.PersistentObjectAttribute[] {
-            return Enumerable.from(entry.obj.attributes).orderBy(attr => attr.offset).where(attr => {
+            return entry.obj.attributes.orderBy(attr => attr.offset).filter(attr => {
                 return attr.name !== "CreatedOn" &&
                     attr.name !== "User" &&
                     attr.name !== "OriginalUser" &&
@@ -283,7 +283,7 @@
                     attr.name !== "OutgoingDataLength" &&
                     attr.name !== "OutgoingDataReference" &&
                     !!attr.value;
-            }).toArray();
+            });
         }
     }
 }

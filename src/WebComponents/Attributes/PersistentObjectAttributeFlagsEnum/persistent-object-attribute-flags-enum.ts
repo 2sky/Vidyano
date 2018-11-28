@@ -49,8 +49,8 @@
             if (this.checked && myValue === 0)
                 this.attribute.value = this.option.value;
             else {
-                const currentOptions = Enumerable.from(<PersistentObjectAttributeOption[]>this.attribute.options);
-                let currentValue = this.attribute.value ? this._values(this.attribute.value).sum(v => parseInt(currentOptions.first(o => o.value === v).key)) : 0;
+                const currentOptions = <PersistentObjectAttributeOption[]>this.attribute.options;
+                let currentValue = this.attribute.value ? this._values(this.attribute.value).sum(v => parseInt(currentOptions.find(o => o.value === v).key)) : 0;
                 if (this.checked)
                     currentValue |= myValue;
                 else
@@ -68,7 +68,7 @@
                 if (value.length > 0)
                     this.attribute.value = value.join(", ");
                 else {
-                    this.attribute.value = currentOptions.first(o => o.key === "0").value;
+                    this.attribute.value = currentOptions.find(o => o.key === "0").value;
                     if (myValue === 0)
                         this.checked = true;
                 }
@@ -83,8 +83,8 @@
             try {
                 this._skipCheckedChanged = true;
 
-                const currentOptions = Enumerable.from(<PersistentObjectAttributeOption[]>this.attribute.options);
-                const currentValue = this.attribute.value ? this._values(this.attribute.value).sum(v => parseInt(currentOptions.first(o => o.value === v).key)) : 0;
+                const currentOptions = <PersistentObjectAttributeOption[]>this.attribute.options;
+                const currentValue = this.attribute.value ? this._values(this.attribute.value).sum(v => parseInt(currentOptions.find(o => o.value === v).key)) : 0;
                 const myValue = parseInt(this.option.key);
 
                 this.checked = (currentValue === 0 && myValue === 0) || (myValue !== 0 && (currentValue & myValue) === myValue);
@@ -94,8 +94,8 @@
             }
         }
 
-        private _values(value: string): linqjs.Enumerable<string> {
-            return Enumerable.from(value.split(",")).select(v => v.trim());
+        private _values(value: string): string[] {
+            return value.split(",").map(v => v.trim());
         }
     }
 }

@@ -87,9 +87,8 @@
                 this._items = attributes.map(attr => this._itemFromAttribute(attr));
             else {
                 oldItems = this._items.slice();
-                const itemsEnum = Enumerable.from(this._items).memoize();
                 this._items = attributes.map(attr => {
-                    let item = itemsEnum.firstOrDefault(i => i.attribute === attr);
+                    let item = oldItems.find(i => i.attribute === attr);
                     if (item) {
                         item.x = item.attribute.column;
                         item.width = Math.min(columns, item.config.calculateWidth(item.attribute));
@@ -106,9 +105,8 @@
             }
 
             let itemsChecksum: string = `${this.group.parent.type};${this.group.parent.objectId};${columns}`;
-            const items = Enumerable.from(this._items).orderBy(item => item.attribute.offset).doAction(item => {
-                itemsChecksum = `${itemsChecksum}${item.attribute.offset};${item.attribute.name};${item.height};${item.width};`;
-            }).toArray();
+            const items = this._items.orderBy(item => item.attribute.offset);
+            items.forEach(item => itemsChecksum = `${itemsChecksum}${item.attribute.offset};${item.attribute.name};${item.height};${item.width};`);
 
             if (this._itemsChecksum === itemsChecksum)
                 return;
@@ -116,7 +114,6 @@
             this._clearAsyncTasks();
             oldItems.filter(item => item.presenter.isAttached).forEach(item => Polymer.dom(this.$.grid).removeChild(item.presenter));
 
-            const areaRow = Enumerable.range(1, columns).select(_ => "");
             const areas: string[][] = [];
 
             let item = items.shift();
@@ -132,7 +129,7 @@
 
                 do {
                     if (areas.length < row + itemHeight) {
-                        const newRow = areaRow.toArray();
+                        const newRow = Array.from({ length: columns }, (v, k) => k + 1).map(_ => "");
                         areas.push(newRow);
 
                         let added = 0;
@@ -204,7 +201,7 @@
             let newRow: string[];
             for (let x in infiniteColumns) {
                 if (!newRow) {
-                    newRow = areaRow.toArray();
+                    newRow = Array.from({ length: columns }, (v, k) => k + 1).map(_ => "");
                     areas.push(newRow);
                 }
 
@@ -212,7 +209,7 @@
             }
 
             if (this.app.isIe) {
-                this.$.grid.style.msGridColumns = Enumerable.range(1, columns).select(_ => "1fr").toArray().join(" ");
+                this.$.grid.style.msGridColumns = Array.from({ length: columns }, (v, k) => k + 1).map(_ => "1fr").join(" ");
                 this.$.grid.style.msGridRows = "auto";
             }
 

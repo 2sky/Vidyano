@@ -25,11 +25,11 @@
         }
 
         private _distributeColumns(e?: CustomEvent) {
-            const columns = Enumerable.from(this._columnElements).orderBy(c => c.column.offset).memoize();
+            const columns = this._columnElements.orderBy(c => c.column.offset);
 
             requestAnimationFrame(() => {
-                this._updateColumns(this.$.pinned, columns.where(c => c.isPinned).toArray());
-                this._updateColumns(this.$.unpinned, columns.where(c => !c.isPinned).toArray());
+                this._updateColumns(this.$.pinned, columns.filter(c => c.isPinned));
+                this._updateColumns(this.$.unpinned, columns.filter(c => !c.isPinned));
             });
 
             if (e)
@@ -37,12 +37,12 @@
         }
 
         private _updateColumns(target: HTMLElement, columns: QueryGridConfigureDialogColumn[]) {
-            Enumerable.from(columns).orderBy(c => c.offset).forEach(col => Polymer.dom(target).appendChild(col));
+            columns.orderBy(c => c.offset).forEach(col => Polymer.dom(target).appendChild(col));
         }
 
         private _reorderColumns(e: CustomEvent) {
             const children = <QueryGridConfigureDialogColumn[]>Polymer.dom(e.srcElement || <Node>e.target).children;
-            const offsets = Enumerable.from(children).orderBy(c => c.column.offset).select(c => c.column.offset).toArray();
+            const offsets = children.orderBy(c => c.column.offset).map(c => c.column.offset);
 
             children.forEach((child: QueryGridConfigureDialogColumn, index: number) => {
                 child.offset = offsets[index];

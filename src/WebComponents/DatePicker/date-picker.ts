@@ -115,17 +115,17 @@
                     };
                 });
 
-                cells.push(...Enumerable.range(1, 42).select(d => {
+                cells.push(...Array.from({ length: 42 }, (v, k) => k + 1).map(d => {
                     return { type: "day" };
-                }).toArray());
+                }));
 
                 this._setCells(cells);
                 this._setCanFast(true);
             }
             else {
-                this._setCells(Enumerable.range(1, 12).select(d => {
+                this._setCells(Array.from({ length: 12 }, (v, k) => k + 1).map(d => {
                     return { type: zoom.substr(0, zoom.length - 1) };
-                }).toArray());
+                }));
                 this._setCanFast(false);
             }
         }

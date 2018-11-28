@@ -54,7 +54,7 @@ namespace Vidyano.WebComponents.Attributes {
 
             super._valueChanged(newValue, oldValue);
 
-            Enumerable.from(this.strings).first(s => s.key === this._defaultLanguage).value = newValue;
+            this.strings.find(s => s.key === this._defaultLanguage).value = newValue;
 
             const newOption = {};
             this.strings.forEach(val => {

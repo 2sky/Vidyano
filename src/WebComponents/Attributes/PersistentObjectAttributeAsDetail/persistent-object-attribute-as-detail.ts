@@ -68,7 +68,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _computeColumns(columns: QueryColumn[]): QueryColumn[] {
-            return Enumerable.from(columns).where(c => !c.isHidden).toArray();
+            return columns.filter(c => !c.isHidden);
         }
 
         private _computeCanDelete(editing: boolean, deleteAction: boolean, objects: Vidyano.PersistentObject[], attribute: Vidyano.PersistentObjectAttributeAsDetail): boolean {
@@ -334,8 +334,8 @@ namespace Vidyano.WebComponents.Attributes {
             Polymer.dom(this).flush();
 
             const attribute = this._getAttributeForColumn(this.serviceObject, e.model.column);
-            const presenters = Enumerable.from(Polymer.dom(this.root).querySelectorAll("vi-persistent-object-attribute-presenter"));
-            const presenter = <PersistentObjectAttributePresenter>presenters.firstOrDefault((p: PersistentObjectAttributePresenter) => p.attribute === attribute);
+            const presenters = Array.from(Polymer.dom(this.root).querySelectorAll("vi-persistent-object-attribute-presenter"));
+            const presenter = <PersistentObjectAttributePresenter>presenters.find((p: PersistentObjectAttributePresenter) => p.attribute === attribute);
             if (!presenter)
                 return;
 

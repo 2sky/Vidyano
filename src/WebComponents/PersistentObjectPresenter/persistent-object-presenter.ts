@@ -114,7 +114,7 @@ namespace Vidyano.WebComponents {
                 });
 
                 if (result === 1) {
-                    Enumerable.from(this.app.cacheEntries).toArray().forEach(entry => {
+                    this.app.cacheEntries.forEach(entry => {
                         if (entry instanceof Vidyano.WebComponents.PersistentObjectAppCacheEntry && !!entry.persistentObject && entry.persistentObject.isDirty && entry.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) {
                             if (entry.persistentObject.isNew)
                                 this.app.cacheRemove(entry);

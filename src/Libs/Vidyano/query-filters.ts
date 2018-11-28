@@ -104,7 +104,7 @@ namespace Vidyano {
             }));
 
             if (setDefaultFilter)
-                this._currentFilter = this._filters.find(f => f.persistentObject.getAttributeValue("IsDefault"));
+                this._currentFilter = this._filters.find(f => f.persistentObject.getAttributeValue("IsDefault")) || null;
         }
 
         private _computeFilterData(): string {

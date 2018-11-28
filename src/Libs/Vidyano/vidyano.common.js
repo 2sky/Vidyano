@@ -1,39 +1,4 @@
 ﻿///////////////////////////////////////////////////////////////
-/// Weakmap polyfill///////////////////////////////////////////
-///////////////////////////////////////////////////////////////
-
-if (!window.WeakMap) {
-	window.WeakMap = function WeakMap() {
-		var keys = [], values = [];
-
-		this.set = function(key, value) {
-			has(key) ? values[i] = value : values[keys.push(key) - 1] = value;
-		}
-
-		this.get = function(key, d3fault) {
-			return has(key) ? values[i] : d3fault;
-		}
-
-		this.delete = function(key) {
-			if (has(key)) {
-				keys.splice(i, 1);
-				values.splice(i, 1);
-			}
-			return -1 < i;
-		}
-
-		function has(key) {
-			if (key !== Object(key))
-				throw new TypeError("not a non-null object");
-
-			i = indexOf.call(keys, key);
-			return -1 < i;
-		}
-		this.has = has;
-	};
-}
-
-///////////////////////////////////////////////////////////////
 /// String extentions /////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 

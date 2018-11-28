@@ -260,7 +260,7 @@
 
         private _tabselect(e: CustomEvent, detail: { name?: string; tab?: Vidyano.PersistentObjectTab }) {
             if (!detail.tab)
-                detail.tab = Enumerable.from(this.masterTabs).firstOrDefault(t => t.name === detail.name) || Enumerable.from(this.detailTabs).firstOrDefault(t => t.name === detail.name);
+                detail.tab = this.masterTabs.find(t => t.name === detail.name) || this.detailTabs.find(t => t.name === detail.name);
 
             if (!detail.tab)
                 return;
@@ -278,7 +278,7 @@
             if (!notification || !this.persistentObject || this.persistentObject.notificationType !== Vidyano.NotificationType.Error)
                 return;
 
-            const firstAttributeWithValidationError = Enumerable.from(this.persistentObject.attributes).orderBy(attr => attr.offset).firstOrDefault(attr => !!attr.validationError);
+            const firstAttributeWithValidationError = this.persistentObject.attributes.orderBy(attr => attr.offset).find(attr => !!attr.validationError);
             if (!firstAttributeWithValidationError)
                 return;
 
