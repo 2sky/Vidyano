@@ -1,7 +1,9 @@
 @import "../_vars.scss";
 
 :host {
+    display: block;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    min-width: var(--theme-h2);
 }
