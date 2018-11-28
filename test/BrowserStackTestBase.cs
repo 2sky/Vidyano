@@ -107,6 +107,9 @@ namespace Vidyano.Test
 
             driver.Navigate().GoToUrl((string)browserstack["vidyano.ci.server"]);
 
+            Assert.That(driver.FindElement(By.CssSelector("vi-app:not([initializing])")), Is.Not.Null, "Unable to find initialized vi-app");
+            driver.ExecuteScript($"var script = document.createElement('script'); script.innerHTML = atob('{Convert.ToBase64String(Encoding.UTF8.GetBytes(Properties.Resources.scripts))}'); document.head.appendChild(script);");
+
             SignIn();
         }
 

@@ -4,7 +4,8 @@
     "os_version": "10",
     "project": "vidyano",
     "browserstack.local": "false",
-    "browserstack.selenium_version": "3.14.0"
+    "browserstack.selenium_version": "3.14.0",
+    "browserstack.console": "verbose"
   },
   "chrome": {
     "browser": "chrome"

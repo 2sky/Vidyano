@@ -11,14 +11,12 @@
     "emitDecoratorMetadata": false,
     "inlineSourceMap": false,
     "sourceMap": false,
-    "inlineSources": true,
-    "noEmitHelpers": true
+    "noEmitHelpers": true,
+    "outFile": "scripts.js"
   },
   "include": [
-    "**/*.ts",
-    "../src/Libs/Shims/*.ts",
-    "../src/Libs/Typings/**/*.d.ts",
-    "../src/Libs/Vidyano/vidyano.d.ts",
-    "../src/WebComponents/**/*.ts"
+    "../src/**/*.d.ts",
+    "Helpers/Vidyano.ts",
+    "Helpers/QueryGrid.ts"
   ]
 }

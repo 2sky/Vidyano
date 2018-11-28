@@ -69,11 +69,14 @@ namespace Vidyano.Test.Properties {
         ///    else
         ///        setTimeout(function () { return findGridByQueryName(queryName, done); }, 1000);
         ///}
-        ///.
+        ///window.requestIdleCallback = window.requestIdleCallback ||
+        ///    function (cb) {
+        ///        return setTimeout(function () {
+        ///           [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string QueryGrid {
+        internal static string scripts {
             get {
-                return ResourceManager.GetString("QueryGrid", resourceCulture);
+                return ResourceManager.GetString("scripts", resourceCulture);
             }
         }
     }

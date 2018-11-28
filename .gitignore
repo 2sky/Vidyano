@@ -202,6 +202,7 @@ ModelManifest.xml
 /src/web.config
 /src/WebComponents/**/*.js
 /src/WebComponents/**/*.css
+/src/WebComponents/**/*.d.ts
 /src/Libs/Vidyano/vidyano.js
 /src/Libs/Vidyano/vidyano.cultures.js
 /src/Libs/Alertify.js/*.js
@@ -221,8 +222,8 @@ ModelManifest.xml
 /src/Libs/sortable/
 /src/Libs/tslib/
 /src/Libs/webcomponentsjs/
-/src/Test/*.js
 /test/browserstack.json
+/test/Helpers/*.js
 /dist/Vidyano.Web2/src
 /dist/Vidyano.Web2/vidyano.d.ts
 /dist/packages/

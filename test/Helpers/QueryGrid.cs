@@ -12,7 +12,7 @@ namespace Vidyano.Test.Helpers
     {
         public static IWebElement FindGridByQueryName(this RemoteWebDriver driver, string queryName)
         {
-            return (IWebElement)driver.ExecuteAsyncScript($"{Properties.Resources.QueryGrid}\nfindGridByQueryName('{queryName}', arguments[arguments.length - 1]);");
+            return (IWebElement)driver.ExecuteVidyano("findGridByQueryName", queryName);
         }
     }
 }
