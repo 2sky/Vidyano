@@ -155,26 +155,7 @@ namespace Vidyano {
         }
 
         private _postJSONProcess(data: any, result: any, requestMethod: string, createdRequest: Date, requestStart: number, elapsedMs: string) {
-            let finishProfile = this.profile;
-            switch (requestMethod) {
-                case "GetPersistentObject":
-                    finishProfile = finishProfile && result.result && result.result.id !== "b15730ad-9f47-4775-aacb-0a181e95e53d" && !result.result.isSystem;
-                    break;
-
-                case "GetQuery":
-                    finishProfile = finishProfile && result.query && !result.query.isSystem;
-                    break;
-
-                case "ExecuteQuery":
-                    finishProfile = finishProfile && data.query && !data.query.isSystem;
-                    break;
-
-                case "ExecuteAction":
-                    finishProfile = finishProfile && !((result.result != null && (result.result.id === "b15730ad-9f47-4775-aacb-0a181e95e53d" || result.result.isSystem) || (data.query != null && data.query.isSystem) || (data.parent != null && data.parent.isSystem && data.parent.id !== "70381ffa-ae0b-4dc0-b4c3-b02dd9a9c0a0")));
-                    break;
-            }
-
-            if (finishProfile) {
+            if (this.profile && result.profiler) {
                 const requestEnd = this._getMs();
 
                 if (!result.profiler) {
