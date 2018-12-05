@@ -129,7 +129,7 @@
 
                 do {
                     if (areas.length < row + itemHeight) {
-                        const newRow = Array.from({ length: columns }, (v, k) => k + 1).map(_ => "");
+                        const newRow = Array.range(1, columns).map(_ => "");
                         areas.push(newRow);
 
                         let added = 0;
@@ -201,7 +201,7 @@
             let newRow: string[];
             for (let x in infiniteColumns) {
                 if (!newRow) {
-                    newRow = Array.from({ length: columns }, (v, k) => k + 1).map(_ => "");
+                    newRow = Array.range(1, columns).map(_ => "");
                     areas.push(newRow);
                 }
 
@@ -209,7 +209,7 @@
             }
 
             if (this.app.isIe) {
-                this.$.grid.style.msGridColumns = Array.from({ length: columns }, (v, k) => k + 1).map(_ => "1fr").join(" ");
+                this.$.grid.style.msGridColumns = Array.range(1, columns).map(_ => "1fr").join(" ");
                 this.$.grid.style.msGridRows = "auto";
             }
 

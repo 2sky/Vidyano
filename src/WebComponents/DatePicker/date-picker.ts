@@ -115,7 +115,7 @@
                     };
                 });
 
-                cells.push(...Array.from({ length: 42 }, (v, k) => k + 1).map(d => {
+                cells.push(...Array.range(1, 42).map(d => {
                     return { type: "day" };
                 }));
 
@@ -123,7 +123,7 @@
                 this._setCanFast(true);
             }
             else {
-                this._setCells(Array.from({ length: 12 }, (v, k) => k + 1).map(d => {
+                this._setCells(Array.range(1, 12).map(d => {
                     return { type: zoom.substr(0, zoom.length - 1) };
                 }));
                 this._setCanFast(false);

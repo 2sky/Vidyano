@@ -666,7 +666,7 @@ namespace Vidyano {
                 clonedQuery.skip = skip;
 
             const work = async () => {
-                if (!Array.from({ length: endPage - startPage }, (_, k) => k + startPage).some(p => this._queriedPages.indexOf(p) < 0))
+                if (!Array.range(startPage, endPage).some(p => this._queriedPages.indexOf(p) < 0))
                     return this.items.slice(start, start + length);
 
                 try {

@@ -20,6 +20,9 @@ interface Array<T> {
     max<T>(this: T[], selector: (element: T) => number): number;
     sum<T>(this: T[], selector: (element: T) => number): number;
 }
+interface ArrayConstructor {
+    range(start: number, end: number, step?: number): number[];
+}
 declare namespace Vidyano {
     class CultureInfo {
         name: string;
@@ -1364,11 +1367,6 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
-    namespace ClientOperations {
-        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
-    }
-}
-declare namespace Vidyano {
     interface IServiceQueryResultItemGroup {
         name: string;
         count: number;
@@ -1400,5 +1398,10 @@ declare namespace Vidyano {
         messages: {
             [key: string]: string;
         };
+    }
+}
+declare namespace Vidyano {
+    namespace ClientOperations {
+        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
     }
 }

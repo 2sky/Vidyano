@@ -11,6 +11,10 @@
     sum<T>(this: T[], selector: (element: T) => number): number;
 }
 
+interface ArrayConstructor {
+    range(start: number, end: number, step?: number): number[];
+}
+
 if (Array.prototype["distinct"] === undefined) {
     Object.defineProperty(Array.prototype, "distinct", {
         configurable: true,
@@ -106,6 +110,12 @@ if (Array.prototype["max"] === undefined) {
         },
         writable: true
     });
+}
+
+if (Array["range"] === undefined) {
+    Array["range"] = function range(start: number, end: number, step: number = 1): number[] {
+        return Array.from({ length: end - start + 1 }, (_, k) => k * step + start);
+    };
 }
 
 if (Array.prototype["sum"] === undefined) {
