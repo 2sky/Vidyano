@@ -3,82 +3,73 @@
 
     @WebComponent.register({
         properties: {
-            input: {
-                type: String,
-            },
+            input: String,
             tags: Array,
-            editing: Boolean,
-            sensitive: Boolean,
-            readonly: Boolean,
-            editMode: Boolean,
-        
-
-        },
-        observers: [
-            "_onEditingChange(editing, sensitive)"
-        ],
-        forwardObservers: [
-            "editing",
-        ]
+            readonly: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            sensitive: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: true
+            }
+        }
     })
     export class Tags extends WebComponent {
-        private input: string;
-        private tags: any[];
-        private sensitive: boolean;
-        private readonly: boolean;
-        private editing: boolean;
-        private editMode: boolean;
-      
-        private _onEditingChange() {
-            if (!this.readonly && !this.sensitive)
-                this.editMode = this.editing
+        input: string;
+        tags: string[];
+        readonly: boolean;
 
-            else this.editMode = false
-        }
+        private _passFocus(e: TapEvent) {
+            if (this.readonly)
+                return;
 
-        private _pasFocus(e: TapEvent) {
-            this.$$("#tagsInput").focus();
+            const input = <HTMLInputElement>Polymer.dom(this.root).querySelector("#tagsInput");
+            if (!input)
+                return;
+
+            input.focus();
+
+            const scroller = <Scroller>Polymer.dom(this.root).querySelector("#scroller");
+            scroller.scrollToBottom();
         }
 
         private _checkKeyPress(e: KeyboardEvent) {
-            if (e.key == "Enter" && this.input != undefined && this.input != "") {
+            if (!this.input)
+                return;
+
+            if (e.keyCode === Keyboard.KeyCodes.enter)
                 this._addTag(this.input);
-            }
-            else if (this.input != undefined) {
+            else {
                 const newWidth = (this.input.length * 8) + 30;
                 this.customStyle["--tags-input--width"] = `${newWidth}px`;
+                this.updateStyles();
             }
-            this.updateStyles();
-
         }
 
         private _onInputBlur() {
-            if (this.input != undefined && this.input != "") {
-                this._addTag(this.input);
+            if (!this.input || this.readonly) {
+                this.input = "";
+                return;
             }
-            else null
+
+            this._addTag(this.input);
         }
 
         private _addTag(input: string) {
             if (!((/^\s*$/.test(input)))) {
-                    const newItem = new Attributes.PersistentObjectAttributeMultiStringItem(input);
-                    newItem.sensitive = this.sensitive;
-                    newItem.isReadOnly = this.readonly;
-                    this.push("tags", newItem)
-                    this.input = undefined;
+                this.push("tags", input);
+                this.input = undefined;
                 this.customStyle["--tags-input--width"] = "30px";
                 this.updateStyles();
             }
-            else {
+            else
                 this.input = undefined;
-            }
         }
 
         private _onDeleteTap(e: TapEvent) {
-            const tag: string = e.model.tag;
-            const index = this.tags.indexOf(tag);
-            this.splice("tags", index, 1);
+            this.splice("tags", this.tags.indexOf(e.model.tag), 1);
         }
-
     }
 }

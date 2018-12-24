@@ -1,53 +1,50 @@
 ﻿@import "../_vars.scss";
 
 :host {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
+    @include layout-horizontal();
 
-    [sensitive] {
-        @apply(--vi-app--sensitive);
+    .wrapContainer {
+        flex-wrap: wrap;
     }
 
-    .tagsContainer {
-        flex-wrap: wrap;
+    &:not([readonly]) {
         cursor: text;
-        padding-left: 3px;      
+    }
 
-        .wrapContainer {
-            flex-wrap: wrap;
-        }
+    input {
+        border: none;
+        outline: none;
+        max-width: 250px;
+        width: var(--tags-input--width, 30px);
+        min-width: 8px;
+    }
 
-        input {
-            border: none;
-            outline: none;
-            max-width: 250px;
-            width: var(--tags-input--width, 30px);
-            min-width: 8px;
-        }
+    .tag {
+        margin: 0 4px 4px 0;
+        background-color: var(--theme-color);
+        color: white;
+        border-radius: var(--theme-h5);
+        text-align: center;
+        justify-content: center;
 
-        .tag {
-            background-color: var(--theme-color);
+        .tagValue {
+            margin-left: 5px;
             margin-right: 5px;
-            margin-top: 3px;
-            color: white;
-            border-radius: 5px;
-            text-align: center;
-            justify-content: center;
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-            .tagValue {
-                margin-left: 5px;
-                margin-right: 5px;
-                max-width: 250px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
+        .delete {
+            padding: 8px 5px 3px 0px;
+            cursor: pointer;
+            fill: white;
+        }
+    }
 
-            .delete {
-                padding: 8px 5px 3px 0px;
-                cursor: pointer;
-                fill: white;
-            }
+    &[sensitive] {
+        .tag {
+            @apply(--vi-app--sensitive);
         }
     }
 }

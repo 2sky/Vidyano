@@ -1,32 +1,20 @@
 ﻿<dom-module id="vi-tags">
     <template>
         <link rel="stylesheet" href="tags.css" />
-        <template is="dom-if" if="[[editMode]]">
-            <vi-scroller class="flex tagsContainer" editing$="[[editing]]" on-tap="_pasFocus" no-horizontal>
-                <div class="layout horizontal wrapContainer">
-                    <template is="dom-repeat" items="[[tags]]" as="tag">
-                        <div class="layout horizontal tag">
-                            <span class="tagValue" sensitive$="[[sensitive]]">[[tag.value]]</span>
-                            <div on-tap="_onDeleteTap" class="delete">
-                                <vi-icon source="Remove"></vi-icon>
-                            </div>
+        <vi-scroller id="scroller" class="flex" editing$="[[editing]]" no-horizontal on-tap="_passFocus">
+            <div class="layout horizontal wrapContainer">
+                <template is="dom-repeat" items="[[tags]]" as="tag">
+                    <div class="layout horizontal tag">
+                        <span class="tagValue" sensitive$="[[sensitive]]">[[tag]]</span>
+                        <div on-tap="_onDeleteTap" class="delete" hidden$="[[readonly]]">
+                            <vi-icon source="Remove"></vi-icon>
                         </div>
-                    </template>
-                    <input type="text" name="TagsInput" value="{{input::input}}" on-keyup="_checkKeyPress" on-blur="_onInputBlur" id="tagsInput" sensitive$="[[sensitive]]" />
-                </div>
-            </vi-scroller>
-        </template>
-        <template is="dom-if" if="[[!editMode]]">
-            <vi-scroller class="flex tagsContainer" editing$="[[editing]]" no-horizontal>
-                <div class="layout horizontal wrapContainer">
-                    <template is="dom-repeat" items="[[tags]]" as="tag">
-                        <div class="layout horizontal tag">
-                            <span class="tagValue" sensitive$="[[sensitive]]">[[tag.value]]</span>
-                        </div>
-                    </template>
-                </div>
-            </vi-scroller>
-        </template>
+                    </div>
+                </template>
+                <input id="tagsInput" type="text" value="{{input::input}}" on-keyup="_checkKeyPress" on-blur="_onInputBlur" sensitive$="[[sensitive]]" hidden$="[[readonly]]" />
+            </div>
+        </vi-scroller>
     </template>
 </dom-module>
+
 <script src="tags.js"></script>

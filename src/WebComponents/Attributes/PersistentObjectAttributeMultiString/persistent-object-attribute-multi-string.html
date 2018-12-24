@@ -1,7 +1,7 @@
+<link rel="import" href="../../Popup/popup.html" />
 <link rel="import" href="../../Scroller/scroller.html" />
 <link rel="import" href="../../Sortable/sortable.html" />
 <link rel="import" href="../../Tags/tags.html" />
-<link rel="import" href="../../Popup/popup.html" />
 
 <dom-module id="vi-persistent-object-attribute-multi-string-item">
     <template>
@@ -32,22 +32,26 @@
             </template>
         </template>
         <template is="dom-if" if="[[isTags]]">
-            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <vi-tags content tags="{{strings}}" editing="[[editing]]" readonly="[[attribute.isReadOnly]]" sensitive="[[sensitive]]"></vi-tags>
-
-                <template is="dom-if" if="[[editMode]]">
-                    <vi-popup id="suggestions" class="button" content-align="center">
-                        <vi-icon source="Add" header></vi-icon>
-                        <vi-scroller content>
-                            <ul>
-                                <template is="dom-repeat" items="[[filteredSuggestions]]" as="suggestion">
-                                    <li on-tap="_addSuggestionTag">[[suggestion]]</li>
-                                </template>
-                            </ul>
-                        </vi-scroller>
-                    </vi-popup>
-                </template>
-            </vi-persistent-object-attribute-edit>
+            <template is="dom-if" if="[[!editing]]">
+                <vi-tags content class="flex" tags="{{tags}}" readonly sensitive="[[sensitive]]"></vi-tags>
+            </template>
+            <template is="dom-if" if="[[editing]]">
+                <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                    <vi-tags content tags="{{tags}}" readonly="[[isTagsReadonly]]" sensitive="[[sensitive]]"></vi-tags>
+                    <template is="dom-if" if="[[hasSuggestions]]">
+                        <vi-popup id="suggestions" class="button">
+                            <vi-icon source="Add" header></vi-icon>
+                            <vi-scroller content>
+                                <ul>
+                                    <template is="dom-repeat" items="[[filteredSuggestions]]" as="suggestion">
+                                        <li on-tap="_addSuggestionTag">[[suggestion]]</li>
+                                    </template>
+                                </ul>
+                            </vi-scroller>
+                        </vi-popup>
+                    </template>
+                </vi-persistent-object-attribute-edit>
+            </template>
         </template>
     </template>
 </dom-module>

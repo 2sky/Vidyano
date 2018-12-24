@@ -93,27 +93,31 @@ namespace Vidyano.WebComponents.Attributes {
             },
             isTags: {
                 type: Boolean,
-                readOnly: true,
-                value: false
+                computed: "_computeIsTags(attribute)"
+            },
+            tags: {
+                type: Array
             },
             suggestions: {
                 type: Array,
-                readOnly: true
+                computed: "_computeTagSuggestions(attribute)"
             },
             hasSuggestions: {
                 type: Boolean,
-                computed: "_computeHasSuggestions(filteredSuggestions, readOnly)"
+                computed: "_computeHasTagSuggestions(filteredSuggestions, editing, readOnly)"
             },
             filteredSuggestions: {
                 type: Array,
                 computed: "_computeFilteredSuggestions(suggestions, strings)"
             },
-            editMode: Boolean
+            isTagsReadonly: {
+                type: Boolean,
+                computed: "_computeIsTagsReadonly(readOnly, editing)"
+            }
         },
         observers: [
             "_render(strings, editing, isAttached)",
-            "_onStringsChange(strings.splices)",
-            "_onEditingChange(editing, sensitive)"
+            "_onTagsChanged(isTags, tags.*)"
         ],
         listeners: {
             "multi-string-item-value-new": "_itemValueNew",
@@ -125,31 +129,11 @@ namespace Vidyano.WebComponents.Attributes {
         ]
     })
     export class PersistentObjectAttributeMultiString extends PersistentObjectAttribute {
-
-        readonly isTags: boolean; private _setIsTags: (value: boolean) => void; 
-        readonly suggestions: string[]; private _setSuggestions: (suggestions: string[]) => void;
+        readonly isTags: boolean;
+        readonly suggestions: string[];
+        readonly hasSuggestions: boolean;
         strings: PersistentObjectAttributeMultiStringItem[];
-        private editMode: boolean;
-        private hasSuggestions: boolean;
-
-        private _setNewString: (newString: PersistentObjectAttributeMultiStringItem) => void;
-
-        protected _attributeChanged() {
-            super._attributeChanged();
-            if (this.attribute.typeHints.istags != undefined) {
-                this._setIsTags(this.attribute.typeHints.istags);
-            }
-            if (this.attribute.options != null && this.attribute.options.length > 0) {
-                this._setSuggestions((<string[]>this.attribute.options).filter(o => !StringEx.isNullOrEmpty(o) ));
-            }
-          
-        }
-
-        private _onStringsChange() {
-            if (this.isTags) {
-                this.value = this.strings.filter(s => !!s.value).map(s => s.value).join("\n");
-            }
-        }
+        tags: string[];
 
         private _computeStrings(value: string, readOnly: boolean, sensitive: boolean): PersistentObjectAttributeMultiStringItem[] {
             const strings = value ? value.split("\n").filter(v => !!v.length).map((v: string, n: number) => this.strings && this.strings[n] && this.strings[n].value === v ? this.strings[n] : new PersistentObjectAttributeMultiStringItem(v)) : [];
@@ -157,6 +141,7 @@ namespace Vidyano.WebComponents.Attributes {
                 s.isReadOnly = readOnly || sensitive;
                 s.sensitive = sensitive;
             });
+
             return strings;
         }
 
@@ -180,10 +165,6 @@ namespace Vidyano.WebComponents.Attributes {
             e.stopPropagation();
         }
 
-        private _getValues(): string[] {
-            return Array.prototype.map.apply(this.querySelectorAll("#inputs > vi-resource"), [resource => resource.model.value]);
-        }
-
         private _render(strings: PersistentObjectAttributeMultiStringItem[], editing: boolean, isAttached: boolean) {
             if (!editing || !isAttached || this.isTags)
                 return;
@@ -204,31 +185,55 @@ namespace Vidyano.WebComponents.Attributes {
             });
         }
 
-        private _addSuggestionTag(e: TapEvent) {
-            const newItem = new Attributes.PersistentObjectAttributeMultiStringItem(e.model.suggestion);
-            newItem.sensitive = this.sensitive;
-            newItem.isReadOnly = this.readOnly;
-            this.push("strings", newItem)
+        /// Tags specific code
+
+        private _computeIsTags(attribute: Vidyano.PersistentObjectAttribute): boolean {
+            return attribute && attribute.getTypeHint("inputtype", undefined, undefined, true) === "tags";
+        }
+
+        protected _valueChanged(newValue: any, oldValue: any) {
+            super._valueChanged(newValue, oldValue);
+
+            if (!newValue)
+                this.tags = [];
+            else
+                this.tags = newValue.split("\n").filter(v => !!v.length);
+        }
+
+        private _onTagsChanged(isTags: boolean) {
+            if (!this.isTags || !this.tags || !this.editing)
+                return;
+
+            const newValue = this.tags.filter(t => !!t).join("\n");
+            if (this.value !== newValue)
+                this.value = newValue;
+        }
+
+        private _computeTagSuggestions(attribute: Vidyano.PersistentObjectAttribute): string[] {
+            if (!attribute || !attribute.options || !attribute.options.length)
+                return null;
+
+            return (<string[]>this.attribute.options).filter(o => !StringEx.isNullOrEmpty(o));
+        }
+
+        private _computeHasTagSuggestions(suggestions: string[], editing: boolean, readOnly: boolean): boolean {
+            return editing && !readOnly && suggestions && suggestions.length > 0;
         }
 
         private _computeFilteredSuggestions(suggestions: string[], strings: Attributes.PersistentObjectAttributeMultiStringItem[]): string[] {
             if (!suggestions || suggestions.length === 0)
                 return [];
 
-            let tempArray = [];
-            strings.forEach(tag => tempArray.push(tag.value));
-            return suggestions.filter(s => tempArray.indexOf(s) < 0);
+            const currentStrings = strings.map(s => s.value);
+            return suggestions.filter(s => currentStrings.indexOf(s) < 0);
         }
 
-        private _onEditingChange() {
-            if (!this.readOnly && !this.sensitive && this.hasSuggestions)
-                this.editMode = this.editing
-
-            else this.editMode = false
+        private _computeIsTagsReadonly(readonly: boolean, editing: boolean) {
+            return this.readOnly || !editing;
         }
 
-        private _computeHasSuggestions(suggestions: string[], readOnly: boolean): boolean {
-            return !readOnly && suggestions && suggestions.length > 0;
+        private _addSuggestionTag(e: TapEvent) {
+            this.value = `${this.value}\n${e.model.suggestion}`;
         }
     }
 }
