@@ -634,7 +634,7 @@ namespace Vidyano.WebComponents {
                 this._setInitializing(false);
             }
             catch (e) {
-                const noInternet = Vidyano.NoInternetMessage.messages[navigator.language.split("-")[0].toLowerCase()] || Vidyano.NoInternetMessage.messages.get["en"];
+                const noInternet = Vidyano.NoInternetMessage.messages[navigator.language.split("-")[0].toLowerCase()] || Vidyano.NoInternetMessage.messages["en"];
 
                 await this.showMessageDialog({
                     title: e === noInternet.message ? noInternet.title : this.app.label || document.title,
