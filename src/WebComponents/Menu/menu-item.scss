@@ -15,6 +15,7 @@ $backgroundColor: $blue-grey-900;
     span.match {
         color: #FFDD00;
         font-weight: bold;
+        pointer-events: none;
     }
 
     > .title {

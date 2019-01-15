@@ -65,6 +65,7 @@ $backgroundColor: $blue-grey-900;
                     &.match {
                         color: #FFDD00;
                         font-weight: bold;
+                        pointer-events: none;
                     }
 
                     &.label {
