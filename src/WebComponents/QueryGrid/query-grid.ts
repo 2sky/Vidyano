@@ -2030,6 +2030,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _upArrow(e: Event) {
+            if (document.activeElement instanceof HTMLTextAreaElement)
+                return true;
+
             e.preventDefault();
             e.stopPropagation();
 
@@ -2040,6 +2043,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _pageUp(e: Event) {
+            if (document.activeElement instanceof HTMLTextAreaElement)
+                return true;
+
             e.preventDefault();
             e.stopPropagation();
 
@@ -2051,6 +2057,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _downArrow(e: Event) {
+            if (document.activeElement instanceof HTMLTextAreaElement)
+                return true;
+
             e.preventDefault();
             e.stopPropagation();
 
@@ -2062,6 +2071,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _pageDown(e: Event) {
+            if (document.activeElement instanceof HTMLTextAreaElement)
+                return true;
+
             e.preventDefault();
             e.stopPropagation();
 
