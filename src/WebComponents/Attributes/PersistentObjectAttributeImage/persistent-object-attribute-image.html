@@ -39,9 +39,11 @@
             <vi-size-tracker size="{{headerSize}}"></vi-size-tracker>
             <h4 class="flex">[[label]]</h4>
         </header>
-        <main>
+        <main class="layout horizontal center">
             <vi-spinner id="spinner"></vi-spinner>
-            <img id="img" hidden src$="[[src]]" />
+            <button is="vi-button" class="previous" icon="ChevronLeft" inverse hidden$="[[!hasMultiple]]" on-tap="_previous"></button>
+            <img id="img" hidden src$="[[source]]" />
+            <button is="vi-button" class="next" icon="ChevronRight" inverse hidden$="[[!hasMultiple]]" on-tap="_next"></button>
         </main>
         <footer class="horizontal layout end-justified relative">
             <vi-size-tracker size="{{footerSize}}"></vi-size-tracker>

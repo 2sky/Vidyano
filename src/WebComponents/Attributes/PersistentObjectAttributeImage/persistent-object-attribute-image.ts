@@ -117,9 +117,18 @@ namespace Vidyano.WebComponents.Attributes {
     @Dialog.register({
         properties: {
             label: String,
-            src: String,
+            sources: Array,
+            source: String,
+            hasMultiple: {
+                type: Boolean,
+                computed: "_computeHasMultiple(sources)"
+            },
             headerSize: Object,
             footerSize: Object
+        },
+        keybindings: {
+            "left": "_previous",
+            "right": "_next"
         },
         observers: [
             "_showImage(headerSize, footerSize)"
@@ -127,9 +136,14 @@ namespace Vidyano.WebComponents.Attributes {
     })
     export class PersistentObjectAttributeImageDialog extends WebComponents.Dialog {
         private _updated: boolean;
+        readonly sources: string[];
+        source: string;
 
-        constructor(public label: string, public src: string) {
+        constructor(public label: string, ...sources: string[]) {
             super();
+
+            this.sources = sources;
+            this.source = this.sources[0];
         }
 
         private _showImage(headerSize: Vidyano.WebComponents.ISize, footerSize: Vidyano.WebComponents.ISize) {
@@ -143,6 +157,18 @@ namespace Vidyano.WebComponents.Attributes {
 
                 this._updated = true;
             }
+        }
+
+        private _computeHasMultiple(sources: string[]): boolean {
+            return sources && sources.length > 1;
+        }
+
+        private _next() {
+            this.source = this.sources[(this.sources.indexOf(this.source) + 1) % this.sources.length];
+        }
+
+        private _previous() {
+            this.source = this.sources[(this.sources.indexOf(this.source) - 1 + this.sources.length) % this.sources.length];
         }
 
         private _close() {
