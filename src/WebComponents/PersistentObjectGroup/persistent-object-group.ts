@@ -93,7 +93,7 @@
                         item.x = item.attribute.column;
                         item.width = Math.min(columns, item.config.calculateWidth(item.attribute));
 
-                        oldItems.splice(oldItems.indexOf(item));
+                        oldItems.splice(oldItems.indexOf(item), 1);
                     }
                     else
                         item = this._itemFromAttribute(attr);
@@ -105,7 +105,7 @@
             }
 
             let itemsChecksum: string = `${this.group.parent.type};${this.group.parent.objectId};${columns}`;
-            const items = this._items.orderBy(item => item.attribute.offset);
+            const items = this._items.slice().orderBy(item => item.attribute.offset);
             items.forEach(item => itemsChecksum = `${itemsChecksum}${item.attribute.offset};${item.attribute.name};${item.height};${item.width};`);
 
             if (this._itemsChecksum === itemsChecksum)
