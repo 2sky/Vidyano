@@ -110,9 +110,9 @@ namespace Vidyano.WebComponents {
                 this._sortable.option("disabled", !enabled);
         }
 
-        static register(info: IWebComponentRegistrationInfo | Function = {}): any {
+        static register(info: IWebComponentRegistrationInfo | Function = {}, prefix?: string): any {
             if (typeof info === "function")
-                return Sortable.register({})(info);
+                return Sortable.register({})(info, prefix);
 
             return (obj: Function) => {
                 info.properties = info.properties || {};
@@ -149,7 +149,7 @@ namespace Vidyano.WebComponents {
                     observer: "_enabledChanged"
                 };
 
-                return WebComponent.register(obj, info);
+                return WebComponent.register(obj, info, prefix);
             };
         }
     }
