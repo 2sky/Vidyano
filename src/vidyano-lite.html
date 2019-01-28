@@ -5,7 +5,7 @@
         const from = Enumerable.from;
         Enumerable.from = function (obj) {
             console.warn("[Deprecation] LINQ for JavaScript is deprecated and will be removed in the next major version of the Vidyano Client. Please migrate your code to take advantage of native JavaScript functions such as Array.from or one of the extensions methods added to the Array object.");
-            from.call(this, obj);
+            return from.call(this, obj);
         };
     })();
 </script>
