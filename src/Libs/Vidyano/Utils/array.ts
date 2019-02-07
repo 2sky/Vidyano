@@ -51,9 +51,9 @@ if (Array.prototype["orderBy"] === undefined) {
 
             const first = selector(this[0]);
             if (typeof first === "number")
-                return this.sort((a, b) => selector(a) - selector(b));
+                return this.slice().sort((a, b) => selector(a) - selector(b));
             else if (typeof first === "string") {
-                return this.sort((a, b) => {
+                return this.slice().sort((a, b) => {
                     if (selector(a) < selector(b))
                         return -1;
                     else if (selector(a) > selector(b))
