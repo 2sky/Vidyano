@@ -66,6 +66,10 @@ namespace Vidyano.WebComponents {
             this._focusElement(this);
         }
 
+        private _catchOnSumbit(e: CustomEvent) {
+            e.preventDefault();
+        }
+
         private _computeHasValue(value: string): boolean {
             return !!value;
         }
