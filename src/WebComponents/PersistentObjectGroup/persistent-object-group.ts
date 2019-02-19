@@ -124,8 +124,33 @@
 
             while (!!item) {
                 const itemHeight = Math.max(item.height, 1);
-                const itemX = item.x < columns ? item.x : null;
+                let itemX = item.x < columns ? item.x : null;
                 const itemWidth = itemX == null ? Math.min(item.width, columns) : Math.min(item.width, columns - itemX);
+                if (Object.keys(infiniteColumns).length > 0) {
+                    do {
+                        if (infiniteColumns[itemX]) {
+                            if (itemX != null) {
+                                infiniteColumns = {};
+                                row++;
+                                break;
+                            }
+                            else
+                                itemX++;
+                        }
+                        else {
+                            for (let x = 1; x < itemWidth; x++) {
+                                if (infiniteColumns[itemX + x]) {
+                                    infiniteColumns = {};
+                                    row++;
+                                    break;
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+                    while (itemX < columns - itemWidth);
+                }
 
                 do {
                     if (areas.length < row + itemHeight) {
