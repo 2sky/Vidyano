@@ -78,6 +78,7 @@ $border-color: #ddd;
         }
 
         [content] {
+            min-width: 1px;
             max-height: calc(var(--theme-h2) * 10);
             overflow-y: auto;
             -ms-overflow-style: scrollbar;

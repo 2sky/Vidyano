@@ -13,14 +13,23 @@
                 <vi-icon source="CaretDown" hidden$="[[!hasOptions]]"></vi-icon>
                 <content select="[right]"></content>
             </div>
-            <ul content filtering$="[[filtering]]" on-select-option="_select">
-                <template is="dom-repeat" items="[[filteredItems]]" as="item">
-                    <template is="dom-if" if="[[_showGroup(item)]]">
-                        <li class="group">[[item.group]]</li>
+            <template is="dom-if" if="[[!groupSeparator]]">
+                <iron-list items="[[filteredItems]]" as="item" content filtering$="[[filtering]]" on-select-option="_select">
+                    <template>
+                            <li is="vi-select-option-item" suggested="[[_equals(item, suggestion)]]" selected="[[_equals(item, selectedItem)]]" item="{{item}}">[[item.displayValue]]</li>
                     </template>
-                    <li is="vi-select-option-item" suggested="[[_equals(item, suggestion)]]" selected="[[_equals(item, selectedItem)]]" item="{{item}}">[[item.displayValue]]</li>
-                </template>
-            </ul>
+                </iron-list>
+            </template>
+            <template is="dom-if" if="[[groupSeparator]]">
+                <ul content filtering$="[[filtering]]" on-select-option="_select">
+                    <template is="dom-repeat" items="[[filteredItems]]" as="item">
+                        <template is="dom-if" if="[[_showGroup(item)]]">
+                            <li class="group">[[item.group]]</li>
+                        </template>
+                        <li is="vi-select-option-item" suggested="[[_equals(item, suggestion)]]" selected="[[_equals(item, selectedItem)]]" item="{{item}}">[[item.displayValue]]</li>
+                    </template>
+                </ul>
+            </template>
         </vi-popup>
     </template>
 </dom-module>
