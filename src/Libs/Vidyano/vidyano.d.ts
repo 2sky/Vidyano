@@ -1007,6 +1007,7 @@ declare namespace Vidyano {
         readonly defaultUserName: string;
         readonly registerUserName: string;
         authToken: string;
+        readonly authTokenType: "Basic" | "JWT" | null;
         profile: boolean;
         readonly profiledRequests: IServiceRequest[];
         private _setProfiledRequests;

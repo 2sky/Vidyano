@@ -96,7 +96,17 @@ namespace Vidyano {
             return new Promise((resolve, reject) => {
                 const r = new XMLHttpRequest();
                 r.open("POST", url, true);
+
                 r.overrideMimeType("application/json; charset=utf-8");
+                if (this.authTokenType === "JWT") {
+                    r.setRequestHeader("Authorization", "bearer " + this.authToken.substr(4));
+
+                    if (data) {
+                        delete data.userName;
+                        delete data.authToken;
+                    }
+                }
+
                 r.onload = async () => {
                     if (r.status !== 200) {
                         if (r.status === 429) {
@@ -115,7 +125,7 @@ namespace Vidyano {
                         result.exception = result.ExceptionMessage;
 
                     if (result.exception == null) {
-                        if (createdRequest > this._lastAuthTokenUpdate) {
+                        if (createdRequest > this._lastAuthTokenUpdate && this.authTokenType !== "JWT") {
                             this.authToken = result.authToken;
                             this._lastAuthTokenUpdate = createdRequest;
                         }
@@ -481,6 +491,13 @@ namespace Vidyano {
                 this._authToken = val;
         }
 
+        get authTokenType(): "Basic" | "JWT" | null {
+            if (!this.authToken)
+                return null;
+
+            return this.authToken.startsWith("JWT:") ? "JWT" : "Basic";
+        }
+
         get profile(): boolean {
             return this._profile;
         }
@@ -540,11 +557,16 @@ namespace Vidyano {
             this._windowsAuthentication = this._clientData.windowsAuthentication;
 
             if (Service._token) {
-                const tokenParts = Service._token.split("/", 2);
-                Service._token = undefined;
+                if (!Service._token.startsWith("JWT:")) {
+                    const tokenParts = Service._token.split("/", 2);
 
-                this._setUserName(Service._decodeBase64(tokenParts[0]));
-                this.authToken = tokenParts[1].replace("_", "/");
+                    this._setUserName(Service._decodeBase64(tokenParts[0]));
+                    this.authToken = tokenParts[1].replace("_", "/");
+                }
+                else
+                    this.authToken = Service._token;
+
+                Service._token = undefined;
 
                 const returnUrl = Vidyano.cookie("returnUrl", { force: true }) || "";
                 if (returnUrl)

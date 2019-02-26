@@ -25,6 +25,10 @@ namespace Vidyano.WebComponents {
             history.replaceState(null, null, hashBangParts[1]);
             Service.token = hashBangParts[2].substr(16);
         }
+        else if (hashBangParts[2].startsWith("SignInWithAuthorizationHeader/")) {
+            history.replaceState(null, null, hashBangParts[1]);
+            Service.token = `JWT:${hashBangParts[2].substr(30)}`;
+        }
         else
             history.replaceState(null, null, `${hashBangParts[1]}${hashBangParts[2]}`);
     }
