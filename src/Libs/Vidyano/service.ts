@@ -1039,11 +1039,19 @@ namespace Vidyano {
 
         async getInstantSearch(search: string): Promise<IInstantSearchResult[]> {
             const uri = this._createUri(`Instant?q=${encodeURIComponent(search)}`);
-            const userName = encodeURIComponent(this.userName);
-            const authToken = this.authToken ? this.authToken.replace("/", "_") : "";
+
+            let authorization: string;
+            if (this.authTokenType !== "JWT") {
+                const userName = encodeURIComponent(this.userName);
+                const authToken = this.authToken ? this.authToken.replace("/", "_") : "";
+
+                authorization = `${userName}/${authToken}`;
+            }
+            else
+                authorization = this.authToken.substr(4);
 
             const data = await this._getJSON(uri, {
-                "Authorization": `Bearer ${userName}/${authToken}`
+                "Authorization": `Bearer ${authorization}`
             });
 
             return data.d;
