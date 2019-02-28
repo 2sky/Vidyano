@@ -2,7 +2,6 @@
 
 :host {
     display: block;
-    padding-right: var(--theme-h5);
     box-sizing: border-box;
 
     &:not([disabled]) {
@@ -10,14 +9,14 @@
     }
 
     div {
-        > span {
-            padding: 0 1px;
+        > span:not([empty]) {
+            padding: 0 1px 0 3px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        > vi-icon:not([hidden]) + span {
+        > vi-icon:not([hidden]) + span:not([empty]) {
             margin-left: calc(var(--theme-h5) - 1px);
         }
     }

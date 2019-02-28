@@ -44,7 +44,7 @@
     }
 }
 
-:host-context([toggled]) {
+:host([toggled]) {
     #box {
         background-color: var(--theme-color);
         border-color: var(--theme-color);
@@ -56,14 +56,14 @@
     }
 }
 
-:host-context([disabled][toggled]) {
+:host([disabled][toggled]) {
     #box {
         background-color: #d6d6d6;
         border-color: #d6d6d6;
     }
 }
 
-:host-context([disabled]:not([toggled])) {
+:host([disabled]:not([toggled])) {
     #box {
         border-color: var(--theme-light-border);
 
