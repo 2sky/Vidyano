@@ -849,9 +849,6 @@ namespace Vidyano {
                 data.parameters = parameters;
 
             try {
-                if (isFreezingAction)
-                    parent.freeze();
-
                 const executeThen: (QueryResultItem: any) => Promise<Vidyano.PersistentObject> = async result => {
                     if (result.operations) {
                         this._queuedClientOperations.push(...result.operations);
@@ -875,20 +872,24 @@ namespace Vidyano {
                 };
 
                 if (parent == null) {
+                    if (isFreezingAction)
+                        parent.freeze();
+
                     const result = await this._postJSON(this._createUri("ExecuteAction"), data);
                     return await executeThen(result);
                 }
 
                 const inputs = parent.attributes.filter(i => i.input != null).map(attribute => ({ attribute, input: attribute.input, replacement: <HTMLInputElement>null }));
                 if (!inputs.length || !inputs.some(i => i.attribute.isValueChanged)) {
+                    if (isFreezingAction)
+                        parent.freeze();
+
                     const result = await this._postJSON(this._createUri("ExecuteAction"), data);
                     return await executeThen(result);
                 }
 
                 const origin = window.location.protocol + "//" + window.location.hostname + (window.location.port ? ":" + window.location.port : "");
-                if (this.serviceUri.startsWith("http") && !this.serviceUri.startsWith(origin) + "/") {
-                    data.parent = parent.toServiceObject();
-
+                if (this.serviceUri.startsWith("http") && !this.serviceUri.startsWith(origin)) {
                     for (let i of inputs) {
                         await new Promise((resolve, reject) => {
                             const file = i.input.files[0];
@@ -915,9 +916,17 @@ namespace Vidyano {
                         });
                     }
 
+                    if (isFreezingAction)
+                        parent.freeze();
+
+                    data.parent = parent.toServiceObject();
+
                     const result = await this._postJSON(this._createUri("ExecuteAction"), data);
                     return await executeThen(result);
                 }
+
+                if (isFreezingAction)
+                    parent.freeze();
 
                 const iframeName = "iframe-" + new Date();
                 const iframe = document.createElement("iframe");
