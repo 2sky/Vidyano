@@ -1,6 +1,6 @@
 # Vidyano
 
-[![Build status](https://2sky.visualstudio.com/Vidyano/_apis/build/status/Vidyano-CI)](https://2sky.visualstudio.com/Vidyano/_build/latest?definitionId=4)
+[![Build status](https://2sky.visualstudio.com/Vidyano/_apis/build/status/Vidyano-CI)](https://2sky.visualstudio.com/Vidyano/_build/latest?definitionId=4) [![Gitter](https://badges.gitter.im/Vidyano/community.svg)](https://gitter.im/Vidyano/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 *[Vidyano](http://www.vidyano.com) is .NET based application platform for building data-driven applications.*
 
