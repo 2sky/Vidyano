@@ -208,7 +208,7 @@
                     @include layout-horizontal();
                     line-height: var(--theme-h3);
                     height: var(--theme-h3);
-                    padding: 0 0 0 var(--theme-h5);
+                    padding: 0 var(--theme-h5);
                     pointer-events: none;
                 }
 
