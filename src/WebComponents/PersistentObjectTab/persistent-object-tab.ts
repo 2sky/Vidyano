@@ -13,10 +13,10 @@ namespace Vidyano.WebComponents {
                 type: Object,
                 observer: "_innerSizeChanged"
             },
-            autofocus: {
+            noAutofocus: {
                 type: Boolean,
                 reflectToAttribute: true,
-                value: true
+                value: false
             },
             noScroll: {
                 type: Boolean,
@@ -25,7 +25,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_autofocus(autofocus, tab.parent.isEditing)"
+            "_autofocus(noAutofocus, tab.parent.isEditing)"
         ],
         listeners: {
             "attribute-loaded": "_attributeLoaded"
@@ -39,7 +39,7 @@ namespace Vidyano.WebComponents {
         private _attributePresenters: Vidyano.WebComponents.PersistentObjectAttributePresenter[];
         private _autofocusTarget: Vidyano.WebComponents.PersistentObjectAttributePresenter;
         tab: Vidyano.PersistentObjectAttributeTab;
-        autofocus: boolean;
+        noAutofocus: boolean;
 
         detached() {
             super.detached();
@@ -61,13 +61,13 @@ namespace Vidyano.WebComponents {
             return 1;
         }
 
-        private _autofocus(autofocus: boolean, isEditing: boolean) {
-            if (autofocus && isEditing && this._autofocusTarget)
+        private _autofocus(noAutofocus: boolean, isEditing: boolean) {
+            if (!noAutofocus && isEditing && this._autofocusTarget)
                 this._focusElement(this._autofocusTarget);
         }
 
         private _attributeLoaded(e: CustomEvent, detail: { attribute: Vidyano.PersistentObjectAttribute }) {
-            if (!this.autofocus)
+            if (this.noAutofocus)
                 return;
 
             if (!this._attributePresenters)
