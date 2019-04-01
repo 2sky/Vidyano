@@ -38,8 +38,12 @@
                 </div>
             </div>
         </div>
-        <div class="top scroll-shadow"></div>
-        <div class="bottom scroll-shadow"></div>
+        <div class="top scroll-shadow-parent">
+            <div class="top scroll-shadow"></div>
+        </div>
+        <div class="bottom scroll-shadow-parent">
+            <div class="bottom scroll-shadow"></div>
+        </div>
         <div class="horizontal scrollbar-parent" on-tap="_horizontalScrollbarParentTap">
             <div id="horizontal" class="scrollbar" on-track="_trackHorizontal" on-mousedown="_trapEvent"></div>
         </div>

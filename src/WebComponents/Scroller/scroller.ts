@@ -119,6 +119,10 @@
                 type: Boolean,
                 readOnly: true,
                 reflectToAttribute: true
+            },
+            hideScrollbars: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         forwardObservers: [
@@ -156,7 +160,6 @@
         readonly vertical: boolean; private _setVertical: (val: boolean) => void;
         readonly scrollTopShadow: boolean; private _setScrollTopShadow: (val: boolean) => void;
         readonly scrollBottomShadow: boolean; private _setScrollBottomShadow: (val: boolean) => void;
-        readonly hiddenScrollbars: boolean; private _setHiddenScrollbars: (val: boolean) => void;
         readonly hideNativeScrollbar: boolean; private _setHideNativeScrollbar: (val: boolean) => void;
         noHorizontal: boolean;
         noVertical: boolean;

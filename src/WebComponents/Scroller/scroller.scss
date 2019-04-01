@@ -198,39 +198,55 @@
         padding-bottom: var(--vi-scroller-thumb-capture-size);
     }
 
-    > .scroll-shadow {
+    > .scroll-shadow-parent {
         position: absolute;
-        -webkit-box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
-        box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
-        bottom: 0;
+        left: 0;
+        right: 0;
         height: var(--theme-h2);
-        -moz-border-radius: 100%;
-        border-radius: 100%;
-        left: calc(var(--theme-h2) * -1);
-        right: calc(var(--theme-h2) * -1);
+        overflow: hidden;
         pointer-events: none;
 
+        > .scroll-shadow {
+            @include fit();
+            box-shadow: 0 0 calc(var(--theme-h2) / 2) rgba(0,0,0,0.3);
+            bottom: 0;
+            border-radius: 100%;
+            left: calc(var(--theme-h2) * -1);
+            right: calc(var(--theme-h2) * -1);
+            pointer-events: none;
+            will-change: transform;
+            transition: transform 0.3s ease-out;
+
+            &.top {
+                transform: translateY(calc(var(--vi-scroller--scroll-shadow-top-offset, var(--theme-h2)) * -1.5));
+            }
+    
+            &.bottom {
+                transform: translateY(calc(var(--vi-scroller--scroll-shadow-top-offset, var(--theme-h2)) * 1.5));
+            }
+        }
+
         &.top {
-            top: 0;
-            -webkit-transform: translateY(-48px);
-            transform: translateY(calc(var(--theme-h2) * -1.5));
+            top: var(--vi-scroller--scroll-shadow-top-offset, 0);
         }
 
         &.bottom {
-            bottom: 0;
-            -webkit-transform: translateY(48px);
-            transform: translateY(calc(var(--theme-h2) * 1.5));
+            bottom: var(--vi-scroller--scroll-shadow-bottom-offset, 0);
         }
     }
 
-    &[scroll-top-shadow] > .scroll-shadow.top {
-        -webkit-transform: translateY(-32px);
+    &[scroll-top-shadow] > .scroll-shadow-parent > .scroll-shadow.top {
         transform: translateY(calc(var(--theme-h2) * -1));
     }
 
-    &[scroll-bottom-shadow] > .scroll-shadow.bottom {
-        -webkit-transform: translateY(32px);
+    &[scroll-bottom-shadow] > .scroll-shadow-parent > .scroll-shadow.bottom {
         transform: translateY(var(--theme-h2));
+    }
+
+    &[hide-scrollbars] {
+        .scrollbar-parent {
+            visibility: hidden;
+        }
     }
 
     &[hide-native-scrollbar]:not([allow-native]) {
