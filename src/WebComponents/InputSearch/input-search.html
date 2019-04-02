@@ -2,7 +2,7 @@
     <template>
         <link rel="stylesheet" href="input-search.css" />
         <form autocomplete="off" class="flex layout horizontal" on-submit="_catchOnSumbit">
-            <input class="flex" placeholder="[[translateMessage('FilterSearchHint', isAttached)]]" value="{{value::input}}" on-keypress="_searchKeypressed" on-focus="_input_focused" on-blur="_input_blurred" autofocus$="[[autofocus]]" role="search" autocomplete="false">
+            <input class="flex" placeholder="[[translateMessage('FilterSearchHint', isConnected)]]" value="{{value::input}}" on-keypress="_searchKeypressed" on-focus="_input_focused" on-blur="_input_blurred" autofocus$="[[autofocus]]" role="search">
         </form>
         <button class="reset" on-tap="_resetClick" hidden$="[[!hasValue]]">
             <vi-icon source="SearchReset"></vi-icon>

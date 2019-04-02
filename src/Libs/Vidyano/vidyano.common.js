@@ -716,7 +716,7 @@ var ExpressionParser = (function () {
 ///////////////////////////////////////////////////////////////
 ///
 var Unique = (function () {
-    var n = 0;
+    var n = 1;
 
     return {
         get: function () {

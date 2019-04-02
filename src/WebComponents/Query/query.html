@@ -6,11 +6,13 @@
     <template>
         <link rel="stylesheet" href="query.css" />
         <vi-query-items-presenter class="flex" query="[[query]]"></vi-query-items-presenter>
-        <template is="dom-if" if="[[!hideHeader]]">
-            <vi-notification service-object="[[query]]"></vi-notification>
-            <vi-action-bar class="horizontal layout center" service-object="[[query]]" hidden$="[[noActions]]"></vi-action-bar>
-            <header>[[label]]</header>
-        </template>
+        <dom-if if="[[!hideHeader]]">
+            <template>
+                <vi-notification service-object="[[query]]"></vi-notification>
+                <vi-action-bar class="horizontal layout center" service-object="[[query]]" hidden$="[[noActions]]"></vi-action-bar>
+                <header>[[label]]</header>
+            </template>
+        </dom-if>
     </template>
 </dom-module>
 

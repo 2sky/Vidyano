@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             action: Object,
@@ -76,7 +74,7 @@ namespace Vidyano.WebComponents {
         },
         observers: [
             "_observeAction(action.canExecute, action.isVisible, action.options)",
-            "_computeSiblingIcon(overflow, isAttached)"
+            "_computeSiblingIcon(overflow, isConnected)"
         ],
         forwardObservers: [
             "action.isPinned",
@@ -121,7 +119,7 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _onExecuteWithoutOptions(e: TapEvent) {
+        private _onExecuteWithoutOptions(e: Polymer.TapEvent) {
             if (!this.canExecute) {
                 e.stopPropagation();
                 return;
@@ -133,7 +131,7 @@ namespace Vidyano.WebComponents {
             e.preventDefault();
         }
 
-        private _onExecuteWithOption(e: TapEvent) {
+        private _onExecuteWithOption(e: Polymer.TapEvent) {
             if (!this.canExecute) {
                 e.stopPropagation();
                 return;
@@ -193,22 +191,18 @@ namespace Vidyano.WebComponents {
         }
 
         private _computeIconSpace(icon: string, siblingIcon: boolean, overflow: boolean): boolean {
-            return overflow && !Icon.Exists(icon) && siblingIcon;
+            return overflow && (!icon || !Icon.Exists(icon)) && siblingIcon;
         }
 
-        private _computeSiblingIcon(overflow: boolean, isAttached: boolean) {
-            const siblingIcon = overflow && isAttached && this.parentElement != null && Array.from(this.parentElement.children).find((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
+        private _computeSiblingIcon(overflow: boolean, isConnected: boolean) {
+            const siblingIcon = overflow && isConnected && this.domHost != null && Array.from(this.domHost.children).find((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
             this._setSiblingIcon(siblingIcon);
             if (siblingIcon) {
-                Array.from(this.parentElement.children).forEach((ab: ActionButton) => {
+                Array.from(this.domHost.children).forEach((ab: ActionButton) => {
                     if (ab instanceof Vidyano.WebComponents.ActionButton && ab !== this)
                         ab._setSiblingIcon(true);
                 });
             }
-        }
-
-        private _computeOpenOnHover(overflow: boolean, openOnHover: boolean): boolean {
-            return overflow || openOnHover;
         }
 
         private _hiddenChanged() {

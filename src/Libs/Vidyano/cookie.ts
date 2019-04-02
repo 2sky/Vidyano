@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export let cookiePrefix: string;
     if (document.head) {
         const base = document.head.querySelector("base") as HTMLBaseElement;

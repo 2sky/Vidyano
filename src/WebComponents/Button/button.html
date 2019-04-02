@@ -2,18 +2,27 @@
     <template>
         <link rel="stylesheet" href="button.css" />
         <paper-ripple></paper-ripple>
-        <template is="dom-if" if="[[customLayout]]">
-            <content></content>
-        </template>
-        <template is="dom-if" if="[[!customLayout]]">
-            <vi-icon source="[[icon]]"></vi-icon>
-            <template is="dom-if" if="[[label]]">
-                <span>[[label]]</span>
+        <div class="highlight"></div>
+        <dom-if if="[[customLayout]]">
+            <template>
+                <slot></slot>
             </template>
-            <template is="dom-if" if="[[busy]]">
-                <vi-spinner></vi-spinner>
+        </dom-if>
+        <dom-if if="[[!customLayout]]">
+            <template>
+                <vi-icon source="[[icon]]"></vi-icon>
+                <dom-if if="[[label]]">
+                    <template>
+                        <span>[[label]]</span>
+                    </template>
+                </dom-if>
+                <dom-if if="[[busy]]">
+                    <template>
+                        <vi-spinner></vi-spinner>
+                    </template>
+                </dom-if>
             </template>
-        </template>
+        </dom-if>
     </template>
 </dom-module>
 

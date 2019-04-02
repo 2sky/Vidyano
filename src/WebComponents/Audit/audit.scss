@@ -17,7 +17,7 @@
         @include layout-horizontal();
         @include layout-horizontal-reverse();
         background-color: var(--vi-action-bar-background-color, #F9F9F9);
-        box-shadow: var(--theme-shadow_-_box-shadow);
+        box-shadow: var(--theme-box-shadow);
         margin-bottom: 3px;
         height: var(--theme-h1);
 

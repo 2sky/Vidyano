@@ -6,81 +6,109 @@
 
 <dom-module id="vi-persistent-object-attribute-as-detail-row">
     <template>
+        <style include="vi-persistent-object-attribute-style-module"></style>
         <link rel="stylesheet" href="persistent-object-attribute-as-detail-row.css" />
-        <template is="dom-repeat" items="[[columns]]" as="column" filter="_isColumnVisible">
-            <div class="column layout horizontal" data-column$="[[column.name]]">
-                <template is="dom-if" if="[[editing]]">
-                    <template is="dom-if" if="[[_isPresenterAvailable(fullEdit, softEdit)]]">
-                        <vi-persistent-object-attribute-presenter class="flex" no-label attribute="[[_getAttributeForColumn(serviceObject, column)]]" soft-edit-only$="[[_isSoftEditOnly(fullEdit, softEdit)]]"></vi-persistent-object-attribute-presenter>
-                    </template>
-                    <template is="dom-if" if="[[!fullEdit]]">
-                        <div pre-edit on-tap="_setFullEdit" class="flex layout horizontal-reverse">
-                            <vi-persistent-object-attribute-validation-error attribute="[[_getAttributeForColumn(serviceObject, column)]]"></vi-persistent-object-attribute-validation-error>
-                            <div class="flex">
-                                <span class="value" sensitive$="[[_isSensitive(column, isAppSensitive)]]">[[_getDisplayValue(serviceObject, column, fullEdit, serviceObject.lastUpdated)]]</span>
-                            </div>
-                        </div>
-                    </template>
-                </template>
-                <template is="dom-if" if="[[!editing]]">
-                    <span class="flex" sensitive$="[[_isSensitive(column, isAppSensitive)]]">[[_getDisplayValue(serviceObject, column, lastUpdated)]]</span>
-                </template>
-            </div>
-        </template>
+        <dom-repeat items="[[columns]]" as="column" filter="_isColumnVisible">
+            <template>
+                <div class="column layout horizontal" data-column$="[[column.name]]">
+                    <dom-if if="[[editing]]">
+                        <template>
+                            <dom-if if="[[op.some(fullEdit, softEdit)]]">
+                                <template>
+                                    <vi-persistent-object-attribute-presenter class="flex" no-label attribute="[[_attributeForColumn(serviceObject, column)]]" soft-edit-only$="[[_isSoftEditOnly(fullEdit, softEdit)]]"></vi-persistent-object-attribute-presenter>
+                                </template>
+                            </dom-if>
+                            <dom-if if="[[!fullEdit]]">
+                                <template>
+                                    <div pre-edit on-tap="_setFullEdit" class="flex layout horizontal-reverse">
+                                        <vi-persistent-object-attribute-validation-error attribute="[[_attributeForColumn(serviceObject, column)]]"></vi-persistent-object-attribute-validation-error>
+                                        <div class="flex">
+                                            <span class="value" sensitive$="[[isSensitive]]">[[_displayValue(serviceObject, column, fullEdit, serviceObject.lastUpdated)]]</span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </dom-if>
+                        </template>
+                    </dom-if>
+                    <dom-if if="[[!editing]]">
+                        <template>
+                            <span class="flex" sensitive$="[[isSensitive]]">[[_displayValue(serviceObject, column, lastUpdated)]]</span>
+                        </template>
+                    </dom-if>
+                </div>
+            </template>
+        </dom-repeat>
     </template>
 </dom-module>
 
 <dom-module id="vi-persistent-object-attribute-as-detail">
     <template>
+        <style include="vi-persistent-object-attribute-style-module"></style>
         <link rel="stylesheet" href="persistent-object-attribute-as-detail.css" />
         <vi-style id="style" key="vi-persistent-object-attribute-as-detail"></vi-style>
         <div id="table">
             <div id="head" class="horizontal layout">
-                <template is="dom-repeat" items="[[attribute.details.columns]]" as="column" filter="_isColumnVisible">
-                    <div class="column" data-column$="[[column.name]]"><label on-mouseenter="_titleMouseenter">[[column.label]]</label></div>
-                </template>
+                <dom-repeat items="[[attribute.details.columns]]" as="column" filter="_isColumnVisible">
+                    <template>
+                        <div class="column" data-column$="[[column.name]]"><label on-mouseenter="_titleMouseenter">[[column.label]]</label></div>
+                    </template>
+                </dom-repeat>
             </div>
             <vi-scroller id="body" no-horizontal force-scrollbars$="[[editing]]">
                 <div class="flex horizontal layout">
                     <div id="data" class="flex relative">
                         <vi-size-tracker trigger-zero size="{{size}}"></vi-size-tracker>
                         <div id="rows">
-                            <template is="dom-repeat" items="[[attribute.objects]]" as="obj">
-                                <vi-persistent-object-attribute-as-detail-row class="row" service-object="[[obj]]" columns="[[attribute.details.columns]]" editing="[[editing]]" hidden$="[[obj.isDeleted]]" full-edit="[[_isActiveObject(activeObject, obj)]]" on-full-edit="_setActiveObject" read-only$="[[readOnly]]" frozen$="[[attribute.parent.isFrozen]]"></vi-persistent-object-attribute-as-detail-row>
-                            </template>
-                        </div>
-                        <template is="dom-if" if="[[newAction]]">
-                            <div class="row add inline layout horizontal" hidden$="[[newActionPinned]]">
-                                <button is="vi-button" inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add" disabled$="[[!_canAdd(attribute.parent.isFrozen, isAdding)]]" busy="[[isAdding]]"></button>
-                                <template is="dom-if" if="[[!newActionPinned]]" restamp>
-                                    <content select="button"></content>
+                            <dom-repeat items="[[attribute.objects]]" as="obj">
+                                <template>
+                                    <vi-persistent-object-attribute-as-detail-row class="row" service-object="[[obj]]" columns="[[attribute.details.columns]]" editing="[[editing]]" hidden$="[[obj.isDeleted]]" full-edit="[[op.areSame(activeObject, obj)]]" on-full-edit="_setActiveObject" read-only$="[[readOnly]]" frozen$="[[attribute.parent.isFrozen]]"></vi-persistent-object-attribute-as-detail-row>
                                 </template>
-                            </div>
-                        </template>
-                    </div>
-                    <template is="dom-if" if="[[canDelete]]">
-                        <div>
-                            <template is="dom-repeat" items="[[attribute.objects]]" as="obj">
-                                <div class="row" hidden$="[[obj.isDeleted]]">
-                                    <div class="delete-button">
-                                        <button is="vi-button" inverse on-tap="_delete" disabled$="[[_computeDeleteDisabled(attribute.parent.isFrozen, obj.isReadOnly)]]">
-                                            <vi-icon source="Action_Delete"></vi-icon>
-                                        </button>
-                                    </div>
+                            </dom-repeat>
+                        </div>
+                        <dom-if if="[[newAction]]">
+                            <template>
+                                <div class="row add inline layout horizontal" hidden$="[[newActionPinned]]">
+                                    <vi-button inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add" disabled$="[[op.some(attribute.parent.isFrozen, isAdding)]]" busy="[[isAdding]]"></vi-button>
+                                    <dom-if if="[[!newActionPinned]]" restamp>
+                                        <template>
+                                            <slot name="button"></slot>
+                                        </template>
+                                    </dom-if>
                                 </div>
                             </template>
-                        </div>
-                    </template>
+                        </dom-if>
+                    </div>
+                    <dom-if if="[[canDelete]]">
+                        <template>
+                            <div>
+                                <dom-repeat items="[[attribute.objects]]" as="obj">
+                                    <template>
+                                        <div class="row" hidden$="[[obj.isDeleted]]">
+                                            <div class="delete-button">
+                                                <vi-button inverse on-tap="_delete" disabled$="[[op.some(attribute.parent.isFrozen, obj.isReadOnly)]]">
+                                                    <vi-icon source="Action_Delete"></vi-icon>
+                                                </vi-button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </dom-repeat>
+                            </div>
+                        </template>
+                    </dom-if>
                 </div>
             </vi-scroller>
-            <template is="dom-if" if="[[newAction]]">
-                <div class="row add foot layout horizontal" hidden$="[[!newActionPinned]]">
-                    <button is="vi-button" inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add"></button>
-                    <template is="dom-if" if="[[newActionPinned]]" restamp>
-                        <content select="button"></content>
-                    </template>
-                </div>
-            </template>
+            <dom-if if="[[newAction]]">
+                <template>
+                    <div class="row add foot layout horizontal" hidden$="[[!newActionPinned]]">
+                        <vi-button inverse icon="Action_New" label="[[newAction.displayName]]" on-tap="_add"></vi-button>
+                        <dom-if if="[[newActionPinned]]" restamp>
+                            <template>
+                                <slot name="button"></slot>
+                            </template>
+                        </dom-if>
+                    </div>
+                </template>
+            </dom-if>
         </div>
     </template>
 </dom-module>

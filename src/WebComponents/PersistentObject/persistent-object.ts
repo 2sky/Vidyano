@@ -1,6 +1,4 @@
-﻿namespace Vidyano.WebComponents {
-    "use strict";
-
+namespace Vidyano.WebComponents {
     @WebComponent.register({
         properties: {
             persistentObject: {
@@ -22,7 +20,7 @@
             hasMasterTabs: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_hasMasterTabs(masterTabs)"
+                computed: "_computeHasMasterTabs(masterTabs)"
             },
             selectedMasterTab: {
                 type: Object,
@@ -37,7 +35,7 @@
             hasDetailTabs: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_hasDetailTabs(detailTabs)"
+                computed: "_computeHasDetailTabs(detailTabs)"
             },
             selectedDetailTab: {
                 type: Object,
@@ -85,7 +83,7 @@
             }
         },
         observers: [
-            "_persistentObjectChanged(persistentObject, isAttached)",
+            "_persistentObjectChanged(persistentObject, isConnected)",
             "_persistentObjectNotificationChanged(persistentObject.notification)"
         ],
         forwardObservers: [
@@ -98,11 +96,11 @@
             "tabselect": "_tabselect"
         }
     })
-    export class PersistentObject extends WebComponent {
+    export class PersistentObject extends WebComponent<App> {
         private _uniqueId: string = Unique.get();
         private _parameters: { id: string; objectId: string };
         private _styleElement: HTMLElement;
-        private _cacheEntry: PersistentObjectAppCacheEntry;
+        private _cacheEntry: AppCacheEntryPersistentObject;
         persistentObject: Vidyano.PersistentObject;
         layout: string;
         masterWidth: string;
@@ -111,24 +109,24 @@
         detailTabs: Vidyano.PersistentObjectTab[];
         selectedDetailTab: Vidyano.PersistentObjectTab;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.setAttribute("style-scope-id", this._uniqueId);
         }
 
-        detached() {
+        disconnectedCallback() {
             if (this._styleElement) {
                 document.head.removeChild(this._styleElement);
                 this._styleElement = undefined;
             }
 
-            super.detached();
+            super.disconnectedCallback();
         }
 
-        private _persistentObjectChanged(persistentObject: Vidyano.PersistentObject, isAttached: boolean) {
-            if (persistentObject && isAttached) {
-                this._cacheEntry = <PersistentObjectAppCacheEntry>this.app.cache(new PersistentObjectAppCacheEntry(this.persistentObject));
+        private _persistentObjectChanged(persistentObject: Vidyano.PersistentObject, isConnected: boolean) {
+            if (persistentObject && isConnected) {
+                this._cacheEntry = <AppCacheEntryPersistentObject>this.app.cache(new AppCacheEntryPersistentObject(this.persistentObject));
 
                 this.selectedMasterTab = this._cacheEntry.selectedMasterTab || this._computeMasterTabs(this.persistentObject, this.persistentObject.tabs)[0] || null;
                 this.selectedDetailTab = this._cacheEntry.selectedDetailTab || this._computeDetailTabs(this.persistentObject, this.persistentObject.tabs)[0] || null;
@@ -149,8 +147,9 @@
         }
 
         private _masterWidthChanged() {
-            this.customStyle["--vi-persistent-object-master-width"] = this.masterWidth;
-            this.updateStyles();
+            this.updateStyles({
+                "--vi-persistent-object-master-width": this.masterWidth
+            });
         }
 
         private _computeMasterTabs(persistentObject: Vidyano.PersistentObject, tabs: Vidyano.PersistentObjectTab[]): Vidyano.PersistentObjectTab[] {
@@ -246,30 +245,28 @@
             return !!persistentObject && detailTabs.length > 0;
         }
 
-        private _disableTabScrolling(tab: Vidyano.PersistentObjectTab): boolean {
-            return tab instanceof Vidyano.PersistentObjectQueryTab;
-        }
-
-        private _hasMasterTabs(tabs: Vidyano.PersistentObjectAttributeTab[]): boolean {
+        private _computeHasMasterTabs(tabs: Vidyano.PersistentObjectAttributeTab[]): boolean {
             return tabs && tabs.length > 1;
         }
 
-        private _hasDetailTabs(tabs: Vidyano.PersistentObjectAttributeTab[]): boolean {
+        private _computeHasDetailTabs(tabs: Vidyano.PersistentObjectAttributeTab[]): boolean {
             return tabs && tabs.length > 0;
         }
 
-        private _tabselect(e: CustomEvent, detail: { name?: string; tab?: Vidyano.PersistentObjectTab }) {
-            if (!detail.tab)
-                detail.tab = this.masterTabs.find(t => t.name === detail.name) || this.detailTabs.find(t => t.name === detail.name);
+        private _tabselect(e: CustomEvent) {
+            let { name, tab }: { name?: string; tab?: Vidyano.PersistentObjectTab } = e.detail;
 
-            if (!detail.tab)
-                return;
+            if (!tab) {
+                tab = this.masterTabs.find(t => t.name === name) || this.detailTabs.find(t => t.name === name);
+                if (!tab)
+                    return;
+            }
 
-            if (this.masterTabs.indexOf(detail.tab) >= 0)
-                this.selectedMasterTab = detail.tab;
+            if (this.masterTabs.indexOf(tab) >= 0)
+                this.selectedMasterTab = tab;
 
-            if (this.detailTabs.indexOf(detail.tab) >= 0)
-                this.selectedDetailTab = detail.tab;
+            if (this.detailTabs.indexOf(tab) >= 0)
+                this.selectedDetailTab = tab;
 
             e.stopPropagation();
         }
@@ -286,18 +283,18 @@
                 this.selectedMasterTab = firstAttributeWithValidationError.tab;
         }
 
-        private _trackSplitter(e: CustomEvent, detail: PolymerTrackDetail) {
-            if (detail.state === "track") {
+        private _trackSplitter(e: Polymer.TrackEvent) {
+            if (e.detail.state === "track") {
                 const px = parseInt(this.masterWidth);
-                this.masterWidth = (px + detail.ddx) + "px";
+                this.masterWidth = (px + e.detail.ddx) + "px";
             }
-            else if (detail.state === "start") {
+            else if (e.detail.state === "start") {
                 this.app.isTracking = true;
                 this.app.classList.add("dragging");
                 if (this.masterWidth.endsWith("%"))
                     this.masterWidth = (this.offsetWidth * (parseInt(this.masterWidth) / 100)).toString() + "px";
             }
-            else if (detail.state === "end") {
+            else if (e.detail.state === "end") {
                 this.app.classList.remove("dragging");
                 window.getSelection().removeAllRanges();
 

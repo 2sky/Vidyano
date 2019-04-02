@@ -5,18 +5,18 @@
 <dom-module id="vi-overflow">
     <template>
         <link rel="stylesheet" href="overflow.css" />
-        <div class="flex relative" id="visibleContainer">
-            <div id="visible" class="horizontal layout wrap relative">
+        <div class="flex relative visibleContainer">
+            <div class="visible horizontal layout wrap relative">
                 <div id="first"></div>
-                <content select=":not([overflow])"></content>
+                <slot id="visible"></slot>
                 <vi-size-tracker on-sizechanged="_visibleSizeChanged"></vi-size-tracker>
             </div>
             <vi-size-tracker on-sizechanged="_visibleContainerSizeChanged"></vi-size-tracker>
         </div>
-        <vi-popup id="overflowPopup" class="horizontal layout" manual on-popup-opening="_popupOpening" on-popup-closed="_popupClosed">
-            <button header flex inverse is="vi-button" label="&hellip;"></button>
-            <div id="overflowChildren" content class="vertical layout">
-                <content select="[overflow]"></content>
+        <vi-popup id="overflowPopup" class="horizontal layout" on-popup-opening="_popupOpening" on-popup-closed="_popupClosed">
+            <vi-button slot="header" flex inverse label="&hellip;"></vi-button>
+            <div id="overflowChildren" class="vertical layout">
+                <slot id="overflow" name="overflow"></slot>
             </div>
         </vi-popup>
     </template>

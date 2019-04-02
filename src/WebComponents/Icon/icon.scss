@@ -5,6 +5,10 @@
     display: block;
     pointer-events: none;
 
+    &[unresolved] {
+        display: none !important;
+    }
+
     > div {
         @include layout-horizontal();
         @include layout-center-center();
@@ -15,6 +19,7 @@
     svg {
         width: var(--vi-icon-width, 16px);
         height: var(--vi-icon-height, 16px);
+        fill: var(--vi-icon-fill, inherit);
     }
 
     &.size-h1 svg {
@@ -40,58 +45,5 @@
     &.size-h5 svg {
         width: var(--theme-h5);
         height: var(--theme-h5);
-    }
-
-    &[source="Selected"] {
-        fill: var(--vi-icon-selected-unchecked-color, #bbb);
-
-        &[is-selected ] {
-            #backdrop {
-                opacity: 1 !important;
-            }
-
-            #check {
-                display: block;
-                fill: white;
-            }
-
-            &:not([disabled]) {
-                #box, #backdrop {
-                    fill: var(--vi-icon-selected-checked-color, --theme-color);
-                }
-            }
-
-            &[disabled] {
-                #box, #backdrop {
-                    fill: var(--vi-icon-selected-disabled-color, #666);
-                }
-            }
-        }
-
-        &:not([is-selected]) {
-            #check {
-                display: none;
-            }
-        }
-    }
-
-    &[source="SelectedRadio"] {
-        fill: var(--vi-icon-selected-unchecked-color, --theme-dark-border);
-
-        &[is-selected ] {
-            #check, #box {
-                fill: var(--theme-color);
-            }
-        }
-
-        &:not([is-selected]) {
-            #check {
-                display: none;
-            }
-        }
-
-        &[disabled] {
-            fill: var(--vi-icon-selected-disabled-color, #666) !important;
-        }
     }
 }

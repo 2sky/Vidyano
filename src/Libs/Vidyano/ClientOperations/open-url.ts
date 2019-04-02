@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export namespace ClientOperations {
         export function openUrl(hooks: ServiceHooks, url: string) {
             if (!url.startsWith("http"))

@@ -3,8 +3,8 @@
 :host {
     @include layout-horizontal();
     line-height: var(--theme-h2);
-    --at-apply: --vi-input-search;
     position: relative;
+    --at-apply: --vi-input-search;
 
     input {
         border: none;
@@ -46,7 +46,6 @@
         width: var(--theme-h2);
         background-color: transparent;
         margin: 1px 1px 1px 0;
-
         --at-apply: --vi-input-search-button;
     }
 

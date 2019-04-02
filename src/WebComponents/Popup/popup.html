@@ -3,7 +3,7 @@
 <dom-module id="vi-popup-core">
     <template>
         <link rel="stylesheet" href="popup-core.css">
-        <content></content>
+        <slot></slot>
     </template>
 </dom-module>
 
@@ -12,10 +12,10 @@
         <link rel="stylesheet" href="popup.css">
         <vi-size-tracker id="toggleSizeTracker" deferred on-sizechanged="_toggleSizeChanged"></vi-size-tracker>
         <div toggle class="horizontal layout">
-            <content select="[header]"></content>
+            <slot name="header"></slot>
         </div>
         <div id="content" on-click="_catchContentClick" on-mouseenter="_contentMouseEnter" on-mouseleave="_contentMouseLeave">
-            <content select=":not([header])"></content>
+            <slot></slot>
         </div>
     </template>
 </dom-module>

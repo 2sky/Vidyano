@@ -21,12 +21,12 @@
         }
     }
 
-    .fit[content] {
+    .fit.image-container {
         padding: var(--theme-h5);
     }
 
-    .button.browse {
-        ::content input {
+    .browse {
+        input {
             position: absolute;
             top: 0;
             right: 0;

@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             isSignedIn: {
@@ -14,7 +12,7 @@ namespace Vidyano.WebComponents {
             },
             signInLabel: {
                 type: String,
-                computed: "_computeSignInLabel(isAttached, collapsed)"
+                computed: "_computeSignInLabel(isConnected, collapsed)"
             },
             hasSensitive: {
                 type: Boolean,
@@ -48,7 +46,7 @@ namespace Vidyano.WebComponents {
         ],
         sensitive: true
     })
-    export class User extends WebComponent {
+    export class User extends WebComponent<App> {
         readonly service: Vidyano.Service; private _setService: (service: Vidyano.Service) => void;
         readonly isSignedIn: boolean; private _setIsSignedIn: (val: boolean) => void;
         readonly hasSensitive: boolean; private _setHasSensitive: (val: boolean) => void;
@@ -57,8 +55,8 @@ namespace Vidyano.WebComponents {
         readonly hasProfiler: boolean; private _setHasProfiler: (val: boolean) => void;
         readonly userName: string; private _setUserName: (val: string) => void;
 
-        private _computeSignInLabel(isAttached: boolean, collapsed: boolean): string {
-            if (!isAttached)
+        private _computeSignInLabel(isConnected: boolean, collapsed: boolean): string {
+            if (!isConnected)
                 return;
 
             return collapsed ? "": this.translateMessage("SignIn");
@@ -95,7 +93,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _showProfiler() {
-            this.app.service.profile = true;
+            this.service.profile = true;
         }
 
         private _signedInChanged() {

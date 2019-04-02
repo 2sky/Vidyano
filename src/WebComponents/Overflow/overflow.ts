@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             hasOverflow: {
@@ -35,65 +33,33 @@ namespace Vidyano.WebComponents {
             if (popup.open)
                 return;
 
-            requestAnimationFrame(() => {
+            Polymer.Async.animationFrame.run(() => {
                 const children = this._getChildren();
-                children.forEach(child => {
-                    Polymer.dom(child).removeAttribute("overflow");
-                });
+                children.forEach(child => child.removeAttribute("slot"));
 
                 this._setHasOverflow(children.some(child => child.offsetTop > 0));
             });
         }
 
         protected _getChildren(): HTMLElement[] {
-            return [].concat(...Array.from(Polymer.dom(this).children).filter(c => c.tagName !== "TEMPLATE").map(element => {
-                if (element.tagName === "CONTENT")
-                    return Array.from(Polymer.dom(element).getDistributedNodes()).filter(c => c.tagName !== "TEMPLATE");
+            const visibleSlot = <HTMLSlotElement>this.$.visible;
+            const overflowSlot = <HTMLSlotElement>this.$.overflow;
 
-                return [element];
-            })).map(child => <HTMLElement>child);
+            return <HTMLElement[]>visibleSlot.assignedNodes().concat(visibleSlot.assignedNodes()).filter(child => child instanceof HTMLElement);
         }
 
         private _popupOpening() {
-            this._overflownChildren = this._getChildren();
-            this._overflownChildren.forEach(child => {
-                if (child.offsetTop > 0)
-                    Polymer.dom(child).setAttribute("overflow", "");
-            });
+            this._overflownChildren = this._getChildren().filter(child => child.offsetTop > 0);
+            this._overflownChildren.forEach(child => child.setAttribute("slot", "overflow"));
 
-            Polymer.dom(this).flush();
+            Polymer.flush();
         }
 
         private _popupClosed() {
-            this._overflownChildren.forEach(child => {
-                Polymer.dom(child).removeAttribute("overflow");
-            });
-
-            Polymer.dom(this).flush();
+            this._overflownChildren.forEach(child => child.removeAttribute("slot"));
+            Polymer.flush();
 
             this._setHasOverflow(this._overflownChildren.some(child => child.offsetTop > 0));
-        }
-
-        private async _popup(e: Event) {
-            e.stopPropagation();
-
-            const children = this._getChildren();
-            children.forEach(child => {
-                if (child.offsetTop > 0)
-                    Polymer.dom(child).setAttribute("overflow", "");
-            });
-
-            Polymer.dom(this).flush();
-
-            const popup = <WebComponents.Popup><any>this.$.overflowPopup;
-            await popup.popup();
-
-            children.forEach(child => {
-                Polymer.dom(child).removeAttribute("overflow");
-            });
-
-            Polymer.dom(this).flush();
-            this._setHasOverflow(children.some(child => child.offsetTop > 0));
         }
     }
 }

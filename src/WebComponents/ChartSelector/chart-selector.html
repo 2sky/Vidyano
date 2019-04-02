@@ -3,20 +3,28 @@
 <dom-module id="vi-chart-selector">
     <template>
         <link rel="stylesheet" href="chart-selector.css" />
-        <button is="vi-button" on-tap="_showGrid" inverse icon="Grid"></button>
-        <template is="dom-repeat" items="[[types]]" as="type">
-            <template is="dom-if" if="[[!type.single]]">
-                <vi-popup-menu>
-                    <button is="vi-button" header inverse icon="[[type.icon]]"></button>
-                    <template is="dom-repeat" items="[[type.charts]]" as="chart">
-                        <vi-popup-menu-item label="[[chart.label]]" on-tap="_showChart"></vi-popup-menu-item>
+        <vi-button on-tap="_showGrid" inverse icon="Grid"></vi-button>
+        <dom-repeat items="[[types]]" as="type">
+            <template>
+                <dom-if if="[[!type.single]]">
+                    <template>
+                        <vi-popup-menu>
+                            <vi-button slot="header" inverse icon="[[type.icon]]"></vi-button>
+                            <dom-repeat items="[[type.charts]]" as="chart">
+                                <template>
+                                    <vi-popup-menu-item label="[[chart.label]]" on-tap="_showChart"></vi-popup-menu-item>
+                                </template>
+                            </dom-repeat>
+                        </vi-popup-menu>
                     </template>
-                </vi-popup-menu>
+                </dom-if>
+                <dom-if if="[[type.single]]">
+                    <template>
+                        <vi-button on-tap="_showChart" data-chart-type="[[type.type]]" inverse icon="[[type.icon]]"></vi-button>
+                    </template>
+                </dom-if>
             </template>
-            <template is="dom-if" if="[[type.single]]">
-                <button is="vi-button" on-tap="_showChart" data-chart-type="[[type.type]]" inverse icon="[[type.icon]]"></button>
-            </template>
-        </template>
+        </dom-repeat>
     </template>
 </dom-module>
 

@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export class ProgramUnit extends ProgramUnitItem {
         offset: number;
         openFirst: boolean;

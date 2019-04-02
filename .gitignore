@@ -203,8 +203,8 @@ ModelManifest.xml
 /src/WebComponents/**/*.js
 /src/WebComponents/**/*.css
 /src/WebComponents/**/*.d.ts
-/src/Libs/Vidyano/vidyano.js
-/src/Libs/Vidyano/vidyano.cultures.js
+/src/Libs/Vidyano/**/*.js
+!/src/Libs/Vidyano/vidyano.common.js
 /src/Libs/Alertify.js/*.js
 /src/Libs/Alertify.js/*.css
 /src/Libs/bignumber.js/
@@ -219,6 +219,7 @@ ModelManifest.xml
 /src/Libs/paper-ripple/
 /src/Libs/pathjs/
 /src/Libs/polymer/
+/src/Libs/shadycss/
 /src/Libs/sortable/
 /src/Libs/tslib/
 /src/Libs/webcomponentsjs/

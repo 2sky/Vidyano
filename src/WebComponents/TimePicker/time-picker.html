@@ -1,11 +1,11 @@
-﻿<link rel="import" href="../Popup/popup.html" />
+<link rel="import" href="../Popup/popup.html" />
 
 <dom-module id="vi-time-picker">
     <template>
         <link rel="stylesheet" href="time-picker.css" />
         <vi-popup id="popup" content-align="right">
-            <vi-icon header source="Clock"></vi-icon>
-            <div class="clock" content on-tap="_catchTap">
+            <vi-icon slot="header" source="Clock"></vi-icon>
+            <div class="clock" on-tap="_catchTap">
                 <div id="current">
                     <span class="hours" on-tap="_switch">[[_zeroPrefix(hours)]]</span>
                     <span>:</span>

@@ -6,21 +6,25 @@
 	<template>
 		<link rel="stylesheet" href="date-picker.css" />
         <vi-popup id="popup" content-align="right" on-popup-opening="_opening">
-            <vi-icon header source="Calendar"></vi-icon>
-            <div class="calendar" content>
+            <vi-icon slot="header" source="Calendar"></vi-icon>
+            <div class="calendar">
                 <header class="horizontal layout">
-                    <button is="vi-button" n="-1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastBackward"></vi-icon></button>
-                    <button is="vi-button" n="-1" on-tap="_slow"><vi-icon source="Backward"></vi-icon></button>
-                    <button is="vi-button" class="flex" on-tap="_zoomOut" label="[[header]]"></button>
-                    <button is="vi-button" n="1" on-tap="_slow"><vi-icon source="Forward"></vi-icon></button>
-                    <button is="vi-button" n="1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastForward"></vi-icon></button>
+                    <vi-button n="-1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastBackward"></vi-icon></vi-button>
+                    <vi-button n="-1" on-tap="_slow"><vi-icon source="Backward"></vi-icon></vi-button>
+                    <vi-button class="flex" on-tap="_zoomOut" label="[[header]]"></vi-button>
+                    <vi-button n="1" on-tap="_slow"><vi-icon source="Forward"></vi-icon></vi-button>
+                    <vi-button n="1" on-tap="_fast" hidden$="[[!canFast]]"><vi-icon source="FastForward"></vi-icon></vi-button>
                 </header>
                 <main class="layout horizontal wrap" zoom$="[[zoom]]">
-                    <template is="dom-if" if="[[!deferredCellsUpdate]]">
-                        <template is="dom-repeat" items="[[cells]]" as="cell">
-                            <div class="cell layout horizontal center-center" type$="[[cell.type]]" is-selected$="[[_isSelected(zoom, cell.date, selectedDateMoment)]]" is-today$="[[_isToday(zoom, cell.date, today)]]" is-other$="[[_isOther(cell.monthOffset)]]" unselectable$="[[_isUnselectable(cell.date, minDate, maxDate)]]" break$="[[cell.break]]" on-tap="_select">[[cell.content]]</div>
+                    <dom-if if="[[!deferredCellsUpdate]]">
+                        <template>
+                            <dom-repeat items="[[cells]]" as="cell">
+                                <template>
+                                    <div class="cell layout horizontal center-center" type$="[[cell.type]]" is-selected$="[[_isDateSelected(zoom, cell.date, selectedDateMoment)]]" is-today$="[[_isDateToday(zoom, cell.date, today)]]" is-other$="[[_isOtherMonth(cell.monthOffset)]]" unselectable$="[[_isDateUnselectable(cell.date, minDate, maxDate)]]" break$="[[cell.break]]" on-tap="_select">[[cell.content]]</div>
+                                </template>
+                            </dom-repeat>
                         </template>
-                    </template>
+                    </dom-if>
                 </main>
             </div>
         </vi-popup>

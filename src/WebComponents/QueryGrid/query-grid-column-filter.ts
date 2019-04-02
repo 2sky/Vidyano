@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     export class QueryGridColumnFilterProxyBase extends Vidyano.WebComponents.WebComponent {
         private _label: string;
         private _labelTextNode: Text;
@@ -102,7 +100,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_update(queryColumn.selectedDistincts, queryColumn.selectedDistinctsInversed, isAttached)",
+            "_update(queryColumn.selectedDistincts, queryColumn.selectedDistinctsInversed, isConnected)",
         ],
         forwardObservers: [
             "queryColumn.selectedDistincts",
@@ -140,6 +138,10 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: false
             },
+            filteredDistincts: {
+                type: Array,
+                computed: "_computeFilteredDistincts(distincts, searchText)"
+            },
             queryFiltering: {
                 type: Boolean,
                 computed: "queryColumn.query.isFiltering",
@@ -170,7 +172,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_update(queryColumn.selectedDistincts, queryColumn.selectedDistinctsInversed, isAttached)",
+            "_update(queryColumn.selectedDistincts, queryColumn.selectedDistinctsInversed, isConnected)",
             "_renderDistincts(queryColumn.selectedDistincts, queryColumn.distincts)"
         ],
         forwardObservers: [
@@ -191,8 +193,8 @@ namespace Vidyano.WebComponents {
         label: string;
         distincts: IQueryGridColumnFilterDistinct[];
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             if (this._openOnAttach) {
                 this._openOnAttach = false;
@@ -267,7 +269,7 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _filteredDistincts(distincts: IQueryGridColumnFilterDistinct[], searchText: string): IQueryGridColumnFilterDistinct[] {
+        private _computeFilteredDistincts(distincts: IQueryGridColumnFilterDistinct[], searchText: string): IQueryGridColumnFilterDistinct[] {
             if (!searchText)
                 return distincts;
 
@@ -280,7 +282,7 @@ namespace Vidyano.WebComponents {
             });
         }
 
-        private _distinctClick(e: TapEvent) {
+        private _distinctClick(e: Polymer.TapEvent) {
             const distinctValue = e.model.item.value;
 
             if (this.queryColumn.selectedDistincts.indexOf(distinctValue) === -1)
@@ -353,7 +355,7 @@ namespace Vidyano.WebComponents {
             this.updateStyles();
         }
 
-        private _distinctDisplayValue(displayValue: string, searchText: string): string {
+        private _getHighlightedDistinctDisplayValue(displayValue: string, searchText: string): string {
             if (!searchText)
                 return displayValue;
 
@@ -398,19 +400,19 @@ namespace Vidyano.WebComponents {
             WebComponents.Popup.closeAll();
         }
 
-        private _onResize(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
-            if (detail.state === "start") {
+        private _onResize(e: Polymer.TrackEvent) {
+            if (e.state === "start") {
                 this.app.isTracking = true;
                 const filter = <Popup>this.$.filter;
                 filter.sticky = true;
 
                 this._resizeStart = { width: this.$.filterContent.offsetWidth, height: this.$.filterContent.offsetHeight };
             }
-            else if (detail.state === "track") {
-                this.$.filterContent.style.width = `${this._resizeStart.width + detail.dx}px`;
-                this.$.filterContent.style.height = `${this._resizeStart.height + detail.dy}px`;
+            else if (e.state === "track") {
+                this.$.filterContent.style.width = `${this._resizeStart.width + e.dx}px`;
+                this.$.filterContent.style.height = `${this._resizeStart.height + e.dy}px`;
             }
-            else if (detail.state === "end") {
+            else if (e.state === "end") {
                 const filter = <Popup>this.$.filter;
                 filter.sticky = false;
 

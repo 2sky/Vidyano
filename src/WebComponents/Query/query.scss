@@ -5,7 +5,7 @@
     @include fit();
     @include layout-vertical-reverse();
     --vi-action-bar-style: {
-        --at-apply: --theme-shadow;
+        box-shadow: var(--theme-box-shadow);
         z-index: 1;
     };
 
@@ -20,7 +20,7 @@
 
     &[no-actions] {
         > header {
-            --at-apply: --theme-shadow;
+            box-shadow: var(--theme-box-shadow);
         }
 
         vi-action-bar {

@@ -1,17 +1,39 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
+    @WebComponent.registerAbstract({
+        properties: {
+            hasTemplate: {
+                type: Boolean,
+                readOnly: true
+            },
+            as: {
+                type: String,
+                reflectToAttribute: true
+            }
+        },
+        hostAttributes: {
+            "slot": "vi-app-config"
+        }
+    })
     export abstract class TemplateConfig<T> extends WebComponent {
-        private _template: PolymerTemplate;
+        private __template: HTMLTemplateElement;
         readonly hasTemplate: boolean; private _setHasTemplate: (val: boolean) => void;
         as: string;
         asModel: (model: T) => any;
 
-        attached() {
-            super.attached();
+        constructor() {
+            super();
 
-            this._template = <PolymerTemplate>Polymer.dom(this).querySelector("template[is='dom-template']");
-            this._setHasTemplate(!!this._template);
+            this.setAttribute("slot", "vi-app-config");
+        }
+
+        connectedCallback() {
+            super.connectedCallback();
+
+            this._setHasTemplate(!!(this.__template = <HTMLTemplateElement>this.querySelector("template")));
+        }
+
+        get template() {
+            return this.__template;
         }
 
         stamp(obj: T, as: string = this.as, asModel: (model: T) => any = this.asModel): DocumentFragment {
@@ -21,21 +43,8 @@ namespace Vidyano.WebComponents {
             const model = {};
             model[as] = !!asModel ? asModel(obj) : obj;
 
-            return this._template.stamp(model).root;
-        }
-
-        static register(info?: IWebComponentRegistrationInfo, prefix?: string): (obj: any) => void {
-            info.properties = info.properties || {};
-            info.properties["hasTemplate"] = {
-                type: Boolean,
-                readOnly: true
-            };
-            info.properties["as"] = {
-                type: String,
-                reflectToAttribute: true
-            };
-
-            return WebComponent.register(info, prefix);
+            const templateClass = Polymer.Templatize.templatize(this.__template);
+            return new templateClass(model).root;
         }
     }
 }

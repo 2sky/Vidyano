@@ -1,6 +1,4 @@
 namespace Vidyano {
-    "use strict";
-
     export enum PersistentObjectLayoutMode {
         FullPage,
         MasterDetail

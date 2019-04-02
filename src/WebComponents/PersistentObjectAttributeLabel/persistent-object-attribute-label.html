@@ -4,13 +4,13 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-label.css" />
         <label>[[attribute.label]]</label>
-        <span class="required">[[translateMessage('Required', isAttached)]]</span>
+        <span class="required">[[translateMessage('Required', isConnected)]]</span>
         <div class="locked">
             <vi-icon source="Lock"></vi-icon>
         </div>
-        <button is="vi-button" inverse class="info" on-tap="_showTooltip" hidden$="[[!hasToolTip]]" tabindex="-1">
+        <vi-button inverse class="info" on-tap="_showTooltip" hidden$="[[!hasToolTip]]" tabindex="-1">
             <vi-icon source="Info"></vi-icon>
-        </button>
+        </vi-button>
     </template>
 </dom-module>
 

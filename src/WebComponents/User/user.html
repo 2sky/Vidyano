@@ -7,31 +7,31 @@
             <span>[[userName]]</span>
         </div>
         <div class="actions">
-            <button is="vi-button" icon="Invisible" inverse="[[!isAppSensitive]]" title="[[translateMessage('Privacy', isAttached)]]" hidden$="[[!hasSensitive]]" on-tap="_toggleSensitive"></button>
-            <template is="dom-if" if="[[isSignedIn]]">
-                <button is="vi-button" icon="Profiler" inverse title="[[translateMessage('Profiler', isAttached)]]" hidden$="[[!hasProfiler]]" on-tap="_showProfiler"></button>
-                <button is="vi-button" icon="UserFeedback" inverse title="[[translateMessage('Feedback', isAttached)]]" hidden$="[[!hasFeedback]]" on-tap="feedback"></button>
-                <button is="vi-button" icon="Configure" inverse title="[[translateMessage('UserSettings', isAttached)]]" hidden$="[[!hasUserSettings]]" on-tap="userSettings"></button>
-                <button is="vi-button" icon="SignOut" inverse title="[[translateMessage('SignOut', isAttached)]]" hidden$="[[service.windowsAuthentication]]" on-tap="signOut"></button>
-            </template>
-            <template is="dom-if" if="[[!isSignedIn]]">
-                <button is="vi-button" class="flex" id="signIn" icon="SignIn" label="[[signInLabel]]" inverse title="[[signInLabel]]" hidden$="[[isSignedIn]]" on-tap="signIn"></button>
-            </template>
+            <vi-button icon="Invisible" inverse="[[!isAppSensitive]]" title="[[translateMessage('Privacy', isConnected)]]" hidden$="[[!hasSensitive]]" on-tap="_toggleSensitive"></vi-button>
+            <dom-if if="[[isSignedIn]]">
+                <template>
+                    <vi-button icon="Profiler" inverse title="[[translateMessage('Profiler', isConnected)]]" hidden$="[[!hasProfiler]]" on-tap="_showProfiler"></vi-button>
+                    <vi-button icon="UserFeedback" inverse title="[[translateMessage('Feedback', isConnected)]]" hidden$="[[!hasFeedback]]" on-tap="feedback"></vi-button>
+                    <vi-button icon="Configure" inverse title="[[translateMessage('UserSettings', isConnected)]]" hidden$="[[!hasUserSettings]]" on-tap="userSettings"></vi-button>
+                    <vi-button icon="SignOut" inverse title="[[translateMessage('SignOut', isConnected)]]" hidden$="[[service.windowsAuthentication]]" on-tap="signOut"></vi-button>
+                </template>
+            </dom-if>
+            <dom-if if="[[!isSignedIn]]">
+                <template>
+                    <vi-button class="flex" id="signIn" icon="SignIn" label="[[signInLabel]]" inverse title="[[signInLabel]]" hidden$="[[isSignedIn]]" on-tap="signIn"></vi-button>
+                </template>
+            </dom-if>
         </div>
     </template>
 </dom-module>
 
-<vi-icon name="Profiler">
-
-</vi-icon>
-
 <!-- Stopwatch by Samy Menai from the Noun Project-->
-<vi-icon name="Profiler">
+<vi-resource type="icon" name="Profiler">
     <svg viewBox="0 0 32 32">
         <g>
             <path d="M 11.320312 0 L 11.320312 2.5957031 L 12.96875 3.2636719 L 14.669922 3.2636719 L 14.669922 4.21875 C 11.517402 4.611414 8.6883391 6.0558025 6.5488281 8.1953125 L 8.4902344 10.138672 C 10.518005 8.1101999 13.317629 6.8554688 16.404297 6.8554688 C 22.580085 6.8554688 27.603516 11.877997 27.603516 18.052734 C 27.603516 24.227822 22.580085 29.251953 16.404297 29.251953 C 10.966199 29.251953 6.4223706 25.354195 5.4160156 20.205078 L 7.5839844 20.205078 L 3.9785156 13.960938 L 0.375 20.205078 L 2.625 20.205078 C 3.6625296 26.877913 9.4466838 32 16.404297 32 C 24.095397 32 30.351563 25.743133 30.351562 18.052734 C 30.351913 10.950105 25.012919 5.0739319 18.138672 4.2167969 L 18.138672 3.2636719 L 19.839844 3.2636719 L 21.488281 2.5957031 L 21.488281 0 L 11.320312 0 z M 26.701172 2.7753906 L 24.931641 4.5449219 L 25.273438 5.7988281 L 28.601562 9.125 L 29.855469 9.46875 L 31.625 7.6992188 L 26.701172 2.7753906 z M 16.404297 9.1757812 L 16.404297 18.025391 L 25.001953 18.025391 C 25.001953 13.137232 21.153745 9.1757813 16.404297 9.1757812 z " />
         </g>
     </svg>
-</vi-icon>
+</vi-resource>
 
 <script src="user.js"></script>

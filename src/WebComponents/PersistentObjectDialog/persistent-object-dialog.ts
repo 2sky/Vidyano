@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     export interface IPersistentObjectDialogOptions {
         noHeader?: boolean;
         saveLabel?: string;
@@ -9,16 +7,20 @@ namespace Vidyano.WebComponents {
         cancel?: (close: () => void) => void;
     }
 
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             persistentObject: Object,
             tab: {
                 type: Object,
-                computed: "_computeTab(persistentObject, isAttached)"
+                computed: "_computeTab(persistentObject, isConnected)"
             },
             readOnly: {
                 type: Boolean,
                 computed: "_computeReadOnly(tab)"
+            },
+            canSave: {
+                type: Boolean,
+                computed: "_computeCanSave(persistentObject.isBusy, persistentObject.dialogSaveAction.canExecute)"
             },
             saveLabel: {
                 type: String,
@@ -94,10 +96,6 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _canSave(isBusy: boolean, canExecute: boolean): boolean {
-            return !isBusy && canExecute;
-        }
-
         private _cancel() {
             if (this.options.cancel)
                 this.options.cancel(() => this.cancel());
@@ -105,6 +103,10 @@ namespace Vidyano.WebComponents {
                 this.persistentObject.cancelEdit();
                 this.cancel();
             }
+        }
+
+        private _computeCanSave(isBusy: boolean, canExecute: boolean): boolean {
+            return !isBusy && canExecute;
         }
 
         private _computeSaveLabel(app: Vidyano.WebComponents.App): string {
@@ -121,16 +123,17 @@ namespace Vidyano.WebComponents {
             return label || this.translateMessage("Save");
         }
 
-        private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {
-            if (!persistentObject || !isAttached)
+        private _computeTab(persistentObject: Vidyano.PersistentObject, isConnected: boolean): Vidyano.PersistentObjectAttributeTab {
+            if (!persistentObject || !isConnected)
                 return null;
 
             const tab = <Vidyano.PersistentObjectAttributeTab>persistentObject.tabs.find(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
             tab.columnCount = tab.columnCount > 1 ? tab.columnCount : 1;
 
-            const width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * tab.columnCount;
-            this.customStyle["--vi-persistent-object-dialog-computed-width"] = `${width}px`;
-            this.updateStyles();
+            const width = parseInt(ShadyCSS.getComputedStyleValue(this, "--vi-persistent-object-dialog-base-width-base")) * tab.columnCount;
+            this.updateStyles({
+                "--vi-persistent-object-dialog-computed-width": `${width}px`
+            });
 
             return tab;
         }
@@ -147,7 +150,7 @@ namespace Vidyano.WebComponents {
             return readOnly || noCancel;
         }
 
-        private _executeExtraAction(e: TapEvent) {
+        private _executeExtraAction(e: Polymer.TapEvent) {
             const action = e.model.action as Vidyano.Action;
             if (!action.canExecute)
                 return;
@@ -159,13 +162,13 @@ namespace Vidyano.WebComponents {
             // Skip default tab navigation behavior
         }
 
-        private _tabInnerSizeChanged(e: CustomEvent, detail: { size: ISize; }) {
+        private _tabInnerSizeChanged(e: SizeTrackerEvent) {
             e.stopPropagation();
 
-            if (!detail.size.height)
+            if (!e.detail.height)
                 return;
 
-            this.$.main.style.height = `${detail.size.height}px`;
+            this.$.main.style.height = `${e.detail.height}px`;
             this._translateReset();
         }
     }

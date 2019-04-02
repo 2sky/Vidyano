@@ -1,5 +1,4 @@
 namespace Vidyano {
-    "use strict";
 
     export enum SortDirection {
         None,

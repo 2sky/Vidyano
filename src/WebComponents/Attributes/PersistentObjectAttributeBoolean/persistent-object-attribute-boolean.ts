@@ -1,7 +1,6 @@
 namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             canToggle: {
                 type: Boolean,
@@ -20,8 +19,8 @@ namespace Vidyano.WebComponents.Attributes {
     export class PersistentObjectAttributeBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
         readonly defaultInputtype: string; private _setDefaultInputtype: (defaultInputtype: string) => void;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this._setDefaultInputtype(this.app.configuration.getSetting("vi-persistent-object-attribute-boolean.inputtype", "toggle").toLowerCase());
         }
@@ -35,7 +34,7 @@ namespace Vidyano.WebComponents.Attributes {
             return editing && !isReadOnly;
         }
 
-        private _isDisabled(isReadOnly: boolean, isFrozen: boolean): boolean {
+        private _computeIsDisabled(isReadOnly: boolean, isFrozen: boolean): boolean {
             return isReadOnly || isFrozen;
         }
 
@@ -44,7 +43,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
     }
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             booleanOptions: {
                 type: Array,
@@ -54,9 +53,6 @@ namespace Vidyano.WebComponents.Attributes {
     })
     export class PersistentObjectAttributeNullableBoolean extends WebComponents.Attributes.PersistentObjectAttribute {
         private _computeBooleanOptions(attribute: Vidyano.PersistentObjectAttribute): KeyValuePair<boolean, string>[] {
-            if (!attribute)
-                return [];
-
             const options = attribute.type.startsWith("Nullable") ? [
                 {
                     key: null,

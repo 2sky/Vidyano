@@ -1,9 +1,7 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register()
     export class AppConfig extends WebComponent {
-        private _nodeObserver: PolymerDomChangeObserver;
+        private _nodeObserver: Polymer.FlattenedNodesObserver;
         private _defaultAttributeConfig: PersistentObjectAttributeConfig;
         private _persistentObjectConfigs: PersistentObjectConfig[] = [];
         private _attributeConfigs: PersistentObjectAttributeConfig[] = [];
@@ -11,20 +9,24 @@ namespace Vidyano.WebComponents {
         private _programUnitConfigs: ProgramUnitConfig[] = [];
         private _queryConfigs: QueryConfig[] = [];
         private _queryChartConfigs: QueryChartConfig[] = [];
+        private _spinnerConfig: SpinnerConfig;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
-            this._nodeObserver = Polymer.dom(this.root).observeNodes(this._nodesChanged.bind(this));
+            const configsSlot = <HTMLSlotElement>this.$.configs;
+            configsSlot.assignedNodes({ flatten: true }).forEach(node => this._handleNode(<WebComponent>node, true));
+
+            this._nodeObserver = new Polymer.FlattenedNodesObserver(configsSlot, this._nodesChanged.bind(this));
         }
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
-            Polymer.dom(this.root).unobserveNodes(this._nodeObserver);
+            this._nodeObserver.disconnect();
         }
 
-        private _nodesChanged(info: PolymerDomChangedInfo) {
+        private _nodesChanged(info: Polymer.FlattenedNodesObserverInfo) {
             info.addedNodes.forEach(node => this._handleNode(node as WebComponent, true));
             info.removedNodes.forEach(node => this._handleNode(node as WebComponent, false));
         }
@@ -59,27 +61,32 @@ namespace Vidyano.WebComponents {
                     arr = this._queryChartConfigs;
                     break;
 
+                case "VI-SPINNER-CONFIG":
+                    this._spinnerConfig = <SpinnerConfig>node;
+
                 default:
                     return;
             }
 
-            if (added)
-                arr.push(node);
+            if (added) {
+                if (arr.indexOf(node) < 0)
+                    arr.push(node);
+            }
             else
                 arr.remove(node);
         }
 
         getSetting(key: string, defaultValue?: string): string {
-            const setting = <AppSetting>this.queryEffectiveChildren(`vi-app-setting[key="${key}"]`);
+            const setting = <AppSetting>this.querySelector(`vi-app-setting[key="${key}"]`);
             return setting ? setting.getAttribute("value") : defaultValue;
         }
 
         getPersistentObjectConfig(persistentObject: Vidyano.PersistentObject): PersistentObjectConfig {
-            return (<AppServiceHooks>this.app.service.hooks).getPersistentObjectConfig(persistentObject, this._persistentObjectConfigs);
+            return (<AppServiceHooks>this.service.hooks).getPersistentObjectConfig(persistentObject, this._persistentObjectConfigs);
         }
 
         getAttributeConfig(attribute: Vidyano.PersistentObjectAttribute): PersistentObjectAttributeConfig {
-            let config = (<AppServiceHooks>this.app.service.hooks).getAttributeConfig(attribute, this._attributeConfigs);
+            let config = (<AppServiceHooks>this.service.hooks).getAttributeConfig(attribute, this._attributeConfigs);
             if (!config) {
                 if (!this._defaultAttributeConfig)
                     this._defaultAttributeConfig = <PersistentObjectAttributeConfig><any>this.appendChild(new WebComponents.PersistentObjectAttributeConfig());
@@ -91,29 +98,31 @@ namespace Vidyano.WebComponents {
         }
 
         getTabConfig(tab: Vidyano.PersistentObjectTab): PersistentObjectTabConfig {
-            return (<AppServiceHooks>this.app.service.hooks).getTabConfig(tab, this._tabConfigs);
+            return (<AppServiceHooks>this.service.hooks).getTabConfig(tab, this._tabConfigs);
         }
 
         getProgramUnitConfig(name: string): ProgramUnitConfig {
-            return (<AppServiceHooks>this.app.service.hooks).getProgramUnitConfig(name, this._programUnitConfigs);
+            return (<AppServiceHooks>this.service.hooks).getProgramUnitConfig(name, this._programUnitConfigs);
         }
 
         getQueryConfig(query: Vidyano.Query): QueryConfig {
-            return (<AppServiceHooks>this.app.service.hooks).getQueryConfig(query, this._queryConfigs);
+            return (<AppServiceHooks>this.service.hooks).getQueryConfig(query, this._queryConfigs);
         }
 
         getQueryChartConfig(type: string): QueryChartConfig {
-            return (<AppServiceHooks>this.app.service.hooks).getQueryChartConfig(type, this._queryChartConfigs);
+            return (<AppServiceHooks>this.service.hooks).getQueryChartConfig(type, this._queryChartConfigs);
         }
 
         getSpinnerConfig(): SpinnerConfig {
-            return <SpinnerConfig>this.queryEffectiveChildren(`vi-spinner-config`) || null;
+            return this._spinnerConfig;
         }
 
         private _getConfigs<T>(type: any): T[] {
-            return [].concat(...Array.from(Polymer.dom(this).children).filter(c => c.tagName !== "TEMPLATE").map(element => {
-                if (element.tagName === "CONTENT")
-                    return Array.from(Polymer.dom(element).getDistributedNodes()).filter(c => c.tagName !== "TEMPLATE");
+            return [].concat(...Array.from(this.children).filter(c => c.tagName !== "TEMPLATE").map(element => {
+                if (element.tagName === "SLOT") {
+                    const slot = <HTMLSlotElement>element;
+                    return Array.from(slot.assignedNodes({ flatten: true })).filter(c => (<any>c).tagName !== "TEMPLATE");
+                }
 
                 return [element];
             })).filter(child => child instanceof type).map(child => <T><any>child);

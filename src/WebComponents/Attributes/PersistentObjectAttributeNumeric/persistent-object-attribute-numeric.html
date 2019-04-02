@@ -1,18 +1,23 @@
 ﻿<dom-module id="vi-persistent-object-attribute-numeric">
     <template>
+        <style include="vi-persistent-object-attribute-style-module"></style>
         <link rel="stylesheet" href="persistent-object-attribute-numeric.css" />
-        <template is="dom-if" if="[[!editing]]">
-            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
-        </template>
-        <template is="dom-if" if="[[editing]]">
-            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <div content class="layout horizontal">
-                    <span class="before" hidden$="[[!unitBefore]]">[[unitBefore]]</span>
-                    <input class="flex" value="{{value::input}}" type$="[[inputtype]]" sensitive$="[[sensitive]]" on-keypress="_keypress" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]" tabindex$="[[readOnlyTabIndex]]" placeholder="[[placeholder]]">
-                    <span class="after" hidden$="[[!unitAfter]]">[[unitAfter]]</span>
-                </div>
-            </vi-persistent-object-attribute-edit>
-        </template>
+        <dom-if if="[[!editing]]">
+            <template>
+                <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+            </template>
+        </dom-if>
+        <dom-if if="[[editing]]">
+            <template>
+                <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                    <div class="layout horizontal">
+                        <span class="before" hidden$="[[!unitBefore]]">[[unitBefore]]</span>
+                        <input class="flex" value="{{value::input}}" type$="[[inputtype]]" sensitive$="[[sensitive]]" on-keypress="_keypress" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]" tabindex$="[[readOnlyTabIndex]]" placeholder="[[placeholder]]">
+                        <span class="after" hidden$="[[!unitAfter]]">[[unitAfter]]</span>
+                    </div>
+                </vi-persistent-object-attribute-edit>
+            </template>
+        </dom-if>
     </template>
 </dom-module>
 

@@ -1,7 +1,6 @@
 namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             unitBefore: {
                 type: String,
@@ -132,7 +131,7 @@ namespace Vidyano.WebComponents.Attributes {
         private _editInputFocus(e: Event) {
             this._setFocused(true);
 
-            const input = <HTMLInputElement>e.target;
+            const input = <HTMLInputElement>this.todo_checkEventTarget(e.target);
             if (!input.value || !this.attribute.getTypeHint("SelectAllOnFocus"))
                 return;
 
@@ -201,7 +200,7 @@ namespace Vidyano.WebComponents.Attributes {
             if (keyCode === Keyboard.KeyCodes.tab || keyCode === Keyboard.KeyCodes.shift || keyCode === Keyboard.KeyCodes.control || keyCode === Keyboard.KeyCodes.alt || keyCode === Keyboard.KeyCodes.leftarrow || keyCode === Keyboard.KeyCodes.rightarrow || keyCode === Keyboard.KeyCodes.uparrow || keyCode === Keyboard.KeyCodes.downarrow || keyCode === Keyboard.KeyCodes.backspace)
                 return;
 
-            const input = <HTMLInputElement>e.target;
+            const input = <HTMLInputElement>this.todo_checkEventTarget(e.target);
             let value = input.value;
             const carretIndex = input.selectionStart;
             if (input.selectionEnd !== carretIndex)

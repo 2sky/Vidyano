@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export class PersistentObjectTab extends Common.Observable<PersistentObjectTab> {
         tabGroupIndex: number;
 

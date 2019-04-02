@@ -1,29 +1,36 @@
-﻿<link rel="import" href="../../Checkbox/checkbox.html" />
+<link rel="import" href="../../Checkbox/checkbox.html" />
 <link rel="import" href="../../Popup/popup.html" />
 
 <dom-module name="vi-persistent-object-attribute-flags-enum">
     <template>
+        <style include="vi-persistent-object-attribute-style-module"></style>
         <link rel="stylesheet" href="persistent-object-attribute-flags-enum.css" />
-        <template is="dom-if" if="[[!editing]]">
-            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
-        </template>
-        <template is="dom-if" if="[[editing]]">
-            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <vi-popup sticky content disabled$="[[_disablePopup(readOnly, attribute.parent.isFrozen, sensitive)]]">
-                    <div header class="layout horizontal flex">
-                        <input class="flex" header value="[[attribute.displayValue]]" readonly placeholder="[[placeholder]]" sensitive$="[[sensitive]]">
-                        <vi-icon source="CaretDown" hidden$="[[readOnly]]"></vi-icon>
-                    </div>
-                    <ul content>
-                        <template is="dom-repeat" items="[[options]]" as="option">
-                            <li>
-                                <vi-persistent-object-attribute-flags-enum-flag attribute="[[attribute]]" option="[[option]]"></vi-persistent-object-attribute-flags-enum-flag>
-                            </li>
-                        </template>
-                    </ul>
-                </vi-popup>
-            </vi-persistent-object-attribute-edit>
-        </template>
+        <dom-if if="[[!editing]]">
+            <template>
+                <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+            </template>
+        </dom-if>
+        <dom-if if="[[editing]]">
+            <template>
+                <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                    <vi-popup sticky disabled$="[[op.some(readOnly, attribute.parent.isFrozen, sensitive)]]">
+                        <div slot="header" class="layout horizontal flex">
+                            <input class="flex" header value="[[attribute.displayValue]]" readonly placeholder="[[placeholder]]" sensitive$="[[sensitive]]">
+                            <vi-icon source="CaretDown" hidden$="[[readOnly]]"></vi-icon>
+                        </div>
+                        <ul>
+                            <dom-repeat items="[[options]]" as="option">
+                                <template>
+                                    <li>
+                                        <vi-persistent-object-attribute-flags-enum-flag attribute="[[attribute]]" option="[[option]]"></vi-persistent-object-attribute-flags-enum-flag>
+                                    </li>
+                                </template>
+                            </dom-repeat>
+                        </ul>
+                    </vi-popup>
+                </vi-persistent-object-attribute-edit>
+            </template>
+        </dom-if>
     </template>
 </dom-module>
 

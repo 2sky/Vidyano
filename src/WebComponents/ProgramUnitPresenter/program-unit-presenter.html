@@ -1,10 +1,12 @@
 <dom-module id="vi-program-unit-presenter">
     <template>
         <link rel="stylesheet" href="program-unit-presenter.css" />
-        <template is="dom-if" if="[[error]]" restamp>
-            <vi-error class="fit" message="[[error]]"></vi-error>
-        </template>
-        <content></content>
+        <dom-if if="[[error]]" restamp>
+            <template>
+                <vi-error class="fit" message="[[error]]"></vi-error>
+            </template>
+        </dom-if>
+        <slot></slot>
     </template>
 </dom-module>
 

@@ -1,0 +1,37 @@
+﻿<dom-module id="vi-query-grid-row">
+    <template>
+        <link rel="stylesheet" href="query-grid-row.css" />
+        <dom-if if="[[item]]">
+            <template>
+                <div id="header" on-tap="_select">
+                    <vi-icon source="Selected" is-selected$="[[item.isSelected]]"></vi-icon>
+                </div>
+                <div id="cells" class="layout horizontal">
+                    <dom-repeat items="[[columns]]" as="column" id="cellsTemplate">
+                        <template>
+                            <vi-query-grid-cell item="[[item]]" column="[[column]]"></vi-query-grid-cell>
+                        </template>
+                    </dom-repeat>
+                </div>
+            </template>
+        </dom-if>
+        <dom-if if="[[group]]">
+            <template>
+                <div id="group">
+                    <vi-icon source="QueryGrid_Group_Row"></vi-icon>
+                    <label>[[_getGroupName(group)]]</label>
+                </div>
+            </template>
+        </dom-if>
+    </template>
+</dom-module>
+
+<vi-resource name="QueryGrid_Group_Row" type="icon">
+    <svg viewBox="0 0 32 32">
+        <g>
+            <path d="M 24 8 L 8 24 L 24 24 L 24 8 z " />
+        </g>
+    </svg>
+</vi-icon>
+
+<script src="query-grid-row.js"></script>

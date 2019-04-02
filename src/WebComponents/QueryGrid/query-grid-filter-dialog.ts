@@ -1,7 +1,5 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             persistentObject: {
                 type: Object,
@@ -70,8 +68,8 @@
         group: string;
         name: string;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this._groupingChanged(this.grouping);
         }
@@ -93,7 +91,7 @@
         }
 
         private _groupingChanged(grouping: boolean, previous?: boolean) {
-            const input = <HTMLInputElement>this.$$(`input.${grouping ? "group" : "name"}`);
+            const input = <HTMLInputElement>this.shadowRoot.querySelector(`input.${grouping ? "group" : "name"}`);
 
             input.selectionStart = 0;
             if (grouping && previous !== false && input.value)

@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             query: Object,
@@ -24,11 +22,11 @@ namespace Vidyano.WebComponents {
             return charts.groupBy(c => c.type).filter(cg => !!this.app.configuration.getQueryChartConfig(cg.key)).map(ct => new ChartType(ct.key, ct.value));
         }
 
-        private _showGrid(e: TapEvent) {
+        private _showGrid(e: Polymer.TapEvent) {
             this.query.currentChart = null;
         }
 
-        private _showChart(e: TapEvent) {
+        private _showChart(e: Polymer.TapEvent) {
             this.query.currentChart = e.model.chart || (e.model.type && e.model.type.single ? e.model.type.charts[0] : null);
         }
     }

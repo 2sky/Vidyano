@@ -1,6 +1,4 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
     interface IPersistentObjectGroupItem {
         attribute: Vidyano.PersistentObjectAttribute;
         config: Vidyano.WebComponents.PersistentObjectAttributeConfig;
@@ -37,12 +35,11 @@
             }
         },
         observers: [
-            "_arrange(group.attributes, columns, isAttached)"
+            "_arrange(group.attributes, columns, isConnected)"
         ],
         listeners: {
             "attribute-loading": "_onAttributeLoading",
-            "attribute-loaded": "_onAttributeLoaded",
-            "focus": "_focus"
+            "attribute-loaded": "_onAttributeLoaded"
         },
         forwardObservers: [
             "group.attributes"
@@ -58,8 +55,8 @@
         group: Vidyano.PersistentObjectAttributeGroup;
         columns: number;
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
             this._clearAsyncTasks();
         }
@@ -76,8 +73,8 @@
             return group.label;
         }
 
-        private _arrange(attributes: Vidyano.PersistentObjectAttribute[], columns: number, attached: boolean) {
-            if (!attached || !columns || !attributes || attributes.length === 0)
+        private _arrange(attributes: Vidyano.PersistentObjectAttribute[], columns: number, isConnected: boolean) {
+            if (!isConnected || !columns || !attributes || attributes.length === 0)
                 return;
 
             let oldItems: IPersistentObjectGroupItem[] = [];
@@ -112,7 +109,7 @@
                 return;
 
             this._clearAsyncTasks();
-            oldItems.filter(item => item.presenter.isAttached).forEach(item => Polymer.dom(this.$.grid).removeChild(item.presenter));
+            oldItems.filter(item => item.presenter.isConnected).forEach(item => this.$.grid.removeChild(item.presenter));
 
             const areas: string[][] = [];
 
@@ -203,7 +200,6 @@
                 if (!item.presenter) {
                     item.presenter = new Vidyano.WebComponents.PersistentObjectAttributePresenter();
                     item.presenter.attribute = item.attribute;
-                    item.presenter.customStyle[`--vi-persistent-object-group--attribute-area`] = item.area;
 
                     if (this.app.isIe) {
                         item.presenter.style.msGridRow = `${row + 1}`;
@@ -214,9 +210,11 @@
                 }
 
                 const renderItem = item;
-                const renderHandle = Polymer.Async.run(() => {
-                    Polymer.dom(this.$.grid).appendChild(renderItem.presenter);
-                    renderItem.presenter.updateStyles();
+                const renderHandle = Polymer.Async.animationFrame.run(() => {
+                    this.$.grid.appendChild(renderItem.presenter);
+                    renderItem.presenter.updateStyles({
+                        "--vi-persistent-object-group--attribute-area": renderItem.area
+                    });
                 });
                 this._asyncHandles.push(renderHandle);
 
@@ -238,8 +236,9 @@
                 this.$.grid.style.msGridRows = "auto";
             }
 
-            this.customStyle[`--vi-persistent-object-group--grid-areas`] = areas.map(r => `"${r.map(a => a || ".").join(" ")}"`).join(" ");
-            this.updateStyles();
+            this.updateStyles({
+                "--vi-persistent-object-group--grid-areas": areas.map(r => `"${r.map(a => a || ".").join(" ")}"`).join(" ")
+            });
 
             this._itemsChecksum = itemsChecksum;
         }
@@ -250,7 +249,7 @@
                 if (!handle)
                     break;
 
-                Polymer.Async.cancel(handle);
+                Polymer.Async.animationFrame.cancel(handle);
             }
         }
 

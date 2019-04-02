@@ -23,9 +23,7 @@ $notification-ok: #339f7b;
     --theme-dark-border: darken(#EAEAEA, 15%);
     --theme-read-only: #f7f7f7;
 
-    --theme-shadow: {
-        box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
-    };
+    --theme-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
 }
 
 @mixin theme-color-button() {
@@ -123,20 +121,8 @@ $notification-ok: #339f7b;
     }
 }
 
-@mixin hideScrollbars() {
-    -ms-overflow-style: none;
-    overflow: -moz-scrollbars-none;
-
-    &::-webkit-scrollbar {
-        width: 0 !important;
-        height: 0 !important;
-    }
-}
-
 @mixin z-index1() {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
 @mixin page-title() {

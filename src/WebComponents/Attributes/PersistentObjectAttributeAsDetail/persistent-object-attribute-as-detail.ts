@@ -1,7 +1,6 @@
 namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             columns: {
                 type: Array,
@@ -45,7 +44,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_updateWidths(columns, size.width, deleteAction, editing, isAttached)",
+            "_updateWidths(columns, size.width, deleteAction, editing, isConnected)",
             "_updateActions(attribute.details.actions, editing, readOnly, attribute)"
         ],
         forwardObservers: [
@@ -92,17 +91,13 @@ namespace Vidyano.WebComponents.Attributes {
             return contentHeight + this._inlineAddHeight > this.$.table.offsetHeight - this.$.head.offsetHeight;
         }
 
-        private _computeDeleteDisabled(frozen: boolean, readOnly: boolean): boolean {
-            return frozen || readOnly;
-        }
-
         private _updateActions(actions: Vidyano.Action[], editing: boolean, readOnly: boolean, attribute: Vidyano.PersistentObjectAttributeAsDetail) {
             this._setNewAction(editing && !readOnly ? actions["New"] || null : null);
             this._setDeleteAction(editing && !readOnly && (attribute.parent.isNew || !!actions["Delete"]));
         }
 
-        private _updateWidths(columns: QueryColumn[], width: number, deleteAction: Vidyano.Action, editing: boolean, isAttached: boolean) {
-            if (!isAttached || !columns || !columns.length || !width || this._lastComputedWidths === width)
+        private _updateWidths(columns: QueryColumn[], width: number, deleteAction: Vidyano.Action, editing: boolean, isConnected: boolean) {
+            if (!isConnected || !columns || !columns.length || !width || this._lastComputedWidths === width)
                 return;
 
             const widths: { name: string; width: number; }[] = [];
@@ -157,7 +152,7 @@ namespace Vidyano.WebComponents.Attributes {
             this._setInitializing(false);
         }
 
-        private async _add(e: TapEvent) {
+        private async _add(e: Polymer.TapEvent) {
             try {
                 this._setIsAdding(true);
                 const po = await this.attribute.newObject();
@@ -218,7 +213,7 @@ namespace Vidyano.WebComponents.Attributes {
             });
             this.set("activeObject", objects[objects.length - 1]);
 
-            Polymer.dom(this).flush();
+            Polymer.flush();
             this.async(() => (<Scroller>this.$.body).verticalScrollOffset = (<Scroller>this.$.body).innerHeight);
 
             this.attribute.isValueChanged = true;
@@ -228,11 +223,7 @@ namespace Vidyano.WebComponents.Attributes {
                 await this.attribute._triggerAttributeRefresh(true);
         }
 
-        private _canAdd(isFrozen: boolean, isAdding: boolean): boolean {
-            return !isFrozen && !isAdding;
-        }
-
-        private _delete(e: TapEvent) {
+        private _delete(e: Polymer.TapEvent) {
             const obj = <Vidyano.PersistentObject>e.model.obj;
             if (obj.isReadOnly)
                 return;
@@ -248,11 +239,7 @@ namespace Vidyano.WebComponents.Attributes {
                 this.attribute._triggerAttributeRefresh(true);
         }
 
-        private _isActiveObject(activeObject: Vidyano.PersistentObject, obj: Vidyano.PersistentObject): boolean {
-            return activeObject === obj;
-        }
-
-        private _setActiveObject(e: TapEvent) {
+        private _setActiveObject(e: Polymer.TapEvent) {
             if (!this.readOnly)
                 this.set("activeObject", e.model.obj);
 
@@ -260,7 +247,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         private _titleMouseenter(e: MouseEvent) {
-            const label = <HTMLElement>e.target;
+            const label = <HTMLElement>this.todo_checkEventTarget(e.target);
             label.setAttribute("title", label.offsetWidth < label.scrollWidth ? label.textContent : "");
         }
     }
@@ -284,6 +271,10 @@ namespace Vidyano.WebComponents.Attributes {
                 type: Object,
                 value: null,
                 readOnly: true
+            },
+            isSensitive: {
+                type: Boolean,
+                computed: "_computeIsSensitive(column, isAppSensitive)"
             }
         },
         forwardObservers: [
@@ -304,37 +295,33 @@ namespace Vidyano.WebComponents.Attributes {
             return !column.isHidden && column.width !== "0";
         }
 
-        private _getDisplayValue(obj: Vidyano.PersistentObject, column: QueryColumn): string {
-            const attr = this._getAttributeForColumn(obj, column);
-            return attr && attr.displayValue || "";
+        private _attributeForColumn(obj: Vidyano.PersistentObject, column: QueryColumn): Vidyano.PersistentObjectAttribute {
+            return obj.attributes[column.name];
         }
 
-        private _getAttributeForColumn(obj: Vidyano.PersistentObject, column: QueryColumn): Vidyano.PersistentObjectAttribute {
-            return obj.attributes[column.name];
+        private _displayValue(obj: Vidyano.PersistentObject, column: QueryColumn): string {
+            const attr = this._attributeForColumn(obj, column);
+            return attr && attr.displayValue || "";
         }
 
         private _computeSoftEdit(serviceObject: Vidyano.PersistentObject): boolean {
             return serviceObject && serviceObject.ownerDetailAttribute.objects[0] === serviceObject;
         }
 
-        private _isPresenterAvailable(fullEdit: boolean, softEdit: boolean): boolean {
-            return fullEdit || softEdit;
-        }
-
         private _isSoftEditOnly(fullEdit: boolean, softEdit: boolean): boolean {
             return !fullEdit && softEdit;
         }
 
-        private _isSensitive(column: QueryColumn, isAppSensitive: boolean): boolean {
+        private _computeIsSensitive(column: QueryColumn, isAppSensitive: boolean): boolean {
             return column.isSensitive && isAppSensitive;
         }
 
-        private _setFullEdit(e: TapEvent) {
+        private _setFullEdit(e: Polymer.TapEvent) {
             this.fire("full-edit", null);
-            Polymer.dom(this).flush();
+            Polymer.flush();
 
-            const attribute = this._getAttributeForColumn(this.serviceObject, e.model.column);
-            const presenters = Array.from(Polymer.dom(this.root).querySelectorAll("vi-persistent-object-attribute-presenter"));
+            const attribute = this._attributeForColumn(this.serviceObject, e.model.column);
+            const presenters = Array.from(this.shadowRoot.querySelectorAll("vi-persistent-object-attribute-presenter"));
             const presenter = <PersistentObjectAttributePresenter>presenters.find((p: PersistentObjectAttributePresenter) => p.attribute === attribute);
             if (!presenter)
                 return;

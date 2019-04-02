@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export namespace Actions {
         export class Save extends Action {
             constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions) {

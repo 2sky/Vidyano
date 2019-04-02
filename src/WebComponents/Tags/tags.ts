@@ -1,6 +1,4 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             input: String,
@@ -21,17 +19,17 @@
         tags: string[];
         readonly: boolean;
 
-        private _passFocus(e: TapEvent) {
+        private _passFocus(e: Polymer.TapEvent) {
             if (this.readonly)
                 return;
 
-            const input = <HTMLInputElement>Polymer.dom(this.root).querySelector("#tagsInput");
+            const input = <HTMLInputElement>this.shadowRoot.querySelector("input");
             if (!input)
                 return;
 
             input.focus();
 
-            const scroller = <Scroller>Polymer.dom(this.root).querySelector("#scroller");
+            const scroller = <Scroller>this.$.scroller;
             scroller.scrollToBottom();
         }
 
@@ -43,8 +41,7 @@
                 this._addTag(this.input);
             else {
                 const newWidth = (this.input.length * 8) + 30;
-                this.customStyle["--tags-input--width"] = `${newWidth}px`;
-                this.updateStyles();
+                this.updateStyles({ "--tags-input--width": `${newWidth}px` });
             }
         }
 
@@ -61,14 +58,13 @@
             if (!((/^\s*$/.test(input)))) {
                 this.push("tags", input);
                 this.input = undefined;
-                this.customStyle["--tags-input--width"] = "30px";
-                this.updateStyles();
+                this.updateStyles({ "--tags-input--width": "30px" });
             }
             else
                 this.input = undefined;
         }
 
-        private _onDeleteTap(e: TapEvent) {
+        private _onDeleteTap(e: Polymer.TapEvent) {
             this.splice("tags", this.tags.indexOf(e.model.tag), 1);
         }
     }

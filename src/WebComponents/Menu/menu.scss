@@ -9,259 +9,181 @@ $backgroundColor: $blue-grey-900;
     @include noSelection();
     color: var(--vi-menu-color, $color);
     background-color: var(--vi-menu-background, $backgroundColor);
+    width: var(--vi-menu--expand-width, 17em);
     --at-apply: --vi-menu;
 
-    &:not([collapsed]) {
-        width: var(--vi-menu--expand-width, 17em);
-
-        header {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
-            #toggleCollapse {
-                background-color: transparent;
-            }
+    &[hide-search] {
+        vi-input-search {
+            display: none !important;
         }
-
-        vi-scroller[vertical][hovering] + #resizer {
-            width: calc(var(--theme-h5) / 2);
-        }
-
-        #add {
-            height: var(--theme-h2);
-            line-height: var(--theme-h2);
-            padding-left: calc(var(--theme-h4) * 2);
-            cursor: pointer;
-            font-style: italic;
-
-            &:hover {
-                background-color: rgba(0, 0, 0, 0.1);
-            }
-        }
-
-        .instantSearch {
-            position: relative;
-            margin-bottom: var(--theme-h5);
-            padding: var(--theme-h5) 0;
-            background-color: rgba(0,0,0,0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-
-            a {
-                cursor: pointer;
-                color: var(--vi-menu-color, $color);
-                line-height: var(--theme-h2);
-                padding: 0 var(--theme-h4);
-                text-decoration: none;
-                overflow: hidden;
-                text-overflow: ellipsis;
-
-                div {
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    padding-right: var(--theme-h5);
-                }
-
-                span {
-                    &.match {
-                        color: #FFDD00;
-                        font-weight: bold;
-                        pointer-events: none;
-                    }
-
-                    &.label {
-                        font-size: 11px;
-                        font-weight: 100;
-                        text-transform: uppercase;
-                        line-height: var(--theme-h2);
-                        transform: translateY(1px);
-                    }
-                }
-
-                &:hover {
-                    background-color: rgba(0, 0, 0, 0.1);
-                }
-            }
-
-            & + vi-menu-item {
-                margin-top: var(--theme-h5);
-            }
+    
+        vi-menu-item:first-of-type {
+            margin-top: var(--theme-h5);
         }
     }
-
-    &[collapsed] {
-        width: var(--theme-h1);
-
-        header {
-            #toggleCollapse {
-                position: relative;
-                background-color: var(--theme-color-dark);
-
-                 > vi-icon {
-                    -moz-transform: rotate(180deg);
-                    -ms-transform: rotate(180deg);
-                    -o-transform: rotate(180deg);
-                    -webkit-transform: rotate(180deg);
-                    transform: rotate(180deg);
-                }
-            }
-
-            span {
-                display: none;
-            }
-
-            .label {
-                display: none;
-            }
-        }
-
-        .programUnits.vi-menu.style-scope {
-            :not(.program-unit) + .subItems {
-                display: none;
-            }
-
-            vi-menu-item[expand] + .subItems, vi-menu-item[filtering]:not([hide]) + .subItems {
-                display: block;
-            }
-
-            .subItems[content] {
-                vi-menu-item {
-                    padding-right: var(--theme-h4);
-                }
-
-                &[item-count="1"] > vi-menu-item {
-                    height: var(--theme-h1);
-                    line-height: var(--theme-h1);
-                }
-
-                &:not([has-group-items]) > vi-menu-item {
-                    padding-left: var(--theme-h5);
-                }
-            }
-        }
-
-        vi-popup {
-            [content] {
-                background-color: var(--vi-menu-background, $backgroundColor);
-            }
-        }
+    
+    &[is-resizing] #resizer, #resizer:hover {
+        background-color: #333;
     }
+}
 
-    header, footer {
-        display: block;
-        line-height: var(--theme-h1);
-        flex-shrink: 0;
+header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    #toggleCollapse {
+        background-color: transparent;
     }
+}
 
-    header {
-        position: relative;
-        text-align: center;
+vi-scroller[vertical][hovering] + #resizer {
+    width: calc(var(--theme-h5) / 2);
+}
 
-        .label {
-            display: block;
-            font-size: var(--theme-h3);
-            line-height: calc(var(--theme-h1) * 2);
-            height: calc(var(--theme-h1) * 2);
-            background-color: var(--theme-color-dark);
+#add {
+    height: var(--theme-h2);
+    line-height: var(--theme-h2);
+    padding-left: calc(var(--theme-h4) * 2);
+    cursor: pointer;
+    font-style: italic;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+}
+
+.instantSearch {
+    position: relative;
+    margin-bottom: var(--theme-h5);
+    padding: var(--theme-h5) 0;
+    background-color: rgba(0,0,0,0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    a {
+        cursor: pointer;
+        color: var(--vi-menu-color, $color);
+        line-height: var(--theme-h2);
+        padding: 0 var(--theme-h4);
+        text-decoration: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        div {
             white-space: nowrap;
             overflow: hidden;
-            --at-apply: --vi-menu--label;
+            text-overflow: ellipsis;
+            padding-right: var(--theme-h5);
         }
 
-        #toggleCollapse {
-            position: absolute;
-            top: 0;
-            right: 0;
-            height: var(--theme-h1);
-            width: var(--theme-h1);
-            fill: rgba(255, 255, 255, 0.5);
-            --at-apply: --vi-menu--toggle-collapse;
+        span {
+            &.match {
+                color: #FFDD00;
+                font-weight: bold;
+                pointer-events: none;
+            }
 
-            > vi-icon {
-                -moz-transition: transform 0.3s ease-in-out;
-                -o-transition: transform 0.3s ease-in-out;
-                -webkit-transition: transform 0.3s ease-in-out;
-                transition: transform 0.3s ease-in-out;
-
-                --vi-icon-width: var(--theme-h4);
-                --vi-icon-height: var(--theme-h4);
+            &.label {
+                font-size: 11px;
+                font-weight: 100;
+                text-transform: uppercase;
+                line-height: var(--theme-h2);
+                transform: translateY(1px);
             }
         }
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
     }
 
-    footer {
+    & + vi-menu-item {
+        margin-top: var(--theme-h5);
+    }
+}
+
+header, footer {
+    display: block;
+    line-height: var(--theme-h1);
+    flex-shrink: 0;
+}
+
+header {
+    position: relative;
+    text-align: center;
+
+    .label {
+        display: block;
+        font-size: var(--theme-h3);
+        line-height: calc(var(--theme-h1) * 2);
+        height: calc(var(--theme-h1) * 2);
+        background-color: var(--theme-color-dark);
+        white-space: nowrap;
         overflow: hidden;
-        --at-apply: --vi-menu--footer;
+        --at-apply: --vi-menu--label;
     }
 
-    vi-input-search:not([collapsed]) {
+    #toggleCollapse {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: var(--theme-h1);
+        width: var(--theme-h1);
+        fill: rgba(255, 255, 255, 0.5);
+        --at-apply: --vi-menu--toggle-collapse;
+
+        > vi-icon {
+            transition: transform 0.3s ease-in-out;
+
+            --vi-icon-width: var(--theme-h4);
+            --vi-icon-height: var(--theme-h4);
+        }
+    }
+}
+
+footer {
+    overflow: hidden;
+    --at-apply: --vi-menu--footer;
+}
+
+vi-input-search {
+    &:not([collapsed]) {
         --vi-input-search: {
             margin-top: calc(var(--theme-h4) / 2);
             margin-right: calc(var(--theme-h4) - var(--theme-h4) / 2);
             margin-bottom: calc(var(--theme-h4) / 2);
             margin-left: calc(var(--theme-h4) - var(--theme-h4) / 2);
         };
-
+    
         --vi-input-search-input: {
             padding-left: var(--theme-h5);
         };
     }
-
+    
     --vi-input-search-input-focused-button: {
         background-color: transparent;
         fill: white;
         border-top-width: 0;
         border-right-width: 0;
         border-bottom-width: 0;
-    };
-
-    vi-input-search[collapsed] {
+    }
+    
+    &[collapsed] {
         --vi-input-search-input: {
             line-height: var(--theme-h1);
             padding-top: 0;
             padding-bottom: 0;
-        };
-    }
-
-    &[hide-search] {
-        vi-input-search {
-            display: none !important;
-        }
-
-        vi-menu-item:first-of-type {
-            margin-top: var(--theme-h5);
         }
     }
+}
 
-    &[collapsed] {
-        header {
-            vi-icon[header] {
-                fill: var(--vi-menu-color, $color);
-                width: var(--theme-h1);
-                height: var(--theme-h1);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                box-sizing: border-box;
-            }
-        }
-
-        #resizer {
-            display: none;
-        }
-    }
-
-    #resizer {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        width: var(--theme-h5);
-        background-color: transparent;
-        cursor: ew-resize;
-        z-index: 99;
-        opacity: 0.5;
-        transform: translateX(calc(var(--theme-h5) / 2));
-    }
-
-    &[is-resizing] #resizer, #resizer:hover {
-        background-color: #333;
-    }
+#resizer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: var(--theme-h5);
+    background-color: transparent;
+    cursor: ew-resize;
+    z-index: 99;
+    opacity: 0.5;
+    transform: translateX(calc(var(--theme-h5) / 2));
 }

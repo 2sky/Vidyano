@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             disabled: {
@@ -29,7 +27,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_hookContextMenu(isAttached, contextMenuOnly)"
+            "_hookContextMenu(isConnected, contextMenuOnly)"
         ],
         listeners: {
             "mouseenter": "_mouseenter",
@@ -49,11 +47,11 @@ namespace Vidyano.WebComponents {
             return (<Popup>this.$.popup).popup();
         }
 
-        private _hookContextMenu(isAttached: boolean, contextMenu: boolean) {
-            if (isAttached && contextMenu)
-                this.parentElement.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
+        private _hookContextMenu(isConnected: boolean, contextMenu: boolean) {
+            if (isConnected && contextMenu)
+                this.domHost.addEventListener("contextmenu", this._openContextEventListener = this._openContext.bind(this));
             else if (this._openContextEventListener) {
-                this.parentElement.removeEventListener("contextmenu", this._openContextEventListener);
+                this.domHost.removeEventListener("contextmenu", this._openContextEventListener);
                 this._openContextEventListener = undefined;
             }
         }
@@ -120,7 +118,7 @@ namespace Vidyano.WebComponents {
         }
     })
     export class PopupMenuItem extends WebComponent {
-        private _observer: PolymerDomChangeObserver;
+        private _observer: Polymer.FlattenedNodesObserver;
         readonly hasChildren: boolean; private _setHasChildren: (hasChildren: boolean) => void;
         checked: boolean;
 
@@ -128,21 +126,21 @@ namespace Vidyano.WebComponents {
             super();
         }
 
-        attached() {
-            this._observer = Polymer.dom(this.$.subItems).observeNodes(info => {
-                this._setHasChildren(Polymer.dom(info.target).getDistributedNodes().length > 0);
+        connectedCallback() {
+            super.connectedCallback();
+
+            const subItems = <HTMLSlotElement>this.$.subItems;
+            this._observer = new Polymer.FlattenedNodesObserver(this.$.subItems, info => {
+                this._setHasChildren(subItems.assignedNodes({ flatten: true }).length > 0);
             });
-
-            super.attached();
         }
 
-        detached() {
-            Polymer.dom(this.$.subItems).unobserveNodes(this._observer);
-
-            super.detached();
+        disconnectedCallback() {
+            this._observer.disconnect();
+            super.disconnectedCallback();
         }
 
-        private _onTap(e: TapEvent) {
+        private _onTap(e: Polymer.TapEvent) {
             if (this._action) {
                 this._action();
                 Vidyano.WebComponents.Popup.closeAll();
@@ -152,7 +150,7 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _catchTap(e: TapEvent) {
+        private _catchTap(e: Polymer.TapEvent) {
             if (!this.hasChildren)
                 return;
 
@@ -185,7 +183,7 @@ namespace Vidyano.WebComponents {
         }
     })
     export class PopupMenuItemSplit extends WebComponent {
-        private _observer: PolymerDomChangeObserver;
+        private _observer: Polymer.FlattenedNodesObserver;
         readonly hasChildren: boolean; private _setHasChildren: (hasChildren: boolean) => void;
         checked: boolean;
 
@@ -193,21 +191,21 @@ namespace Vidyano.WebComponents {
             super();
         }
 
-        attached() {
-            this._observer = Polymer.dom(this.$.subItems).observeNodes(info => {
-                this._setHasChildren(Polymer.dom(info.target).getDistributedNodes().length > 0);
+        connectedCallback() {
+            super.connectedCallback();
+
+            const subItems = <HTMLSlotElement>this.$.subItems;
+            this._observer = new Polymer.FlattenedNodesObserver(this.$.subItems, info => {
+                this._setHasChildren(subItems.assignedNodes({ flatten: true }).length > 0);
             });
-
-            super.attached();
         }
 
-        detached() {
-            Polymer.dom(this.$.subItems).unobserveNodes(this._observer);
-
-            super.detached();
+        disconnectedCallback() {
+            this._observer.disconnect();
+            super.disconnectedCallback();
         }
 
-        private _onTap(e: TapEvent) {
+        private _onTap(e: Polymer.TapEvent) {
             if (this._action) {
                 this._action();
                 Vidyano.WebComponents.Popup.closeAll();
@@ -232,14 +230,11 @@ namespace Vidyano.WebComponents {
         }
     })
     export class PopupMenuItemWithActions extends WebComponent {
-        private _observer: PolymerDomChangeObserver;
-        readonly hasChildren: boolean; private _setHasChildren: (hasChildren: boolean) => void;
-
         constructor(public label?: string, public icon?: string, private _action?: () => void) {
             super();
         }
 
-        private _onTap(e: TapEvent) {
+        private _onTap(e: Polymer.TapEvent) {
             if (this._action) {
                 this._action();
                 Vidyano.WebComponents.Popup.closeAll();
@@ -249,7 +244,7 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _actionsTap(e: TapEvent) {
+        private _actionsTap(e: Polymer.TapEvent) {
             Vidyano.WebComponents.Popup.closeAll();
             e.stopPropagation();
         }

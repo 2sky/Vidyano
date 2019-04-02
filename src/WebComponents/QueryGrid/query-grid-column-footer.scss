@@ -8,8 +8,8 @@
 
     label {
         display: block;
-        line-height: var(--vi-query-grid-header-height, --theme-h2);
-        height: var(--vi-query-grid-header-height, --theme-h2);
+        line-height: var(--vi-query-grid-header-height, var(--theme-h2));
+        height: var(--vi-query-grid-header-height, var(--theme-h2));
         padding: 0 var(--theme-h5);
         white-space: nowrap;
         cursor: default;

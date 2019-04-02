@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export namespace Actions {
         /* tslint:disable:class-name */
         export class viSearch extends Action {

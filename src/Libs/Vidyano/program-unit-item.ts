@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export class ProgramUnitItem extends ServiceObject {
         id: string;
         title: string;

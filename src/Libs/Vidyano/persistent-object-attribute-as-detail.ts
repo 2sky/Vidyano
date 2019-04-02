@@ -1,6 +1,4 @@
 namespace Vidyano {
-    "use strict";
-
     export class PersistentObjectAttributeAsDetail extends PersistentObjectAttribute {
         private _objects: PersistentObject[];
         details: Query;

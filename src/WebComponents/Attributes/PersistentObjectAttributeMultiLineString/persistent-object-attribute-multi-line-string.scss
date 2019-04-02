@@ -11,7 +11,7 @@
     }
 
     pre, textarea {
-        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
+        color: var(--vi-persistent-object-attribute-foreground, var(--theme-foreground));
 
         &[sensitive] {
             --at-apply: --vi-app--sensitive;

@@ -1,20 +1,18 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "es2015"
-    ],
+    "target": "esnext",
     "removeComments": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": false,
     "inlineSourceMap": true,
     "inlineSources": true,
-    "noEmitHelpers": true
+    "noEmitHelpers": true,
+    "alwaysStrict": true
   },
   "include": [
     "src/Libs/Shims/*.ts",
+    "src/Libs/Polymer/types/polymer.d.ts",
     "src/Libs/Typings/**/*.d.ts",
     "src/Libs/Vidyano/vidyano.d.ts",
     "src/WebComponents/**/*.ts"

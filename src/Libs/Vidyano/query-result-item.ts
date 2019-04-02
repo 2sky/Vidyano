@@ -1,5 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
 
     export class QueryResultItem extends ServiceObject {
         private _ignoreSelect: boolean;

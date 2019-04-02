@@ -7,18 +7,18 @@
                 <vi-icon id="sortingIcon" source="[[sorting]]" hidden$="[[!sorting]]"></vi-icon>
             </div>
             <vi-popup-menu right-align id="menu">
-                <button is="vi-button" header icon="CaretDown" inverse></button>
-                <vi-popup-menu-item label="[[translateMessage('SortAscending', isAttached)]]" icon="SortAsc" on-tap="_sort" hidden$="[[!canSort]]"></vi-popup-menu-item>
-                <vi-popup-menu-item label="[[translateMessage('SortDescending', isAttached)]]" icon="SortDesc" on-tap="_sort" hidden$="[[!canSort]]"></vi-popup-menu-item>
+                <vi-button header icon="CaretDown" inverse></vi-button>
+                <vi-popup-menu-item label="[[translateMessage('SortAscending', isConnected)]]" icon="SortAsc" on-tap="_sort" hidden$="[[!canSort]]"></vi-popup-menu-item>
+                <vi-popup-menu-item label="[[translateMessage('SortDescending', isConnected)]]" icon="SortDesc" on-tap="_sort" hidden$="[[!canSort]]"></vi-popup-menu-item>
                 <vi-popup-menu-item-separator hidden$="[[!canSort]]"></vi-popup-menu-item-separator>
                 <vi-popup-menu-item label="[[groupByLabel]]" icon="QueryGrid_Group" on-tap="_group" hidden$="[[!canGroupBy]]"></vi-popup-menu-item>
-                <vi-popup-menu-item label="[[_computePinLabel(isPinned)]]" icon="Pin" checked$="[[isPinned]]" on-tap="_togglePin"></vi-popup-menu-item>
-                <vi-popup-menu-item label="[[translateMessage('HideColumn', isAttached)]]" icon="Eye" on-tap="_hide"></vi-popup-menu-item>
+                <vi-popup-menu-item label="[[pinLabel]]" icon="Pin" checked$="[[isPinned]]" on-tap="_togglePin"></vi-popup-menu-item>
+                <vi-popup-menu-item label="[[translateMessage('HideColumn', isConnected)]]" icon="Eye" on-tap="_hide"></vi-popup-menu-item>
                 <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
-                <vi-popup-menu-item label="[[translateMessage('Manage', isAttached)]]" icon="Configure" on-tap="_configure"></vi-popup-menu-item>
+                <vi-popup-menu-item label="[[translateMessage('Manage', isConnected)]]" icon="Configure" on-tap="_configure"></vi-popup-menu-item>
             </vi-popup-menu>
         </div>
-        <content select="vi-query-grid-column-filter-proxy, vi-query-grid-column-filter"></content>
+        <slot></slot>
         <div class="resizer" on-track="_resizeTrack"></div>
     </template>
 </dom-module>

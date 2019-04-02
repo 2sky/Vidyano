@@ -9,6 +9,13 @@ $discSpacing: 20px;
 	position: relative;
 	@include noSelection();
 
+    &:hover vi-popup[open], vi-popup[hover] {
+        [slot="header"] {
+            background-color: var(--theme-color) !important;
+            fill: white !important;
+        }
+    }
+
 	@mixin numbers($n, $offset, $size) {
 		@for $counter from 1 through $n {
 			$current: ($n - $counter);

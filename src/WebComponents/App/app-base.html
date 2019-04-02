@@ -1,0 +1,151 @@
+
+<dom-module id="vi-base-style-module">
+    <template>
+        <link rel="stylesheet" href="StyleModules/base.css">
+    </template>
+</dom-module>
+
+<dom-module id="vi-flex-layout-style-module">
+    <template>
+        <link rel="stylesheet" href="StyleModules/flex-layout.css">
+    </template>
+</dom-module>
+    
+<dom-module id="vi-responsive-style-module">
+    <template>
+        <link rel="stylesheet" href="StyleModules/responsive.css">
+    </template>
+</dom-module>
+
+<script src="../../Libs/pathjs/path.js"></script>
+<script src="../../Libs/shims/requestIdleCallback.js"></script>
+<link rel="import" href="../../Libs/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../../Libs/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../Libs/iron-list/iron-list.html">
+<link rel="import" href="../../Libs/iron-media-query/iron-media-query.html">
+<link rel="import" href="../../Libs/alertify.js/alertify.html">
+<link rel="import" href="../../Libs/paper-ripple/paper-ripple.html">
+<link rel="import" href="../WebComponent/webcomponent.html">
+<link rel="import" href="../Spinner/spinner.html">
+<link rel="import" href="../AppRoutePresenter/app-route-presenter.html">
+<link rel="import" href="../AppRoute/app-route.html">
+<link rel="import" href="../Button/button.html">
+<link rel="import" href="../Dialog/dialog.html">
+<link rel="import" href="../Error/error.html">
+<link rel="import" href="../Grid/grid.html">
+<link rel="import" href="../Icon/icon.html">
+<link rel="import" href="../Popup/popup.html">
+<link rel="import" href="../Scroller/scroller.html">
+<link rel="import" href="../SizeTracker/size-tracker.html">
+<link rel="import" href="../Spinner/spinner.html">
+<link rel="import" href="../SignIn/sign-in.html">
+<link rel="import" href="../SignOut/sign-out.html">
+
+<link rel="stylesheet" href="app-global.css">
+
+<dom-module id="vi-app-base">
+    <template>
+        <style include="vi-responsive-style-module"></style>
+        <link rel="stylesheet" href="app-base.css">
+        <iron-a11y-keys keys="[[keys]]" on-keys-pressed="_keysPressed"></iron-a11y-keys>
+        <iron-media-query query="(max-width: 479px)" query-matches="{{isPhone}}"></iron-media-query>
+        <iron-media-query query="(min-width: 480px) and (max-width: 839px)" query-matches="{{isTablet}}"></iron-media-query>
+        <iron-media-query query="(min-width: 840px)" query-matches="{{isDesktop}}"></iron-media-query>
+        <input id="catchautofill" style="position: fixed; visibility: hidden; left: -100vw;" />
+        <dom-if if="[[sessionLost]]">
+            <template>
+                <div id="sessionLost" class="layout horizontal" on-tap="_reload">
+                    <vi-icon source="Notification_Warning"></vi-icon>
+                    <p>[[translations.SessionLost]]</p>
+                    <vi-button class="self-center" label="[[translations.Reload]]"></vi-button>
+                </div>
+            </template>
+        </dom-if>
+        <vi-app-config>
+            <vi-persistent-object-attribute-config type="CommonMark" height="3"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="Reference" height="attr.selectInPlace && attr.getTypeHint('inputtype', '', undefined, true) === 'radio' ? 0 : 1"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="DropDown" height="attr.getTypeHint('inputtype', '', undefined, true) === 'radio' ? 0 : 1"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="KeyValueList" height="attr.getTypeHint('inputtype', '', undefined, true) === 'radio' ? 0 : 1"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="Enum" height="attr.getTypeHint('inputtype', '', undefined, true) === 'radio' ? 0 : 1"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="MultiLineString" height="attr.getTypeHint('height', 3, undefined, true)"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="MultiString" height="attr.getTypeHint('height', 3, undefined, true)"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="Image" height="attr.getTypeHint('height', 2, undefined, true)"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="TranslatedString" height="attr.getTypeHint('MultiLine') == 'True' ? 3 : 1"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-attribute-config type="AsDetail" height="attr.getTypeHint('height', 'auto', undefined, true) == 'auto' ? 0 : 6" width="4"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-tab-config type="Vidyano.Rule" name="Rule">
+                <template is="dom-template">
+                    <div class="vertical layout flex">
+                        <vi-grid style="padding-top: 0; padding-bottom: 0;">
+                            <vi-persistent-object-attribute-presenter desktop-6 attribute="[[tab.attributes.Name]]"></vi-persistent-object-attribute-presenter>
+                            <vi-persistent-object-attribute-presenter desktop-6 attribute="[[tab.attributes.Type]]"></vi-persistent-object-attribute-presenter>
+                        </vi-grid>
+                        <vi-grid class="flex" style="padding-top: 0; padding-bottom: 0;">
+                            <vi-persistent-object-attribute-presenter class="layout vertical" desktop-12 tablet-8 phone-6 height="0" attribute="[[tab.attributes.Data]]"></vi-persistent-object-attribute-presenter>
+                        </vi-grid>
+                    </div>
+                </template>
+            </vi-persistent-object-tab-config>
+            <vi-persistent-object-tab-config type="Vidyano.GlobalSearch" name="">
+                <template is="dom-template">
+                    <style is="custom-style">
+                        #globalSearch {
+                            color: var(--theme-color-error);
+                            fill: var(--theme-color-error);
+                        }
+
+                            #globalSearch span {
+                                display: block;
+                                text-align: center;
+                                padding: var(--theme-h5) var(--theme-h3);
+                            }
+                    </style>
+                    <div id="globalSearch" class="flex layout horizontal center-center">
+                        <div>
+                            <vi-icon source="Notification_Error" class="size-h1"></vi-icon>
+                            <span class="error">[[translations.NoResultsFound]]</span>
+                        </div>
+                    </div>
+                </template>
+            </vi-persistent-object-tab-config>
+            <vi-persistent-object-attribute-config parent-id="d2662fbc-5bfc-44c0-9ba1-1e84058c2dc2" name="Message" height="0"></vi-persistent-object-attribute-config>
+            <vi-persistent-object-config type="Vidyano.Placeholder" object-id="Vidyano.Audit">
+                <template is="dom-template">
+                    <vi-audit class="flex" persistent-object="[[persistentObject]]"></vi-audit>
+                </template>
+            </vi-persistent-object-config>
+            <slot name="vi-app-config" slot="vi-app-config"></slot>
+        </vi-app-config>
+        <dom-if if="[[updateAvailable]]">
+            <template>
+                <div id="update">
+                    <div class="overlay" on-tap="_refreshForUpdateDismiss"></div>
+                    <div class="message" on-tap="_refreshForUpdate">
+                        <span>[[translations.ApplicationOutdated]]</span>
+                        <span class="highlight">[[translations.ApplicationOutdatedRefresh]]</span>
+                    </div>
+                </div>
+            </template>
+        </dom-if>
+        <vi-spinner hidden$="[[!initializing]]"></vi-spinner>
+    </template>
+</dom-module>
+
+<dom-module id="vi-app-config">
+    <template>
+        <slot id="configs" name="vi-app-config"></slot>
+    </template>
+</dom-module>
+
+<script src="Config/app-setting.js"></script>
+<script src="Config/template-config.js"></script>
+<script src="Config/persistent-object-config.js"></script>
+<script src="Config/persistent-object-attribute-config.js"></script>
+<script src="Config/persistent-object-tab-config.js"></script>
+<script src="Config/program-unit-config.js"></script>
+<script src="Config/query-config.js"></script>
+<script src="Config/query-chart-config.js"></script>
+<script src="Config/spinner-config.js"></script>
+<script src="Config/app-config.js"></script>
+<script src="app-color.js"></script>
+<script src="../AppServiceHooks/app-service-hooks-base.js"></script>
+<script src="app-base.js"></script>

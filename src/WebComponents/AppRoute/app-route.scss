@@ -3,8 +3,9 @@
 :host {
     @include flex();
     @include layout-horizontal();
+    @include relative();
 
-    ::content > * {
+    ::slotted(*) {
         @include flex();
     }
 

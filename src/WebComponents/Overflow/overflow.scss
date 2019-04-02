@@ -7,11 +7,11 @@
     @include layout-horizontal();
     @include relative();
 
-    #visibleContainer {
+    .visibleContainer {
         overflow: hidden;
     }
 
-    #visible {
+    .visible {
         @include layout-inline();
         position: relative;
 
@@ -28,7 +28,7 @@
     #overflowPopup {
         position: relative;
 
-        button[header] {
+        button[slot="header"] {
             display: block;
             width: var(--theme-h1);
             font-weight: bold;
@@ -43,7 +43,7 @@
 
     vi-popup {
         &[open] {
-            button[header] {
+            button[slot="header"] {
                 background-color: var(--theme-color-faint);
             }
         }

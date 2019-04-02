@@ -1,6 +1,27 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
+    @WebComponent.registerAbstract({
+        properties: {
+            noHeader: {
+                type: Boolean,
+                reflectToAttribute: true
+            }
+        },
+        listeners: {
+            "sizechanged": "_dialogSizeChanged",
+            "iron-overlay-closed": "_onClosed"
+        },
+        behaviors: [
+            Polymer["IronOverlayBehavior"],
+            Polymer["IronResizableBehavior"]
+        ],
+        hostAttributes: {
+            "dialog": "",
+            "with-backdrop": ""
+        },
+        keybindings: {
+            "esc": "_esc"
+        }
+    })
     export abstract class Dialog extends WebComponent {
         private _sizeTracker: Vidyano.WebComponents.SizeTracker;
         private _translatePosition: IPosition;
@@ -10,9 +31,9 @@ namespace Vidyano.WebComponents {
         noCancelOnEscKey: boolean;
         noHeader: boolean;
 
-        attached() {
+        connectedCallback() {
             if (!this._sizeTracker) {
-                Polymer.dom(this.root).appendChild(this._sizeTracker = new Vidyano.WebComponents.SizeTracker());
+                this.shadowRoot.appendChild(this._sizeTracker = new Vidyano.WebComponents.SizeTracker());
                 this._sizeTracker.bubbles = true;
             }
 
@@ -28,12 +49,12 @@ namespace Vidyano.WebComponents {
             // By default, don't cancel dialog on outside click.
             this.noCancelOnOutsideClick = true;
 
-            super.attached();
+            super.connectedCallback();
         }
 
         async open(): Promise<any> {
             let trackHandler: Function;
-            const header = <HTMLElement>Polymer.dom(this.root).querySelector("header");
+            const header = <HTMLElement>this.shadowRoot.querySelector("header");
             if (header)
                 Polymer.Gestures.add(header, "track", trackHandler = this._track.bind(this));
 
@@ -67,23 +88,21 @@ namespace Vidyano.WebComponents {
             this._resolve();
         }
 
-        private _dialogSizeChanged(e: CustomEvent, details: ISize) {
+        private _dialogSizeChanged(e: SizeTrackerEvent) {
             (<any>this).notifyResize();
 
             e.stopPropagation();
         }
 
-        private _track(e: PolymerTrackEvent) {
-            const detail = <PolymerTrackDetail>e.detail;
-
-            if (detail.state === "track" && this._translatePosition && this.app.isTracking) {
+        private _track(e: Polymer.TrackEvent) {
+            if (e.detail.state === "track" && this._translatePosition && this.app.isTracking) {
                 this._translate({
-                    x: this._translatePosition.x + detail.ddx,
-                    y: this._translatePosition.y + detail.ddy
+                    x: this._translatePosition.x + e.detail.ddx,
+                    y: this._translatePosition.y + e.detail.ddy
                 });
             }
-            else if (detail.state === "start") {
-                if (!(<HTMLElement>(e.detail.sourceEvent.target)).tagName.startsWith("H")) {
+            else if (e.detail.state === "start") {
+                if (!(<HTMLElement>(e.sourceEvent.target)).tagName.startsWith("H")) {
                     e.stopPropagation();
                     e.preventDefault();
 
@@ -96,7 +115,7 @@ namespace Vidyano.WebComponents {
 
                 this.setAttribute("dragging", "");
             }
-            else if (detail.state === "end") {
+            else if (e.detail.state === "end") {
                 this.removeAttribute("dragging");
                 this.app.isTracking = false;
             }
@@ -113,39 +132,6 @@ namespace Vidyano.WebComponents {
 
             this._translatePosition = null;
             this.style.webkitTransform = this.style.transform = "";
-        }
-
-        static register(info: IWebComponentRegistrationInfo | Function = {}, prefix?: string): any {
-            if (typeof info === "function")
-                return Dialog.register({})(info);
-
-            return (obj: Function) => {
-                info.properties = info.properties || {};
-
-                info.properties["noHeader"] = {
-                    type: Boolean,
-                    reflectToAttribute: true
-                };
-
-                info.listeners = info.listeners || {};
-                info.listeners["sizechanged"] = "_dialogSizeChanged";
-                info.listeners["iron-overlay-closed"] = "_onClosed";
-
-                info.behaviors = info.behaviors || [];
-                info.behaviors.push(Polymer["IronOverlayBehavior"]);
-                info.behaviors.push(Polymer["IronResizableBehavior"]);
-
-                info.hostAttributes = info.hostAttributes || {};
-                info.hostAttributes["dialog"] = "";
-                info.hostAttributes["with-backdrop"] = "";
-
-                info.keybindings = info.keybindings || {};
-                info.keybindings["esc"] = {
-                    listener: "_esc"
-                };
-
-                return WebComponent.register(obj, info, prefix);
-            };
         }
     }
 }

@@ -3,14 +3,16 @@
         <link rel="stylesheet" href="tags.css" />
         <vi-scroller id="scroller" class="flex" editing$="[[editing]]" no-horizontal on-tap="_passFocus">
             <div class="layout horizontal wrapContainer">
-                <template is="dom-repeat" items="[[tags]]" as="tag">
-                    <div class="layout horizontal tag">
-                        <span class="tagValue" sensitive$="[[sensitive]]">[[tag]]</span>
-                        <div on-tap="_onDeleteTap" class="delete" hidden$="[[readonly]]">
-                            <vi-icon source="Remove"></vi-icon>
+                <dom-repeat items="[[tags]]" as="tag">
+                    <template>
+                        <div class="layout horizontal tag">
+                            <span class="tagValue" sensitive$="[[sensitive]]">[[tag]]</span>
+                            <div on-tap="_onDeleteTap" class="delete" hidden$="[[readonly]]">
+                                <vi-icon source="Remove"></vi-icon>
+                            </div>
                         </div>
-                    </div>
-                </template>
+                    </template>
+                </dom-repeat>
                 <input id="tagsInput" type="text" value="{{input::input}}" on-keyup="_checkKeyPress" on-blur="_onInputBlur" sensitive$="[[sensitive]]" hidden$="[[readonly]]" />
             </div>
         </vi-scroller>

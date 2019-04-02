@@ -29,8 +29,6 @@ The supporting code for your component resides in the TypeScript file:
 
 ```ts
 namespace MyProject.WebComponents {
-    "use strict";
-
     @Vidyano.WebComponents.WebComponent.register({}, "my")
     export class Component extends Vidyano.WebComponents.WebComponent {
     }

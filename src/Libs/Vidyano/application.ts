@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export interface IServiceApplication {
         application: IServicePersistentObject;
         hasSensitive: boolean;

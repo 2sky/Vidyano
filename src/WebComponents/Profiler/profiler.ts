@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     export interface IProfilerServiceRequest extends Vidyano.IServiceRequest {
         hasNPlusOne: boolean;
         parameters: {
@@ -73,31 +71,27 @@ namespace Vidyano.WebComponents {
         timelineSize: ISize;
         profiledRequests: IProfilerServiceRequest[];
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.$.timeline.addEventListener("DOMMouseScroll", this._boundMousehweel);
         }
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
             this.$.timeline.removeEventListener("DOMMouseScroll", this._boundMousehweel);
         }
 
-        private _computeSQL(request: IProfilerServiceRequest): string {
-            return request.profiler.sql ? this._formatMs(request.profiler.sql.reduce((current, entry) => current + entry.elapsedMilliseconds, 0)) : "0ms";
+        private _requestSQL(request: IProfilerServiceRequest): string {
+            return request.profiler.sql ? this._ms(request.profiler.sql.reduce((current, entry) => current + entry.elapsedMilliseconds, 0)) : "0ms";
         }
 
-        private _computeSharpSQL(request: IProfilerServiceRequest): string {
+        private _requestSharpSQL(request: IProfilerServiceRequest): string {
             return (request.profiler.sql ? request.profiler.sql.length : 0).toString();
         }
 
-        private _isSelected(request: IProfilerServiceRequest, selectedRequest: IProfilerServiceRequest): boolean {
-            return request === selectedRequest;
-        }
-
-        private _hasWarnings(request: IProfilerServiceRequest): boolean {
+        private _requestHasWarnings(request: IProfilerServiceRequest): boolean {
             return request.hasNPlusOne || (request.profiler.exceptions && request.profiler.exceptions.length > 0);
         }
 
@@ -118,14 +112,6 @@ namespace Vidyano.WebComponents {
             return hasNPlusOne;
         }
 
-        private _hasSelectedEntry(selectedEntry: IServiceRequestProfilerEntry): boolean {
-            return !!selectedEntry;
-        }
-
-        private _hasLastRequest(request: IProfilerServiceRequest): boolean {
-            return !!request;
-        }
-
         private _onMousewheel(e: any) {
             const scroller = <Scroller>this.$.timelineScroller;
 
@@ -142,7 +128,7 @@ namespace Vidyano.WebComponents {
             scroller.horizontalScrollOffset = (newInnerWidth - scroller.outerWidth) * mousePctg;
         }
 
-        private _selectRequest(e: TapEvent) {
+        private _selectRequest(e: Polymer.TapEvent) {
             this._setSelectedRequest(e.model.request);
         }
 
@@ -197,9 +183,9 @@ namespace Vidyano.WebComponents {
 
         private _renderRequestTimeline(request: IProfilerServiceRequest, size: ISize, zoom: number) {
             const width = (size.width - 2) * zoom; // Strip vi-scroller borders
-            const headerHeight = parseInt(this.getComputedStyleValue("--vi-profiler-header-height"));
-            const entryHeight = parseInt(this.getComputedStyleValue("--vi-profiler-entry-height"));
-            const entryLevelGap = parseInt(this.getComputedStyleValue("--vi-profiler-entry-level-gap"));
+            const headerHeight = parseInt(ShadyCSS.getComputedStyleValue(this, "--vi-profiler-header-height"));
+            const entryHeight = parseInt(ShadyCSS.getComputedStyleValue(this, "--vi-profiler-entry-height"));
+            const entryLevelGap = parseInt(ShadyCSS.getComputedStyleValue(this, "--vi-profiler-entry-level-gap"));
             const scale = d3.scale.linear().domain([0, request.profiler.elapsedMilliseconds]).range([0, width]);
 
             const svg = d3.select(this.$.timeline).
@@ -211,7 +197,7 @@ namespace Vidyano.WebComponents {
                 .scale(scale.copy().rangeRound([0, width - 12]))
                 .orient("top")
                 .tickSize(-size.height, 0)
-                .tickFormat(d => this._formatMs(d));
+                .tickFormat(d => this._ms(d));
 
             const xAxisGroup = svg.selectAll("g.xaxis")
                 .attr("transform", `translate(0, ${headerHeight})`)
@@ -311,18 +297,18 @@ namespace Vidyano.WebComponents {
             return className;
         }
 
-        private _formatRequestParameters(request: IProfilerServiceRequest): string {
+        private _requestParameters(request: IProfilerServiceRequest): string {
             if (!request || !request.parameters)
                 return "";
 
             return `(${request.parameters.map(p =>p.value).join(", ")})`;
         }
 
-        private _formatMs(ms: number): string {
+        private _ms(ms: number): string {
             return `${ms || 0}ms`;
         }
 
-        private _formatDate(date: Date): string {
+        private _requestDate(date: Date): string {
             return StringEx.format(`{0:${Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern} ${Vidyano.CultureInfo.currentCulture.dateFormat.shortTimePattern}}`, date);
         }
 
@@ -454,8 +440,8 @@ namespace Vidyano.WebComponents {
             this._setSelectedEntry(null);
         }
 
-        private _close(e: TapEvent) {
-            this.app.service.profile = false;
+        private _close(e: Polymer.TapEvent) {
+            this.service.profile = false;
 
             e.stopPropagation();
         }

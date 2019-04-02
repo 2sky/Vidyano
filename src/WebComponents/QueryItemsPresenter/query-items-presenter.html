@@ -4,14 +4,18 @@
 <dom-module id="vi-query-items-presenter">
     <template>
         <link rel="stylesheet" href="query-items-presenter.css" />
-        <template is="dom-if" if="[[fileDrop]]">
-            <vi-file-drop class="layout horizontal">
-                <content></content>
-            </vi-file-drop>
-        </template>
-        <template is="dom-if" if="[[!fileDrop]]">
-            <content></content>
-        </template>
+        <dom-if if="[[fileDrop]]">
+            <template>
+                <vi-file-drop class="layout horizontal">
+                    <slot></slot>
+                </vi-file-drop>
+            </template>
+        </dom-if>
+        <dom-if if="[[!fileDrop]]">
+            <template>
+                <slot></slot>
+            </template>
+        </dom-if>
         <vi-spinner hidden$="[[!loading]]"></vi-spinner>
     </template>
 </dom-module>

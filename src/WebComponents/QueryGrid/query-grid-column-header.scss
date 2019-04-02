@@ -16,14 +16,14 @@
     }
 
     &:not([sorting]) .label {
-        padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
+        padding: 0 var(--vi-query-grid-cell-padding, var(--theme-h5));
     }
 
     .label {
         @include layout-horizontal();
         @include relative();
-        height: var(--vi-query-grid-header-height, --theme-h2);
-        padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
+        height: var(--vi-query-grid-header-height, var(--theme-h2));
+        padding: 0 var(--vi-query-grid-cell-padding, var(--theme-h5));
         cursor: pointer;
         position: relative;
         color: #808080;

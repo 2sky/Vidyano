@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export class ActionDefinition {
         private _name: string;
         private _displayName: string;

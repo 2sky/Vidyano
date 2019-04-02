@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export class NoInternetMessage {
         static messages: KeyValue<NoInternetMessage> = Object.assign({}, ...[
             new NoInternetMessage("en", "Unable to connect to the server.", "Please check your internet connection settings and try again.", "Try again"),

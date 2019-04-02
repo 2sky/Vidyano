@@ -1,6 +1,4 @@
-﻿namespace Vidyano.WebComponents {
-    "use strict";
-
+namespace Vidyano.WebComponents {
     @WebComponent.register({
         properties: {
             query: {
@@ -32,19 +30,19 @@
             "query.filters.currentFilter.name"
         ]
     })
-    export class Query extends WebComponent {
-        private _cacheEntry: QueryAppCacheEntry;
+    export class Query extends WebComponent<App> {
+        private _cacheEntry: AppCacheEntryQuery;
         query: Vidyano.Query;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this._queryChanged();
         }
 
         private _queryChanged() {
-            if (this.query && this.isAttached) {
-                this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(this.query.id));
+            if (this.query && this.isConnected) {
+                this._cacheEntry = <AppCacheEntryQuery>this.app.cache(new AppCacheEntryQuery(this.query.id));
                 this._cacheEntry.query = this.query;
             }
             else

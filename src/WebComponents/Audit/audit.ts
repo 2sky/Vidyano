@@ -1,6 +1,4 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
     interface ILogEntryGroup {
         today: boolean;
         date: Date;
@@ -63,8 +61,8 @@
         ],
         observers: [
             "_itemsChanged(query.items, persistentObject, app)",
-            "_syncVerticalScrollOffset(verticalScrollOffset, persistentObject, isAttached)",
-            "_syncFilter(filter, persistentObject, isAttached)"
+            "_syncVerticalScrollOffset(verticalScrollOffset, persistentObject, isConnected)",
+            "_syncFilter(filter, persistentObject, isConnected)"
         ]
     })
     export class Audit extends WebComponent {
@@ -84,11 +82,11 @@
             return logsVerbose;
         }
 
-        private _syncVerticalScrollOffset(verticalScrollOffset: number, persistentObject: AuditPersistentObject, isAttached: boolean) {
-            if (persistentObject && !isAttached && !isNaN(verticalScrollOffset))
+        private _syncVerticalScrollOffset(verticalScrollOffset: number, persistentObject: AuditPersistentObject, isConnected: boolean) {
+            if (persistentObject && !isConnected && !isNaN(verticalScrollOffset))
                 persistentObject.__audit_verticalScrollOffset__ = verticalScrollOffset;
             else if (!isNaN(persistentObject.__audit_verticalScrollOffset__)) {
-                Polymer.dom(this).flush();
+                Polymer.flush();
 
                 const newVerticalScrollOffset = persistentObject.__audit_verticalScrollOffset__;
                 persistentObject.__audit_verticalScrollOffset__ = Number.NaN;
@@ -96,11 +94,11 @@
             }
         }
 
-        private _syncFilter(filter: string, persistentObject: AuditPersistentObject, isAttached: boolean) {
-            if (persistentObject && !isAttached)
+        private _syncFilter(filter: string, persistentObject: AuditPersistentObject, isConnected: boolean) {
+            if (persistentObject && !isConnected)
                 persistentObject.__audit_filter__ = filter;
             else if (persistentObject.__audit_filter__) {
-                Polymer.dom(this).flush();
+                Polymer.flush();
 
                 const filter = persistentObject.__audit_filter__;
                 persistentObject.__audit_filter__ = null;
@@ -222,7 +220,7 @@
             return JSON.parse(value);
         }
 
-        private _filterEntry(filter: string): (entry: ILogEntry) => boolean {
+        private _filterEntries(filter: string): (entry: ILogEntry) => boolean {
             if (!this.filter)
                 return () => true;
 
@@ -243,7 +241,7 @@
             return !Icon.Exists(icon) ? "Action_Default$" : icon;
         }
 
-        private _open(e: TapEvent) {
+        private _open(e: Polymer.TapEvent) {
             const item = <ILogEntry>e.model.entry;
             const sourceEvent = <MouseEvent>e.detail.sourceEvent;
             if (sourceEvent && (sourceEvent.ctrlKey || sourceEvent.shiftKey))
@@ -261,7 +259,7 @@
             this._setFilter(this.search);
         }
 
-        private _expand(e: TapEvent) {
+        private _expand(e: Polymer.TapEvent) {
             const entry = <ILogEntry>e.model.entry;
             this.set(`groups.${entry.groupIndex}.entries.${entry.entryIndex}.expanded`, !entry.expanded);
 

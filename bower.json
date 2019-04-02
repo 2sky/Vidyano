@@ -18,7 +18,16 @@
   },
   "exportsOverride": {
     "polymer": {
-      "": "*.html"
+      "": "*.html",
+      "lib/elements": "lib/elements/*.html",
+      "lib/legacy": "lib/legacy/*.html",
+      "lib/mixins": "lib/mixins/*.html",
+      "lib/utils": "lib/utils/*.html",
+      "types": "types/*.d.ts",
+      "types/lib/elements": "types/lib/elements/*.d.ts",
+      "types/lib/legacy": "types/lib/legacy/*.d.ts",
+      "types/lib/mixins": "types/lib/mixins/*.d.ts",
+      "types/lib/utils": "types/lib/utils/*.d.ts"
     },
     "webcomponentsjs": {
       "": "*-lite*.js"
@@ -30,7 +39,10 @@
       "": "marked*.html"
     },
     "layout": {
-      "": [ "layout.html", "_layout.scss" ]
+      "": [
+        "layout.html",
+        "_layout.scss"
+      ]
     },
     "bignumber.js": {
       "": "*.min.js"
@@ -42,7 +54,13 @@
       "": "d3.min.js"
     },
     "iron-overlay-behavior": {
-      "": [ "iron-overlay-behavior.html", "iron-overlay-manager.html", "iron-overlay-backdrop.html", "iron-focusables-helper.html" ]
+      "": [
+        "iron-overlay-behavior.html",
+        "iron-overlay-manager.html",
+        "iron-overlay-backdrop.html",
+        "iron-scroll-manager.html",
+        "iron-focusables-helper.html"
+      ]
     },
     "codemirror": {
       "lib": "lib/*.*",
@@ -54,25 +72,28 @@
       "mode/xml": "mode/xml/xml.js"
     },
     "alertify.js": {
-      "": [ "lib/alertify.min.js", "themes/alertify.core.css", "themes/alertify.default.css" ]
+      "": [
+        "lib/alertify.min.js",
+        "themes/alertify.core.css",
+        "themes/alertify.default.css"
+      ]
     }
   },
   "dependencies": {
-    "polymer": "polymer/polymer#1.10.1",
-    "paper-ripple": "polymerelements/paper-ripple#^1.0.8",
-    "marked-element": "polymerelements/marked-element#^1.0.2",
-    "iron-a11y-keys": "polymerelements/iron-a11y-keys#^1.0.5",
-    "iron-collapse": "polymerelements/iron-collapse#^1.1.0",
-    "iron-list": "polymerelements/iron-list#^1.4.6",
-    "iron-media-query": "polymerelements/iron-media-query#^1.0.8",
-    "iron-overlay-behavior": "polymerelements/iron-overlay-behavior#^1.10.2",
+    "polymer": "^2.6.1",
+    "paper-ripple": "polymerelements/paper-ripple#^2.0.1",
+    "marked-element": "^2.2.0",
+    "iron-a11y-keys": "^2.0.0",
+    "iron-collapse": "^2.0.0",
+    "iron-list": "2sky/iron-list#50518d5943eb0050ce12e7e8d142693427c08ceb",
+    "iron-media-query": "^2.0.0",
+    "iron-overlay-behavior": "^2.0.0",
     "bignumber.js": "^4.1.0",
     "moment": "^2.10.6",
     "sortable": "RubaXa/sortable#^1.2.1",
     "d3": "^3.5.6",
     "codemirror": "^5.13.2",
     "alertify.js": "^0.3.11",
-    "linqjs": "2sky/linqjs#3.0.3-Beta4",
     "pathjs": "2sky/pathjs#master",
     "layout": "2sky/layout#master"
   }

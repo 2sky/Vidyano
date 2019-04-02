@@ -1,7 +1,5 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             persistentObject: Object,
             currentTab: {
@@ -54,21 +52,22 @@ namespace Vidyano.WebComponents {
             this._setCurrentTab(<Vidyano.PersistentObjectAttributeTab>persistentObject.tabs[0]);
         }
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
-            const width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * (this.currentTab.columnCount || 1);
-            this.customStyle["--vi-persistent-object-dialog-computed-width"] = `${width}px`;
-            this.updateStyles();
+            const width = parseInt(ShadyCSS.getComputedStyleValue(this, "--vi-persistent-object-dialog-base-width-base")) * (this.currentTab.columnCount || 1);
+            this.updateStyles({
+                "--vi-persistent-object-dialog-computed-width": `${width}px`
+            });
         }
 
-        private _tabInnerSizeChanged(e: CustomEvent, detail: { size: ISize; }) {
+        private _tabInnerSizeChanged(e: SizeTrackerEvent) {
             e.stopPropagation();
 
-            if (!detail.size.height)
+            if (!e.detail.height)
                 return;
 
-            this.$.main.style.height = `${detail.size.height}px`;
+            this.$.main.style.height = `${e.detail.height}px`;
             this._translateReset();
         }
 
@@ -76,7 +75,7 @@ namespace Vidyano.WebComponents {
             return !!currentTab && currentTab.parent.tabs.indexOf(currentTab) > 0;
         }
 
-        private _previous(e: TapEvent) {
+        private _previous(e: Polymer.TapEvent) {
             this._setCurrentTab(this.currentTab.parent.tabs[this.currentTab.parent.tabs.indexOf(this.currentTab) - 1]);
         }
 
@@ -87,7 +86,7 @@ namespace Vidyano.WebComponents {
             return !!currentTab && currentTab.parent.tabs.indexOf(currentTab) < currentTab.parent.tabs.length - 1;
         }
 
-        private _next(e: TapEvent) {
+        private _next(e: Polymer.TapEvent) {
             this.persistentObject.queueWork(async () => {
                 const result = await this.persistentObject.service.executeAction("Wizard.NextStep", this.persistentObject, undefined, undefined, { CurrentTab: this.currentTab.key, Attributes: this.currentTab.attributes.map(a => a.name).join("\n") });
                 this.persistentObject.refreshFromResult(result);

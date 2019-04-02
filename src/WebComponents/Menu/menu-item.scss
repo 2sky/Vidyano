@@ -6,8 +6,8 @@ $backgroundColor: $blue-grey-900;
 :host {
     @include relative();
     box-sizing: border-box;
-	display: block;
-	line-height: var(--theme-h2);
+    display: block;
+    line-height: var(--theme-h2);
     color: var(--vi-menu-color, $color);
     fill: var(--vi-menu-color, $color);
     cursor: pointer;
@@ -42,17 +42,17 @@ $backgroundColor: $blue-grey-900;
             --vi-icon-height: 1em;
             margin-left: calc(var(--theme-h3) * var(--vi-menu-item-indent-level, 0));
             fill: var(--vi-menu-color, $color);
-    		-moz-transition: transform 0.2s ease;
-    		-o-transition: transform 0.2s ease;
-    		-webkit-transition: transform 0.2s ease;
-    		transition: transform 0.2s ease;
+            -moz-transition: transform 0.2s ease;
+            -o-transition: transform 0.2s ease;
+            -webkit-transition: transform 0.2s ease;
+            transition: transform 0.2s ease;
             -moz-transform: rotate(0deg);
             -ms-transform: rotate(0deg);
             -o-transform: rotate(0deg);
             -webkit-transform: rotate(0deg);
             transform: rotate(0deg);
 
-            &:not([has-resource]) {
+            &:empty {
                 display: none;
 
                 & + span {
@@ -60,22 +60,22 @@ $backgroundColor: $blue-grey-900;
                 }
             }
         }
-	}
+    }
 
     &[expand], &[filtering] {
         > .title {
             > vi-icon[source="ProgramUnitGroup"] {
                 -moz-transform: rotate(90deg);
-    			-ms-transform: rotate(90deg);
-    			-o-transform: rotate(90deg);
-    			-webkit-transform: rotate(90deg);
-    			transform: rotate(90deg);
+                -ms-transform: rotate(90deg);
+                -o-transform: rotate(90deg);
+                -webkit-transform: rotate(90deg);
+                transform: rotate(90deg);
             }
         }
     }
 
     &.program-unit {
-		background-color: transparent;
+        background-color: transparent;
 
         > .title {
             font-weight: 600;
@@ -99,14 +99,14 @@ $backgroundColor: $blue-grey-900;
                 width: var(--theme-h1);
                 text-align: center;
 
-                > vi-icon[has-resource] {
+                > vi-icon:not(:empty) {
                     display: block;
                     width: var(--theme-h1);
                     -moz-transform: rotate(0);
-    			    -ms-transform: rotate(0);
-    			    -o-transform: rotate(0);
-    			    -webkit-transform: rotate(0);
-    			    transform: rotate(0);
+                    -ms-transform: rotate(0);
+                    -o-transform: rotate(0);
+                    -webkit-transform: rotate(0);
+                    transform: rotate(0);
 
                     & + span {
                         display: none;
@@ -118,11 +118,11 @@ $backgroundColor: $blue-grey-900;
                 }
             }
 
-            &:not([header]) {
+            &:not([slot="header"]) {
                 > .title {
                     display: none;
                 }
             }
         }
-	}
+    }
 }

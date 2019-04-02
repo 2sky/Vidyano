@@ -1,8 +1,5 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
-        extends: "button",
         properties: {
             disabled: {
                 type: Boolean,
@@ -36,13 +33,13 @@
         readonly customLayout: boolean; private _setCustomLayout: (custom: boolean) => void;
         disabled: boolean;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
-            this._setCustomLayout(Polymer.dom(this).children.length > 0);
+            this._setCustomLayout(this.children.length > 0);
         }
 
-        private _tap(e: TapEvent) {
+        private _tap(e: Polymer.TapEvent) {
             if (this.disabled) {
                 e.stopImmediatePropagation();
                 e.preventDefault();

@@ -1,41 +1,15 @@
 <link rel="import" href="../SizeTracker/size-tracker.html" />
 <link rel="import" href="../ScrollIntersection/scroll-intersection.html" />
 
-<dom-module id="vi-scrollbar-test">
-    <style>
-        #wrapper {
-            width: 100px;
-            height: 100px;
-            overflow: auto;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-            #wrapper::-webkit-scrollbar {
-                display: none;
-            }
-
-        #content {
-            width: 200px;
-            height: 200px;
-        }
-    </style>
-    <template>
-        <div id="wrapper">
-            <div id="content"></div>
-        </div>
-    </template>
-</dom-module>
-
 <dom-module id="vi-scroller">
     <template>
-        <link rel="stylesheet" href="scroller.css" />
+        <link rel="stylesheet" href="scroller.css">
         <vi-size-tracker class="fit" on-sizechanged="_outerSizeChanged"></vi-size-tracker>
-        <div id="wrapper" on-scroll="_scroll" tabindex="-1">
-            <div id="content" class="relative">
+        <div id="wrapper" class="wrapper" tabindex="-1">
+            <div id="content" class="relative content">
                 <vi-size-tracker on-sizechanged="_innerSizeChanged" trigger-zero></vi-size-tracker>
                 <div class="relative">
-                    <content></content>
+                    <slot></slot>
                 </div>
             </div>
         </div>

@@ -1,10 +1,10 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2018",
     "lib": [
       "dom",
-      "es2015"
+      "es6"
     ],
     "removeComments": true,
     "experimentalDecorators": true,
@@ -14,7 +14,8 @@
     "noEmitHelpers": true,
     "noUnusedLocals": true,
     "outFile": "vidyano.js",
-    "declaration": true
+    "declaration": true,
+    "alwaysStrict": true
   },
   "include": [
     "_reference.ts",

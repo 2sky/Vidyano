@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             tab: Object,
@@ -17,7 +15,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_renderTab(tab, isAttached)"
+            "_renderTab(tab, isConnected)"
         ],
         listeners: {
             "attribute-loaded": "_attributeLoaded"
@@ -30,8 +28,8 @@ namespace Vidyano.WebComponents {
         readonly templated: boolean; private _setTemplated: (templated: boolean) => void;
         tab: Vidyano.PersistentObjectTab;
 
-        private async _renderTab(tab: Vidyano.PersistentObjectTab, isAttached: boolean) {
-            if (!isAttached || this._renderedTab === tab)
+        private async _renderTab(tab: Vidyano.PersistentObjectTab, isConnected: boolean) {
+            if (!isConnected || this._renderedTab === tab)
                 return;
 
             this.empty();
@@ -49,7 +47,7 @@ namespace Vidyano.WebComponents {
             this._setTemplated(!!config && config.hasTemplate);
 
             if (this.templated) {
-                Polymer.dom(this).appendChild(config.stamp(tab, config.as || "tab"));
+                this.appendChild(config.stamp(tab, config.as || "tab"));
 
                 this._setLoading(false);
             }
@@ -62,7 +60,7 @@ namespace Vidyano.WebComponents {
                     if (itemPresenter.query.autoQuery && !itemPresenter.query.hasSearched)
                         itemPresenter.query.search();
 
-                    Polymer.dom(this).appendChild(itemPresenter);
+                    this.appendChild(itemPresenter);
 
                     this._setLoading(false);
                 }
@@ -78,7 +76,7 @@ namespace Vidyano.WebComponents {
                     attributeTab.className = childClassName;
                     attributeTab.tab = <Vidyano.PersistentObjectAttributeTab>tab;
 
-                    Polymer.dom(this).appendChild(attributeTab);
+                    this.appendChild(attributeTab);
 
                     if (this._tabAttributes.length === 0)
                         this._setLoading(false);
@@ -86,12 +84,14 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _attributeLoaded(e: Event, detail: { attribute: Vidyano.PersistentObjectAttribute; }) {
+        private _attributeLoaded(e: CustomEvent) {
+            const { attribute }: { attribute: Vidyano.PersistentObjectAttribute; } = e.detail;
+
             if (!this._tabAttributes)
                 return;
 
             if (this._tabAttributes.length > 0)
-                this._tabAttributes.remove(detail.attribute);
+                this._tabAttributes.remove(attribute);
 
             if (this._tabAttributes.length === 0)
                 this._setLoading(false);

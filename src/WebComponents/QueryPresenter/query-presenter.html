@@ -3,16 +3,20 @@
 <dom-module id="vi-query-presenter">
     <template>
         <link rel="stylesheet" href="query-presenter.css" />
-        <template is="dom-if" if="[[loading]]">
-            <vi-spinner></vi-spinner>
-        </template>
-        <template is="dom-if" if="[[hasError]]" restamp>
-            <div id="error">
-                <vi-icon source="Notification_Error"></vi-icon>
-                <span>[[error]]</span>
-            </div>
-        </template>
-        <content></content>
+        <dom-if if="[[loading]]">
+            <template>
+                <vi-spinner></vi-spinner>
+            </template>
+        </dom-if>
+        <dom-if if="[[hasError]]" restamp>
+            <template>
+                <div id="error">
+                    <vi-icon source="Notification_Error"></vi-icon>
+                    <span>[[error]]</span>
+                </div>
+            </template>
+        </dom-if>
+        <slot></slot>
     </template>
 </dom-module>
 

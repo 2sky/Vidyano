@@ -1,6 +1,4 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
     export interface IMessageDialogOptions {
         noClose?: boolean;
         title?: string;
@@ -14,7 +12,7 @@
         rich?: boolean;
     }
 
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             options: {
                 type: Object,
@@ -25,6 +23,10 @@
                 readOnly: true,
                 value: 0,
                 observer: "_activeActionChanged"
+            },
+            hasHeaderIcon: {
+                type: Boolean,
+                computed: "_computeHasHeaderIcon(options)"
             }
         },
         keybindings: {
@@ -46,8 +48,8 @@
                 this._setActiveAction(options.defaultAction);
         }
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.noCancelOnEscKey = this.noCancelOnOutsideClick = this.options.noClose || this.options.cancelAction == null;
         }
@@ -77,18 +79,18 @@
             return super.open();
         }
 
-        private _hasHeaderIcon(options: IMessageDialogOptions): boolean {
+        private _computeHasHeaderIcon(options: IMessageDialogOptions): boolean {
             return options && typeof options.titleIcon === "string";
         }
 
-        private _getActionType(options: IMessageDialogOptions, index: number): string {
+        private _actionType(options: IMessageDialogOptions, index: number): string {
             if (!options || !options.actionTypes)
                 return undefined;
 
             return options.actionTypes[index];
         }
 
-        private _onSelectAction(e: TapEvent) {
+        private _onSelectAction(e: Polymer.TapEvent) {
             this.close(e.model.index);
 
             e.stopPropagation();
@@ -112,10 +114,6 @@
 
         private _keyboardPreviousAction() {
             this._setActiveAction((this.activeAction - 1 + this.options.actions.length) % this.options.actions.length);
-        }
-
-        private _isActiveAction(activeAction: number, index: number): boolean {
-            return activeAction === index;
         }
     }
 }

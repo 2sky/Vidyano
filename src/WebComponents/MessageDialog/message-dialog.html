@@ -5,26 +5,32 @@
     <template>
         <link rel="stylesheet" href="message-dialog.css" />
         <header class="horizontal layout">
-            <template is="dom-if" if="[[_hasHeaderIcon(options)]]">
-                <vi-icon source="[[options.titleIcon]]"></vi-icon>
-            </template>
+            <vi-icon source="[[options.titleIcon]]" hidden$="[[!hasHeaderIcon]]"></vi-icon>
             <h4 class="flex">[[options.title]]</h4>
-            <template is="dom-if" if="[[!options.noClose]]">
-                <button class="close" on-tap="cancel"><vi-icon source="Remove"></vi-icon></button>
-            </template>
+            <dom-if if="[[!options.noClose]]">
+                <template>
+                    <button class="close" on-tap="cancel"><vi-icon source="Remove"></vi-icon></button>
+                </template>
+            </dom-if>
         </header>
         <main rich$="[[options.rich]]">
-            <template is="dom-if" if="[[options.rich]]">
-                <marked-element markdown="[[options.message]]"></marked-element>
-            </template>
-            <template is="dom-if" if="[[!options.rich]]">
-                <pre>[[options.message]]</pre>
-            </template>
+            <dom-if if="[[options.rich]]">
+                <template>
+                    <marked-element markdown="[[options.message]]"></marked-element>
+                </template>
+            </dom-if>
+            <dom-if if="[[!options.rich]]">
+                <template>
+                    <pre>[[options.message]]</pre>
+                </template>
+            </dom-if>
         </main>
         <footer class="horizontal layout end-justified" id="actions">
-            <template is="dom-repeat" items="[[options.actions]]" as="action">
-                <button is="vi-button" on-tap="_onSelectAction" type$="[[_getActionType(options, index)]]" inverse="[[!_isActiveAction(activeAction, index)]]" label="[[action]]"></button>
-            </template>
+            <dom-repeat items="[[options.actions]]" as="action">
+                <template>
+                    <vi-button on-tap="_onSelectAction" type$="[[_actionType(options, index)]]" inverse="[[op.areNotSame(activeAction, index)]]" label="[[action]]"></vi-button>
+                </template>
+            </dom-repeat>
         </footer>
     </template>
 </dom-module>

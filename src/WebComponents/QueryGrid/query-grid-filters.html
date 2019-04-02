@@ -5,53 +5,77 @@
     <template>
         <link rel="stylesheet" href="query-grid-filters.css" />
         <vi-popup-menu disabled="[[disabled]]">
-            <button header is="vi-button" inverse$="[[!isFiltering]]" disabled$="[[disabled]]">
+            <vi-button slot="header" inverse$="[[!isFiltering]]" disabled$="[[disabled]]">
                 <vi-icon source="Filter_Menu"></vi-icon>
-            </button>
-            <template is="dom-if" if="[[canReset]]">
-                <vi-popup-menu-item icon="Filter_Reset" label="[[translations.Reset]]" on-tap="_reset"></vi-popup-menu-item>
-            </template>
-            <template is="dom-if" if="[[canSave]]">
-                <vi-popup-menu-item icon="Filter_Save" label="[[_computeCurrentFilterSaveLabel(currentFilter)]]" on-tap="_save"></vi-popup-menu-item>
-                <vi-popup-menu-item icon-space label="[[translations.SaveAs]]" on-tap="_saveAs"></vi-popup-menu-item>
-            </template>
-            <template is="dom-if" if="[[canSaveAs]]">
-                <vi-popup-menu-item icon="Filter_Save" label="[[translations.SaveAs]]" on-tap="_saveAs"></vi-popup-menu-item>
-            </template>
-            <template is="dom-if" if="[[userFilters]]">
-                <vi-popup-menu-item-separator hidden$="[[!_showUserFilterSeparator(canReset, canSave, canSaveAs)]]"></vi-popup-menu-item-separator>
-                <template is="dom-repeat" items="[[userFilters]]" as="filter" filter="_hasGroupName">
-                    <vi-popup-menu-item icon-space label="[[filter.groupName]]" icon="Folder" on-tap="_catchGroupTap">
-                        <template is="dom-repeat" items="[[filter.children]]" as="filter">
-                            <vi-popup-menu-item-with-actions icon-space label="[[_nonGroupName(filter.filter.name)]]" on-tap="_load">
-                                <button is="vi-button" icon="Action_Edit" inverse on-tap="_edit"></button>
-                                <button is="vi-button" icon="Action_Delete" inverse on-tap="_delete"></button>
+            </vi-button>
+            <dom-if if="[[canReset]]">
+                <template>
+                    <vi-popup-menu-item icon="Filter_Reset" label="[[translations.Reset]]" on-tap="_reset"></vi-popup-menu-item>
+                </template>
+            </dom-if>
+            <dom-if if="[[canSave]]">
+                <template>
+                    <vi-popup-menu-item icon="Filter_Save" label="[[saveCurrentLabel]]" on-tap="_save"></vi-popup-menu-item>
+                    <vi-popup-menu-item icon-space label="[[translations.SaveAs]]" on-tap="_saveAs"></vi-popup-menu-item>
+                </template>
+            </dom-if>
+            <dom-if if="[[canSaveAs]]">
+                <template>
+                    <vi-popup-menu-item icon="Filter_Save" label="[[translations.SaveAs]]" on-tap="_saveAs"></vi-popup-menu-item>
+                </template>
+            </dom-if>
+            <dom-if if="[[userFilters]]">
+                <template>
+                    <vi-popup-menu-item-separator hidden$="[[op.none(canReset, canSave, canSaveAs)]]"></vi-popup-menu-item-separator>
+                    <dom-repeat items="[[userFilters]]" as="filter" filter="_hasGroupName">
+                        <template>
+                            <vi-popup-menu-item icon-space label="[[filter.groupName]]" icon="Folder" on-tap="_catchGroupTap">
+                                <dom-repeat items="[[filter.children]]" as="filter">
+                                    <template>
+                                        <vi-popup-menu-item-with-actions icon-space label="[[_filterNonGroupName(filter.filter.name)]]" on-tap="_load">
+                                            <vi-button slot="button" icon="Action_Edit" inverse on-tap="_edit"></vi-button>
+                                            <vi-button slot="button" icon="Action_Delete" inverse on-tap="_delete"></vi-button>
+                                        </vi-popup-menu-item-with-actions>
+                                    </template>
+                                </dom-repeat>
+                            </vi-popup-menu-item>
+                        </template>
+                    </dom-repeat>
+                    <dom-repeat items="[[userFilters]]" as="filter" filter="_hasNoGroupName">
+                        <template>
+                            <vi-popup-menu-item-with-actions icon-space label="[[filter.filter.name]]" on-tap="_load">
+                                <vi-button icon="Action_Edit" inverse on-tap="_edit"></vi-button>
+                                <vi-button icon="Action_Delete" inverse on-tap="_delete"></vi-button>
                             </vi-popup-menu-item-with-actions>
                         </template>
-                    </vi-popup-menu-item>
+                    </dom-repeat>
                 </template>
-                <template is="dom-repeat" items="[[userFilters]]" as="filter" filter="_hasNoGroupName">
-                    <vi-popup-menu-item-with-actions icon-space label="[[filter.filter.name]]" on-tap="_load">
-                        <button is="vi-button" icon="Action_Edit" inverse on-tap="_edit"></button>
-                        <button is="vi-button" icon="Action_Delete" inverse on-tap="_delete"></button>
-                    </vi-popup-menu-item-with-actions>
+            </dom-if>
+            <dom-if if="[[lockedFilters]]">
+                <template>
+                    <vi-popup-menu-item-separator hidden$="[[op.none(canReset, canSave, canSaveAs, userFilters)]]"></vi-popup-menu-item-separator>
+                    <dom-repeat items="[[lockedFilters]]" as="filter">
+                        <template>
+                            <dom-if if="[[filter.groupName]]">
+                                <template>
+                                    <vi-popup-menu-item icon-space label="[[filter.groupName]]" icon="Folder">
+                                        <dom-repeat items="[[filter.children]]" as="filter">
+                                            <template>
+                                                <vi-popup-menu-item-split icon-space label="[[_filterNonGroupName(filter.filter.name)]]" on-tap="_load"></vi-popup-menu-item-split>
+                                            </template>
+                                        </dom-repeat>
+                                    </vi-popup-menu-item>
+                                </template>
+                            </dom-if>
+                            <dom-if if="[[!filter.groupName]]">
+                                <template>
+                                    <vi-popup-menu-item-split icon-space label="[[_filterNonGroupName(filter.filter.name)]]" on-tap="_load"></vi-popup-menu-item-split>
+                                </template>
+                            </dom-if>
+                        </template>
+                    </dom-repeat>
                 </template>
-            </template>
-            <template is="dom-if" if="[[lockedFilters]]">
-                <vi-popup-menu-item-separator hidden$="[[!_showLockedFilterSeparator(canReset, canSave, canSaveAs, userFilters)]]"></vi-popup-menu-item-separator>
-                <template is="dom-repeat" items="[[lockedFilters]]" as="filter">
-                    <template is="dom-if" if="[[filter.groupName]]">
-                        <vi-popup-menu-item icon-space label="[[filter.groupName]]" icon="Folder">
-                            <template is="dom-repeat" items="[[filter.children]]" as="filter">
-                                <vi-popup-menu-item-split icon-space label="[[_nonGroupName(filter.filter.name)]]" on-tap="_load"></vi-popup-menu-item-split>
-                            </template>
-                        </vi-popup-menu-item>
-                    </template>
-                    <template is="dom-if" if="[[!filter.groupName]]">
-                        <vi-popup-menu-item-split icon-space label="[[_nonGroupName(filter.filter.name)]]" on-tap="_load"></vi-popup-menu-item-split>
-                    </template>
-                </template>
-            </template>
+            </dom-if>
         </vi-popup-menu>
     </template>
 </dom-module>

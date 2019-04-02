@@ -1,14 +1,4 @@
 <script src="Libs/bignumber.js/bignumber.min.js"></script>
-<script src="Libs/linqjs/linq.min.js"></script>
-<script>
-    (function () {
-        const from = Enumerable.from;
-        Enumerable.from = function (obj) {
-            console.warn("[Deprecation] LINQ for JavaScript is deprecated and will be removed in the next major version of the Vidyano Client. Please migrate your code to take advantage of native JavaScript functions such as Array.from or one of the extensions methods added to the Array object.");
-            return from.call(this, obj);
-        };
-    })();
-</script>
 <script src="Libs/PromiseQueue/promise-queue.js"></script>
 <script src="Libs/tslib/tslib.js"></script>
 <script src="Libs/Vidyano/vidyano.common.js"></script>

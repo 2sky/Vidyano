@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export type PersistentObjectAttributeVisibility = "Always" | "Read" | "New" | "Never" | "Query" | "Read, Query" | "Read, New" | "Query, New";
 
     export type PersistentObjectAttributeOption = KeyValuePair<string, string>;

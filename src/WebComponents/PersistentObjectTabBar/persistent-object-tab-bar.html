@@ -4,9 +4,11 @@
     <template>
         <link rel="stylesheet" href="persistent-object-tab-bar.css" />
         <vi-overflow class="fit">
-            <template is="dom-repeat" items="[[tabs]]" filter="_isVisible" observe="isVisible" as="tab">
-                <vi-persistent-object-tab-bar-item tab="{{tab}}" selected-tab="{{selectedTab}}" on-tab-selected="_tabSelected"></vi-persistent-object-tab-bar-item>
-            </template>
+            <dom-repeat items="[[tabs]]" filter="_isVisible" observe="isVisible" as="tab">
+                <template>
+                    <vi-persistent-object-tab-bar-item tab="{{tab}}" selected-tab="{{selectedTab}}" on-tab-selected="_tabSelected"></vi-persistent-object-tab-bar-item>
+                </template>
+            </dom-repeat>
         </vi-overflow>
     </template>
 </dom-module>
@@ -15,9 +17,11 @@
     <template>
         <link rel="stylesheet" href="persistent-object-tab-bar-item.css" />
         <span>[[label]]</span>
-        <template is="dom-if" if="[[hasBadge]]">
-            <span class="badge">[[badge]]</span>
-        </template>
+        <dom-if if="[[hasBadge]]">
+            <template>
+                <span class="badge">[[badge]]</span>
+            </template>
+        </dom-if>
     </template>
 </dom-module>
 

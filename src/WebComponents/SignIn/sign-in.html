@@ -1,12 +1,12 @@
-﻿<link rel="import" href="../AttachedNotifier/attached-notifier.html" />
+<link rel="import" href="../AttachedNotifier/attached-notifier.html" />
 <link rel="import" href="../Button/button.html" />
 <link rel="import" href="../Checkbox/checkbox.html" />
-<link rel="import" href="../Scroller/scroller.html" />
 
 <dom-module id="vi-sign-in">
     <template>
         <link rel="stylesheet" href="sign-in.css" />
         <div id="background">
+            <slot name="sign-in-background"></slot>
             <div class="default fit">
                 <svg xmlns="https://www.w3.org/2000/svg" viewBox="0 0 1440 810" preserveAspectRatio="xMinYMin slice" aria-hidden="true">
                     <g>
@@ -21,99 +21,114 @@
                     </g>
                 </svg>
             </div>
-            <content select="[sign-in-background]"></content>
         </div>
         <div class="dialog">
             <div class="loader" hidden$="[[!isBusy]]"></div>
             <header>
-                <template is="dom-if" if="[[!logo]]">
-                    <h1>[[label]]</h1>
-                </template>
+                <dom-if if="[[!logo]]">
+                    <template>
+                        <h1>[[label]]</h1>
+                    </template>
+                </dom-if>
                 <img id="logo" src$="[[logo]]" />
             </header>
             <main>
                 <section class="username">
                     <h1>[[translateMessage("SignInTo", label, translations)]]</h1>
-                    <template is="dom-if" if="[[hasVidyano]]">
-                        <input id="username" type="text" placeholder="[[translations.UserName]]" value="{{userName::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
-                        <label class="description">[[description]]</label>
-                        <div class="actions layout horizontal-reverse justified">
-                            <button is="vi-button" label="[[translations.Next]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
-                            <template is="dom-if" if="[[hasRegister]]">
-                                <button is="vi-button" label="[[translations.Register]]" inverse on-tap="_register" disabled$="[[isBusy]]"></button>
-                            </template>
-                        </div>
-                        <template is="dom-if" if="[[hasOther]]">
-                            <div class="splitter">
-                                <span>[[translations.Or]]</span>
+                    <dom-if if="[[hasVidyano]]">
+                        <template>
+                            <input id="username" type="text" placeholder="[[translations.UserName]]" value="{{userName::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
+                            <label class="description">[[description]]</label>
+                            <div class="actions layout horizontal-reverse justified">
+                                <vi-button label="[[translations.Next]]" on-tap="_authenticate" disabled$="[[!canAuthenticate]]"></vi-button>
+                                <dom-if if="[[hasRegister]]">
+                                    <template>
+                                        <vi-button label="[[translations.Register]]" inverse on-tap="_register" disabled$="[[isBusy]]"></vi-button>
+                                    </template>
+                                </dom-if>
+                            </div>
+                            <dom-if if="[[hasOther]]">
+                                <template>
+                                    <div class="splitter">
+                                        <span>[[translations.Or]]</span>
+                                    </div>
+                                </template>
+                            </dom-if>
+                        </template>
+                    </dom-if>
+                    <dom-if if="[[hasOther]]">
+                        <template>
+                            <div class="brands">
+                                <dom-repeat items="[[_getProviders(service.providers)]]" as="provider">
+                                    <template>
+                                        <vi-button class="brand" brand$="[[provider.name]]" disabled$="[[isBusy]]" on-tap="_authenticateExternal">
+                                            <div class="logo"></div>
+                                            <span>[[translations.SignInUsing]] [[provider.parameters.label]]</span>
+                                        </vi-button>
+                                    </template>
+                                </dom-repeat>
                             </div>
                         </template>
-                    </template>
-                    <template is="dom-if" if="[[hasOther]]">
-                        <div class="brands">
-                            <template is="dom-repeat" items="[[_providers(service.providers)]]" as="provider">
-                                <button is="vi-button" class="brand" brand$="[[provider.name]]" disabled$="[[isBusy]]" on-tap="_authenticateExternal">
-                                    <div class="logo"></div>
-                                    <span>[[translations.SignInUsing]] [[provider.parameters.label]]</span>
-                                </button>
-                            </template>
-                        </div>
-                    </template>
+                    </dom-if>
                 </section>
                 <section class="password">
                     <div class="layout horizontal user wrap">
                         <vi-icon source="Action_viImpersonate"></vi-icon>
                         <h3>[[userName]]</h3>
-                        <button is="vi-button" label="([[translations.NotYou]])" inverse on-tap="_back" disabled$="[[isBusy]]"></button>
+                        <vi-button label="([[translations.NotYou]])" inverse on-tap="_back" disabled$="[[isBusy]]"></vi-button>
                     </div>
                     <h1>[[translations.EnterPassword]]</h1>
                     <input id="password" type="password" placeholder="[[translations.Password]]" value="{{password::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
                     <vi-checkbox label="[[translations.StaySignedIn]]" disabled$="[[isBusy]]" checked="{{staySignedIn}}"></vi-checkbox>
                     <div class="actions layout horizontal-reverse justified">
-                        <button is="vi-button" label="[[translations.Next]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
-                        <template is="dom-if" if="[[hasForgot]]">
-                            <button is="vi-button" label="[[translations.ForgotPassword]]" inverse on-tap="_forgot" disabled$="[[isBusy]]"></button>
-                        </template>
+                        <vi-button label="[[translations.Next]]" on-tap="_authenticate" disabled$="[[!canAuthenticate]]"></vi-button>
+                        <dom-if if="[[hasForgot]]">
+                            <template>
+                                <vi-button label="[[translations.ForgotPassword]]" inverse on-tap="_forgot" disabled$="[[isBusy]]"></vi-button>
+                            </template>
+                        </dom-if>
                     </div>
                 </section>
                 <section class="twofactor">
                     <div class="layout horizontal user wrap">
                         <vi-icon source="Action_viImpersonate"></vi-icon>
                         <h3>[[userName]]</h3>
-                        <button is="vi-button" label="([[translations.NotYou]])" inverse on-tap="_back" disabled$="[[isBusy]]"></button>
+                        <vi-button label="([[translations.NotYou]])" inverse on-tap="_back" disabled$="[[isBusy]]"></vi-button>
                     </div>
                     <h1>[[translations.EnterTwoFactorCode]]</h1>
                     <input id="twofactor" type="text" placeholder="[[translations.TwoFactorCode]]" value="{{twoFactorCode::input}}" on-keydown="_keydown" disabled$="[[isBusy]]" />
                     <vi-checkbox label="[[translations.StaySignedIn]]" disabled$="[[isBusy]]" checked="{{staySignedIn}}"></vi-checkbox>
                     <div class="actions layout horizontal-reverse justified">
-                        <button is="vi-button" label="[[translations.SignIn]]" on-tap="_authenticate" disabled$="[[!_canAuthenticate(isBusy, userName, password, twoFactorCode)]]"></button>
-                        <button is="vi-button" label="[[translations.Previous]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
+                        <vi-button label="[[translations.SignIn]]" on-tap="_authenticate" disabled$="[[!canAuthenticate]]"></vi-button>
+                        <vi-button label="[[translations.Previous]]" on-tap="_back" disabled$="[[isBusy]]" inverse></vi-button>
                     </div>
                 </section>
                 <section class="register">
                     <h1>[[register.breadcrumb]]</h1>
                     <vi-persistent-object-tab-presenter tab="[[register.tabs.0]]" on-vi-persistent-object-tab-inner-size-changed="_tabInnerSizeChanged"></vi-persistent-object-tab-presenter>
                     <div class="actions layout horizontal-reverse justified">
-                        <button is="vi-button" label="[[translations.RegisterSave]]" on-tap="_register" disabled$="[[register.isBusy]]"></button>
-                        <button is="vi-button" label="[[translations.SignIn]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
+                        <vi-button label="[[translations.RegisterSave]]" on-tap="_register" disabled$="[[register.isBusy]]"></vi-button>
+                        <vi-button label="[[translations.SignIn]]" on-tap="_back" disabled$="[[isBusy]]" inverse></vi-button>
                     </div>
                 </section>
                 <section class="initial">
-                    <template is="dom-if" if="[[initial]]">
-                        <h1>[[initial.breadcrumb]]</h1>
-                        <vi-persistent-object-tab-presenter tab="[[initial.tabs.0]]" on-vi-persistent-object-tab-inner-size-changed="_tabInnerSizeChanged"></vi-persistent-object-tab-presenter>
-                        <div class="actions layout horizontal-reverse justified">
-                            <button is="vi-button" label="[[_computeSaveInitialLabel(initial)]]" on-tap="_finishInitial" disabled$="[[initial.isBusy]]"></button>
-                            <button is="vi-button" label="[[translations.SignOut]]" on-tap="_back" disabled$="[[isBusy]]" inverse></button>
-                        </div>
-                    </template>
+                    <dom-if if="[[initial]]">
+                        <template>
+                            <h1>[[initial.breadcrumb]]</h1>
+                            <vi-persistent-object-tab-presenter tab="[[initial.tabs.0]]" on-vi-persistent-object-tab-inner-size-changed="_tabInnerSizeChanged"></vi-persistent-object-tab-presenter>
+                            <div class="actions layout horizontal-reverse justified">
+                                <vi-button label="[[_getInitialSaveLabel(initial)]]" on-tap="_finishInitial" disabled$="[[initial.isBusy]]"></vi-button>
+                                <vi-button label="[[translations.SignOut]]" on-tap="_back" disabled$="[[isBusy]]" inverse></vi-button>
+                            </div>
+                        </template>
+                    </dom-if>
                 </section>
             </main>
             <footer hidden$="[[!notification]]" type$="[[notification.type]]">
                 <span>[[notification.text]]</span>
             </footer>
         </div>
-        <content select="[sign-in-footer]"></content>
+        <slot name="sign-in-footer"></slot>
     </template>
 </dom-module>
 

@@ -3,10 +3,10 @@
 $border-color: #ddd;
 
 :host {
-    display: block;
+    @include layout-horizontal();
     position: relative;
     border: 1px solid $border-color;
-    @include layout-horizontal();
+    outline: none !important;
 
     vi-popup {
         @include flex();
@@ -19,7 +19,7 @@ $border-color: #ddd;
             transform: translate(0, 1px);
         }
 
-        [header] {
+        [slot="header"] {
             @include flex();
             @include layout-horizontal();
             @include relative();
@@ -53,6 +53,7 @@ $border-color: #ddd;
                 line-height: calc(var(--theme-h2) - 2px);
                 padding-left: var(--theme-h5);
                 background-color: transparent;
+                outline: none;
                 --at-apply: --vi-select-input;
 
                 &[disabled] {
@@ -72,13 +73,12 @@ $border-color: #ddd;
             vi-icon {
                 height: calc(var(--theme-h2) - 2px);
                 width: calc(var(--theme-h2) - 2px);
-                fill: var(--vi-select-icon-color, --theme-foreground);
+                fill: var(--vi-select-icon-color, var(--theme-foreground));
                 --at-apply: --vi-select-icon;
             }
         }
 
-        [content] {
-            min-width: 1px;
+        ul {
             max-height: calc(var(--theme-h2) * 10);
             overflow-y: auto;
             -ms-overflow-style: scrollbar;
@@ -119,7 +119,7 @@ $border-color: #ddd;
             }
         }
 
-        &[disabled] [header] vi-icon {
+        &[disabled] [slot="header"] vi-icon {
             opacity: 0.25;
             cursor: default;
         }

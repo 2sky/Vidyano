@@ -15,18 +15,24 @@
         </main>
         <footer class="horizontal layout">
             <div class="layout horizontal flex extra-actions">
-                <template is="dom-repeat" items="[[dialogActions]]" as="action">
-                    <button is="vi-button" label="[[action.definition.displayName]]" on-tap="_executeExtraAction" disabled$="[[persistentObject.isBusy]]"></button>
-                </template>
+                <dom-repeat items="[[dialogActions]]" as="action">
+                    <template>
+                        <vi-button label="[[action.definition.displayName]]" on-tap="_executeExtraAction" disabled$="[[persistentObject.isBusy]]"></vi-button>
+                    </template>
+                </dom-repeat>
             </div>
             <div class="layout horizontal default-actions">
-                <template is="dom-if" if="[[!readOnly]]">
-                    <button is="vi-button" on-tap="_save" action-type="Default" label="[[saveLabel]]" disabled$="[[!_canSave(persistentObject.isBusy, persistentObject.dialogSaveAction.canExecute)]]"></button>
-                    <button is="vi-button" inverse on-tap="_cancel" label="[[translateMessage('Cancel', isAttached)]]" disabled$="[[persistentObject.isBusy]]" hidden$="[[options.noCancel]]"></button>
-                </template>
-                <template is="dom-if" if="[[readOnly]]">
-                    <button is="vi-button" on-tap="_cancel" action-type="Default" label="[[translateMessage('Close', isAttached)]]" disabled$="[[persistentObject.isBusy]]"></button>
-                </template>
+                <dom-if if="[[!readOnly]]">
+                    <template>
+                        <vi-button on-tap="_save" action-type="Default" label="[[saveLabel]]" disabled$="[[!canSave]]"></vi-button>
+                        <vi-button inverse on-tap="_cancel" label="[[translateMessage('Cancel', isConnected)]]" disabled$="[[persistentObject.isBusy]]" hidden$="[[options.noCancel]]"></vi-button>
+                    </template>
+                </dom-if>
+                <dom-if if="[[readOnly]]">
+                    <template>
+                        <vi-button on-tap="_cancel" action-type="Default" label="[[translateMessage('Close', isConnected)]]" disabled$="[[persistentObject.isBusy]]"></vi-button>
+                    </template>
+                </dom-if>
             </div>
         </footer>
     </template>

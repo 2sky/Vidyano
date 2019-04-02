@@ -1,5 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
 
     export class ServiceHooks {
         private _service: Vidyano.Service;

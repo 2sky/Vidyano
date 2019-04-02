@@ -1,5 +1,4 @@
 namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
     export interface ITranslatedString {
         key: string;
@@ -7,7 +6,7 @@ namespace Vidyano.WebComponents.Attributes {
         value: string;
     }
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             strings: {
                 type: Array,
@@ -98,7 +97,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
     }
 
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             label: String,
             strings: Array,

@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             tabs: Array,
@@ -15,7 +13,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_hookObservers(isAttached, tabs)"
+            "_hookObservers(isConnected, tabs)"
         ]
     })
     export class PersistentObjectTabBar extends WebComponent {
@@ -29,7 +27,7 @@ namespace Vidyano.WebComponents {
                 this._observeDisposer = undefined;
             }
 
-            if (this.isAttached && this.tabs) {
+            if (this.isConnected && this.tabs) {
                 this._observeDisposer = this._forwardObservable(this.tabs, "isVisible", "tabs", () => {
                     if (!this.selectedTab || !this.selectedTab.isVisible)
                         this.selectedTab = this.tabs.filter(t => t.isVisible)[0];

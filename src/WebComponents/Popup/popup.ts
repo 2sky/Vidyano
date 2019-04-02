@@ -1,12 +1,9 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     let _documentClosePopupListener: EventListener;
     document.addEventListener("mousedown", _documentClosePopupListener = e => {
-        let el = <HTMLElement>e.target;
-        let popup: Popup;
-
-        while (true) {
+        const path = e.composedPath().slice();
+        do {
+            const el = path.shift();
             if (!el || el === <any>document) {
                 WebComponents.PopupCore.closeAll();
                 break;
@@ -15,9 +12,8 @@ namespace Vidyano.WebComponents {
                 break;
             else if ((<any>el).popup && (<any>el).popup.__Vidyano_WebComponents_PopupCore__Instance__ && (<WebComponents.PopupCore>(<any>el).popup).open)
                 break;
-            else
-                el = el.parentElement;
         }
+        while (true);
     });
     document.addEventListener("touchstart", _documentClosePopupListener);
 
@@ -56,11 +52,6 @@ namespace Vidyano.WebComponents {
                 type: Number,
                 value: 500
             }
-        },
-        listeners: {
-            "mouseenter": "_contentMouseEnter",
-            "mouseleave": "_contentMouseLeave",
-            "click": "_catchContentClick"
         }
     })
     export class PopupCore extends WebComponent {
@@ -221,7 +212,7 @@ namespace Vidyano.WebComponents {
                 }
             }
 
-            const contentChild = <HTMLElement>Polymer.dom(this).querySelector("[content]");
+            const contentChild = <HTMLElement>this.querySelector("[content]");
             if (contentChild) {
                 const definedMaxHeight = parseInt(getComputedStyle(contentChild).maxHeight);
                 if (isNaN(definedMaxHeight) || definedMaxHeight > parseInt(maxContentHeight))
@@ -311,6 +302,7 @@ namespace Vidyano.WebComponents {
 
             this._currentTarget = this._currentContent = null;
             this._setOpen(false);
+            this._setHover(false);
 
             if (this._resolver)
                 this._resolver();
@@ -344,8 +336,10 @@ namespace Vidyano.WebComponents {
         }
 
         protected _contentMouseLeave(e: MouseEvent) {
-            if (this._setHover)
-                this._setHover(false);
+            if (e.relatedTarget == null) {
+                e.stopPropagation();
+                return;
+            }
 
             if (!this.sticky) {
                 this._closeOnMoveoutTimer = setTimeout(() => {
@@ -355,7 +349,13 @@ namespace Vidyano.WebComponents {
         }
 
         private _hoverChanged(hover: boolean) {
-            this.toggleAttribute("hover", hover, this._currentTarget);
+            if (!this._currentTarget)
+                return;
+
+            if (hover)
+                this._currentTarget.setAttribute("hover", "");
+            else
+                this._currentTarget.removeAttribute("hover");
         }
 
         static closeAll(parent?: HTMLElement | WebComponent) {
@@ -379,20 +379,6 @@ namespace Vidyano.WebComponents {
 
     @WebComponent.register({
         properties: {
-            disabled: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            open: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true,
-                notify: true
-            },
-            sticky: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
             autoSizeContent: {
                 type: Boolean,
                 reflectToAttribute: true
@@ -402,22 +388,13 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: false
             },
-            contentAlign: {
-                type: String,
-                reflectToAttribute: true
-            },
-            orientation: {
-                type: String,
-                reflectToAttribute: true,
-                value: "auto"
-            },
             closeDelay: {
                 type: Number,
                 value: 500
             }
         },
         observers: [
-            "_hookTapAndHoverEvents(isAttached, openOnHover)"
+            "_hookTapAndHoverEvents(isConnected, openOnHover)"
         ],
         listeners: {
             "tap": "_tap"
@@ -443,12 +420,12 @@ namespace Vidyano.WebComponents {
         }
 
         private _hookTapAndHoverEvents() {
-            this._header = <HTMLElement>Polymer.dom(this.root).querySelector("[toggle]") || this.parentElement;
+            this._header = <HTMLElement>this.shadowRoot.querySelector("[toggle]") || this.parentElement;
 
             if (this._header === this.parentElement)
                 (<any>this._header).popup = this;
 
-            if (this.isAttached) {
+            if (this.isConnected) {
                 if (this.openOnHover) {
                     this._header.addEventListener("mouseenter", this._enterHandler = this._onOpen.bind(this));
                     this.addEventListener("mouseleave", this._leaveHandler = this.close.bind(this));
@@ -485,18 +462,17 @@ namespace Vidyano.WebComponents {
                 return;
             }
 
-            let el = <HTMLElement>e.target;
+            const path = e.composedPath().slice();
             do {
-                if (el === this._header) {
-                    this._onOpen(e);
+                if (this._header !== path.shift())
+                    continue;
 
-                    e.stopPropagation();
-                    break;
-                }
+                this._onOpen(e);
 
-                el = el.parentElement;
+                e.stopPropagation();
+                break;
             }
-            while (el && el !== this);
+            while (path.length);
         }
 
         private _onOpen(e: Event) {

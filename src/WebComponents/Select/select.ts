@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     export type SelectOption = KeyValuePair<any, string>;
 
     export interface ISelectItem {
@@ -79,6 +77,10 @@ namespace Vidyano.WebComponents {
             isReadonlyInput: {
                 type: Boolean,
                 computed: "_computeIsReadonlyInput(readonly, hasOptions, keepUnmatched, disableFiltering)"
+            },
+            inputTabindex: {
+                type: String,
+                computed: "_computeInputTabIndex(isReadonlyInput)"
             },
             disabled: {
                 type: Boolean,
@@ -202,7 +204,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _onFocus() {
-            this.$$("input").focus();
+            this.shadowRoot.querySelector("input").focus();
         }
 
         private _keyup(e: KeyboardEvent) {
@@ -237,7 +239,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _scrollItemIntoView() {
-            const focusOption = <HTMLElement>this.$$("[content] > li[selected]") || <HTMLElement>this.$$("[content] > li[suggested]");
+            const focusOption = <HTMLElement>this.shadowRoot.querySelector("[content] > li[selected]") || <HTMLElement>this.shadowRoot.querySelector("[content] > li[suggested]");
             if (focusOption)
                 (focusOption["scrollIntoViewIfNeeded"] || focusOption["scrollIntoView"]).apply(focusOption);
         }
@@ -438,24 +440,12 @@ namespace Vidyano.WebComponents {
             e.stopPropagation();
         }
 
-        private _equals(item1: ISelectItem, item2: ISelectItem): boolean {
-            return item1 != null && item2 != null && item1.option === item2.option;
-        }
-
         private _computeIsReadonlyInput(readonly: boolean, hasOptions: boolean, keepUnmatched: boolean, disableFiltering: boolean): boolean {
             return readonly || (!keepUnmatched && (!hasOptions || disableFiltering));
         }
 
         private _computeInputTabIndex(isReadonlyInput: boolean): string {
             return isReadonlyInput ? "-1" : "0";
-        }
-
-        private _disablePopup(readonly: boolean, disabled: boolean, sensitive: boolean): boolean {
-            return readonly || disabled || sensitive;
-        }
-
-        private _showGroup(item: ISelectItem): boolean {
-            return item.group && item.groupFirst;
         }
     }
 
@@ -484,7 +474,7 @@ namespace Vidyano.WebComponents {
     export class SelectOptionItem extends WebComponent {
         item: ISelectItem;
 
-        private _onTap(e: TapEvent) {
+        private _onTap(e: Polymer.TapEvent) {
             this.fire("select-option", { option: this.item.option }, { bubbles: true });
 
             e.stopPropagation();

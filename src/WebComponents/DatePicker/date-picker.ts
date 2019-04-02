@@ -1,6 +1,4 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
     export interface IDatePickerCell {
         type: string;
         content?: string;
@@ -90,8 +88,8 @@
         maxDate: Date;
         newTime: string;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.zoom = this.monthMode ? "months" : "days";
             this._setToday(moment(new Date()));
@@ -190,7 +188,10 @@
             }
         }
 
-        private _isSelected(zoom: string, date: moment.Moment, selectedDate: moment.Moment): boolean {
+        private _isDateSelected(zoom: string, date: moment.Moment, selectedDate: moment.Moment): boolean {
+            if (!this.ensureArgumentValues(arguments))
+                return undefined;
+
             if (zoom === "days")
                 return date.isSame(selectedDate, "day");
             else if (zoom === "months" && this.monthMode)
@@ -199,7 +200,10 @@
             return false;
         }
 
-        private _isToday(zoom: string, date: moment.Moment, today: moment.Moment): boolean {
+        private _isDateToday(zoom: string, date: moment.Moment, today: moment.Moment): boolean {
+            if (!this.ensureArgumentValues(arguments))
+                return undefined;
+
             if (zoom === "days")
                 return date.isSame(today, "day");
             else if (zoom === "months")
@@ -208,11 +212,11 @@
             return date.isSame(today, "year");
         }
 
-        private _isOther(monthOffset: number): boolean {
+        private _isOtherMonth(monthOffset: number): boolean {
             return !!monthOffset;
         }
 
-        private _isUnselectable(date: moment.Moment, minDate: Date, maxDate: Date): boolean {
+        private _isDateUnselectable(date: moment.Moment, minDate: Date, maxDate: Date): boolean {
             if (!date || (!minDate && !maxDate))
                 return false;
 
@@ -254,12 +258,12 @@
             e.stopPropagation();
         }
 
-        private _select(e: TapEvent) {
+        private _select(e: Polymer.TapEvent) {
             const cell = <IDatePickerCell>e.model.cell;
             if (!cell || !cell.date)
                 return;
 
-            if ((<HTMLElement>e.target).hasAttribute("unselectable")) {
+            if ((<HTMLElement>this.todo_checkEventTarget(e.target)).hasAttribute("unselectable")) {
                 e.stopPropagation();
                 return;
             }

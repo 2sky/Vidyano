@@ -1,7 +1,6 @@
 namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             canClear: {
                 type: Boolean,
@@ -13,7 +12,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_registerInput(attribute, isAttached)"
+            "_registerInput(attribute, isConnected)"
         ]
     })
     export class PersistentObjectAttributeBinaryFile extends WebComponents.Attributes.PersistentObjectAttribute {
@@ -29,7 +28,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         }
 
-        private _registerInput(attribute: Vidyano.PersistentObjectAttribute, isAttached: boolean) {
+        private _registerInput(attribute: Vidyano.PersistentObjectAttribute, isConnected: boolean) {
             if (this._inputAttribute) {
                 this._inputAttribute.input = null;
                 this._inputAttribute = null;
@@ -38,7 +37,7 @@ namespace Vidyano.WebComponents.Attributes {
             if (this._inputContainer)
                 this._inputContainer.textContent = "";
 
-            if (attribute && isAttached) {
+            if (attribute && isConnected) {
                 this._inputAttribute = attribute;
 
                 const input = document.createElement("input");
@@ -48,9 +47,9 @@ namespace Vidyano.WebComponents.Attributes {
 
                 if (!this._inputContainer) {
                     this._inputContainer = document.createElement("div");
-                    this._inputContainer.setAttribute("upload", "");
+                    this._inputContainer.setAttribute("slot", "upload");
 
-                    Polymer.dom(this).appendChild(this._inputContainer);
+                    this.appendChild(this._inputContainer);
                 }
                 this._inputContainer.appendChild(input);
             }

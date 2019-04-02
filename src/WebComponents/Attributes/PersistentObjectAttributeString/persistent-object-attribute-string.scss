@@ -10,7 +10,7 @@
     }
 
     span, input {
-        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
+        color: var(--vi-persistent-object-attribute-foreground, var(--theme-foreground));
 
         &[sensitive] {
             --at-apply: --vi-app--sensitive;
@@ -57,20 +57,20 @@
         text-decoration: none;
         overflow: hidden;
         text-overflow: ellipsis;
-        fill: var(--vi-persistent-object-attribute-foreground, --theme-color);
+        fill: var(--vi-persistent-object-attribute-foreground, var(--theme-color));
 
         &:focus {
             outline: 0;
         }
 
         &:visited {
-            color: var(--vi-persistent-object-attribute-foreground, --theme-color);
-            fill: var(--vi-persistent-object-attribute-foreground, --theme-color);
+            color: var(--vi-persistent-object-attribute-foreground, var(--theme-color));
+            fill: var(--vi-persistent-object-attribute-foreground, var(--theme-color));
         }
 
         &:hover {
-            color: var(--vi-persistent-object-attribute-foreground, --theme-color-light);
-            fill: var(--vi-persistent-object-attribute-foreground, --theme-color-light);
+            color: var(--vi-persistent-object-attribute-foreground, var(--theme-color-light));
+            fill: var(--vi-persistent-object-attribute-foreground, var(--theme-color-light));
         }
 
         &[disabled] {
@@ -86,7 +86,7 @@
             -o-text-overflow: ellipsis;
             text-overflow: ellipsis;
             overflow: hidden;
-            color: var(--vi-persistent-object-attribute-foreground, --theme-color);
+            color: var(--vi-persistent-object-attribute-foreground, var(--theme-color));
         }
 
         vi-icon {

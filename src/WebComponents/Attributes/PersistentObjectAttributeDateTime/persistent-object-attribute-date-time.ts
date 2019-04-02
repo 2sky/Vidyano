@@ -1,33 +1,32 @@
 ﻿namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             selectedDate: Object,
             selectedTime: Object,
             hasDateComponent: {
                 type: Boolean,
-                computed: "_computeHasComponent(attribute, 'Date', isAttached)"
+                computed: "_computeHasComponent(attribute, 'Date', isConnected)"
             },
             hasTimeComponent: {
                 type: Boolean,
-                computed: "_computeHasComponent(attribute, 'Time', isAttached)"
+                computed: "_computeHasComponent(attribute, 'Time', isConnected)"
             },
             dateFormat: {
                 type: String,
-                computed: "_computeDateFormat(isAttached)"
+                computed: "_computeDateFormat(isConnected)"
             },
             dateSeparator: {
                 type: String,
-                computed: "_computeDateSeparator(isAttached)"
+                computed: "_computeDateSeparator(isConnected)"
             },
             timeFormat: {
                 type: String,
-                computed: "_computeTimeFormat(isAttached)"
+                computed: "_computeTimeFormat(isConnected)"
             },
             timeSeparator: {
                 type: String,
-                computed: "_computeTimeSeparator(isAttached)"
+                computed: "_computeTimeSeparator(isConnected)"
             },
             isInvalid: {
                 type: Boolean,
@@ -40,15 +39,15 @@
             },
             monthMode: {
                 type: Boolean,
-                computed: "_computeMonthMode(attribute.typeHints.displayformat)"
+                computed: "_computeMonthMode(attribute.typeHints)"
             },
             minDate: {
                 type: Object,
-                computed: "_computeMinMaxDate(attribute.typeHints.mindate)"
+                computed: "_computeMinMaxDate(attribute.typeHints, 'mindate')"
             },
             maxDate: {
                 type: Object,
-                computed: "_computeMinMaxDate(attribute.typeHints.maxdate)"
+                computed: "_computeMinMaxDate(attribute.typeHints, 'maxdate')"
             }
         },
         observers: [
@@ -85,8 +84,15 @@
 
         get dateInput(): HTMLInputElement {
             if (!this._dateInput) {
-                Polymer.dom(this).flush();
-                this._dateInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("input.date");
+                Polymer.flush();
+
+                this._dateInput = <HTMLInputElement>this.shadowRoot.querySelector("input.date");
+                const maskedDateInput = MaskedInput({
+                    elm: this._dateInput,
+                    format: this.dateFormat,
+                    sep: this.dateSeparator,
+                    onfilled: this._dateFilled.bind(this)
+                });
             }
 
             return this._dateInput;
@@ -94,24 +100,31 @@
 
         get timeInput(): HTMLInputElement {
             if (!this._timeInput) {
-                Polymer.dom(this).flush();
-                this._timeInput = <HTMLInputElement>Polymer.dom(this.root).querySelector("input.time");
+                Polymer.flush();
+
+                this._timeInput = <HTMLInputElement>this.shadowRoot.querySelector("input.time");
+                const maskedTimeInput = MaskedInput({
+                    elm: this._timeInput,
+                    format: this.timeFormat,
+                    sep: this.timeSeparator,
+                    onfilled: this._timeFilled.bind(this)
+                });
             }
 
             return this._timeInput;
         }
 
         private _focused(e: FocusEvent) {
-            const target = <HTMLInputElement>e.target;
+            const input = <HTMLInputElement>e.target;
 
-            if ((target.id === "date" && !this._isDateFilled) || (target.id === "time" && !this._isTimeFilled))
-                target.selectionStart = target.selectionEnd = 0;
+            if ((input.id === "date" && !this._isDateFilled) || (input.id === "time" && !this._isTimeFilled))
+                input.selectionStart = input.selectionEnd = 0;
         }
 
         protected _editingChanged() {
             super._editingChanged();
 
-            Polymer.dom(this).flush();
+            Polymer.flush();
 
             if (this.editing)
                 this._setIsInvalid(false);
@@ -151,21 +164,24 @@
             if (!hasDateComponent || this._valueChangedBlock)
                 return;
 
-            let skipSet: boolean;
-            const newValue = new Date(selectedDate.getTime());
-            if (this.hasTimeComponent) {
-                if (this.selectedTime)
-                    newValue.setHours(this.selectedTime.getHours(), this.selectedTime.getMinutes(), this.selectedTime.getSeconds(), this.selectedTime.getMilliseconds());
-                else if (typeof this.attribute.typeHints.newtime === "string") {
-                    const time = this.attribute.typeHints.newtime.split(/[:.]/);
-                    while (time.length < 4)
-                        time.push("0");
+            if (selectedDate) {
+                const newValue = new Date(selectedDate.getTime());
+                if (this.hasTimeComponent) {
+                    if (this.selectedTime)
+                        newValue.setHours(this.selectedTime.getHours(), this.selectedTime.getMinutes(), this.selectedTime.getSeconds(), this.selectedTime.getMilliseconds());
+                    else if (typeof this.attribute.typeHints.newtime === "string") {
+                        const time = this.attribute.typeHints.newtime.split(/[:.]/);
+                        while (time.length < 4)
+                            time.push("0");
 
-                    newValue.setHours(parseInt(time[0], 10), parseInt(time[1], 10), parseInt(time[2], 10), parseInt(time[3].substr(0, 3), 10));
+                        newValue.setHours(parseInt(time[0], 10), parseInt(time[1], 10), parseInt(time[2], 10), parseInt(time[3].substr(0, 3), 10));
+                    }
                 }
-            }
 
-            this._guardedSetValue(newValue);
+                this._guardedSetValue(newValue);
+            }
+            else
+                this._guardedSetValue(null);
         }
 
         private _selectedTimeChanged(selectedTime: Date, hasDateComponent: boolean, hasTimeComponent: boolean) {
@@ -204,7 +220,7 @@
             if (!allowRefresh && !this.isInvalid) {
                 allowRefresh = value && !this.value;
                 if (!allowRefresh) {
-                    allowRefresh = (this.hasTimeComponent && (<TimePicker>this.$$("#timepicker")).isOpen) || (this.hasDateComponent && (<DatePicker>this.$$("#datepicker")).isOpen);
+                    allowRefresh = (this.hasTimeComponent && (<TimePicker>this.shadowRoot.querySelector("#timepicker")).isOpen) || (this.hasDateComponent && (<DatePicker>this.shadowRoot.querySelector("#datepicker")).isOpen);
                     if (!allowRefresh)
                         allowRefresh = document.activeElement !== this.dateInput && document.activeElement !== this.timeInput;
                 }
@@ -269,8 +285,8 @@
             this.attribute.setValue(null, true).catch(Vidyano.noop);
         }
 
-        private _dateFilled(e: Event, detail: IMaskedInputFilled) {
-            const dateMoment = moment(detail.value, Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toUpperCase(), true);
+        private _dateFilled() {
+            const dateMoment = moment(this.dateInput.value, Vidyano.CultureInfo.currentCulture.dateFormat.shortDatePattern.toUpperCase(), true);
             if (this._isDateFilled = dateMoment.isValid()) {
                 this.selectedDate = dateMoment.toDate();
 
@@ -279,7 +295,7 @@
                         this._skipBlurRefreshUpdate = true;
                         if (!this.selectedTime) {
                             this.timeInput.value = this.attribute.typeHints.newTime || moment(new Date()).format("HH:mm");
-                            (<MaskedInput><any>this.timeInput).fire("filled", { value: this.timeInput.value });
+                            //(<MaskedInput><any>this.timeInput).fire("filled", { value: this.timeInput.value });
                         }
 
                         this._focusElement(this.timeInput);
@@ -293,19 +309,15 @@
             }
             else
                 this._setIsInvalid(true);
-
-            e.stopPropagation();
         }
 
-        private _timeFilled(e: Event, detail: IMaskedInputFilled) {
-            const timeMoment = moment(detail.value, Vidyano.CultureInfo.currentCulture.dateFormat.shortTimePattern, true);
+        private _timeFilled() {
+            const timeMoment = moment(this.timeInput.value, Vidyano.CultureInfo.currentCulture.dateFormat.shortTimePattern, true);
 
             if (this._isTimeFilled = timeMoment.isValid())
                 this.selectedTime = timeMoment.toDate();
             else
                 this._setIsInvalid(true);
-
-            e.stopPropagation();
         }
 
         private _keydown(e: KeyboardEvent) {
@@ -369,8 +381,7 @@
         }
 
         private _computeHasComponent(target: Vidyano.PersistentObjectAttribute, component: string): boolean {
-            Polymer.dom(this).flush();
-
+            Polymer.flush();
             return target && target.type.contains(component);
         }
 
@@ -394,21 +405,22 @@
             return value != null && !required;
         }
 
-        private _computeMonthMode(displayFormat: string): boolean {
-            if (!displayFormat)
+        private _computeMonthMode(typeHints: any): boolean {
+            if (!typeHints.displayFormat)
                 return false;
 
-            return displayFormat === "{0:y}";
+            return typeHints.displayFormat === "{0:y}";
         }
 
-        private _computeMinMaxDate(date: string): Date {
+        private _computeMinMaxDate(typeHints: any, hint: string): Date {
+            const date = typeHints[hint];
             if (!date)
                 return null;
 
             return moment(date, "YYYY-MM-DD").toDate();
         }
 
-        private _previousMonth(e: TapEvent) {
+        private _previousMonth() {
             const selectedDateMoment = this.selectedDate ? moment(this.selectedDate) : moment().startOf("month");
             const newSelectedDate = selectedDateMoment.subtract(1, "month").toDate();
             if (this.minDate && newSelectedDate < this.minDate)
@@ -417,7 +429,7 @@
             this.selectedDate = newSelectedDate;
         }
 
-        private _nextMonth(e: TapEvent) {
+        private _nextMonth() {
             const selectedDateMoment = this.selectedDate ? moment(this.selectedDate) : moment().startOf("month");
             const newSelectedDate = selectedDateMoment.add(1, "month").toDate();
             if (this.maxDate && newSelectedDate > this.maxDate)

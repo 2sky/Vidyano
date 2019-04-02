@@ -4,7 +4,7 @@
     @include layout-horizontal();
 
     &[editing] {
-        [content] {
+        [slot="content"] {
             @include layout-horizontal();
         }
 
@@ -32,7 +32,7 @@
     }
 
     span, input {
-        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
+        color: var(--vi-persistent-object-attribute-foreground, var(--theme-foreground));
 
         &[sensitive] {
             --at-apply: --vi-app--sensitive;

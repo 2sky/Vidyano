@@ -4,9 +4,7 @@
     @include layout-horizontal();
     @include relative();
 
-    ::content {
-        > vi-persistent-object-tab, > vi-query-items-presenter {
-            @include fit();
-        }
+    ::slotted(*) {
+        @include fit();
     }
 }

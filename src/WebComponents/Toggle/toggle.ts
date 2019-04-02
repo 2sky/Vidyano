@@ -1,6 +1,4 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             toggled: {
@@ -55,10 +53,6 @@
 
         private _computeIsNull(toggled: boolean): boolean {
             return toggled !== false && toggled !== true;
-        }
-
-        private _isEmpty(label: string): boolean {
-            return !label;
         }
     }
 }

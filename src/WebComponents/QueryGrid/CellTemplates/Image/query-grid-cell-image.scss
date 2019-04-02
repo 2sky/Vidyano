@@ -1,12 +1,12 @@
-@import "../_vars.scss";
+@import "../../../_vars.scss";
 
 :host {
     display: block;
     padding: 0 1px;
     overflow: hidden;
 
-    ::content .image {
-        height: calc(var(--theme-h2) - 2px);
+    ::slotted(*) {
+        height: var(--vi-query-grid--row-height);
         background-position: center center;
         background-size: contain;
         background-repeat: no-repeat;

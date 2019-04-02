@@ -1,5 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
 
     export class QueryResultItemValue extends ServiceObject {
         private _column: Vidyano.QueryColumn;

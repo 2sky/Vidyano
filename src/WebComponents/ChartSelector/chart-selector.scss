@@ -6,7 +6,7 @@
     margin-left: var(--theme-h5);
     padding-left: var(--theme-h5);
 
-    > button, button[header] {
+    > button, button[slot="header"] {
         height: var(--theme-h1);
     }
 }

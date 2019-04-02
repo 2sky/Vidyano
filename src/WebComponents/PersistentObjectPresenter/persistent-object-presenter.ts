@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     interface IPersistentObjectPresenterRouteParameters {
         id: string;
         objectId: string;
@@ -38,7 +36,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_updatePersistentObject(persistentObjectId, persistentObjectObjectId, isAttached)",
+            "_updatePersistentObject(persistentObjectId, persistentObjectObjectId, isConnected)",
             "_updateTitle(persistentObject.isBreadcrumbSensitive, isAppSensitive)"
         ],
         listeners: {
@@ -55,8 +53,8 @@ namespace Vidyano.WebComponents {
         },
         sensitive: true
     })
-    export class PersistentObjectPresenter extends WebComponent implements IConfigurable {
-        private _cacheEntry: PersistentObjectAppCacheEntry;
+    export class PersistentObjectPresenter extends WebComponent<App> implements IConfigurable {
+        private _cacheEntry: AppCacheEntryPersistentObject;
         readonly loading: boolean; private _setLoading: (loading: boolean) => void;
         readonly templated: boolean; private _setTemplated: (templated: boolean) => void;
         readonly error: string; private _setError: (error: string) => void;
@@ -64,9 +62,10 @@ namespace Vidyano.WebComponents {
         persistentObjectObjectId: string;
         persistentObject: Vidyano.PersistentObject;
 
-        private _activate(e: CustomEvent, { parameters }: { parameters: IPersistentObjectPresenterRouteParameters; }) {
+        private _activate(e: CustomEvent) {
+            const { parameters }: { parameters: IPersistentObjectPresenterRouteParameters; } = e.detail;
             if (parameters.fromActionId) {
-                if (this._cacheEntry = <PersistentObjectFromActionAppCacheEntry>this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(undefined, parameters.fromActionId)))
+                if (this._cacheEntry = <AppCacheEntryPersistentObjectFromAction>this.app.cachePing(new AppCacheEntryPersistentObjectFromAction(undefined, parameters.fromActionId)))
                     this.persistentObject = this._cacheEntry.persistentObject;
 
                 if (!this._cacheEntry) {
@@ -78,8 +77,8 @@ namespace Vidyano.WebComponents {
                     return;
                 }
             } else {
-                const cacheEntry = new PersistentObjectAppCacheEntry(parameters.id, parameters.objectId);
-                this._cacheEntry = <PersistentObjectAppCacheEntry>this.app.cachePing(cacheEntry);
+                const cacheEntry = new AppCacheEntryPersistentObject(parameters.id, parameters.objectId);
+                this._cacheEntry = <AppCacheEntryPersistentObject>this.app.cachePing(cacheEntry);
                 if (!this._cacheEntry)
                     this.app.cache(this._cacheEntry = cacheEntry);
 
@@ -96,26 +95,26 @@ namespace Vidyano.WebComponents {
         }
 
         private async _deactivate(e: CustomEvent) {
-            const route = <AppRoute>Polymer.dom(this).parentNode;
-            const currentPath = App.removeRootPath(route.path);
-            const newPath = App.removeRootPath(this.app.path);
+            const route = <AppRoute>this.parentNode;
+            const currentPath = AppBase.removeRootPath(route.path);
+            const newPath = AppBase.removeRootPath(this.app.path);
 
             if (this.persistentObject && this.persistentObject.isDirty && this.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit") && currentPath !== newPath) {
                 e.preventDefault();
 
                 const result = await this.app.showMessageDialog( {
-                    title: this.app.service.getTranslatedMessage("PagesWithUnsavedChanges"),
+                    title: this.service.getTranslatedMessage("PagesWithUnsavedChanges"),
                     noClose: true,
-                    message: this.app.service.getTranslatedMessage("ConfirmLeavePage"),
+                    message: this.service.getTranslatedMessage("ConfirmLeavePage"),
                     actions: [
-                        this.app.service.getTranslatedMessage("StayOnThisPage"),
-                        this.app.service.getTranslatedMessage("LeaveThisPage")
+                        this.service.getTranslatedMessage("StayOnThisPage"),
+                        this.service.getTranslatedMessage("LeaveThisPage")
                     ]
                 });
 
                 if (result === 1) {
                     this.app.cacheEntries.forEach(entry => {
-                        if (entry instanceof Vidyano.WebComponents.PersistentObjectAppCacheEntry && !!entry.persistentObject && entry.persistentObject.isDirty && entry.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) {
+                        if (entry instanceof Vidyano.WebComponents.AppCacheEntryPersistentObject && !!entry.persistentObject && entry.persistentObject.isDirty && entry.persistentObject.actions.some(a => a.name === "Save" || a.name === "EndEdit")) {
                             if (entry.persistentObject.isNew)
                                 this.app.cacheRemove(entry);
                             else
@@ -133,18 +132,18 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private async _updatePersistentObject(persistentObjectId: string, persistentObjectObjectId: string, isAttached: boolean) {
+        private async _updatePersistentObject(persistentObjectId: string, persistentObjectObjectId: string, isConnected: boolean) {
             this._setError(null);
 
-            if (!this.isAttached || (this.persistentObject && this.persistentObject.id === persistentObjectId && this.persistentObject.objectId === persistentObjectObjectId))
+            if (!this.isConnected || (this.persistentObject && this.persistentObject.id === persistentObjectId && this.persistentObject.objectId === persistentObjectObjectId))
                 return;
 
             if (persistentObjectId != null) {
                 this._setLoading(true);
 
                 try {
-                    const po = await this.app.service.getPersistentObject(null, persistentObjectId, persistentObjectObjectId);
-                    const cacheEntry = <PersistentObjectAppCacheEntry>this.app.cache(new PersistentObjectAppCacheEntry(persistentObjectId, persistentObjectObjectId));
+                    const po = await this.service.getPersistentObject(null, persistentObjectId, persistentObjectObjectId);
+                    const cacheEntry = <AppCacheEntryPersistentObject>this.app.cache(new AppCacheEntryPersistentObject(persistentObjectId, persistentObjectObjectId));
 
                     cacheEntry.persistentObject = po;
 
@@ -173,7 +172,7 @@ namespace Vidyano.WebComponents {
                 this._setTemplated(!!config && config.hasTemplate);
 
                 if (this.templated) {
-                    Polymer.dom(this).appendChild(config.stamp(persistentObject, config.as || "persistentObject"));
+                    this.appendChild(config.stamp(persistentObject, config.as || "persistentObject"));
                     this._setLoading(false);
                 }
                 else {
@@ -198,7 +197,7 @@ namespace Vidyano.WebComponents {
 
             const persistentObjectComponent = new Vidyano.WebComponents.PersistentObject();
             persistentObjectComponent.persistentObject = persistentObject;
-            Polymer.dom(this).appendChild(persistentObjectComponent);
+            this.appendChild(persistentObjectComponent);
 
             this._setLoading(false);
         }

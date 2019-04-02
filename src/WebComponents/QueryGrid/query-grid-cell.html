@@ -1,0 +1,43 @@
+﻿<link rel="import" href="../Resource/resource.html" />
+<link rel="import" href="CellTemplates/Default/query-grid-cell-default.html" />
+<link rel="import" href="CellTemplates/Boolean/query-grid-cell-boolean.html" />
+<link rel="import" href="CellTemplates/Image/query-grid-cell-image.html" />
+
+<vi-resource type="query-grid-cell" name="Default">
+    <template>
+        <vi-query-grid-cell-default value="{{value}}"></vi-query-grid-cell-default>
+    </template>
+</vi-resource>
+
+<vi-resource type="query-grid-cell" name="Image">
+    <template>
+        <vi-query-grid-cell-image value="{{value}}"></vi-query-grid-cell-image>
+    </template>
+</vi-resource>
+
+<vi-resource type="query-grid-cell" name="Boolean">
+    <template is="dom-template">
+        <vi-query-grid-cell-boolean value="{{value}}"></vi-query-grid-cell-boolean>
+    </template>
+</vi-resource>
+
+<vi-resource type="query-grid-cell" name="NullableBoolean">
+    <template is="dom-template">
+        <vi-query-grid-cell-boolean value="{{value}}"></vi-query-grid-cell-boolean>
+    </template>
+</vi-resource>
+
+<vi-resource type="query-grid-cell" name="YesNo">
+    <template is="dom-template">
+        <vi-query-grid-cell-boolean value="{{value}}"></vi-query-grid-cell-boolean>
+    </template>
+</vi-resource>
+
+<dom-module id="vi-query-grid-cell">
+    <template>
+        <link rel="stylesheet" href="query-grid-cell.css" />
+        <slot></slot>
+    </template>
+</dom-module>
+
+<script src="query-grid-cell.js"></script>

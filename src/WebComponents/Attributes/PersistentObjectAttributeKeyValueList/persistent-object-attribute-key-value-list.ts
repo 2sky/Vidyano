@@ -1,7 +1,6 @@
 namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             radio: {
                 type: Boolean,

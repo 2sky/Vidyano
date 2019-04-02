@@ -8,21 +8,23 @@
             <vi-icon source="[[icon]]"></vi-icon>
         </div>
         <div class="flex relative" on-tap="_moreInfo">
-            <template is="dom-if" if="[[!hidden]]">
-                <vi-size-tracker on-sizechanged="_trackerSizeChanged"></vi-size-tracker>
-            </template>
-            <span id="text" inner-h-t-m-l="[[_textInline(text)]]"></span>
+            <dom-if if="[[!hidden]]">
+                <template>
+                    <vi-size-tracker on-sizechanged="_trackerSizeChanged"></vi-size-tracker>
+                </template>
+            </dom-if>
+            <span id="text" inner-h-t-m-l="[[inlineText]]"></span>
         </div>
-        <button is="vi-button" id="close" on-tap="_close" hidden$="[[noClose]]">
+        <vi-button id="close" on-tap="_close" hidden$="[[noClose]]">
             <vi-icon source="Notification_Close"></vi-icon>
-        </button>
+        </vi-button>
     </template>
 </dom-module>
 
-<vi-icon name="Notification_Close">
+<vi-resource type="icon" name="Notification_Close">
     <svg viewBox="0 0 32 32">
         <path d="M19.587 16.001l6.096 6.096c0.396 0.396 0.396 1.039 0 1.435l-2.151 2.151c-0.396 0.396-1.038 0.396-1.435 0l-6.097-6.096-6.097 6.096c-0.396 0.396-1.038 0.396-1.434 0l-2.152-2.151c-0.396-0.396-0.396-1.038 0-1.435l6.097-6.096-6.097-6.097c-0.396-0.396-0.396-1.039 0-1.435l2.153-2.151c0.396-0.396 1.038-0.396 1.434 0l6.096 6.097 6.097-6.097c0.396-0.396 1.038-0.396 1.435 0l2.151 2.152c0.396 0.396 0.396 1.038 0 1.435l-6.096 6.096z"></path>
     </svg>
-</vi-icon>
+</vi-resource>
 
 <script src="notification.js"></script>

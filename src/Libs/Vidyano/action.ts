@@ -1,6 +1,4 @@
 namespace Vidyano {
-    "use strict";
-
     export interface IActionExecuteOptions {
         menuOption?: number;
         parameters?: any;

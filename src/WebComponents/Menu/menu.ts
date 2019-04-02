@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             label: String,
@@ -24,7 +22,8 @@ namespace Vidyano.WebComponents {
             },
             instantSearchResults: {
                 type: Array,
-                readOnly: true
+                readOnly: true,
+                value: null
             },
             filter: {
                 type: String,
@@ -49,12 +48,13 @@ namespace Vidyano.WebComponents {
             "reset-filter": "_resetFilter"
         }
     })
-    export class Menu extends WebComponent {
+    export class Menu extends WebComponent<App> {
         private static _minResizeWidth: number;
         private _resizeWidth: number;
-        readonly isResizing: boolean; private _setIsResizing: (val: boolean) => void;
+        private _instantSearchDebouncer: Polymer.Debouncer;
         readonly instantSearchDelay: number;
         readonly instantSearchResults: IInstantSearchResult[]; private _setInstantSearchResults: (results: IInstantSearchResult[]) => void;
+        readonly isResizing: boolean; private _setIsResizing: (val: boolean) => void;
         filter: string;
         filtering: boolean;
         activeProgramUnit: ProgramUnit;
@@ -62,31 +62,35 @@ namespace Vidyano.WebComponents {
         hasGlobalSearch: boolean;
         hideSearch: boolean;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.hideSearch = this.app.configuration.getSetting("vi-menu.hide-search", "false").toLowerCase() === "true";
 
-            Array.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).forEach(element => Polymer.dom(this.$.footerElements).appendChild(element));
-            Array.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).forEach(element => Polymer.dom(this.$.headerElements).appendChild(element));
+            // TODO
+            // Array.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='footer']")).forEach(element => Polymer.dom(this.$.footerElements).appendChild(element));
+            // Array.from(Polymer.dom(this.app).querySelectorAll("[vi-menu-element~='header']")).forEach(element => Polymer.dom(this.$.headerElements).appendChild(element));
 
             if (!Menu._minResizeWidth)
                 Menu._minResizeWidth = this.offsetWidth;
 
             const menuWidth = parseInt(Vidyano.cookie("menu-width"));
             if (menuWidth)
-                this.customStyle["--vi-menu--expand-width"] = `${menuWidth}px`;
-
-            this.updateStyles();
+                this.updateStyles({ "--vi-menu--expand-width": `${menuWidth}px` });
 
             this.collapsed = BooleanEx.parse(Vidyano.cookie("menu-collapsed"));
         }
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
-            Array.from(Polymer.dom(this.$.footerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
-            Array.from(Polymer.dom(this.$.headerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
+            // TODO
+            // Array.from(Polymer.dom(this.$.footerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
+            // Array.from(Polymer.dom(this.$.headerElements).children).forEach(element => Polymer.dom(this.app).appendChild(element));
+        }
+
+        get app(): App {
+            return <App>super.app;
         }
 
         private _filterChanged() {
@@ -95,8 +99,8 @@ namespace Vidyano.WebComponents {
             if (this.filtering) {
                 if (this.instantSearchDelay) {
                     const filter = this.filter;
-                    this.debounce("Menu.InstantSearch", async () => {
-                        const results = await this.app.service.getInstantSearch(filter);
+                    this._instantSearchDebouncer = Polymer.Debouncer.debounce(this._instantSearchDebouncer, Polymer.Async.timeOut.after(this.instantSearchDelay), async () => {
+                        const results = await this.service.getInstantSearch(filter);
                         if (filter !== this.filter)
                             return;
 
@@ -107,11 +111,12 @@ namespace Vidyano.WebComponents {
 
                             return r;
                         }) : null);
-                    }, this.instantSearchDelay);
+                    });
                 }
             }
-            else {
-                this.cancelDebouncer("Menu.InstantSearch");
+            else if (this._instantSearchDebouncer) {
+                this._instantSearchDebouncer.cancel();
+                this._instantSearchDebouncer = null;
                 this._setInstantSearchResults(null);
             }
         }
@@ -123,7 +128,7 @@ namespace Vidyano.WebComponents {
             if (!this.filtering || !this.hasGlobalSearch)
                 return;
 
-            this.app.changePath(this.app.getUrlForPersistentObject(this.app.service.application.globalSearchId, this.filter));
+            this.app.changePath(this.app.getUrlForPersistentObject(this.service.application.globalSearchId, this.filter));
             this.filter = "";
         }
 
@@ -148,16 +153,16 @@ namespace Vidyano.WebComponents {
             return !!programUnitItems && programUnitItems.some(item => item instanceof ProgramUnitItemGroup);
         }
 
-        private _countItems(programUnitItems: any[]): number {
+        private _programUnitItemsCount(programUnitItems: any[]): number {
             return !!programUnitItems ? programUnitItems.length : 0;
         }
 
         private _focusSearch() {
-            const inputSearch = <InputSearch>Polymer.dom(this.root).querySelector("#collapsedInputSearch");
+            const inputSearch = <InputSearch>this.shadowRoot.querySelector("#collapsedInputSearch");
             this._focusElement(inputSearch);
         }
 
-        private _catchInputSearchTap(e: TapEvent) {
+        private _catchInputSearchTap(e: CustomEvent) {
             e.stopPropagation();
         }
 
@@ -165,27 +170,25 @@ namespace Vidyano.WebComponents {
             this.filter = "";
         }
 
-        private _onResize(e: PolymerTrackEvent, detail: PolymerTrackDetail) {
-            if (detail.state === "start") {
+        private _onResize(e: Polymer.TrackEvent) {
+            if (e.detail.state === "start") {
                 this.app.isTracking = true;
                 this._resizeWidth = Math.max(Menu._minResizeWidth, this.offsetWidth);
-                this.customStyle["--vi-menu--expand-width"] = `${this._resizeWidth}px`;
-                this.updateStyles();
+                this.updateStyles({ "--vi-menu--expand-width": `${this._resizeWidth}px` });
                 this._setIsResizing(true);
             }
-            else if (detail.state === "track") {
-                this._resizeWidth = Math.max(Menu._minResizeWidth, this._resizeWidth + detail.ddx);
-                this.customStyle["--vi-menu--expand-width"] = `${this._resizeWidth}px`;
-                this.updateStyles();
+            else if (e.detail.state === "track") {
+                this._resizeWidth = Math.max(Menu._minResizeWidth, this._resizeWidth + e.detail.ddx);
+                this.updateStyles({ "--vi-menu--expand-width": `${this._resizeWidth} px` });
             }
-            else if (detail.state === "end") {
+            else if (e.detail.state === "end") {
                 Vidyano.cookie("menu-width", String(this._resizeWidth));
                 this._setIsResizing(false);
                 this.app.isTracking = false;
             }
         }
 
-        private _computeIsFirstRunProgramUnit(application: Vidyano.Application, programUnit: Vidyano.ProgramUnit): boolean {
+        private _isFirstRunProgramUnit(application: Vidyano.Application, programUnit: Vidyano.ProgramUnit): boolean {
             if (application && application.programUnits.length === 2) {
                 if (application.programUnits[0] === programUnit && programUnit.name === "Home" && programUnit.items.length === 0)
                     return application.programUnits[1].path.contains("e683de37-2b39-45e9-9522-ef69c3f0287f");
@@ -194,8 +197,8 @@ namespace Vidyano.WebComponents {
             return false;
         }
 
-        private async _add(e: TapEvent) {
-            const query = (await Promise.all([this.app.service.getQuery("5a4ed5c7-b843-4a1b-88f7-14bd1747458b"), this.app.importComponent("SelectReferenceDialog")]))[0] as Vidyano.Query;
+        private async _add(e: CustomEvent) {
+            const query = (await Promise.all([this.service.getQuery("5a4ed5c7-b843-4a1b-88f7-14bd1747458b"), this.app.importComponent("SelectReferenceDialog")]))[0] as Vidyano.Query;
             if (!query)
                 return;
 
@@ -217,7 +220,7 @@ namespace Vidyano.WebComponents {
                     return;
 
                 try {
-                    await this.app.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: this.app.service.application.programUnits[0].id });
+                    await this.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: this.service.application.programUnits[0].id });
                     document.location.reload();
                 }
                 catch (e) {
@@ -312,7 +315,7 @@ namespace Vidyano.WebComponents {
             "tap": "_tap"
         }
     })
-    export class MenuItem extends WebComponent {
+    export class MenuItem extends WebComponent<App> {
         readonly expand: boolean; private _setExpand: (val: boolean) => void;
         collapseGroupsOnTap: boolean;
         item: Vidyano.ProgramUnitItem;
@@ -324,8 +327,7 @@ namespace Vidyano.WebComponents {
         filterParent: ProgramUnitItem;
 
         private _updateIndentVariable(level: number) {
-            this.customStyle["--vi-menu-item-indent-level"] = level.toString();
-            this.updateStyles();
+            this.updateStyles({ "--vi-menu-item-indent-level": level.toString() });
         }
 
         private _computeSubLevel(level: number): number {
@@ -336,7 +338,7 @@ namespace Vidyano.WebComponents {
             if (!this.collapseGroupsOnTap)
                 this._setExpand(false);
 
-            Array.prototype.forEach.call(Polymer.dom(this.root).querySelectorAll("vi-menu-item[has-items]"), (item: MenuItem) => item._collapseRecursive());
+            Array.prototype.forEach.call(this.shadowRoot.querySelectorAll("vi-menu-item[has-items]"), (item: MenuItem) => item._collapseRecursive());
         }
 
         private _tap(e: Event) {
@@ -353,9 +355,9 @@ namespace Vidyano.WebComponents {
                     item = (<Vidyano.ProgramUnit>item).items[0];
 
                 if (item instanceof Vidyano.ProgramUnitItemQuery)
-                    this.app.cacheRemove(new QueryAppCacheEntry((<Vidyano.ProgramUnitItemQuery>item).queryId));
+                    this.app.cacheRemove(new AppCacheEntryQuery((<Vidyano.ProgramUnitItemQuery>item).queryId));
                 else if (item instanceof Vidyano.ProgramUnitItemPersistentObject)
-                    this.app.cacheRemove(new PersistentObjectAppCacheEntry((<Vidyano.ProgramUnitItemPersistentObject>item).persistentObjectId, (<Vidyano.ProgramUnitItemPersistentObject>item).persistentObjectObjectId));
+                    this.app.cacheRemove(new AppCacheEntryPersistentObject((<Vidyano.ProgramUnitItemPersistentObject>item).persistentObjectId, (<Vidyano.ProgramUnitItemPersistentObject>item).persistentObjectObjectId));
 
                 if (this.app.noHistory && !(item instanceof Vidyano.ProgramUnitItemUrl)) {
                     e.preventDefault();
@@ -461,7 +463,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _titleMouseenter() {
-            this.$.title.setAttribute("title", this.$.title.offsetWidth < this.$.title.scrollWidth ? this.item.title : "");
+            this.$.title.setAttribute("title", (<HTMLElement>this.$.title).offsetWidth < this.$.title.scrollWidth ? this.item.title : "");
         }
 
         _viConfigure(actions: IConfigurableAction[]) {
@@ -470,7 +472,7 @@ namespace Vidyano.WebComponents {
 
             if (this.item instanceof Vidyano.ProgramUnit) {
                 actions.push({
-                    label: `Program unit: ${this.item.name}`,
+                    label: `Program unit: ${this.item.name} `,
                     icon: "viConfigure",
                     action: () => this.app.changePath(`Management/PersistentObject.b53ec1cd-e0b3-480f-b16d-bf33b133c05c/${this.item.name}`),
                     subActions: [
@@ -479,7 +481,7 @@ namespace Vidyano.WebComponents {
                             icon: "Add",
                             action: async () => {
                                 await this.app.importComponent("SelectReferenceDialog");
-                                const query = await this.app.service.getQuery("5a4ed5c7-b843-4a1b-88f7-14bd1747458b");
+                                const query = await this.service.getQuery("5a4ed5c7-b843-4a1b-88f7-14bd1747458b");
                                 if (!query)
                                     return;
 
@@ -487,7 +489,7 @@ namespace Vidyano.WebComponents {
                                 if (!query.selectedItems || query.selectedItems.length === 0)
                                     return;
 
-                                await this.app.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: this.item.id });
+                                await this.service.executeAction("System.AddQueriesToProgramUnit", null, query, query.selectedItems, { Id: this.item.id });
                                 document.location.reload();
                             }
                         }
@@ -498,9 +500,9 @@ namespace Vidyano.WebComponents {
             }
             else if (this.item instanceof Vidyano.ProgramUnitItem) {
                 actions.push({
-                    label: `Program unit item: ${this.item.name}`,
+                    label: `Program unit item: ${this.item.name} `,
                     icon: "viConfigure",
-                    action: () => this.app.changePath(`Management/PersistentObject.68f7b99e-ce10-4d43-80fb-191b6742d53c/${this.item.name}`)
+                    action: () => this.app.changePath(`Management/PersistentObject.68f7b99e-ce10-4d43-80fb-191b6742d53c/${this.item.name} `)
                 });
             }
         }

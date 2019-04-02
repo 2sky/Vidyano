@@ -33,7 +33,7 @@
                 width: 100%;
             }
 
-            &:not(:only-child) {
+            &:not(:nth-child(2)) {
                 display: none;
             }
         }
@@ -160,7 +160,7 @@
             .actions {
                 padding-top: var(--theme-h3);
 
-                button {
+                vi-button {
                     padding: 0 var(--theme-h3);
                     line-height: var(--theme-h2);
 
@@ -177,14 +177,14 @@
                 background-color: #eee;
                 margin-bottom: var(--theme-h4);
 
-                h3, button {
+                h3, vi-button {
                     font-weight: 300;
                     font-size: 13px;
+                    line-height: var(--theme-h3);
                 }
 
                 h3 {
                     margin-right: 2px;
-                    padding: 3px 0;
                 }
 
                 vi-icon {
@@ -363,11 +363,9 @@
         }
     }
 
-    footer ::content {
-        [sign-in-footer] {
-            max-width: 100vw;
-            width: 400px;
-        }
+    ::slotted([slot="sign-in-footer"]) {
+        max-width: 100vw;
+        width: 400px;
     }
 
     &[is-desktop], &[is-tablet] {
@@ -391,10 +389,8 @@
         }
     }
 
-    footer ::content {
-        [sign-in-footer] {
-            width: auto !important;
-        }
+    ::slotted([slot="sign-in-footer"]) {
+        width: auto !important;
     }
 }
 

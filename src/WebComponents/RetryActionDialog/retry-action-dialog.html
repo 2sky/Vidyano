@@ -14,9 +14,11 @@
             <vi-persistent-object-tab-presenter tab="[[tab]]"></vi-persistent-object-tab-presenter>
         </main>
         <footer class="horizontal layout end-justified">
-            <template is="dom-repeat" items="[[retry.options]]" as="option">
-                <button is="vi-button" on-tap="_onSelectOption" inverse="[[!_isFirst(index)]]" label="[[option]]"></button>
-            </template>
+            <dom-repeat items="[[retry.options]]" as="option">
+                <template>
+                    <vi-button on-tap="_onSelectOption" inverse="[[op.areNotSame(index, 0)]]" label="[[option]]"></vi-button>
+                </template>
+            </dom-repeat>
         </footer>
     </template>
 </dom-module>

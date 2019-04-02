@@ -1,6 +1,4 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             time: {
@@ -29,8 +27,8 @@
         state: string;
         time: Date;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
             this._updateTime();
         }
 
@@ -44,7 +42,7 @@
 
         private _tap(e: Event, detail: any, sender: HTMLElement) {
             let source: HTMLElement;
-            let tapSource = e.srcElement || <HTMLElement>e.target;
+            let tapSource = this.todo_checkEventTarget(e.srcElement || <HTMLElement>e.target);
 
             if (tapSource.tagName === "SPAN") {
                 const parent = <HTMLElement>tapSource.parentNode;
@@ -87,7 +85,7 @@
         }
 
         private _switch(e: Event, detail: any) {
-            const target = <HTMLElement>e.target;
+            const target = <HTMLElement>this.todo_checkEventTarget(e.target);
             if (target.classList.contains("hours"))
                 this.state = "hours";
             else if (target.classList.contains("minutes"))
@@ -100,7 +98,7 @@
             this._setHours(this.time ? this.time.getHours() : 0);
             this._setMinutes(this.time ? this.time.getMinutes() : 0);
 
-            const items = this.querySelectorAll(".item");
+            const items = this.shadowRoot.querySelectorAll(".item");
             [].forEach.apply(items, [(item: HTMLElement) => {
                 const hours = parseInt(item.getAttribute("data-hours"), 10);
                 const minutes = parseInt(item.getAttribute("data-minutes"), 10);

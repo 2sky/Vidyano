@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     interface IQueryPresenterRouteParameters {
         programUnitName: string;
         id: string;
@@ -43,23 +41,25 @@ namespace Vidyano.WebComponents {
             "query.labelWithTotalItems"
         ]
     })
-    export class QueryPresenter extends WebComponent {
+    export class QueryPresenter extends WebComponent<App> {
         private _customTemplate: PolymerTemplate;
-        private _cacheEntry: QueryAppCacheEntry;
+        private _cacheEntry: AppCacheEntryQuery;
         readonly loading: boolean; private _setLoading: (loading: boolean) => void;
         readonly error: string; private _setError: (error: string) => void;
         queryId: string;
         query: Vidyano.Query;
 
-        attached() {
+        connectedCallback() {
             if (!this._customTemplate)
-                this._customTemplate = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
+                this._customTemplate = <PolymerTemplate><any>this.querySelector("template[is='dom-template']");
 
-            super.attached();
+            super.connectedCallback();
         }
 
-        private _activate(e: CustomEvent, { parameters }: { parameters: IQueryPresenterRouteParameters; }) {
-            this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(parameters.id));
+        private _activate(e: CustomEvent) {
+            const { parameters }: { parameters: IQueryPresenterRouteParameters; } = e.detail;
+
+            this._cacheEntry = <AppCacheEntryQuery>this.app.cache(new AppCacheEntryQuery(parameters.id));
             if (this._cacheEntry && this._cacheEntry.query)
                 this.query = this._cacheEntry.query;
             else {
@@ -92,7 +92,7 @@ namespace Vidyano.WebComponents {
 
                     const query = await app.service.getQuery(this.queryId);
                     if (query.id.toUpperCase() === this.queryId.toUpperCase()) {
-                        this._cacheEntry = <QueryAppCacheEntry>this.app.cache(new QueryAppCacheEntry(query.id));
+                        this._cacheEntry = <AppCacheEntryQuery>this.app.cache(new AppCacheEntryQuery(query.id));
                         this.query = this._cacheEntry.query = query;
                     }
                 }
@@ -108,7 +108,7 @@ namespace Vidyano.WebComponents {
         }
 
         private async _queryChanged(query: Vidyano.Query, oldQuery: Vidyano.Query) {
-            if (this.isAttached && oldQuery)
+            if (this.isConnected && oldQuery)
                 this.empty();
 
             if (query) {
@@ -120,7 +120,7 @@ namespace Vidyano.WebComponents {
                     this._renderQuery(query);
                 }
                 else
-                    Polymer.dom(this).appendChild(this._customTemplate.stamp({ query: query }).root);
+                    this.appendChild(this._customTemplate.stamp({ query: query }).root);
             }
 
             this.fire("title-changed", { title: query ? query.labelWithTotalItems : null }, { bubbles: true });
@@ -132,7 +132,7 @@ namespace Vidyano.WebComponents {
 
             const queryComponent = new Vidyano.WebComponents.Query();
             queryComponent.query = query;
-            Polymer.dom(this).appendChild(queryComponent);
+            this.appendChild(queryComponent);
 
             this._setLoading(false);
         }

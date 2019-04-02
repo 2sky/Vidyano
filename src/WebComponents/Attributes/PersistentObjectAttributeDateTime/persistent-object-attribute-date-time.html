@@ -1,48 +1,67 @@
 ﻿<link rel="import" href="../../DatePicker/date-picker.html" />
 <link rel="import" href="../../TimePicker/time-picker.html" />
-<link rel="import" href="../../MaskedInput/masked-input.html" />
 
 <dom-module id="vi-persistent-object-attribute-date-time">
     <template>
+        <style include="vi-persistent-object-attribute-style-module"></style>
         <link rel="stylesheet" href="persistent-object-attribute-date-time.css" />
-        <template is="dom-if" if="[[!editing]]">
-            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
-        </template>
-        <template is="dom-if" if="[[editing]]">
-            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <div content class="layout horizontal">
-                    <template is="dom-if" if="[[!monthMode]]">
-                        <input is="vi-masked-input" class="date" size="9" format$="[[dateFormat]]" separator$="[[dateSeparator]]" sensitive$="[[sensitive]]" on-filled="_dateFilled" on-keydown="_keydown" on-keyup="_keyup" on-blur="_blur" on-focus="_focused" readonly$="[[readOnly]]" tabindex$="[[readOnlyTabIndex]]" hidden$="[[!hasDateComponent]]" flex$="[[!hasTimeComponent]]">
-                        <input is="vi-masked-input" class="time" size="5" format$="[[timeFormat]]" separator$="[[timeSeparator]]" sensitive$="[[sensitive]]" on-filled="_timeFilled" on-keydown="_keydown" on-keyup="_keyup" on-blur="_blur" on-focus="_focused" readonly$="[[readOnly]]" tabindex$="[[readOnlyTabIndex]]" hidden$="[[!hasTimeComponent]]">
-                    </template>
-                    <template is="dom-if" if="[[monthMode]]">
-                        <span id="monthMode" hidden$="[[!hasDateComponent]]" sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
-                    </template>
-                </div>
-                <template is="dom-if" if="[[!readOnly]]">
-                    <template is="dom-if" if="[[hasTimeComponent]]">
-                        <vi-time-picker id="timepicker" class="button" time="{{selectedTime}}"></vi-time-picker>
-                    </template>
-                    <template is="dom-if" if="[[hasDateComponent]]">
-                        <template is="dom-if" if="[[monthMode]]">
-                            <button on-tap="_previousMonth">
-                                <vi-icon source="ChevronLeft"></vi-icon>
-                            </button>
-                            <button on-tap="_nextMonth">
-                                <vi-icon source="ChevronRight"></vi-icon>
-                            </button>
+        <dom-if if="[[!editing]]">
+            <template>
+                <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+            </template>
+        </dom-if>
+        <dom-if if="[[editing]]">
+            <template>
+                <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                    <div class="layout horizontal">
+                        <dom-if if="[[!monthMode]]">
+                            <template>
+                                <input class="date" size="9" sensitive$="[[sensitive]]" on-keydown="_keydown" on-keyup="_keyup" on-blur="_blur" on-focus="_focused" readonly$="[[readOnly]]" tabindex$="[[readOnlyTabIndex]]" hidden$="[[!hasDateComponent]]" flex$="[[!hasTimeComponent]]" />
+                                <input class="time" size="5" sensitive$="[[sensitive]]" on-keydown="_keydown" on-keyup="_keyup" on-blur="_blur" on-focus="_focused" readonly$="[[readOnly]]" tabindex$="[[readOnlyTabIndex]]" hidden$="[[!hasTimeComponent]]" />
+                            </template>
+                        </dom-if>
+                        <dom-if if="[[monthMode]]">
+                            <template>
+                                <span id="monthMode" hidden$="[[!hasDateComponent]]" sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+                            </template>
+                        </dom-if>
+                    </div>
+                    <dom-if if="[[!readOnly]]">
+                        <template>
+                            <dom-if if="[[hasTimeComponent]]">
+                                <template>
+                                    <vi-time-picker slot="button" id="timepicker" time="{{selectedTime}}"></vi-time-picker>
+                                </template>
+                            </dom-if>
+                            <dom-if if="[[hasDateComponent]]">
+                                <template>
+                                    <dom-if if="[[monthMode]]">
+                                        <template>
+                                            <button slot="button" on-tap="_previousMonth">
+                                                <vi-icon source="ChevronLeft"></vi-icon>
+                                            </button>
+                                            <button slot="button" on-tap="_nextMonth">
+                                                <vi-icon source="ChevronRight"></vi-icon>
+                                            </button>
+                                        </template>
+                                    </dom-if>
+                                    <vi-date-picker slot="button" id="datepicker" selected-date="{{selectedDate}}" month-mode="[[monthMode]]" min-date="[[minDate]]" max-date="[[maxDate]]"></vi-date-picker>
+                                </template>
+                            </dom-if>
+                            <dom-if if="[[canClear]]">
+                                <template>
+                                    <button slot="button" on-tap="_clear" tabindex="-1">
+                                        <vi-icon source="Remove"></vi-icon>
+                                    </button>
+                                </template>
+                            </dom-if>
                         </template>
-                        <vi-date-picker id="datepicker" class="button" selected-date="{{selectedDate}}" month-mode="[[monthMode]]" min-date="[[minDate]]" max-date="[[maxDate]]"></vi-date-picker>
-                    </template>
-                    <template is="dom-if" if="[[canClear]]">
-                        <button on-tap="_clear" tabindex="-1">
-                            <vi-icon source="Remove"></vi-icon>
-                        </button>
-                    </template>
-                </template>
-            </vi-persistent-object-attribute-edit>
-        </template>
+                    </dom-if>
+                </vi-persistent-object-attribute-edit>
+            </template>
+        </dom-if>
     </template>
 </dom-module>
 
+<script src="../../../Libs/MaskedInput/masked_input_1.4.js"></script>
 <script src="persistent-object-attribute-date-time.js"></script>

@@ -10,19 +10,9 @@ declare class ResizeObserver implements IResizeObserver {
 }
 
 namespace Vidyano.WebComponents {
-    "use strict";
-
-    const requestFrame = (function () {
-        const raf = window.requestAnimationFrame || (<any>window).mozRequestAnimationFrame || (<any>window).webkitRequestAnimationFrame ||
-            function (fn) { return window.setTimeout(fn, 20); };
-        return function (fn) { return raf(fn); };
-    })();
-
-    const cancelFrame = (function () {
-        const cancel = window.cancelAnimationFrame || (<any>window).mozCancelAnimationFrame || (<any>window).webkitCancelAnimationFrame ||
-            window.clearTimeout;
-        return function (id) { return cancel(id); };
-    })();
+    export interface SizeTrackerEvent extends CustomEvent {
+        detail: ISize;
+    }
 
     let observer: IResizeObserver;
 
@@ -55,7 +45,7 @@ namespace Vidyano.WebComponents {
         private _resizeTimer: number;
         private _resizeTimerQueuedElements: HTMLElement[] = [];
         private _resizeLast: ISize;
-        private _resizeRAF: Function;
+        private _resizeAfHandle: number;
         private _scrollListener: EventListener;
         private _isActive: boolean;
         readonly size: ISize; private _setSize: (size: ISize) => void;
@@ -64,8 +54,8 @@ namespace Vidyano.WebComponents {
         triggerZero: boolean;
         bubbles: boolean;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             if (this.deferred)
                 return;
@@ -73,8 +63,8 @@ namespace Vidyano.WebComponents {
             this.measure();
         }
 
-        detached() {
-            super.detached();
+        disconnectedCallback() {
+            super.disconnectedCallback();
 
             if (observer)
                 observer.unobserve(this.parentElement);
@@ -93,10 +83,10 @@ namespace Vidyano.WebComponents {
                 else {
                     this._setNoResizeObserver(true);
                     this.$.resizeObserverShim["render"]();
-                    this.$.root = <HTMLElement>Polymer.dom(this.root).querySelector("#root");
-                    this.$.expand = <HTMLElement>Polymer.dom(this.root).querySelector("#expand");
-                    this.$.expandChild = <HTMLElement>Polymer.dom(this.root).querySelector("#expandChild");
-                    this.$.contract = <HTMLElement>Polymer.dom(this.root).querySelector("#contract");
+                    this.$.root = <HTMLElement>this.shadowRoot.querySelector("#root");
+                    this.$.expand = <HTMLElement>this.shadowRoot.querySelector("#expand");
+                    this.$.expandChild = <HTMLElement>this.shadowRoot.querySelector("#expandChild");
+                    this.$.contract = <HTMLElement>this.shadowRoot.querySelector("#contract");
                 }
 
                 this._isActive = true;
@@ -112,15 +102,15 @@ namespace Vidyano.WebComponents {
             }
             else if (this._resizeLast) {
                 this._setSize(this._resizeLast);
-                this.fire("sizechanged", this._resizeLast, { onNode: this, bubbles: !!this.bubbles });
+                this.fire("sizechanged", this._resizeLast, { node: this, bubbles: !!this.bubbles });
             }
         }
 
         private _onScroll(e: UIEvent) {
-            if (this._resizeRAF)
-                cancelFrame(this._resizeRAF);
+            if (this._resizeAfHandle)
+                Polymer.Async.animationFrame.cancel(this._resizeAfHandle);
 
-            this._resizeRAF = requestFrame(() => {
+            this._resizeAfHandle = Polymer.Async.animationFrame.run(() => {
                 this._resetTriggers(this.$.root);
                 this._triggerSizeChanged();
             });
@@ -140,7 +130,7 @@ namespace Vidyano.WebComponents {
                     return;
 
                 this._setSize(this._resizeLast);
-                this.fire("sizechanged", this._resizeLast, { onNode: this, bubbles: !!this.bubbles });
+                this.fire("sizechanged", this._resizeLast, { node: this, bubbles: !!this.bubbles });
             }
         }
 

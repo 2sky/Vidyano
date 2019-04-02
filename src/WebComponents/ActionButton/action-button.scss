@@ -4,7 +4,9 @@
     display: block;
     box-sizing: border-box;
 
-    button {
+    vi-button {
+        display: inline-block;
+        padding: 0 var(--theme-h5);
         vertical-align: top;
         text-align: left;
         height: var(--theme-h1);
@@ -23,10 +25,6 @@
             &[source^="Down"] {
                 width: var(--theme-h3);
             }
-
-            &:not([has-resource]) {
-                display: none;
-            }
         }
 
         span {
@@ -37,7 +35,7 @@
     }
 
     &[disabled] {
-        button {
+        vi-button {
             --vi-button-disabled: {
                 opacity: 1;
             };
@@ -46,14 +44,14 @@
                 opacity: 0.5;
             }
 
-            vi-icon ::content svg {
+            vi-icon {
                 opacity: 0.4;
             }
         }
     }
 
     &[overflow] {
-        button {
+        vi-button {
             padding: 0 !important;
 
             vi-icon {
@@ -90,13 +88,13 @@
     }
 
     &[no-label]:not([force-label]), &[pinned]:not([force-label]) {
-        button span {
+        vi-button span {
             display: none;
         }
     }
 
     &[no-icon] {
-        button vi-icon {
+        vi-button vi-icon {
             display: none;
         }
     }

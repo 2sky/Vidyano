@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     export interface IFileDropDetails {
         name: string;
         contents: string;
@@ -39,7 +37,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _dragLeave(e: DragEvent) {
-            if (e.srcElement !== this.$.overlay && !!this.findParent(node => node === this, e.srcElement || <Node>e.target))
+            if (e.srcElement !== this.$.overlay && !!this.findParent(node => node === this, e.srcElement || <Node>this.todo_checkEventTarget(e.target)))
                 return;
 
             this._setDragOver(false);

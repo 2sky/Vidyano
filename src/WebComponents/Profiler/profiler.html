@@ -9,20 +9,22 @@
     <template>
         <link rel="stylesheet" href="profiler.css" />
         <vi-popup sticky disabled$="[[!lastRequest]]">
-            <div header class="flex layout horizontal">
+            <div slot="header" class="flex layout horizontal">
                 <vi-icon source="Profiler"></vi-icon>
-                <div class="flex" hidden$="[[_hasLastRequest(lastRequest)]]">[[awaiting]]</div>
-                <div class="flex layout horizontal" hidden$="[[!_hasLastRequest(lastRequest)]]" id="lastRequest">
+                <div class="flex" hidden$="[[op.isNull(lastRequest)]]">[[awaiting]]</div>
+                <div class="flex layout horizontal" hidden$="[[op.isNotNull(lastRequest)]]" id="lastRequest">
                     <div>
                         <label>Method</label>
                         <h1>[[lastRequest.method]]</h1>
                     </div>
-                    <template is="dom-repeat" items="[[lastRequest.parameters]]" as="parameter">
-                        <div>
-                            <label>[[parameter.key]]</label>
-                            <h1>[[parameter.value]]</h1>
-                        </div>
-                    </template>
+                    <dom-repeat items="[[lastRequest.parameters]]" as="parameter">
+                        <template>
+                            <div>
+                                <label>[[parameter.key]]</label>
+                                <h1>[[parameter.value]]</h1>
+                            </div>
+                        </template>
+                    </dom-repeat>
                     <div>
                         <label>Server</label>
                         <h1>[[lastRequest.profiler.elapsedMilliseconds]]ms</h1>
@@ -32,43 +34,45 @@
                         <h1>[[lastRequest.transport]]ms</h1>
                     </div>
                 </div>
-                <button is="vi-button" icon="Remove" type="light-monochrome" inverse on-tap="_close"></button>
+                <vi-button icon="Remove" type="light-monochrome" inverse on-tap="_close"></vi-button>
             </div>
-            <div content class="layout horizontal">
+            <div class="layout horizontal">
                 <vi-scroller no-horizontal align-vertical-scrollbar="left">
                     <div>
-                        <template is="dom-repeat" items="[[profiledRequests]]" as="request">
-                            <div class="request" selected$="[[_isSelected(request, selectedRequest)]]" has-warnings$="[[_hasWarnings(request)]]" on-tap="_selectRequest">
-                                <div class="layout horizontal-reverse method">
-                                    <h3>[[_formatDate(request.when)]]</h3>
-                                    <div class="flex layout horizontal wrap">
-                                        <h1>[[request.method]]</h1>
-                                        <h2>[[_formatRequestParameters(request)]]</h2>
+                        <dom-repeat items="[[profiledRequests]]" as="request">
+                            <template>
+                                <div class="request" selected$="[[op.areSame(request, selectedRequest)]]" has-warnings$="[[_requestHasWarnings(request)]]" on-tap="_selectRequest">
+                                    <div class="layout horizontal-reverse method">
+                                        <h3>[[_requestDate(request.when)]]</h3>
+                                        <div class="flex layout horizontal wrap">
+                                            <h1>[[request.method]]</h1>
+                                            <h2>[[_requestParameters(request)]]</h2>
+                                        </div>
+                                    </div>
+                                    <div class="layout horizontal wrap extra">
+                                        <div>
+                                            <label>Server:</label>
+                                            <span>[[_ms(request.profiler.elapsedMilliseconds)]]</span>
+                                        </div>
+                                        <div>
+                                            <label>Transport:</label>
+                                            <span>[[_ms(request.transport)]]</span>
+                                        </div>
+                                        <div>
+                                            <label>SQL:</label>
+                                            <span>[[_requestSQL(request)]]</span>
+                                        </div>
+                                        <div>
+                                            <label>#SQL:</label>
+                                            <span>[[_requestSharpSQL(request)]]</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="layout horizontal wrap extra">
-                                    <div>
-                                        <label>Server:</label>
-                                        <span>[[_formatMs(request.profiler.elapsedMilliseconds)]]</span>
-                                    </div>
-                                    <div>
-                                        <label>Transport:</label>
-                                        <span>[[_formatMs(request.transport)]]</span>
-                                    </div>
-                                    <div>
-                                        <label>SQL:</label>
-                                        <span>[[_computeSQL(request)]]</span>
-                                    </div>
-                                    <div>
-                                        <label>#SQL:</label>
-                                        <span>[[_computeSharpSQL(request)]]</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </template>
+                            </template>
+                        </dom-repeat>
                     </div>
                 </vi-scroller>
-                <div class="flex relative" hidden$="[[_hasSelectedEntry(selectedEntry)]]">
+                <div class="flex relative" hidden$="[[op.isNotNull(selectedEntry)]]">
                     <vi-size-tracker size="{{timelineSize}}"></vi-size-tracker>
                     <vi-scroller id="timelineScroller" class="fit" no-vertical>
                         <svg id="timeline" on-mousewheel="_onMousewheel">
@@ -83,7 +87,7 @@
                             </tr>
                             <tr>
                                 <td>Total time</td>
-                                <td>[[_formatMs(hoveredEntry.elapsedMilliseconds)]]</td>
+                                <td>[[_ms(hoveredEntry.elapsedMilliseconds)]]</td>
                             </tr>
                             <tr>
                                 <td>SQL statements</td>
@@ -92,10 +96,10 @@
                         </table>
                     </div>
                 </div>
-                <div class="flex relative" hidden$="[[!_hasSelectedEntry(selectedEntry)]]" id="selectedEntry">
+                <div class="flex relative" hidden$="[[op.isNull(selectedEntry)]]" id="selectedEntry">
                     <header class="horizontal layout">
                         <h1 class="flex">[[selectedEntry.methodName]]</h1>
-                        <button is="vi-button" icon="Remove" inverse on-tap="_closeSelectedEntry"></button>
+                        <vi-button icon="Remove" inverse on-tap="_closeSelectedEntry"></vi-button>
                     </header>
                     <vi-scroller class="fit">
                         <main id="selectedEntryInfo"></main>

@@ -27,7 +27,7 @@
     }
 
     input, span {
-        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
+        color: var(--vi-persistent-object-attribute-foreground, var(--theme-foreground));
         
         &[sensitive] {
             --at-apply: --vi-app--sensitive;
@@ -37,7 +37,7 @@
     vi-icon {
         height: calc(var(--theme-h2) - 2px);
         width: calc(var(--theme-h2) - 2px);
-        fill: var(--vi-select-icon-color, --theme-foreground);
+        fill: var(--vi-select-icon-color, var(--theme-foreground));
         --at-apply: --vi-persistent-object-attribute-flags-enum-icon;
     }
 

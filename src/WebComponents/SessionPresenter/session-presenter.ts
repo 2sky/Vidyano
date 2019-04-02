@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             session: {
@@ -26,9 +24,9 @@ namespace Vidyano.WebComponents {
 
         private _computeSession(session: Vidyano.PersistentObject): Vidyano.PersistentObject {
             if (!this._customTemplate)
-                this._customTemplate = <PolymerTemplate>Polymer.dom(this).querySelector("template[is='dom-template']");
+                this._customTemplate = <PolymerTemplate>this.querySelector("template[is='dom-template']");
 
-            Polymer.dom(this).children.filter(c => c.tagName !== "TEMPLATE").forEach(c => Polymer.dom(this).removeChild(c));
+            this.children.filter(c => c.tagName !== "TEMPLATE").forEach(c => this.removeChild(c));
 
             if (!session || !this._customTemplate)
                 return;
@@ -44,8 +42,8 @@ namespace Vidyano.WebComponents {
             if (session !== this.session)
                 return;
 
-            Polymer.dom(this).appendChild(this._customTemplate.stamp({ session: session }).root);
-            Polymer.dom(this).flush();
+            this.appendChild(this._customTemplate.stamp({ session: session }).root);
+            Polymer.flush();
         }
     }
 }

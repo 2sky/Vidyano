@@ -1,0 +1,15 @@
+﻿@import "../_vars.scss";
+
+:host {
+    display: inline-block;
+    position: relative;
+    line-height: var(--vi-query-grid--header-height);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 var(--theme-h4);
+    box-sizing: border-box;
+}

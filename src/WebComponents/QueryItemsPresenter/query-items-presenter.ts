@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     let _queryGridComponentLoader: Promise<any>;
     let _chartComponentLoader: Promise<any>;
 
@@ -34,7 +32,7 @@ namespace Vidyano.WebComponents {
             "f2": "_bulkEdit"
         },
         observers: [
-            "_renderQuery(query, query.currentChart, isAttached)"
+            "_renderQuery(query, query.currentChart, isConnected)"
         ],
         forwardObservers: [
             "query.currentChart"
@@ -50,8 +48,8 @@ namespace Vidyano.WebComponents {
         readonly fileDrop: boolean; private _setFileDrop: (fileDrop: boolean) => void;
         query: Vidyano.Query;
 
-        private async _renderQuery(query: Vidyano.Query, currentChart: Vidyano.QueryChart, isAttached: boolean) {
-            if (!isAttached)
+        private async _renderQuery(query: Vidyano.Query, currentChart: Vidyano.QueryChart, isConnected: boolean) {
+            if (!isConnected)
                 return;
 
             this.empty();
@@ -73,7 +71,7 @@ namespace Vidyano.WebComponents {
 
             if (this.templated) {
                 if (this._renderedQuery !== query) {
-                    Polymer.dom(this).appendChild(config.stamp(query, config.as || "query"));
+                    this.appendChild(config.stamp(query, config.as || "query"));
                     this._renderedQuery = query;
                 }
             }
@@ -85,7 +83,7 @@ namespace Vidyano.WebComponents {
 
                     const grid = new Vidyano.WebComponents.QueryGrid();
                     this._renderedQuery = grid.query = this.query;
-                    Polymer.dom(this).appendChild(grid);
+                    this.appendChild(grid);
                 }
                 else {
                     const chartConfig = this.app.configuration.getQueryChartConfig(currentChart.type);
@@ -101,17 +99,18 @@ namespace Vidyano.WebComponents {
 
                     this._renderedQuery = query;
 
-                    Polymer.dom(this).appendChild(chartConfig.stamp(currentChart, chartConfig.as || "chart"));
+                    this.appendChild(chartConfig.stamp(currentChart, chartConfig.as || "chart"));
                 }
             }
 
             this._setLoading(false);
         }
 
-        private async _onFileDropped(e: CustomEvent, details: IFileDropDetails[]) {
+        private async _onFileDropped(e: CustomEvent) {
             if (!this.fileDrop)
                 return;
 
+            const details: IFileDropDetails[] = e.detail;
             for (let detail of details) {
                 await (<AppServiceHooks>this.query.service.hooks).onQueryFileDrop(this.query, detail.name, detail.contents);
             }

@@ -1,5 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
 
     export class ServiceLanguage extends Vidyano.Common.Observable<ServiceObject> implements ILanguage {
         constructor(private _language: ILanguage) {

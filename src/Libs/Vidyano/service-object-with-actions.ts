@@ -1,5 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
 
     export class ServiceObjectWithActions extends ServiceObject {
         private _queue: Queue;

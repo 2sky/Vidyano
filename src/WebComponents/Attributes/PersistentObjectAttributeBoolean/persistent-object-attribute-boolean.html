@@ -3,37 +3,54 @@
 
 <dom-module id="vi-persistent-object-attribute-nullable-boolean">
     <template>
+        <style include="vi-persistent-object-attribute-style-module"></style>
         <link rel="stylesheet" href="persistent-object-attribute-nullable-boolean.css" />
-        <template is="dom-if" if="[[!editing]]" restamp>
-            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
-        </template>
-        <template is="dom-if" if="[[editing]]">
-            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <vi-select content options="[[booleanOptions]]" selected-option="{{value}}" sensitive="[[sensitive]]" disable-filtering readonly="[[readOnly]]" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]" placeholder="[[placeholder]]"></vi-select>
-            </vi-persistent-object-attribute-edit>
-        </template>
+        <dom-if if="[[!editing]]" restamp>
+            <template>
+                <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+            </template>
+        </dom-if>
+        <dom-if if="[[editing]]">
+            <template>
+                <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                    <vi-select options="[[booleanOptions]]" selected-option="{{value}}" sensitive="[[sensitive]]" disable-filtering readonly="[[readOnly]]" disabled="[[op.some(attribute.isReadOnly, attribute.parent.isFrozen)]]" placeholder="[[placeholder]]"></vi-select>
+                </vi-persistent-object-attribute-edit>
+            </template>
+        </dom-if>
     </template>
 </dom-module>
 
 <dom-module id="vi-persistent-object-attribute-boolean">
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-boolean.css" />
-        <template is="dom-if" if="[[editing]]">
-            <template is="dom-if" if="[[!sensitive]]" restamp>
-                <template is="dom-if" if="[[!checkBox]]">
-                    <vi-toggle label="[[attribute.displayValue]]" toggled="{{value}}" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-toggle>
-                </template>
-                <template is="dom-if" if="[[checkBox]]">
-                    <vi-checkbox checked="{{value}}" label="[[attribute.displayValue]]" disabled="[[_isDisabled(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-checkbox>
-                </template>
+        <dom-if if="[[editing]]">
+            <template>
+                <dom-if if="[[!sensitive]]" restamp>
+                    <template>
+                        <dom-if if="[[!checkBox]]">
+                            <template>
+                                <vi-toggle label="[[attribute.displayValue]]" toggled="{{value}}" disabled="[[op.some(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-toggle>
+                            </template>
+                        </dom-if>
+                        <dom-if if="[[checkBox]]">
+                            <template>
+                                <vi-checkbox checked="{{value}}" label="[[attribute.displayValue]]" disabled="[[op.some(attribute.isReadOnly, attribute.parent.isFrozen)]]"></vi-checkbox>
+                            </template>
+                        </dom-if>
+                    </template>
+                </dom-if>
+                <dom-if if="[[sensitive]]" restamp>
+                    <template>
+                        <span sensitive>[[attribute.displayValue]]</span>
+                    </template>
+                </dom-if>
             </template>
-            <template is="dom-if" if="[[sensitive]]" restamp>
-                <span sensitive>[[attribute.displayValue]]</span>
+        </dom-if>
+        <dom-if if="[[!editing]]">
+            <template>
+                <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
             </template>
-        </template>
-        <template is="dom-if" if="[[!editing]]">
-            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
-        </template>
+        </dom-if>
     </template>
 </dom-module>
 

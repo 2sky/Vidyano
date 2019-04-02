@@ -1,0 +1,13 @@
+﻿:host {
+    &[is-phone] [hide-phone] {
+        display: none !important;
+    }
+
+    &[is-tablet] [hide-tablet] {
+        display: none !important;
+    }
+
+    &[is-desktop] [hide-desktop] {
+        display: none !important;
+    }
+}

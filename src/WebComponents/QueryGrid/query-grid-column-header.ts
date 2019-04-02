@@ -1,6 +1,4 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             canSort: {
@@ -24,7 +22,11 @@
             },
             groupByLabel: {
                 type: String,
-                readOnly: true
+                computed: "_computeGroupByLabel(column.label)"
+            },
+            pinLabel: {
+                type: String,
+                computed: "_computePinLabel(isPinned)"
             }
         },
         listeners: {
@@ -44,22 +46,21 @@
         readonly canGroupBy: boolean; private _setCanGroupBy: (canGroupBy: boolean) => void;
         readonly sorting: string; private _setSorting: (sorting: string) => void;
         readonly isPinned: boolean; private _setIsPinned: (isPinned: boolean) => void;
-        readonly groupByLabel: string; private _setGroupByLabel: (groupByLabel: string) => void;
 
-        attached() {
-            this._minimumColumnWidth = parseInt(this.getComputedStyleValue("--vi-query-grid--minimum-column-width"));
+        connectedCallback() {
+            this._minimumColumnWidth = parseInt(ShadyCSS.getComputedStyleValue(this, "--vi-query-grid--minimum-column-width"));
 
-            super.attached();
+            super.connectedCallback();
 
             if (!this._filter)
-                Polymer.dom(this).appendChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilterProxy());
+                this.appendChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilterProxy());
         }
 
         private _onUpgradeFilterProxy(e: Event) {
             const proxy = this._filter;
 
-            Polymer.dom(this).replaceChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilter(), proxy);
-            Polymer.dom(this).flush();
+            this.replaceChild(this._filter = new Vidyano.WebComponents.QueryGridColumnFilter(), proxy);
+            Polymer.flush();
 
             this._filter.column = this._column;
 
@@ -89,7 +90,6 @@
                 this._updateSortingIcon(column.sortDirection);
                 this._setCanSort(column.canSort);
                 this._setIsPinned(column.isPinned);
-                this._setGroupByLabel(this.translateMessage("GroupByColumn", column.label));
             }
             else {
                 this._updateLabel("");
@@ -143,6 +143,10 @@
             this.column.query.group(this.column.column);
         }
 
+        private _computeGroupByLabel(label: string, translations: any): string {
+            return this.translateMessage("GroupByColumn", label);
+        }
+
         private _togglePin() {
             this.fire("toggle-pin", this.column);
             this._setIsPinned(this.column.isPinned);
@@ -176,7 +180,7 @@
             this._setSorting(direction === SortDirection.Ascending ? "SortAsc" : (direction === SortDirection.Descending ? "SortDesc" : null));
         }
 
-        private _resizeTrack(e: TrackEvent, detail: PolymerTrackDetail) {
+        private _resizeTrack(detail: Polymer.TrackEvent) {
             if (detail.state === "start") {
                 this.app.isTracking = true;
                 this.classList.add("resizing");

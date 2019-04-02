@@ -5,9 +5,9 @@
         <link rel="stylesheet" href="persistent-object-attribute-edit.css" />
         <fieldset class="flex relative" disabled$="[[attribute.parent.isFrozen]]">
             <div class="box layout horizontal fit" reverse$="[[reverse]]">
-                <content select="[content]"></content>
+                <slot></slot>
                 <div class="buttons">
-                    <content select=".button, button, vi-popup:not([content])"></content>
+                    <slot name="button"></slot>
                 </div>
             </div>
         </fieldset>

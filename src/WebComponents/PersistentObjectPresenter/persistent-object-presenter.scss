@@ -2,7 +2,6 @@
 
 :host {
     @include layout-horizontal();
-    @include relative();
 
     &[has-error] {
         @include layout-center-center();
@@ -21,7 +20,7 @@
         }
     }
 
-    ::content > vi-persistent-object {
-        @include fit();
+    ::slotted(*) {
+        @include flex();
     }
 }

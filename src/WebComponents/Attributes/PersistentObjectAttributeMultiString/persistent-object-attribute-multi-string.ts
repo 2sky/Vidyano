@@ -1,7 +1,6 @@
 namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @Sortable.register
+    @WebComponent.register()
     export class PersistentObjectAttributeMultiStringItems extends Sortable {
         protected _dragEnd() {
             this.fire("reorder-strings", {}, { bubbles: true });
@@ -45,10 +44,10 @@ namespace Vidyano.WebComponents.Attributes {
             super();
         }
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
-            this._setInput(<HTMLInputElement>Polymer.dom(this.root).querySelector("input"));
+            this._setInput(<HTMLInputElement>this.shadowRoot.querySelector("input"));
 
             if (this._focusQueued) {
                 this._focusQueued = false;
@@ -78,13 +77,9 @@ namespace Vidyano.WebComponents.Attributes {
             if (!this.isReadOnly && !this.isNew)
                 this.fire("multi-string-item-value-changed", null);
         }
-
-        private _computeTabIndex(isReadOnly: boolean): string {
-            return isReadOnly ? "-1" : null;
-        }
     }
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             maxlength: Number,
             strings: {
@@ -116,7 +111,7 @@ namespace Vidyano.WebComponents.Attributes {
             }
         },
         observers: [
-            "_render(strings, editing, isAttached)",
+            "_render(strings, editing, isConnected)",
             "_onTagsChanged(isTags, tags.*)"
         ],
         listeners: {
@@ -145,17 +140,18 @@ namespace Vidyano.WebComponents.Attributes {
             return strings;
         }
 
-        private _itemValueNew(e: Event, detail: { value: string }) {
-            this.value = `${this.value || ""}\n${detail.value}`;
+        private _itemValueNew(e: CustomEvent) {
+            const { value }: { value: string } = e.detail;
+            this.value = `${this.value || ""}\n${value}`;
 
-            Polymer.dom(this).flush();
+            Polymer.flush();
             this._focusElement(this.strings[this.strings.length - 1].input);
 
             e.stopPropagation();
         }
 
         private _itemsOrderChanged() {
-            const stringsContainer = <HTMLElement>Polymer.dom(this.root).querySelector("#strings");
+            const stringsContainer = <HTMLElement>this.shadowRoot.querySelector("#strings");
             this.value = Array.from(stringsContainer.querySelectorAll("input")).filter((i: HTMLInputElement) => !!i.value).map((i: HTMLInputElement) => i.value).join("\n");
         }
 
@@ -165,13 +161,17 @@ namespace Vidyano.WebComponents.Attributes {
             e.stopPropagation();
         }
 
-        private _render(strings: PersistentObjectAttributeMultiStringItem[], editing: boolean, isAttached: boolean) {
-            if (!editing || !isAttached || this.isTags)
+        private _getValues(): string[] {
+            return Array.prototype.map.apply(this.querySelectorAll("#inputs > vi-resource"), [resource => resource.model.value]);
+        }
+
+        private _render(strings: PersistentObjectAttributeMultiStringItem[], editing: boolean, isConnected: boolean) {
+            if (!editing || !isConnected || this.isTags)
                 return;
 
-            Polymer.dom(this).flush();
+            Polymer.flush();
 
-            const stringsContainer = <HTMLElement>Polymer.dom(this.root).querySelector("#strings");
+            const stringsContainer = <HTMLElement>this.shadowRoot.querySelector("#strings");
             const diff = stringsContainer.children.length !== strings.length || strings.some((s, n) => stringsContainer.children[n] !== s);
 
             strings.forEach((s: PersistentObjectAttributeMultiStringItem, index: number) => {

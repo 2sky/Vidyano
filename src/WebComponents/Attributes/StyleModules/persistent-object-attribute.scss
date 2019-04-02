@@ -1,0 +1,23 @@
+﻿:host {
+    textarea {
+        overflow: auto;
+        resize: none;
+        padding: var(--theme-h5);
+        line-height: var(--theme-h3);
+    }
+
+    input {
+        padding: 0 var(--theme-h5);
+        line-height: calc(var(--theme-h2) - 2px);
+    }
+
+    input, textarea {
+        background-color: transparent;
+        box-sizing: border-box;
+        margin: 0;
+        border: none;
+        outline: none;
+        color: #333;
+        width: 100%;
+    }
+}

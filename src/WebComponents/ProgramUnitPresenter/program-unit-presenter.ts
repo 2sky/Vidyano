@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     interface IProgramUnitPresenterRouteParameters {
         programUnitName: string;
     }
@@ -25,11 +23,13 @@ namespace Vidyano.WebComponents {
         readonly programUnit: Vidyano.ProgramUnit; private _setProgramUnit: (programUnit: Vidyano.ProgramUnit) => void;
         readonly error: string; private _setError: (error: string) => void;
 
-        private _activate(e: CustomEvent, { parameters }: { parameters: IProgramUnitPresenterRouteParameters; }) {
-            if (!this.app.service || !this.app.service.application)
+        private _activate(e: CustomEvent) {
+            const { parameters }: { parameters: IProgramUnitPresenterRouteParameters; } = e.detail;
+
+            if (!this.service || !this.service.application)
                 return;
 
-            this._setProgramUnit(this.app.service.application.programUnits.find(pu => pu.name === parameters.programUnitName));
+            this._setProgramUnit(this.service.application.programUnits.find(pu => pu.name === parameters.programUnitName));
             if (!this.programUnit) {
                 e.preventDefault();
 
@@ -48,7 +48,7 @@ namespace Vidyano.WebComponents {
 
             const config = this.app.configuration.getProgramUnitConfig(programUnit.name);
             if (!!config && config.hasTemplate)
-                Polymer.dom(this).appendChild(config.stamp(programUnit, config.as || "programUnit"));
+                this.appendChild(config.stamp(programUnit, config.as || "programUnit"));
         }
     }
 }

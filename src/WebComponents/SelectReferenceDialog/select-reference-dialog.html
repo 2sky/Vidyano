@@ -18,10 +18,10 @@
         </main>
         <footer class="horizontal-reverse layout justified">
             <div class="horizontal layout end-justified">
-                <button is="vi-button" on-tap="_select" disabled$="[[!canSelect]]" label="[[translateMessage('OK', isAttached)]]"></button>
-                <button is="vi-button" inverse on-tap="cancel" label="[[translateMessage('Cancel', isAttached)]]"></button>
+                <vi-button on-tap="_select" disabled$="[[!canSelect]]" label="[[translateMessage('OK', isConnected)]]"></vi-button>
+                <vi-button inverse on-tap="cancel" label="[[translateMessage('Cancel', isConnected)]]"></vi-button>
             </div>
-            <button is="vi-button" on-tap="_addNew" hidden$="[[!canAddNewReference]]" label="[[translateMessage('NewReference', isAttached)]]"></button>
+            <vi-button on-tap="_addNew" hidden$="[[!canAddNewReference]]" label="[[translateMessage('NewReference', isConnected)]]"></vi-button>
         </footer>
     </template>
 </dom-module>

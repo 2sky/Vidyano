@@ -6,25 +6,33 @@
     <template>
         <link rel="stylesheet" href="persistent-object-tab.css" />
         <vi-size-tracker size="{{size}}"></vi-size-tracker>
-        <template is="dom-if" if="[[!noScroll]]" restamp>
-            <vi-scroller no-horizontal>
-                <div class="relative">
-                    <vi-size-tracker size="{{innerSize}}"></vi-size-tracker>
-                    <div class="groups">
-                        <template is="dom-repeat" items="[[tab.groups]]" as="group">
+        <dom-if if="[[!noScroll]]" restamp>
+            <template>
+                <vi-scroller no-horizontal>
+                    <div class="relative">
+                        <vi-size-tracker size="{{innerSize}}"></vi-size-tracker>
+                        <div class="groups">
+                            <dom-repeat items="[[tab.groups]]" as="group">
+                                <template>
+                                    <vi-persistent-object-group group="[[group]]" group-index="[[index]]" columns="[[columns]]"></vi-persistent-object-group>
+                                </template>
+                            </dom-repeat>
+                        </div>
+                    </div>
+                </vi-scroller>
+            </template>
+        </dom-if>
+        <dom-if if="[[noScroll]]" restamp>
+            <template>
+                <div class="groups relative">
+                    <dom-repeat items="[[tab.groups]]" as="group">
+                        <template>
                             <vi-persistent-object-group group="[[group]]" group-index="[[index]]" columns="[[columns]]"></vi-persistent-object-group>
                         </template>
-                    </div>
+                    </dom-repeat>
                 </div>
-            </vi-scroller>
-        </template>
-        <template is="dom-if" if="[[noScroll]]" restamp>
-            <div class="groups relative">
-                <template is="dom-repeat" items="[[tab.groups]]" as="group">
-                    <vi-persistent-object-group group="[[group]]" group-index="[[index]]" columns="[[columns]]"></vi-persistent-object-group>
-                </template>
-            </div>
-        </template>
+            </template>
+        </dom-if>
     </template>
 </dom-module>
 

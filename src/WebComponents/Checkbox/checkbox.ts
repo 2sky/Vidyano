@@ -1,6 +1,4 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             checked: {
@@ -11,6 +9,10 @@
             label: {
                 type: String,
                 value: null
+            },
+            noLabel: {
+                type: Boolean,
+                computed: "_computeNoLabel(label)"
             },
             isNull: {
                 type: Boolean,
@@ -25,6 +27,10 @@
                 type: Boolean,
                 reflectToAttribute: true,
                 value: false
+            },
+            icon: {
+                type: String,
+                computed: "_computeIcon(radio)"
             }
         },
         hostAttributes: {
@@ -69,7 +75,7 @@
             return !radio ? "Selected" : "SelectedRadio";
         }
 
-        private _isEmpty(label: string): boolean {
+        private _computeNoLabel(label: string): boolean {
             return !label;
         }
     }

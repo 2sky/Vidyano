@@ -16,6 +16,10 @@
     "inputFile": "src/WebComponents/App/app.scss"
   },
   {
+    "outputFile": "src/WebComponents/App/StyleModules/responsive.css",
+    "inputFile": "src/WebComponents/App/StyleModules/responsive.scss"
+  },
+  {
     "outputFile": "src/WebComponents/Audit/audit.css",
     "inputFile": "src/WebComponents/Audit/audit.scss"
   },
@@ -276,16 +280,16 @@
     "inputFile": "src/WebComponents/Query/query.scss"
   },
   {
-    "outputFile": "src/WebComponents/QueryGrid/query-grid-cell-boolean.css",
-    "inputFile": "src/WebComponents/QueryGrid/query-grid-cell-boolean.scss"
+    "outputFile": "src/WebComponents/QueryGrid/CellTemplates/Boolean/query-grid-cell-boolean.css",
+    "inputFile": "src/WebComponents/QueryGrid/CellTemplates/Boolean/query-grid-cell-boolean.scss"
   },
   {
-    "outputFile": "src/WebComponents/QueryGrid/query-grid-cell-default.css",
-    "inputFile": "src/WebComponents/QueryGrid/query-grid-cell-default.scss"
+    "outputFile": "src/WebComponents/QueryGrid/CellTemplates/Default/query-grid-cell-default.css",
+    "inputFile": "src/WebComponents/QueryGrid/CellTemplates/Default/query-grid-cell-default.scss"
   },
   {
-    "outputFile": "src/WebComponents/QueryGrid/query-grid-cell-image.css",
-    "inputFile": "src/WebComponents/QueryGrid/query-grid-cell-image.scss"
+    "outputFile": "src/WebComponents/QueryGrid/CellTemplates/Image/query-grid-cell-image.css",
+    "inputFile": "src/WebComponents/QueryGrid/CellTemplates/Image/query-grid-cell-image.scss"
   },
   {
     "outputFile": "src/WebComponents/QueryGrid/query-grid-column-filter-proxy.css",
@@ -392,7 +396,23 @@
     "inputFile": "src/WebComponents/Website/website.scss"
   },
   {
+    "outputFile": "src/WebComponents/Attributes/StyleModules/persistent-object-attribute.css",
+    "inputFile": "src/WebComponents/Attributes/StyleModules/persistent-object-attribute.scss"
+  },
+  {
     "outputFile": "src/WebComponents/Tags/tags.css",
     "inputFile": "src/WebComponents/Tags/tags.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-cell.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-cell.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-header.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-header.scss"
+  },
+  {
+    "outputFile": "src/WebComponents/QueryGrid/query-grid-row.css",
+    "inputFile": "src/WebComponents/QueryGrid/query-grid-row.scss"
   }
 ]

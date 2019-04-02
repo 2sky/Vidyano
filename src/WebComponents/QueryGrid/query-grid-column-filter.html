@@ -16,16 +16,16 @@
     <template>
         <link rel="stylesheet" href="query-grid-column-filter.css" />
         <vi-popup id="filter" on-popup-opening="_popupOpening" class="flex" disabled="[[!column.canFilter]]">
-            <button is="vi-button" header inverse>
+            <vi-button slot="header" inverse>
                 <span id="label"></span>
                 <vi-icon source="Filter"></vi-icon>
-            </button>
-            <div content class="relative" on-click="_catchClick">
+            </vi-button>
+            <div id="filterContentHost" class="relative" on-click="_catchClick">
                 <div id="filterContent" class="vertical layout">
                     <div class="left"></div>
                     <div class="menuItem horizontal layout" disabled$="[[!filtered]]" on-tap="_clear">
                         <vi-icon source="Filter_Reset"></vi-icon>
-                        <span flex>[[translateMessage('ClearFilterFrom', column.label, isAttached)]]</span>
+                        <span flex>[[translateMessage('ClearFilterFrom', column.label, isConnected)]]</span>
                     </div>
                     <div class="split"></div>
                     <div class="flex advanced vertical layout">
@@ -34,24 +34,30 @@
                             <button id="inverse" on-tap="_inverse" inversed$="[[inversed]]">
                                 <vi-icon source="Filter_Inverse"></vi-icon>
                             </button>
-                            <template is="dom-if" if="[[loading]]">
-                                <vi-spinner></vi-spinner>
-                            </template>
-                            <vi-list class="flex" id="distincts" items="[[_filteredDistincts(distincts, searchText)]]" as="item">
+                            <dom-if if="[[loading]]">
+                                <template>
+                                    <vi-spinner></vi-spinner>
+                                </template>
+                            </dom-if>
+                            <vi-list class="flex" id="distincts" items="[[_filteredDistincts]]" as="distinct">
                                 <template>
                                     <div>
-                                        <template is="dom-if" if="[[item.type]]">
-                                            <div class="layout horizontal item" on-tap="_distinctClick">
-                                                <vi-checkbox checked="{{item.checked}}"></vi-checkbox>
-                                                <span class="flex" distinct-type$="[[item.type]]" inner-h-t-m-l="[[_distinctDisplayValue(item.displayValue, searchText)]]"></span>
-                                            </div>
-                                        </template>
-                                        <template is="dom-if" if="[[!item.type]]">
-                                            <div class="hasMore">
-                                                <vi-icon source="Selected"></vi-icon>
-                                                <vi-icon source="Ellipsis"></vi-icon>
-                                            </div>
-                                        </template>
+                                        <dom-if if="[[distinct.type]]">
+                                            <template>
+                                                <div class="layout horizontal item" on-tap="_distinctClick">
+                                                    <vi-checkbox checked="{{distinct.checked}}"></vi-checkbox>
+                                                    <span class="flex" distinct-type$="[[distinct.type]]" inner-h-t-m-l="[[_getHighlightedDistinctDisplayValue(distinct.displayValue, searchText)]]"></span>
+                                                </div>
+                                            </template>
+                                        </dom-if>
+                                        <dom-if if="[[!distinct.type]]">
+                                            <template>
+                                                <div class="hasMore">
+                                                    <vi-icon source="Selected"></vi-icon>
+                                                    <vi-icon source="Ellipsis"></vi-icon>
+                                                </div>
+                                            </template>
+                                        </dom-if>
                                     </div>
                                 </template>
                             </vi-list>

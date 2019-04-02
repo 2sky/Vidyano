@@ -1,7 +1,6 @@
 namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             newValue: {
                 type: String,
@@ -60,7 +59,7 @@ namespace Vidyano.WebComponents.Attributes {
         }
 
         protected _onFocus(e: FocusEvent) {
-            this._focusElement(this.$$("vi-select"));
+            this._focusElement(this.shadowRoot.querySelector("vi-select"));
         }
     }
 }

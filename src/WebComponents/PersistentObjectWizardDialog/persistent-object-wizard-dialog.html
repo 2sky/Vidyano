@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="persistent-object-wizard-dialog.css" />
         <header class="horizontal layout">
             <h4 class="flex">[[currentTab.label]]</h4>
-            <button is="vi-button" inverse on-tap="cancel" icon="Remove"></button>
+            <vi-button inverse on-tap="cancel" icon="Remove"></vi-button>
         </header>
         <vi-notification service-object="[[persistentObject]]"></vi-notification>
         <main id="main">
@@ -16,11 +16,11 @@
         </main>
         <footer class="horizontal layout justified">
             <div>
-                <button is="vi-button" inverse on-tap="_previous" label="[[translateMessage('Previous', isAttached)]]" disabled$="[[persistentObject.isBusy]]" hidden$="[[!canPrevious]]"></button>
+                <vi-button inverse on-tap="_previous" label="[[translateMessage('Previous', isConnected)]]" disabled$="[[persistentObject.isBusy]]" hidden$="[[!canPrevious]]"></vi-button>
             </div>
             <div>
-                <button is="vi-button" on-tap="_next" action-type="Default" label="[[translateMessage('Next', isAttached)]]" disabled$="[[!canNext]]" hidden$="[[canFinish]]"></button>
-                <button is="vi-button" on-tap="_finish" action-type="Default" label="[[translateMessage('Finish', isAttached)]]" disabled$="[[persistentObject.isBusy]]" hidden$="[[!canFinish]]"></button>
+                <vi-button on-tap="_next" action-type="Default" label="[[translateMessage('Next', isConnected)]]" disabled$="[[!canNext]]" hidden$="[[canFinish]]"></vi-button>
+                <vi-button on-tap="_finish" action-type="Default" label="[[translateMessage('Finish', isConnected)]]" disabled$="[[persistentObject.isBusy]]" hidden$="[[!canFinish]]"></vi-button>
             </div>
         </footer>
     </template>

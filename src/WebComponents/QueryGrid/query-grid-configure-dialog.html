@@ -14,10 +14,10 @@
             </vi-scroller>
         </main>
         <footer class="horizontal layout justified">
-            <button is="vi-button" inverse class="self-end" on-tap="_reset" action-type="Default" label="[[translateMessage('Reset', isAttached)]]"></button>
+            <vi-button inverse class="self-end" on-tap="_reset" action-type="Default" label="[[translateMessage('Reset', isConnected)]]"></vi-button>
             <div class="buttons horizontal layout">
-                <button is="vi-button" on-tap="_save" action-type="Default" label="[[translateMessage('Save', isAttached)]]"></button>
-                <button is="vi-button" inverse on-tap="cancel" label="[[translateMessage('Cancel', isAttached)]]"></button>
+                <vi-button on-tap="_save" action-type="Default" label="[[translateMessage('Save', isConnected)]]"></vi-button>
+                <vi-button inverse on-tap="cancel" label="[[translateMessage('Cancel', isConnected)]]"></vi-button>
             </div>
         </footer>
     </template>
@@ -29,8 +29,8 @@
         <vi-icon source="Hamburger"></vi-icon>
         <label>[[column.column.label]]</label>
         <div class="buttons layout horizontal">
-            <button is="vi-button" inverse icon="Pin" on-tap="_togglePin"></button>
-            <button is="vi-button" inverse icon="Eye" on-tap="_toggleVisible"></button>
+            <vi-button inverse icon="Pin" on-tap="_togglePin"></vi-button>
+            <vi-button inverse icon="Eye" on-tap="_toggleVisible"></vi-button>
         </div>
     </template>
 </dom-module>

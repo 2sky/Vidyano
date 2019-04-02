@@ -38,7 +38,7 @@
     &:focus {
         outline: 0;
 
-        &:not([disabled]) span:not([empty]) {
+        &:not([disabled]) span {
             outline: 1px dotted var(--theme-color-light);
         }
     }

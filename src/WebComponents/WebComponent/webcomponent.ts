@@ -1,9 +1,53 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     const verboseLogElements = [];
     const verboseLogFunctions = [];
     const verboseSkipLogFunctions = [];
+
+    class Operations {
+        areSame(value1: any, value2: any): boolean {
+            return value1 === value2;
+        }
+
+        areNotSame(value1: any, value2, any): boolean {
+            return value1 !== value2;
+        }
+
+        areEqual(value1: any, value2: any): boolean {
+            return value1 == value2;
+        }
+
+        areNotEqual(value1: any, value2, any): boolean {
+            return value1 != value2;
+        }
+
+        some(...args: any[]): boolean {
+            return args.some(a => !!a && (!Array.isArray(a) || a.length > 0));
+        }
+
+        every(...args: any[]) {
+            args.every(a => !!a && (!Array.isArray(a) || a.length > 0));
+        }
+
+        none(...args: any[]) {
+            return args.every(a => !a && (!Array.isArray(a) || a.length === 0));
+        }
+
+        isNull(value: any): boolean {
+            return value == null;
+        }
+
+        isNotNull(value: any): boolean {
+            return value != null;
+        }
+
+        isEmpty(value: string): boolean {
+            return !value;
+        }
+
+        isNotEmpty(value: string): boolean {
+            return !!value;
+        }
+    }
 
     export module Keyboard {
         export enum KeyCodes {
@@ -121,44 +165,6 @@ namespace Vidyano.WebComponents {
         height: number;
     }
 
-    ////////////////////////////////////////////////////
-    // Get browser scrollbar width and height
-    ////////////////////////////////////////////////////
-
-    export let scrollbarWidth = function (): number {
-        let width = <number>scrollbarWidth["cached"];
-        if (width)
-            return width;
-
-        const inner = document.createElement("p");
-        inner.style.width = "100%";
-        inner.style.height = "100px";
-
-        const outer = document.createElement("div");
-        outer.style.position = "absolute";
-        outer.style.top = "0px";
-        outer.style.left = "0px";
-        outer.style.visibility = "hidden";
-        outer.style.width = "50px";
-        outer.style.height = "50px";
-        outer.appendChild(inner);
-
-        document.body.appendChild(outer);
-        outer.style.overflow = "hidden";
-
-        const w1 = inner.offsetWidth;
-        outer.style.overflow = "scroll";
-
-        let w2 = inner.offsetWidth;
-        if (w1 === w2) w2 = outer.clientWidth;
-
-        width = scrollbarWidth["cached"] = (w1 - w2);
-
-        document.body.removeChild(outer);
-
-        return width;
-    };
-
     export interface IWebComponentKeybindingInfo {
         [keys: string]: {
             listener: string;
@@ -173,7 +179,7 @@ namespace Vidyano.WebComponents {
     }
 
     export interface IWebComponentRegistrationInfo {
-        properties?: PolymerProperties;
+        properties?: Polymer.Properties;
         hostAttributes?: { [name: string]: any };
         listeners?: { [eventName: string]: string };
         observers?: string[];
@@ -207,185 +213,7 @@ namespace Vidyano.WebComponents {
         (): void;
     }
 
-    export class PolymerBase extends HTMLElement {
-        /**
-         * $ contains all names of elements in the shady DOM with an id attribute.
-         */
-        $: { [id: string]: HTMLElement };
-
-        /**
-         * Convenience method to run `querySelector` on this local DOM scope.
-         */
-        $$: (selector: string) => HTMLElement | WebComponents.WebComponent;
-
-        /**
-         * Shady DOM entry point.
-         */
-        root: HTMLElement | WebComponent;
-
-        /**
-         * Invokes a function asynchronously. The context of the callback
-         * function is bound to 'this' automatically.
-         * @method async
-         * @param {Function|String} method
-         * @param {any|Array} args
-         * @param {number} timeout
-         */
-        async: {
-            (method: string, args?: any, timeout?: number): number;
-            (method: Function, args?: any, timeout?: number): number;
-        };
-
-        /**
-         * Cancels the async function call.
-         */
-        cancelAsync: (handle: number) => void;
-
-        /*
-         * Fire an event.
-         * @method fire
-         * @returns {Object} event
-         * @param {string} type An event name.
-         * @param {any} detail
-         * @param {Node} onNode Target node.
-         */
-        fire: (type: string, detail: any, options?: { onNode?: Node; bubbles?: boolean; cancelable?: boolean; }) => CustomEvent;
-
-        /**
-         * Call debounce to collapse multiple requests for a named task into one invocation, which is made after the wait time has elapsed with no new request. If no wait time is given, the callback is called at microtask timing (guaranteed to be before paint).
-         */
-        debounce: (jobName: string, callback: Function, wait?: number) => void;
-
-        /**
-         * Cancels an active debouncer without calling the callback.
-         */
-        cancelDebouncer: (jobName: string) => void;
-
-        /**
-         * Calls the debounced callback immediately and cancels the debouncer.
-         */
-        flushDebouncer: (jobName: string) => void;
-
-        /**
-         * Returns true if the named debounce task is waiting to run.
-         */
-        isDebouncerActive: (jobName: string) => void;
-
-        /*
-         * Adds new elements to the end of an array, returns the new length and notifies Polymer that the array has changed.
-         */
-        push: (path: string, ...items: any[]) => number;
-
-        /*
-         * Removes the last element of an array, returns that element and notifies Polymer that the array has changed.
-         */
-        pop: (path: string) => any;
-
-        /*
-         * Adds new elements to the beginning of an array, returns the new length and notifies Polymer that the array has changed.
-         */
-        unshift: (path: string, items: any[]) => number;
-
-        /*
-         * Removes the first element of an array, returns that element and notifies Polymer that the array has changed.
-         */
-        shift: (path: string) => any;
-
-        /*
-         * Adds/Removes elements from an array and notifies Polymer that the array has changed.
-         */
-        splice: (path: string, index: number, removeCount?: number, items?: any[]) => any[];
-
-        /**
-         * Takes a URL relative to the <dom-module> of an imported Polymer element, and returns a path relative to the current document.
-         * This method can be used, for example, to refer to an asset delivered alongside an HTML import.
-         */
-        resolveUrl: (href: string) => string;
-
-        /**
-         * Gets a path's value.
-         */
-        get: (path: string, root?: WebComponent) => any;
-
-        /**
-         * Sets a path's value and notifies Polymer for a change for that path.
-         */
-        set: (path: string, value: any, root?: WebComponent) => void;
-
-        /**
-         * Notifies Polymer for a change in the given path.
-         */
-        notifyPath: (path: string, value: any, fromAbove?: boolean) => void;
-
-        /**
-         *  Applies a CSS transform to the specified node, or host element if no node is specified.
-         */
-        transform: (transform: string, node?: Node | WebComponent) => void;
-
-        /**
-         * Transforms the specified node, or host element if no node is specified.
-         */
-        translate3d: (x: string, y: string, z: string, node?: Node | WebComponent) => void;
-
-        /**
-         * Toggles the named boolean class on the host element, adding the class if bool is truthy and removing it if bool is falsey.
-         * If node is specified, sets the class on node instead of the host element.
-         */
-        toggleClass: (name: string, bool: boolean, node?: Node | WebComponent) => void;
-
-        /*
-         * Toggles the named boolean attribute on the host element, adding the attribute if bool is truthy and removing it if bool is falsey.
-         * If node is specified, sets the attribute on node instead of the host element.
-         */
-        toggleAttribute: (name: string, bool: boolean, node?: Node | WebComponent) => boolean;
-
-        /**
-         * Key-value pairs for the custom styles on the element.
-         */
-        customStyle: { [key: string]: string };
-
-        /**
-         * Returns the computed style value for the given property.
-         */
-        getComputedStyleValue: (property: string) => string;
-
-        /**
-         * Revaluates custom property values.
-         */
-        updateStyles: () => void;
-
-        /**
-         * Force immediate content distribution.
-         */
-        distributeContent: () => void;
-
-        /**
-         * Returns a list of effective child nodes for this element.
-         */
-        getEffectiveChildNodes: () => Node[];
-
-        /**
-         * Returns a list of effective child elements for this element.
-         */
-        getEffectiveChildren: () => HTMLElement[];
-
-        /**
-         * Returns the first effective child that matches selector.
-         */
-        queryEffectiveChildren: (selector: string) => HTMLElement;
-
-        /**
-         * Returns a list of effective children that match selector.
-         */
-        queryAllEffectiveChildren: (selector: string) => HTMLElement[];
-    }
-
-    // HACK: This fixes the default __extends for extending from HTMLElement
-    /* tslint:disable:no-eval */
-    eval("PolymerBase = (function (_super) { function PolymerBase() { } return PolymerBase; })(HTMLElement); WebComponents.PolymerBase = PolymerBase;");
-    /* tslint:enable:no-eval */
-
-    export interface IConfigurable extends PolymerBase {
+    export interface IConfigurable {
         /**
          * Will be called when the context menu is openend on the element.
          */
@@ -400,8 +228,7 @@ namespace Vidyano.WebComponents {
         subActions?: IConfigurableAction[];
     }
 
-    export abstract class WebComponent extends PolymerBase {
-        private _app: Vidyano.WebComponents.App;
+    export abstract class WebComponent<T extends AppBase = AppBase> extends Polymer.GestureEventListeners(Polymer.Element) {
         readonly service: Vidyano.Service;
         readonly translations: { [key: string]: string; };
         protected readonly isAppSensitive: boolean;
@@ -409,34 +236,103 @@ namespace Vidyano.WebComponents {
         classList: DOMTokenList;
         tagName: string;
         style: CSSStyleDeclaration;
-        isAttached: boolean;
-        app: Vidyano.WebComponents.App;
+        isConnected: boolean;
 
-        protected attached() {
-            // Noop
+        connectedCallback() {
+            if (this["_updateListeners"])
+                this["_updateListeners"](true);
+
+            super.connectedCallback();
+            this.notifyPath("isConnected", true);
         }
 
-        protected detached() {
-            // Noop
+        disconnectedCallback() {
+            if (this["_updateListeners"])
+                this["_updateListeners"]();
+
+            super.disconnectedCallback();
+            this.notifyPath("isConnected", false);
         }
+
+        get app(): T {
+            return <T>window["app"];
+        }
+
+        get domHost(): HTMLElement {
+            const root = this["getRootNode"]();
+            return (root instanceof DocumentFragment) ? (<any>root).host : root;
+        }
+
+        todo_checkEventTarget(target: EventTarget): EventTarget {
+            console.assert(false, "Check event target", target);
+            return target;
+        }
+
+        ensureArgumentValues(args: IArguments): boolean {
+            return !Array.from(args).some(a => a === undefined);
+        }
+
+        private _ensureComputedValues(fn: string, prop: string, ...args: any[]): any {
+            if (args.some(a => a === undefined))
+                return this[prop];
+
+            return (<Function>this[fn]).apply(this, args);
+        }
+
+        private _ensureObserverValues(fn: string, ...args: any[]): any {
+            if (args.some(a => a === undefined))
+                return;
+
+            (<Function>this[fn]).apply(this, args);
+        }
+
+        $: { [key: string]: HTMLElement };
 
         computePath(relativePath: string): string {
             return Vidyano.Path.routes.rootPath + relativePath;
         }
 
         empty(parent: Node = this, condition?: (e: Node) => boolean) {
-            Polymer.dom(parent).getEffectiveChildNodes().forEach(c => {
-                if (!condition || condition(c))
-                    Polymer.dom(parent).removeChild(c);
-            });
+            let children = Array.from(parent.childNodes);
+            if (condition)
+                children = children.filter(c => condition(c));
+
+            children.forEach(c => parent.removeChild(c));
         }
 
-        findParent<T>(condition: (element: Node) => boolean, parent: Node = this): T {
+        findParent<T extends HTMLElement>(condition: (element: Node) => boolean = e => !!e, parent: Node = this.parentElement || this.parentNode.nodeType !== 11 ? this.parentNode : (<any>this.parentNode).host): T {
             let element = parent;
             while (!!element && !condition(element))
-                element = element.parentNode || (<any>element).host;
+                element = element.parentNode ? element.parentNode.nodeType !== 11 ? element.parentNode : (<any>element).host : null;
 
             return <T><any>element;
+        }
+
+        /**
+         * Dispatches a custom event with an optional detail value.
+         * @param {string} type Name of event type.
+         * @param {*=} detail Detail value containing event-specific payload.
+         * @param {{ bubbles: (boolean|undefined), cancelable: (boolean|undefined), composed: (boolean|undefined) }=}
+         *  options Object specifying options.  These may include:
+         *  `bubbles` (boolean, defaults to `true`),
+         *  `cancelable` (boolean, defaults to false), and
+         *  `node` on which to fire the event (HTMLElement, defaults to `this`).
+         * @return {!Event} The new event that was fired.
+         */
+        fire(type: string, detail?: any, options?: { node?: Node, bubbles?: boolean, cancelable?: boolean, composed?: boolean }): Event {
+            options = options || {};
+            detail = (detail === null || detail === undefined) ? {} : detail;
+            let event = new CustomEvent(type, {
+                detail: detail,
+                bubbles: options.bubbles === undefined ? true : options.bubbles,
+                cancelable: Boolean(options.cancelable),
+                composed: options.composed === undefined ? true : options.composed
+            });
+
+            const node = options.node || this;
+            node.dispatchEvent(event);
+
+            return event;
         }
 
         protected sleep(milliseconds: number): Promise<never> {
@@ -444,47 +340,26 @@ namespace Vidyano.WebComponents {
         }
 
         translateMessage(key: string, ...params: string[]): string {
-            if (!this.app || !this.app.service)
+            if (!key || !this.app || !this.service || !this.service.language)
                 return key;
 
-            return this.app.service.getTranslatedMessage.apply(this.app.service, [key].concat(params));
+            return this.service.getTranslatedMessage.apply(this.service, [key].concat(params));
         }
 
-        /**
-         * Dynamically imports an HTML document.
-         */
-        importHref(href: string): Promise<any> {
-            const _importHref: (href: string, onLoad?: (e: CustomEvent) => void, onFail?: (e: CustomEvent) => void) => void = Polymer["Base"].importHref;
+        importHref(href: string): Promise<HTMLLinkElement> {
+            const _importHref = Polymer.importHref;
             return new Promise((resolve, reject) => {
-                _importHref.call(this, href, e => resolve(e.target["import"]), err => {
+                _importHref.call(this, href, e => resolve(), err => {
                     console.error(err);
                     reject(err);
                 });
             });
         }
 
-        protected _getFocusableElement(source: Node = this): HTMLElement {
-            // Copyright (c) 2014 The Polymer Authors. All rights reserved.
-            // https://github.com/PolymerElements/iron-overlay-behavior/blob/2aea7b4945e0b10ce77e1a15ba0ef5a02cdc7984/iron-overlay-behavior.html
-
-            // Elements that can be focused even if they have [disabled] attribute.
-            const FOCUSABLE_WITH_DISABLED = ["a[href]", "area[href]", "iframe", "[tabindex]", "[contentEditable=true]"];
-            // Elements that cannot be focused if they have [disabled] attribute.
-            const FOCUSABLE_WITHOUT_DISABLED = ["input", "select", "textarea", "button"];
-
-            // Discard elements with tabindex=-1 (makes them not focusable).
-            const selector = FOCUSABLE_WITH_DISABLED.join(":not([tabindex='-1']),") +
-                ":not([tabindex='-1'])," +
-                FOCUSABLE_WITHOUT_DISABLED.join(":not([disabled]):not([tabindex='-1']),") +
-                ":not([disabled]):not([tabindex='-1'])";
-
-            return <HTMLElement>Polymer.dom(source).querySelector(selector);
-        }
-
         protected _focusElement(element: string | HTMLElement, maxAttempts?: number, interval?: number, attempt: number = 0) {
-            const input = typeof element === "string" ? <HTMLElement>this.$$(`#${element}`) : <HTMLElement>element;
+            const input = typeof element === "string" ? <HTMLElement>this.shadowRoot.querySelector(`#${element}`) : <HTMLElement>element;
             if (input) {
-                const activeElement = document.activeElement;
+                const activeElement = <HTMLElement>document.activeElement;
                 input.focus();
 
                 if (activeElement !== document.activeElement)
@@ -557,20 +432,6 @@ namespace Vidyano.WebComponents {
             };
         }
 
-        private _computeApp(isAttached: boolean): Vidyano.WebComponents.App {
-            if (!isAttached)
-                return this._app;
-
-            if (this instanceof Vidyano.WebComponents.App)
-                return (<Vidyano.WebComponents.WebComponent>this)._app = this;
-
-            const component = <Vidyano.WebComponents.WebComponent>this.findParent(e => !!e && (<any>e)._app instanceof Vidyano.WebComponents.App || e instanceof Vidyano.WebComponents.App);
-            if (!!component)
-                return this._app = component instanceof Vidyano.WebComponents.App ? component : component._app;
-
-            return this._app = null;
-        }
-
         // This function simply returns the value. This can be used to reflect a property on an observable object as an attribute.
         private _forwardComputed(value: any): any {
             return value;
@@ -586,34 +447,74 @@ namespace Vidyano.WebComponents {
             return results && results[1] || "";
         }
 
+        private static _addTemplateProperty(obj: Function, elementName: string) {
+            const addStyleModules = (template: HTMLTemplateElement = <HTMLTemplateElement>(Polymer.DomModule.import(elementName, "template"))) => {
+                if (template == null)
+                    return;
+
+                const userStyleModuleTemplate = <HTMLTemplateElement>Polymer.DomModule.import(`${elementName}-style-module`, "template");
+                const userStyle = userStyleModuleTemplate != null ? userStyleModuleTemplate.content.querySelector("style") : null;
+
+                const baseStyle = (<HTMLTemplateElement>Polymer.DomModule.import("vi-base-style-module", "template")).content.querySelector("style").cloneNode(true);
+                // Add vi-base-style-module
+                template.content.insertBefore(baseStyle, template.content.firstChild);
+
+                // Add vi-flex-layout-style-module if template contains layout or flex class
+                const temp = document.createElement("div");
+                temp.appendChild(template.cloneNode(true));
+                if (/class="[^"]*?(layout|flex)[^"]*?"/.test(temp.innerHTML)) {
+                    const flexLayoutStyleModuleTemplate = <HTMLTemplateElement>Polymer.DomModule.import("vi-flex-layout-style-module", "template");
+                    const flexLayoutStyle = flexLayoutStyleModuleTemplate.content.querySelector("style");
+                    if (flexLayoutStyle != null)
+                        baseStyle.parentNode.insertBefore(flexLayoutStyle.cloneNode(true), baseStyle.nextSibling);
+                }
+
+                if (userStyle != null)
+                    template.content.appendChild(userStyle);
+
+                return template;
+            };
+
+            Object.defineProperty(obj, "template", {
+                enumerable: false,
+                configurable: false,
+                get: !(Vidyano.WebComponents.AppBase && obj.prototype instanceof Vidyano.WebComponents.AppBase) ? addStyleModules : () => {
+                    const appTemplate = <HTMLTemplateElement>(Polymer.DomModule.import("vi-app-base", "template")).cloneNode(true);
+                    const customTemplate = <HTMLTemplateElement>Polymer.DomModule.import(elementName, "template");
+                    appTemplate.content.appendChild(customTemplate.content);
+
+                    return addStyleModules(appTemplate);
+                }
+            });
+        }
+
         private static _register(obj: Function, info: IWebComponentRegistrationInfo = {}, prefix: string = "vi", ns?: any) {
-            const name = WebComponent.getName(obj);
+            const name = obj.name;
             const elementName = prefix + name.replace(/([A-Z])/g, m => "-" + m[0].toLowerCase());
 
-            const wcPrototype = <any>info;
-            (<any>wcPrototype).is = elementName;
+            obj["is"] = elementName;
 
-            if (obj.length > 0)
-                wcPrototype.factoryImpl = obj;
-            else
-                wcPrototype.created = obj;
+            if (!obj.hasOwnProperty("template"))
+                Vidyano.WebComponents.WebComponent._addTemplateProperty(obj, elementName);
 
-            info.properties = wcPrototype.properties || {};
+            info.properties = info.properties || {};
+            obj["properties"] = info.properties;
 
-            for (const prop in info.properties) {
-                if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed)) {
-                    if (wcPrototype.properties[prop].computed[0] !== "!")
-                        info.properties[prop]["computed"] = "_forwardComputed(" + wcPrototype.properties[prop].computed + ")";
-                    else
-                        info.properties[prop]["computed"] = "_forwardNegate(" + wcPrototype.properties[prop].computed.substring(1) + ")";
+            info.properties.isConnected = Boolean;
+
+            for (const p in <Polymer.Properties>info.properties) {
+                const prop = info.properties[p];
+                if (typeof prop === "object") {
+                    if (prop.computed && !/\)$/.test(prop.computed)) {
+                        if (prop.computed[0] !== "!")
+                            prop.computed = "_forwardComputed(" + prop.computed + ")";
+                        else
+                            prop.computed = "_forwardNegate(" + prop.computed.substring(1) + ")";
+                    }
                 }
             }
 
-            info.properties.isAttached = Boolean;
-            info.properties.app = {
-                type: Object,
-                computed: "_computeApp(isAttached)"
-            };
+            info.properties.isConnected = Boolean;
 
             if (!info.properties.service) {
                 info.properties.service = {
@@ -627,7 +528,29 @@ namespace Vidyano.WebComponents {
                 computed: "_forwardComputed(service.language.messages)"
             };
 
-            info.observers = info.observers || [];
+            if (info.listeners) {
+                obj.prototype["_updateListeners"] = function (isConnected: boolean) {
+                    if (isConnected) {
+                        for (const l in info.listeners) {
+                            if (this[info.listeners[l]])
+                                this._addEventListenerToNode(this, l, this[info.listeners[l]].bound = this[info.listeners[l]].bind(this));
+                            else
+                                console.warn(`listener method '${info.listeners[l]}' not defined`);
+                        }
+                    }
+                    else {
+                        for (const l in info.listeners) {
+                            if (!this[info.listeners[l]])
+                                continue;
+
+                            this._removeEventListenerFromNode(this, l, this[info.listeners[l]].bound);
+                            this[info.listeners[l]].bound = undefined;
+                        }
+                    }
+                }
+            }
+
+            obj["observers"] = info.observers || (info.observers = []);
 
             info.forwardObservers = info.forwardObservers || [];
             info.forwardObservers.push("service.language");
@@ -638,9 +561,9 @@ namespace Vidyano.WebComponents {
                 return (functionIndex > 0 ? path.substr(functionIndex + 1) : path).split(".", 2)[0];
             }).forEach(source => {
                 const methodName = "_observablePropertyObserver_" + source.key;
-                info.observers.push(methodName + "(" + source.key + ", isAttached)");
+                info.observers.push(methodName + "(" + source.key + ", isConnected)");
 
-                wcPrototype[methodName] = function (sourceObj: any, attached: boolean) {
+                obj.prototype[methodName] = function (sourceObj: any, isConnected: boolean) {
                     if (sourceObj == null)
                         return;
 
@@ -650,7 +573,7 @@ namespace Vidyano.WebComponents {
                     while (forwardObservers.length > 0)
                         forwardObservers.pop()();
 
-                    if (!attached)
+                    if (!isConnected)
                         return;
 
                     source.value.forEach(p => {
@@ -662,7 +585,7 @@ namespace Vidyano.WebComponents {
                             observer = observer.bind(this);
 
                         forwardObservers.push(this._forwardObservable(sourceObj, path, source.key, observer));
-                        if (observer && sourceObj && attached) {
+                        if (observer && sourceObj && isConnected) {
                             const valuePath = path.slice().split(".").reverse();
                             let value = sourceObj;
 
@@ -678,10 +601,10 @@ namespace Vidyano.WebComponents {
             });
 
             if (info.keybindings) {
-                (info.observers = info.observers || []).push("_keybindingsObserver(isAttached)");
+                (info.observers = info.observers || []).push("_keybindingsObserver(isConnected)");
 
-                wcPrototype["_keybindingsObserver"] = function (isAttached: boolean) {
-                    if (isAttached) {
+                obj.prototype._keybindingsObserver = function (isConnected: boolean) {
+                    if (isConnected) {
                         if (!this._keybindingRegistrations)
                             this._keybindingRegistrations = [];
 
@@ -730,7 +653,8 @@ namespace Vidyano.WebComponents {
                             };
 
                             this._keybindingRegistrations.push(registration);
-                            Polymer.dom(this.root).appendChild(element);
+                            // TODO
+                            //this.shadowRoot.appendChild(element);
 
                             this.app._registerKeybindings(registration);
                         };
@@ -747,7 +671,8 @@ namespace Vidyano.WebComponents {
                                 this.app._unregisterKeybindings(reg);
 
                                 reg.element.removeEventListener("keys-pressed", reg.listener);
-                                Polymer.dom(this.root).removeChild(reg.element);
+                                // TODO
+                                //this.shadowRoot.removeChild(reg.element);
                             }
                         }
                     }
@@ -775,7 +700,7 @@ namespace Vidyano.WebComponents {
 
                 info.observers.push("_mediaQueryObserver(app)");
 
-                wcPrototype["_mediaQueryObserver"] = function (app: Vidyano.WebComponents.App) {
+                obj.prototype._mediaQueryObserver = function (app: Vidyano.WebComponents.App) {
                     if (this._mediaQueryObserverInfo) {
                         this._mediaQueryObserverInfo.app.removeEventListener("media-query-changed", this._mediaQueryObserverInfo.listener);
                         this._mediaQueryObserverInfo = null;
@@ -809,7 +734,7 @@ namespace Vidyano.WebComponents {
 
                 info.observers.push("_appSensitiveObserver(app)");
 
-                wcPrototype["_appSensitiveObserver"] = function (app: Vidyano.WebComponents.App) {
+                obj.prototype._appSensitiveObserver = function (app: Vidyano.WebComponents.App) {
                     if (this.app) {
                         this["_setIsAppSensitive"](app.sensitive);
                         const _this = this;
@@ -821,70 +746,161 @@ namespace Vidyano.WebComponents {
                 };
             }
 
-            const extendFunction = (proto: any, p: string, elementName: string): Function => {
-                if (verboseSkipLogFunctions.indexOf(p) === -1 && (verboseLogElements.indexOf(elementName) > -1 || verboseLogFunctions.indexOf(p) > -1)) {
-                    return function () {
-                        if (!this._uniqueId)
-                            this._uniqueId = Unique.get();
+            //const extendFunction = (proto: any, p: string, elementName: string): Function => {
+            //    if (verboseSkipLogFunctions.indexOf(p) === -1 && (verboseLogElements.indexOf(elementName) > -1 || verboseLogFunctions.indexOf(p) > -1)) {
+            //        return function () {
+            //            if (!this._uniqueId)
+            //                this._uniqueId = Unique.get();
 
-                        console.group(p + (p === "attributeChanged" ? ": " + arguments[0] : "") + " (" + elementName + "#" + this._uniqueId + ")");
-                        const result = proto[p].apply(this, arguments);
-                        console.groupEnd();
-                        return result;
-                    };
-                }
-                else
-                    return proto[p];
-            };
+            //            console.group(p + (p === "attributeChanged" ? ": " + arguments[0] : "") + " (" + elementName + "#" + this._uniqueId + ")");
+            //            const result = proto[p].apply(this, arguments);
+            //            console.groupEnd();
+            //            return result;
+            //        };
+            //    }
+            //    else
+            //        return proto[p];
+            //};
 
-            for (const p in obj.prototype) {
-                const getter = obj.prototype.__lookupGetter__(p);
-                const setter = obj.prototype.__lookupSetter__(p);
-                if (getter || setter) {
-                    Object.defineProperty(wcPrototype, p, {
-                        get: getter || Polymer.nop,
-                        set: setter || Polymer.nop,
-                        enumerable: true,
-                        configurable: true
-                    });
-                }
-                else if (p !== "constructor" && typeof obj.prototype[p] === "function") {
-                    if (p.startsWith("_set") && p.length > 4) {
-                        const property = p.substr(4, 1).toLowerCase() + p.slice(5);
-                        if (info.properties[property] && (<any>info.properties[property]).readOnly)
-                            continue;
+            //for (const p in obj.prototype) {
+            //    const getter = obj.prototype.__lookupGetter__(p);
+            //    const setter = obj.prototype.__lookupSetter__(p);
+            //    if (getter || setter) {
+            //        Object.defineProperty(wcPrototype, p, {
+            //            get: getter || Polymer.nop,
+            //            set: setter || Polymer.nop,
+            //            enumerable: true,
+            //            configurable: true
+            //        });
+            //    }
+            //    else if (p !== "constructor" && typeof obj.prototype[p] === "function") {
+            //        if (p.startsWith("_set") && p.length > 4) {
+            //            const property = p.substr(4, 1).toLowerCase() + p.slice(5);
+            //            if (info.properties[property] && (<any>info.properties[property]).readOnly)
+            //                continue;
+            //        }
+
+            //        wcPrototype[p] = extendFunction(obj.prototype, p, elementName);
+            //    }
+            //}
+
+
+            //const wc = Polymer(wcPrototype);
+            //for (const method in obj) {
+            //    if (obj.hasOwnProperty(method) && method !== "getName" && method !== "registerOverride" && method !== "_finalizeRegistration" && method !== "publish") {
+            //        const descriptor = Object.getOwnPropertyDescriptor(obj, method);
+            //        if (descriptor.value)
+            //            wc[method] = obj[method];
+            //        else
+            //            Object.defineProperty(wc, method, descriptor);
+            //    }
+            //}
+
+            //if (ns)
+            //    ns[name] = wc;
+
+            const fncRegex = /([^(]+)\(([^)]+)\)/;
+
+            for (let p in info.properties) {
+                if (typeof info.properties[p] === "object") {
+                    const prop = <Polymer.Property>info.properties[p];
+                    if (prop.computed && !prop.computed.startsWith("_forwardComputed(") && !prop.computed.startsWith("_forwardNegate(")) {
+                        if (!prop.computed.startsWith("_compute") && elementName.startsWith("vi-"))
+                            console.error(`Naming convention violation for computed property "${p}" on element "${elementName}"`);
+
+                        const parts = fncRegex.exec(prop.computed);
+                        prop.computed = `_ensureComputedValues("${parts[1]}", "${p}", ${parts[2]})`;
                     }
-
-                    wcPrototype[p] = extendFunction(obj.prototype, p, elementName);
                 }
             }
 
-
-            const wc = Polymer(wcPrototype);
-            for (const method in obj) {
-                if (obj.hasOwnProperty(method) && method !== "getName" && method !== "registerOverride" && method !== "_finalizeRegistration" && method !== "publish") {
-                    const descriptor = Object.getOwnPropertyDescriptor(obj, method);
-                    if (descriptor.value)
-                        wc[method] = obj[method];
-                    else
-                        Object.defineProperty(wc, method, descriptor);
-                }
+            for (let p in info.observers) {
+                const parts = fncRegex.exec(info.observers[p]);
+                info.observers[p] = `_ensureObserverValues("${parts[1]}", ${parts[2]})`;
             }
 
-            if (ns)
-                ns[name] = wc;
+            for (let fn of Object.getOwnPropertyNames(Operations.prototype)) {
+                if (fn === "constructor")
+                    continue;
 
-            return wc;
+                obj.prototype[`op.${fn}`] = Operations.prototype[fn];
+            }
+
+            window.customElements.define(elementName, obj);
+
+            return obj;
         }
 
-        static register(arg1?: IWebComponentRegistrationInfo | Function, arg2?: string | IWebComponentRegistrationInfo, arg3?: string): (obj: any) => void {
-            if (!arg1 || typeof arg1 === "object") {
-                return (obj: Function) => {
-                    return WebComponent._register(obj, <IWebComponentRegistrationInfo>arg1, <string>arg2, arg3);
+        private static registrations: { [key: string]: IWebComponentRegistrationInfo; } = {};
+        static register(info?: IWebComponentRegistrationInfo, prefix?: string, ns?: string): (obj: any) => void;
+        static register(target: Function, info: IWebComponentRegistrationInfo, prefix?: string, ns?: string): (obj: any) => void;
+        static register(infoOrTarget?: IWebComponentRegistrationInfo | Function, prefixOrInfo?: string | IWebComponentRegistrationInfo, prefixOrNs?: string, ns?: string): (obj: any) => void {
+            if (!infoOrTarget || typeof infoOrTarget === "object") {
+                return (target: Function) => {
+                    const info: IWebComponentRegistrationInfo = Vidyano.WebComponents.WebComponent._clone(WebComponent.registrations[Object.getPrototypeOf(target).name] || {});
+
+                    const targetInfo = <IWebComponentRegistrationInfo>infoOrTarget;
+                    if (targetInfo) {
+                        if (targetInfo.properties)
+                            info.properties = info.properties ? Vidyano.extend(info.properties, targetInfo.properties) : targetInfo.properties;
+
+                        if (targetInfo.hostAttributes)
+                            info.hostAttributes = info.hostAttributes ? Vidyano.extend(info.hostAttributes, targetInfo.hostAttributes) : targetInfo.hostAttributes;
+
+                        if (targetInfo.listeners)
+                            info.listeners = info.listeners ? Vidyano.extend(info.listeners, targetInfo.listeners) : targetInfo.listeners;
+
+                        if (targetInfo.keybindings)
+                            info.keybindings = info.keybindings ? Vidyano.extend(info.keybindings, targetInfo.keybindings) : targetInfo.keybindings;
+
+                        if (targetInfo.observers)
+                            info.observers ? info.observers.push(...targetInfo.observers) : (info.observers = targetInfo.observers);
+
+                        if (targetInfo.behaviors)
+                            info.behaviors ? info.behaviors.push(...targetInfo.behaviors) : (info.behaviors = targetInfo.behaviors);
+
+                        if (targetInfo.forwardObservers)
+                            info.forwardObservers ? info.forwardObservers.push(...targetInfo.forwardObservers) : (info.forwardObservers = targetInfo.forwardObservers);
+
+                        if (typeof targetInfo.mediaQueryAttributes !== "undefined")
+                            info.mediaQueryAttributes = targetInfo.mediaQueryAttributes;
+
+                        if (typeof targetInfo.sensitive !== "undefined")
+                            info.sensitive = targetInfo.sensitive;
+                    }
+
+                    const prefix = <string>prefixOrInfo;
+                    const ns = prefixOrNs;
+                    const wc = WebComponent._register(target, Vidyano.WebComponents.WebComponent._clone(info), prefix, ns);
+
+                    WebComponent.registrations[wc.name] = info;
+
+                    return wc;
                 };
             }
-            else if (typeof arg1 === "function")
+            else if (typeof infoOrTarget === "function")
                 return WebComponent._register.apply(this, arguments);
+        }
+
+        static registerAbstract(info?: IWebComponentRegistrationInfo, prefix?: string, ns?: string): (obj: any) => void {
+            return (target: Function) => {
+                WebComponent.registrations[Object(target).name] = info;
+            };
+        }
+
+        private static _clone(source: any, depth: number = 0): any {
+            const output = Array.isArray(source) ? [] : {};
+            for (let key in source) {
+                if (key === "behaviors" && depth === 0) {
+                    output[key] = source[key];
+                    continue;
+                }
+
+                const value = source[key];
+                output[key] = (value != null && typeof value === "object") ? Vidyano.WebComponents.WebComponent._clone(value, depth + 1) : value;
+            }
+
+            return output;
         }
     }
 }

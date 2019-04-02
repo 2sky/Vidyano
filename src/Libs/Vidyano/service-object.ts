@@ -1,5 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
 
     export class ServiceObject extends Vidyano.Common.Observable<ServiceObject> {
         constructor(public service: Service) {

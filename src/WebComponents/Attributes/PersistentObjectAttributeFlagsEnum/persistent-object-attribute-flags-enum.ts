@@ -1,11 +1,7 @@
 ﻿namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @PersistentObjectAttribute.register
+    @WebComponent.register()
     export class PersistentObjectAttributeFlagsEnum extends WebComponents.Attributes.PersistentObjectAttribute {
-        private _disablePopup(readonly: boolean, disabled: boolean, sensitive: boolean): boolean {
-            return readonly || disabled || sensitive;
-        }
     }
 
     @WebComponent.register({

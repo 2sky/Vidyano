@@ -2,16 +2,20 @@
     <template>
         <link rel="stylesheet" href="list.css" />
         <vi-size-tracker on-sizechanged="_sizeChanged"></vi-size-tracker>
-        <template is="dom-if" if="[[!parentScroller]]" restamp>
-            <vi-scroller class="flex" no-horizontal>
-                <iron-list id="list" items="[[items]]" as="[[as]]"><content></content></iron-list>
+        <dom-if if="[[!parentScroller]]" restamp>
+            <template>
+                <vi-scroller class="flex" no-horizontal>
+                    <iron-list id="list" items="[[items]]" as="[[as]]"><slot></slot></iron-list>
+                    <vi-attached-notifier on-attached="_bindIronListDataHost"></vi-attached-notifier>
+                </vi-scroller>
+            </template>
+        </dom-if>
+        <dom-if if="[[parentScroller]]" restamp id="parentScrollerTemplate">
+            <template>
+                <iron-list id="list" items="[[items]]" as="[[as]]" class="flex"><slot></slot></iron-list>
                 <vi-attached-notifier on-attached="_bindIronListDataHost"></vi-attached-notifier>
-            </vi-scroller>
-        </template>
-        <template is="dom-if" if="[[parentScroller]]" restamp id="parentScrollerTemplate">
-            <iron-list id="list" items="[[items]]" as="[[as]]" class="flex"><content></content></iron-list>
-            <vi-attached-notifier on-attached="_bindIronListDataHost"></vi-attached-notifier>
-        </template>
+            </template>
+        </dom-if>
     </template>
 </dom-module>
 

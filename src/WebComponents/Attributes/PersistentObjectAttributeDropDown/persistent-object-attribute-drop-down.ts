@@ -1,7 +1,6 @@
 namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @PersistentObjectAttribute.register({
+    @WebComponent.register({
         properties: {
             radio: {
                 type: Boolean,
@@ -35,12 +34,12 @@ namespace Vidyano.WebComponents.Attributes {
             return attribute && attribute.getTypeHint("groupseparator", null, undefined, true);
         }
 
-        private _isRadioChecked(option: string, value: string): boolean {
-            return option === value || (!option && !value);
-        }
-
         private _radioLabel(option: string): string {
             return option != null ? option : "—";
+        }
+
+        private _isRadioChecked(option: string, value: string): boolean {
+            return option === value || (!option && !value);
         }
 
         private _radioChanged(e: CustomEvent) {

@@ -6,9 +6,8 @@ marked.defaults.breaks = true;
 /* tslint:enable:no-use-before-declare */
 
 namespace Vidyano.WebComponents.Attributes {
-    "use strict";
 
-    @PersistentObjectAttribute.register
+    @WebComponent.register()
     export class PersistentObjectAttributeCommonMark extends PersistentObjectAttribute {
         private _editTextAreaBlur() {
             if (this.attribute && this.attribute.isValueChanged && this.attribute.triggersRefresh)

@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export class CultureInfo {
         static currentCulture: CultureInfo;
         static invariantCulture: CultureInfo;

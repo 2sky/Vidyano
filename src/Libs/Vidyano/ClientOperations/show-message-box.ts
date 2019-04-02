@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export namespace ClientOperations {
         export function showMessageBox(hooks: ServiceHooks, title: string, message: string, rich: boolean = false, delay: number = 0): void {
             setTimeout(function () {

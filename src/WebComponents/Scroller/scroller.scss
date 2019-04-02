@@ -1,17 +1,19 @@
 @import "../_vars.scss";
 
 :host {
-    overflow: hidden;
-    @include layout-horizontal();
-    @include relative();
-    --vi-scroller-thumb-color: #888;
-    --vi-scroller-thumb-hover-color: #777;
-    --vi-scroller-thumb-size: var(--theme-h5);
-    --vi-scroller-thumb-hover-size: calc(var(--theme-h5) + 2px);
-    --vi-scroller-thumb-capture-size: calc(var(--theme-h4) + 2px);
-    --vi-scroller-thumb-parent-hover-size: calc(var(--theme-h5) + 6px);
+    &, .scroll-host {
+        overflow: hidden;
+        @include layout-horizontal();
+        @include relative();
+        --vi-scroller-thumb-color: #888;
+        --vi-scroller-thumb-hover-color: #777;
+        --vi-scroller-thumb-size: var(--theme-h5);
+        --vi-scroller-thumb-hover-size: calc(var(--theme-h5) + 2px);
+        --vi-scroller-thumb-capture-size: calc(var(--theme-h4) + 2px);
+        --vi-scroller-thumb-parent-hover-size: calc(var(--theme-h5) + 6px);
+    }
 
-    > #wrapper {
+    .wrapper {
         @include flex();
         @include relative();
         overflow: auto;
@@ -26,17 +28,17 @@
     }
 
     &[no-horizontal]:not([no-vertical]) {
-        > #wrapper {
+        .wrapper {
             @include layout-vertical();
 
-            > #content {
+            .content {
                 min-height: auto;
             }
         }
     }
 
     &[no-vertical]:not([no-horizontal]) {
-        > #wrapper {
+        .wrapper {
             @include layout-horizontal();
             margin-right: 0;
             overflow-y: hidden;
@@ -44,12 +46,12 @@
     }
 
     &[no-vertical][no-horizontal] {
-        > #wrapper {
+        .wrapper {
             @include layout-horizontal();
             overflow: hidden;
             margin: 0 !important;
 
-            > #content {
+            .content {
                 @include flex();
                 @include layout-horizontal();
                 min-height: initial;
@@ -63,19 +65,19 @@
     }
 
     &:not([no-vertical]):not([no-horizontal]) {
-        > #wrapper {
-            > #content {
+        .wrapper {
+            > .content {
                 display: inline-block;
                 min-width: 100%;
             }
         }
     }
 
-    &:not([force-scrollbars]):not([hovering]):not([scrolling]) > .scrollbar-parent .scrollbar {
+    &:not([force-scrollbars]):not([hovering]):not([scrolling]) .scrollbar-parent .scrollbar {
         opacity: 0;
     }
 
-    > .scrollbar-parent {
+    .scrollbar-parent {
         position: absolute;
         background-color: transparent;
         display: none;
@@ -159,25 +161,25 @@
         }
     }
 
-    &[horizontal] > .scrollbar-parent.horizontal, &[vertical] > .scrollbar-parent.vertical {
+    &[horizontal] .scrollbar-parent.horizontal, &[vertical] .scrollbar-parent.vertical {
         display: block;
     }
 
     &[align-vertical-scrollbar="left"] {
-        > .vertical {
+        .vertical {
             right: auto;
             left: 0;
         }
     }
 
     &[scrolling] {
-        > #wrapper {
+        .wrapper {
             pointer-events: none;
         }
     }
 
-    &[vertical][scrolling="vertical"] > .scrollbar-parent.vertical, > .scrollbar-parent.vertical:hover,
-    &[horizontal][scrolling="horizontal"] > .scrollbar-parent.horizontal, > .scrollbar-parent.horizontal:hover {
+    &[vertical][scrolling="vertical"] .scrollbar-parent.vertical, .scrollbar-parent.vertical:hover,
+    &[horizontal][scrolling="horizontal"] .scrollbar-parent.horizontal, .scrollbar-parent.horizontal:hover {
         &:before {
             background-color: rgba(0, 0, 0, 0.1);
         }
@@ -195,7 +197,7 @@
         }
     }
 
-    &[horizontal] > #wrapper > #content > div {
+    &[horizontal] .wrapper .content > div {
         padding-bottom: var(--vi-scroller-thumb-capture-size);
     }
 
@@ -252,19 +254,19 @@
 
     &[hide-native-scrollbar]:not([allow-native]) {
         &[vertical] {
-            > #wrapper {
+            .wrapper {
                 margin-right: calc(var(--theme-scrollbar-width) * -1);
             }
         }
 
         &[horizontal] {
-            > #wrapper {
+            .wrapper {
                 margin-bottom: calc(var(--theme-scrollbar-width) * -1);
             }
         }
     }
 
-    &[hide-native-scrollbar][allow-native] > .scrollbar-parent {
+    &[hide-native-scrollbar][allow-native] .scrollbar-parent {
         display: none !important;
     }
 }

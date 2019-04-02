@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export class ExecuteActionArgs {
         private _action: string;
 

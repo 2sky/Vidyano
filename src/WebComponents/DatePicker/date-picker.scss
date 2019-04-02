@@ -6,16 +6,14 @@ $border-color: #eee;
     display: block;
     @include noSelection();
 
-    &:hover {
-        vi-popup[open] {
-            [header] {
-                background-color: var(--theme-color) !important;
-                fill: white !important;
-            }
+    &:hover vi-popup[open], vi-popup[hover] {
+        [slot="header"] {
+            background-color: var(--theme-color) !important;
+            fill: white !important;
         }
     }
 
-    > header {
+    header {
         color: white;
         fill: white;
         background-color: var(--theme-color);

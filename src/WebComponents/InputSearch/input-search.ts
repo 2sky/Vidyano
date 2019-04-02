@@ -1,6 +1,4 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
     @WebComponent.register({
         properties: {
             value: {
@@ -27,8 +25,8 @@ namespace Vidyano.WebComponents {
         focused: boolean;
         autofocus: boolean;
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             if (this.autofocus)
                 this._focusElement(this);
@@ -39,14 +37,14 @@ namespace Vidyano.WebComponents {
                 this._searchClick();
         }
 
-        private _searchClick(e?: TapEvent) {
+        private _searchClick(e?:Polymer.TapEvent) {
             this.fire("search", this.value);
 
             if (e && !this.value)
                 e.stopPropagation();
         }
 
-        private _resetClick(e?: TapEvent) {
+        private _resetClick(e?:Polymer.TapEvent) {
             this.fire("search", this.value = "");
 
             if (e && !this.value)
@@ -61,7 +59,7 @@ namespace Vidyano.WebComponents {
             this.focused = false;
         }
 
-        private _stop_tap(e: TapEvent) {
+        private _stop_tap(e: Polymer.TapEvent) {
             e.stopPropagation();
             this._focusElement(this);
         }
@@ -75,7 +73,7 @@ namespace Vidyano.WebComponents {
         }
 
         focus() {
-            this._focusElement(this.$$("input"));
+            this._focusElement(this.shadowRoot.querySelector("input"));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@import "../_vars.scss";
+@import "../_vars.scss";
 
 :host {
     position: relative;
@@ -59,7 +59,7 @@
         background-color: var(--theme-color-faint);
     }
 
-    button[header] {
+    button[slot="header"] {
         box-sizing: border-box;
         overflow: hidden;
         text-align: left;
@@ -75,7 +75,7 @@
 
     #label {
         display: none;
-        padding: 0 var(--vi-query-grid-cell-padding, --theme-h5);
+        padding: 0 var(--vi-query-grid-cell-padding, var(--theme-h5));
         line-height: var(--theme-h2);
         white-space: nowrap;
         -ms-text-overflow: ellipsis;
@@ -90,7 +90,7 @@
         fill: #eee;
         line-height: var(--theme-h2);
         height: var(--theme-h2);
-        padding: 0 0 0 var(--vi-query-grid-cell-padding, --theme-h5);
+        padding: 0 0 0 var(--vi-query-grid-cell-padding, var(--theme-h5));
     }
 
     &[filtered] {
@@ -157,7 +157,7 @@
         }
 
         .advanced {
-            padding: 0 var(--vi-query-grid-cell-padding, --theme-h5) var(--vi-query-grid-cell-padding, --theme-h5) 0;
+            padding: 0 var(--vi-query-grid-cell-padding, var(--theme-h5)) var(--vi-query-grid-cell-padding, var(--theme-h5)) 0;
             position: relative;
 
             > div {
@@ -201,7 +201,7 @@
                 cursor: pointer;
 
                 &:hover {
-                    background-color: var(--vi-query-grid-column-filter-distinct-hover-color, --theme-color-faint);
+                    background-color: var(--vi-query-grid-column-filter-distinct-hover-color, var(--theme-color-faint));
                 }
 
                 vi-checkbox {

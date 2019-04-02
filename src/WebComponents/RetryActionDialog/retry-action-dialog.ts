@@ -1,12 +1,10 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             retry: Object,
             tab: {
                 type: Object,
-                computed: "_computeTab(retry.persistentObject, isAttached)"
+                computed: "_computeTab(retry.persistentObject, isConnected)"
             }
         }
     })
@@ -18,8 +16,8 @@ namespace Vidyano.WebComponents {
                 retry.message = null;
         }
 
-        attached() {
-            super.attached();
+        connectedCallback() {
+            super.connectedCallback();
 
             this.retry.cancelOption = 1;
             this.noCancelOnOutsideClick = this.noCancelOnEscKey = this.retry.cancelOption == null;
@@ -29,21 +27,22 @@ namespace Vidyano.WebComponents {
             this.close(this.retry.cancelOption);
         }
 
-        private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {
-            if (!persistentObject || !isAttached)
+        private _computeTab(persistentObject: Vidyano.PersistentObject, isConnected: boolean): Vidyano.PersistentObjectAttributeTab {
+            if (!persistentObject || !isConnected)
                 return null;
 
             const tab = <Vidyano.PersistentObjectAttributeTab>persistentObject.tabs.find(tab => tab instanceof Vidyano.PersistentObjectAttributeTab);
             tab.columnCount = tab.columnCount > 1 ? tab.columnCount : 1;
 
-            const width = parseInt(this.getComputedStyleValue("--vi-persistent-object-dialog-base-width-base")) * tab.columnCount;
-            this.customStyle["--vi-persistent-object-dialog-computed-width"] = `${width}px`;
-            this.updateStyles();
+            const width = parseInt(ShadyCSS.getComputedStyleValue(this, "--vi-persistent-object-dialog-base-width-base")) * tab.columnCount;
+            this.updateStyles({
+                "--vi-persistent-object-dialog-computed-width": `${width}px`
+            });
 
             return tab;
         }
 
-        private _onSelectOption(e: TapEvent) {
+        private _onSelectOption(e: Polymer.TapEvent) {
             this.close(e.model.option);
 
             e.stopPropagation();

@@ -27,7 +27,7 @@ $border-color: mix(white, $background-color, 7.5%);
         @include layout-around-justified();
         background-color: var(--vi-user--background-color, $background-color);
 
-        button {
+        vi-button {
             height: var(--theme-h2) !important;
             line-height: var(--theme-h2) !important;
             cursor: pointer;
@@ -47,7 +47,7 @@ $border-color: mix(white, $background-color, 7.5%);
         }
     }
 
-    button {
+    vi-button {
         width: $footerHeight;
         height: $footerHeight !important;
         line-height: $footerHeight !important;
@@ -74,7 +74,7 @@ $border-color: mix(white, $background-color, 7.5%);
     }
 
     &:not([is-signed-in]) {
-        button {
+        vi-button {
             cursor: pointer;
         }
     }
@@ -83,7 +83,7 @@ $border-color: mix(white, $background-color, 7.5%);
         .actions {
             @include layout-vertical();
 
-            button {
+            vi-button {
                 height: var(--theme-h1) !important;
                 line-height: var(--theme-h1) !important;
             }
@@ -105,7 +105,7 @@ $border-color: mix(white, $background-color, 7.5%);
             }
         }
 
-        button.vi-user#settings {
+        vi-button.vi-user#settings {
             border-left-width: 0;
         }
     }

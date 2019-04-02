@@ -1,7 +1,5 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
-    @TemplateConfig.register({
+    @WebComponent.register({
         properties: {
             type: String,
             name: String,

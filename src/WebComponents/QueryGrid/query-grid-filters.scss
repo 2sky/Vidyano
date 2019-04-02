@@ -10,7 +10,7 @@
     align-self: flex-end;
 
     > vi-popup-menu {
-        button[header] {
+        button[slot="header"] {
             @include relative();
             @include flex();
             z-index: 1;

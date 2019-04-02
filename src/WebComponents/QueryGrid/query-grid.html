@@ -1,102 +1,32 @@
-<link rel="import" href="../ActionButton/action-button.html" />
-﻿<link rel="import" href="../Checkbox/checkbox.html" />
-<link rel="import" href="../Scroller/scroller.html" />
-<link rel="import" href="../SizeTracker/size-tracker.html" />
-<link rel="import" href="../Style/style.html" />
-<link rel="import" href="../Sortable/sortable.html" />
-<link rel="import" href="query-grid-configure-dialog.html" />
-<link rel="import" href="query-grid-select-all.html" />
-<link rel="import" href="query-grid-column-header.html" />
-<link rel="import" href="query-grid-column-footer.html" />
-<link rel="import" href="query-grid-filters.html" />
-<link rel="import" href="query-grid-filter-dialog.html" />
-<link rel="import" href="query-grid-cells.html" />
+<link rel="import" href="query-grid-column.html" />
+<link rel="import" href="query-grid-cell.html" />
+<link rel="import" href="query-grid-row.html" />
+<link rel="import" href="query-grid-header.html" />
 
 <dom-module id="vi-query-grid">
     <template>
         <link rel="stylesheet" href="query-grid.css" />
-        <vi-style id="style" key="vi-query-grid"></vi-style>
-        <div class="vertical layout fit">
-            <header id="dataHeaderHost" class="horizontal layout">
-                <div class="horizontal layout relative" id="headerControls">
-                    <template is="dom-if" if="[[hasGrouping]]">
-                        <vi-popup-menu id="grouping" disabled$="[[isBusy]]">
-                            <button is="vi-button" header icon="QueryGrid_Group" inverse disabled$="[[isBusy]]"></button>
-                            <vi-popup-menu-item icon="QueryGrid_Group_Collapse" label="Collapse all" on-tap="_groupingToggleCollapse"></vi-popup-menu-item>
-                            <vi-popup-menu-item icon="QueryGrid_Group_Expand" label="Expand all" on-tap="_groupingToggleCollapse"></vi-popup-menu-item>
-                            <vi-popup-menu-item-separator></vi-popup-menu-item-separator>
-                            <vi-popup-menu-item icon="Remove" label="Remove grouping" on-tap="_groupingRemove"></vi-popup-menu-item>
-                        </vi-popup-menu>
+        <div id="headerHost">
+            <header class="inline layout horizontal">
+                <dom-repeat items="[[columns]]" as="column" id="headers">
+                    <template>
+                        <vi-query-grid-header column="[[column]]"></vi-query-grid-header>
                     </template>
-                    <vi-query-grid-select-all query="[[query]]" hidden$="[[!canSelect]]"></vi-query-grid-select-all>
-                    <template is="dom-if" if="[[canFilter]]">
-                        <vi-query-grid-filters id="filters" query="[[query]]"></vi-query-grid-filters>
-                    </template>
-                    <vi-size-tracker size="{{headerControlsSize}}" trigger-zero></vi-size-tracker>
-                </div>
-                <div id="dataHeaderHostColumns">
-                    <vi-popup id="moreLeft" class="more left" hidden>
-                        <button is="vi-button" header inverse icon="ChevronLeft"></button>
-                        <vi-scroller id="moreLeftContent" content no-horizontal></vi-scroller>
-                    </vi-popup>
-                    <vi-popup id="moreRight" class="more right" hidden>
-                        <button is="vi-button" header inverse icon="ChevronRight"></button>
-                        <vi-scroller id="moreRightContent" content no-horizontal></vi-scroller>
-                    </vi-popup>
-                </div>
+                </dom-repeat>
             </header>
-            <div class="horizontal layout flex relative">
-                <vi-size-tracker size="{{viewportSize}}"></vi-size-tracker>
-                <vi-scroller id="scroller" class="flex" vertical-scroll-offset="{{_verticalScrollOffset}}" horizontal-scroll-offset="{{_horizontalScrollOffset}}" force-scrollbars="[[forceScrollbars]]">
-                    <div id="verticalSpacer">
-                        <div id="dataHost"></div>
-                    </div>
-                </vi-scroller>
-            </div>
-            <footer id="dataFooterHost"></footer>
         </div>
-        <div id="initializingOverlay"></div>
-        <vi-spinner></vi-spinner>
-        <vi-popup-core id="actions" on-tap="_closeActions"></vi-popup-core>
+        <vi-scroller id="dataHost" class="flex" horizontal-scroll-offset="{{horizontalScrollOffset}}" outer-width="{{dataHostWidth}}" outer-height="{{dataHostOuterHeight}}">
+            <iron-list id="dataList" class="content" items="[[items]]" as="lazyItem">
+                <template>
+                    <vi-query-grid-row lazy-item="[[lazyItem]]" columns="[[columns]]" index="[[index]]"></vi-query-grid-row>
+                </template>
+            </iron-list>
+        </vi-scroller>
+        <div hidden>
+            <slot id="columns"></slot>
+        </div>
+        <vi-spinner hidden$="[[!loading]]"></vi-spinner>
     </template>
 </dom-module>
-
-<vi-icon name="QueryGrid_Group_Row">
-    <svg viewBox="0 0 32 32">
-        <g>
-            <path d="M 24 8 L 8 24 L 24 24 L 24 8 z " />
-        </g>
-    </svg>
-</vi-icon>
-
-<vi-icon name="QueryGrid_Group">
-    <svg viewBox="0 0 32 32">
-        <g>
-            <path d="M 2 8 L 2 14 L 22 14 L 22 8 L 2 8 z M 10 18 L 10 24 L 30 24 L 30 18 L 10 18 z " />
-        </g>
-    </svg>
-</vi-icon>
-
-<vi-icon name="QueryGrid_Group_Collapse">
-    <svg viewBox="0 0 32 32">
-        <g>
-            <path d="M 10,3 H 22 L 16,9 Z" />
-            <path d="m 6,11.666666 h 20 v 3 H 6 Z" />
-            <path d="m 6,17.333333 h 20 v 3 H 6 Z" />
-            <path d="m 16,23 -6,6 h 12 z" />
-        </g>
-    </svg>
-</vi-icon>
-
-<vi-icon name="QueryGrid_Group_Expand">
-    <svg viewBox="0 0 32 32">
-        <g>
-            <path d="M 10,9 H 22 L 16,3 Z" />
-            <path d="m 6,11.666666 h 20 v 3 H 6 Z" />
-            <path d="m 6,17.333333 h 20 v 3 H 6 Z" />
-            <path d="M 16,29 10,23 H 22 Z" />
-        </g>
-    </svg>
-</vi-icon>
 
 <script src="query-grid.js"></script>

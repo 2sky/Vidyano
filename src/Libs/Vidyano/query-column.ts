@@ -1,6 +1,4 @@
 namespace Vidyano {
-    "use strict";
-
     export interface IQueryColumnDistincts {
         matching: string[];
         remaining: string[];

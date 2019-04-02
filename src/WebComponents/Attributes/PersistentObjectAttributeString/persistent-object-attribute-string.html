@@ -2,44 +2,59 @@
 
 <dom-module id="vi-persistent-object-attribute-string">
     <template>
+        <style include="vi-persistent-object-attribute-style-module"></style>
         <link rel="stylesheet" href="persistent-object-attribute-string.css" />
-        <template is="dom-if" if="[[!editing]]">
-            <template is="dom-if" if="[[!_isLink(link, attribute.value)]]">
-                <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
-            </template>
-            <template is="dom-if" if="[[_isLink(link, attribute.value)]]">
-                <a href$="[[_computeLink(attribute.value, link)]]" title$="[[_computeLinkTitle(attribute.displayValue, sensitive)]]" rel="external noopener" target="_blank">
-                    <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
-                    <template is="dom-if" if="[[attribute.value]]">
-                        <vi-icon source="ArrowUpRight" class="size-h4"></vi-icon>
+        <dom-if if="[[!editing]]">
+            <template>
+                <dom-if if="[[!link]]">
+                    <template>
+                        <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
                     </template>
-                    <div class="spacer"></div>
-                </a>
-            </template>
-        </template>
-        <template is="dom-if" if="[[editing]]">
-            <vi-persistent-object-attribute-edit attribute="[[attribute]]">
-                <input content value="{{value::input}}" type$="[[inputtype]]" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" sensitive$="[[sensitive]]" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]" tabindex$="[[readOnlyTabIndex]]" placeholder="[[placeholder]]">
-                <template is="dom-if" if="[[_isLink(link, attribute.value)]]">
-                    <a class="button" href$="[[_computeLink(attribute.value, link)]]" title$="[[_computeLinkTitle(attribute.displayValue, sensitive)]]" tabindex="-1" rel="external noopener" target="_blank">
-                        <vi-icon source="ArrowUpRight"></vi-icon>
-                    </a>
-                </template>
-                <content select=".button, button, vi-popup:not([content])"></content>
-                <template is="dom-if" if="[[hasSuggestions]]">
-                    <vi-popup id="suggestions" class="button" content-align="right">
-                        <vi-icon source="Add" header></vi-icon>
-                        <vi-scroller content>
-                            <ul>
-                                <template is="dom-repeat" items="[[filteredSuggestions]]" as="suggestion">
-                                    <li on-tap="_addSuggestion">[[suggestion]]</li>
+                </dom-if>
+                <dom-if if="[[link]]">
+                    <template>
+                        <a href$="[[link]]" title$="[[linkTitle]]" rel="external noopener" target="_blank">
+                            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+                            <dom-if if="[[attribute.value]]">
+                                <template>
+                                    <vi-icon source="ArrowUpRight" class="size-h4"></vi-icon>
                                 </template>
-                            </ul>
-                        </vi-scroller>
-                    </vi-popup>
-                </template>
-            </vi-persistent-object-attribute-edit>
-        </template>
+                            </dom-if>
+                            <div class="spacer"></div>
+                        </a>
+                    </template>
+                </dom-if>
+            </template>
+        </dom-if>
+        <dom-if if="[[editing]]">
+            <template>
+                <vi-persistent-object-attribute-edit attribute="[[attribute]]">
+                    <input value="{{value::input}}" type$="[[inputtype]]" maxlength$="[[maxlength]]" style$="[[editInputStyle]]" sensitive$="[[sensitive]]" on-focus="_editInputFocus" on-blur="_editInputBlur" readonly$="[[readOnly]]" tabindex$="[[readOnlyTabIndex]]" placeholder="[[placeholder]]">
+                    <template if="[[link]]">
+                        <a class="button" href$="[[link]]" title$="[[linkTitle]]" tabindex="-1" rel="external noopener" target="_blank">
+                            <vi-icon source="ArrowUpRight"></vi-icon>
+                        </a>
+                    </template>
+                    <slot name="button" slot="button"></slot>
+                    <dom-if if="[[hasSuggestions]]">
+                        <template>
+                            <vi-popup slot="button" id="suggestions" content-align="right">
+                                <vi-icon source="Add" slot="header"></vi-icon>
+                                <vi-scroller>
+                                    <ul>
+                                        <dom-repeat items="[[filteredSuggestions]]" as="suggestion">
+                                            <template>
+                                                <li on-tap="_addSuggestion">[[suggestion]]</li>
+                                            </template>
+                                        </dom-repeat>
+                                    </ul>
+                                </vi-scroller>
+                            </vi-popup>
+                        </template>
+                    </dom-if>
+                </vi-persistent-object-attribute-edit>
+            </template>
+        </dom-if>
     </template>
 </dom-module>
 

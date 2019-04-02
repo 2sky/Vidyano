@@ -22,7 +22,7 @@ $tabsBG: #f1f1f1;
 
     .tabs {
         background-color: $tabsBG;
-        --at-apply: --theme-shadow;
+        box-shadow: var(--theme-box-shadow);
     }
 
     vi-persistent-object-tab-presenter {
@@ -110,7 +110,7 @@ $tabsBG: #f1f1f1;
             vi-action-bar {
                 padding-top: 0;
                 z-index: 1;
-                --at-apply: --theme-shadow;
+                box-shadow: var(--theme-box-shadow);
                 margin-bottom: 3px;
             }
 

@@ -55,7 +55,7 @@
             fill: var(--theme-color-ok);
         }
 
-        &:not([has-resource]) {
+        &:empty {
             display: none;
         }
     }

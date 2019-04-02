@@ -1,7 +1,5 @@
 namespace Vidyano.WebComponents {
-    "use strict";
-
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             query: Object,
             canSelect: Boolean,
@@ -39,7 +37,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _selectedItemsChanged() {
-            if (!this.isAttached)
+            if (!this.isConnected)
                 return;
 
             this.canSelect = this.query && this.query.selectedItems && this.query.selectedItems.length > 0;

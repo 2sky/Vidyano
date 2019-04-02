@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export namespace Actions {
         export class ExportToExcel extends Action {
             constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions) {

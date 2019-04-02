@@ -10,8 +10,8 @@
         z-index: 1;
     }
 
-    .button.browse {
-        ::content input {
+    .browse {
+        ::slotted(div) {
             position: absolute;
             top: 0;
             right: 0;
@@ -25,7 +25,7 @@
     }
 
     span, input {
-        color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
+        color: var(--vi-persistent-object-attribute-foreground, var(--theme-foreground));
 
         &[sensitive] {
             --at-apply: --vi-app--sensitive;

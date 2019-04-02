@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export class PersistentObjectAttributeWithReference extends PersistentObjectAttribute {
         lookup: Query;
         objectId: string;

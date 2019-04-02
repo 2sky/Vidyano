@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export namespace Common {
         export interface ISubjectNotifier<TSource, TDetail> {
             notify: (source: TSource, detail?: TDetail) => void;

@@ -3,32 +3,40 @@
 <dom-module id="vi-select">
     <template>
         <link rel="stylesheet" href="select.css" />
-        <vi-popup id="popup" on-tap="_openPopup" on-click="_openPopup" on-popup-opened="_popupOpened" on-popup-closed="_popupClosed" sticky auto-width disabled$="[[_disablePopup(readonly, disabled, sensitive)]]">
-            <div header>
-                <content select="[left]"></content>
+        <vi-popup id="popup" on-tap="_openPopup" on-click="_openPopup" on-popup-opened="_popupOpened" on-popup-closed="_popupClosed" sticky auto-width disabled$="[[op.some(readonly, disabled, sensitive)]]">
+            <div slot="header" >
+                <slot name="left"></slot>
                 <div class="suggestions">
                     <span id="match"></span><span id="remainder"></span>
                 </div>
-                <input value="{{_inputValue::input}}" sensitive$="[[sensitive]]" on-blur="_blur" on-keydown="_keydown" on-keyup="_keyup" readonly$="[[isReadonlyInput]]" tabindex="[[_computeInputTabIndex(isReadonlyInput)]]" placeholder="[[placeholder]]">
+                <input value="{{_inputValue::input}}" sensitive$="[[sensitive]]" on-blur="_blur" on-keydown="_keydown" on-keyup="_keyup" readonly$="[[isReadonlyInput]]" tabindex="[[inputTabindex]]" placeholder="[[placeholder]]">
                 <vi-icon source="CaretDown" hidden$="[[!hasOptions]]"></vi-icon>
-                <content select="[right]"></content>
+                <slot name="right"></slot>
             </div>
-            <template is="dom-if" if="[[!groupSeparator]]">
-                <iron-list items="[[filteredItems]]" as="item" content filtering$="[[filtering]]" on-select-option="_select">
-                    <template>
-                            <li is="vi-select-option-item" suggested="[[_equals(item, suggestion)]]" selected="[[_equals(item, selectedItem)]]" item="{{item}}">[[item.displayValue]]</li>
-                    </template>
-                </iron-list>
-            </template>
-            <template is="dom-if" if="[[groupSeparator]]">
-                <ul content filtering$="[[filtering]]" on-select-option="_select">
-                    <template is="dom-repeat" items="[[filteredItems]]" as="item">
-                        <template is="dom-if" if="[[_showGroup(item)]]">
-                            <li class="group">[[item.group]]</li>
+            <dom-if if="[[!groupSeparator]]">
+                <template>
+                    <iron-list items="[[filteredItems]]" as="item" content filtering$="[[filtering]]" on-select-option="_select">
+                        <template>
+                            <li is="vi-select-option-item" suggested="[[op.areSame(item, suggestion)]]" selected="[[op.areSame(item, selectedItem)]]" item="{{item}}">[[item.displayValue]]</li>
                         </template>
-                        <li is="vi-select-option-item" suggested="[[_equals(item, suggestion)]]" selected="[[_equals(item, selectedItem)]]" item="{{item}}">[[item.displayValue]]</li>
-                    </template>
-                </ul>
+                    </iron-list>
+                </template>
+            </template>
+            <dom-if if="[[groupSeparator]]">
+                <template>
+                    <ul content filtering$="[[filtering]]" on-select-option="_select">
+                        <dom-repeat items="[[filteredItems]]" as="item">
+                            <template>
+                                <dom-if if="[[op.every(item.group, item.groupFirst)]]">
+                                    <template>
+                                        <li class="group">[[item.group]]</li>
+                                    </template>
+                                </dom-if>
+                                <li is="vi-select-option-item" suggested="[[op.areSame(item.option, suggestion.option)]]" selected="[[op.areSame(item.option, selectedItem.option)]]" item="{{item}}">[[item.displayValue]]</li>
+                            </template>
+                        </dom-repeat>
+                    </ul>
+                </template>
             </template>
         </vi-popup>
     </template>

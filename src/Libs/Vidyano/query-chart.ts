@@ -1,6 +1,4 @@
 ﻿namespace Vidyano {
-    "use strict";
-
     export class QueryChart extends Vidyano.Common.Observable<QueryChart> {
         constructor(private _query: Vidyano.Query, private _label: string, private _name: string, private _options: any, private _type: string) {
             super();

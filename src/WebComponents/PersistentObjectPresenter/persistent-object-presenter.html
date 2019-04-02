@@ -3,13 +3,17 @@
 <dom-module id="vi-persistent-object-presenter">
     <template>
         <link rel="stylesheet" href="persistent-object-presenter.css" />
-        <template is="dom-if" if="[[error]]" restamp>
-            <vi-error class="flex" message="[[error]]"></vi-error>
-        </template>
-        <content></content>
-        <template is="dom-if" if="[[loading]]">
-            <vi-spinner></vi-spinner>
-        </template>
+        <dom-if if="[[error]]" restamp>
+            <template>
+                <vi-error class="flex" message="[[error]]"></vi-error>
+            </template>
+        </dom-if>
+        <slot></slot>
+        <dom-if if="[[loading]]">
+            <template>
+                <vi-spinner></vi-spinner>
+            </template>
+        </dom-if>
     </template>
 </dom-module>
 

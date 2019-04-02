@@ -1,6 +1,4 @@
 namespace Vidyano {
-    "use strict";
-
     export class QueryFilters extends Vidyano.Common.Observable<QueryFilters> {
         private _filters: QueryFilter[];
         private _currentFilter: QueryFilter;

@@ -1,7 +1,5 @@
 ﻿namespace Vidyano.WebComponents {
-    "use strict";
-
-    @Dialog.register({
+    @WebComponent.register({
         properties: {
             grid: Object,
             _columnElements: {
@@ -41,7 +39,7 @@
         }
 
         private _reorderColumns(e: CustomEvent) {
-            const children = <QueryGridConfigureDialogColumn[]>Polymer.dom(e.srcElement || <Node>e.target).children;
+            const children = <QueryGridConfigureDialogColumn[]>Polymer.dom(e.srcElement || <Node>this.grid.todo_checkEventTarget(e.target)).children;
             const offsets = children.orderBy(c => c.column.offset).map(c => c.column.offset);
 
             children.forEach((child: QueryGridConfigureDialogColumn, index: number) => {
@@ -78,7 +76,7 @@
         }
     }
 
-    @Sortable.register({
+    @WebComponent.register({
         extends: "ul"
     })
     export class QueryGridConfigureDialogColumnList extends Sortable {
