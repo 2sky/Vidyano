@@ -46,7 +46,7 @@ namespace Vidyano.Web2.Build
 
                         Console.WriteLine($"Inlining style: {cssFile}");
 
-                        link.ParentNode.ReplaceChild(HtmlNode.CreateNode($"<style>{File.ReadAllText(cssFile)}</style>"), link);
+                        link.ParentNode.ReplaceChild(HtmlNode.CreateNode($"<style>{FixCss(File.ReadAllText(cssFile))}</style>"), link);
 
                         if (string.IsNullOrEmpty(outdir))
                             File.Delete(cssFile);
@@ -78,6 +78,18 @@ namespace Vidyano.Web2.Build
 
                 doc.Save(string.IsNullOrEmpty(outdir) ? html : Path.Combine(outdir, Path.GetFileName(html)), Encoding.UTF8);
             }
+        }
+
+        private static string FixCss(string css)
+        {
+            // Fix :host(...) with parent selectors
+            css = Regex.Replace(css, ":host([^( -][^{> ,]+)([ ,])", ":host($1)$2");
+
+            // Transform --at-apply: to @apply
+            // More info: https://www.xanthir.com/b4o00, to be replaced with: https://www.w3.org/TR/css-shadow-parts-1/
+            css = css.Replace("--at-apply:", "@apply");
+
+            return css;
         }
     }
 }
