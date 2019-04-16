@@ -168,7 +168,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _devToggle() {
-            this.set("developer", developerShortcut.state);
+            this.set("developer", !this.attribute.parent.isSystem && developerShortcut.state);
         }
 
         queueFocus() {
