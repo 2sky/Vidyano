@@ -94,11 +94,11 @@ namespace Vidyano.Web2
         private static string FixCss(string css)
         {
             // Fix :host(...) with parent selectors
-            css = Regex.Replace(css, ":host([^( -][^{> ,]+)([ ,])", ":host($1)$2");
+            css = Regex.Replace(css, ":host([^{( ->][^{> ,]+)([{> ,])", ":host($1)$2");
 
             // Transform --at-apply: to @apply
             // More info: https://www.xanthir.com/b4o00, to be replaced with: https://www.w3.org/TR/css-shadow-parts-1/
-            css = css.Replace("--at-apply:", "@apply");
+            css = Regex.Replace(css, "--at-apply:([^;}]+)", "@apply($1)");
 
             return css;
         }
