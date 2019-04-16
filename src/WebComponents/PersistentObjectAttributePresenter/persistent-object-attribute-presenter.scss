@@ -38,9 +38,9 @@
     vi-checkbox {
         margin-right: var(--theme-h5);
 
-        --vi-checkbox--icon-disabled: #{'{
+        --vi-checkbox--icon-disabled: {
             background-color: #eee;
-        }'};
+        };
     }
 
     input, textarea {

@@ -78,17 +78,29 @@ namespace Vidyano.Web2
                     {
                         var file = Path.Combine(web2homeFolder, id);
                         if (File.Exists(file))
-                            return "<style>" + File.ReadAllText(file) + "</style>";
+                            return "<style>" + FixCss(File.ReadAllText(file)) + "</style>";
                     }
 
                     if (useLocalFileSystem)
-                        return "<style>" + File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id)) + "</style>";
+                        return "<style>" + FixCss(File.ReadAllText(Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~"), id))) + "</style>";
 
                     return "<style>" + GetEmbeddedResource(id) + "</style>";
                 });
 
                 return html;
             }
+        }
+
+        private static string FixCss(string css)
+        {
+            // Fix :host(...) with parent selectors
+            css = Regex.Replace(css, ":host([^( -][^{> ,]+)([ ,])", ":host($1)$2");
+
+            // Transform --at-apply: to @apply
+            // More info: https://www.xanthir.com/b4o00, to be replaced with: https://www.w3.org/TR/css-shadow-parts-1/
+            css = css.Replace("--at-apply:", "@apply");
+
+            return css;
         }
     }
 }
