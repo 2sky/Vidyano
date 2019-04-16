@@ -1,6 +1,31 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
+    class DeveloperShortcut extends Vidyano.Common.Observable<DeveloperShortcut> {
+        private _state: boolean = false;
+
+        get state(): boolean {
+            return this._state;
+        }
+
+        set state(state: boolean) {
+            if (state === this._state)
+                return;
+
+            const oldState = this._state;
+            this.notifyPropertyChanged("state", this._state = state, oldState);
+        }
+    }
+
+    const developerShortcut = new DeveloperShortcut();
+    document.addEventListener("keydown", e => {
+        developerShortcut.state = e.ctrlKey && e.altKey;
+    });
+
+    document.addEventListener("keyup", e => {
+        developerShortcut.state = e.ctrlKey && e.altKey;
+    });
+
     const _attributeImports: { [key: string]: Promise<any>; } = {
         "AsDetail": undefined,
         "BinaryFile": undefined,
@@ -82,6 +107,10 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "_computeHasError(attribute.validationError)"
+            },
+            developer: {
+                type: Boolean,
+                reflectToAttribute: true
             }
         },
         hostAttributes: {
@@ -106,6 +135,7 @@ namespace Vidyano.WebComponents {
         ]
     })
     export class PersistentObjectAttributePresenter extends WebComponent implements IConfigurable {
+        private _developerToggleDisposer: Common.ISubjectDisposer;
         private _renderedAttribute: Vidyano.PersistentObjectAttribute;
         private _renderedAttributeElement: Vidyano.WebComponents.Attributes.PersistentObjectAttribute;
         private _customTemplate: PolymerTemplate;
@@ -122,7 +152,23 @@ namespace Vidyano.WebComponents {
             if (!this._customTemplate)
                 this._customTemplate = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
 
+            if (this.service.application.hasManagement)
+                this._developerToggleDisposer = developerShortcut.propertyChanged.attach(this._devToggle.bind(this));
+
             super.attached();
+        }
+
+        detached() {
+            if (this._developerToggleDisposer) {
+                this._developerToggleDisposer();
+                this._developerToggleDisposer = null;
+            }
+
+            super.detached();
+        }
+
+        private _devToggle() {
+            this.set("developer", developerShortcut.state);
         }
 
         queueFocus() {
@@ -332,6 +378,10 @@ namespace Vidyano.WebComponents {
             }
         }
 
+        private _openAttributeManagement() {
+            this.app.changePath(`Management/PersistentObject.1456569d-e02b-44b3-9d1a-a1e417061c77/${this.attribute.id}`);
+        }
+
         _viConfigure(actions: IConfigurableAction[]) {
             if (this.attribute.parent.isSystem)
                 return;
@@ -339,9 +389,7 @@ namespace Vidyano.WebComponents {
             actions.push({
                 label: `Attribute: ${this.attribute.name}`,
                 icon: "viConfigure",
-                action: () => {
-                    this.app.changePath(`Management/PersistentObject.1456569d-e02b-44b3-9d1a-a1e417061c77/${this.attribute.id}`);
-                }
+                action: this._openAttributeManagement.bind(this)
             });
         }
     }

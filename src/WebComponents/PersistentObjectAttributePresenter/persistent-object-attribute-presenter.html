@@ -14,6 +14,11 @@
             </template>
             <div id="content"></div>
         </div>
+        <template is="dom-if" if="[[developer]]">
+            <div id="developer" on-tap="_openAttributeManagement">
+                <label>[[attribute.name]]</label>
+            </div>
+        </template>
     </template>
 </dom-module>
 
