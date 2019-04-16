@@ -53,15 +53,15 @@ $border-color: #ddd;
                 line-height: calc(var(--theme-h2) - 2px);
                 padding-left: var(--theme-h5);
                 background-color: transparent;
-                @apply(--vi-select-input);
+                --at-apply: --vi-select-input;
 
                 &[disabled] {
                     color: inherit !important;
-                    @apply(--vi-select-input-disabled);
+                    --at-apply: --vi-select-input-disabled;
                 }
 
                 &:hover {
-                    @apply(--vi-select-input-hover);
+                    --at-apply: --vi-select-input-hover;
                 }
 
                 &::-ms-clear {
@@ -73,7 +73,7 @@ $border-color: #ddd;
                 height: calc(var(--theme-h2) - 2px);
                 width: calc(var(--theme-h2) - 2px);
                 fill: var(--vi-select-icon-color, --theme-foreground);
-                @apply(--vi-select-icon);
+                --at-apply: --vi-select-icon;
             }
         }
 
@@ -127,7 +127,7 @@ $border-color: #ddd;
 
     &[sensitive] {
         input, li {
-            @apply(--vi-app--sensitive);
+            --at-apply: --vi-app--sensitive;
         }
 
         input + vi-icon {

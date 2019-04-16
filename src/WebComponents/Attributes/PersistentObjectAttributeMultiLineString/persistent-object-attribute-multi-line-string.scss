@@ -14,7 +14,7 @@
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
 
         &[sensitive] {
-            @apply(--vi-app--sensitive);
+            --at-apply: --vi-app--sensitive;
         }
     }
 

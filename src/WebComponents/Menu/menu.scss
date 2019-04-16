@@ -9,7 +9,7 @@ $backgroundColor: $blue-grey-900;
     @include noSelection();
     color: var(--vi-menu-color, $color);
     background-color: var(--vi-menu-background, $backgroundColor);
-    @apply(--vi-menu);
+    --at-apply: --vi-menu;
 
     &:not([collapsed]) {
         width: var(--vi-menu--expand-width, 17em);
@@ -164,7 +164,7 @@ $backgroundColor: $blue-grey-900;
             background-color: var(--theme-color-dark);
             white-space: nowrap;
             overflow: hidden;
-            @apply(--vi-menu--label);
+            --at-apply: --vi-menu--label;
         }
 
         #toggleCollapse {
@@ -174,7 +174,7 @@ $backgroundColor: $blue-grey-900;
             height: var(--theme-h1);
             width: var(--theme-h1);
             fill: rgba(255, 255, 255, 0.5);
-            @apply(--vi-menu--toggle-collapse);
+            --at-apply: --vi-menu--toggle-collapse;
 
             > vi-icon {
                 -moz-transition: transform 0.3s ease-in-out;
@@ -190,36 +190,36 @@ $backgroundColor: $blue-grey-900;
 
     footer {
         overflow: hidden;
-        @apply(--vi-menu--footer);
+        --at-apply: --vi-menu--footer;
     }
 
     vi-input-search:not([collapsed]) {
-        --vi-input-search: #{'{
+        --vi-input-search: {
             margin-top: calc(var(--theme-h4) / 2);
             margin-right: calc(var(--theme-h4) - var(--theme-h4) / 2);
             margin-bottom: calc(var(--theme-h4) / 2);
             margin-left: calc(var(--theme-h4) - var(--theme-h4) / 2);
-        }'};
+        };
 
-        --vi-input-search-input: #{'{
+        --vi-input-search-input: {
             padding-left: var(--theme-h5);
-        }'};
+        };
     }
 
-    --vi-input-search-input-focused-button: #{'{
+    --vi-input-search-input-focused-button: {
         background-color: transparent;
         fill: white;
         border-top-width: 0;
         border-right-width: 0;
         border-bottom-width: 0;
-    }'};
+    };
 
     vi-input-search[collapsed] {
-        --vi-input-search-input: #{'{
+        --vi-input-search-input: {
             line-height: var(--theme-h1);
             padding-top: 0;
             padding-bottom: 0;
-        }'};
+        };
     }
 
     &[hide-search] {

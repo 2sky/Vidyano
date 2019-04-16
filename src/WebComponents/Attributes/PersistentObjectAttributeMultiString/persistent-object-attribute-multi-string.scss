@@ -25,7 +25,7 @@
     }
 
     pre[sensitive] {
-        @apply(--vi-app--sensitive);
+        --at-apply: --vi-app--sensitive;
     }
 
     vi-persistent-object-attribute-edit vi-tags {

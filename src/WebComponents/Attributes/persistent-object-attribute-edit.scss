@@ -21,10 +21,10 @@
         -o-transition: border-color 0.2s ease-in-out;
         -webkit-transition: border-color 0.2s ease-in-out;
         transition: border-color 0.2s ease-in-out;
-        @apply(--vi-persistent-object-attribute-edit-box);
+        --at-apply: --vi-persistent-object-attribute-edit-box;
 
         .buttons {
-            @apply(--vi-persistent-object-attribute-edit-buttons);
+            --at-apply: --vi-persistent-object-attribute-edit-buttons;
         }
 
         &[reverse] {

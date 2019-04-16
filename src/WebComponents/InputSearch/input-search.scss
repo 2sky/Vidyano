@@ -3,7 +3,7 @@
 :host {
     @include layout-horizontal();
     line-height: var(--theme-h2);
-    @apply(--vi-input-search);
+    --at-apply: --vi-input-search;
     position: relative;
 
     input {
@@ -31,7 +31,7 @@
             color: var(--vi-input-search-placeholder-color, #aaa);
         }
 
-        @apply(--vi-input-search-input);
+        --at-apply: --vi-input-search-input;
     }
 
     button {
@@ -47,23 +47,23 @@
         background-color: transparent;
         margin: 1px 1px 1px 0;
 
-        @apply(--vi-input-search-button);
+        --at-apply: --vi-input-search-button;
     }
 
     input:focus {
-        @apply(--vi-input-search-input-focused);
+        --at-apply: --vi-input-search-input-focused;
 
         ~ button {
             fill: var(--theme-color);
-            @apply(--vi-input-search-input-focused-button);
+            --at-apply: --vi-input-search-input-focused-button;
 
             &.search {
                 fill: #B3B3B3;
-                @apply(--vi-input-search-input-focused-button-search);
+                --at-apply: --vi-input-search-input-focused-button-search;
             }
 
             &.reset {
-                @apply(--vi-input-search-input-focused-button-reset);
+                --at-apply: --vi-input-search-input-focused-button-reset;
             }
         }
     }

@@ -30,7 +30,7 @@
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
         
         &[sensitive] {
-            @apply(--vi-app--sensitive);
+            --at-apply: --vi-app--sensitive;
         }
     }    
 
@@ -38,7 +38,7 @@
         height: calc(var(--theme-h2) - 2px);
         width: calc(var(--theme-h2) - 2px);
         fill: var(--vi-select-icon-color, --theme-foreground);
-        @apply(--vi-persistent-object-attribute-flags-enum-icon);
+        --at-apply: --vi-persistent-object-attribute-flags-enum-icon;
     }
 
     vi-popup[disabled] {

@@ -17,7 +17,7 @@
         }
 
         &[sensitive] {
-            @apply(--vi-app--sensitive);
+            --at-apply: --vi-app--sensitive;
         }
     }
 

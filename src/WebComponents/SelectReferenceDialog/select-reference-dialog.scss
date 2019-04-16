@@ -1,7 +1,7 @@
 @import "../_vars.scss";
 
 :host {
-    --vi-input-search: #{'{
+    --vi-input-search: {
         line-height: var(--theme-h2);
         height: var(--theme-h2);
         border-top: 1px solid #EAEAEA;
@@ -9,21 +9,21 @@
         border-bottom: 1px solid #EAEAEA;
         border-left: 1px solid #EAEAEA;
         box-sizing: border-box;
-    }'};
+    };
 
-    --vi-input-search-input: #{'{
+    --vi-input-search-input: {
         color: #333;
-    }'};
+    };
 
-    --vi-input-search-input-focused: #{'{
+    --vi-input-search-input-focused: {
         background-color: white;
-    }'};
+    };
 
-    --vi-input-search-input-focused-button: #{'{
+    --vi-input-search-input-focused-button: {
         border-top-width: 0;
         border-right-width: 0;
         border-bottom-width: 0;
-    }'};
+    };
 }
 
 :host-context(vi-app[is-phone]) {

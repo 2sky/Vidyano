@@ -3,10 +3,10 @@
 $tabsBG: #f1f1f1;
 
 :host {
-    --vi-action-bar-style: #{'{
+    --vi-action-bar-style: {
         padding-top: 3px;
         border-bottom: 1px solid '$tabsBG';
-    }'};
+    };
 
     @include layout-vertical-reverse();
     --vi-persistent-object-master-width: 40%;
@@ -16,13 +16,13 @@ $tabsBG: #f1f1f1;
         padding-right: 4px;
 
         > span[sensitive] {
-            @apply(--vi-app--sensitive);
+            --at-apply: --vi-app--sensitive;
         }
     }
 
     .tabs {
         background-color: $tabsBG;
-        @apply(--theme-shadow);
+        --at-apply: --theme-shadow;
     }
 
     vi-persistent-object-tab-presenter {
@@ -110,7 +110,7 @@ $tabsBG: #f1f1f1;
             vi-action-bar {
                 padding-top: 0;
                 z-index: 1;
-                @apply(--theme-shadow);
+                --at-apply: --theme-shadow;
                 margin-bottom: 3px;
             }
 

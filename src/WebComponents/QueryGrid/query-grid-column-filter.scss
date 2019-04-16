@@ -9,7 +9,7 @@
     line-height: var(--theme-h2);
     cursor: pointer;
 
-    --vi-input-search: #{'{
+    --vi-input-search: {
         height: var(--theme-h2);
         border-top: 1px solid var(--theme-light-border);
         border-right: 1px solid var(--theme-light-border);
@@ -20,25 +20,25 @@
         margin-right: 0;
         margin-bottom: var(--theme-h5);
         margin-left: calc(var(--theme-h2) + var(--theme-h5));
-    }'};
+    };
 
-    --vi-input-search-input: #{'{
+    --vi-input-search-input: {
         padding-left: 8px;
         color: #333;
-    }'};
+    };
 
-    --vi-input-search-button: #{'{
+    --vi-input-search-button: {
         width: var(--theme-h2);
         padding-top: 0;
         padding-right: 0;
         padding-bottom: 0;
         padding-left: 0;
         fill: var(--theme-light-border);
-    }'};
+    };
 
-    --vi-input-search-input-focused-button: #{'{
+    --vi-input-search-input-focused-button: {
         fill: var(--theme-color-light);
-    }'};
+    };
 
     &[disabled] {
         cursor: default;
@@ -282,7 +282,7 @@
 
     &[sensitive] {
         vi-checkbox[distinct-type="matching"], vi-checkbox[distinct-type="remaining"] {
-            @apply(--vi-app--sensitive);
+            --at-apply: --vi-app--sensitive;
         }
     }
 }

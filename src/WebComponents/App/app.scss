@@ -67,9 +67,9 @@
     }
 
     &[sensitive] {
-        --vi-app--sensitive: #{'{
+        --vi-app--sensitive: {
             filter: blur(5px);
-        }'};
+        };
     }
 
     vi-app-config {
@@ -91,7 +91,7 @@
 
     [dialog] {
         @include layout-vertical();
-        @apply(--theme-shadow);
+        --at-apply: --theme-shadow;
         background-color: white;
         max-height: 90vh;
         max-width: 90vw;

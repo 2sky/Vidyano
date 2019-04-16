@@ -13,9 +13,9 @@ $min-main-width: 400px;
         }
 
         h4 + button {
-            --vi-button-icon: #{'{
+            --vi-button-icon: {
                 fill: var(--vi-persistent-object-dialog-header-color, #333);
-            }'};
+            };
 
             margin-left: var(--theme-h5);
         }

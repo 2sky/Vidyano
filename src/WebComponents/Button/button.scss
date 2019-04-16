@@ -14,7 +14,7 @@
         background-color: fadeout($bgColor, 50%) !important;
         fill: fadeout($fgColor, 50%) !important;
         color: fadeout($fgColor, 50%) !important;
-        @apply(--vi-button-disabled);
+        --at-apply: --vi-button-disabled;
     }
 }
 
@@ -66,18 +66,18 @@
         box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
     }
 
-    @apply(--vi-button);
+    --at-apply: --vi-button;
 
     &[disabled] {
         cursor: default;
-        @apply(--vi-button-disabled);
+        --at-apply: --vi-button-disabled;
 
         vi-icon {
-            @apply(--vi-button-disabled-icon);
+            --at-apply: --vi-button-disabled-icon;
         }
 
         span {
-            @apply(--vi-button-disabled-label);
+            --at-apply: --vi-button-disabled-label;
         }
     }
 
@@ -87,7 +87,7 @@
         > vi-icon {
             display: inline-block;
             height: 100%;
-            @apply(--vi-button-icon);
+            --at-apply: --vi-button-icon;
 
             &:not([has-resource]) {
                 display: none;
@@ -97,7 +97,7 @@
         > span {
             display: inline-block;
             vertical-align: top;
-            @apply(--vi-button-label);
+            --at-apply: --vi-button-label;
         }
 
         > vi-icon[has-resource] + span {
@@ -124,7 +124,7 @@
 
             &:not([busy])[disabled] {
                 opacity: 0.5;
-                @apply(--vi-button-disabled);
+                --at-apply: --vi-button-disabled;
             }
         }
 
@@ -145,7 +145,7 @@
 
             &:not([busy])[disabled] {
                 opacity: 0.5;
-                @apply(--vi-button-disabled);
+                --at-apply: --vi-button-disabled;
             }
         }
     }

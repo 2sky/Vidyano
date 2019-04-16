@@ -5,9 +5,9 @@
     @include layout-horizontal();
     line-height: normal;
 
-    --vi-select-input: #{'{
+    --vi-select-input: {
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
-    }'};
+    };
 
     vi-checkbox {
         display: inline-block;
@@ -15,10 +15,10 @@
     }
 
      span[sensitive] {
-         @apply(--vi-app--sensitive);
+         --at-apply: --vi-app--sensitive;
      }
 
-    @apply(--vi-persistent-object-attribute-boolean);
+    --at-apply: --vi-persistent-object-attribute-boolean;
 }
 
 

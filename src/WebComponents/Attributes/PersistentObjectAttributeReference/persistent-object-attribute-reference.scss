@@ -4,13 +4,13 @@
     @include layout-horizontal();
     @include relative();
 
-    --vi-select-input: #{'{
+    --vi-select-input: {
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
-    }'};
+    };
 
-    --vi-select-icon: #{'{
+    --vi-select-icon: {
         display: none;
-    }'};
+    };
 
     input {
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
@@ -84,9 +84,9 @@
     }
 
     vi-persistent-object-attribute-edit[reverse-content] {
-        --vi-persistent-object-attribute-edit-buttons: #{'{
+        --vi-persistent-object-attribute-edit-buttons: {
             z-index: 2;
-        }'};
+        };
     }
 
     #radiobuttons {
@@ -100,7 +100,7 @@
 
     span, input {
         &[sensitive] {
-            @apply(--vi-app--sensitive);
+            --at-apply: --vi-app--sensitive;
         }
     }
 }

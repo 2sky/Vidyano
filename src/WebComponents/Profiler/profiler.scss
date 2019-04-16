@@ -56,7 +56,7 @@
             height: calc(15 * var(--theme-h1));
             max-height: 40vh;
             background-color: #e7e7e7;
-            @apply(--theme-shadow);
+            --at-apply: --theme-shadow;
             padding: 6px;
 
             > * {
@@ -66,7 +66,7 @@
                 &:first-child {
                     width: 40%;
                     z-index: 1;
-                    @apply(--theme-shadow);
+                    --at-apply: --theme-shadow;
 
                     .request {
                         background-color: #FAFAFA;

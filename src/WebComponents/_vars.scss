@@ -23,11 +23,9 @@ $notification-ok: #339f7b;
     --theme-dark-border: darken(#EAEAEA, 15%);
     --theme-read-only: #f7f7f7;
 
-    --theme-shadow: #{'{
-        -webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
-        -moz-box-shadow:    0 0 4px 0 rgba(0, 0, 0, 0.5);
-        box-shadow:         0 0 4px 0 rgba(0, 0, 0, 0.5);
-    }'};
+    --theme-shadow: {
+        box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5);
+    };
 }
 
 @mixin theme-color-button() {

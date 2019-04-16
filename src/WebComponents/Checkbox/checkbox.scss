@@ -37,10 +37,10 @@
     }
 
     vi-icon {
-        @apply(--vi-checkbox--icon);
+        --at-apply: --vi-checkbox--icon;
 
         &[disabled] {
-            @apply(--vi-checkbox--icon-disabled);
+            --at-apply: --vi-checkbox--icon-disabled;
         }
     }
 }

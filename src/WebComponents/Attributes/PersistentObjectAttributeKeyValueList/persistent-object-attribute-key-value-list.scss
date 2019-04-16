@@ -10,13 +10,13 @@
     span, vi-select {
         color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
 
-        --vi-select-input: #{'{
+        --vi-select-input: {
             color: var(--vi-persistent-object-attribute-foreground, --theme-foreground);
-        }'};
+        };
     }
 
     span[sensitive] {
-        @apply(--vi-app--sensitive);
+        --at-apply: --vi-app--sensitive;
     }
 
     #radiobuttons {
