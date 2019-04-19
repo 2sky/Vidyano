@@ -152,7 +152,7 @@ namespace Vidyano.WebComponents {
             if (!this._customTemplate)
                 this._customTemplate = <PolymerTemplate><any>Polymer.dom(this).querySelector("template[is='dom-template']");
 
-            if (this.service.application.hasManagement)
+            if (this.service && this.service.application && this.service.application.hasManagement)
                 this._developerToggleDisposer = developerShortcut.propertyChanged.attach(this._devToggle.bind(this));
 
             super.attached();
