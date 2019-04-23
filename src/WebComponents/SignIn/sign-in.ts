@@ -265,6 +265,13 @@
             if (oldStep)
                 (Polymer.dom(this.root).querySelector(`section.${oldStep}`) as HTMLElement).classList.remove("active");
 
+            if (step === "register")
+                this._updateWidth(this.register);
+            else if (step === "initial")
+                this._updateWidth(this.service.initial);
+            else
+                this._updateWidth(null);
+
             (Polymer.dom(this.root).querySelector(`section.${step}`) as HTMLElement).classList.add("active");
 
             Polymer.dom(this).flush();
@@ -469,6 +476,21 @@
                     parameters: this.service.providers[key]
                 };
             });
+        }
+
+        private _updateWidth(po: Vidyano.PersistentObject) {
+            if (po === null) {
+                this.customStyle["--vi-sign-in-persistent-object-width"] = null;
+                this.updateStyles();
+                return;
+            }
+
+            const tab = <Vidyano.PersistentObjectAttributeTab>po.tabs[0];
+            tab.columnCount = tab.columnCount > 1 ? tab.columnCount : 1;
+
+            const width = parseInt(this.getComputedStyleValue("--vi-sign-in-persistent-object-width-base")) * tab.columnCount;
+            this.customStyle["--vi-sign-in-persistent-object-width"] = `${width}px`;
+            this.updateStyles();
         }
 
         private _tabInnerSizeChanged(e: CustomEvent, detail: { size: ISize; }) {

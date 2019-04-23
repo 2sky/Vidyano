@@ -16,6 +16,7 @@
     @include layout-center-center();
     @include noSelection();
     position: relative;
+    --vi-sign-in-persistent-object-width-base: 400px;
 
     #background {
         @include fit();
@@ -111,9 +112,7 @@
                     }
                 }
 
-                &.register {
-                    max-width: 400px;
-
+                &.register, &.initial {
                     vi-persistent-object-tab-presenter {
                         max-height: 50vh;
                     }
@@ -373,7 +372,8 @@
 
     &[is-desktop], &[is-tablet] {
         .dialog {
-            width: 400px;
+            width: var(--vi-sign-in-persistent-object-width, var(--vi-sign-in-persistent-object-width-base));
+            max-width: 90vw;
             min-height: 360px;
         }
     }
