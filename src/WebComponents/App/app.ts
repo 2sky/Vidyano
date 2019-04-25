@@ -246,7 +246,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_updateInitialize(serviceInitializer, appRoutesInitializer)",
+            "_updateInitialize(serviceInitializer, appRoutePresenter, signIn)",
             "_updateRoute(path, initializing)",
             "_hookWindowBeforeUnload(noHistory, isAttached)",
             "_cleanUpOnSignOut(service.isSignedIn)",
@@ -268,12 +268,16 @@ namespace Vidyano.WebComponents {
             "service.isSignedIn",
             "service.profile",
             "service.application"
-        ]
+        ],
+        serviceBusObservers: {
+            "app-route-presenter:attached": "_appRoutePresenterChanged",
+            "sign-in:attached": "_signInChanged"
+        }
     })
     export class App extends WebComponent {
         private _cache: AppCacheEntry[] = [];
         private _nodeObserver: PolymerDomChangeObserver;
-        private _appRoutePresenter: Vidyano.WebComponents.AppRoutePresenter;
+        private appRoutePresenter: Vidyano.WebComponents.AppRoutePresenter;
         private _initializeResolve: (app: Vidyano.Application) => void;
         private _initializeReject: (e: any) => void;
         private _initialize: Promise<Vidyano.Application> = new Promise((resolve, reject) => { this._initializeResolve = resolve; this._initializeReject = reject; });
@@ -306,30 +310,10 @@ namespace Vidyano.WebComponents {
 
             window.addEventListener("storage", this._onSessionStorage.bind(this), false);
 
-            this.set("appRoutesInitializer", new Promise(resolve => {
-                const bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0];
-                this._setBarebone(!!bareboneTemplate);
-                if (this.barebone) {
-                    const appRouteTargetSetter = (e: CustomEvent) => {
-                        this._appRoutePresenter = e.target as Vidyano.WebComponents.AppRoutePresenter;
-                        this._distributeAppRoutes();
-
-                        this.removeEventListener("app-route-presenter-attached", appRouteTargetSetter);
-                        resolve(this._appRoutePresenter);
-                    };
-
-                    this.addEventListener("app-route-presenter-attached", appRouteTargetSetter.bind(this));
-
-                    Polymer.dom(this.root).appendChild(bareboneTemplate.stamp({ app: this }).root);
-                } else {
-                    Polymer.dom(this).flush();
-
-                    this._appRoutePresenter = Polymer.dom(this.root).querySelector("vi-app-route-presenter") as Vidyano.WebComponents.AppRoutePresenter;
-                    this._distributeAppRoutes();
-
-                    resolve(this._appRoutePresenter);
-                }
-            }));
+            const bareboneTemplate = <PolymerTemplate><Node>Polymer.dom(this).children.filter(c => c.tagName === "TEMPLATE" && c.getAttribute("is") === "dom-template")[0];
+            this._setBarebone(!!bareboneTemplate);
+            if (this.barebone)
+                Polymer.dom(this.root).appendChild(bareboneTemplate.stamp({ app: this }).root);
 
             Vidyano.Path.rescue(() => {
                 this.path = decodeURI(App.removeRootPath(Vidyano.Path.routes.current));
@@ -353,9 +337,18 @@ namespace Vidyano.WebComponents {
             super.detached();
 
             if (this._nodeObserver) {
-                Polymer.dom(this._appRoutePresenter).unobserveNodes(this._nodeObserver);
+                Polymer.dom(this.appRoutePresenter).unobserveNodes(this._nodeObserver);
                 this._nodeObserver = null;
             }
+        }
+
+        private _appRoutePresenterChanged(sender: AppRoutePresenter) {
+            this._distributeAppRoutes(sender);
+            this.set("appRoutePresenter", sender);
+        }
+
+        private _signInChanged(sender: SignIn) {
+            this.set("signIn", sender);
         }
 
         private _onSessionStorage(event: StorageEvent) {
@@ -571,9 +564,9 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _distributeAppRoutes() {
-            this._nodeObserver = Polymer.dom(this._appRoutePresenter).observeNodes(this._nodesChanged.bind(this));
-            Array.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(this._appRoutePresenter).appendChild(route));
+        private _distributeAppRoutes(appRoutePresenter: AppRoutePresenter) {
+            this._nodeObserver = Polymer.dom(appRoutePresenter).observeNodes(this._nodesChanged.bind(this));
+            Array.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(appRoutePresenter).appendChild(route));
 
             if (this.noHistory)
                 this.changePath(this.path);
@@ -618,23 +611,10 @@ namespace Vidyano.WebComponents {
             Array.from(doc.body.childNodes).forEach(c => Polymer.dom(this).appendChild(c));
         }
 
-        private async _updateInitialize(...promises: Promise<any>[]) {
+        private async _updateInitialize(serviceInitializer: Promise<Application>) {
             try {
-                if (this._initializeResolve) {
-                    const results = await Promise.all(promises);
-                    this._initializeResolve(results[0]);
-                    this._initializeResolve = null;
-                    this._initializeReject = null;
-                }
-                else {
-                    this._initialize = Promise.all(promises).then((results: any[]) => {
-                        this._setInitializing(false);
-                        return results[0];
-                    });
-
-                    await this._initialize;
-                }
-
+                const app = await serviceInitializer;
+                this._initializeResolve(app);
                 this._setInitializing(false);
             }
             catch (e) {
@@ -790,7 +770,7 @@ namespace Vidyano.WebComponents {
                     await newRoute.activate(mappedPathRoute.params);
 
                 this._setCurrentRoute(newRoute);
-                this._appRoutePresenter.notFound = !!path && !this.currentRoute;
+                this.appRoutePresenter.notFound = !!path && !this.currentRoute;
             });
         }
 

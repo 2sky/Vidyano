@@ -15,7 +15,7 @@
         attached() {
             super.attached();
 
-            this.fire("app-route-presenter-attached", null);
+            Vidyano.ServiceBus.send(this, "app-route-presenter:attached");
         }
     }
 }

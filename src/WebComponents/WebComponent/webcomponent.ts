@@ -193,6 +193,11 @@ namespace Vidyano.WebComponents {
         forwardObservers?: string[];
 
         /*
+         * serviceBusObservers is used to subscribe to messages send over the global ServiceBus
+         */
+        serviceBusObservers?: { [message: string]: string };
+
+        /*
          * If true, the component will add readonly isDesktop, isTablet, isPhone properties with reflectToAttribute
          */
         mediaQueryAttributes?: boolean;
@@ -676,6 +681,23 @@ namespace Vidyano.WebComponents {
                     });
                 };
             });
+
+            if (info.serviceBusObservers) {
+                (info.observers = info.observers || []).push("_serviceBusObserver(isAttached)");
+                wcPrototype["_serviceBusObserver"] = function (isAttached: boolean) {
+                    if (!this._serviceBusRegistrations)
+                        this._serviceBusRegistrations = [];
+
+                    if (isAttached) {
+                        for (const message in this.serviceBusObservers)
+                            this._serviceBusRegistrations.push(Vidyano.ServiceBus.subscribe(message, this[this.serviceBusObservers[message]].bind(this), true));
+                    }
+                    else {
+                        this._serviceBusRegistrations.forEach(disposer => disposer());
+                        this._serviceBusRegistrations = [];
+                    }
+                };
+            }
 
             if (info.keybindings) {
                 (info.observers = info.observers || []).push("_keybindingsObserver(isAttached)");

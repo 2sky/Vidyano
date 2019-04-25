@@ -117,12 +117,18 @@
         readonly register: Vidyano.PersistentObject; private _setRegister: (register: Vidyano.PersistentObject) => void;
         readonly initial: Vidyano.PersistentObject; private _setInitial: (initial: Vidyano.PersistentObject) => void;
         readonly description: string; private _setDescription: (description: string) => void;
-        private readonly notification: INotification; private _setNotification: (notification: INotification) => void;
+        private _setNotification: (notification: INotification) => void;
         private step: Step;
         userName: string;
         password: string;
         staySignedIn: boolean;
         twoFactorCode: string;
+
+        attached() {
+            super.attached();
+
+            Vidyano.ServiceBus.send(this, "sign-in:attached");
+        }
 
         private async _activate(e: CustomEvent, { parameters }: { parameters: ISignInRouteParameters; }) {
             if (parameters.stateOrReturnUrl) {

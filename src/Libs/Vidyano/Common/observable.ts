@@ -3,7 +3,7 @@
 
     export namespace Common {
         export interface ISubjectNotifier<TSource, TDetail> {
-            notify: (source: TSource, detail?: TDetail) => void;
+            notify?: (source: TSource, detail?: TDetail) => void;
         }
 
         export class PropertyChangedArgs {
@@ -55,7 +55,7 @@
 
             constructor(paused?: boolean) {
                 this._paused = paused;
-                this.propertyChanged = new Vidyano.Common.Subject<T, Vidyano.Common.PropertyChangedArgs>(this._propertyChangedNotifier = { notify: undefined });
+                this.propertyChanged = new Vidyano.Common.Subject<T, Vidyano.Common.PropertyChangedArgs>(this._propertyChangedNotifier = {});
             }
 
             protected notifyPropertyChanged(propertyName: string, newValue: any, oldValue?: any) {
