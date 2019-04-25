@@ -36,7 +36,22 @@ namespace Vidyano {
             return this._topics[topic];
         }
 
-        send(sender: any, message: string, detail?: any) {
+        send(message: string, detail?: any): void;
+        send(sender: any, message: string, detail?: any): void;
+        send(senderOrMessage: any, messageOrDetail?: any, detail?: any) {
+            let sender: any;
+            let message: string;
+
+            if (typeof senderOrMessage !== "string") {
+                sender = senderOrMessage;
+                message = messageOrDetail;
+            }
+            else {
+                sender = null;
+                message = senderOrMessage;
+                detail = messageOrDetail;
+            }
+
             const topicOrMessage = message.split(":", 2);
             const topic = this._getTopic(topicOrMessage.length > 1 ? topicOrMessage[0] : "");
             message = topicOrMessage.length === 1 ? topicOrMessage[0] : topicOrMessage[1];

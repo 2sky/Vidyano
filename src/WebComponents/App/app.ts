@@ -246,7 +246,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_updateInitialize(serviceInitializer, appRoutePresenter, signIn)",
+            "_updateInitialize(serviceInitializer, appRoutePresenter)",
             "_updateRoute(path, initializing)",
             "_hookWindowBeforeUnload(noHistory, isAttached)",
             "_cleanUpOnSignOut(service.isSignedIn)",
@@ -270,8 +270,7 @@ namespace Vidyano.WebComponents {
             "service.application"
         ],
         serviceBusObservers: {
-            "app-route-presenter:attached": "_appRoutePresenterChanged",
-            "sign-in:attached": "_signInChanged"
+            "app-route-presenter:attached": "_appRoutePresenterChanged"
         }
     })
     export class App extends WebComponent {
@@ -279,8 +278,7 @@ namespace Vidyano.WebComponents {
         private _nodeObserver: PolymerDomChangeObserver;
         private appRoutePresenter: Vidyano.WebComponents.AppRoutePresenter;
         private _initializeResolve: (app: Vidyano.Application) => void;
-        private _initializeReject: (e: any) => void;
-        private _initialize: Promise<Vidyano.Application> = new Promise((resolve, reject) => { this._initializeResolve = resolve; this._initializeReject = reject; });
+        private _initialize: Promise<Vidyano.Application> = new Promise(resolve => { this._initializeResolve = resolve; });
         private _routeMap: { [key: string]: AppRoute } = {};
         private _routeUpdater: Promise<any> = Promise.resolve();
         private _keybindingRegistrations: { [key: string]: Keyboard.IKeybindingRegistration[]; } = {};
@@ -345,10 +343,6 @@ namespace Vidyano.WebComponents {
         private _appRoutePresenterChanged(sender: AppRoutePresenter) {
             this._distributeAppRoutes(sender);
             this.set("appRoutePresenter", sender);
-        }
-
-        private _signInChanged(sender: SignIn) {
-            this.set("signIn", sender);
         }
 
         private _onSessionStorage(event: StorageEvent) {

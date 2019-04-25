@@ -124,12 +124,6 @@
         staySignedIn: boolean;
         twoFactorCode: string;
 
-        attached() {
-            super.attached();
-
-            Vidyano.ServiceBus.send(this, "sign-in:attached");
-        }
-
         private async _activate(e: CustomEvent, { parameters }: { parameters: ISignInRouteParameters; }) {
             if (parameters.stateOrReturnUrl) {
                 if (/^(register)$/i.test(parameters.stateOrReturnUrl)) {

@@ -1368,27 +1368,6 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
-    namespace ClientOperations {
-        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
-    }
-}
-declare namespace Vidyano {
-    type ServiceBusCallback = (sender: any, message: string, detail: any) => void;
-    interface ServiceBusSubscriptionDisposer extends Vidyano.Common.ISubjectDisposer {
-    }
-    interface IServiceBus {
-        send(sender: any, message: string, parameters: any): any;
-        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): ServiceBusSubscriptionDisposer;
-    }
-    class ServiceBusImpl implements IServiceBus {
-        private _topics;
-        private _getTopic;
-        send(sender: any, message: string, detail?: any): void;
-        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): Common.ISubjectDisposer;
-    }
-    const ServiceBus: ServiceBusImpl;
-}
-declare namespace Vidyano {
     interface IServiceQueryResultItemGroup {
         name: string;
         count: number;
@@ -1421,4 +1400,26 @@ declare namespace Vidyano {
             [key: string]: string;
         };
     }
+}
+declare namespace Vidyano {
+    namespace ClientOperations {
+        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
+    }
+}
+declare namespace Vidyano {
+    type ServiceBusCallback = (sender: any, message: string, detail: any) => void;
+    interface ServiceBusSubscriptionDisposer extends Vidyano.Common.ISubjectDisposer {
+    }
+    interface IServiceBus {
+        send(sender: any, message: string, parameters: any): any;
+        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): ServiceBusSubscriptionDisposer;
+    }
+    class ServiceBusImpl implements IServiceBus {
+        private _topics;
+        private _getTopic;
+        send(message: string, detail?: any): void;
+        send(sender: any, message: string, detail?: any): void;
+        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): Common.ISubjectDisposer;
+    }
+    const ServiceBus: ServiceBusImpl;
 }
