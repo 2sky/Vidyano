@@ -133,6 +133,7 @@ namespace Vidyano.WebComponents {
             path: {
                 type: String,
                 reflectToAttribute: true,
+                observer: "_pathChanged",
                 value: ""
             },
             service: {
@@ -146,10 +147,6 @@ namespace Vidyano.WebComponents {
             },
             keys: {
                 type: String,
-                readOnly: true
-            },
-            currentRoute: {
-                type: Object,
                 readOnly: true
             },
             application: Object,
@@ -189,7 +186,7 @@ namespace Vidyano.WebComponents {
             signInLogo: String,
             showMenu: {
                 type: Boolean,
-                computed: "_computeShowMenu(service.application, noMenu, currentRoute)"
+                computed: "_computeShowMenu(service.application, noMenu)"
             },
             isDesktop: {
                 type: Boolean,
@@ -246,8 +243,6 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_updateInitialize(serviceInitializer, appRoutePresenter)",
-            "_updateRoute(path, initializing)",
             "_hookWindowBeforeUnload(noHistory, isAttached)",
             "_cleanUpOnSignOut(service.isSignedIn)",
             "_resolveDependencies(service.application.hasManagement)",
@@ -268,26 +263,18 @@ namespace Vidyano.WebComponents {
             "service.isSignedIn",
             "service.profile",
             "service.application"
-        ],
-        serviceBusObservers: {
-            "app-route-presenter:attached": "_appRoutePresenterChanged"
-        }
+        ]
     })
     export class App extends WebComponent {
         private _cache: AppCacheEntry[] = [];
-        private _nodeObserver: PolymerDomChangeObserver;
-        private appRoutePresenter: Vidyano.WebComponents.AppRoutePresenter;
         private _initializeResolve: (app: Vidyano.Application) => void;
         private _initialize: Promise<Vidyano.Application> = new Promise(resolve => { this._initializeResolve = resolve; });
-        private _routeMap: { [key: string]: AppRoute } = {};
-        private _routeUpdater: Promise<any> = Promise.resolve();
         private _keybindingRegistrations: { [key: string]: Keyboard.IKeybindingRegistration[]; } = {};
         private _beforeUnloadEventHandler: EventListener;
         private _activeDialogs: Dialog[] = [];
         private _updateAvailableSnoozeTimer: number;
         readonly initializing: boolean; private _setInitializing: (init: boolean) => void;
         readonly keys: string; private _setKeys: (keys: string) => void;
-        readonly currentRoute: AppRoute; private _setCurrentRoute: (route: AppRoute) => void;
         readonly barebone: boolean; private _setBarebone: (barebone: boolean) => void;
         readonly updateAvailable: boolean; private _setUpdateAvailable: (updateAvailable: boolean) => void;
         readonly sessionLost: boolean; private _setSessionLost: (sessionLost: boolean) => void;
@@ -324,25 +311,18 @@ namespace Vidyano.WebComponents {
                 Vidyano.Path["dispatch"](document.location.toString().substr(base.href.length).replace(document.location.hash, ""));
             }
 
+            Vidyano.ServiceBus.subscribe("path-changed", (sender, message, details) => {
+                if (sender === this)
+                    return;
+
+                this.path = details.path;
+            }, true);
+
             if (!this.label)
                 this.label = this.title;
 
             const keys = <any>this.$$("iron-a11y-keys");
             keys.target = document.body;
-        }
-
-        detached() {
-            super.detached();
-
-            if (this._nodeObserver) {
-                Polymer.dom(this.appRoutePresenter).unobserveNodes(this._nodeObserver);
-                this._nodeObserver = null;
-            }
-        }
-
-        private _appRoutePresenterChanged(sender: AppRoutePresenter) {
-            this._distributeAppRoutes(sender);
-            this.set("appRoutePresenter", sender);
         }
 
         private _onSessionStorage(event: StorageEvent) {
@@ -387,8 +367,35 @@ namespace Vidyano.WebComponents {
             return this._initialize;
         }
 
-        get routeMap(): { [key: string]: AppRoute } {
-            return this._routeMap;
+        private async _pathChanged(path: string) {
+            await this.initialize;
+
+            if (path !== this.path)
+                return;
+
+            path = Vidyano.WebComponents.App.removeRootPath(this._convertPath(this.service.application, path));
+
+            if (this.service && this.service.isSignedIn && path === "") {
+                let programUnit = this.programUnit;
+                if (!programUnit && this.service.application.programUnits.length > 0)
+                    programUnit = this.service.application.programUnits[0];
+
+                if (programUnit && !this.app.barebone) {
+                    if (programUnit.openFirst && programUnit.path && path !== programUnit.path) {
+                        this.async(() => this.changePath(programUnit.path));
+                        return;
+                    }
+                    else {
+                        const config = this.app.configuration.getProgramUnitConfig(programUnit.name);
+                        if (!!config && config.hasTemplate) {
+                            this.async(() => this.changePath(programUnit.name));
+                            return;
+                        }
+                    }
+                }
+            }
+
+            Vidyano.ServiceBus.send(this, "path-changed", { path: path });
         }
 
         changePath(path: string, replaceCurrent: boolean = false) {
@@ -558,25 +565,6 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _distributeAppRoutes(appRoutePresenter: AppRoutePresenter) {
-            this._nodeObserver = Polymer.dom(appRoutePresenter).observeNodes(this._nodesChanged.bind(this));
-            Array.from(this.queryAllEffectiveChildren("vi-app-route")).forEach(route => Polymer.dom(appRoutePresenter).appendChild(route));
-
-            if (this.noHistory)
-                this.changePath(this.path);
-        }
-
-        private _nodesChanged(info: PolymerDomChangedInfo) {
-            info.addedNodes.filter(node => node instanceof Vidyano.WebComponents.AppRoute).forEach((appRoute: Vidyano.WebComponents.AppRoute) => {
-                const route = App.removeRootPath(appRoute.route);
-
-                if (!this._routeMap[route]) {
-                    this._routeMap[route] = appRoute;
-                    Vidyano.Path.map(Path.routes.rootPath + route).to(() => this.path = Vidyano.Path.routes.current);
-                }
-            });
-        }
-
         private _computeIsProfiling(isSignedIn: boolean, profile: boolean): boolean {
             if (!isSignedIn || !profile)
                 return false;
@@ -605,27 +593,6 @@ namespace Vidyano.WebComponents {
             Array.from(doc.body.childNodes).forEach(c => Polymer.dom(this).appendChild(c));
         }
 
-        private async _updateInitialize(serviceInitializer: Promise<Application>) {
-            try {
-                const app = await serviceInitializer;
-                this._initializeResolve(app);
-                this._setInitializing(false);
-            }
-            catch (e) {
-                const noInternet = Vidyano.NoInternetMessage.messages[navigator.language.split("-")[0].toLowerCase()] || Vidyano.NoInternetMessage.messages["en"];
-
-                await this.showMessageDialog({
-                    title: e === noInternet.message ? noInternet.title : this.app.label || document.title,
-                    message: e,
-                    actions: [noInternet.tryAgain],
-                    actionTypes: ["Danger"],
-                    noClose: true
-                });
-
-                document.location.reload();
-            }
-        }
-
         private _computeInitialService(uri: string, hooks: string, isAttached: boolean): Vidyano.Service {
             if (this.service) {
                 console.warn("Service uri and hooks cannot be altered.");
@@ -648,19 +615,25 @@ namespace Vidyano.WebComponents {
             const skipDefaultCredentialLogin = path.startsWith("SignIn");
 
             this._setInitializing(true);
-            this.set("serviceInitializer", service.initialize(skipDefaultCredentialLogin).then(() => {
-                if (this.service === service)
-                    return this.service.application;
+            service.initialize(skipDefaultCredentialLogin).then(() => {
+                if (this.service !== service)
+                    return;
 
-                return null;
+                this._initializeResolve(this.service.application);
+                this._setInitializing(false);
             }, e => {
-                if (this.service === service) {
-                    if (e !== "Session expired")
-                        throw e;
-                }
+                if (e === "Session expired")
+                    return;
 
-                return null;
-            }));
+                const noInternet = Vidyano.NoInternetMessage.messages[navigator.language.split("-")[0].toLowerCase()] || Vidyano.NoInternetMessage.messages["en"];
+                this.showMessageDialog({
+                    title: e === noInternet.message ? noInternet.title : this.app.label || document.title,
+                    message: e,
+                    actions: [noInternet.tryAgain],
+                    actionTypes: ["Danger"],
+                    noClose: true
+                }).then(() => document.location.reload());
+            });
 
             return service;
         }
@@ -699,75 +672,6 @@ namespace Vidyano.WebComponents {
             return path;
         }
 
-        private _updateRoute(path: string, initializing: boolean) {
-            if (initializing)
-                return;
-
-            let currentPath = this.path;
-            this._routeUpdater = this._routeUpdater.then(async () => {
-                const initial: Vidyano.PersistentObject = this.service["_initial"];
-                if (initial != null)
-                    await (<AppServiceHooks>this.service.hooks).onInitial(initial);
-
-                if (currentPath !== this.path)
-                    return;
-
-                path = Vidyano.WebComponents.App.removeRootPath(this._convertPath(this.service.application, path));
-
-                if (this.service && this.service.isSignedIn && path === "") {
-                    let programUnit = this.programUnit;
-                    if (!programUnit && this.service.application.programUnits.length > 0)
-                        programUnit = this.service.application.programUnits[0];
-
-                    if (programUnit && !this.barebone) {
-                        if (programUnit.openFirst && programUnit.path && path !== programUnit.path) {
-                            this.async(() => this.changePath(programUnit.path));
-                            return;
-                        }
-                        else {
-                            const config = this.app.configuration.getProgramUnitConfig(programUnit.name);
-                            if (!!config && config.hasTemplate) {
-                                this.async(() => this.changePath(programUnit.name));
-                                return;
-                            }
-                        }
-                    }
-                }
-
-                const mappedPathRoute = path != null || this.barebone ? Vidyano.Path.match(Path.routes.rootPath + path, true) : null;
-                const newRoute = mappedPathRoute ? this._routeMap[App.removeRootPath(mappedPathRoute.path)] : null;
-
-                if (!this.service.isSignedIn && (!newRoute || !newRoute.allowSignedOut)) {
-                    this.redirectToSignIn();
-                    return;
-                }
-
-                if (this.currentRoute) {
-                    if (this.currentRoute === newRoute && this.currentRoute.matchesParameters(mappedPathRoute.params))
-                        return;
-
-                    if (!await this.currentRoute.deactivate(newRoute))
-                        return;
-                }
-
-                Array.from(Polymer.dom(this.root).querySelectorAll("[dialog]")).forEach((dialog: Vidyano.WebComponents.Dialog) => dialog.close());
-
-                const redirect = await (<AppServiceHooks>this.app.service.hooks).onAppRouteChanging(newRoute, this.currentRoute);
-                if (redirect) {
-                    this._setCurrentRoute(null);
-                    this.async(() => this.changePath(redirect));
-
-                    return;
-                }
-
-                if (!!newRoute)
-                    await newRoute.activate(mappedPathRoute.params);
-
-                this._setCurrentRoute(newRoute);
-                this.appRoutePresenter.notFound = !!path && !this.currentRoute;
-            });
-        }
-
         private _computeProgramUnit(application: Vidyano.Application, path: string): ProgramUnit {
             path = this._convertPath(application, path);
 
@@ -782,22 +686,18 @@ namespace Vidyano.WebComponents {
             return null;
         }
 
-        private _computeShowMenu(application: Vidyano.Application, noMenu: boolean, currentRoute: Vidyano.WebComponents.AppRoute): boolean {
-            const showMenu = application && !noMenu && currentRoute != null && !currentRoute.route.startsWith("SignIn") && !currentRoute.route.startsWith("SignOut");
-            if (showMenu)
-                this.importComponent("Menu");
+        private _computeShowMenu(application: Vidyano.Application, noMenu: boolean): boolean {
+            if (!application || noMenu)
+                return false;
 
-            return showMenu;
+            this.importComponent("Menu");
+            return true;
         }
 
         private _cleanUpOnSignOut(isSignedIn: boolean) {
             if (isSignedIn === false) {
 
                 this.cacheClear();
-                for (const route in this._routeMap)
-                    this._routeMap[route].reset();
-
-                this._setCurrentRoute(null);
 
                 // Trigger sign out across tabs for the same base uri
                 localStorage.setItem("vi-signOut", Vidyano.cookiePrefix);
