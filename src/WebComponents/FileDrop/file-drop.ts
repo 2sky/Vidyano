@@ -39,7 +39,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _dragLeave(e: DragEvent) {
-            if (e.srcElement !== this.$.overlay && !!this.findParent(node => node === this, e.srcElement || <Node>e.target))
+            if (e.target !== this.$.overlay && !!this.findParent(node => node === this, <Node>e.target))
                 return;
 
             this._setDragOver(false);

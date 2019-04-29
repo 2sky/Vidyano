@@ -41,7 +41,7 @@
         }
 
         private _reorderColumns(e: CustomEvent) {
-            const children = <QueryGridConfigureDialogColumn[]>Polymer.dom(e.srcElement || <Node>e.target).children;
+            const children = <QueryGridConfigureDialogColumn[]>Polymer.dom(<Node>e.target).children;
             const offsets = children.orderBy(c => c.column.offset).map(c => c.column.offset);
 
             children.forEach((child: QueryGridConfigureDialogColumn, index: number) => {
