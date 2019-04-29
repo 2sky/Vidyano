@@ -689,8 +689,13 @@ namespace Vidyano.WebComponents {
                         this._serviceBusRegistrations = [];
 
                     if (isAttached) {
-                        for (const message in this.serviceBusObservers)
-                            this._serviceBusRegistrations.push(Vidyano.ServiceBus.subscribe(message, this[this.serviceBusObservers[message]].bind(this), true));
+                        for (const message in this.serviceBusObservers) {
+                            const callback = this[this.serviceBusObservers[message]];
+                            if (callback)
+                                this._serviceBusRegistrations.push(Vidyano.ServiceBus.subscribe(message, callback.bind(this), true));
+                            else
+                                console.warn("ServiceBus listener callback '" + message + "' not found on element " + this.is);
+                        }
                     }
                     else {
                         this._serviceBusRegistrations.forEach(disposer => disposer());
