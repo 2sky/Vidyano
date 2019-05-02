@@ -886,6 +886,31 @@ namespace Vidyano.WebComponents {
                 }
             }
 
+            if (prefix === "vi") {
+                const domModule = <HTMLTemplateElement>Polymer.DomModule.import(elementName);
+                if (domModule !== null) {
+                    const templateOverride = <HTMLTemplateElement>Polymer.DomModule.import(`${elementName}-template-module`, "template");
+                    if (templateOverride != null) {
+                        const originalTemplate = domModule.querySelector("template");
+                        if (originalTemplate != null) {
+                            if (templateOverride.hasAttribute("preserve-styles")) {
+                                const firstChild = templateOverride.content.firstChild;
+                                originalTemplate.content.querySelectorAll("style").forEach(style => templateOverride.content.insertBefore(style.cloneNode(true), firstChild));
+                            }
+
+                            originalTemplate.replaceWith(templateOverride);
+                        }
+                    }
+                }
+
+                const template = <HTMLTemplateElement>Polymer.DomModule.import(elementName, "template");
+                if (template != null) {
+                    const userStyleModuleTemplate = <HTMLTemplateElement>Polymer.DomModule.import(`${elementName}-style-module`, "template");
+                    const userStyle = userStyleModuleTemplate != null ? userStyleModuleTemplate.content.querySelector("style") : null;
+                    if (userStyle != null)
+                        template.content.appendChild(userStyle);
+                }
+            }
 
             const wc = Polymer(wcPrototype);
             for (const method in obj) {

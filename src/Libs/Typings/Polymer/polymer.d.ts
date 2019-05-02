@@ -126,6 +126,19 @@ interface PolymerGestures {
     remove: (node: HTMLElement, eventName: string, handler: Function) => void;
 }
 
+interface PolymerDomModule extends HTMLElement {
+    /**
+     * Retrieves the element specified by the css `selector` in the module
+     * registered by `id`. For example, this.import('foo', 'img');
+     *
+     * @param id The id of the dom-module in which to search.
+     * @param selector The css selector by which to find the element.
+     * @returns Returns the element which matches `selector` in the
+     * module registered at the specified `id`.
+     */
+    import(id: string, selector?: string): HTMLElement|null;
+}
+
 declare var Polymer: {
     (polymer: any): any;
     dom(element: Node | Vidyano.WebComponents.WebComponent): PolymerDomApi;
@@ -148,7 +161,10 @@ declare var Polymer: {
     Async: PolymerAsync;
 
     Gestures: PolymerGestures;
+
+    DomModule: PolymerDomModule;
 };
+
 declare var CustomElements: {
     registry: {
         [tag: string]: {
