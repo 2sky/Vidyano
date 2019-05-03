@@ -5,7 +5,8 @@
         properties: {
             currentRoute: {
                 type: Object,
-                readOnly: true
+                readOnly: true,
+                notify: true
             },
             notFound: {
                 type: Boolean,
