@@ -17,7 +17,8 @@ $min-main-width: 400px;
 
             > vi-persistent-object-tab {
                 position: static;
-                width: 100%;
+                width: var(--vi-persistent-object-dialog-computed-width, var(--vi-persistent-object-dialog-base-width-base));
+                max-width: 90vw;
             }
         }
     }
