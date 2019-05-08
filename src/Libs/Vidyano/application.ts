@@ -98,9 +98,9 @@
 
         private _setRoutes(routes: IRoutes) {
             this._routes = {
-                queries: Object.assign({}, ...Object.keys(routes.queries).map(po => ({[po.toKebabCase()]: routes.queries[po]}))),
+                queries: Object.assign({}, ...Object.keys(routes.queries).map(q => ({[q.toKebabCase()]: routes.queries[q]}))),
                 persistentObjects: Object.assign({}, ...Object.keys(routes.persistentObjects).map(po => ({[po.toKebabCase()]: routes.persistentObjects[po]}))),
-                programUnits: Object.assign(routes.programUnits, ...Object.keys(routes.programUnits).map(po => ({[po.toKebabCase()]: routes.programUnits[po]})))
+                programUnits: Object.assign(routes.programUnits, ...Object.keys(routes.programUnits).map(pu => ({[pu.toKebabCase()]: routes.programUnits[pu]})))
             };
         }
 

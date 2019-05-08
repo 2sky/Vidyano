@@ -31,10 +31,9 @@
         }
 
         private static _getPath(routes: IRoutes, id: string): string {
-            const queries = routes.queries;
-            for (const name in queries) {
-                if (queries[name] === id)
-                    return "/" + name.toKebabCase();
+            for (const name in routes.queries) {
+                if (routes.queries[name] === id)
+                    return "/" + name;
             }
 
             return "/query." + id;
@@ -53,10 +52,9 @@
         }
 
         private static _getPath(routes: IRoutes, id: string, objectId: string): string {
-            const persistentObjects = routes.persistentObjects;
-            for (const name in persistentObjects) {
-                if (persistentObjects[name] === id)
-                    return "/" + name.toKebabCase() + (objectId ? "/" + objectId : "");
+            for (const name in routes.persistentObjects) {
+                if (routes.persistentObjects[name] === id)
+                    return "/" + name + (objectId ? "/" + objectId : "");
             }
 
             return "/persistent-object." + id + (objectId ? "/" + objectId : "");

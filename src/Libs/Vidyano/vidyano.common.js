@@ -130,7 +130,7 @@ String.prototype.asDataUri = function String$asDataUri() {
 };
 
 String.prototype.toKebabCase = function() {
-    if (!this)
+    if (!this || this === this.toLowerCase())
         return this;
 
     return Array.from(this).map((c, i) => {

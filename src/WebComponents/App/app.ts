@@ -395,7 +395,7 @@ namespace Vidyano.WebComponents {
                     else {
                         const config = this.app.configuration.getProgramUnitConfig(programUnit.name);
                         if (!!config && config.hasTemplate) {
-                            this.async(() => this.changePath(programUnit.name.toKebabCase()));
+                            this.async(() => this.changePath(programUnit.path));
                             return;
                         }
                     }
@@ -420,24 +420,24 @@ namespace Vidyano.WebComponents {
             const persistentObjects = this.service.application.routes.persistentObjects;
             for (const type in persistentObjects) {
                 if (persistentObjects[type] === id)
-                    return (pu ? pu.name.toKebabCase() + "/" : "") + type + (objectId ? "/" + objectId : "");
+                    return (pu ? pu.path + "/" : "") + type + (objectId ? "/" + objectId : "");
             }
 
-            return (pu ? pu.name.toKebabCase() + "/" : "") + `persistent-object.${id}${objectId ? "/" + objectId : ""}`;
+            return (pu ? pu.path + "/" : "") + `persistent-object.${id}${objectId ? "/" + objectId : ""}`;
         }
 
         getUrlForQuery(id: string, pu: ProgramUnit = this.programUnit) {
             const queries = this.service.application.routes.persistentObjects;
             for (const name in queries) {
                 if (queries[name] === id)
-                    return (pu ? pu.name.toKebabCase() + "/" : "") + `${name}`;
+                    return (pu ? pu.path + "/" : "") + `${name}`;
             }
 
-            return (pu ? pu.name.toKebabCase() + "/" : "") + `query.${id}`;
+            return (pu ? pu.path + "/" : "") + `query.${id}`;
         }
 
         getUrlForFromAction(id: string, pu: ProgramUnit = this.programUnit) {
-            return (pu ? pu.name.toKebabCase() + "/" : "") + `from-action/${id}`;
+            return (pu ? pu.path + "/" : "") + `from-action/${id}`;
         }
 
         cache(entry: Vidyano.WebComponents.AppCacheEntry): Vidyano.WebComponents.AppCacheEntry {
@@ -678,7 +678,7 @@ namespace Vidyano.WebComponents {
             const mappedPathRoute = Vidyano.Path.match(Path.routes.rootPath + App.removeRootPath(path), true);
             if (application) {
                 if (mappedPathRoute && mappedPathRoute.params && mappedPathRoute.params.programUnitName)
-                    return application.programUnits.find(pu => pu.name.toKebabCase() === mappedPathRoute.params.programUnitName);
+                    return application.programUnits.find(pu => pu.path === mappedPathRoute.params.programUnitName);
                 else if (application.programUnits.length > 0)
                     return application.programUnits[0];
             }

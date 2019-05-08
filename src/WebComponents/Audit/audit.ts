@@ -153,7 +153,7 @@
                     changes: [],
                     inData: null,
                     outData: null,
-                    href: this.computePath(`${this.app.programUnit.name.toKebabCase()}/persistent-object.${item.query.persistentObject.id}/${item.id}`),
+                    href: this.computePath(`${this.app.programUnit.path}/persistent-object.${item.query.persistentObject.id}/${item.id}`),
                     groupIndex: this.groups.length - 1,
                     entryIndex: this.groups[this.groups.length - 1].entries.length
                 };
