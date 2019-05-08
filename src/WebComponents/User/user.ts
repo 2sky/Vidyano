@@ -78,7 +78,7 @@ namespace Vidyano.WebComponents {
             const commentAttr = po.getAttribute("Comment");
             const commentOptions = ["Browser: " + navigator.userAgent, "Vidyano Client: " + Vidyano.version];
             const location = window.location.toString();
-            if (!location.contains("FromAction/"))
+            if (!location.contains("from-action/"))
                 commentOptions.push("Url: " + location);
             commentAttr.options = commentOptions;
             commentAttr.isValueChanged = true;
@@ -87,7 +87,7 @@ namespace Vidyano.WebComponents {
         }
 
         userSettings() {
-            this.app.changePath((this.app.programUnit ? this.app.programUnit.name + "/" : "") + "PersistentObject." + this.service.application.userSettingsId + "/" + this.service.application.userId);
+            this.app.changePath((this.app.programUnit ? this.app.programUnit.name.toKebabCase() + "/" : "") + "persistent-object." + this.service.application.userSettingsId + "/" + this.service.application.userId);
         }
 
         private _toggleSensitive() {

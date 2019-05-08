@@ -149,7 +149,7 @@ namespace Vidyano.WebComponents {
                 actions.push({
                     label: `Attribute tab: ${tab.label}`,
                     icon: "viConfigure",
-                    action: () => this.app.changePath(`Management/PersistentObject.9b7a3b94-cf71-4284-bac3-de4d2790c868/${tab.id}`)
+                    action: () => this.app.changePath(`management/persistent-object.9b7a3b94-cf71-4284-bac3-de4d2790c868/${tab.id}`)
                 });
             }
             else if (this.tab.target instanceof Vidyano.Query) {
@@ -157,12 +157,12 @@ namespace Vidyano.WebComponents {
                 actions.push({
                     label: `Query tab: ${query.label}`,
                     icon: "viConfigure",
-                    action: () => this.app.changePath(`Management/PersistentObject.b9d2604d-2233-4df2-887a-709d93502843/${query.id}`),
+                    action: () => this.app.changePath(`management/persistent-object.b9d2604d-2233-4df2-887a-709d93502843/${query.id}`),
                     subActions: [{
                         label: `Persistent Object: ${query.persistentObject.type}`,
                         icon: "viConfigure",
                         action: () => {
-                            this.app.changePath(`Management/PersistentObject.316b2486-df38-43e3-bee2-2f7059334992/${query.persistentObject.id}`);
+                            this.app.changePath(`management/persistent-object.316b2486-df38-43e3-bee2-2f7059334992/${query.persistentObject.id}`);
                         }
                     }]
                 });

@@ -107,7 +107,7 @@ namespace Vidyano.WebComponents {
             actions.push({
                 label: `Attribute tab: ${tab.label}`,
                 icon: "viConfigure",
-                action: () => this.app.changePath(`Management/PersistentObject.9b7a3b94-cf71-4284-bac3-de4d2790c868/${tab.id}`)
+                action: () => this.app.changePath(`management/persistent-object.9b7a3b94-cf71-4284-bac3-de4d2790c868/${tab.id}`)
             });
         }
     }

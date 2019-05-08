@@ -157,13 +157,13 @@ namespace Vidyano.WebComponents {
                 label: `Query: ${this.query.label}`,
                 icon: "viConfigure",
                 action: () => {
-                    this.app.changePath(`Management/PersistentObject.b9d2604d-2233-4df2-887a-709d93502843/${this.query.id}`);
+                    this.app.changePath(`management/persistent-object.b9d2604d-2233-4df2-887a-709d93502843/${this.query.id}`);
                 },
                 subActions: [{
                     label: `Persistent Object: ${this.query.persistentObject.type}`,
                     icon: "viConfigure",
                     action: () => {
-                        this.app.changePath(`Management/PersistentObject.316b2486-df38-43e3-bee2-2f7059334992/${this.query.persistentObject.id}`);
+                        this.app.changePath(`management/persistent-object.316b2486-df38-43e3-bee2-2f7059334992/${this.query.persistentObject.id}`);
                     }
                 }]
             });

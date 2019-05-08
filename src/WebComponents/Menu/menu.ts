@@ -103,7 +103,7 @@ namespace Vidyano.WebComponents {
                         const exp = new RegExp(`(${filter})`, "gi");
                         this._setInstantSearchResults(results.length > 0 ? results.map(r => {
                             r["match"] = r.breadcrumb.replace(exp, "<span class='style-scope vi-menu match'>$1</span>");
-                            r["href"] = `${Vidyano.Path.routes.rootPath}PersistentObject.${r.id}/${r.objectId}`;
+                            r["href"] = `${Vidyano.Path.routes.rootPath}persistent-object.${r.id}/${r.objectId}`;
 
                             return r;
                         }) : null);
@@ -357,11 +357,6 @@ namespace Vidyano.WebComponents {
                 else if (item instanceof Vidyano.ProgramUnitItemPersistentObject)
                     this.app.cacheRemove(new PersistentObjectAppCacheEntry((<Vidyano.ProgramUnitItemPersistentObject>item).persistentObjectId, (<Vidyano.ProgramUnitItemPersistentObject>item).persistentObjectObjectId));
 
-                if (this.app.noHistory && !(item instanceof Vidyano.ProgramUnitItemUrl)) {
-                    e.preventDefault();
-                    this.app.changePath(item.path);
-                }
-
                 if (this.filtering && this.app.configuration.getSetting("vi-menu.sticky-search", "false").toLowerCase() !== "true")
                     this.fire("reset-filter", null);
             }
@@ -450,7 +445,7 @@ namespace Vidyano.WebComponents {
             if (item instanceof Vidyano.ProgramUnitItemUrl)
                 return item.path;
 
-            return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? app.noHistory ? "#" : Path.routes.rootPath + this.item.path : undefined;
+            return (this.item && !(item instanceof Vidyano.ProgramUnitItemGroup)) ? Path.routes.rootPath + this.item.path : undefined;
         }
 
         private _computedRel(item: Vidyano.ProgramUnitItemUrl, app: Vidyano.WebComponents.App): string {
@@ -472,7 +467,7 @@ namespace Vidyano.WebComponents {
                 actions.push({
                     label: `Program unit: ${this.item.name}`,
                     icon: "viConfigure",
-                    action: () => this.app.changePath(`Management/PersistentObject.b53ec1cd-e0b3-480f-b16d-bf33b133c05c/${this.item.name}`),
+                    action: () => this.app.changePath(`management/persistent-object.b53ec1cd-e0b3-480f-b16d-bf33b133c05c/${this.item.name}`),
                     subActions: [
                         {
                             label: "Add Query",
@@ -500,7 +495,7 @@ namespace Vidyano.WebComponents {
                 actions.push({
                     label: `Program unit item: ${this.item.name}`,
                     icon: "viConfigure",
-                    action: () => this.app.changePath(`Management/PersistentObject.68f7b99e-ce10-4d43-80fb-191b6742d53c/${this.item.name}`)
+                    action: () => this.app.changePath(`management/persistent-object.68f7b99e-ce10-4d43-80fb-191b6742d53c/${this.item.name}`)
                 });
             }
         }

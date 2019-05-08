@@ -542,6 +542,7 @@ declare namespace Vidyano {
         readonly hasManagement: boolean;
         readonly session: Vidyano.PersistentObject;
         readonly routes: IRoutes;
+        private _setRoutes;
         readonly poRe: RegExp;
         readonly queryRe: RegExp;
         saveUserSettings(): Promise<any>;

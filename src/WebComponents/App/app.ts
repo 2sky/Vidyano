@@ -13,11 +13,6 @@ namespace Vidyano {
 namespace Vidyano.WebComponents {
     "use strict";
 
-    const base = document.head.querySelector("base") as HTMLBaseElement;
-    const parser = document.createElement("a");
-    parser.href = base.href;
-    Path.routes.rootPath = parser.pathname[0] === "/" ? parser.pathname : `/${parser.pathname}`; // IE Bug: https://connect.microsoft.com/IE/Feedback/Details/1002846
-
     const hashBangRe = /(.+)#!\/(.*)/;
     if (hashBangRe.test(document.location.href)) {
         const hashBangParts = hashBangRe.exec(document.location.href);
@@ -125,16 +120,21 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: null
             },
-            noHistory: {
-                type: Boolean,
-                reflectToAttribute: true,
-                value: false
-            },
             path: {
                 type: String,
                 reflectToAttribute: true,
                 observer: "_pathChanged",
-                value: ""
+                value: () => {
+                    const base = document.head.querySelector("base") as HTMLBaseElement;
+                    const parser = document.createElement("a");
+                    parser.href = base.href;
+
+                    Path.routes.rootPath = parser.pathname;
+                    Path.root(base.href);
+                    Path.history.listen();
+
+                    return document.location.toString().substr(base.href.length).replace(document.location.hash, "");
+                }
             },
             service: {
                 type: Object,
@@ -243,7 +243,7 @@ namespace Vidyano.WebComponents {
             }
         },
         observers: [
-            "_hookWindowBeforeUnload(noHistory, isAttached)",
+            "_hookWindowBeforeUnload(isAttached)",
             "_cleanUpOnSignOut(service.isSignedIn)",
             "_resolveDependencies(service.application.hasManagement)",
             "_computeThemeColorVariants(themeColor, 'color', isAttached)",
@@ -282,7 +282,6 @@ namespace Vidyano.WebComponents {
         programUnit: ProgramUnit;
         uri: string;
         hooks: string;
-        noHistory: boolean;
         path: string;
         cacheSize: number;
         noMenu: boolean;
@@ -300,23 +299,32 @@ namespace Vidyano.WebComponents {
             if (this.barebone)
                 Polymer.dom(this.root).appendChild(bareboneTemplate.stamp({ app: this }).root);
 
-            Vidyano.Path.rescue(() => {
-                this.path = decodeURI(App.removeRootPath(Vidyano.Path.routes.current));
-            });
-
-            if (!this.noHistory) {
-                Vidyano.Path.root(base.href);
-                Vidyano.Path.history.listen();
-
-                Vidyano.Path["dispatch"](document.location.toString().substr(base.href.length).replace(document.location.hash, ""));
-            }
-
             Vidyano.ServiceBus.subscribe("path-changed", (sender, message, details) => {
                 if (sender === this)
                     return;
 
                 this.path = details.path;
             }, true);
+
+            Vidyano.Path.rescue(() => {
+                const path = App.removeRootPath(Vidyano.Path.routes.current);
+                if (!this.barebone) {
+                    let mappedPath = this._convertPath(this.app.service.application, path);
+                    if (mappedPath !== path)
+                        Vidyano.Path["dispatch"](Vidyano.Path.routes.rootPath + mappedPath);
+                    else if (path.contains("/")) {
+                        const parts = path.split("/");
+                        const kebabPath = [parts[0].toKebabCase(), parts[1].toKebabCase(), ...parts.slice(2)].join("/");
+                        const mappedKebabPath = this._convertPath(this.app.service.application, kebabPath);
+                        if (kebabPath !== mappedKebabPath) {
+                            this.async(() => this.changePath(kebabPath, true));
+                            return;
+                        }
+                    }
+                }
+
+                this.path = path;
+            });
 
             if (!this.label)
                 this.label = this.title;
@@ -374,7 +382,6 @@ namespace Vidyano.WebComponents {
                 return;
 
             path = Vidyano.WebComponents.App.removeRootPath(this._convertPath(this.service.application, path));
-
             if (this.service && this.service.isSignedIn && path === "") {
                 let programUnit = this.programUnit;
                 if (!programUnit && this.service.application.programUnits.length > 0)
@@ -388,7 +395,7 @@ namespace Vidyano.WebComponents {
                     else {
                         const config = this.app.configuration.getProgramUnitConfig(programUnit.name);
                         if (!!config && config.hasTemplate) {
-                            this.async(() => this.changePath(programUnit.name));
+                            this.async(() => this.changePath(programUnit.name.toKebabCase()));
                             return;
                         }
                     }
@@ -403,41 +410,34 @@ namespace Vidyano.WebComponents {
             if (this.path === path)
                 return;
 
-            if (!this.noHistory) {
-                if (!replaceCurrent)
-                    Vidyano.Path.history.pushState(null, null, Path.routes.rootPath + path);
-                else
-                    Vidyano.Path.history.replaceState(null, null, Path.routes.rootPath + path);
-            }
-            else {
-                this.path = path;
-                if (replaceCurrent)
-                    history.pushState("", document.title, window.location.pathname);
-            }
+            if (!replaceCurrent)
+                Vidyano.Path.history.pushState(null, null, Path.routes.rootPath + path);
+            else
+                Vidyano.Path.history.replaceState(null, null, Path.routes.rootPath + path);
         }
 
         getUrlForPersistentObject(id: string, objectId: string, pu: ProgramUnit = this.programUnit) {
             const persistentObjects = this.service.application.routes.persistentObjects;
             for (const type in persistentObjects) {
                 if (persistentObjects[type] === id)
-                    return (pu ? pu.name + "/" : "") + type + (objectId ? "/" + objectId : "");
+                    return (pu ? pu.name.toKebabCase() + "/" : "") + type + (objectId ? "/" + objectId : "");
             }
 
-            return (pu ? pu.name + "/" : "") + `PersistentObject.${id}${objectId ? "/" + objectId : ""}`;
+            return (pu ? pu.name.toKebabCase() + "/" : "") + `persistent-object.${id}${objectId ? "/" + objectId : ""}`;
         }
 
         getUrlForQuery(id: string, pu: ProgramUnit = this.programUnit) {
             const queries = this.service.application.routes.persistentObjects;
             for (const name in queries) {
                 if (queries[name] === id)
-                    return (pu ? pu.name + "/" : "") + `${name}`;
+                    return (pu ? pu.name.toKebabCase() + "/" : "") + `${name}`;
             }
 
-            return (pu ? pu.name + "/" : "") + `Query.${id}`;
+            return (pu ? pu.name.toKebabCase() + "/" : "") + `query.${id}`;
         }
 
         getUrlForFromAction(id: string, pu: ProgramUnit = this.programUnit) {
-            return (pu ? pu.name + "/" : "") + `FromAction/${id}`;
+            return (pu ? pu.name.toKebabCase() + "/" : "") + `from-action/${id}`;
         }
 
         cache(entry: Vidyano.WebComponents.AppCacheEntry): Vidyano.WebComponents.AppCacheEntry {
@@ -611,8 +611,8 @@ namespace Vidyano.WebComponents {
                 hooksInstance = new AppServiceHooks(this);
 
             const service = new Vidyano.Service(this.uri, hooksInstance);
-            const path = this.noHistory ? this.path : App.removeRootPath(document.location.pathname);
-            const skipDefaultCredentialLogin = path.startsWith("SignIn");
+            const path = App.removeRootPath(document.location.pathname);
+            const skipDefaultCredentialLogin = path.startsWith("sign-in");
 
             this._setInitializing(true);
             service.initialize(skipDefaultCredentialLogin).then(() => {
@@ -661,11 +661,11 @@ namespace Vidyano.WebComponents {
             if (application && !this.barebone) {
                 let match = application.poRe.exec(path);
                 if (match)
-                    path = (match[1] || "") + "PersistentObject." + application.routes.persistentObjects[match[3]] + (match[4] || "");
+                    path = (match[1] || "") + "persistent-object." + application.routes.persistentObjects[match[3]] + (match[4] || "");
                 else {
                     match = application.queryRe.exec(path);
                     if (match)
-                        path = (match[1] || "") + "Query." + application.routes.queries[match[3]];
+                        path = (match[1] || "") + "query." + application.routes.queries[match[3]];
                 }
             }
 
@@ -678,7 +678,7 @@ namespace Vidyano.WebComponents {
             const mappedPathRoute = Vidyano.Path.match(Path.routes.rootPath + App.removeRootPath(path), true);
             if (application) {
                 if (mappedPathRoute && mappedPathRoute.params && mappedPathRoute.params.programUnitName)
-                    return application.programUnits.find(pu => pu.name === mappedPathRoute.params.programUnitName);
+                    return application.programUnits.find(pu => pu.name.toKebabCase() === mappedPathRoute.params.programUnitName);
                 else if (application.programUnits.length > 0)
                     return application.programUnits[0];
             }
@@ -705,13 +705,13 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _hookWindowBeforeUnload(noHistory: boolean, isAttached: boolean) {
+        private _hookWindowBeforeUnload(isAttached: boolean) {
             if (this._beforeUnloadEventHandler) {
                 window.removeEventListener("beforeunload", this._beforeUnloadEventHandler);
                 this._beforeUnloadEventHandler = null;
             }
 
-            if (!noHistory && isAttached)
+            if (isAttached)
                 window.addEventListener("beforeunload", this._beforeUnloadEventHandler = this._beforeUnload.bind(this));
         }
 

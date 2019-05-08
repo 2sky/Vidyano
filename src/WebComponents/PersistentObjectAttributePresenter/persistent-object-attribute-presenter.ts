@@ -379,7 +379,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _openAttributeManagement() {
-            this.app.changePath(`Management/PersistentObject.1456569d-e02b-44b3-9d1a-a1e417061c77/${this.attribute.id}`);
+            this.app.changePath(`management/persistent-object.1456569d-e02b-44b3-9d1a-a1e417061c77/${this.attribute.id}`);
         }
 
         _viConfigure(actions: IConfigurableAction[]) {

@@ -57,7 +57,7 @@
                 return;
 
             path = Vidyano.WebComponents.App.removeRootPath(path);
-            if (!path || path.startsWith("FromAction"))
+            if (!path || path.startsWith("from-action"))
                 return;
 
             this._initializeGoogleAnalytics();
@@ -238,27 +238,23 @@
             if (parent instanceof Vidyano.PersistentObject) {
                 const cacheEntry = <PersistentObjectFromActionAppCacheEntry>this.app.cachePing(new PersistentObjectFromActionAppCacheEntry(parent));
                 if (cacheEntry instanceof PersistentObjectFromActionAppCacheEntry && cacheEntry.fromActionIdReturnPath) {
-                    if (App.removeRootPath(this.app.getUrlForFromAction(cacheEntry.fromActionId)) === App.removeRootPath(this.app.path)) {
-                        if (this.app.noHistory)
-                            this.app.changePath(cacheEntry.fromActionIdReturnPath, true);
-                        else
-                            history.back();
-                    }
+                    if (App.removeRootPath(this.app.getUrlForFromAction(cacheEntry.fromActionId)) === App.removeRootPath(this.app.path))
+                        history.back();
                 }
             }
         }
 
         onRedirectToSignIn(keepUrl: boolean) {
-            if (keepUrl && this.app.path.startsWith("SignIn/")) {
+            if (keepUrl && this.app.path.startsWith("sign-in/")) {
                 this.app.changePath(this.app.path);
                 return;
             }
 
-            this.app.changePath("SignIn" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path).replace(/SignIn\/?/, "")).replace(/\./g, "%2E") : ""), true);
+            this.app.changePath("sign-in" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(this.app.path).replace(/sign-in\/?/, "")).replace(/\./g, "%2E") : ""), true);
         }
 
         onRedirectToSignOut(keepUrl: boolean) {
-            this.app.changePath("SignOut" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(decodeURIComponent(this.app.path)).replace(/SignIn\/?/, "")).replace(/\./g, "%2E") : ""), true);
+            this.app.changePath("sign-out" + (keepUrl && this.app.path ? "/" + encodeURIComponent(App.removeRootPath(decodeURIComponent(this.app.path)).replace(/sign-in\/?/, "")).replace(/\./g, "%2E") : ""), true);
         }
 
         onMessageDialog(title: string, message: string, rich: boolean, ...actions: string[]): Promise<number> {

@@ -26,14 +26,6 @@
             super.attached();
 
             this._nodeObserver = Polymer.dom(this).observeNodes(this._nodesChanged.bind(this));
-
-            Vidyano.ServiceBus.subscribe("path-changed", (sender, message, details) => {
-                if (sender === this)
-                    return;
-
-                const oldPath = this._path;
-                this._pathChanged(this._path = details.path, oldPath);
-            }, true);
         }
 
         detached() {
@@ -47,21 +39,33 @@
 
         private _nodesChanged(info: PolymerDomChangedInfo) {
             info.addedNodes.filter(node => node instanceof Vidyano.WebComponents.AppRoute).forEach((appRoute: Vidyano.WebComponents.AppRoute) => {
-                const route = App.removeRootPath(appRoute.route);
+                this._addRoute(appRoute, appRoute.route);
+                if (appRoute.routeAlt)
+                    this._addRoute(appRoute, appRoute.routeAlt);
+            });
 
-                if (!this._routeMap[route]) {
-                    this._routeMap[route] = appRoute;
-                    Vidyano.Path.map(Path.routes.rootPath + route).to(() => {
-                        Vidyano.ServiceBus.send(this, "path-changed", { path: Vidyano.Path.routes.current });
-                    });
-                }
+            Vidyano.ServiceBus.subscribe("path-changed", (sender, message, details) => {
+                if (sender === this)
+                    return;
+
+                const oldPath = this._path;
+                this._pathChanged(this._path = details.path, oldPath);
+            }, true);
+        }
+
+        private _addRoute(appRoute: AppRoute, route: string) {
+            route = App.removeRootPath(route);
+            if (this._routeMap[route])
+                return;
+
+            this._routeMap[route] = appRoute;
+            Vidyano.Path.map(Path.routes.rootPath + route).to(() => {
+                Vidyano.ServiceBus.send(this, "path-changed", { path: Vidyano.WebComponents.App.removeRootPath(Vidyano.Path.routes.current) });
             });
         }
 
         private async _pathChanged(path: string, oldPath: string) {
             await this.app.initializing;
-
-            Vidyano.ServiceBus.send(this, "path-changed", { path: path });
 
             this._routeUpdater = this._routeUpdater.then(async () => {
                 const initial: Vidyano.PersistentObject = this.service["_initial"];

@@ -32,7 +32,7 @@
             this._userSettingsId = this.getAttributeValue("UserSettingsId");
             this._globalSearchId = this.getAttributeValue("GlobalSearchId");
             this._analyticsKey = this.getAttributeValue("AnalyticsKey");
-            this._routes = JSON.parse(this.getAttributeValue("Routes"));
+            this._setRoutes(JSON.parse(this.getAttributeValue("Routes")));
 
             const puRoutes = "^((" + Object.keys(this._routes.programUnits).join("|") + ")/)?";
             const poTypes = Object.keys(this._routes.persistentObjects);
@@ -94,6 +94,14 @@
 
         get routes(): IRoutes {
             return this._routes;
+        }
+
+        private _setRoutes(routes: IRoutes) {
+            this._routes = {
+                queries: Object.assign({}, ...Object.keys(routes.queries).map(po => ({[po.toKebabCase()]: routes.queries[po]}))),
+                persistentObjects: Object.assign({}, ...Object.keys(routes.persistentObjects).map(po => ({[po.toKebabCase()]: routes.persistentObjects[po]}))),
+                programUnits: Object.assign(routes.programUnits, ...Object.keys(routes.programUnits).map(po => ({[po.toKebabCase()]: routes.programUnits[po]})))
+            };
         }
 
         get poRe(): RegExp {

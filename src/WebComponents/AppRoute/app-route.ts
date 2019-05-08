@@ -16,6 +16,10 @@ namespace Vidyano.WebComponents {
                 type: String,
                 reflectToAttribute: true
             },
+            routeAlt: {
+                type: String,
+                reflectToAttribute: true
+            },
             component: {
                 type: String,
                 reflectToAttribute: true
@@ -51,6 +55,7 @@ namespace Vidyano.WebComponents {
         allowSignedOut: boolean;
         deactivator: (result: boolean) => void;
         preserveContent: boolean;
+        routeAlt: string;
 
         constructor(public route: string, public component: string) {
             super();
@@ -198,7 +203,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _titleChanged(e: CustomEvent, detail: { title: string; }) {
-            if (!this.active || this.app.noHistory || e.defaultPrevented || Polymer.dom(<Node>e.target).parentNode !== this)
+            if (!this.active || e.defaultPrevented || Polymer.dom(<Node>e.target).parentNode !== this)
                 return;
 
             if (this._documentTitleBackup !== detail.title && !!detail.title)

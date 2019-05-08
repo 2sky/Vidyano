@@ -129,6 +129,38 @@ String.prototype.asDataUri = function String$asDataUri() {
     return "";
 };
 
+String.prototype.toKebabCase = function() {
+    if (!this)
+        return this;
+
+    return Array.from(this).map((c, i) => {
+        const cLower = c.toLowerCase();
+        if (c === cLower)
+            return c;
+
+        if (i === 0)
+            return cLower;
+
+        const cPrev = this[i - 1];
+        if (!/^[a-zA-Z]+$/.test(cPrev))
+            return cLower;
+
+        const cPrevLower = cPrev.toLowerCase();
+        if (cPrev === cPrevLower)
+            return `-${cLower}`;
+
+        if (i + 1 === this.length)
+            return cLower;
+
+        const cNext = this[i + 1];
+        const cNextUpper = cNext.toUpperCase();
+        if (cNext === cNextUpper)
+            return cLower;
+
+        return `-${cLower}`;
+    }).join("");
+}
+
 ///////////////////////////////////////////////////////////////
 /// Number Extensions /////////////////////////////////////////
 ///////////////////////////////////////////////////////////////

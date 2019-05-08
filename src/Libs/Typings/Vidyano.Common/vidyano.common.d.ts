@@ -9,6 +9,7 @@ interface String {
     trimEnd(c: string): string;
     trimStart(c: string): string;
     localeFormat(format: string, useDefault: boolean): string;
+    toKebabCase(): string;
 }
 
 interface Date {

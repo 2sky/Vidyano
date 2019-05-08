@@ -25,7 +25,7 @@
         queryId: string;
 
         constructor(service: Service, routes: IRoutes, unitItem: any, parent: ProgramUnit) {
-            super(service, unitItem, parent.name + ProgramUnitItemQuery._getPath(routes, unitItem.query));
+            super(service, unitItem, parent.path + ProgramUnitItemQuery._getPath(routes, unitItem.query));
 
             this.queryId = unitItem.query;
         }
@@ -34,10 +34,10 @@
             const queries = routes.queries;
             for (const name in queries) {
                 if (queries[name] === id)
-                    return "/" + name;
+                    return "/" + name.toKebabCase();
             }
 
-            return "/Query." + id;
+            return "/query." + id;
         }
     }
 
@@ -46,7 +46,7 @@
         persistentObjectObjectId: string;
 
         constructor(service: Service, routes: IRoutes, unitItem: any, parent: ProgramUnit) {
-            super(service, unitItem, parent.name + ProgramUnitItemPersistentObject._getPath(routes, unitItem.persistentObject, unitItem.objectId));
+            super(service, unitItem, parent.path + ProgramUnitItemPersistentObject._getPath(routes, unitItem.persistentObject, unitItem.objectId));
 
             this.persistentObjectId = unitItem.persistentObject;
             this.persistentObjectObjectId = unitItem.objectId;
@@ -56,10 +56,10 @@
             const persistentObjects = routes.persistentObjects;
             for (const name in persistentObjects) {
                 if (persistentObjects[name] === id)
-                    return "/" + name + (objectId ? "/" + objectId : "");
+                    return "/" + name.toKebabCase() + (objectId ? "/" + objectId : "");
             }
 
-            return "/PersistentObject." + id + (objectId ? "/" + objectId : "");
+            return "/persistent-object." + id + (objectId ? "/" + objectId : "");
         }
     }
 

@@ -59,8 +59,7 @@ namespace Vidyano.WebComponents {
 
             this.app.uri = this.serviceUri;
             this.app.noMenu = true;
-            this.app.noHistory = true;
-            this.app.path = `PersistentObject.${config.id}`;
+            this.app.path = `persistent-object.${config.id}`;
             this.app.hooks = this.serviceHooks;
 
             Polymer.dom(config).appendChild(template);

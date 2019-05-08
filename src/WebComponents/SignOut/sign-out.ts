@@ -15,7 +15,7 @@ namespace Vidyano.WebComponents {
 
             let path: string;
             if (!signInUsingDefaultCredentials)
-                path = decodeURIComponent((<AppRoute>Polymer.dom(this).parentNode).parameters.returnUrl || "SignIn");
+                path = decodeURIComponent((<AppRoute>Polymer.dom(this).parentNode).parameters.returnUrl || "sign-in");
             else {
                 await this.app.service.signInUsingDefaultCredentials();
                 path = "";

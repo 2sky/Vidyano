@@ -250,11 +250,11 @@
                 this.step = "password";
             }
             else if (this.step === "register") {
-                this.app.changePath("SignIn" + (this.returnUrl ? `/${this.returnUrl}` : ""));
+                this.app.changePath("sign-in" + (this.returnUrl ? `/${this.returnUrl}` : ""));
                 this._setRegister(null);
             }
             else if (this.step === "initial") {
-                this.app.changePath("SignOut/SignIn" + (this.returnUrl ? `/${this.returnUrl}` : ""));
+                this.app.changePath("sign-out/sign-in" + (this.returnUrl ? `/${this.returnUrl}` : ""));
                 this._setInitial(this.service["_initial"] = null);
             }
 
@@ -284,7 +284,7 @@
 
         private async _register() {
             if (this.step !== "register") {
-                this.app.changePath("SignIn/Register", false);
+                this.app.changePath("sign-in/register", false);
                 return;
             }
 
@@ -296,7 +296,7 @@
                 } : null);
 
                 this.userName = "";
-                this.app.changePath("SignIn", true);
+                this.app.changePath("sign-in", true);
             }
             catch (error) {
                 this._setNotification({

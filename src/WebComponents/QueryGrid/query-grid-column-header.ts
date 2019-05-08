@@ -213,13 +213,13 @@
                 label: `Column: ${this.column.column.query.persistentObject.type}.${this.column.name}`,
                 icon: "viConfigure",
                 action: () => {
-                    this.app.changePath(`Management/PersistentObject.f96c50b2-9871-47bb-81bd-de76bf1ce124/${this.column.query.id};${this.column.name}`);
+                    this.app.changePath(`management/persistent-object.f96c50b2-9871-47bb-81bd-de76bf1ce124/${this.column.query.id};${this.column.name}`);
                 },
                 subActions: [{
                     label: `Attribute: ${this.column.column.query.persistentObject.type}.${this.column.name}`,
                     icon: "viConfigure",
                     action: () => {
-                        this.app.changePath(`Management/PersistentObject.1456569d-e02b-44b3-9d1a-a1e417061c77/${this.column.column.id}`);
+                        this.app.changePath(`management/persistent-object.1456569d-e02b-44b3-9d1a-a1e417061c77/${this.column.column.id}`);
                     }
                 }]
             });

@@ -238,7 +238,7 @@ namespace Vidyano.WebComponents {
                 label: `Persistent Object: ${this.persistentObject.type}`,
                 icon: "viConfigure",
                 action: () => {
-                    this.app.changePath(`Management/PersistentObject.316b2486-df38-43e3-bee2-2f7059334992/${this.persistentObject.id}`);
+                    this.app.changePath(`management/persistent-object.316b2486-df38-43e3-bee2-2f7059334992/${this.persistentObject.id}`);
                 }
             });
         }

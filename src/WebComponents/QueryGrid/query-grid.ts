@@ -587,7 +587,7 @@ namespace Vidyano.WebComponents {
             }
 
             if (this.table.grid.query.canRead && !this.table.grid.query.asLookup && !this.table.grid.asLookup) {
-                if (!this.table.grid.app.noHistory && e.detail.sourceEvent && ((<KeyboardEvent>e.detail.sourceEvent).ctrlKey || (<KeyboardEvent>e.detail.sourceEvent).shiftKey)) {
+                if (e.detail.sourceEvent && ((<KeyboardEvent>e.detail.sourceEvent).ctrlKey || (<KeyboardEvent>e.detail.sourceEvent).shiftKey)) {
                     // Open in new window/tab
                     window.open(Path.routes.root + this.table.grid.app.getUrlForPersistentObject(this.item.query.persistentObject.id, this.item.id));
 
