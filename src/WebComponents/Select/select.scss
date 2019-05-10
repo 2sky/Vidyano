@@ -117,6 +117,18 @@ $border-color: #ddd;
                     background-color: var(--theme-color-light);
                 }
             }
+
+            &[filtering] {
+                li {
+                    span {
+                        &.match {
+                            background-color: rgba(255, 255, 0, 0.5);
+                            font-weight: bold;
+                            pointer-events: none;
+                        }
+                    }
+                }
+            }
         }
 
         &[disabled] [header] vi-icon {

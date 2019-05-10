@@ -330,10 +330,10 @@ namespace Vidyano.WebComponents {
             if (filtering) {
                 if (!StringEx.isNullOrEmpty(inputValue)) {
                     const lowerInputValue = inputValue.toLowerCase();
-                    result = result.filter(r => r != null && r.displayValue && r.displayValue.toLowerCase().startsWith(lowerInputValue));
+                    result = result.filter(r => r != null && r.displayValue && r.displayValue.toLowerCase().contains(lowerInputValue));
 
                     if (!this.suggestion || result.indexOf(this.suggestion) < 0)
-                        this._setSuggestion(result[0] !== undefined ? result[0] : null);
+                        this._setSuggestion(result[0] !== undefined && result[0].displayValue.toLowerCase().startsWith(lowerInputValue) ? result[0] : null);
                 }
                 else {
                     let suggestion: ISelectItem;
@@ -373,6 +373,14 @@ namespace Vidyano.WebComponents {
 
             this.$.match.innerHTML = this._escapeHTML(suggestionMatch).replace(" ", "&nbsp;");
             this.$.remainder.innerHTML = this._escapeHTML(suggestionRemainder).replace(" ", "&nbsp;");
+        }
+
+        private _computeItemDisplayValue(displayValue: string, inputValue: string): string {
+            if (!inputValue)
+                return displayValue;
+
+            const exp = new RegExp(`(${inputValue})`, "gi");
+            return displayValue.replace(exp, "<span class='style-scope vi-select match'>$1</span>");
         }
 
         private _setSelectedOption(option: string | SelectOption, force?: boolean) {
