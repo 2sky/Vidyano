@@ -576,14 +576,19 @@ namespace Vidyano.WebComponents {
             return this._app = null;
         }
 
-        // This function simply returns the value. This can be used to reflect a property on an observable object as an attribute.
+        // This function simply returns the value.
         private _forwardComputed(value: any): any {
             return value;
         }
 
-        // This function simply returns the negated value. This can be used to reflect a property on an observable object as an attribute.
+        // This function returns the negated value.
         private _forwardNegate(value: boolean): boolean {
             return !value;
+        }
+
+        // This function converts the value to a boolean.
+        private _forwardTruthy(value: any): boolean {
+            return !!value;
         }
 
         static getName(fnc: Function): string {
@@ -609,8 +614,12 @@ namespace Vidyano.WebComponents {
                 if (info.properties[prop]["computed"] && !/\)$/.test(wcPrototype.properties[prop].computed)) {
                     if (wcPrototype.properties[prop].computed[0] !== "!")
                         info.properties[prop]["computed"] = "_forwardComputed(" + wcPrototype.properties[prop].computed + ")";
-                    else
-                        info.properties[prop]["computed"] = "_forwardNegate(" + wcPrototype.properties[prop].computed.substring(1) + ")";
+                    else {
+                        if (wcPrototype.properties[prop].computed[1] !== "!")
+                            info.properties[prop]["computed"] = "_forwardNegate(" + wcPrototype.properties[prop].computed.substring(1) + ")";
+                        else
+                            info.properties[prop]["computed"] = "_forwardTruthy(" + wcPrototype.properties[prop].computed.substring(2) + ")";
+                    }
                 }
             }
 
