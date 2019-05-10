@@ -133,31 +133,32 @@ String.prototype.toKebabCase = function() {
     if (!this || this === this.toLowerCase())
         return this;
 
-    return Array.from(this).map((c, i) => {
-        const cLower = c.toLowerCase();
+    var _this = this;
+    return Array.from(this).map(function(c, i) {
+        var cLower = c.toLowerCase();
         if (c === cLower)
             return c;
 
         if (i === 0)
             return cLower;
 
-        const cPrev = this[i - 1];
+        var cPrev = _this[i - 1];
         if (!/^[a-zA-Z]+$/.test(cPrev))
             return cLower;
 
-        const cPrevLower = cPrev.toLowerCase();
+        var cPrevLower = cPrev.toLowerCase();
         if (cPrev === cPrevLower)
-            return `-${cLower}`;
+            return "-" + cLower;
 
-        if (i + 1 === this.length)
+        if (i + 1 === _this.length)
             return cLower;
 
-        const cNext = this[i + 1];
-        const cNextUpper = cNext.toUpperCase();
+        var cNext = _this[i + 1];
+        var cNextUpper = cNext.toUpperCase();
         if (cNext === cNextUpper)
             return cLower;
 
-        return `-${cLower}`;
+        return "-" + cLower;
     }).join("");
 }
 
