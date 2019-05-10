@@ -16,7 +16,7 @@
             <template is="dom-if" if="[[!groupSeparator]]">
                 <iron-list items="[[filteredItems]]" as="item" content filtering$="[[filtering]]" on-select-option="_select">
                     <template>
-                            <li is="vi-select-option-item" suggested="[[_equals(item, suggestion)]]" selected="[[_equals(item, selectedItem)]]" item="{{item}}">[[item.displayValue]]</li>
+                        <li is="vi-select-option-item" suggested="[[_equals(item, suggestion)]]" selected="[[_equals(item, selectedItem)]]" item="{{item}}">[[item.displayValue]]</li>
                     </template>
                 </iron-list>
             </template>

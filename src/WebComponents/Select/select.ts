@@ -224,6 +224,10 @@ namespace Vidyano.WebComponents {
         }
 
         private _popupOpened() {
+            const list = <WebComponent>Polymer.dom(this.root).querySelector("iron-list");
+            if (list != null)
+                list.fire("iron-resize", null);
+
             this._scrollItemIntoView();
         }
 
