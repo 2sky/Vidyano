@@ -661,11 +661,11 @@ namespace Vidyano.WebComponents {
             if (application && !this.barebone) {
                 let match = application.poRe.exec(path);
                 if (match)
-                    path = (match[1] || "") + "persistent-object." + application.routes.persistentObjects[match[3]] + (match[4] || "");
+                    path = (match[1] || "") + "persistent-object." + application.routes.persistentObjects[match[3].toKebabCase()] + (match[4] || "");
                 else {
                     match = application.queryRe.exec(path);
                     if (match)
-                        path = (match[1] || "") + "query." + application.routes.queries[match[3]];
+                        path = (match[1] || "") + "query." + application.routes.queries[match[3].toKebabCase()];
                 }
             }
 
@@ -678,7 +678,7 @@ namespace Vidyano.WebComponents {
             const mappedPathRoute = Vidyano.Path.match(Path.routes.rootPath + App.removeRootPath(path), true);
             if (application) {
                 if (mappedPathRoute && mappedPathRoute.params && mappedPathRoute.params.programUnitName)
-                    return application.programUnits.find(pu => pu.nameKebab === mappedPathRoute.params.programUnitName);
+                    return application.programUnits.find(pu => pu.nameKebab === mappedPathRoute.params.programUnitName || pu.name === mappedPathRoute.params.programUnitName);
                 else if (application.programUnits.length > 0)
                     return application.programUnits[0];
             }

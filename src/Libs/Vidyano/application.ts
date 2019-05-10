@@ -35,9 +35,9 @@
             this._setRoutes(JSON.parse(this.getAttributeValue("Routes")));
 
             const puRoutes = "^((" + Object.keys(this._routes.programUnits).join("|") + ")/)?";
-            const poTypes = Object.keys(this._routes.persistentObjects);
+            const poTypes = Object.keys(this._routes.persistentObjects).concat(this._routes.persistentObjectKeys);
             this._poRe = poTypes.length === 0 ? /$ ^/ : new RegExp(puRoutes + "(" + poTypes.join("|") + ")(/.+)?$");
-            const queryNames = Object.keys(this._routes.queries);
+            const queryNames = Object.keys(this._routes.queries).concat(this._routes.queryKeys);
             this._queryRe = queryNames.length === 0 ? /$ ^/ : new RegExp(puRoutes + "(" + queryNames.join("|") + ")$");
 
             const userSettings = this.getAttributeValue("UserSettings");
@@ -97,9 +97,13 @@
         }
 
         private _setRoutes(routes: IRoutes) {
+            const queryKeys = Object.keys(routes.queries);
+            const persistentObjectKeys = Object.keys(routes.persistentObjects);
             this._routes = {
-                queries: Object.assign({}, ...Object.keys(routes.queries).map(q => ({[q.toKebabCase()]: routes.queries[q]}))),
+                queries: Object.assign({}, ...queryKeys.map(q => ({[q.toKebabCase()]: routes.queries[q]}))),
+                queryKeys: queryKeys,
                 persistentObjects: Object.assign({}, ...Object.keys(routes.persistentObjects).map(po => ({[po.toKebabCase()]: routes.persistentObjects[po]}))),
+                persistentObjectKeys: persistentObjectKeys,
                 programUnits: Object.assign(routes.programUnits, ...Object.keys(routes.programUnits).map(pu => ({[pu.toKebabCase()]: routes.programUnits[pu]})))
             };
         }
@@ -146,6 +150,8 @@
     export interface IRoutes {
         programUnits: { [name: string]: string };
         persistentObjects: { [type: string]: string };
+        persistentObjectKeys: string[];
         queries: { [type: string]: string };
+        queryKeys: string[];
     }
 }
