@@ -420,24 +420,24 @@ namespace Vidyano.WebComponents {
             const persistentObjects = this.service.application.routes.persistentObjects;
             for (const type in persistentObjects) {
                 if (persistentObjects[type] === id)
-                    return (pu ? pu.path + "/" : "") + type + (objectId ? "/" + objectId : "");
+                    return (pu ? pu.nameKebab + "/" : "") + type + (objectId ? "/" + objectId : "");
             }
 
-            return (pu ? pu.path + "/" : "") + `persistent-object.${id}${objectId ? "/" + objectId : ""}`;
+            return (pu ? pu.nameKebab + "/" : "") + `persistent-object.${id}${objectId ? "/" + objectId : ""}`;
         }
 
         getUrlForQuery(id: string, pu: ProgramUnit = this.programUnit) {
             const queries = this.service.application.routes.persistentObjects;
             for (const name in queries) {
                 if (queries[name] === id)
-                    return (pu ? pu.path + "/" : "") + `${name}`;
+                    return (pu ? pu.nameKebab + "/" : "") + `${name}`;
             }
 
-            return (pu ? pu.path + "/" : "") + `query.${id}`;
+            return (pu ? pu.nameKebab + "/" : "") + `query.${id}`;
         }
 
         getUrlForFromAction(id: string, pu: ProgramUnit = this.programUnit) {
-            return (pu ? pu.path + "/" : "") + `from-action/${id}`;
+            return (pu ? pu.nameKebab + "/" : "") + `from-action/${id}`;
         }
 
         cache(entry: Vidyano.WebComponents.AppCacheEntry): Vidyano.WebComponents.AppCacheEntry {
@@ -678,7 +678,7 @@ namespace Vidyano.WebComponents {
             const mappedPathRoute = Vidyano.Path.match(Path.routes.rootPath + App.removeRootPath(path), true);
             if (application) {
                 if (mappedPathRoute && mappedPathRoute.params && mappedPathRoute.params.programUnitName)
-                    return application.programUnits.find(pu => pu.path === mappedPathRoute.params.programUnitName);
+                    return application.programUnits.find(pu => pu.nameKebab === mappedPathRoute.params.programUnitName);
                 else if (application.programUnits.length > 0)
                     return application.programUnits[0];
             }

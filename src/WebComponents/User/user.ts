@@ -87,7 +87,7 @@ namespace Vidyano.WebComponents {
         }
 
         userSettings() {
-            this.app.changePath((this.app.programUnit ? this.app.programUnit.path + "/" : "") + "persistent-object." + this.service.application.userSettingsId + "/" + this.service.application.userId);
+            this.app.changePath((this.app.programUnit ? this.app.programUnit.nameKebab + "/" : "") + "persistent-object." + this.service.application.userSettingsId + "/" + this.service.application.userId);
         }
 
         private _toggleSensitive() {

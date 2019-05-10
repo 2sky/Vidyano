@@ -7,7 +7,7 @@
         items: ProgramUnitItem[];
 
         constructor(service: Service, routes: IRoutes, unit: any) {
-            super(service, unit, unit.name.toKebabCase());
+            super(service, unit, unit.name.toKebabCase(), unit.name.toKebabCase());
 
             this.offset = unit.offset;
             this.openFirst = unit.openFirst;

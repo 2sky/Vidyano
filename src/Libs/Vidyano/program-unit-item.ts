@@ -6,7 +6,7 @@
         title: string;
         name: string;
 
-        constructor(service: Service, unitItem: any, public path?: string) {
+        constructor(service: Service, unitItem: any, public path?: string, public nameKebab?: string) {
             super(service);
 
             this.id = unitItem.id;
