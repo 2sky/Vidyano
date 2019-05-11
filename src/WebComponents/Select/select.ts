@@ -376,7 +376,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _computeItemDisplayValue(displayValue: string, inputValue: string): string {
-            if (!inputValue)
+            if (!displayValue || !inputValue)
                 return displayValue;
 
             const exp = new RegExp(`(${inputValue})`, "gi");
