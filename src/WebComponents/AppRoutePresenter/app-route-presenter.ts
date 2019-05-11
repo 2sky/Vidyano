@@ -17,6 +17,7 @@
     export class AppRoutePresenter extends WebComponent {
         private _nodeObserver: PolymerDomChangeObserver;
         private _path: string;
+        private _pathListener: Common.ISubjectDisposer;
         private _routeMap: { [key: string]: AppRoute } = {};
         private _routeUpdater: Promise<any> = Promise.resolve();
         readonly currentRoute: AppRoute; private _setCurrentRoute: (route: AppRoute) => void;
@@ -35,6 +36,11 @@
                 Polymer.dom(this).unobserveNodes(this._nodeObserver);
                 this._nodeObserver = null;
             }
+
+            if (this._pathListener) {
+                this._pathListener();
+                this._pathListener = null;
+            }
         }
 
         private _nodesChanged(info: PolymerDomChangedInfo) {
@@ -44,7 +50,10 @@
                     this._addRoute(appRoute, appRoute.routeAlt);
             });
 
-            Vidyano.ServiceBus.subscribe("path-changed", (sender, message, details) => {
+            if (this._pathListener)
+                this._pathListener();
+
+            this._pathListener = Vidyano.ServiceBus.subscribe("path-changed", (sender, message, details) => {
                 if (sender === this)
                     return;
 
