@@ -28,8 +28,12 @@
         --at-apply: --vi-app--sensitive;
     }
 
-    vi-persistent-object-attribute-edit vi-tags {
-        margin: 4px 0 0 4px;
+    vi-persistent-object-attribute-edit {
+        min-height: calc(var(--theme-h2) - 2px);
+
+        vi-tags {
+            margin: 4px 0 0 4px;
+        }
     }
 
     vi-tags {
