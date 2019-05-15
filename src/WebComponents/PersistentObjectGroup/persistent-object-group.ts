@@ -156,6 +156,7 @@ namespace Vidyano.WebComponents {
                     if (areas.length < row + itemHeight) {
                         const newRow = Array.range(1, columns).map(_ => "");
                         areas.push(newRow);
+                        column = 0;
 
                         let added = 0;
                         for (let x in infiniteColumns) {
