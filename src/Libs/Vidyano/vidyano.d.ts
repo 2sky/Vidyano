@@ -555,18 +555,21 @@ declare namespace Vidyano {
         persistentObjects: {
             [type: string]: string;
         };
+        persistentObjectKeys: string[];
         queries: {
             [type: string]: string;
         };
+        queryKeys: string[];
     }
 }
 declare namespace Vidyano {
     class ProgramUnitItem extends ServiceObject {
         path?: string;
+        nameKebab?: string;
         id: string;
         title: string;
         name: string;
-        constructor(service: Service, unitItem: any, path?: string);
+        constructor(service: Service, unitItem: any, path?: string, nameKebab?: string);
     }
     class ProgramUnitItemGroup extends ProgramUnitItem {
         items: ProgramUnitItem[];
