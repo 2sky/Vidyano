@@ -179,7 +179,7 @@
                             column = itemX;
                     }
 
-                    if (!areas[row][column])
+                    if (!Array.range(column, column + itemWidth - 1).some(c => !!areas[row][c]))
                         break;
 
                     column++;
