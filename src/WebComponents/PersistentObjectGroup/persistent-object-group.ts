@@ -1,4 +1,4 @@
-﻿namespace Vidyano.WebComponents {
+namespace Vidyano.WebComponents {
     "use strict";
 
     interface IPersistentObjectGroupItem {
@@ -195,8 +195,8 @@
                         infiniteColumns[column + x] = item.area;
                 }
 
-                for (let y = 0; y < itemHeight; y++) {
-                    for (let x = 0; x < itemWidth; x++)
+                for (let x = 0; x < itemWidth; x++) {
+                    for (let y = 0; y < (item.height !== 0 ? itemHeight : areas.length - row); y++)
                         areas[row + y][column + x] = item.area;
                 }
 
