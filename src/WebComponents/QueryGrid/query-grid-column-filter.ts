@@ -233,7 +233,7 @@ namespace Vidyano.WebComponents {
                 }
                 catch (e) {
                     this._setLoading(false);
-                    this.app.showAlert(e, Vidyano.NotificationType.Error);
+                    this.app.showAlert(e, "Error");
                 }
             }
             else {

@@ -671,7 +671,7 @@ namespace Vidyano.WebComponents {
             if (this._column !== column) {
                 this.host.setAttribute("name", (this._column = column) ? Vidyano.WebComponents.QueryGridTableColumn.columnSafeName(this._column.name) : "");
                 this.host.setAttribute("type", (this._column = column) ? this._column.type : "");
-                if (this._column && Vidyano.Service.isNumericType(this._column.type))
+                if (this._column && Vidyano.DataType.isNumericType(this._column.type))
                     this.host.setAttribute("numeric", "");
                 else
                     this.host.removeAttribute("numeric");
@@ -985,6 +985,11 @@ namespace Vidyano.WebComponents {
                 type: Boolean,
                 reflectToAttribute: true,
                 computed: "query.isBusy"
+            },
+            configureOnly: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeConfigureOnly(query, _columns, isBusy, initializing)"
             },
             query: {
                 type: Object,
@@ -1351,6 +1356,13 @@ namespace Vidyano.WebComponents {
             columns.forEach(c => c.reset());
 
             return columns;
+        }
+
+        private _computeConfigureOnly(query: Vidyano.Query, _columns: QueryGridColumn[], isBusy: boolean, initializing: boolean): boolean {
+            if (query && _columns && _columns.length === 0 && !isBusy && !initializing)
+                return true;
+
+            return false;
         }
 
         private _updateOutOfViewColumns(columns: QueryGridColumn[], viewportSize: ISize, horizontalScrollOffset: number, columnWidthsCalculated: boolean) {

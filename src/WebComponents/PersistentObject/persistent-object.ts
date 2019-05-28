@@ -275,7 +275,7 @@
         }
 
         private _persistentObjectNotificationChanged(notification: string) {
-            if (!notification || !this.persistentObject || this.persistentObject.notificationType !== Vidyano.NotificationType.Error)
+            if (!notification || !this.persistentObject || this.persistentObject.notificationType !== "Error")
                 return;
 
             const firstAttributeWithValidationError = Enumerable.from(this.persistentObject.attributes).orderBy(attr => attr.offset).firstOrDefault(attr => !!attr.validationError);

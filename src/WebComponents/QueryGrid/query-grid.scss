@@ -567,4 +567,22 @@
     > vi-size-tracker {
         pointer-events: none;
     }
+    ///////////////////////////////////////////////////////////////////////////////
+    #configureColumns {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-color: white;
+        z-index: 2;
+        --vi-icon-width: var(--theme-h1);
+        --vi-icon-height: var(--theme-h1);
+    }
+
+    &:not([configure-only]) {
+        #configureColumns {
+            display: none !important;
+        }
+    }
 }

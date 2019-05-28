@@ -146,9 +146,9 @@ namespace Vidyano.WebComponents {
                     this.height = this.app.configuration.getAttributeConfig(attribute).calculateHeight(attribute);
 
                 let attributeType: string;
-                if (Vidyano.Service.isNumericType(attribute.type))
+                if (Vidyano.DataType.isNumericType(attribute.type))
                     attributeType = "Numeric";
-                else if (Vidyano.Service.isDateTimeType(attribute.type))
+                else if (Vidyano.DataType.isDateTimeType(attribute.type))
                     attributeType = "DateTime";
                 else if (attribute.parent.isBulkEdit && (attribute.type === "YesNo" || attribute.type === "Boolean"))
                     attributeType = "NullableBoolean";

@@ -1,0 +1,28 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "removeComments": true,
+    "sourceMap": false,
+    "target": "es2017",
+    "lib": [
+      "es6",
+      "webworker"
+    ],
+    "outFile": "service-worker.js",
+    "declaration": true,
+    "experimentalDecorators": true
+  },
+  "include": [
+    "../Libs/Typings/Vidyano.Common/vidyano.common.d.ts",
+    "../Libs/Typings/bignumber.js/bignumber.d.ts",
+    "../Libs/Vidyano/cultures.ts",
+    "../Libs/idb/idb.d.ts",
+    "data-type.ts",
+    "service.ts",
+    "indexed-db.ts",
+    "service-worker.ts",
+    "service-worker-actions.ts",
+    "service-worker-files.ts",
+    "Model/*.ts"
+  ]
+}

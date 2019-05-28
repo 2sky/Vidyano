@@ -221,6 +221,7 @@ ModelManifest.xml
 /src/Libs/sortable/
 /src/Libs/tslib/
 /src/Libs/webcomponentsjs/
+/src/ServiceWorker/**/*.js
 /src/Test/*.js
 /test/credentials.json
 /dist/Vidyano.Web2/src

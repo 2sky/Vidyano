@@ -1,11 +1,7 @@
 namespace Vidyano {
     "use strict";
 
-    export enum SortDirection {
-        None,
-        Ascending,
-        Descending
-    }
+    export type SortDirection = Service.SortDirection;
 
     export interface ISortOption {
         column: QueryColumn;
@@ -17,34 +13,6 @@ namespace Vidyano {
         isAvailable: boolean;
         allSelected: boolean;
         inverse: boolean;
-    }
-
-    export interface IQueryGroupingInfo {
-        readonly groupedBy: string;
-        groups?: QueryResultItemGroup[];
-    }
-
-    export interface IServiceQueryChart {
-        label: string;
-        name: string;
-        type: string;
-        options: any;
-    }
-
-    export interface IServiceQueryResult {
-        pageSize: number;
-        totalItems: number;
-        columns: Vidyano.QueryColumn[];
-        items: Vidyano.QueryResultItem[];
-        groupingInfo: IQueryGroupingInfo;
-        groupedBy: string;
-        notification: string;
-        notificationType: Vidyano.NotificationType;
-        notificationDuration: number;
-        sortOptions: string;
-        charts: IServiceQueryChart[];
-        totalItem: Vidyano.QueryResultItem;
-        continuation?: string;
     }
 
     class QuerySelectAllImpl extends Vidyano.Common.Observable<IQuerySelectAll> implements IQuerySelectAll {
@@ -116,7 +84,7 @@ namespace Vidyano {
     }
 
     export class Query extends ServiceObjectWithActions {
-        private _lastResult: IServiceQueryResult;
+        private _lastResult: Service.QueryResult;
         private _asLookup: boolean;
         private _isSelectionModifying: boolean;
         private _totalItems: number;
@@ -124,6 +92,7 @@ namespace Vidyano {
         private _sortOptions: ISortOption[];
         private _queriedPages: Array<number> = [];
         private _filters: QueryFilters;
+        private _allowTextSearch: boolean;
         private _canFilter: boolean;
         private _canRead: boolean;
         private _canReorder: boolean;
@@ -156,6 +125,7 @@ namespace Vidyano {
         items: QueryResultItem[];
         selectAll: IQuerySelectAll;
 
+        constructor(service: Service, query: Service.Query, parent?: PersistentObject, asLookup?: boolean, maxSelectedItems?: number);
         constructor(service: Service, query: any, public parent?: PersistentObject, asLookup: boolean = false, public maxSelectedItems?: number) {
             super(service, query._actionNames || query.actions, query.actionLabels);
 
@@ -167,6 +137,7 @@ namespace Vidyano {
             if (!this.autoQuery)
                 this.items = [];
 
+            this._allowTextSearch = query.allowTextSearch;
             this._canRead = !!query.canRead;
             this._canReorder = !!query.canReorder && !asLookup;
             this.isHidden = query.isHidden;
@@ -219,6 +190,10 @@ namespace Vidyano {
 
         get isSystem(): boolean {
             return this._isSystem;
+        }
+
+        get allowTextSearch(): boolean {
+            return this._allowTextSearch;
         }
 
         get filters(): QueryFilters {
@@ -470,7 +445,7 @@ namespace Vidyano {
                         newSortOptions.push({
                             column: col,
                             name: optionParts[0],
-                            direction: optionParts.length < 2 || optionParts[1].toUpperCase() === "ASC" ? SortDirection.Ascending : SortDirection.Descending
+                            direction: optionParts.length < 2 ? "ASC" : <SortDirection>optionParts[1]
                         });
                     });
                 }
@@ -514,7 +489,7 @@ namespace Vidyano {
                     result["allSelectedInversed"] = true;
             }
 
-            result["sortOptions"] = this.sortOptions ? this.sortOptions.filter(option => option.direction !== SortDirection.None).map(option => option.name + (option.direction === SortDirection.Ascending ? " ASC" : " DESC")).join("; ") : "";
+            result["sortOptions"] = this.sortOptions ? this.sortOptions.filter(option => option.direction !== "").map(option => `${option.name}${option.direction === "DESC" ? " " + option.direction : ""}`).join("; ") : "";
             if (this.groupingInfo && this.groupingInfo.groupedBy)
                 result["groupedBy"] = this.groupingInfo.groupedBy;
 
@@ -526,7 +501,7 @@ namespace Vidyano {
             return result;
         }
 
-        _setResult(result: IServiceQueryResult) {
+        _setResult(result: Service.QueryResult) {
             this._lastResult = result;
 
             this.continuation = result.continuation;
@@ -836,22 +811,26 @@ namespace Vidyano {
             this._setCanFilter(this.actions.some(a => a.name === "Filter") && this.columns.some(c => c.canFilter));
         }
 
-        private _updateGroupingInfo(groupingInfo: IQueryGroupingInfo) {
+        private _updateGroupingInfo(groupingInfo: Service.QueryGroupingInfo) {
             if (!groupingInfo) {
                 this._setGroupingInfo(null);
                 return;
             }
 
-            const currentGroupingInfo = this.groupingInfo;
-            this._setGroupingInfo(groupingInfo || null);
-            if (this.groupingInfo) {
+            const oldGroupingInfo = this.groupingInfo;
+            if (groupingInfo) {
                 let start = 0;
-                this.groupingInfo.groups = this.groupingInfo.groups.map(g => new QueryResultItemGroup(this, g, start, (start = start + g.count) - 1));
+                this._setGroupingInfo({
+                    groupedBy: groupingInfo.groupedBy,
+                    groups: groupingInfo.groups.map(g => new QueryResultItemGroup(this, g, start, (start = start + g.count) - 1))
+                });
             }
+            else
+                this._setGroupingInfo(null);
 
-            if (currentGroupingInfo) {
-                currentGroupingInfo.groups.forEach(oldGroup => {
-                    const newGroup = Enumerable.from(this.groupingInfo.groups).firstOrDefault(g => g.name === oldGroup.name);
+            if (oldGroupingInfo) {
+                oldGroupingInfo.groups.forEach(oldGroup => {
+                    const newGroup = this.groupingInfo.groups.find(g => g.name === oldGroup.name);
                     if (newGroup)
                         newGroup.isCollapsed = oldGroup.isCollapsed;
                 });
@@ -907,25 +886,6 @@ namespace Vidyano {
                 else if (selectedItems.length === this.totalItems)
                     this.selectAll.allSelected = true;
             }
-        }
-
-        static FromJsonData(service: Service, data: IJsonQueryData): Query {
-            const query = {
-                actions: [],
-                allowTextSearch: false,
-                autoQuery: true,
-                canRead: false,
-                columns: data.columns,
-                disableBulkEdit: true,
-                filters: {},
-                id: data.id || Unique.get(),
-                label: data.label,
-                name: data.name || data.label,
-                persistentObject: { label: data.singularLabel },
-                result: data
-            };
-
-            return new Query(service, query);
         }
     }
 

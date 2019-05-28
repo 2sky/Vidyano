@@ -16,7 +16,7 @@
             // Noop
         }
 
-        onInitialize(clientData: IServiceClientData): Promise<IServiceClientData> {
+        onInitialize(clientData: Service.ClientData): Promise<Service.ClientData> {
             return Promise.resolve(clientData);
         }
 
@@ -40,7 +40,7 @@
             // Noop
         }
 
-        onConstructApplication(application: IServiceApplication): Application {
+        onConstructApplication(application: Service.ApplicationResponse): Application {
             return new Application(this.service, application);
         }
 
@@ -150,7 +150,7 @@
             localStorage.removeItem("vi-updateAvailable");
         }
 
-        onRetryAction(retry: IRetryAction): Promise<string> {
+        onRetryAction(retry: Service.RetryAction): Promise<string> {
             return Promise.resolve(null);
         }
 
@@ -158,7 +158,7 @@
             return undefined;
         }
 
-        setDefaultTranslations(languages: ILanguage[]) {
+        setDefaultTranslations(languages: Language[]) {
             const messages = {
                 "ForgotPassword": "Forgot password?",
                 "Or": "Or",

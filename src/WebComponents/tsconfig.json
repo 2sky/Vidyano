@@ -10,9 +10,9 @@
     "noEmitHelpers": true
   },
   "include": [
-    "src/Libs/Shims/*.ts",
-    "src/Libs/Typings/**/*.d.ts",
-    "src/Libs/Vidyano/vidyano.d.ts",
-    "src/WebComponents/**/*.ts"
+    "../Libs/Shims/*.ts",
+    "../Libs/Typings/**/*.d.ts",
+    "../Libs/Vidyano/vidyano.d.ts",
+    "**/*.ts"
   ]
 }

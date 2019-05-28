@@ -35,7 +35,7 @@ $border-color: mix(white, $background-color, 7.5%);
             --vi-icon-height: var(--theme-h4);
             --vi-icon-width: var(--theme-h4);
 
-            &#signIn {
+            &.signIn {
                 border-left: 1px solid $border-color;
                 color: white;
 
@@ -43,6 +43,11 @@ $border-color: mix(white, $background-color, 7.5%);
                     height: $footerHeight !important;
                     margin-left: var(--theme-h5);
                 }
+            }
+
+            &.offline {
+                --vi-icon-width: 16px;
+                --vi-icon-height: 16px;
             }
         }
     }

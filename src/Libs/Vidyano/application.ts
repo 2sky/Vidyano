@@ -1,11 +1,6 @@
 ﻿namespace Vidyano {
     "use strict";
 
-    export interface IServiceApplication {
-        application: IServicePersistentObject;
-        hasSensitive: boolean;
-    }
-
     export class Application extends PersistentObject {
         private _userId: string;
         private _friendlyUserName: string;
@@ -23,7 +18,7 @@
         readonly programUnits: ProgramUnit[];
         readonly hasSensitive: boolean;
 
-        constructor(service: Service, { application, hasSensitive }: IServiceApplication) {
+        constructor(service: Service, { application, hasSensitive }: Service.ApplicationResponse) {
             super(service, application);
 
             this._userId = this.getAttributeValue("UserId");

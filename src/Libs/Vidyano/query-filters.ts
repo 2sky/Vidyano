@@ -162,7 +162,7 @@ namespace Vidyano {
                 }
                 catch (e) {
                     result = false;
-                    filter.persistentObject.setNotification(e, Vidyano.NotificationType.Error);
+                    filter.persistentObject.setNotification(e, "Error");
                 }
 
                 const newFilter = Enumerable.from(this._filtersAsDetail.objects).firstOrDefault(f => f.isNew);

@@ -9,17 +9,17 @@ namespace Vidyano {
         private static _token: string;
         private _lastAuthTokenUpdate: Date = new Date();
         private _isUsingDefaultCredentials: boolean;
-        private _clientData: IServiceClientData;
-        private _language: ServiceLanguage;
-        private _languages: ILanguage[];
+        private _clientData: Service.ClientData;
+        private _language: Language;
+        private _languages: Language[];
         private _windowsAuthentication: boolean;
-        private _providers: { [name: string]: IProviderParameters };
+        private _providers: { [name: string]: Service.ProviderParameters };
         private _isSignedIn: boolean;
         private _application: Application;
         private _userName: string;
         private _authToken: string;
         private _profile: boolean;
-        private _profiledRequests: IServiceRequest[];
+        private _profiledRequests: Service.ProfilerRequest[];
         private _queuedClientOperations: ClientOperations.IClientOperation[] = [];
         private _initial: Vidyano.PersistentObject;
         staySignedIn: boolean;
@@ -97,6 +97,7 @@ namespace Vidyano {
                 const r = new XMLHttpRequest();
                 r.open("POST", url, true);
                 r.overrideMimeType("application/json; charset=utf-8");
+                r.setRequestHeader("Content-type", "application/json");
                 r.onload = async () => {
                     if (r.status !== 200) {
                         if (r.status === 429) {
@@ -148,7 +149,17 @@ namespace Vidyano {
 
                     this._postJSONProcess(data, result, requestMethod, createdRequest, requestStart, result.profiler ? r.getResponseHeader("X-ElapsedMilliseconds") : undefined);
                 };
-                r.onerror = () => { reject(`${r.statusText} (${r.status})`); };
+                r.onerror = () => {
+                    if (r.status === 0) {
+                        const noInternet = NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || NoInternetMessage.messages.get("en");
+                        if (url.endsWith("GetClientData?v=2"))
+                            reject(noInternet);
+                        else
+                            reject(noInternet.message);
+                    }
+                    else
+                        reject(r.statusText);
+                };
 
                 r.send(JSON.stringify(data));
             });
@@ -186,7 +197,7 @@ namespace Vidyano {
                 if (elapsedMs)
                     result.profiler.elapsedMilliseconds = Service.fromServiceString(elapsedMs, "Int32");
 
-                const request: IServiceRequest = {
+                const request: Service.ProfilerRequest = {
                     when: createdRequest,
                     profiler: result.profiler,
                     transport: Math.round(requestEnd - requestStart - result.profiler.elapsedMilliseconds),
@@ -391,16 +402,16 @@ namespace Vidyano {
                 this.profile = false;
         }
 
-        get language(): ILanguage {
+        get language(): Language {
             return this._language;
         }
 
-        set language(l: ILanguage) {
+        set language(l: Language) {
             if (this._language === l)
                 return;
 
             const oldLanguage = this._language;
-            this.notifyPropertyChanged("language", this._language = new ServiceLanguage(l), oldLanguage);
+            this.notifyPropertyChanged("language", this._language = l, oldLanguage);
         }
 
         get requestedLanguage(): string {
@@ -428,7 +439,7 @@ namespace Vidyano {
                 this.notifyPropertyChanged("isSignedIn", this._isSignedIn, oldIsSignedIn);
         }
 
-        get languages(): ILanguage[] {
+        get languages(): Language[] {
             return this._languages;
         }
 
@@ -436,7 +447,7 @@ namespace Vidyano {
             return this._windowsAuthentication;
         }
 
-        get providers(): { [name: string]: IProviderParameters } {
+        get providers(): { [name: string]: Service.ProviderParameters } {
             return this._providers;
         }
 
@@ -517,11 +528,11 @@ namespace Vidyano {
             this.notifyPropertyChanged("profile", val, oldValue);
         }
 
-        get profiledRequests(): IServiceRequest[] {
+        get profiledRequests(): Service.ProfilerRequest[] {
             return this._profiledRequests;
         }
 
-        private _setProfiledRequests(requests: IServiceRequest[]) {
+        private _setProfiledRequests(requests: Service.ProfilerRequest[]) {
             this.notifyPropertyChanged("profiledRequests", this._profiledRequests = requests);
         }
 
@@ -530,6 +541,9 @@ namespace Vidyano {
         }
 
         async initialize(skipDefaultCredentialLogin: boolean = false): Promise<Application> {
+            if (ServiceWorker.Monitor.available)
+                await ServiceWorker.Monitor.activation;
+
             let url = "GetClientData?v=2";
             if (this.requestedLanguage)
                 url = `${url}&lang=${this.requestedLanguage}`;
@@ -539,14 +553,11 @@ namespace Vidyano {
             if (this._clientData.exception)
                 throw this._clientData.exception;
 
-            const languages: ILanguage[] = [];
-            for (const name in this._clientData.languages) {
-                languages.push({ culture: name, name: this._clientData.languages[name].name, isDefault: this._clientData.languages[name].isDefault, messages: this._clientData.languages[name].messages });
-            }
-            this._languages = languages;
-            this.language = Enumerable.from(this._languages).firstOrDefault(l => l.isDefault) || this._languages[0];
+            const languages = Object.keys(this._clientData.languages).map(culture => new Language(this._clientData.languages[culture], culture));
+            this.hooks.setDefaultTranslations(languages);
 
-            this.hooks.setDefaultTranslations(this.languages);
+            this._languages = languages;
+            this.language = this._languages.find(l => l.isDefault) || this.languages[0];
 
             this._providers = {};
             for (const provider in this._clientData.providers) {
@@ -700,7 +711,7 @@ namespace Vidyano {
 
             this.actionDefinitions.toEnumerable().forEach(kvp => this.language.messages[`Action_${kvp.key}`] = kvp.value.displayName);
 
-            CultureInfo.currentCulture = CultureInfo.cultures.get(result.userCultureInfo) || CultureInfo.cultures.get(result.userLanguage) || CultureInfo.invariantCulture;
+            CultureInfo.currentCulture = CultureInfo.cultures[result.userCultureInfo] || CultureInfo.cultures[result.userLanguage] || CultureInfo.invariantCulture;
 
             if (result.initial != null)
                 this._initial = this.hooks.onConstructPersistentObject(this, result.initial);
@@ -744,7 +755,7 @@ namespace Vidyano {
                 throw result.exception;
             else if (result.result && result.result.notification) {
                 if (result.result.notificationDuration) {
-                    this.hooks.onShowNotification(result.result.notification, NotificationType[<string>result.result.notificationType], result.result.notificationDuration);
+                    this.hooks.onShowNotification(result.result.notification, result.result.notificationType, result.result.notificationDuration);
                     result.result.notification = null;
                     result.result.notificationDuration = 0;
                 }
@@ -755,7 +766,7 @@ namespace Vidyano {
             return this.hooks.onConstructPersistentObject(this, result.result);
         }
 
-        async executeQuery(parent: PersistentObject, query: Query, asLookup: boolean = false, throwExceptions?: boolean): Promise<IServiceQueryResult> {
+        async executeQuery(parent: PersistentObject, query: Query, asLookup: boolean = false, throwExceptions?: boolean): Promise<Service.QueryResult> {
             const data = this._createData("executeQuery");
             data.query = query._toServiceObject();
 
@@ -769,7 +780,7 @@ namespace Vidyano {
                 if (result.exception)
                     throw result.exception;
 
-                const queryResult = <IServiceQueryResult>result.result;
+                const queryResult = <Service.QueryResult>result.result;
                 if (queryResult.continuation) {
                     const wanted = <number>data.query.top || queryResult.pageSize;
 
@@ -781,7 +792,7 @@ namespace Vidyano {
                         if (innerResult.exception)
                             throw innerResult.exception;
 
-                        const innerQueryResult = <IServiceQueryResult>innerResult.result;
+                        const innerQueryResult = <Service.QueryResult>innerResult.result;
                         queryResult.items.push(...innerQueryResult.items);
                         queryResult.continuation = innerQueryResult.continuation;
                     }
@@ -1055,286 +1066,21 @@ namespace Vidyano {
             return this._postJSON(this._createUri("forgotpassword"), { userName: userName });
         }
 
-        static getDate = function (yearString: string, monthString: string, dayString: string, hourString: string, minuteString: string, secondString: string, msString: string) {
-            const year = parseInt(yearString, 10);
-            const month = parseInt(monthString || "1", 10) - 1;
-            const day = parseInt(dayString || "1", 10);
-            const hour = parseInt(hourString || "0", 10);
-            const minutes = parseInt(minuteString || "0", 10);
-            const seconds = parseInt(secondString || "0", 10);
-            const ms = parseInt(msString || "0", 10);
-
-            return new Date(year, month, day, hour, minutes, seconds, ms);
-        };
-
         static fromServiceString(value: string, typeName: string): any {
-            switch (typeName) {
-                case "Decimal":
-                case "Single":
-                case "Double":
-                case "Int64":
-                case "UInt64":
-                    if (StringEx.isNullOrEmpty(value))
-                        return new BigNumber(0);
-
-                    return new BigNumber(value);
-
-                case "NullableDecimal":
-                case "NullableSingle":
-                case "NullableDouble":
-                case "NullableInt64":
-                case "NullableUInt64":
-                    if (StringEx.isNullOrEmpty(value))
-                        return null;
-
-                    return new BigNumber(value);
-
-                case "Int16":
-                case "UInt16":
-                case "Int32":
-                case "UInt32":
-                case "Byte":
-                case "SByte":
-                    if (StringEx.isNullOrEmpty(value))
-                        return 0;
-
-                    return parseInt(value, 10);
-
-                case "NullableInt16":
-                case "NullableInt32":
-                case "NullableUInt16":
-                case "NullableUInt32":
-                case "NullableByte":
-                case "NullableSByte":
-                    if (StringEx.isNullOrEmpty(value))
-                        return null;
-
-                    return parseInt(value, 10);
-
-                case "Date":
-                case "NullableDate":
-                case "DateTime":
-                case "NullableDateTime":
-                case "DateTimeOffset":
-                case "NullableDateTimeOffset":
-                    // Example format: 17-07-2003 00:00:00[.000] [+00:00]
-                    if (!StringEx.isNullOrEmpty(value) && value.length >= 19) {
-                        const parts = value.split(" ");
-                        const date = parts[0].split("-");
-                        const time = parts[1].split(":");
-                        const dateTime = Service.getDate(date[2], date[1], date[0], time[0], time[1], time[2].substring(0, 2), time[2].length > 2 ? time[2].substr(3, 3) : null);
-                        if (parts.length === 3) {
-                            dateTime.netType("DateTimeOffset");
-                            dateTime.netOffset(parts[2]);
-                        }
-
-                        return dateTime;
-                    }
-
-                    const now = new Date();
-                    if (typeName === "Date") {
-                        now.setHours(0, 0, 0, 0);
-                        return now;
-                    }
-                    else if (typeName === "DateTime")
-                        return now;
-                    else if (typeName === "DateTimeOffset") {
-                        now.netType("DateTimeOffset");
-                        const zone = now.getTimezoneOffset() * -1;
-                        const zoneHour = zone / 60;
-                        const zoneMinutes = zone % 60;
-                        now.netOffset(StringEx.format("{0}{1:D2}:{2:D2}", zone < 0 ? "-" : "+", zoneHour, zoneMinutes)); // +00:00
-                        return now;
-                    }
-
-                    return null;
-
-                case "Time":
-                case "NullableTime":
-                    return Service.toServiceString(value, typeName);
-
-                case "Boolean":
-                case "NullableBoolean":
-                case "YesNo":
-                    return value != null ? BooleanEx.parse(value) : null;
-
-                default:
-                    return value;
-            }
+            return DataType.fromServiceString(value, typeName);
         }
 
         static toServiceString(value: any, typeName: string): string {
-            switch (typeName) {
-                case "NullableDecimal":
-                case "Decimal":
-                case "NullableSingle":
-                case "Single":
-                case "NullableDouble":
-                case "Double":
-                case "NullableInt64":
-                case "Int64":
-                case "NullableUInt64":
-                case "UInt64":
-                case "NullableInt32":
-                case "Int32":
-                case "NullableUInt32":
-                case "UInt32":
-                case "NullableInt16":
-                case "Int16":
-                case "NullableUInt16":
-                case "UInt16":
-                case "NullableByte":
-                case "Byte":
-                case "NullableSByte":
-                case "SByte":
-                    if (StringEx.isNullOrEmpty(value) && !typeName.startsWith("Nullable"))
-                        return "0";
-
-                    break;
-
-                case "Date":
-                case "NullableDate":
-                    if (!StringEx.isNullOrEmpty(value)) {
-                        let date: Date = value;
-                        if (typeof (date) === "string")
-                            date = new Date(value);
-
-                        return `${date.format("dd-MM-yyyy")} 00:00:00`;
-                    }
-
-                    break;
-
-                case "DateTime":
-                case "NullableDateTime":
-                    if (!StringEx.isNullOrEmpty(value)) {
-                        let date = value;
-                        if (typeof (date) === "string")
-                            date = new Date(value);
-
-                        return date.format("dd-MM-yyyy HH:mm:ss.fff").trimEnd("0").trimEnd(".");
-                    }
-
-                    break;
-
-                case "DateTimeOffset":
-                case "NullableDateTimeOffset":
-                    if (!StringEx.isNullOrEmpty(value)) {
-                        let dateOffset = value;
-                        if (typeof (value) === "string") {
-                            if (value.length >= 23 && value.length <= 30) {
-                                const dateParts = value.split(" ");
-
-                                dateOffset = new Date(dateParts[0] + " " + dateParts[1]);
-                                dateOffset.netOffset(dateParts[2]);
-                                dateOffset.netType("DateTimeOffset");
-                            }
-                            else
-                                return null;
-                        }
-
-                        return dateOffset.format("dd-MM-yyyy HH:mm:ss") + " " + (dateOffset.netOffset() || "+00:00");
-                    }
-
-                    break;
-
-                case "Boolean":
-                case "NullableBoolean":
-                case "YesNo":
-                    if (value == null)
-                        return null;
-
-                    if (typeof (value) === "string")
-                        value = BooleanEx.parse(value);
-
-                    return value ? "True" : "False";
-
-                case "Time":
-                    return Service._getServiceTimeString(value, "0:00:00:00.0000000");
-
-                case "NullableTime":
-                    return Service._getServiceTimeString(value, null);
-            }
-
-            return typeof (value) === "string" || value == null ? value : String(value);
-        }
-
-        static numericTypes = [
-            "NullableDecimal",
-            "Decimal",
-            "NullableSingle",
-            "Single",
-            "NullableDouble",
-            "Double",
-            "NullableInt64",
-            "Int64",
-            "NullableUInt64",
-            "UInt64",
-            "NullableInt32",
-            "Int32",
-            "NullableUInt32",
-            "UInt32",
-            "NullableInt16",
-            "Int16",
-            "NullableUInt16",
-            "UInt16",
-            "NullableByte",
-            "Byte",
-            "NullableSByte",
-            "SByte"
-        ];
-
-        static isNumericType(type: string): boolean {
-            return Service.numericTypes.indexOf(type) >= 0;
-        }
-
-        static dateTimeTypes = [
-            "NullableDate",
-            "Date",
-            "NullableTime",
-            "Time",
-            "NullableDateTime",
-            "DateTime",
-            "NullableDateTimeOffset",
-            "DateTimeOffset"
-        ];
-
-        static isDateTimeType(type: string): boolean {
-            return Service.dateTimeTypes.indexOf(type) >= 0;
+            return DataType.toServiceString(value, typeName);
         }
     }
 
-    export enum NotificationType {
-        Error,
-        Notice,
-        OK,
-        Warning
-    }
-
-    export interface IProviderParameters {
-        label: string;
-        description: string;
-        requestUri: string;
-        signOutUri: string;
-        redirectUri: string;
-        registerPersistentObjectId?: string;
-        registerUser?: string;
-        forgotPassword?: boolean;
-        getCredentialType?: boolean;
-    }
+    export type NotificationType = Service.NotificationType;
 
     export interface IForgotPassword {
         notification: string;
         notificationType: NotificationType;
         notificationDuration: number;
-    }
-
-    export interface ILanguage {
-        culture: string;
-        name: string;
-        isDefault: boolean;
-        messages: {
-            [key: string]: string;
-        };
     }
 
     export interface IReportOptions {
@@ -1351,123 +1097,5 @@ namespace Vidyano {
         label: string;
         objectId: string;
         breadcrumb: string;
-    }
-
-    export interface IRetryAction {
-        title: string;
-        message: string;
-        options: string[];
-        defaultOption?: number;
-        cancelOption?: number;
-        persistentObject?: PersistentObject;
-    }
-
-    export interface IServiceClientData {
-        defaultUser: string;
-        exception: string;
-        languages: { [code: string]: { name: string; isDefault: boolean; messages: { [key: string]: string; } } };
-        providers: { [name: string]: { parameters: IProviderParameters } };
-        windowsAuthentication: boolean;
-    }
-
-    export interface IServiceRequest {
-        when: Date;
-        profiler: IServiceRequestProfiler;
-        transport: number;
-        method: string;
-        request: any;
-        response: any;
-    }
-
-    export interface IServiceRequestProfiler {
-        taskId: number;
-        elapsedMilliseconds: number;
-        entries: IServiceRequestProfilerEntry[];
-        sql: IServiceRequestProfilerSQL[];
-        exceptions: {
-            id: string;
-            message: string;
-        }[];
-    }
-
-    export interface IServiceRequestProfilerEntry {
-        entries: IServiceRequestProfilerEntry[];
-        methodName: string;
-        sql: string[];
-        started: number;
-        elapsedMilliseconds: number;
-        hasNPlusOne?: boolean;
-        exception: string;
-        arguments: any[];
-    }
-
-    export interface IServiceRequestProfilerSQL {
-        commandId: string;
-        commandText: string;
-        elapsedMilliseconds: number;
-        recordsAffected: number;
-        taskId: number;
-        type: string;
-        parameters: IServiceRequestProfilerSQLParameter[];
-    }
-
-    export interface IServiceRequestProfilerSQLParameter {
-        name: string;
-        type: string;
-        value: string;
-    }
-
-    export interface IServiceClientData {
-        defaultUser: string;
-        exception: string;
-        languages: { [code: string]: { name: string; isDefault: boolean; messages: { [key: string]: string; } } };
-        providers: { [name: string]: { parameters: IProviderParameters } };
-    }
-
-    export interface IServiceRequest {
-        when: Date;
-        profiler: IServiceRequestProfiler;
-        transport: number;
-        method: string;
-        request: any;
-        response: any;
-    }
-
-    export interface IServiceRequestProfiler {
-        taskId: number;
-        elapsedMilliseconds: number;
-        entries: IServiceRequestProfilerEntry[];
-        sql: IServiceRequestProfilerSQL[];
-        exceptions: {
-            id: string;
-            message: string;
-        }[];
-    }
-
-    export interface IServiceRequestProfilerEntry {
-        entries: IServiceRequestProfilerEntry[];
-        methodName: string;
-        sql: string[];
-        started: number;
-        elapsedMilliseconds: number;
-        hasNPlusOne?: boolean;
-        exception: string;
-        arguments: any[];
-    }
-
-    export interface IServiceRequestProfilerSQL {
-        commandId: string;
-        commandText: string;
-        elapsedMilliseconds: number;
-        recordsAffected: number;
-        taskId: number;
-        type: string;
-        parameters: IServiceRequestProfilerSQLParameter[];
-    }
-
-    export interface IServiceRequestProfilerSQLParameter {
-        name: string;
-        type: string;
-        value: string;
     }
 }

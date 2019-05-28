@@ -2,6 +2,10 @@
     export class AppServiceHooks extends Vidyano.ServiceHooks {
         constructor(public app: App) {
             super();
+
+            navigator.serviceWorker.addEventListener("message", event => {
+                this.app.showAlert(event.data, "Notice", 3000);
+            });
         }
 
         private _initializeGoogleAnalytics() {
@@ -106,7 +110,7 @@
             return Enumerable.from(queryChartConfigs).firstOrDefault(c => c.type === type);
         }
 
-        onConstructApplication(application: IServiceApplication): Application {
+        onConstructApplication(application: Service.ApplicationResponse): Application {
             const app = super.onConstructApplication(application);
             this.app.sensitive = app.hasSensitive && BooleanEx.parse(Vidyano.cookie("sensitive")) !== false;
 
@@ -379,7 +383,7 @@
             }, true);
         }
 
-        async onRetryAction(retry: IRetryAction): Promise<string> {
+        async onRetryAction(retry: Service.RetryAction): Promise<string> {
             if (retry.persistentObject) {
                 await this.app.importComponent("RetryActionDialog");
                 return this.app.showDialog(new Vidyano.WebComponents.RetryActionDialog(retry));

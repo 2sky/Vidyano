@@ -3,19 +3,6 @@
 
     export type PersistentObjectAttributeVisibility = "Always" | "Read" | "New" | "Never" | "Query" | "Read, Query" | "Read, New" | "Query, New";
 
-    export interface IServicePersistentObjectAttribute {
-        name: string;
-        type: string;
-        label: string;
-        value?: string;
-        isReadOnly?: boolean;
-        isRequired?: boolean;
-        isSensitive?: boolean;
-        isValueChanged: boolean;
-        rules?: string;
-        visibility: PersistentObjectAttributeVisibility;
-    }
-
     export class PersistentObjectAttribute extends ServiceObject {
         private _isSystem: boolean;
         private _lastParsedValue: string;
@@ -55,7 +42,7 @@
         column: number;
         columnSpan: number;
 
-        constructor(service: Service, attr: IServicePersistentObjectAttribute, parent: PersistentObject);
+        constructor(service: Service, attr: Service.PersistentObjectAttribute, parent: PersistentObject);
         constructor(service: Service, attr: any, public parent: PersistentObject) {
             super(service);
 
