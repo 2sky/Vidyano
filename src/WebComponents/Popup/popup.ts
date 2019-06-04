@@ -1,10 +1,8 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
-    let _documentClosePopupListener: EventListener;
-    document.addEventListener("mousedown", _documentClosePopupListener = e => {
+    Polymer.Gestures.add(document.body, "tap", (e: CustomEvent) => {
         let el = <HTMLElement>e.target;
-        let popup: Popup;
 
         while (true) {
             if (!el || el === <any>document) {
@@ -19,7 +17,6 @@ namespace Vidyano.WebComponents {
                 el = el.parentElement;
         }
     });
-    document.addEventListener("touchstart", _documentClosePopupListener);
 
     @WebComponent.register({
         properties: {
