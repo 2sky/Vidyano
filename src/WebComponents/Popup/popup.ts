@@ -1,22 +1,36 @@
 namespace Vidyano.WebComponents {
     "use strict";
 
-    Polymer.Gestures.add(document.body, "tap", (e: CustomEvent) => {
-        let el = <HTMLElement>e.target;
+    const _hookClose = (target) => {
+        Polymer.Gestures.add(target, "tap", (e: CustomEvent) => {
+            let el = <HTMLElement>e.target;
 
-        while (true) {
-            if (!el || el === <any>document) {
-                WebComponents.PopupCore.closeAll();
-                break;
+            while (true) {
+                if (!el || el === <any>document) {
+                    WebComponents.PopupCore.closeAll();
+                    break;
+                }
+                else if ((<any>el).__Vidyano_WebComponents_PopupCore__Instance__ && (<WebComponents.PopupCore><any>el).open)
+                    break;
+                else if ((<any>el).popup && (<any>el).popup.__Vidyano_WebComponents_PopupCore__Instance__ && (<WebComponents.PopupCore>(<any>el).popup).open)
+                    break;
+                else
+                    el = el.parentElement;
             }
-            else if ((<any>el).__Vidyano_WebComponents_PopupCore__Instance__ && (<WebComponents.PopupCore><any>el).open)
-                break;
-            else if ((<any>el).popup && (<any>el).popup.__Vidyano_WebComponents_PopupCore__Instance__ && (<WebComponents.PopupCore>(<any>el).popup).open)
-                break;
-            else
-                el = el.parentElement;
-        }
-    });
+        });
+    };
+
+    if (!document.body) {
+        const trying = setInterval(() => {
+            if (!document.body)
+                return;
+
+            _hookClose(document.body);
+            clearInterval(trying);
+        }, 100);
+    }
+    else
+        _hookClose(document.body);
 
     @WebComponent.register({
         properties: {
