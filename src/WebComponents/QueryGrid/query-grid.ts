@@ -1899,6 +1899,9 @@ namespace Vidyano.WebComponents {
         }
 
         private async _itemActions(e: CustomEvent, detail: { row: QueryGridTableDataRow; host: HTMLElement; position: IPosition; }) {
+            if (this._actionMenu.open)
+                this._actionMenu.close();
+
             if (!(detail.row.item instanceof Vidyano.QueryResultItem))
                 return;
 
@@ -1931,13 +1934,15 @@ namespace Vidyano.WebComponents {
                 host.style.top = `${detail.position.y}px`;
             }
 
-            actions.forEach(action => {
+            const buttons = actions.map(action => {
                 const button = new Vidyano.WebComponents.ActionButton(this.query.selectedItems.length === 0 ? detail.row.item : null, action);
                 button.forceLabel = true;
                 button.openOnHover = true;
                 button.setAttribute("overflow", "");
 
                 Polymer.dom(this._actionMenu).appendChild(button);
+
+                return button;
             });
 
             Polymer.dom(this._actionMenu).flush();
@@ -1947,7 +1952,7 @@ namespace Vidyano.WebComponents {
             if (host !== detail.host)
                 host.setAttribute("hidden", "");
 
-            this._actionMenu.empty();
+            buttons.forEach(button => Polymer.dom(this._actionMenu).removeChild(button));
             detail.row.host.removeAttribute("hover");
         }
 
