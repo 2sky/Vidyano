@@ -171,9 +171,11 @@ namespace Vidyano.WebComponents.Attributes {
             this._setCanBrowseReference(hasReference && this.attribute.parent.isEditing && !this.attribute.isReadOnly && !this.sensitive && !this.attribute.selectInPlace);
         }
 
-        private _openSelect() {
+        private _openSelect(e: TapEvent) {
             const selectInPlace = <Select>Polymer.dom(this.root).querySelector("#selectInPlace");
             selectInPlace.open();
+
+            e.stopPropagation();
         }
 
         private async _open(e: Event) {
