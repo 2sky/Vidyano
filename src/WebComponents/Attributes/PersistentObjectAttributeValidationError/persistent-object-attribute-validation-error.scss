@@ -16,6 +16,13 @@
         fill: var(--theme-color-error);
     }
 
+    &[small] {
+        vi-icon {
+            width: auto;
+            height: auto;
+        }
+    }
+
     pre[content] {
         padding: var(--theme-h5);
         border: 1px solid var(--theme-color-error);

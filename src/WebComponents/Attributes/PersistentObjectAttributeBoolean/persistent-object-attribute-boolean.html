@@ -30,6 +30,7 @@
             <template is="dom-if" if="[[sensitive]]" restamp>
                 <span sensitive>[[attribute.displayValue]]</span>
             </template>
+            <vi-persistent-object-attribute-validation-error attribute="[[attribute]]" small></vi-persistent-object-attribute-validation-error>
         </template>
         <template is="dom-if" if="[[!editing]]">
             <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
