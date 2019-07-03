@@ -72,7 +72,7 @@ namespace Vidyano.Test
 
         protected virtual void SignIn()
         {
-            Assert.That(driver.FindElement(By.CssSelector("vi-app-route.active[route^=\"SignIn\"]")), Is.Not.Null, "No active sign in route found.");
+            Assert.That(driver.FindElement(By.CssSelector("vi-app-route.active[route^=\"sign-in\"]")), Is.Not.Null, "No active sign in route found.");
 
             if (verifyBuild)
             {
