@@ -19,7 +19,7 @@ namespace Vidyano.Test
         public void Search()
         {
             var search = "pei";
-            var input = driver.FindElement(By.CssSelector("vi-menu vi-input-search > input"));
+            var input = driver.FindElement(By.CssSelector("vi-menu vi-input-search > form > input"));
             input.SendKeys(search);
             input.SendKeys(Keys.Enter);
 
