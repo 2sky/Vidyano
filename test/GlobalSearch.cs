@@ -9,7 +9,6 @@ namespace Vidyano.Test
     [TestFixture("safari")]
     [TestFixture("firefox")]
     [TestFixture("edge")]
-    [TestFixture("ie")]
     [Parallelizable(ParallelScope.Fixtures)]
     public class GlobalSearch: BrowserStackTestBase
     {
