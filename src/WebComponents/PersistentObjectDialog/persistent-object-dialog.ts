@@ -4,6 +4,7 @@ namespace Vidyano.WebComponents {
     export interface IPersistentObjectDialogOptions {
         noHeader?: boolean;
         saveLabel?: string;
+        cancelLabel?: string;
         save?: (po: Vidyano.PersistentObject, close: () => void) => void;
         noCancel?: boolean;
         cancel?: (close: () => void) => void;
@@ -23,6 +24,10 @@ namespace Vidyano.WebComponents {
             saveLabel: {
                 type: String,
                 computed: "_computeSaveLabel(app)"
+            },
+            cancelLabel: {
+                type: String,
+                computed: "_computeCancelLabel(app)"
             },
             dialogActions: {
                 type: Array,
@@ -119,6 +124,20 @@ namespace Vidyano.WebComponents {
             }
 
             return label || this.translateMessage("Save");
+        }
+
+        private _computeCancelLabel(app: Vidyano.WebComponents.App): string {
+            if (!app)
+                return null;
+
+            let label = this.options.cancelLabel;
+            if (!label) {
+                const cancelEdit = this.persistentObject.getAction("CancelEdit") || this.persistentObject.getAction("CancelSave");
+                if (cancelEdit)
+                    label = cancelEdit.displayName;
+            }
+
+            return label || this.translateMessage("Cancel");
         }
 
         private _computeTab(persistentObject: Vidyano.PersistentObject, isAttached: boolean): Vidyano.PersistentObjectAttributeTab {

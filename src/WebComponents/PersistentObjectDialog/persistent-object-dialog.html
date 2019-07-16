@@ -22,7 +22,7 @@
             <div class="layout horizontal default-actions">
                 <template is="dom-if" if="[[!readOnly]]">
                     <button is="vi-button" on-tap="_save" action-type="Default" label="[[saveLabel]]" disabled$="[[!_canSave(persistentObject.isBusy, persistentObject.dialogSaveAction.canExecute)]]"></button>
-                    <button is="vi-button" inverse on-tap="_cancel" label="[[translateMessage('Cancel', isAttached)]]" disabled$="[[persistentObject.isBusy]]" hidden$="[[options.noCancel]]"></button>
+                    <button is="vi-button" inverse on-tap="_cancel" label="[[cancelLabel]]" disabled$="[[persistentObject.isBusy]]" hidden$="[[options.noCancel]]"></button>
                 </template>
                 <template is="dom-if" if="[[readOnly]]">
                     <button is="vi-button" on-tap="_cancel" action-type="Default" label="[[translateMessage('Close', isAttached)]]" disabled$="[[persistentObject.isBusy]]"></button>
