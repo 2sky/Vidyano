@@ -36,6 +36,18 @@
         }
     }
 
+    vi-popup {
+        button.groupActions {
+            span {
+                padding: 0 var(--theme-h5);
+            }
+        }
+
+        &[open] button.groupActions {
+            background-color: var(--theme-color-faint);
+        }
+    }
+
     &[disabled] {
         button {
             --vi-button-disabled: {
@@ -52,7 +64,13 @@
         }
     }
 
-    &[overflow] {
+    &[grouped] {
+        vi-icon.down-icon {
+            transform: rotate(-90deg);
+        }
+    }
+
+    &[overflow], &[grouped] {
         button {
             padding: 0 !important;
 

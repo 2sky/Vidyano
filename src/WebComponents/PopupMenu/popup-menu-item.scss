@@ -28,6 +28,12 @@
         }
     }
 
+    &[no-icon] {
+        button span {
+            padding: 0 var(--theme-h4) !important;
+        }
+    }
+
     vi-icon {
         position: relative;
         display: inline-block;

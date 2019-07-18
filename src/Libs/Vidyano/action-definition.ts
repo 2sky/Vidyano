@@ -11,11 +11,12 @@
         private _iconData: string;
         private _reverseIconData: string;
         private _confirmation: string;
+        private _groupDefinition: string | ActionDefinition;
         private _options: Array<string> = [];
         private _selectionRule: (count: number) => boolean;
         private _showedOn: string[];
 
-        constructor(service: Service, item: QueryResultItem) {
+        constructor(private readonly _service: Service, item: QueryResultItem) {
             this._name = item.getValue("Name");
             this._displayName = item.getValue("DisplayName");
             this._isPinned = item.getValue("IsPinned");
@@ -26,13 +27,17 @@
             this._offset = item.getValue("Offset");
             this._showedOn = (<string>item.getValue("ShowedOn") || "").split(",").map(v => v.trim());
 
+            const groupAction = item.getFullValue("GroupAction");
+            if (groupAction != null)
+                this._groupDefinition = groupAction.objectId;
+
             const icon = item.getFullValue("Icon");
 
             const options = item.getValue("Options");
             this._options = !StringEx.isNullOrWhiteSpace(options) ? options.split(";") : [];
 
             if (icon != null) {
-                const appIcon = service.icons[icon.objectId];
+                const appIcon = _service.icons[icon.objectId];
                 if (StringEx.isNullOrWhiteSpace(appIcon))
                     return;
 
@@ -112,6 +117,16 @@
 
         get showedOn(): string[] {
             return this._showedOn;
+        }
+
+        get groupDefinition(): ActionDefinition {
+            if (this._groupDefinition == null)
+                return null;
+
+            if (typeof this._groupDefinition === "string")
+                this._groupDefinition = this._service.actionDefinitions[this._groupDefinition];
+
+            return <ActionDefinition>this._groupDefinition;
         }
     }
 }

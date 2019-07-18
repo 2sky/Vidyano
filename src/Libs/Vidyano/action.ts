@@ -32,6 +32,7 @@ namespace Vidyano {
         protected _isPinned: boolean;
         private _options: string[] = [];
         private _executeHandlers: ActionExecutionHandler[];
+        private _group: ActionGroup;
         selectionRule: (count: number) => boolean;
         displayName: string;
         dependentActions = [];
@@ -104,6 +105,10 @@ namespace Vidyano {
 
         get name(): string {
             return this.definition.name;
+        }
+
+        get group(): ActionGroup {
+            return this._group;
         }
 
         get canExecute(): boolean {
@@ -324,6 +329,17 @@ namespace Vidyano {
                 actions.push(action);
 
                 Action.addActions(service, owner, actions, action.dependentActions);
+            });
+
+            const actionGroups: { [name: string]: ActionGroup } = {};
+            actions.forEach(action => {
+                if (action.definition.groupDefinition) {
+                    if (!actionGroups[action.definition.groupDefinition.name])
+                        actionGroups[action.definition.groupDefinition.name] = new ActionGroup(service, action.definition.groupDefinition);
+
+                    actionGroups[action.definition.groupDefinition.name].addAction(action);
+                    action._group = actionGroups[action.definition.groupDefinition.name];
+                }
             });
         }
     }

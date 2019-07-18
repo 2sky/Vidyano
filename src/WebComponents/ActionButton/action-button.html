@@ -3,29 +3,69 @@
 <dom-module id="vi-action-button">
     <template>
         <link rel="stylesheet" href="action-button.css" />
-        <template is="dom-if" if="[[!options]]">
-            <button is="vi-button" disabled="[[!canExecute]]" header on-tap="_onExecuteWithoutOptions" inverse>
-                <div class="layout horizontal">
-                    <vi-icon source="[[icon]]"></vi-icon>
-                    <span class="label">[[action.displayName]]</span>
-                </div>
-            </button>
-        </template>
-        <template is="dom-if" if="[[options]]">
-            <vi-popup-menu open-on-hover="[[_computeOpenOnHover(overflow, openOnHover)]]" disabled="[[!canExecute]]">
-                <button is="vi-button" disabled="[[!canExecute]]" header inverse class="options">
+        <template is="dom-if" if="[[!isGroup]]">
+            <template is="dom-if" if="[[!options]]">
+                <button is="vi-button" disabled="[[!canExecute]]" header on-tap="_onExecuteWithoutOptions" inverse>
                     <div class="layout horizontal">
-                        <vi-icon source="[[icon]]"></vi-icon>
+                        <vi-icon class="action-icon" source="[[icon]]"></vi-icon>
                         <span class="label">[[action.displayName]]</span>
-                        <vi-icon source="Down"></vi-icon>
                     </div>
                 </button>
-                <template is="dom-repeat" items="[[options]]" as="option">
-                    <vi-popup-menu-item label="[[option.value]]" on-tap="_onExecuteWithOption"></vi-popup-menu-item>
-                </template>
-            </vi-popup-menu>
+            </template>
+            <template is="dom-if" if="[[options]]">
+                <vi-popup-menu open-on-hover="[[_computeOpenOnHover(overflow, openOnHover)]]" disabled="[[!canExecute]]">
+                    <button is="vi-button" disabled="[[!canExecute]]" header inverse class="options">
+                        <div class="layout horizontal">
+                            <vi-icon class="action-icon" source="[[icon]]"></vi-icon>
+                            <span class="label">[[action.displayName]]</span>
+                            <vi-icon class="down-icon" source="Down"></vi-icon>
+                        </div>
+                    </button>
+                    <template is="dom-repeat" items="[[options]]" as="option">
+                        <vi-popup-menu-item label="[[option.value]]" on-tap="_onExecuteWithOption" no-icon></vi-popup-menu-item>
+                    </template>
+                </vi-popup-menu>
+            </template>
+        </template>
+        <template is="dom-if" if="[[isGroup]]">
+            <vi-popup disabled="[[!canExecute]]" open-on-hover="[[_computeOpenOnHover(overflow, openOnHover)]]">
+                <button is="vi-button" disabled="[[!canExecute]]" header inverse class="groupActions">
+                    <div class="layout horizontal">
+                        <vi-icon class="action-icon" source="[[icon]]"></vi-icon>
+                        <span class="label">[[action.displayName]]</span>
+                        <vi-icon class="down-icon" source="Down"></vi-icon>
+                    </div>
+                </button>
+                <div content>
+                    <template is="dom-repeat" items="[[action.actions]]" as="groupAction">
+                        <vi-action-button grouped open-on-hover action="[[groupAction]]"></vi-action-button>
+                    </template>
+                </div>
+            </vi-popup>
         </template>
     </template>
 </dom-module>
+
+<vi-icon name="Action_RefreshObject">
+    <svg viewBox="0 0 32 32">
+        <g>
+            <path style="fill:none;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+                    d="m 1.0024198,16.014565 c -0.1608928,7.226584 5.7144461,13.988806 12.8935162,14.850338 6.213085,0.9092 12.840028,-2.454963 15.554166,-8.162582 2.727101,-5.426499 1.816556,-12.494514 -2.4397,-16.88801 C 22.925671,1.386365 16.078282,-0.265778 10.483747,2.073448 5.1630126,4.1605 1.2329644,9.452561 1.0239062,15.197949 c -0.014637,0.27194 -0.021821,0.544283 -0.021486,0.816616 z" />
+            <g transform="matrix(1.53421,0,0,1.53421,-2.410513,-2.41052)">
+                <g transform="translate(-433.13094,-501.35006)">
+                    <path d="m 437.79741,519.82082 c 1.33945,0.75933 2.67075,1.53336 4.00857,2.29597 -1.19117,0.56055 -2.39374,1.09664 -3.58327,1.66209 l -0.0358,0 c -0.13851,-1.31827 -0.26235,-2.63817 -0.38945,-3.95806 z m 5.90206,-12.76227 c 2.17701,1.23843 4.34587,2.48989 6.51963,3.73481 -1.66861,2.89726 -3.31277,5.80918 -5.00583,8.69178 -0.12058,-0.36664 -0.24605,-0.73164 -0.37479,-1.09339 -0.63713,-0.0652 -1.27427,-0.12711 -1.90977,-0.19719 -0.10755,-0.3976 -0.21998,-0.79519 -0.32427,-1.19278 -0.62573,-0.0326 -1.25146,-0.0408 -1.87719,-0.0717 -0.17272,-0.43507 -0.34382,-0.87016 -0.51655,-1.30523 -0.50025,0.0408 -0.99888,0.0913 -1.49751,0.13688 1.64742,-2.91029 3.32907,-5.7994 4.98628,-8.70317 z m 3.09605,-4.13731 0.0261,0 c 0.32264,0.0603 0.63061,0.18413 0.91415,0.34873 1.37204,0.80497 2.76201,1.57898 4.13405,2.38233 0.42204,0.2265 0.65342,0.72512 0.58173,1.19605 -0.0734,0.62247 -0.46767,1.14066 -0.76913,1.67024 -2.21123,-1.26938 -4.42409,-2.53225 -6.63207,-3.80652 0.41389,-0.72512 0.80009,-1.67187 1.7452,-1.79082 z" />
+                </g>
+            </g>
+        </g>
+    </svg>
+</vi-icon>
+
+<!-- <vi-icon name="Action_Test">
+        <svg viewBox="0 0 32 32">
+            <g>
+                <path d="m 21.048828,0.734375 0,6.9746094 -7.107422,0 0,3.3222656 7.105469,0 0,6.972656 3.392578,0 0,-6.972656 7.103516,0 0,-3.3222656 -7.103516,0 0,-6.9746094 z m -20.59179675,12.792969 0,4.066406 15.47667275,0 0,-4.066406 z m 0,6.835937 0,4.072266 15.47667275,0 0,-4.072266 z m 0,6.841797 0,4.060547 15.47667275,0 0,-4.060547 z" />
+            </g>
+        </svg>
+    </vi-icon> -->
 
 <script src="action-button.js"></script>

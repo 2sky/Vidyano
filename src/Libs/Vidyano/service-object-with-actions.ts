@@ -7,7 +7,7 @@
         private _notification: string;
         private _notificationType: NotificationType;
         private _notificationDuration: number;
-        actions: Action[] = [];
+        actions: NamedArray<Action> = <any>[];
 
         constructor(service: Service, private _actionNames: string[] = [], private _actionLabels?: { [key: string]: string }) {
             super(service);
@@ -94,6 +94,7 @@
 
         protected _initializeActions() {
             Action.addActions(this.service, this, this.actions, this._actionNames);
+
             this.actions.forEach(a => {
                 this.actions[a.name] = a;
 

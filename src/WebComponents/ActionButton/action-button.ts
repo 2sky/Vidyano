@@ -21,7 +21,7 @@ namespace Vidyano.WebComponents {
             iconSpace: {
                 type: Boolean,
                 reflectToAttribute: true,
-                computed: "_computeIconSpace(icon, siblingIcon, overflow)"
+                computed: "_computeIconSpace(icon, siblingIcon, overflow, grouped)"
             },
             pinned: {
                 type: Boolean,
@@ -42,7 +42,8 @@ namespace Vidyano.WebComponents {
             },
             overflow: {
                 type: Boolean,
-                reflectToAttribute: true
+                reflectToAttribute: true,
+                value: null
             },
             canExecute: {
                 type: Boolean,
@@ -68,15 +69,25 @@ namespace Vidyano.WebComponents {
                 reflectToAttribute: true,
                 value: null
             },
+            grouped: {
+                type: Boolean,
+                reflectToAttribute: true,
+                value: null
+            },
             title: {
                 type: String,
                 reflectToAttribute: true,
                 computed: "_computeTitle(action, pinned)"
+            },
+            isGroup: {
+                type: Boolean,
+                reflectToAttribute: true,
+                computed: "_computeIsGroup(action)"
             }
         },
         observers: [
             "_observeAction(action.canExecute, action.isVisible, action.options)",
-            "_computeSiblingIcon(overflow, isAttached)"
+            "_computeSiblingIcon(overflow, grouped, isAttached)"
         ],
         forwardObservers: [
             "action.isPinned",
@@ -91,34 +102,51 @@ namespace Vidyano.WebComponents {
         readonly canExecute: boolean; private _setCanExecute: (val: boolean) => void;
         readonly siblingIcon: boolean; private _setSiblingIcon: (val: boolean) => void;
         readonly hidden: boolean; private _setHidden: (val: boolean) => void;
+        readonly isGroup: boolean;
         noLabel: boolean;
         openOnHover: boolean;
         forceLabel: boolean;
+        grouped: boolean;
 
         constructor(public item: Vidyano.QueryResultItem, public action: Action) {
             super();
 
-            if(item && action) {
-                const args: ISelectedItemsActionArgs = {
-                    name: action.name,
-                    isVisible: action.isVisible,
-                    canExecute: action.definition.selectionRule(1),
-                    options: action.options
-                };
+            if(item && action)
+                this._applyItemSelection(item, action);
+        }
 
-                action.service.hooks.onSelectedItemsActions(item.query, [item], args);
+        attached() {
+            super.attached();
 
-                this._setCanExecute(args.canExecute);
-                this._setHidden(!args.isVisible);
-                this._setOptions(args.options && args.options.length > 0 ? args.options.map((value: string, index: number) => {
-                    return {
-                        key: index,
-                        value: value
-                    };
-                }) : null);
-
-                this._skipObserver = true;
+            if (this.grouped) {
+                const groupParent = <ActionButton>this.findParent(p => p instanceof Vidyano.WebComponents.ActionButton && p.isGroup);
+                if (groupParent && groupParent.item && this.action) {
+                    this.item = groupParent.item;
+                    this._applyItemSelection(groupParent.item, this.action);
+                }
             }
+        }
+
+        private _applyItemSelection(item: Vidyano.QueryResultItem, action: Action) {
+            const args: ISelectedItemsActionArgs = {
+                name: action.name,
+                isVisible: action.isVisible,
+                canExecute: action.definition.selectionRule(1),
+                options: action.options
+            };
+
+            action.service.hooks.onSelectedItemsActions(item.query, [item], args);
+
+            this._setCanExecute(args.canExecute);
+            this._setHidden(!args.isVisible);
+            this._setOptions(args.options && args.options.length > 0 ? args.options.map((value: string, index: number) => {
+                return {
+                    key: index,
+                    value: value
+                };
+            }) : null);
+
+            this._skipObserver = true;
         }
 
         private _onExecuteWithoutOptions(e: TapEvent) {
@@ -176,6 +204,10 @@ namespace Vidyano.WebComponents {
             return !canExecute;
         }
 
+        private _computeIsGroup(action: Vidyano.Action | Vidyano.ActionGroup): boolean {
+            return action instanceof Vidyano.ActionGroup;
+        }
+
         private _computeTitle(action: Vidyano.Action, pinned: boolean): string {
             return pinned ? action.displayName : null;
         }
@@ -192,12 +224,12 @@ namespace Vidyano.WebComponents {
             return !StringEx.isNullOrEmpty(icon) && Vidyano.WebComponents.Icon.Exists(icon);
         }
 
-        private _computeIconSpace(icon: string, siblingIcon: boolean, overflow: boolean): boolean {
-            return overflow && !Icon.Exists(icon) && siblingIcon;
+        private _computeIconSpace(icon: string, siblingIcon: boolean, overflow: boolean, grouped: boolean): boolean {
+            return (overflow || grouped) && !Icon.Exists(icon) && siblingIcon;
         }
 
-        private _computeSiblingIcon(overflow: boolean, isAttached: boolean) {
-            const siblingIcon = overflow && isAttached && this.parentElement != null && Array.from(this.parentElement.children).find((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
+        private _computeSiblingIcon(overflow: boolean, grouped: boolean, isAttached: boolean) {
+            const siblingIcon = (overflow || grouped) && isAttached && this.parentElement != null && Array.from(this.parentElement.children).find((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
             this._setSiblingIcon(siblingIcon);
             if (siblingIcon) {
                 Array.from(this.parentElement.children).forEach((ab: ActionButton) => {

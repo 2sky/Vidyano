@@ -57,12 +57,26 @@
             query.search();
         }
 
-        private _computePinnedActions(): Vidyano.Action[] {
-            return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(action => action.isPinned) : [];
+        private _computePinnedActions(): (Vidyano.Action | Vidyano.ActionGroup)[] {
+            return this.serviceObject && this.serviceObject.actions ? Array.from(this._transformActionsWithGroups(this.serviceObject.actions.filter(action => action.isPinned))) : [];
         }
 
-        private _computeUnpinnedActions(): Vidyano.Action[] {
-            return this.serviceObject && this.serviceObject.actions ? this.serviceObject.actions.filter(action => !action.isPinned) : [];
+        private _computeUnpinnedActions(): (Vidyano.Action | Vidyano.ActionGroup)[] {
+            return this.serviceObject && this.serviceObject.actions ? Array.from(this._transformActionsWithGroups(this.serviceObject.actions.filter(action => !action.isPinned))) : [];
+        }
+
+        private *_transformActionsWithGroups(actions: Vidyano.Action[]): IterableIterator<Vidyano.Action | Vidyano.ActionGroup> {
+            const actionGroups: { [name: string]: Vidyano.ActionGroup } = {};
+            for (let i=0; i<actions.length; i++) {
+                const action = actions[i];
+                if (!action.group) {
+                    yield action;
+                    continue;
+                }
+
+                if (!actionGroups[action.group.name])
+                    yield (actionGroups[action.group.name] = action.group);
+            }
         }
 
         private _computeCanSearch(serviceObject: Vidyano.ServiceObjectWithActions): boolean {

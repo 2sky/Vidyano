@@ -1934,7 +1934,15 @@ namespace Vidyano.WebComponents {
                 host.style.top = `${detail.position.y}px`;
             }
 
+            const actionGroups: { [name: string]: Vidyano.ActionGroup } = {};
             const buttons = actions.map(action => {
+                if (action.group) {
+                    if (!!actionGroups[action.group.name])
+                        return;
+
+                    action = actionGroups[action.group.name] = action.group;
+                }
+
                 const button = new Vidyano.WebComponents.ActionButton(this.query.selectedItems.length === 0 ? detail.row.item : null, action);
                 button.forceLabel = true;
                 button.openOnHover = true;
@@ -1943,7 +1951,7 @@ namespace Vidyano.WebComponents {
                 Polymer.dom(this._actionMenu).appendChild(button);
 
                 return button;
-            });
+            }).filter(a => !!a);
 
             Polymer.dom(this._actionMenu).flush();
 

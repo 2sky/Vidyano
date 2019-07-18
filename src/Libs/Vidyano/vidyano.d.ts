@@ -8,6 +8,9 @@ declare type KeyValuePair<T, U> = {
 declare type KeyValue<T> = {
     [key: string]: T;
 };
+declare type NamedArray<T> = Array<T> & {
+    [name: string]: T;
+};
 interface Array<T> {
     distinct<T, U>(this: T[], selector?: (element: T) => T | U): T[];
     groupBy<T>(this: T[], selector: (element: T) => string): KeyValuePair<string, T[]>[];
@@ -134,7 +137,7 @@ declare namespace Vidyano {
         private _notification;
         private _notificationType;
         private _notificationDuration;
-        actions: Action[];
+        actions: NamedArray<Action>;
         constructor(service: Service, _actionNames?: string[], _actionLabels?: {
             [key: string]: string;
         });
@@ -152,6 +155,7 @@ declare namespace Vidyano {
 }
 declare namespace Vidyano {
     class ActionDefinition {
+        private readonly _service;
         private _name;
         private _displayName;
         private _isPinned;
@@ -161,10 +165,11 @@ declare namespace Vidyano {
         private _iconData;
         private _reverseIconData;
         private _confirmation;
+        private _groupDefinition;
         private _options;
         private _selectionRule;
         private _showedOn;
-        constructor(service: Service, item: QueryResultItem);
+        constructor(_service: Service, item: QueryResultItem);
         readonly name: string;
         readonly displayName: string;
         readonly isPinned: boolean;
@@ -177,6 +182,29 @@ declare namespace Vidyano {
         readonly options: Array<string>;
         readonly selectionRule: (count: number) => boolean;
         readonly showedOn: string[];
+        readonly groupDefinition: ActionDefinition;
+    }
+}
+declare namespace Vidyano {
+    class ActionGroup extends ServiceObject {
+        service: Service;
+        definition: ActionDefinition;
+        private _actions;
+        private _canExecute;
+        private _isVisible;
+        constructor(service: Service, definition: ActionDefinition);
+        addAction(action: Action): void;
+        removeAction(action: Action): void;
+        readonly actions: Action[];
+        readonly name: string;
+        readonly displayName: string;
+        readonly canExecute: boolean;
+        private _setCanExecute;
+        readonly isVisible: boolean;
+        private _setIsVisible;
+        readonly isPinned: boolean;
+        readonly options: string[];
+        private _actionPropertyChanged;
     }
 }
 declare namespace Vidyano {
@@ -211,6 +239,7 @@ declare namespace Vidyano {
         protected _isPinned: boolean;
         private _options;
         private _executeHandlers;
+        private _group;
         selectionRule: (count: number) => boolean;
         displayName: string;
         dependentActions: any[];
@@ -219,6 +248,7 @@ declare namespace Vidyano {
         readonly query: Query;
         offset: number;
         readonly name: string;
+        readonly group: ActionGroup;
         canExecute: boolean;
         block: boolean;
         isVisible: boolean;
