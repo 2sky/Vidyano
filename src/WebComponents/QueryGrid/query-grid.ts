@@ -1913,7 +1913,7 @@ namespace Vidyano.WebComponents {
                 this.query.selectedItems = [detail.row.item];
             }
 
-            const actions = (detail.row.item.query.actions || []).filter(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue && a.selectionRule(Math.max(1, this.query.selectedItems.length)));
+            const actions = (<Action[]>detail.row.item.query.actions || []).filter(a => a.isVisible && a.definition.selectionRule !== ExpressionParser.alwaysTrue && a.selectionRule(Math.max(1, this.query.selectedItems.length)));
             if (actions.length === 0)
                 return;
 
@@ -1936,14 +1936,17 @@ namespace Vidyano.WebComponents {
 
             const actionGroups: { [name: string]: Vidyano.ActionGroup } = {};
             const buttons = actions.map(action => {
+                let actionOrGroup: Vidyano.Action | Vidyano.ActionGroup;
                 if (action.group) {
                     if (!!actionGroups[action.group.name])
                         return;
 
-                    action = actionGroups[action.group.name] = action.group;
+                    actionOrGroup = actionGroups[action.group.name] = action.group;
                 }
+                else
+                    actionOrGroup = action;
 
-                const button = new Vidyano.WebComponents.ActionButton(this.query.selectedItems.length === 0 ? detail.row.item : null, action);
+                const button = new Vidyano.WebComponents.ActionButton(this.query.selectedItems.length === 0 ? detail.row.item : null, actionOrGroup);
                 button.forceLabel = true;
                 button.openOnHover = true;
                 button.setAttribute("overflow", "");

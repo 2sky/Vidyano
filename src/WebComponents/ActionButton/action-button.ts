@@ -108,7 +108,7 @@ namespace Vidyano.WebComponents {
         forceLabel: boolean;
         grouped: boolean;
 
-        constructor(public item: Vidyano.QueryResultItem, public action: Action) {
+        constructor(public item: Vidyano.QueryResultItem, public action: Action | ActionGroup) {
             super();
 
             if(item && action)
@@ -127,7 +127,7 @@ namespace Vidyano.WebComponents {
             }
         }
 
-        private _applyItemSelection(item: Vidyano.QueryResultItem, action: Action) {
+        private _applyItemSelection(item: Vidyano.QueryResultItem, action: Action | ActionGroup) {
             const args: ISelectedItemsActionArgs = {
                 name: action.name,
                 isVisible: action.isVisible,
@@ -171,6 +171,9 @@ namespace Vidyano.WebComponents {
         }
 
         private _execute(option: number = -1) {
+            if (!(this.action instanceof Vidyano.Action))
+                return;
+
             if (this.canExecute) {
                 if (!this.item)
                     this.action.execute({
@@ -229,7 +232,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _computeSiblingIcon(overflow: boolean, grouped: boolean, isAttached: boolean) {
-            const siblingIcon = (overflow || grouped) && isAttached && this.parentElement != null && Array.from(this.parentElement.children).find((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(c.action))) != null;
+            const siblingIcon = (overflow || grouped) && isAttached && this.parentElement != null && Array.from(this.parentElement.children).find((c: ActionButton) => c.action && Icon.Exists(this._computeIcon(<Action>c.action))) != null;
             this._setSiblingIcon(siblingIcon);
             if (siblingIcon) {
                 Array.from(this.parentElement.children).forEach((ab: ActionButton) => {
@@ -248,6 +251,9 @@ namespace Vidyano.WebComponents {
         }
 
         _viConfigure(actions: IConfigurableAction[]) {
+            if (!(this.action instanceof Vidyano.Action))
+                return;
+
             if ((this.action.parent && this.action.parent.isSystem) || (this.action.query && this.action.query.isSystem))
                 return;
 
