@@ -37,12 +37,6 @@
     }
 
     vi-popup {
-        button.groupActions {
-            span {
-                padding: 0 var(--theme-h5);
-            }
-        }
-
         &[open] button.groupActions {
             background-color: var(--theme-color-faint);
         }
@@ -78,6 +72,10 @@
                 &[source^="Action_"] {
                     width: var(--theme-h2);
                 }
+            }
+
+            span {
+                padding: 0 var(--theme-h4);
             }
         }
 
