@@ -149,6 +149,7 @@
         private _horizontalScrollSpace: number;
         private _trackStart: number;
         private _zenscroll: IZenscroll;
+        private _scrollTrack: "" | "down" | "up" = "";
         readonly hovering: boolean; private _setHovering: (hovering: boolean) => void;
         readonly scrolling: string; private _setScrolling: (scrolling: string) => void;
         readonly atTop: boolean; private _setAtTop: (atTop: boolean) => void;
@@ -355,9 +356,14 @@
                 this.horizontalScrollOffset = this.scroller.scrollLeft;
         }
 
-        private _verticalScrollOffsetChanged(newVerticalScrollOffset: number) {
+        private _verticalScrollOffsetChanged(newVerticalScrollOffset: number, oldScrollOffset: number = 0) {
             if (this.scroller.scrollTop === newVerticalScrollOffset)
                 return;
+
+            if (oldScrollOffset < newVerticalScrollOffset && this._scrollTrack !== "down")
+                this.fire("scroll", { direction: this._scrollTrack = "down" }, { bubbles: true });
+            else if (this._scrollTrack !== "up")
+                this.fire("scroll", { direction: this._scrollTrack = "up" }, { bubbles: true });
 
             this.scroller.scrollTop = newVerticalScrollOffset;
         }
