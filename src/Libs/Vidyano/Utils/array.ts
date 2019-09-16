@@ -74,7 +74,7 @@ if (Array.prototype["orderByDescending"] === undefined) {
         configurable: true,
         value: function orderByDescending<T>(this: T[], selectorOrString: string | ((element: T) => number)): T[] {
             const selector = typeof selectorOrString === "string" ? (element: T) => element[<string>selectorOrString] : selectorOrString;
-            return this.sort((a, b) => selector(b) - selector(a));
+            return this.slice().sort((a, b) => selector(b) - selector(a));
         },
         writable: true
     });
