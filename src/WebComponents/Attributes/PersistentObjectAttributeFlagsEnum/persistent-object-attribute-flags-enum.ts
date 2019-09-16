@@ -1,10 +1,28 @@
 ﻿namespace Vidyano.WebComponents.Attributes {
     "use strict";
 
-    @PersistentObjectAttribute.register
+    @PersistentObjectAttribute.register({
+        properties: {
+            label: {
+                type: String,
+                computed: "_computeLabel(value, app)"
+            }
+        }
+    })
     export class PersistentObjectAttributeFlagsEnum extends WebComponents.Attributes.PersistentObjectAttribute {
         private _disablePopup(readonly: boolean, disabled: boolean, sensitive: boolean): boolean {
             return readonly || disabled || sensitive;
+        }
+
+        private _computeLabel(value: string, app: Vidyano.Application): string {
+            if (!app || !this.attribute)
+                return;
+
+            const translatePrefix = this.attribute.getTypeHint("TranslatePrefix");
+            if (translatePrefix == null)
+                return this.attribute.displayValue;
+
+            return value.split(",").map(v => this.translateMessage(`${translatePrefix}${v.trim()}`)).join(", ");
         }
     }
 
@@ -19,7 +37,7 @@
             },
             label: {
                 type: String,
-                computed: "_computeLabel(option)"
+                computed: "_computeLabel(option, attribute, app)"
             },
             option: Object,
             value: {
@@ -75,7 +93,14 @@
             }
         }
 
-        private _computeLabel(option: PersistentObjectAttributeOption): string {
+        private _computeLabel(option: PersistentObjectAttributeOption, attribute: Vidyano.PersistentObjectAttribute, app: Vidyano.Application): string {
+            if (!app || !attribute)
+                return;
+
+            const translatePrefix = this.attribute.getTypeHint("TranslatePrefix");
+            if (translatePrefix != null)
+                return this.translateMessage(`${translatePrefix}${option.value}`);
+
             return option.value;
         }
 

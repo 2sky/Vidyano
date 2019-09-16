@@ -5,13 +5,13 @@
     <template>
         <link rel="stylesheet" href="persistent-object-attribute-flags-enum.css" />
         <template is="dom-if" if="[[!editing]]">
-            <span sensitive$="[[sensitive]]">[[attribute.displayValue]]</span>
+            <span sensitive$="[[sensitive]]">[[label]]</span>
         </template>
         <template is="dom-if" if="[[editing]]">
             <vi-persistent-object-attribute-edit attribute="[[attribute]]">
                 <vi-popup sticky content disabled$="[[_disablePopup(readOnly, attribute.parent.isFrozen, sensitive)]]">
                     <div header class="layout horizontal flex">
-                        <input class="flex" header value="[[attribute.displayValue]]" readonly placeholder="[[placeholder]]" sensitive$="[[sensitive]]">
+                        <input class="flex" header value="[[label]]" readonly placeholder="[[placeholder]]" sensitive$="[[sensitive]]">
                         <vi-icon source="CaretDown" hidden$="[[readOnly]]"></vi-icon>
                     </div>
                     <ul content>
