@@ -55,7 +55,7 @@ namespace Vidyano.WebComponents.Attributes {
                 return;
             }
 
-            const attributeValue = this.attribute.value.toString();
+            const attributeValue = this.attribute.value.toFixed();
             let myValue = this.value;
             if (this.value && this._decimalSeparator !== ".")
                 myValue = this.value.replace(this._decimalSeparator, ".");
@@ -120,7 +120,7 @@ namespace Vidyano.WebComponents.Attributes {
                 this.attribute.value = newValue;
             }
 
-            let attributeValue = this.attribute.value ? this.attribute.value.toString() : ((this.attribute.isRequired && !this.attribute.type.startsWith("Nullable")) || this.value ? "0" : "");
+            let attributeValue = this.attribute.value ? this.attribute.value.toFixed() : ((this.attribute.isRequired && !this.attribute.type.startsWith("Nullable")) || this.value ? "0" : "");
             if (attributeValue !== this.value) {
                 if (this._decimalSeparator !== ".")
                     this.value = attributeValue.replace(".", this._decimalSeparator);

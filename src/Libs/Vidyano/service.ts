@@ -1270,7 +1270,12 @@ namespace Vidyano {
                     return Service._getServiceTimeString(value, null);
             }
 
-            return typeof (value) === "string" || value == null ? value : String(value);
+            if (typeof (value) === "string" || value == null)
+                return value;
+            else if (value instanceof BigNumber)
+                return value.toFixed();
+            else
+                return String(value);
         }
 
         static numericTypes = [
