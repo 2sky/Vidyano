@@ -10,6 +10,10 @@ interface SortableOptions {
 	draggable?: string;
 	animation?: number;
 	onSort?: Function;
+	filter?: string;
+	disabled?: boolean;
+	onStart?: () => void;
+	onEnd?: (e: { item: any; newINdex: number; oldIndex: number; }) => void;
 }
 
 interface SortableStatic {
