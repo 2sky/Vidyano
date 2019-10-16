@@ -74,6 +74,7 @@
     "alertify.js": "^0.3.11",
     "linqjs": "2sky/linqjs#3.0.3-Beta4",
     "pathjs": "2sky/pathjs#master",
-    "layout": "2sky/layout#master"
+    "layout": "2sky/layout#master",
+    "tslib": "1.10.0"
   }
 }
