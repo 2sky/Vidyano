@@ -29,7 +29,7 @@ namespace Vidyano.WebComponents {
             if (!this.app.service || !this.app.service.application)
                 return;
 
-            this._setProgramUnit(this.app.service.application.programUnits.find(pu => pu.nameKebab === parameters.programUnitName));
+            this._setProgramUnit(this.app.service.application.programUnits.find(pu => pu.nameKebab === parameters.programUnitName || pu.name === parameters.programUnitName));
             if (!this.programUnit) {
                 e.preventDefault();
 
