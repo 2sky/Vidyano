@@ -678,7 +678,7 @@ namespace Vidyano.WebComponents {
             const mappedPathRoute = Vidyano.Path.match(Path.routes.rootPath + App.removeRootPath(path), true);
             if (application) {
                 if (mappedPathRoute && mappedPathRoute.params && mappedPathRoute.params.programUnitName)
-                    return application.programUnits.find(pu => pu.nameKebab === mappedPathRoute.params.programUnitName || pu.name === mappedPathRoute.params.programUnitName);
+                    return application.programUnits.find(pu => pu.nameKebab === mappedPathRoute.params.programUnitName || pu.name === mappedPathRoute.params.programUnitName) || application.programUnits[0];
                 else if (application.programUnits.length > 0)
                     return application.programUnits[0];
             }
