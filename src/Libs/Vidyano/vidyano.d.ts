@@ -12,7 +12,7 @@ declare type NamedArray<T> = Array<T> & {
     [name: string]: T;
 };
 interface Array<T> {
-    distinct<T, U>(this: T[], selector?: (element: T) => T | U): T[];
+    distinct<T, U>(this: T[], selector?: (element: T) => T | U): U[];
     groupBy<T>(this: T[], selector: (element: T) => string): KeyValuePair<string, T[]>[];
     groupBy<T>(this: T[], selector: (element: T) => number): KeyValuePair<number, T[]>[];
     orderBy<T>(this: T[], selector: (element: T) => number | string): T[];

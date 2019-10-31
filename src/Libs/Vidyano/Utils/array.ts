@@ -1,5 +1,5 @@
 ﻿interface Array<T> {
-    distinct<T, U>(this: T[], selector?: (element: T) => T | U): T[];
+    distinct<T, U>(this: T[], selector?: (element: T) => T | U): U[];
     groupBy<T>(this: T[], selector: (element: T) => string): KeyValuePair<string, T[]>[];
     groupBy<T>(this: T[], selector: (element: T) => number): KeyValuePair<number, T[]>[];
     orderBy<T>(this: T[], selector: (element: T) => number | string): T[];
@@ -19,7 +19,7 @@ if (Array.prototype["distinct"] === undefined) {
     Object.defineProperty(Array.prototype, "distinct", {
         configurable: true,
         value: function distinct<T, U>(this: T[], selector: (element: T) => T | U = (element) => element): U[] {
-            return this.reduce((x, y) => x.find(yy => yy === selector(y)) ? x : [...x, selector(y)], []);
+            return this.reduce((x, y) => x.find(yy => yy === selector(y)) !== undefined ? x : [...x, selector(y)], []);
         },
         writable: true
     });
