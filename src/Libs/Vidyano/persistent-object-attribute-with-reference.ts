@@ -68,13 +68,18 @@
 
         _refreshFromResult(resultAttr: PersistentObjectAttribute, resultWins: boolean): boolean {
             const resultAttrWithRef = <PersistentObjectAttributeWithReference>resultAttr;
-            this.objectId = resultAttrWithRef.objectId;
+
+            if (resultWins || this.objectId !== resultAttrWithRef.objectId) {
+                this.objectId = resultAttrWithRef.objectId;
+                this.isValueChanged = resultAttr.isValueChanged;
+            }
 
             const visibilityChanged = super._refreshFromResult(resultAttr, resultWins);
 
             this.displayAttribute = resultAttrWithRef.displayAttribute;
             this.canAddNewReference = resultAttrWithRef.canAddNewReference;
             this.selectInPlace = resultAttrWithRef.selectInPlace;
+
 
             return visibilityChanged;
         }
