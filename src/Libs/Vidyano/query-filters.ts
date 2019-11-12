@@ -93,15 +93,7 @@ namespace Vidyano {
             if (this._filters)
                 this._filters.forEach(f => currentFilters[f.name || ""] = f);
 
-            this._setFilters(this._filtersAsDetail.objects.map(filter => {
-                const existing = currentFilters[filter.getAttributeValue("Name") || ""];
-                if (existing) {
-                    existing.persistentObject.refreshFromResult(filter);
-                    return existing;
-                }
-
-                return new QueryFilter(filter);
-            }));
+            this._setFilters(this._filtersAsDetail.objects.map(filter => new QueryFilter(filter)));
 
             if (setDefaultFilter)
                 this._currentFilter = this._filters.find(f => f.persistentObject.getAttributeValue("IsDefault")) || null;
@@ -170,9 +162,7 @@ namespace Vidyano {
                     this._filtersAsDetail.objects.remove(filter.persistentObject = newFilter);
 
                 this._computeFilters();
-
-                if (!newFilter && filter.persistentObject.isNew)
-                    this.currentFilter = this.filters.find(f => f.name === filter.name);
+                this.currentFilter = this.filters.find(f => f.name === filter.name);
 
                 return result;
             });
@@ -194,6 +184,9 @@ namespace Vidyano {
 
                     await this._filtersPO.save();
                     this._computeFilters();
+
+                    if (this.currentFilter === filter)
+                        this.currentFilter = null;
 
                     return null;
                 });
