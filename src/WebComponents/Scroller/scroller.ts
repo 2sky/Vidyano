@@ -344,7 +344,9 @@
         }
 
         private _scroll(e: Event) {
-            Popup.closeAll(this);
+            if (this.scroller.scrollTop !== this.verticalScrollOffset || this.scroller.scrollLeft !== this.horizontalScrollOffset)
+                Popup.closeAll(this);
+
             this._updateScrollOffsets();
         }
 
