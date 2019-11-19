@@ -141,11 +141,11 @@ declare namespace Vidyano {
         constructor(service: Service, _actionNames?: string[], _actionLabels?: {
             [key: string]: string;
         });
-        readonly isBusy: boolean;
+        get isBusy(): boolean;
         private _setIsBusy;
-        readonly notification: string;
-        readonly notificationType: NotificationType;
-        readonly notificationDuration: number;
+        get notification(): string;
+        get notificationType(): NotificationType;
+        get notificationDuration(): number;
         getAction(name: string): Vidyano.Action;
         setNotification(notification?: string, type?: NotificationType, duration?: number, skipShowNotification?: boolean): void;
         queueWork<T>(work: () => Promise<T>, blockActions?: boolean): Promise<T>;
@@ -170,19 +170,19 @@ declare namespace Vidyano {
         private _selectionRule;
         private _showedOn;
         constructor(_service: Service, item: QueryResultItem);
-        readonly name: string;
-        readonly displayName: string;
-        readonly isPinned: boolean;
-        readonly refreshQueryOnCompleted: boolean;
-        readonly keepSelectionOnRefresh: boolean;
-        readonly offset: number;
-        readonly iconData: string;
-        readonly reverseIconData: string;
-        readonly confirmation: string;
-        readonly options: Array<string>;
-        readonly selectionRule: (count: number) => boolean;
-        readonly showedOn: string[];
-        readonly groupDefinition: ActionDefinition;
+        get name(): string;
+        get displayName(): string;
+        get isPinned(): boolean;
+        get refreshQueryOnCompleted(): boolean;
+        get keepSelectionOnRefresh(): boolean;
+        get offset(): number;
+        get iconData(): string;
+        get reverseIconData(): string;
+        get confirmation(): string;
+        get options(): Array<string>;
+        get selectionRule(): (count: number) => boolean;
+        get showedOn(): string[];
+        get groupDefinition(): ActionDefinition;
     }
 }
 declare namespace Vidyano {
@@ -195,15 +195,15 @@ declare namespace Vidyano {
         constructor(service: Service, definition: ActionDefinition);
         addAction(action: Action): void;
         removeAction(action: Action): void;
-        readonly actions: Action[];
-        readonly name: string;
-        readonly displayName: string;
-        readonly canExecute: boolean;
+        get actions(): Action[];
+        get name(): string;
+        get displayName(): string;
+        get canExecute(): boolean;
         private _setCanExecute;
-        readonly isVisible: boolean;
+        get isVisible(): boolean;
         private _setIsVisible;
-        readonly isPinned: boolean;
-        readonly options: string[];
+        get isPinned(): boolean;
+        get options(): string[];
         private _actionPropertyChanged;
     }
 }
@@ -244,16 +244,19 @@ declare namespace Vidyano {
         displayName: string;
         dependentActions: any[];
         constructor(service: Service, definition: ActionDefinition, owner: ServiceObjectWithActions);
-        readonly parent: PersistentObject;
-        readonly query: Query;
-        offset: number;
-        readonly name: string;
-        readonly group: ActionGroup;
-        canExecute: boolean;
-        block: boolean;
-        isVisible: boolean;
-        readonly isPinned: boolean;
-        readonly options: string[];
+        get parent(): PersistentObject;
+        get query(): Query;
+        get offset(): number;
+        set offset(value: number);
+        get name(): string;
+        get group(): ActionGroup;
+        get canExecute(): boolean;
+        set canExecute(val: boolean);
+        set block(block: boolean);
+        get isVisible(): boolean;
+        set isVisible(val: boolean);
+        get isPinned(): boolean;
+        get options(): string[];
         private _setOptions;
         subscribe(handler: ActionExecutionHandler): ActionExecutionHandlerDispose;
         execute(options?: IActionExecuteOptions): Promise<PersistentObject>;
@@ -356,26 +359,32 @@ declare namespace Vidyano {
         columnSpan: number;
         input: HTMLInputElement;
         constructor(service: Service, attr: IServicePersistentObjectAttribute, parent: PersistentObject);
-        readonly groupKey: string;
-        group: PersistentObjectAttributeGroup;
-        readonly tabKey: string;
-        tab: PersistentObjectAttributeTab;
-        readonly isSystem: boolean;
-        visibility: PersistentObjectAttributeVisibility;
-        readonly isVisible: boolean;
-        validationError: string;
-        readonly rules: string;
+        get groupKey(): string;
+        get group(): PersistentObjectAttributeGroup;
+        set group(group: PersistentObjectAttributeGroup);
+        get tabKey(): string;
+        get tab(): PersistentObjectAttributeTab;
+        set tab(tab: PersistentObjectAttributeTab);
+        get isSystem(): boolean;
+        get visibility(): PersistentObjectAttributeVisibility;
+        set visibility(visibility: PersistentObjectAttributeVisibility);
+        get isVisible(): boolean;
+        get validationError(): string;
+        set validationError(error: string);
+        get rules(): string;
         private _setRules;
-        readonly isRequired: boolean;
+        get isRequired(): boolean;
         private _setIsRequired;
-        readonly isReadOnly: boolean;
+        get isReadOnly(): boolean;
         private _setIsReadOnly;
-        readonly displayValue: string;
-        readonly shouldRefresh: boolean;
-        value: any;
+        get displayValue(): string;
+        get shouldRefresh(): boolean;
+        get value(): any;
+        set value(val: any);
         setValue(val: any, allowRefresh?: boolean): Promise<any>;
-        isValueChanged: boolean;
-        readonly isSensitive: boolean;
+        get isValueChanged(): boolean;
+        set isValueChanged(isValueChanged: boolean);
+        get isSensitive(): boolean;
         getTypeHint(name: string, defaultValue?: string, typeHints?: any, ignoreCasing?: boolean): string;
         _toServiceObject(): any;
         _refreshFromResult(resultAttr: PersistentObjectAttribute, resultWins: boolean): boolean;
@@ -390,7 +399,7 @@ declare namespace Vidyano {
         details: Query;
         lookupAttribute: string;
         constructor(service: Service, attr: any, parent: PersistentObject);
-        readonly objects: Vidyano.PersistentObject[];
+        get objects(): Vidyano.PersistentObject[];
         private _setObjects;
         newObject(): Promise<PersistentObject>;
         _refreshFromResult(resultAttr: PersistentObjectAttribute, resultWins: boolean): boolean;
@@ -407,7 +416,8 @@ declare namespace Vidyano {
         label: string;
         index: number;
         constructor(service: Service, key: string, _attributes: PersistentObjectAttribute[], parent: PersistentObject);
-        attributes: PersistentObjectAttribute[];
+        get attributes(): PersistentObjectAttribute[];
+        set attributes(attributes: PersistentObjectAttribute[]);
     }
 }
 declare namespace Vidyano {
@@ -435,7 +445,8 @@ declare namespace Vidyano {
         private _isVisible;
         tabGroupIndex: number;
         constructor(service: Service, name: string, label: string, target: ServiceObjectWithActions, parent?: PersistentObject, _isVisible?: boolean);
-        isVisible: boolean;
+        get isVisible(): boolean;
+        set isVisible(val: boolean);
     }
     class PersistentObjectAttributeTab extends PersistentObjectTab {
         private _groups;
@@ -445,10 +456,11 @@ declare namespace Vidyano {
         columnCount: number;
         private _attributes;
         constructor(service: Service, _groups: PersistentObjectAttributeGroup[], key: string, id: string, name: string, _layout: any, po: PersistentObject, columnCount: number, isVisible: boolean);
-        readonly layout: any;
+        get layout(): any;
         private _setLayout;
-        readonly attributes: PersistentObjectAttribute[];
-        groups: PersistentObjectAttributeGroup[];
+        get attributes(): PersistentObjectAttribute[];
+        get groups(): PersistentObjectAttributeGroup[];
+        set groups(groups: PersistentObjectAttributeGroup[]);
         saveLayout(layout: any): Promise<any>;
         private _updateAttributes;
     }
@@ -507,25 +519,27 @@ declare namespace Vidyano {
         queries: Query[];
         constructor(service: Service, po: IServicePersistentObject);
         private _createPersistentObjectAttribute;
-        readonly id: string;
-        readonly isSystem: boolean;
-        readonly type: string;
-        readonly isBulkEdit: boolean;
-        tabs: PersistentObjectTab[];
-        readonly isEditing: boolean;
+        get id(): string;
+        get isSystem(): boolean;
+        get type(): string;
+        get isBulkEdit(): boolean;
+        get tabs(): PersistentObjectTab[];
+        set tabs(tabs: PersistentObjectTab[]);
+        get isEditing(): boolean;
         private setIsEditing;
-        readonly breadcrumb: string;
+        get breadcrumb(): string;
         private _setBreadcrumb;
-        readonly isDirty: boolean;
+        get isDirty(): boolean;
         private _setIsDirty;
-        isDeleted: boolean;
-        readonly isFrozen: boolean;
+        get isDeleted(): boolean;
+        set isDeleted(isDeleted: boolean);
+        get isFrozen(): boolean;
         freeze(): void;
         unfreeze(): void;
         getAttribute(name: string): PersistentObjectAttribute;
         getAttributeValue(name: string): any;
         setAttributeValue(name: string, value: any, allowRefresh?: boolean): Promise<any>;
-        readonly lastUpdated: Date;
+        get lastUpdated(): Date;
         private _setLastUpdated;
         getQuery(name: string): Query;
         beginEdit(): void;
@@ -561,20 +575,20 @@ declare namespace Vidyano {
         readonly programUnits: ProgramUnit[];
         readonly hasSensitive: boolean;
         constructor(service: Service, { application, hasSensitive }: IServiceApplication);
-        readonly userId: string;
-        readonly friendlyUserName: string;
-        readonly feedbackId: string;
-        readonly userSettingsId: string;
-        readonly globalSearchId: string;
-        readonly analyticsKey: string;
-        readonly userSettings: any;
-        readonly canProfile: boolean;
-        readonly hasManagement: boolean;
-        readonly session: Vidyano.PersistentObject;
-        readonly routes: IRoutes;
+        get userId(): string;
+        get friendlyUserName(): string;
+        get feedbackId(): string;
+        get userSettingsId(): string;
+        get globalSearchId(): string;
+        get analyticsKey(): string;
+        get userSettings(): any;
+        get canProfile(): boolean;
+        get hasManagement(): boolean;
+        get session(): Vidyano.PersistentObject;
+        get routes(): IRoutes;
         private _setRoutes;
-        readonly poRe: RegExp;
-        readonly queryRe: RegExp;
+        get poRe(): RegExp;
+        get queryRe(): RegExp;
         saveUserSettings(): Promise<any>;
         _updateSession(session: any): void;
     }
@@ -637,11 +651,11 @@ declare namespace Vidyano {
         private _options;
         private _type;
         constructor(_query: Vidyano.Query, _label: string, _name: string, _options: any, _type: string);
-        readonly query: Vidyano.Query;
-        readonly label: string;
-        readonly name: string;
-        readonly options: any;
-        readonly type: string;
+        get query(): Vidyano.Query;
+        get label(): string;
+        get name(): string;
+        get options(): any;
+        get type(): string;
         execute(parameters?: any): Promise<any>;
     }
 }
@@ -678,22 +692,25 @@ declare namespace Vidyano {
         width: string;
         typeHints: any;
         constructor(service: Service, col: IServiceQueryColumn, query: Query);
-        readonly id: string;
-        readonly name: string;
-        readonly type: string;
-        readonly label: string;
-        readonly canFilter: boolean;
-        readonly canSort: boolean;
-        readonly canGroupBy: boolean;
-        readonly canListDistincts: boolean;
-        readonly displayAttribute: string;
-        readonly isSensitive: boolean;
-        readonly isSorting: boolean;
-        readonly sortDirection: SortDirection;
-        selectedDistincts: string[];
-        selectedDistinctsInversed: boolean;
-        distincts: IQueryColumnDistincts;
-        readonly total: QueryResultItemValue;
+        get id(): string;
+        get name(): string;
+        get type(): string;
+        get label(): string;
+        get canFilter(): boolean;
+        get canSort(): boolean;
+        get canGroupBy(): boolean;
+        get canListDistincts(): boolean;
+        get displayAttribute(): string;
+        get isSensitive(): boolean;
+        get isSorting(): boolean;
+        get sortDirection(): SortDirection;
+        get selectedDistincts(): string[];
+        set selectedDistincts(selectedDistincts: string[]);
+        get selectedDistinctsInversed(): boolean;
+        set selectedDistinctsInversed(selectedDistinctsInversed: boolean);
+        get distincts(): IQueryColumnDistincts;
+        set distincts(distincts: IQueryColumnDistincts);
+        get total(): QueryResultItemValue;
         private _setTotal;
         private _setSortDirection;
         _toServiceObject(): any;
@@ -712,10 +729,11 @@ declare namespace Vidyano {
         private _filtersAsDetail;
         private _skipSearch;
         constructor(_query: Query, _filtersPO: Vidyano.PersistentObject);
-        readonly filters: QueryFilter[];
+        get filters(): QueryFilter[];
         private _setFilters;
-        readonly detailsAttribute: PersistentObjectAttributeAsDetail;
-        currentFilter: QueryFilter;
+        get detailsAttribute(): PersistentObjectAttributeAsDetail;
+        get currentFilter(): QueryFilter;
+        set currentFilter(filter: QueryFilter);
         private _computeFilters;
         private _computeFilterData;
         clone(targetQuery: Query): QueryFilters;
@@ -727,9 +745,9 @@ declare namespace Vidyano {
     class QueryFilter extends Vidyano.Common.Observable<QueryFilter> {
         persistentObject: PersistentObject;
         constructor(persistentObject: PersistentObject);
-        readonly name: string;
-        readonly isLocked: boolean;
-        readonly isDefault: boolean;
+        get name(): string;
+        get isLocked(): boolean;
+        get isDefault(): boolean;
     }
 }
 declare namespace Vidyano {
@@ -744,8 +762,8 @@ declare namespace Vidyano {
         persistentObjectId: string;
         objectId: string;
         constructor(service: Service, _item: QueryResultItem, value: any);
-        readonly item: Vidyano.QueryResultItem;
-        readonly column: Vidyano.QueryColumn;
+        get item(): Vidyano.QueryResultItem;
+        get column(): Vidyano.QueryColumn;
         getTypeHint(name: string, defaultValue?: string, typeHints?: any): string;
         getValue(): any;
         _toServiceObject(): any;
@@ -762,11 +780,12 @@ declare namespace Vidyano {
         private _fullValuesByName;
         private _values;
         constructor(service: Service, item: any, query: Query, _isSelected: boolean);
-        readonly values: {
+        get values(): {
             [key: string]: any;
         };
-        isSelected: boolean;
-        readonly ignoreSelect: boolean;
+        get isSelected(): boolean;
+        set isSelected(val: boolean);
+        get ignoreSelect(): boolean;
         getValue(key: string): any;
         getFullValue(key: string): QueryResultItemValue;
         getTypeHint(name: string, defaultValue?: string, typeHints?: any): string;
@@ -857,38 +876,42 @@ declare namespace Vidyano {
         items: QueryResultItem[];
         selectAll: IQuerySelectAll;
         constructor(service: Service, query: any, parent?: PersistentObject, asLookup?: boolean, maxSelectedItems?: number);
-        readonly isSystem: boolean;
-        readonly filters: QueryFilters;
-        readonly canFilter: boolean;
+        get isSystem(): boolean;
+        get filters(): QueryFilters;
+        get canFilter(): boolean;
         private _setCanFilter;
-        readonly hasMore: boolean;
+        get hasMore(): boolean;
         private _setHasMore;
-        readonly canRead: boolean;
-        readonly canReorder: boolean;
-        readonly charts: QueryChart[];
+        get canRead(): boolean;
+        get canReorder(): boolean;
+        get charts(): QueryChart[];
         private _setCharts;
-        currentChart: QueryChart;
-        defaultChartName: string;
-        readonly groupingInfo: IQueryGroupingInfo;
+        get currentChart(): QueryChart;
+        set currentChart(currentChart: QueryChart);
+        get defaultChartName(): string;
+        set defaultChartName(defaultChart: string);
+        get groupingInfo(): IQueryGroupingInfo;
         private _setGroupingInfo;
-        readonly lastUpdated: Date;
+        get lastUpdated(): Date;
         private _setLastUpdated;
-        selectedItems: QueryResultItem[];
+        get selectedItems(): QueryResultItem[];
+        set selectedItems(items: QueryResultItem[]);
         private _selectAllPropertyChanged;
         resetFilters(): Promise<void>;
         selectRange(from: number, to: number): boolean;
-        readonly asLookup: boolean;
-        readonly totalItems: number;
-        readonly labelWithTotalItems: string;
-        sortOptions: ISortOption[];
-        readonly totalItem: QueryResultItem;
+        get asLookup(): boolean;
+        get totalItems(): number;
+        get labelWithTotalItems(): string;
+        get sortOptions(): ISortOption[];
+        get totalItem(): QueryResultItem;
         private _setTotalItem;
+        set sortOptions(options: ISortOption[]);
         group(column: QueryColumn): Promise<QueryResultItem[]>;
         group(by: string): Promise<QueryResultItem[]>;
         reorder(before: QueryResultItem, item: QueryResultItem, after: QueryResultItem): Promise<QueryResultItem[]>;
         private _setSortOptionsFromService;
         private _setTotalItems;
-        readonly isFiltering: boolean;
+        get isFiltering(): boolean;
         private _updateIsFiltering;
         _toServiceObject(): any;
         _setResult(result: IServiceQueryResult): void;
@@ -944,7 +967,7 @@ declare namespace Vidyano {
 declare namespace Vidyano {
     class ServiceHooks {
         private _service;
-        readonly service: Vidyano.Service;
+        get service(): Vidyano.Service;
         createData(data: any): void;
         trackEvent(name: string, option: string, owner: ServiceObjectWithActions): void;
         onInitialize(clientData: IServiceClientData): Promise<IServiceClientData>;
@@ -1010,7 +1033,7 @@ declare namespace Vidyano {
         environment: string;
         environmentVersion: string;
         constructor(serviceUri: string, hooks?: ServiceHooks, isTransient?: boolean);
-        static token: string;
+        static set token(token: string);
         private _createUri;
         private _createData;
         private _getMs;
@@ -1021,29 +1044,33 @@ declare namespace Vidyano {
         private static _decodeBase64;
         private static _getServiceTimeString;
         _getStream(obj: PersistentObject, action?: string, parent?: PersistentObject, query?: Query, selectedItems?: Array<QueryResultItem>, parameters?: any): void;
-        readonly queuedClientOperations: ClientOperations.IClientOperation[];
-        readonly application: Application;
+        get queuedClientOperations(): ClientOperations.IClientOperation[];
+        get application(): Application;
         private _setApplication;
-        readonly initial: Vidyano.PersistentObject;
-        language: ILanguage;
-        requestedLanguage: string;
-        readonly isSignedIn: boolean;
+        get initial(): Vidyano.PersistentObject;
+        get language(): ILanguage;
+        set language(l: ILanguage);
+        get requestedLanguage(): string;
+        set requestedLanguage(val: string);
+        get isSignedIn(): boolean;
         private _setIsSignedIn;
-        readonly languages: ILanguage[];
-        readonly windowsAuthentication: boolean;
-        readonly providers: {
+        get languages(): ILanguage[];
+        get windowsAuthentication(): boolean;
+        get providers(): {
             [name: string]: IProviderParameters;
         };
-        readonly isUsingDefaultCredentials: boolean;
+        get isUsingDefaultCredentials(): boolean;
         private _setIsUsingDefaultCredentials;
-        readonly userName: string;
+        get userName(): string;
         private _setUserName;
-        readonly defaultUserName: string;
-        readonly registerUserName: string;
-        authToken: string;
-        readonly authTokenType: "Basic" | "JWT" | null;
-        profile: boolean;
-        readonly profiledRequests: IServiceRequest[];
+        get defaultUserName(): string;
+        get registerUserName(): string;
+        get authToken(): string;
+        set authToken(val: string);
+        get authTokenType(): "Basic" | "JWT" | null;
+        get profile(): boolean;
+        set profile(val: boolean);
+        get profiledRequests(): IServiceRequest[];
         private _setProfiledRequests;
         getTranslatedMessage(key: string, ...params: string[]): string;
         initialize(skipDefaultCredentialLogin?: boolean): Promise<Application>;
@@ -1402,6 +1429,29 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
+    namespace ClientOperations {
+        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
+    }
+}
+declare namespace Vidyano {
+    export type ServiceBusCallback = (sender: any, message: string, detail: any) => void;
+    export interface ServiceBusSubscriptionDisposer extends Vidyano.Common.ISubjectDisposer {
+    }
+    export interface IServiceBus {
+        send(sender: any, message: string, parameters: any): any;
+        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): ServiceBusSubscriptionDisposer;
+    }
+    class ServiceBusImpl implements IServiceBus {
+        private _topics;
+        private _getTopic;
+        send(message: string, detail?: any): void;
+        send(sender: any, message: string, detail?: any): void;
+        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): Common.ISubjectDisposer;
+    }
+    export const ServiceBus: ServiceBusImpl;
+    export {};
+}
+declare namespace Vidyano {
     interface IServiceQueryResultItemGroup {
         name: string;
         count: number;
@@ -1415,11 +1465,11 @@ declare namespace Vidyano {
         private _items;
         isCollapsed: boolean;
         constructor(query: Query, group: IServiceQueryResultItemGroup, _start: number, _end: number);
-        readonly name: string;
-        readonly count: number;
-        readonly start: number;
-        readonly end: number;
-        readonly items: QueryResultItem[];
+        get name(): string;
+        get count(): number;
+        get start(): number;
+        get end(): number;
+        get items(): QueryResultItem[];
         update(group: IServiceQueryResultItemGroup, start: number, end: number): void;
     }
 }
@@ -1427,33 +1477,14 @@ declare namespace Vidyano {
     class ServiceLanguage extends Vidyano.Common.Observable<ServiceObject> implements ILanguage {
         private _language;
         constructor(_language: ILanguage);
-        readonly culture: string;
-        readonly name: string;
-        readonly isDefault: boolean;
-        messages: {
+        get culture(): string;
+        get name(): string;
+        get isDefault(): boolean;
+        get messages(): {
             [key: string]: string;
         };
+        set messages(value: {
+            [key: string]: string;
+        });
     }
-}
-declare namespace Vidyano {
-    namespace ClientOperations {
-        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
-    }
-}
-declare namespace Vidyano {
-    type ServiceBusCallback = (sender: any, message: string, detail: any) => void;
-    interface ServiceBusSubscriptionDisposer extends Vidyano.Common.ISubjectDisposer {
-    }
-    interface IServiceBus {
-        send(sender: any, message: string, parameters: any): any;
-        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): ServiceBusSubscriptionDisposer;
-    }
-    class ServiceBusImpl implements IServiceBus {
-        private _topics;
-        private _getTopic;
-        send(message: string, detail?: any): void;
-        send(sender: any, message: string, detail?: any): void;
-        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): Common.ISubjectDisposer;
-    }
-    const ServiceBus: ServiceBusImpl;
 }

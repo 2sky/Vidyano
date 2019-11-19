@@ -249,7 +249,7 @@ namespace Vidyano.WebComponents {
         }
 
         protected _getTargetRect(target: HTMLElement): { targetRect: ClientRect, transformedRect?: ClientRect } {
-            let targetRect = target.getBoundingClientRect();
+            let targetRect = target.getBoundingClientRect() as { left: number, top: number, bottom: number, right: number, width: number, height: number };
             if (target === this) {
                 targetRect = {
                     left: targetRect.left,
