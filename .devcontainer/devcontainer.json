@@ -1,0 +1,32 @@
+{
+	"name": "Vidyano Web2 Runner",
+	"dockerFile": "Dockerfile",
+	
+	"mounts": [
+		"source=${localWorkspaceFolder},target=/vidyano,type=bind",
+		"source=${env:HOME}${env:USERPROFILE}/.aspnet/https,target=/home/vscode/.aspnet/https,type=bind"
+	],
+	"containerEnv": {
+		//Override the default HTTP endpoints - need to listen to '*' for appPort to work
+		"ASPNETCORE_Kestrel__Endpoints__Https__Url": "https://*:443",
+		"ASPNETCORE_Kestrel__Certificates__Default__Password": "923639d6-6d5a-4b2b-92b8-9a0cf8557eee",
+		"ASPNETCORE_Kestrel__Certificates__Default__Path": "/home/vscode/.aspnet/https/aspnetapp.pfx"
+	},
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"ritwickdey.live-sass"
+	],
+
+	// A port or array of ports that should be automatically forwarded locally when the environment is running.
+	"appPort": [ "8888:443" ],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "npm install && grunt && ((dotnet /app/Vidyano.Web2.Runner.dll > /vidyano/web2-runner-log.txt) &)"
+}

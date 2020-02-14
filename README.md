@@ -20,6 +20,33 @@ You can play around with a live demo at [demo.vidyano.com](https://demo.vidyano.
 * [Custom Templates](docs/custom-templates.md)
 * [Session Presenter](docs/session-presenter.md)
 
+## How to run this repository
+**1. Prerequisites**
+- Visual Studio Code (https://code.visualstudio.com/)
+    - Install the Remote - Containers extension (https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+- .NET Core (https://dotnet.microsoft.com/download/dotnet-core/3.1)
+    - Create/Export your dev certificate
+        - On Windows (via Powershell):
+            - ```dotnet dev-certs https --trust; dotnet dev-certs https -ep "$env:USERPROFILE/.aspnet/https/aspnetapp.pfx" -p "923639d6-6d5a-4b2b-92b8-9a0cf8557eee"```
+        - On MacOS/Linux (via Terminal)
+            - ```dotnet dev-certs https --trust; dotnet dev-certs https -ep "${HOME}/.aspnet/https/aspnetapp.pfx" -p "923639d6-6d5a-4b2b-92b8-9a0cf8557eee"```
+
+**2. Opening the development container**
+    
+- Clone https://github.com/2sky/vidyano locally.
+
+- Start VS Code
+
+- Run the ```Remote-Containers: Open Folder in Container...``` command and select the local folder
+
+**3. Using your development container in Vidyano**
+
+In the ```web.config``` add a new appSetting: 
+```xml
+<add key="Vidyano.Web2Version" value="https://localhost:8888/"/>
+```
+
 ## Tested using BrowserStack Automated Testing
 
 Vidyano is constantly tested on real browsers using BrowserStack.
