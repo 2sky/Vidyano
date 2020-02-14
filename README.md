@@ -22,29 +22,35 @@ You can play around with a live demo at [demo.vidyano.com](https://demo.vidyano.
 
 ## How to run this repository
 **1. Prerequisites**
-- Visual Studio Code (https://code.visualstudio.com/)
-    - Install the Remote - Containers extension (https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+- Install [Docker](https://www.docker.com/) installed on your system and make sure Linux containers are enabled.
 
-- .NET Core (https://dotnet.microsoft.com/download/dotnet-core/3.1)
-    - Create/Export your dev certificate
-        - On Windows (via Powershell):
-            - ```dotnet dev-certs https --trust; dotnet dev-certs https -ep "$env:USERPROFILE/.aspnet/https/aspnetapp.pfx" -p "923639d6-6d5a-4b2b-92b8-9a0cf8557eee"```
-        - On MacOS/Linux (via Terminal)
-            - ```dotnet dev-certs https --trust; dotnet dev-certs https -ep "${HOME}/.aspnet/https/aspnetapp.pfx" -p "923639d6-6d5a-4b2b-92b8-9a0cf8557eee"```
+- Install [Visual Studio Code](https://code.visualstudio.com/)
+    - Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+- Install [.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
+
+- Create/Export your self-signed developer certificate
+    ```sh
+    // On Windows (via PowerShell)
+    dotnet dev-certs https --trust; dotnet dev-certs https -ep "$env:USERPROFILE/.aspnet/https/aspnetapp.pfx" -p "923639d6-6d5a-4b2b-92b8-9a0cf8557eee"
+
+    // On MacOS/Linux (via Terminal)
+    dotnet dev-certs https --trust; dotnet dev-certs https -ep "${HOME}/.aspnet/https/aspnetapp.pfx" -p "923639d6-6d5a-4b2b-92b8-9a0cf8557eee"
+    ```
 
 **2. Opening the development container**
     
-- Clone https://github.com/2sky/vidyano locally.
+- Clone https://github.com/2sky/vidyano locally and make sure the drive is shared in Docker.
 
 - Start VS Code
 
 - Run the ```Remote-Containers: Open Folder in Container...``` command and select the local folder
 
-**3. Using your development container in Vidyano**
+**3. Using your new Vidyano Web² development code in an existing Vidyano applicaiton**
 
-In the ```web.config``` add a new appSetting: 
+In the ```web.config``` of your Vidyano application, add a new ```appSetting``` :
 ```xml
-<add key="Vidyano.Web2Version" value="https://localhost:8888/"/>
+<add key="Vidyano.Web2Version" value="https://localhost:8888" />
 ```
 
 ## Tested using BrowserStack Automated Testing
@@ -56,4 +62,4 @@ Big thanks to BrowserStack for providing this testing environment to us.
 
 ## Copyright and license
 
-Code and documentation copyright 2011-2016 2sky NV. Code released under the MIT license available [here](./LICENSE)
+Code and documentation copyright 2011-2020 2sky NV. Code released under the MIT license available [here](./LICENSE)
