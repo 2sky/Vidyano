@@ -6,8 +6,7 @@
     "target": "es2017",
     "lib": [
       "es6",
-      "webworker",
-
+      "webworker"
     ],
     "outFile": "service-worker.js",
     "declaration": true,

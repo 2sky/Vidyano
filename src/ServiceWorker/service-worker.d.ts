@@ -1,3 +1,4 @@
+/// <reference path="../Libs/idb/idb.d.ts" />
 declare type KeyValuePair<T, U> = {
     key: T;
     value: U;

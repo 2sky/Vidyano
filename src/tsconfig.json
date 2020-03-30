@@ -12,5 +12,11 @@
       "inlineSourceMap": true,
       "inlineSources": true,
       "noEmitHelpers": true
-    }
+    },
+    "include": [
+      "Libs/Shims/*.ts",
+      "Libs/Typings/**/*.d.ts",
+      "Libs/Vidyano/vidyano.d.ts",
+      "WebComponents/**/*.ts"
+    ]
   }

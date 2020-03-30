@@ -75,8 +75,8 @@ module.exports = function (grunt) {
                 }
             },
             webcomponents: {
-                cwd: 'src/WebComponents/',
-                tsconfig: "src/WebComponents/tsconfig.json",
+                cwd: 'src/',
+                tsconfig: "src/tsconfig.json",
                 options: {
                     fast: 'never'
                 }
@@ -130,24 +130,12 @@ module.exports = function (grunt) {
                 options: {
                     project: 'src',
                     out: 'dist/Vidyano.Web2/vidyano.d.ts'
-                },
-                default: {
-                    src: ['src/**/*.ts', '!src/ServiceWorker/**/*.ts', '!src/Libs/Vidyano/vidyano.d.ts', '!src/Libs/WebComponents/**/*.d.ts', 'node_modules/typescript/lib/lib.d.ts']
                 }
             },
             serviceworker: {
                 options: {
                     project: 'src/ServiceWorker',
-                    out: 'dist/Vidyano.Web2/vidyano-service-worker.d.ts'
-                },
-                default: {
-                    src: [
-                        'src/Libs/Typings/Vidyano.Common/vidyano.common.d.ts',
-                        'src/Libs/Typings/bignumber.js/bignumber.d.ts',
-                        'src/Libs/idb/idb.d.ts',
-                        'src/ServiceWorker/**/*.ts',
-                        '!src/ServiceWorker/FilesGenerator/**/*.ts',
-                    ]
+                    out: 'dist/Vidyano.Web2/vidyano.service-worker.d.ts'
                 }
             }
         },
@@ -231,7 +219,8 @@ module.exports = function (grunt) {
         "ts:webcomponents",
         "ts:serviceworker_files_generator",
         "run:dev",
-        "ts:serviceworker"
+        "ts:serviceworker",
+        "dtsGenerator"
     ]);
 
     grunt.registerTask("nuget", [
