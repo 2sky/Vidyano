@@ -3,6 +3,7 @@
 /// <reference path="../Typings/bignumber.js/bignumber.d.ts" />
 /// <reference path="../Typings/PromiseQueue/promise-queue.d.ts" />
 /// <reference path="../Typings/Vidyano.Common/vidyano.common.d.ts" />
+/// <reference path="ServiceBus/service-bus.ts" />
 /// <reference path="Utils/types.ts" />
 /// <reference path="Utils/array.ts" />
 /// <reference path="cultures.ts" />

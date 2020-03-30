@@ -294,6 +294,24 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace Vidyano {
+    export type ServiceBusCallback = (sender: any, message: string, detail: any) => void;
+    export interface ServiceBusSubscriptionDisposer extends Vidyano.Common.ISubjectDisposer {
+    }
+    export interface IServiceBus {
+        send(sender: any, message: string, parameters: any): any;
+        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): ServiceBusSubscriptionDisposer;
+    }
+    class ServiceBusImpl implements IServiceBus {
+        private _topics;
+        private _getTopic;
+        send(message: string, detail?: any): void;
+        send(sender: any, message: string, detail?: any): void;
+        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): Common.ISubjectDisposer;
+    }
+    export const ServiceBus: ServiceBusImpl;
+    export {};
+}
 declare type KeyValuePair<T, U> = {
     key: T;
     value: U;
@@ -1520,24 +1538,6 @@ declare namespace Vidyano {
     namespace ClientOperations {
         function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
     }
-}
-declare namespace Vidyano {
-    export type ServiceBusCallback = (sender: any, message: string, detail: any) => void;
-    export interface ServiceBusSubscriptionDisposer extends Vidyano.Common.ISubjectDisposer {
-    }
-    export interface IServiceBus {
-        send(sender: any, message: string, parameters: any): any;
-        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): ServiceBusSubscriptionDisposer;
-    }
-    class ServiceBusImpl implements IServiceBus {
-        private _topics;
-        private _getTopic;
-        send(message: string, detail?: any): void;
-        send(sender: any, message: string, detail?: any): void;
-        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): Common.ISubjectDisposer;
-    }
-    export const ServiceBus: ServiceBusImpl;
-    export {};
 }
 declare namespace Vidyano {
     class Language extends Vidyano.Common.Observable<ServiceObject> implements Service.Language {

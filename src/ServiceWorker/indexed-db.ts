@@ -2,7 +2,7 @@
 
 namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
-    export type RequestMapKey = "GetQuery" | "GetPersistentObject"
+    export type RequestMapKey = "GetQuery" | "GetPersistentObject";
 
     export type StoreGetClientDataRequest = {
         id: "GetClientData";
@@ -12,7 +12,7 @@ namespace Vidyano {
     export type StoreGetApplicationRequest = {
         id: "GetApplication";
         response: Service.ApplicationResponse;
-    }
+    };
 
     export type StoreQuery = {
         newPersistentObject?: Service.PersistentObject;
@@ -76,7 +76,7 @@ namespace Vidyano {
         save<K extends keyof StoreNameMap>(store: K, entry: StoreNameMap[K]): Promise<void>;
         saveAll<K extends keyof StoreNameMap>(storeName: K, entries: StoreNameMap[K][]): Promise<void>;
         add<K extends keyof StoreNameMap>(storeName: K, entry: StoreNameMap[K]): Promise<void>;
-        addAll<K extends keyof StoreNameMap>(storeName: K, entries: StoreNameMap[K][]): Promise<void>
+        addAll<K extends keyof StoreNameMap>(storeName: K, entries: StoreNameMap[K][]): Promise<void>;
         load<K extends keyof StoreNameMap, I extends keyof RequestsStoreNameMap>(store: "Requests", key: I): Promise<RequestsStoreNameMap[I]>;
         load<K extends keyof StoreNameMap>(store: K, key: string | string[]): Promise<StoreNameMap[K]>;
         loadAll<K extends keyof StoreNameMap>(storeName: K, indexName?: string, key?: any): Promise<StoreNameMap[K][]>;
