@@ -1,3 +1,5 @@
+/// <reference path="../Libs/idb/idb.d.ts" />
+
 namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject"

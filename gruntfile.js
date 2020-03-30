@@ -126,13 +126,29 @@ module.exports = function (grunt) {
             }
         },
         dtsGenerator: {
-            options: {
-                name: 'Vidyano',
-                baseDir: 'src',
-                out: 'dist/Vidyano.Web2/vidyano.d.ts'
-            },
             default: {
-                src: ['src/**/*.ts', '!src/Libs/Vidyano/vidyano.d.ts', '!src/Libs/WebComponents/**/*.d.ts', 'node_modules/typescript/lib/lib.d.ts']
+                options: {
+                    project: 'src',
+                    out: 'dist/Vidyano.Web2/vidyano.d.ts'
+                },
+                default: {
+                    src: ['src/**/*.ts', '!src/ServiceWorker/**/*.ts', '!src/Libs/Vidyano/vidyano.d.ts', '!src/Libs/WebComponents/**/*.d.ts', 'node_modules/typescript/lib/lib.d.ts']
+                }
+            },
+            serviceworker: {
+                options: {
+                    project: 'src/ServiceWorker',
+                    out: 'dist/Vidyano.Web2/vidyano-service-worker.d.ts'
+                },
+                default: {
+                    src: [
+                        'src/Libs/Typings/Vidyano.Common/vidyano.common.d.ts',
+                        'src/Libs/Typings/bignumber.js/bignumber.d.ts',
+                        'src/Libs/idb/idb.d.ts',
+                        'src/ServiceWorker/**/*.ts',
+                        '!src/ServiceWorker/FilesGenerator/**/*.ts',
+                    ]
+                }
             }
         },
         cssmin: {
@@ -238,6 +254,11 @@ module.exports = function (grunt) {
         "uglify",
         "cssmin",
         "dtsGenerator"
+    ]);
+
+    grunt.registerTask("dts", [
+        "dtsGenerator:default",
+        "dtsGenerator:serviceworker",
     ]);
 
     grunt.registerTask("cdn", [

@@ -6,7 +6,8 @@
     "target": "es2017",
     "lib": [
       "es6",
-      "webworker"
+      "webworker",
+
     ],
     "outFile": "service-worker.js",
     "declaration": true,
@@ -15,8 +16,8 @@
   "include": [
     "../Libs/Typings/Vidyano.Common/vidyano.common.d.ts",
     "../Libs/Typings/bignumber.js/bignumber.d.ts",
+    "../Libs/Vidyano/Utils/types.ts",
     "../Libs/Vidyano/cultures.ts",
-    "../Libs/idb/idb.d.ts",
     "data-type.ts",
     "service.ts",
     "indexed-db.ts",

@@ -2,6 +2,6 @@
   "name": "vidyano",
   "private": true,
   "devDependencies": {
-    "@types/node": "^10.3.1"
+    "@types/node": "^10.17.17"
   }
 }

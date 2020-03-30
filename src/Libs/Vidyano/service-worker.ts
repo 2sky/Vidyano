@@ -7,39 +7,31 @@
     class ServiceWorkerMonitor implements IServiceWorkerMonitor {
         private _activation: Promise<void>;
 
-        constructor(private _register?: Promise<ServiceWorkerRegistration>) {
-            if (this.available) {
-                let resolveUpdater: () => void;
+        constructor(private _registration?: Promise<ServiceWorkerRegistration>) {
+            if (!this.available)
+                return;
 
-                this._activation = new Promise(async resolve => {
-                    const reg = await this._register;
+            this._activation = new Promise(async resolve => {
+                const reg = await this._registration;
 
-                    reg.onupdatefound = () => {
-                        var installingWorker = reg.installing;
-
-                        installingWorker.onstatechange = () => {
-                            if (installingWorker.state === "activated") {
-                                console.log("New service worker installed successfully, reloading page...");
-                                document.location.reload();
-                            }
-                        };
+                reg.onupdatefound = () => {
+                    reg.installing.onstatechange = () => {
+                        if (reg.installing.state === "activated") {
+                            console.log("New service worker installed successfully, reloading page...");
+                            document.location.reload();
+                        }
                     };
+                };
 
-                    try {
-                        await reg.unregister();
-                    }
-                    catch { /* Throws service-worker.js not found exception while offline. */}
-
-                    if (!reg.installing && reg.active && reg.active.state === "activated") {
-                        resolve();
-                        return;
-                    }
-                });
-            }
+                if (!reg.installing && reg.active && reg.active.state === "activated") {
+                    resolve();
+                    return;
+                }
+            });
         }
 
         get available(): boolean {
-            return this._register != null;
+            return this._registration != null;
         }
 
         get activation(): Promise<void> {

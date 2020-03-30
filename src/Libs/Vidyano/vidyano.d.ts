@@ -1,6 +1,17 @@
 /// <reference path="../Typings/bignumber.js/bignumber.d.ts" />
 /// <reference path="../Typings/PromiseQueue/promise-queue.d.ts" />
 /// <reference path="../Typings/Vidyano.Common/vidyano.common.d.ts" />
+declare namespace Vidyano {
+    abstract class DataType {
+        static isDateTimeType(type: string): boolean;
+        static isNumericType(type: string): boolean;
+        static isBooleanType(type: string): boolean;
+        private static _getDate;
+        private static _getServiceTimeString;
+        static fromServiceString(value: string, type: string): any;
+        static toServiceString(value: any, type: string): string;
+    }
+}
 declare namespace Vidyano.Service {
     type KeyValue<T> = {
         [key: string]: T;
@@ -1278,7 +1289,6 @@ declare namespace Vidyano {
         private _postJSONProcess;
         private _getJSON;
         private static _decodeBase64;
-        private static _getServiceTimeString;
         _getStream(obj: PersistentObject, action?: string, parent?: PersistentObject, query?: Query, selectedItems?: Array<QueryResultItem>, parameters?: any): void;
         get queuedClientOperations(): ClientOperations.IClientOperation[];
         get application(): Application;
@@ -1507,15 +1517,27 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
-    abstract class DataType {
-        static isDateTimeType(type: string): boolean;
-        static isNumericType(type: string): boolean;
-        static isBooleanType(type: string): boolean;
-        private static _getDate;
-        private static _getServiceTimeString;
-        static fromServiceString(value: string, type: string): any;
-        static toServiceString(value: any, type: string): string;
+    namespace ClientOperations {
+        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
     }
+}
+declare namespace Vidyano {
+    export type ServiceBusCallback = (sender: any, message: string, detail: any) => void;
+    export interface ServiceBusSubscriptionDisposer extends Vidyano.Common.ISubjectDisposer {
+    }
+    export interface IServiceBus {
+        send(sender: any, message: string, parameters: any): any;
+        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): ServiceBusSubscriptionDisposer;
+    }
+    class ServiceBusImpl implements IServiceBus {
+        private _topics;
+        private _getTopic;
+        send(message: string, detail?: any): void;
+        send(sender: any, message: string, detail?: any): void;
+        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): Common.ISubjectDisposer;
+    }
+    export const ServiceBus: ServiceBusImpl;
+    export {};
 }
 declare namespace Vidyano {
     class Language extends Vidyano.Common.Observable<ServiceObject> implements Service.Language {
@@ -1553,27 +1575,4 @@ declare namespace Vidyano {
         get items(): QueryResultItem[];
         update(group: Service.QueryResultItemGroup, start: number, end: number): void;
     }
-}
-declare namespace Vidyano {
-    namespace ClientOperations {
-        function refreshForUpdate(hooks: ServiceHooks, path: string, replaceCurrent?: boolean): void;
-    }
-}
-declare namespace Vidyano {
-    export type ServiceBusCallback = (sender: any, message: string, detail: any) => void;
-    export interface ServiceBusSubscriptionDisposer extends Vidyano.Common.ISubjectDisposer {
-    }
-    export interface IServiceBus {
-        send(sender: any, message: string, parameters: any): any;
-        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): ServiceBusSubscriptionDisposer;
-    }
-    class ServiceBusImpl implements IServiceBus {
-        private _topics;
-        private _getTopic;
-        send(message: string, detail?: any): void;
-        send(sender: any, message: string, detail?: any): void;
-        subscribe(message: string, callback: ServiceBusCallback, receiveLast?: boolean): Common.ISubjectDisposer;
-    }
-    export const ServiceBus: ServiceBusImpl;
-    export {};
 }

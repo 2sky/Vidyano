@@ -161,7 +161,7 @@ namespace Vidyano {
                 };
                 r.onerror = () => {
                     if (r.status === 0) {
-                        const noInternet = NoInternetMessage.messages.get(navigator.language.split("-")[0].toLowerCase()) || NoInternetMessage.messages.get("en");
+                        const noInternet = NoInternetMessage.messages[navigator.language.split("-")[0].toLowerCase()] || NoInternetMessage.messages["en"];
                         if (url.endsWith("GetClientData?v=2"))
                             reject(noInternet);
                         else
@@ -277,54 +277,6 @@ namespace Vidyano {
 
             return decodeURIComponent(output);
         }
-
-        private static _getServiceTimeString = function (timeString: string, defaultValue: string) {
-            if (!StringEx.isNullOrWhiteSpace(timeString)) {
-                timeString = timeString.trim();
-
-                // 00:00.0000000
-                let ms = "0000000";
-                const parts = timeString.split(".");
-                if (parts.length === 2) {
-                    ms = parts[1];
-                    timeString = parts[0];
-                }
-                else if (parts.length !== 1)
-                    return defaultValue;
-
-                const length = timeString.length;
-                if (length >= 4) {
-                    const values = timeString.split(":"), valuesLen = values.length;
-                    let days = 0, hours, minutes, seconds = 0;
-
-                    if ((length === 4 || length === 5) && valuesLen === 2) {
-                        // [0]0:00
-                        hours = parseInt(values[0], 10);
-                        minutes = parseInt(values[1], 10);
-                    }
-                    else if ((length === 7 || length === 8) && valuesLen === 3) {
-                        // [0]0:00:00
-                        hours = parseInt(values[0], 10);
-                        minutes = parseInt(values[1], 10);
-                        seconds = parseInt(values[2], 10);
-                    }
-                    else if (length >= 10 && valuesLen === 4) {
-                        // 0:00:00:00
-                        days = parseInt(values[0], 10);
-                        hours = parseInt(values[1], 10);
-                        minutes = parseInt(values[2], 10);
-                        seconds = parseInt(values[3], 10);
-                    }
-                    else
-                        return defaultValue;
-
-                    if (!isNaN(days) && !isNaN(hours) && !isNaN(minutes) && !isNaN(seconds) && days >= 0 && hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59 && seconds >= 0 && seconds <= 59)
-                        return StringEx.format("{0}:{1:d2}:{2:d2}:{3:d2}.{4}", days, hours, minutes, seconds, ms.padRight(7, "0"));
-                }
-            }
-
-            return defaultValue;
-        };
 
         _getStream(obj: PersistentObject, action?: string, parent?: PersistentObject, query?: Query, selectedItems?: Array<QueryResultItem>, parameters?: any) {
             const data = this._createData("getStream");

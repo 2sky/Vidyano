@@ -1,5 +1,8 @@
 namespace Vidyano {
-    export let version = "latest";
+    // See issue: https://github.com/Microsoft/TypeScript/issues/14877
+    const self_service_worker_global_scope = (self as unknown) as ServiceWorkerGlobalScope;
+
+    export const version = "latest";
     const CACHE_NAME = `vidyano.web2.${version}`;
     const WEB2_BASE = "WEB2_BASE";
 
@@ -85,18 +88,12 @@ namespace Vidyano {
                 `${WEB2_BASE}Libs/Vidyano/vidyano.common.js`,
                 `${WEB2_BASE}Libs/idb/idb.js`);
 
-            //await (self as ServiceWorkerGlobalScope).skipWaiting();
-
             this._log("Installed ServiceWorker.");
+            await self_service_worker_global_scope.skipWaiting();
         }
 
         private async _onActivate(e: ExtendableEvent) {
-            try {
-                await (self as ServiceWorkerGlobalScope).clients.claim();
-            } catch (ee) {
-                debugger;
-                throw ee;
-            }
+            await self_service_worker_global_scope.clients.claim();
 
             const oldCaches = (await caches.keys()).filter(cache => cache.startsWith("vidyano.web2.") && cache !== CACHE_NAME);
             while (oldCaches.length > 0) {
@@ -315,7 +312,7 @@ namespace Vidyano {
         }
 
         private async _send(message: string) {
-            const clients = await ((self as ServiceWorkerGlobalScope).clients).matchAll();
+            const clients = await self_service_worker_global_scope.clients.matchAll();
             await Promise.all(clients.map(client => {
                 const channel = new MessageChannel();
                 client.postMessage(message, [channel.port2]);

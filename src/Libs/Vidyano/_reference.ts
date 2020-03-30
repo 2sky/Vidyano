@@ -1,3 +1,4 @@
+/// <reference path="../../ServiceWorker/data-type.ts" />
 /// <reference path="../../ServiceWorker/service.ts" />
 /// <reference path="../Typings/bignumber.js/bignumber.d.ts" />
 /// <reference path="../Typings/PromiseQueue/promise-queue.d.ts" />
