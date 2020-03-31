@@ -1,4 +1,7 @@
-/// <reference path="../Libs/idb/idb.d.ts" />
+namespace idb  {
+    export interface Database extends idb.DB {
+    }
+}
 
 namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
@@ -86,7 +89,7 @@ namespace Vidyano {
 
     export class IndexedDB {
         private _initializing: Promise<void>;
-        private _db: idb.DB;
+        private _db: idb.Database;
 
         constructor() {
             this._initializing = new Promise<void>(async resolve => {
@@ -112,7 +115,7 @@ namespace Vidyano {
             });
         }
 
-        get db(): idb.DB {
+        get db(): idb.Database {
             return this._db;
         }
 

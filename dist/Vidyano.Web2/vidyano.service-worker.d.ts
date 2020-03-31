@@ -1,4 +1,3 @@
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -292,6 +291,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -367,7 +370,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -394,6 +397,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -594,7 +598,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -888,6 +891,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -963,7 +970,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -990,6 +997,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -1190,7 +1198,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -1484,6 +1491,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -1559,7 +1570,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -1586,6 +1597,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -1786,7 +1798,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -2080,6 +2091,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -2155,7 +2170,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -2182,6 +2197,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -2382,7 +2398,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -2676,6 +2691,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -2751,7 +2770,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -2778,6 +2797,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -2978,7 +2998,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -3272,6 +3291,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -3347,7 +3370,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -3374,6 +3397,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -3574,7 +3598,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -3868,6 +3891,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -3943,7 +3970,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -3970,6 +3997,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -4170,7 +4198,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -4464,6 +4491,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -4539,7 +4570,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -4566,6 +4597,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -4766,7 +4798,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -5060,6 +5091,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -5135,7 +5170,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -5162,6 +5197,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -5362,7 +5398,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -5656,6 +5691,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -5731,7 +5770,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -5758,6 +5797,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -5958,7 +5998,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -6252,6 +6291,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -6327,7 +6370,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -6354,6 +6397,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -6554,7 +6598,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -6848,6 +6891,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -6923,7 +6970,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -6950,6 +6997,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -7150,7 +7198,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -7444,6 +7491,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -7519,7 +7570,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -7546,6 +7597,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -7746,7 +7798,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -8040,6 +8091,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -8115,7 +8170,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -8142,6 +8197,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;
@@ -8342,7 +8398,6 @@ declare namespace Vidyano {
     }
     export {};
 }
-/// <reference path="../Libs/idb/idb.d.ts" />
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -8636,6 +8691,10 @@ declare namespace Vidyano.Service {
         value: string;
     };
 }
+declare namespace idb {
+    interface Database extends idb.DB {
+    }
+}
 declare namespace Vidyano {
     export type Store = "Requests" | "Queries" | "QueryResults" | "ActionClassesById" | "Changes" | "Settings";
     export type RequestMapKey = "GetQuery" | "GetPersistentObject";
@@ -8711,7 +8770,7 @@ declare namespace Vidyano {
         private _initializing;
         private _db;
         constructor();
-        get db(): idb.DB;
+        get db(): idb.Database;
         createContext(): Promise<IndexedDBTransaction>;
         createContext(): Promise<IIndexedDBContext>;
         saveOffline(offline: Service.PersistentObject): Promise<void>;
@@ -8738,6 +8797,7 @@ declare namespace Vidyano {
         private get authToken();
         private set authToken(value);
         private _log;
+        protected getPreloadFiles(): string[];
         private _onInstall;
         private _onActivate;
         private _onFetch;

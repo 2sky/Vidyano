@@ -11,7 +11,7 @@
                 "NullableDateTimeOffset",
                 "DateTimeOffset"
             ].indexOf(type) >= 0;
-        } 
+        }
 
         static isNumericType(type: string): boolean {
             return [

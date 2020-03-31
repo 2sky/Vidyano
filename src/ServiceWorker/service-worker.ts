@@ -56,12 +56,20 @@ namespace Vidyano {
             console.log("SW: " + message);
         }
 
+        protected getPreloadFiles(): string[] {
+            return [];
+        }
+
         private async _onInstall(e: ExtendableEvent) {
             console.log("Installing Vidyano Web2 version " + version);
 
             vidyanoFiles.splice(0, vidyanoFiles.length, ...[
                 `${WEB2_BASE}`,
             ].concat(vidyanoFiles.map(f => `${WEB2_BASE}${f}`)));
+
+            this.getPreloadFiles().forEach(file => {
+                vidyanoFiles.push(file);
+            });
 
             const cache = await caches.open(CACHE_NAME);
             await Promise.all(vidyanoFiles.map(async url => {
