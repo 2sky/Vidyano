@@ -16,10 +16,7 @@
 
                 reg.onupdatefound = () => {
                     reg.installing.onstatechange = () => {
-                        if (!reg.installing)
-                            console.log(reg);
-
-                        if (reg.installing?.state === "activated") {
+                        if (reg.active?.state === "activated") {
                             console.log("New service worker installed successfully, reloading page...");
                             document.location.reload();
                         }

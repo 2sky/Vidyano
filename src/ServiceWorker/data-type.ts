@@ -46,7 +46,7 @@
                 "YesNo",
                 "NullableBoolean"
             ].indexOf(type) >= 0;
-        } 
+        }
 
         private static _getDate = function (yearString: string, monthString: string, dayString: string, hourString: string, minuteString: string, secondString: string, msString: string) {
             const year = parseInt(yearString, 10);

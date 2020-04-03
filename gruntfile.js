@@ -131,12 +131,17 @@ module.exports = function (grunt) {
                     project: 'src',
                     out: 'dist/Vidyano.Web2/vidyano.d.ts'
                 }
-            },
-            serviceworker: {
-                options: {
-                    project: 'src/ServiceWorker',
-                    out: 'dist/Vidyano.Web2/vidyano.service-worker.d.ts'
-                }
+            }
+        },
+        concat: {
+            serviceworker_dts: {
+                src: [
+                    "src/Libs/Typings/Vidyano.Common/vidyano.common.d.ts",
+                    "src/Libs/Typings/bignumber.js/bignumber.d.ts",
+                    "src/Libs/idb/idb.d.ts",
+                    "src/ServiceWorker/service-worker.d.ts"
+                ],
+                dest: "dist/Vidyano.Web2/vidyano.service-worker.d.ts"
             }
         },
         cssmin: {
@@ -220,7 +225,8 @@ module.exports = function (grunt) {
         "ts:serviceworker_files_generator",
         "run:dev",
         "ts:serviceworker",
-        "dtsGenerator"
+        "dtsGenerator",
+        "concat:serviceworker_dts"
     ]);
 
     grunt.registerTask("nuget", [
@@ -242,7 +248,8 @@ module.exports = function (grunt) {
         "replace:nugetPackageVersion",
         "uglify",
         "cssmin",
-        "dtsGenerator"
+        "dtsGenerator",
+        "concat:serviceworker_dts"
     ]);
 
     grunt.registerTask("dts", [
@@ -272,6 +279,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-bower-task");
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-cssmin");
+    grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-copy");
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-run');
