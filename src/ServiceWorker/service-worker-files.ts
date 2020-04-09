@@ -28,6 +28,7 @@ namespace Vidyano {
         "Libs/iron-overlay-behavior/iron-overlay-manager.html",
         "Libs/iron-resizable-behavior/iron-resizable-behavior.html",
         "Libs/iron-scroll-target-behavior/iron-scroll-target-behavior.html",
+        "Libs/jszip/jszip.js",
         "Libs/layout/layout.html",
         "Libs/linqjs/linq.min.js",
         "Libs/marked/lib/marked.js",

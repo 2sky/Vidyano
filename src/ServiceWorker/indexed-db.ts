@@ -1,62 +1,43 @@
 namespace Vidyano {
-    export class IndexedDB<StoreName extends string> {
-        private _initializing: Promise<void>;
-        private _db: idb.DB;
+    export abstract class IndexedDB {
+        constructor(private readonly name: string, private readonly version: number) {
+        }
 
-        constructor() {
-            this._initializing = new Promise<void>(async resolve => {
-                this._db = await idb.open("vidyano.offline", 1, upgrade => {
-                    upgrade.createObjectStore("Requests", { keyPath: "id" });
-                    const queries = upgrade.createObjectStore("Queries", { keyPath: "id" });
-                    queries.createIndex("WithResults", "hasResults");
-                    queries.createIndex("ByPersistentObjectId", "persistentObject.id");
-                    queries.createIndex("ByPersistentObjectIdWithResults", ["persistentObject.id", "hasResults"]);
+        protected abstract initialize(upgrade: idb.UpgradeDB);
 
-                    const queryResults = upgrade.createObjectStore("QueryResults", { keyPath: ["persistentObjectId", "id"] });
-                    queryResults.createIndex("ByPersistentObjectId", "persistentObjectId");
-
-                    upgrade.createObjectStore("PersistentObjects", { keyPath: "id" });
-                    upgrade.createObjectStore("ActionClassesById", { keyPath: "id" });
-
-                    upgrade.createObjectStore("Changes", { keyPath: "id", autoIncrement: true });
-
-                    upgrade.createObjectStore("Settings", { keyPath: "key" });
-                });
-
-                resolve();
+        private async _open(): Promise<idb.DB> {
+            return await idb.open(this.name, this.version, upgrade => {
+                this.initialize(upgrade);
             });
         }
 
-        get db(): idb.DB {
-            return this._db;
-        }
+        async transaction(callback: (transaction: IndexedDBTransaction) => Promise<any>, ...storeNames: string[]): Promise<any> {
+            const db = await this._open();
 
-        async createContext(): Promise<IndexedDBContext<StoreName>> {
-            await this._initializing;
+            try {
+                const transaction = db.transaction(storeNames, "readwrite");
 
-            return new IndexedDBContext(this);
+                const result = await callback(new IndexedDBTransaction(transaction));
+                await transaction.complete;
+
+                return result;
+            }
+            finally {
+                db.close();
+            }
         }
     }
 
-    class IndexedDBContext<StoreName extends string> {
-        private readonly _transaction: idb.Transaction;
-
-        constructor(private _db: IndexedDB<StoreName>) {
-            this._transaction = _db.db.transaction(["Requests", "Queries", "QueryResults", "ActionClassesById", "Changes", "viSettings"], "readwrite");
-            this._transaction.complete.catch(e => {
-                if (!e) // Abort also requires the transaction complete catch
-                    return;
-
-                console.error(e);
-            });
+    export class IndexedDBTransaction {
+        constructor(private readonly _transaction: idb.Transaction) {
         }
 
-        async clear(storeName: StoreName): Promise<void> {
+        async clear(storeName: string): Promise<void> {
             const store = this._transaction.objectStore(storeName);
             await store.clear();
         }
 
-        async exists(storeName: StoreName, key: string | string[]): Promise<boolean> {
+        async exists(storeName: string, key: string | string[]): Promise<boolean> {
             const store = this._transaction.objectStore(storeName);
             return !!await store.getKey(key);
         }
@@ -65,35 +46,35 @@ namespace Vidyano {
             return this._transaction.complete;
         }
 
-        async save(storeName: StoreName, entry?: any): Promise<void> {
+        async save(storeName: string, entry?: any): Promise<void> {
             await this._transaction.objectStore(storeName).put(entry);
         }
 
-        async saveAll(storeName: StoreName, entries: any[]): Promise<void> {
+        async saveAll(storeName: string, entries: any[]): Promise<void> {
             const store = this._transaction.objectStore(storeName);
 
             for (let i = 0; i < entries.length; i++)
                 await store.put(entries[i]);
         }
 
-        async add(storeName: StoreName, entry: any): Promise<void> {
+        async add(storeName: string, entry: any): Promise<void> {
             const store = this._transaction.objectStore(storeName);
             store.add(entry);
         }
 
-        async addAll(storeName: StoreName, entries: any[]): Promise<void> {
+        async addAll(storeName: string, entries: any[]): Promise<void> {
             const store = this._transaction.objectStore(storeName);
 
             for (let i = 0; i < entries.length; i++)
                 store.add(entries[i]);
         }
 
-        async load(storeName: StoreName, key: string | string[]): Promise<any> {
+        async load(storeName: string, key: string | string[]): Promise<any> {
             const store = this._transaction.objectStore(storeName);
             return await store.get(key);
         }
 
-        async loadAll(storeName: StoreName, indexName?: string, key?: any): Promise<any[]> {
+        async loadAll(storeName: string, indexName?: string, key?: any): Promise<any[]> {
             const store = this._transaction.objectStore(storeName);
 
             if (indexName)
@@ -102,9 +83,9 @@ namespace Vidyano {
             return await store.getAll(key);
         }
 
-        async deleteAll<K extends keyof StoreName>(storeName: string, condition: (item: any) => boolean): Promise<number>;
-        async deleteAll<K extends keyof StoreName>(storeName: string, index: string, indexKey: IDBValidKey, condition: (item: any) => boolean): Promise<number>;
-        async deleteAll<K extends keyof StoreName>(storeName: string, indexOrCondition: string | ((item: any) => boolean), indexKey?: IDBValidKey, condition?: (item: any) => boolean): Promise<number> {
+        async deleteAll<K extends keyof string>(storeName: string, condition: (item: any) => boolean): Promise<number>;
+        async deleteAll<K extends keyof string>(storeName: string, index: string, indexKey: IDBValidKey, condition: (item: any) => boolean): Promise<number>;
+        async deleteAll<K extends keyof string>(storeName: string, indexOrCondition: string | ((item: any) => boolean), indexKey?: IDBValidKey, condition?: (item: any) => boolean): Promise<number> {
             const store = this._transaction.objectStore(storeName);
             let cursor: idb.Cursor<any, any>;
 
@@ -126,6 +107,68 @@ namespace Vidyano {
             }
 
             return nDeleted;
+        }
+    }
+
+    export class IndexedDBVidyano extends IndexedDB {
+        constructor() {
+            super("vidyano", 1);
+        }
+
+        protected initialize(upgrade: idb.UpgradeDB) {
+            if (upgrade.oldVersion < 1) {
+                upgrade.createObjectStore("Requests", { keyPath: "id" });
+                upgrade.createObjectStore("Settings", { keyPath: "key" });
+            }
+        }
+
+        async setting(key: string, value?: string): Promise<string> {
+            return this.transaction(async tx => {
+                if (value) {
+                    await tx.save("Settings", {
+                        key: key,
+                        value: value
+                    });
+                }
+                else
+                    await tx.deleteAll("Settings", setting => {
+                        return setting.key === key;
+                    });
+
+                return value;
+            }, "Settings");
+        }
+
+        async getClientData(): Promise<Service.ClientData> {
+            return this.transaction(async tx => {
+                const request = await tx.load("Requests", "GetClientData");
+                return request.response;
+            }, "Requests");
+        }
+
+        async saveClientData(clientData: Service.ClientData): Promise<void> {
+            return this.transaction(async tx => {
+                await tx.save("Requests", {
+                    id: "GetClientData",
+                    response: clientData
+                });
+            }, "Requests");
+        }
+
+        async getApplication(): Promise<Service.ApplicationResponse> {
+            return this.transaction(async tx => {
+                const request = await tx.load("Requests", "GetApplication");
+                return request.response;
+            }, "Requests");
+        }
+
+        async saveApplication(application: Service.ApplicationResponse): Promise<void> {
+            return this.transaction(async tx => {
+                await tx.save("Requests", {
+                    id: "GetApplication",
+                    response: application
+                });
+            }, "Requests");
         }
     }
 }

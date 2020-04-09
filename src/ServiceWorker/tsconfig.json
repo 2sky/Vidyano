@@ -15,6 +15,9 @@
   "include": [
     "../Libs/Typings/bignumber.js/bignumber.d.ts",
     "../Libs/Typings/Vidyano.Common/vidyano.common.d.ts",
+    "../Libs/Vidyano/Utils/array.ts",
+    "../Libs/Vidyano/Utils/types.ts",
+    "../Libs/Vidyano/cultures.ts",
     "../Libs/idb/idb.d.ts",
     "data-type.ts",
     "service.ts",

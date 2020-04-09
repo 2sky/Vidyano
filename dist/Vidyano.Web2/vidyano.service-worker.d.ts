@@ -1652,6 +1652,88 @@ declare namespace idb {
 
 /** This is your entry point to the API. It's exposed to the global scope unless you're using a module system such as browserify, in which case it's the exported object. */
 declare var idb: idb.IDBStatic;
+interface Array<T> {
+    distinct<T, U>(this: T[], selector?: (element: T) => T | U): U[];
+    groupBy<T>(this: T[], selector: (element: T) => string): KeyValuePair<string, T[]>[];
+    groupBy<T>(this: T[], selector: (element: T) => number): KeyValuePair<number, T[]>[];
+    orderBy<T>(this: T[], selector: (element: T) => number | string): T[];
+    orderBy<T>(this: T[], property: string): T[];
+    orderByDescending<T>(this: T[], selector: (element: T) => number): T[];
+    orderByDescending<T>(this: T[], property: string): T[];
+    min<T>(this: T[], selector: (element: T) => number): number;
+    max<T>(this: T[], selector: (element: T) => number): number;
+    sum<T>(this: T[], selector: (element: T) => number): number;
+}
+interface ArrayConstructor {
+    range(start: number, end: number, step?: number): number[];
+}
+declare type KeyValuePair<T, U> = {
+    key: T;
+    value: U;
+};
+declare type KeyValue<T> = {
+    [key: string]: T;
+};
+declare type NamedArray<T> = Array<T> & {
+    [name: string]: T;
+};
+declare namespace Vidyano {
+    class CultureInfo {
+        name: string;
+        numberFormat: ICultureInfoNumberFormat;
+        dateFormat: ICultureInfoDateFormat;
+        static currentCulture: CultureInfo;
+        static invariantCulture: CultureInfo;
+        static cultures: KeyValue<CultureInfo>;
+        constructor(name: string, numberFormat: ICultureInfoNumberFormat, dateFormat: ICultureInfoDateFormat);
+    }
+    interface ICultureInfoNumberFormat {
+        naNSymbol: string;
+        negativeSign: string;
+        positiveSign: string;
+        negativeInfinityText: string;
+        positiveInfinityText: string;
+        percentSymbol: string;
+        percentGroupSizes: Array<number>;
+        percentDecimalDigits: number;
+        percentDecimalSeparator: string;
+        percentGroupSeparator: string;
+        percentPositivePattern: string;
+        percentNegativePattern: string;
+        currencySymbol: string;
+        currencyGroupSizes: Array<number>;
+        currencyDecimalDigits: number;
+        currencyDecimalSeparator: string;
+        currencyGroupSeparator: string;
+        currencyNegativePattern: string;
+        currencyPositivePattern: string;
+        numberGroupSizes: Array<number>;
+        numberDecimalDigits: number;
+        numberDecimalSeparator: string;
+        numberGroupSeparator: string;
+    }
+    interface ICultureInfoDateFormat {
+        amDesignator: string;
+        pmDesignator: string;
+        dateSeparator: string;
+        timeSeparator: string;
+        gmtDateTimePattern: string;
+        universalDateTimePattern: string;
+        sortableDateTimePattern: string;
+        dateTimePattern: string;
+        longDatePattern: string;
+        shortDatePattern: string;
+        longTimePattern: string;
+        shortTimePattern: string;
+        yearMonthPattern: string;
+        firstDayOfWeek: number;
+        dayNames: Array<string>;
+        shortDayNames: Array<string>;
+        minimizedDayNames: Array<string>;
+        monthNames: Array<string>;
+        shortMonthNames: Array<string>;
+    }
+}
 declare namespace Vidyano {
     abstract class DataType {
         static isDateTimeType(type: string): boolean;
@@ -1946,46 +2028,78 @@ declare namespace Vidyano.Service {
     };
 }
 declare namespace Vidyano {
-    export class IndexedDB<StoreName extends string> {
-        private _initializing;
-        private _db;
-        constructor();
-        get db(): idb.DB;
-        createContext(): Promise<IndexedDBContext<StoreName>>;
+    abstract class IndexedDB {
+        private readonly name;
+        private readonly version;
+        constructor(name: string, version: number);
+        protected abstract initialize(upgrade: idb.UpgradeDB): any;
+        private _open;
+        transaction(callback: (transaction: IndexedDBTransaction) => Promise<any>, ...storeNames: string[]): Promise<any>;
     }
-    class IndexedDBContext<StoreName extends string> {
-        private _db;
+    class IndexedDBTransaction {
         private readonly _transaction;
-        constructor(_db: IndexedDB<StoreName>);
-        clear(storeName: StoreName): Promise<void>;
-        exists(storeName: StoreName, key: string | string[]): Promise<boolean>;
+        constructor(_transaction: idb.Transaction);
+        clear(storeName: string): Promise<void>;
+        exists(storeName: string, key: string | string[]): Promise<boolean>;
         saveChanges(): Promise<void>;
-        save(storeName: StoreName, entry?: any): Promise<void>;
-        saveAll(storeName: StoreName, entries: any[]): Promise<void>;
-        add(storeName: StoreName, entry: any): Promise<void>;
-        addAll(storeName: StoreName, entries: any[]): Promise<void>;
-        load(storeName: StoreName, key: string | string[]): Promise<any>;
-        loadAll(storeName: StoreName, indexName?: string, key?: any): Promise<any[]>;
-        deleteAll<K extends keyof StoreName>(storeName: string, condition: (item: any) => boolean): Promise<number>;
-        deleteAll<K extends keyof StoreName>(storeName: string, index: string, indexKey: IDBValidKey, condition: (item: any) => boolean): Promise<number>;
+        save(storeName: string, entry?: any): Promise<void>;
+        saveAll(storeName: string, entries: any[]): Promise<void>;
+        add(storeName: string, entry: any): Promise<void>;
+        addAll(storeName: string, entries: any[]): Promise<void>;
+        load(storeName: string, key: string | string[]): Promise<any>;
+        loadAll(storeName: string, indexName?: string, key?: any): Promise<any[]>;
+        deleteAll<K extends keyof string>(storeName: string, condition: (item: any) => boolean): Promise<number>;
+        deleteAll<K extends keyof string>(storeName: string, index: string, indexKey: IDBValidKey, condition: (item: any) => boolean): Promise<number>;
     }
-    export {};
+    class IndexedDBVidyano extends IndexedDB {
+        constructor();
+        protected initialize(upgrade: idb.UpgradeDB): void;
+        setting(key: string, value?: string): Promise<string>;
+        getClientData(): Promise<Service.ClientData>;
+        saveClientData(clientData: Service.ClientData): Promise<void>;
+        getApplication(): Promise<Service.ApplicationResponse>;
+        saveApplication(application: Service.ApplicationResponse): Promise<void>;
+    }
 }
 declare namespace Vidyano {
-    const version = "latest";
-    class ServiceWorker {
-        private serviceUri?;
-        private _verbose?;
-        constructor(serviceUri?: string, _verbose?: boolean);
+    export const version = "latest";
+    export type Fetcher<TPayload, TResult> = (payload?: TPayload) => Promise<TResult>;
+    interface IFetcher<TPayload, TResult> {
+        payload?: TPayload;
+        request?: Request;
+        response?: Response;
+        fetch: Fetcher<TPayload, TResult>;
+    }
+    export abstract class ServiceWorker<T extends IndexedDB> {
+        private _db;
+        private _vidyanoDb;
+        private readonly serviceUri;
+        private _clientData;
+        private _application;
+        constructor(serviceUri?: string);
+        protected abstract onCreateDatabase(): T;
+        get db(): T;
+        private get vidyanoDb();
+        get clientData(): Service.ClientData;
+        get application(): Service.ApplicationResponse;
         private _log;
-        protected getPreloadFiles(): string[];
+        protected abstract getPreloadFiles(files: string[]): string[];
         private _onInstall;
+        protected onInstall(): Promise<any>;
         private _onActivate;
+        protected onActivate(): Promise<any>;
         private _onFetch;
-        private _send;
+        protected onFetch(request: Request, cache: Cache): Promise<Response>;
+        protected onGetClientData(): Promise<Service.ClientData>;
+        protected onCacheClientData(clientData: Service.ClientData): Promise<void>;
+        protected onGetApplication(): Promise<Service.ApplicationResponse>;
+        protected onCacheApplication(application: Service.ApplicationResponse): Promise<void>;
+        broadcast(message: string): Promise<void>;
+        protected createFetcher<TPayload, TResult>(originalRequest: Request): Promise<IFetcher<TPayload, TResult>>;
         protected createRequest(data: any, request: Request): Request;
         protected createResponse(data: any, response?: Response): Response;
     }
+    export {};
 }
 declare namespace Vidyano {
     const vidyanoFiles: string[];

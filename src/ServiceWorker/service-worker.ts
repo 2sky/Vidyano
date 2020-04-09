@@ -6,10 +6,23 @@ namespace Vidyano {
     const CACHE_NAME = `vidyano.web2.${version}`;
     const WEB2_BASE = "WEB2_BASE" + "/";
 
-    export class ServiceWorker {
-        constructor(private serviceUri?: string, private _verbose?: boolean) {
-            if (!serviceUri)
-                this.serviceUri = location.href.split("service-worker.js")[0];
+    export type Fetcher<TPayload, TResult> = (payload?: TPayload) => Promise<TResult>;
+    interface IFetcher<TPayload, TResult> {
+        payload?: TPayload;
+        request?: Request;
+        response?: Response;
+        fetch: Fetcher<TPayload, TResult>;
+    }
+
+    export abstract class ServiceWorker<T extends IndexedDB> {
+        private _db: T;
+        private _vidyanoDb: IndexedDBVidyano;
+        private readonly serviceUri: string;
+        private _clientData: Service.ClientData;
+        private _application: Service.ApplicationResponse;
+
+        constructor(serviceUri?: string) {
+            this.serviceUri = serviceUri ?? location.href.split("service-worker.js")[0];
 
             self.addEventListener("install", (e: ExtendableEvent) => {
                 self_service_worker_global_scope.skipWaiting();
@@ -19,20 +32,29 @@ namespace Vidyano {
             self.addEventListener("fetch", (e: FetchEvent) => e.respondWith(this._onFetch(e)));
         }
 
-        // get db(): IndexedDB {
-        //     return this._db || (this._db = new IndexedDB());
-        // }
+        protected abstract onCreateDatabase(): T;
+
+        get db(): T {
+            return this._db || (this._db = this.onCreateDatabase());
+        }
+
+        private get vidyanoDb(): IndexedDBVidyano {
+            return this._vidyanoDb || (this._vidyanoDb = new IndexedDBVidyano());
+        }
+
+        get clientData(): Service.ClientData {
+            return this._clientData;
+        }
+
+        get application(): Service.ApplicationResponse {
+            return this._application;
+        }
 
         private _log(message: string) {
-            if (!this._verbose)
-                return;
-
             console.log("SW: " + message);
         }
 
-        protected getPreloadFiles(): string[] {
-            return [];
-        }
+        protected abstract getPreloadFiles(files: string[]): string[];
 
         private async _onInstall(e: ExtendableEvent) {
             console.log("Installing Vidyano Web2 version " + version);
@@ -42,12 +64,9 @@ namespace Vidyano {
                 `${WEB2_BASE}`,
             ].concat(vidyanoFiles.map(f => `${WEB2_BASE}${f}`)));
 
-            this.getPreloadFiles().forEach(file => {
-                vidyanoFiles.push(file);
-            });
-
+            const files = this.getPreloadFiles(vidyanoFiles);
             const cache = await caches.open(CACHE_NAME);
-            await Promise.all(vidyanoFiles.map(async url => {
+            await Promise.all(files.map(async url => {
                 const request = new Request(url);
                 const response = await fetch(request);
 
@@ -71,7 +90,13 @@ namespace Vidyano {
                 `${WEB2_BASE}Libs/Vidyano/vidyano.common.js`,
                 `${WEB2_BASE}Libs/idb/idb.js`);
 
+            await this.onInstall();
+
             this._log(`Installed ServiceWorker. Time taken: ${(new Date().getTime() - start) / 1000}s.`);
+        }
+
+        protected async onInstall(): Promise<any> {
+            return Promise.resolve();
         }
 
         private async _onActivate(e: ExtendableEvent) {
@@ -86,14 +111,57 @@ namespace Vidyano {
                     console.error("Failed uninstalling Vidyano Web2 version " + cacheName.substr(13));
             }
 
+            await this.onActivate();
+
             this._log("Activated ServiceWorker");
         }
 
+        protected async onActivate(): Promise<any> {
+            return Promise.resolve();
+        }
+
         private async _onFetch(e: FetchEventInit) {
+            if (!globalThis.idb) {
+                self.importScripts(
+                    `${WEB2_BASE}Libs/bignumber.js/bignumber.min.js`,
+                    `${WEB2_BASE}Libs/Vidyano/vidyano.common.js`,
+                    `${WEB2_BASE}Libs/idb/idb.js`);
+            }
+
             try {
                 let response: Response;
 
+                if (e.request.method === "GET" && e.request.url.endsWith("GetClientData?v=2")) {
+                    const fetcher = await this.createFetcher<any, Service.ClientData>(e.request);
+                    let response = await fetcher.fetch();
+                    if (!response)
+                        response = await this.onGetClientData();
+                    else {
+                        await this.onCacheClientData(response);
+
+                    }
+
+                    return this.createResponse(response);
+                }
+
+                if (e.request.method === "POST") {
+                    if (e.request.url.endsWith("GetApplication")) {
+                        const fetcher = await this.createFetcher<Service.GetApplicationRequest, Service.ApplicationResponse>(e.request);
+                        let response = await fetcher.fetch(fetcher.payload);
+                        if (!response)
+                            response = await this.onGetApplication();
+                        else
+                            await this.onCacheApplication(response);
+
+                        return this.createResponse(response);
+                    }
+                }
+
                 const cache = await caches.open(CACHE_NAME);
+                response = await this.onFetch(e.request, cache);
+                if (response)
+                    return response;
+
                 if (!!(response = await cache.match(e.request)))
                     return response;
                 else {
@@ -103,7 +171,9 @@ namespace Vidyano {
                 try {
                     response = await fetch(e.request);
                 }
-                catch (error) { }
+                catch (error) {
+                    // Do nothing
+                }
 
                 if (e.request.method === "GET") {
                     if (response) {
@@ -136,12 +206,54 @@ namespace Vidyano {
             }
         }
 
-        private async _send(message: string) {
+        protected async onFetch(request: Request, cache: Cache): Promise<Response> {
+            return null;
+        }
+
+        protected onGetClientData(): Promise<Service.ClientData> {
+            return this.vidyanoDb.getClientData();
+        }
+
+        protected onCacheClientData(clientData: Service.ClientData): Promise<void> {
+            return this.vidyanoDb.saveClientData(clientData);
+        }
+
+        protected async onGetApplication(): Promise<Service.ApplicationResponse> {
+            return this.vidyanoDb.getApplication();
+        }
+
+        protected onCacheApplication(application: Service.ApplicationResponse): Promise<void> {
+            return this.vidyanoDb.saveApplication(application);
+        }
+
+        async broadcast(message: string) {
             const clients = await self_service_worker_global_scope.clients.matchAll();
             await Promise.all(clients.map(client => {
                 const channel = new MessageChannel();
                 client.postMessage(message, [channel.port2]);
             }));
+        }
+
+        protected async createFetcher<TPayload, TResult>(originalRequest: Request): Promise<IFetcher<TPayload, TResult>> {
+            const fetcher: IFetcher<any, any> = {
+                payload: originalRequest.headers.get("Content-type") === "application/json" ? await originalRequest.clone().json() : await originalRequest.text(),
+                fetch: null
+            };
+
+            fetcher.fetch = async payload => {
+                const fetchRquest = this.createRequest(payload, originalRequest);
+                try {
+                    fetcher.response = await fetch(fetchRquest);
+                }
+                catch (ex) {
+                    await this.broadcast("Offline");
+                    return;
+                }
+
+                return await fetcher.response.json();
+            };
+
+            return fetcher;
         }
 
         protected createRequest(data: any, request: Request): Request {
