@@ -2062,15 +2062,14 @@ declare namespace Vidyano {
     }
 }
 declare namespace Vidyano {
-    export const version = "latest";
-    export type Fetcher<TPayload, TResult> = (payload?: TPayload) => Promise<TResult>;
-    interface IFetcher<TPayload, TResult> {
-        payload?: TPayload;
+    const version = "latest";
+    interface IFetcher {
+        payload?: any;
         request?: Request;
         response?: Response;
-        fetch: Fetcher<TPayload, TResult>;
+        fetch: () => Promise<any>;
     }
-    export abstract class ServiceWorker<T extends IndexedDB> {
+    abstract class ServiceWorker<T extends IndexedDB> {
         private _db;
         private _vidyanoDb;
         private readonly serviceUri;
@@ -2083,23 +2082,27 @@ declare namespace Vidyano {
         get clientData(): Service.ClientData;
         get application(): Service.ApplicationResponse;
         private _log;
+        protected cache(fetcher: IFetcher, cache: Cache): any;
+        protected cache(request: Request, response: Response, cache?: Cache): any;
+        private _cache;
         protected abstract getPreloadFiles(files: string[]): string[];
         private _onInstall;
         protected onInstall(): Promise<any>;
         private _onActivate;
         protected onActivate(): Promise<any>;
         private _onFetch;
-        protected onFetch(request: Request, cache: Cache): Promise<Response>;
+        private _onFetchVidyano;
+        protected onFetch(fetcher: IFetcher): Promise<Response>;
+        protected onCacheMiss(request: Request): Promise<Response>;
         protected onGetClientData(): Promise<Service.ClientData>;
         protected onCacheClientData(clientData: Service.ClientData): Promise<void>;
         protected onGetApplication(): Promise<Service.ApplicationResponse>;
         protected onCacheApplication(application: Service.ApplicationResponse): Promise<void>;
         broadcast(message: string): Promise<void>;
-        protected createFetcher<TPayload, TResult>(originalRequest: Request): Promise<IFetcher<TPayload, TResult>>;
+        protected createFetcher(originalRequest: Request): Promise<IFetcher>;
         protected createRequest(data: any, request: Request): Request;
         protected createResponse(data: any, response?: Response): Response;
     }
-    export {};
 }
 declare namespace Vidyano {
     const vidyanoFiles: string[];

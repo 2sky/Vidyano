@@ -6,12 +6,11 @@ namespace Vidyano {
     const CACHE_NAME = `vidyano.web2.${version}`;
     const WEB2_BASE = "WEB2_BASE" + "/";
 
-    export type Fetcher<TPayload, TResult> = (payload?: TPayload) => Promise<TResult>;
-    interface IFetcher<TPayload, TResult> {
-        payload?: TPayload;
+    export interface IFetcher {
+        payload?: any;
         request?: Request;
         response?: Response;
-        fetch: Fetcher<TPayload, TResult>;
+        fetch: () => Promise<any>;
     }
 
     export abstract class ServiceWorker<T extends IndexedDB> {
@@ -70,19 +69,7 @@ namespace Vidyano {
                 const request = new Request(url);
                 const response = await fetch(request);
 
-                if (request.url !== response.url) {
-                    const redirect = new Response(null, {
-                        status: 302,
-                        headers: new Headers({
-                            "location": response.url
-                        })
-                    });
-
-                    cache.put(request, redirect);
-                    cache.put(new Request(response.url), response);
-                }
-                else
-                    cache.put(request, response);
+                this.cache(new Request(url), response, cache);
             }));
 
             self.importScripts(
@@ -129,45 +116,26 @@ namespace Vidyano {
             }
 
             try {
-                let response: Response;
-
-                if (e.request.method === "GET" && e.request.url.endsWith("GetClientData?v=2")) {
-                    const fetcher = await this.createFetcher<any, Service.ClientData>(e.request);
-                    let response = await fetcher.fetch();
-                    if (!response)
-                        response = await this.onGetClientData();
-                    else {
-                        await this.onCacheClientData(response);
-
-                    }
-
-                    return this.createResponse(response);
-                }
-
-                if (e.request.method === "POST") {
-                    if (e.request.url.endsWith("GetApplication")) {
-                        const fetcher = await this.createFetcher<Service.GetApplicationRequest, Service.ApplicationResponse>(e.request);
-                        let response = await fetcher.fetch(fetcher.payload);
-                        if (!response)
-                            response = await this.onGetApplication();
-                        else
-                            await this.onCacheApplication(response);
-
-                        return this.createResponse(response);
-                    }
-                }
-
-                const cache = await caches.open(CACHE_NAME);
-                response = await this.onFetch(e.request, cache);
+                // Handle Vidyano requests
+                let response = await this._onFetchVidyano(e);
                 if (response)
                     return response;
 
+                // Allow implementor to handle request
+                response = await this.onFetch(await this.createFetcher(e.request));
+                if (response)
+                    return response;
+
+                const cache = await caches.open(CACHE_NAME);
                 if (!!(response = await cache.match(e.request)))
                     return response;
                 else {
-                    console.warn("No cache hit for: " + e.request.url);
+                    response = await this.onCacheMiss(e.request);
+                    if (response)
+                        return response;
                 }
 
+                // Launch request
                 try {
                     response = await fetch(e.request);
                 }
@@ -175,28 +143,12 @@ namespace Vidyano {
                     // Do nothing
                 }
 
-                if (e.request.method === "GET") {
-                    if (response) {
-                        if (response.status !== 0 && e.request.url !== response.url) {
-                            cache.put(new Request(response.url), response);
-                            response = new Response(null, {
-                                status: 302,
-                                headers: new Headers({
-                                    "location": response.url
-                                })
-                            });
-
-                            cache.put(e.request, response);
-                        }
-                        else
-                            cache.put(e.request, response.clone());
-                    }
-                    else
-                        response = await caches.match(e.request);
-                }
+                // Cache GET requests
+                if (e.request.method === "GET" && response)
+                    this.cache(e.request, response, cache);
 
                 if (!response && e.request.url.startsWith(this.serviceUri) && e.request.method === "GET")
-                    return await caches.match(this.serviceUri); // Fallback to root document when a deeplink is loaded directly
+                    return await cache.match(this.serviceUri); // Fallback to root document when a deeplink is loaded directly
 
                 return response;
             }
@@ -206,8 +158,40 @@ namespace Vidyano {
             }
         }
 
-        protected async onFetch(request: Request, cache: Cache): Promise<Response> {
+        private async _onFetchVidyano(e: FetchEventInit): Promise<Response> {
+            if (e.request.method === "GET" && e.request.url.endsWith("GetClientData?v=2")) {
+                const fetcher = await this.createFetcher(e.request);
+                let response = await fetcher.fetch();
+                if (!response)
+                    response = await this.onGetClientData();
+                else
+                    await this.onCacheClientData(response);
+
+                return this.createResponse(response);
+            }
+
+            if (e.request.method === "POST") {
+                if (e.request.url.endsWith("GetApplication")) {
+                    const fetcher = await this.createFetcher(e.request);
+                    let response = await fetcher.fetch();
+                    if (!response)
+                        response = await this.onGetApplication();
+                    else
+                        await this.onCacheApplication(response);
+
+                    return this.createResponse(response);
+                }
+            }
+
             return null;
+        }
+
+        protected async onFetch(fetcher: IFetcher): Promise<Response> {
+            return null;
+        }
+
+        protected async onCacheMiss(request: Request): Promise<Response> {
+            return Promise.resolve(null);
         }
 
         protected onGetClientData(): Promise<Service.ClientData> {
@@ -226,6 +210,24 @@ namespace Vidyano {
             return this.vidyanoDb.saveApplication(application);
         }
 
+        protected async cache(request: Request, response: Response, cache: Cache): Promise<void> {
+            response = response.clone();
+
+            if (request.url !== response.url) {
+                const redirect = new Response(null, {
+                    status: 302,
+                    headers: new Headers({
+                        "location": response.url
+                    })
+                });
+
+                await cache.put(request, redirect);
+                await cache.put(new Request(response.url), response);
+            }
+            else
+                await cache.put(request, response);
+        }
+
         async broadcast(message: string) {
             const clients = await self_service_worker_global_scope.clients.matchAll();
             await Promise.all(clients.map(client => {
@@ -234,31 +236,44 @@ namespace Vidyano {
             }));
         }
 
-        protected async createFetcher<TPayload, TResult>(originalRequest: Request): Promise<IFetcher<TPayload, TResult>> {
-            const fetcher: IFetcher<any, any> = {
-                payload: originalRequest.headers.get("Content-type") === "application/json" ? await originalRequest.clone().json() : await originalRequest.text(),
-                fetch: null
-            };
+        protected async createFetcher(originalRequest: Request): Promise<IFetcher> {
+            let payload = null;
+            const method = originalRequest.method.toUpperCase();
+            if (method !== "GET" && method !== "HEAD") {
+                if (originalRequest.headers.get("Content-type") === "application/json")
+                    payload = await originalRequest.clone().json();
+                else
+                    payload = await originalRequest.text();
+            }
 
-            fetcher.fetch = async payload => {
-                const fetchRquest = this.createRequest(payload, originalRequest);
-                try {
-                    fetcher.response = await fetch(fetchRquest);
-                }
-                catch (ex) {
-                    await this.broadcast("Offline");
-                    return;
-                }
+            const fetcher: IFetcher = {
+                request: originalRequest,
+                payload: payload,
+                fetch: async () => {
+                    const fetchRquest = this.createRequest(fetcher.payload, originalRequest);
+                    try {
+                        fetcher.response = await fetch(fetchRquest);
+                    }
+                    catch (ex) {
+                        await this.broadcast("Offline");
+                        return;
+                    }
 
-                return await fetcher.response.json();
+                    return await fetcher.response.clone().json();
+                }
             };
 
             return fetcher;
         }
 
         protected createRequest(data: any, request: Request): Request {
-            if (typeof data === "object")
-                data = JSON.stringify(data);
+            if (data != null) {
+                const method = request.method.toUpperCase();
+                if (method === "GET" || method === "HEAD")
+                    data = null;
+                else if (typeof data === "object")
+                    data = JSON.stringify(data);
+            }
 
             return new Request(request.url, {
                 headers: request.headers,
