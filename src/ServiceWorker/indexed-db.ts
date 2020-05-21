@@ -11,11 +11,11 @@ namespace Vidyano {
             });
         }
 
-        async transaction(callback: (transaction: IndexedDBTransaction) => Promise<any>, ...storeNames: string[]): Promise<any> {
+        async transaction(callback: (transaction: IndexedDBTransaction) => Promise<any>, storeName: string, ...additionalStoreNames: string[]): Promise<any> {
             const db = await this._open();
 
             try {
-                const transaction = db.transaction(storeNames, "readwrite");
+                const transaction = db.transaction([storeName, ...additionalStoreNames], "readwrite");
 
                 const result = await callback(new IndexedDBTransaction(transaction));
                 await transaction.complete;

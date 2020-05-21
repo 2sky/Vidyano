@@ -380,7 +380,7 @@ declare namespace Vidyano {
         constructor(name: string, version: number);
         protected abstract initialize(upgrade: idb.UpgradeDB): any;
         private _open;
-        transaction(callback: (transaction: IndexedDBTransaction) => Promise<any>, ...storeNames: string[]): Promise<any>;
+        transaction(callback: (transaction: IndexedDBTransaction) => Promise<any>, storeName: string, ...additionalStoreNames: string[]): Promise<any>;
     }
     class IndexedDBTransaction {
         private readonly _transaction;
@@ -416,19 +416,18 @@ declare namespace Vidyano {
         fetch: () => Promise<any>;
     }
     abstract class ServiceWorker<T extends IndexedDB> {
+        protected readonly name: string;
         private _db;
         private _vidyanoDb;
-        private readonly serviceUri;
-        private _clientData;
-        private _application;
-        constructor(serviceUri?: string);
+        private _resourceCacheName;
+        private _lastConnectionState;
+        protected readonly serviceUri: string;
+        constructor(name: string);
         protected abstract onCreateDatabase(): T;
         get db(): T;
         private get vidyanoDb();
-        get clientData(): Service.ClientData;
-        get application(): Service.ApplicationResponse;
         private _log;
-        protected abstract getPreloadFiles(files: string[]): string[];
+        protected getPreloadFiles(): string[];
         private _onInstall;
         protected onInstall(): Promise<any>;
         private _onActivate;
@@ -442,10 +441,12 @@ declare namespace Vidyano {
         protected onGetApplication(): Promise<Service.ApplicationResponse>;
         protected onCacheApplication(application: Service.ApplicationResponse): Promise<void>;
         protected cache(request: Request, response: Response, cache: Cache): Promise<void>;
-        broadcast(message: string): Promise<void>;
+        protected setConnectionState(online: boolean): Promise<void>;
+        sendMessageToClients(message: string): Promise<void>;
         protected createFetcher(originalRequest: Request): Promise<IFetcher>;
         protected createRequest(data: any, request: Request): Request;
         protected createResponse(data: any, response?: Response): Response;
+        protected createOfflineResponse(): Response;
     }
 }
 declare namespace Vidyano {

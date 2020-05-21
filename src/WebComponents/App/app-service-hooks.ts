@@ -3,8 +3,8 @@
         constructor(public app: App) {
             super();
 
-            navigator.serviceWorker.addEventListener("message", event => {
-                this.app.showAlert(event.data, "Notice", 3000);
+            navigator.serviceWorker?.addEventListener("message", event => {
+                this.onServiceWorkerMessage(event.data);
             });
         }
 
@@ -409,6 +409,13 @@
                 defaultAction: retry.defaultOption,
                 cancelAction: retry.cancelOption
             })];
+        }
+
+        onServiceWorkerMessage(data: string) {
+            if (data === "connection-offline")
+                console.log("SW: Application offline");
+            else if (data === "connection-online")
+                console.log("SW: Application online");
         }
     }
 }
