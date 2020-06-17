@@ -873,26 +873,32 @@ namespace Vidyano.WebComponents {
                     return proto[p];
             };
 
+            const added: string[] = [];
             for (const p in obj.prototype) {
-                const getter = obj.prototype.__lookupGetter__(p);
-                const setter = obj.prototype.__lookupSetter__(p);
-                if (getter || setter) {
-                    Object.defineProperty(wcPrototype, p, {
-                        get: getter || Polymer.nop,
-                        set: setter || Polymer.nop,
-                        enumerable: true,
-                        configurable: true
-                    });
-                }
-                else if (p !== "constructor" && typeof obj.prototype[p] === "function") {
-                    if (p.startsWith("_set") && p.length > 4) {
-                        const property = p.substr(4, 1).toLowerCase() + p.slice(5);
-                        if (info.properties[property] && (<any>info.properties[property]).readOnly)
-                            continue;
-                    }
+                if (p === "constructor")
+                    continue;
 
-                    wcPrototype[p] = extendFunction(obj.prototype, p, elementName);
+                if (p.startsWith("_set") && p.length > 4) {
+                    const property = p.substr(4, 1).toLowerCase() + p.slice(5);
+                    if (info.properties[property] && (<any>info.properties[property]).readOnly)
+                        continue;
                 }
+
+                wcPrototype[p] = obj.prototype[p];
+            }
+
+            const propertyNames = Object.getOwnPropertyNames(obj.prototype).filter(p => added.indexOf(p) < 0);
+            for (const p of propertyNames) {
+                const desc = Object.getOwnPropertyDescriptor(obj.prototype, p);
+                if (desc == null || (desc.get == null && desc.set == null))
+                    continue;
+
+                Object.defineProperty(wcPrototype, p, {
+                    get: desc.get || Polymer.nop,
+                    set: desc.set || Polymer.nop,
+                    enumerable: false,
+                    configurable: true
+                });
             }
 
             if (prefix === "vi") {

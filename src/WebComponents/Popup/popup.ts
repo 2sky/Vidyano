@@ -7,12 +7,12 @@ namespace Vidyano.WebComponents {
 
             while (true) {
                 if (!el || el === <any>document) {
-                    WebComponents.PopupCore.closeAll();
+                    WebComponents.PopupBase.closeAll();
                     break;
                 }
-                else if ((<any>el).__Vidyano_WebComponents_PopupCore__Instance__ && (<WebComponents.PopupCore><any>el).open)
+                else if ((<any>el).__Vidyano_WebComponents_PopupBase__Instance__ && (<WebComponents.PopupCore><any>el).open)
                     break;
-                else if ((<any>el).popup && (<any>el).popup.__Vidyano_WebComponents_PopupCore__Instance__ && (<WebComponents.PopupCore>(<any>el).popup).open)
+                else if ((<any>el).popup && (<any>el).popup.__Vidyano_WebComponents_PopupBase__Instance__ && (<WebComponents.PopupBase>(<any>el).popup).open)
                     break;
                 else
                     el = el.parentElement;
@@ -32,53 +32,11 @@ namespace Vidyano.WebComponents {
     else
         _hookClose(document.body);
 
-    @WebComponent.register({
-        properties: {
-            disabled: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            open: {
-                type: Boolean,
-                readOnly: true,
-                reflectToAttribute: true,
-                notify: true
-            },
-            sticky: {
-                type: Boolean,
-                reflectToAttribute: true
-            },
-            contentAlign: {
-                type: String,
-                reflectToAttribute: true
-            },
-            orientation: {
-                type: String,
-                reflectToAttribute: true,
-                value: "auto"
-            },
-            hover: {
-                type: Boolean,
-                reflectToAttribute: true,
-                readOnly: true,
-                observer: "_hoverChanged"
-            },
-            closeDelay: {
-                type: Number,
-                value: 500
-            }
-        },
-        listeners: {
-            "mouseenter": "_contentMouseEnter",
-            "mouseleave": "_contentMouseLeave",
-            "click": "_catchContentClick"
-        }
-    })
-    export class PopupCore extends WebComponent {
+    export abstract class PopupBase extends WebComponent {
         private static _isBuggyGetBoundingClientRect: boolean;
-        private static _openPopups: Vidyano.WebComponents.PopupCore[] = [];
+        private static _openPopups: Vidyano.WebComponents.PopupBase[] = [];
 
-        private __Vidyano_WebComponents_PopupCore__Instance__ = true;
+        private __Vidyano_WebComponents_PopupBase__Instance__ = true;
         private _resolver: Function;
         private _closeOnMoveoutTimer: number;
         private _currentTarget: HTMLElement | WebComponent;
@@ -111,7 +69,7 @@ namespace Vidyano.WebComponents {
 
             // Close non-parent popups
             const parentPopup = this._findParentPopup();
-            const firstOpenNonParentChild = PopupCore._openPopups[parentPopup == null ? 0 : PopupCore._openPopups.indexOf(parentPopup) + 1];
+            const firstOpenNonParentChild = PopupBase._openPopups[parentPopup == null ? 0 : PopupBase._openPopups.indexOf(parentPopup) + 1];
             if (firstOpenNonParentChild != null)
                 firstOpenNonParentChild.close();
 
@@ -243,7 +201,7 @@ namespace Vidyano.WebComponents {
             this._currentContent = content;
 
             this._setOpen(true);
-            PopupCore._openPopups.push(this);
+            PopupBase._openPopups.push(this);
 
             this.fire("popup-opened", null, { bubbles: false, cancelable: false });
         }
@@ -261,7 +219,7 @@ namespace Vidyano.WebComponents {
                 };
             }
 
-            if (PopupCore._isBuggyGetBoundingClientRect === undefined) {
+            if (PopupBase._isBuggyGetBoundingClientRect === undefined) {
                 const outer = document.createElement("div");
                 outer.style.webkitTransform = outer.style.transform = "translate(-100px, -100px)";
 
@@ -275,10 +233,10 @@ namespace Vidyano.WebComponents {
                 const innerRect = inner.getBoundingClientRect();
                 document.body.removeChild(outer);
 
-                PopupCore._isBuggyGetBoundingClientRect = outerRect.left === innerRect.left;
+                PopupBase._isBuggyGetBoundingClientRect = outerRect.left === innerRect.left;
             }
 
-            if (PopupCore._isBuggyGetBoundingClientRect) {
+            if (PopupBase._isBuggyGetBoundingClientRect) {
                 let parent = this.findParent(p => p === target) != null ? target.parentElement : this.parentElement;
                 while (parent != null) {
                     const computedStyle = getComputedStyle(parent, null),
@@ -316,7 +274,7 @@ namespace Vidyano.WebComponents {
                 this._closeOnMoveoutTimer = undefined;
             }
 
-            const openChild = PopupCore._openPopups[PopupCore._openPopups.indexOf(this) + 1];
+            const openChild = PopupBase._openPopups[PopupBase._openPopups.indexOf(this) + 1];
             if (openChild != null)
                 openChild.close();
 
@@ -326,14 +284,14 @@ namespace Vidyano.WebComponents {
             if (this._resolver)
                 this._resolver();
 
-            PopupCore._openPopups.remove(this);
+                PopupBase._openPopups.remove(this);
 
             this.fire("popup-closed", null, { bubbles: false, cancelable: false });
         }
 
         protected _findParentPopup(): Popup {
             let element = this.parentNode;
-            while (element != null && PopupCore._openPopups.indexOf(<any>element) === -1)
+            while (element != null && PopupBase._openPopups.indexOf(<any>element) === -1)
                 element = (<any>element).host || element.parentNode;
 
             return <Popup><any>element;
@@ -370,8 +328,8 @@ namespace Vidyano.WebComponents {
         }
 
         static closeAll(parent?: HTMLElement | WebComponent) {
-            const rootPopup = PopupCore._openPopups[0];
-            if (rootPopup && (!parent || PopupCore._isDescendant(<HTMLElement>parent, rootPopup)))
+            const rootPopup = PopupBase._openPopups[0];
+            if (rootPopup && (!parent || PopupBase._isDescendant(<HTMLElement>parent, rootPopup)))
                 rootPopup.close();
         }
 
@@ -385,6 +343,54 @@ namespace Vidyano.WebComponents {
             }
 
             return false;
+        }
+    }
+
+    @WebComponent.register({
+        properties: {
+            disabled: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            open: {
+                type: Boolean,
+                readOnly: true,
+                reflectToAttribute: true,
+                notify: true
+            },
+            sticky: {
+                type: Boolean,
+                reflectToAttribute: true
+            },
+            contentAlign: {
+                type: String,
+                reflectToAttribute: true
+            },
+            orientation: {
+                type: String,
+                reflectToAttribute: true,
+                value: "auto"
+            },
+            hover: {
+                type: Boolean,
+                reflectToAttribute: true,
+                readOnly: true,
+                observer: "_hoverChanged"
+            },
+            closeDelay: {
+                type: Number,
+                value: 500
+            }
+        },
+        listeners: {
+            "mouseenter": "_contentMouseEnter",
+            "mouseleave": "_contentMouseLeave",
+            "click": "_catchContentClick"
+        }
+    })
+    export class PopupCore extends PopupBase {
+        static closeAll(parent?: HTMLElement | WebComponent) {
+            PopupBase.closeAll(parent);
         }
     }
 
@@ -434,7 +440,7 @@ namespace Vidyano.WebComponents {
             "tap": "_tap"
         }
     })
-    export class Popup extends PopupCore {
+    export class Popup extends PopupBase {
         private _tapHandler: EventListener;
         private _enterHandler: EventListener;
         private _leaveHandler: EventListener;
@@ -561,7 +567,7 @@ namespace Vidyano.WebComponents {
         }
 
         static closeAll(parent?: HTMLElement | WebComponent) {
-            PopupCore.closeAll(parent);
+            PopupBase.closeAll(parent);
         }
     }
 }
