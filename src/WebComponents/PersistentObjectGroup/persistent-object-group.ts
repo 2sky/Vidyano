@@ -205,13 +205,6 @@ namespace Vidyano.WebComponents {
                     item.presenter = new Vidyano.WebComponents.PersistentObjectAttributePresenter();
                     item.presenter.attribute = item.attribute;
                     item.presenter.customStyle[`--vi-persistent-object-group--attribute-area`] = item.area;
-
-                    if (this.app.isIe) {
-                        item.presenter.style.msGridRow = `${row + 1}`;
-                        item.presenter.style.msGridColumn = `${column + 1}`;
-                        item.presenter.style.msGridRowSpan = `${itemHeight}`;
-                        item.presenter.style.msGridColumnSpan = `${itemWidth}`;
-                    }
                 }
 
                 const renderItem = item;
@@ -232,11 +225,6 @@ namespace Vidyano.WebComponents {
                 }
 
                 newRow[x] = infiniteColumns[x];
-            }
-
-            if (this.app.isIe) {
-                this.$.grid.style.msGridColumns = Array.range(1, columns).map(_ => "1fr").join(" ");
-                this.$.grid.style.msGridRows = "auto";
             }
 
             this.customStyle[`--vi-persistent-object-group--grid-areas`] = areas.map(r => `"${r.map(a => a || ".").join(" ")}"`).join(" ");
