@@ -2073,16 +2073,13 @@ declare namespace Vidyano {
         protected readonly name: string;
         private _db;
         private _vidyanoDb;
-        private _clientData;
-        private _application;
         private _resourceCacheName;
+        private _lastConnectionState;
         protected readonly serviceUri: string;
         constructor(name: string);
         protected abstract onCreateDatabase(): T;
         get db(): T;
         private get vidyanoDb();
-        get clientData(): Service.ClientData;
-        get application(): Service.ApplicationResponse;
         private _log;
         protected getPreloadFiles(): string[];
         private _onInstall;
@@ -2098,7 +2095,8 @@ declare namespace Vidyano {
         protected onGetApplication(): Promise<Service.ApplicationResponse>;
         protected onCacheApplication(application: Service.ApplicationResponse): Promise<void>;
         protected cache(request: Request, response: Response, cache: Cache): Promise<void>;
-        broadcast(message: string): Promise<void>;
+        protected setConnectionState(online: boolean): Promise<void>;
+        sendMessageToClients(message: string): Promise<void>;
         protected createFetcher(originalRequest: Request): Promise<IFetcher>;
         protected createRequest(data: any, request: Request): Request;
         protected createResponse(data: any, response?: Response): Response;
