@@ -253,8 +253,8 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask("dts", [
-        "dtsGenerator:default",
-        "dtsGenerator:serviceworker",
+        "dtsGenerator",
+        "concat:serviceworker_dts"
     ]);
 
     grunt.registerTask("cdn", [
