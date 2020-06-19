@@ -21,6 +21,7 @@
     "../Libs/idb/idb.d.ts",
     "data-type.ts",
     "service.ts",
+    "file-extensions.ts",
     "indexed-db.ts",
     "service-worker.ts",
     "service-worker-files.ts"

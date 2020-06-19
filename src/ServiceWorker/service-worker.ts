@@ -64,7 +64,7 @@ namespace Vidyano {
             };
 
             if (!await caches.has(VIDYANO_RESOURCES_CACHE_NAME))
-                await processFiles([WEB2_BASE, ...vidyanoFiles.map(f => `${WEB2_BASE}${f}`)], await caches.open(VIDYANO_RESOURCES_CACHE_NAME));
+                await processFiles([...vidyanoFiles.map(f => `${WEB2_BASE}${f}`)], await caches.open(VIDYANO_RESOURCES_CACHE_NAME));
 
             self.importScripts(
                 `${WEB2_BASE}Libs/bignumber.js/bignumber.min.js`,
@@ -134,12 +134,30 @@ namespace Vidyano {
                 if (response)
                     return response;
 
-                // Fallback to root document when a deeplink is fetched directly
-                if (e.request.method === "GET" && e.request.url.startsWith(this.serviceUri)) {
-                    response = await resourceCache.match(this.serviceUri);
-                    if (!response) {
-                        response = await fetch(e.request);
-                        await resourceCache.put(e.request, response);
+                if (e.request.method === "GET") {
+                    // If mimetype can be resolved, try to fetch and cache the resource. If offline, attempt to return the previously cached verion.
+                    if (GetMimeType(e.request.url) !== "application/octet-stream") {
+                        console.warn(`Could not get a precached response for ${e.request.url}`);
+
+                        const fetcher = await this.createFetcher(e.request, false);
+                        const result = await fetcher.fetch();
+                        if (result) {
+                            await this.cache(fetcher.request, fetcher.response, resourceCache);
+                            return fetcher.response;
+                        }
+
+                        response = await resourceCache.match(fetcher.request);
+                        if (response)
+                            return response;
+                    }
+
+                    // Fallback to root document when a deeplink is fetched directly
+                    if (e.request.url.startsWith(this.serviceUri)) {
+                        response = await resourceCache.match(this.serviceUri);
+                        if (!response) {
+                            response = await fetch(e.request);
+                            await resourceCache.put(e.request, response);
+                        }
                     }
                 }
             }
@@ -239,7 +257,7 @@ namespace Vidyano {
             }));
         }
 
-        protected async createFetcher(originalRequest: Request): Promise<IFetcher> {
+        protected async createFetcher(originalRequest: Request, asJson: boolean = true): Promise<IFetcher> {
             let payload = null;
             const method = originalRequest.method.toUpperCase();
             if (method !== "GET" && method !== "HEAD") {
@@ -263,7 +281,8 @@ namespace Vidyano {
                         return;
                     }
 
-                    return await fetcher.response.clone().json();
+                    const response = await fetcher.response.clone();
+                    return await (asJson ? response.json() : response.text());
                 }
             };
 

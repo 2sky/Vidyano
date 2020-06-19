@@ -374,6 +374,10 @@ declare namespace Vidyano.Service {
     };
 }
 declare namespace Vidyano {
+    const MimeTypes: string[][];
+    function GetMimeType(url: string): string;
+}
+declare namespace Vidyano {
     abstract class IndexedDB {
         private readonly name;
         private readonly version;
@@ -443,7 +447,7 @@ declare namespace Vidyano {
         protected cache(request: Request, response: Response, cache: Cache): Promise<void>;
         protected setConnectionState(online: boolean): Promise<void>;
         sendMessageToClients(message: string): Promise<void>;
-        protected createFetcher(originalRequest: Request): Promise<IFetcher>;
+        protected createFetcher(originalRequest: Request, asJson?: boolean): Promise<IFetcher>;
         protected createRequest(data: any, request: Request): Request;
         protected createResponse(data: any, response?: Response): Response;
         protected createOfflineResponse(): Response;
