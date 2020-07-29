@@ -2,25 +2,25 @@
 <link rel="import" href="../ScrollIntersection/scroll-intersection.html" />
 
 <dom-module id="vi-scrollbar-test">
-    <style>
-        #wrapper {
-            width: 100px;
-            height: 100px;
-            overflow: auto;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-            #wrapper::-webkit-scrollbar {
-                display: none;
-            }
-
-        #content {
-            width: 200px;
-            height: 200px;
-        }
-    </style>
     <template>
+		<style>
+			#wrapper {
+				width: 100px;
+				height: 100px;
+				overflow: auto;
+				-ms-overflow-style: none;
+				scrollbar-width: none;
+			}
+
+				#wrapper::-webkit-scrollbar {
+					display: none;
+				}
+
+			#content {
+				width: 200px;
+				height: 200px;
+			}
+		</style>
         <div id="wrapper">
             <div id="content"></div>
         </div>
