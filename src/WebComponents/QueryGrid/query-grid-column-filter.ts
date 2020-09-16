@@ -188,7 +188,6 @@ namespace Vidyano.WebComponents {
         readonly loading: boolean; private _setLoading: (loading: boolean) => void;
         column: QueryGridColumn;
         searchText: string;
-        label: string;
         distincts: IQueryGridColumnFilterDistinct[];
 
         attached() {

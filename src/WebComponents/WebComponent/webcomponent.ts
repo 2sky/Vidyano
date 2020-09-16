@@ -885,21 +885,35 @@ namespace Vidyano.WebComponents {
                 }
 
                 wcPrototype[p] = obj.prototype[p];
+                added.push(p);
             }
 
-            const propertyNames = Object.getOwnPropertyNames(obj.prototype).filter(p => added.indexOf(p) < 0);
-            for (const p of propertyNames) {
-                const desc = Object.getOwnPropertyDescriptor(obj.prototype, p);
-                if (desc == null || (desc.get == null && desc.set == null))
-                    continue;
+            let prototype = obj.prototype;
+            let basePrototype = obj["__proto__"];
+            do {
+                const propertyNames = Object.getOwnPropertyNames(prototype).filter(p => added.indexOf(p) < 0);
+                for (const p of propertyNames) {
+                    const desc = Object.getOwnPropertyDescriptor(prototype, p);
+                    if (desc == null || (desc.get == null && desc.set == null))
+                        continue;
 
-                Object.defineProperty(wcPrototype, p, {
-                    get: desc.get || Polymer.nop,
-                    set: desc.set || Polymer.nop,
-                    enumerable: false,
-                    configurable: true
-                });
+                    Object.defineProperty(wcPrototype, p, {
+                        get: desc.get || Polymer.nop,
+                        set: desc.set || Polymer.nop,
+                        enumerable: false,
+                        configurable: true
+                    });
+
+                    added.push(p);
+                }
+
+                if (basePrototype === Vidyano.WebComponents.WebComponent)
+                    break;
+
+                prototype = basePrototype.prototype;
+                basePrototype = basePrototype["__proto__"];
             }
+            while (true);
 
             if (prefix === "vi") {
                 webComponentsReady.then(() => {
