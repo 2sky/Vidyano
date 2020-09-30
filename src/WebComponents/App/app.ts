@@ -615,9 +615,12 @@ namespace Vidyano.WebComponents {
             const skipDefaultCredentialLogin = path.startsWith("sign-in");
 
             this._setInitializing(true);
-            service.initialize(skipDefaultCredentialLogin).then(() => {
+            service.initialize(skipDefaultCredentialLogin).then(async () => {
                 if (this.service !== service)
                     return;
+
+                if (hooksInstance instanceof Vidyano.WebComponents.AppServiceHooks)
+                    await hooksInstance.onBeforeAppInitialized();
 
                 this._initializeResolve(this.service.application);
                 this._setInitializing(false);

@@ -180,6 +180,10 @@
             return super.onAction(args);
         }
 
+        async onBeforeAppInitialized(): Promise<void> {
+            return Promise.resolve();
+        }
+
         async onOpen(obj: ServiceObject, replaceCurrent: boolean = false, fromAction: boolean = false) {
             if (obj instanceof Vidyano.PersistentObject) {
                 const po = <Vidyano.PersistentObject>obj;
