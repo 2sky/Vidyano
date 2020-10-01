@@ -184,6 +184,22 @@
             return Promise.resolve();
         }
 
+        async onAppInitializeFailed(message: string): Promise<void> {
+            if (message === "Session expired")
+                return;
+
+            const noInternet = Vidyano.NoInternetMessage.messages[navigator.language.split("-")[0].toLowerCase()] || Vidyano.NoInternetMessage.messages["en"];
+            await this.app.showMessageDialog({
+                title: message === noInternet.message ? noInternet.title : this.app.label || document.title,
+                message: message,
+                actions: [noInternet.tryAgain],
+                actionTypes: ["Danger"],
+                noClose: true
+            });
+
+            document.location.reload();
+        }
+
         async onOpen(obj: ServiceObject, replaceCurrent: boolean = false, fromAction: boolean = false) {
             if (obj instanceof Vidyano.PersistentObject) {
                 const po = <Vidyano.PersistentObject>obj;

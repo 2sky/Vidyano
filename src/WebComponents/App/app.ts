@@ -624,18 +624,9 @@ namespace Vidyano.WebComponents {
 
                 this._initializeResolve(this.service.application);
                 this._setInitializing(false);
-            }, e => {
-                if (e === "Session expired")
-                    return;
-
-                const noInternet = Vidyano.NoInternetMessage.messages[navigator.language.split("-")[0].toLowerCase()] || Vidyano.NoInternetMessage.messages["en"];
-                this.showMessageDialog({
-                    title: e === noInternet.message ? noInternet.title : this.app.label || document.title,
-                    message: e,
-                    actions: [noInternet.tryAgain],
-                    actionTypes: ["Danger"],
-                    noClose: true
-                }).then(() => document.location.reload());
+            }, async e => {
+                if (hooksInstance instanceof Vidyano.WebComponents.AppServiceHooks)
+                    await hooksInstance.onAppInitializeFailed(e);
             });
 
             return service;
