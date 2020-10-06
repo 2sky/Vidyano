@@ -327,6 +327,8 @@ namespace Vidyano {
                 result.parent = this.parent.toServiceObject();
             if (this.attributes)
                 result.attributes = this.attributes.map(attr => attr._toServiceObject());
+            if (this._lastResult.metadata != null)
+                result.metadata = this._lastResult.metadata;
 
             return result;
         }
