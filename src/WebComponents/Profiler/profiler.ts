@@ -394,7 +394,7 @@ namespace Vidyano.WebComponents {
             // SQL information
             if (entry.sql  && entry.sql.length > 0) {
                 const title = document.createElement("h2");
-                title.textContent = "SQL Statements";
+                title.textContent = "DB Requests";
                 info.appendChild(title);
 
                 entry.sql.forEach(sqlCommandId => {
