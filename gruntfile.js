@@ -129,12 +129,12 @@ module.exports = function (grunt) {
         },
         replace: {
             vidyanoVersion: {
-                src: ['dist\\Vidyano.Web2\\src\\Libs\\Vidyano\\vidyano.js'],
+                src: ['dist/Vidyano.Web2/src/Libs/Vidyano/vidyano.js'],
                 overwrite: true,
                 replacements: [{ from: '"latest"', to: '"' + grunt.option("vidyano-version-full") + '"' }]
             },
             assemblyVersion: {
-                src: ['dist\\Vidyano.Web2\\Properties\\AssemblyInfo.cs'],
+                src: ['dist/Vidyano.Web2/Properties/AssemblyInfo.cs'],
                 overwrite: true,
                 replacements: [
                     { from: "0.0.0", to: grunt.option("vidyano-version") },
@@ -142,7 +142,7 @@ module.exports = function (grunt) {
                 ]
             },
             assemblyVersionRevert: {
-                src: ['dist\\Vidyano.Web2\\Properties\\AssemblyInfo.cs'],
+                src: ['dist/Vidyano.Web2/Properties/AssemblyInfo.cs'],
                 overwrite: true,
                 replacements: [
                     { from: grunt.option("vidyano-version"), to: "0.0.0" },
@@ -150,14 +150,14 @@ module.exports = function (grunt) {
                 ]
             },
             nugetPackageVersion: {
-                src: ['dist\\Vidyano.Web2\\Vidyano.Web2.nuspec', 'dist\\Vidyano.Web2\\Vidyano.Web2.Definition.nuspec'],
+                src: ['dist/Vidyano.Web2/Vidyano.Web2.nuspec', 'dist/Vidyano.Web2/Vidyano.Web2.Definition.nuspec'],
                 overwrite: true,
                 replacements: [
                     { from: "$version$", to: grunt.option("vidyano-version-full") }
                 ]
             },
             nugetPackageVersionRevert: {
-                src: ['dist\\Vidyano.Web2\\Vidyano.Web2.nuspec', 'dist\\Vidyano.Web2\\Vidyano.Web2.Definition.nuspec'],
+                src: ['dist/Vidyano.Web2/Vidyano.Web2.nuspec', 'dist/Vidyano.Web2/Vidyano.Web2.Definition.nuspec'],
                 overwrite: true,
                 replacements: [
                     { from: grunt.option("vidyano-version-full"), to: "$version$" }

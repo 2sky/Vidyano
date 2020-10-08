@@ -226,6 +226,7 @@ ModelManifest.xml
 /test/Helpers/*.js
 /dist/Vidyano.Web2/src
 /dist/Vidyano.Web2/vidyano.d.ts
+/dist/Vidyano.Web2.Build/builds
 /dist/packages/
 *.nupkg
 *.map
