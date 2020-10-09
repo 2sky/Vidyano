@@ -426,10 +426,12 @@ declare namespace Vidyano {
         private _resourceCacheName;
         private _lastConnectionState;
         protected readonly serviceUri: string;
+        private _requests;
         constructor(name: string);
         protected abstract onCreateDatabase(): T;
         get db(): T;
         private get vidyanoDb();
+        get requests(): ServiceWorkerRequest[];
         private _log;
         protected getPreloadFiles(): string[];
         private _onInstall;
@@ -447,7 +449,7 @@ declare namespace Vidyano {
         protected cache(request: Request, response: Response, cache: Cache): Promise<void>;
         protected setConnectionState(online: boolean): Promise<void>;
         sendMessageToClients(message: string): Promise<void>;
-        protected createFetcher(originalRequest: Request, asJson?: boolean): Promise<IFetcher>;
+        protected createFetcher(originalRequest: Request): Promise<IFetcher>;
         protected createRequest(data: any, request: Request): Request;
         protected createResponse(data: any, response?: Response): Response;
         protected createOfflineResponse(): Response;
@@ -455,4 +457,9 @@ declare namespace Vidyano {
 }
 declare namespace Vidyano {
     const vidyanoFiles: string[];
+}
+declare namespace Vidyano {
+    class ServiceWorkerRequest {
+        match(request: Request): boolean;
+    }
 }

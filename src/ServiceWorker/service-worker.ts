@@ -19,6 +19,7 @@ namespace Vidyano {
         private _resourceCacheName: string;
         private _lastConnectionState: boolean;
         protected readonly serviceUri: string;
+        private _requests: ServiceWorkerRequest[];
 
         constructor(protected readonly name: string) {
             this._resourceCacheName = `${name}.resources`;
@@ -40,6 +41,10 @@ namespace Vidyano {
 
         private get vidyanoDb(): IndexedDBVidyano {
             return this._vidyanoDb || (this._vidyanoDb = new IndexedDBVidyano());
+        }
+
+        get requests(): ServiceWorkerRequest[] {
+            return this._requests || (this._requests = []);
         }
 
         private _log(message: string) {
@@ -123,23 +128,28 @@ namespace Vidyano {
                 if (response)
                     return response;
 
+                
+
                 // Try to match from project resource cache
                 const resourceCache = await caches.open(this._resourceCacheName);
                 response = await resourceCache.match(e.request);
                 if (response)
                     return response;
 
-                // Allow implementor to handle request
-                response = await this.onFetch(await this.createFetcher(e.request));
-                if (response)
-                    return response;
+                const fetcher = await this.createFetcher(e.request);
 
-                if (e.request.method === "GET") {
+                // Allow implementor to handle request
+                response = await this.onFetch(fetcher);
+                if (fetcher.response)
+                    return fetcher.response;
+
+                if (e.request.method !== "GET")
+                    response = (await fetcher.fetch()).response;
+                else {
                     // If mimetype can be resolved, try to fetch and cache the resource. If offline, attempt to return the previously cached verion.
-                    if (GetMimeType(e.request.url) !== "application/octet-stream") {
+                    if (!e.request.url.startsWith(this.serviceUri) || GetMimeType(e.request.url) !== "application/octet-stream") {
                         console.warn(`Could not get a precached response for ${e.request.url}`);
 
-                        const fetcher = await this.createFetcher(e.request, false);
                         const result = await fetcher.fetch();
                         if (result) {
                             await this.cache(fetcher.request, fetcher.response, resourceCache);
@@ -150,9 +160,8 @@ namespace Vidyano {
                         if (response)
                             return response;
                     }
-
                     // Fallback to root document when a deeplink is fetched directly
-                    if (e.request.url.startsWith(this.serviceUri)) {
+                    else if (e.request.url.startsWith(this.serviceUri)) {
                         response = await resourceCache.match(this.serviceUri);
                         if (!response) {
                             response = await fetch(e.request);
@@ -257,11 +266,13 @@ namespace Vidyano {
             }));
         }
 
-        protected async createFetcher(originalRequest: Request, asJson: boolean = true): Promise<IFetcher> {
-            let payload = null;
+        protected async createFetcher(originalRequest: Request): Promise<IFetcher> {
+            const asJson: boolean = originalRequest.headers.get("Content-type") === "application/json";
             const method = originalRequest.method.toUpperCase();
+
+            let payload = null;
             if (method !== "GET" && method !== "HEAD") {
-                if (originalRequest.headers.get("Content-type") === "application/json")
+                if (asJson)
                     payload = await originalRequest.clone().json();
                 else
                     payload = await originalRequest.text();
@@ -301,12 +312,7 @@ namespace Vidyano {
             return new Request(request.url, {
                 headers: request.headers,
                 body: data,
-                cache: request.cache,
-                credentials: request.credentials,
-                integrity: request.integrity,
-                keepalive: request.keepalive,
                 method: request.method,
-                mode: request.mode,
                 referrer: request.referrer,
                 referrerPolicy: request.referrerPolicy
             });

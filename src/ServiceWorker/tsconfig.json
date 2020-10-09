@@ -24,6 +24,7 @@
     "file-extensions.ts",
     "indexed-db.ts",
     "service-worker.ts",
-    "service-worker-files.ts"
+    "service-worker-files.ts",
+    "service-worker-request.ts"
   ]
 }
