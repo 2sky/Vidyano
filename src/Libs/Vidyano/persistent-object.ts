@@ -375,6 +375,7 @@ namespace Vidyano {
                 if (!this.attributes.some(a => a.id === serviceAttr.id)) {
                     const attr = this._createPersistentObjectAttribute(serviceAttr);
                     this.attributes.push(attr);
+                    this.attributes[attr.name] = attr;
                     attr.parent = this;
 
                     changedAttributes.push(attr);
