@@ -3,7 +3,8 @@
 	"dockerFile": "Dockerfile",
 	"mounts": [
 		"source=${localWorkspaceFolder},target=/vidyano,type=bind",
-		"source=${localEnv:HOME}${localEnv:USERPROFILE}\\AppData\\Roaming\\Microsoft\\UserSecrets\\e359c69b-d2bb-4f80-a344-2b6e64a0f5a4,target=/run/secrets/e359c69b-d2bb-4f80-a344-2b6e64a0f5a4,type=bind"
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/.aspnet/https,target=/home/vscode/.aspnet/https,type=bind",
+		"source=${localEnv:HOME}${localEnv:USERPROFILE}/AppData/Roaming/Microsoft/UserSecrets/e359c69b-d2bb-4f80-a344-2b6e64a0f5a4,target=/run/secrets/e359c69b-d2bb-4f80-a344-2b6e64a0f5a4,type=bind"
 	],
 	"containerEnv": {
 		"ASPNETCORE_Kestrel__Endpoints__Https__Url": "https://*:443",
@@ -17,6 +18,6 @@
 		"dbaeumer.vscode-eslint",
 		"ritwickdey.live-sass"
 	],
-	"appPort": [ "8888:443" ],
+	"appPort": [ "8889:443" ],
 	"postCreateCommand": "dos2unix .devcontainer/postCreateCommand.sh && ./.devcontainer/postCreateCommand.sh"
 }
