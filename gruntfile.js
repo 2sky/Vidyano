@@ -199,7 +199,7 @@ module.exports = function (grunt) {
         "copy:dist",
         "revision",
         "replace:vidyanoVersion",
-        "replace:nugetVersion"
+        "replace:nugetPackageVersion"
     ]);
 
     grunt.registerTask("nugetrevert", [
