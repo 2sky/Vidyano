@@ -32,6 +32,15 @@ namespace Vidyano.WebComponents {
     else
         _hookClose(document.body);
 
+    interface IPopupClientRect {
+        top: number;
+        left: number;
+        right: number;
+        bottom: number;
+        width: number;
+        height: number;
+    }
+
     export abstract class PopupBase extends WebComponent {
         private static _isBuggyGetBoundingClientRect: boolean;
         private static _openPopups: Vidyano.WebComponents.PopupBase[] = [];
@@ -206,7 +215,7 @@ namespace Vidyano.WebComponents {
             this.fire("popup-opened", null, { bubbles: false, cancelable: false });
         }
 
-        protected _getTargetRect(target: HTMLElement): { targetRect: ClientRect, transformedRect?: ClientRect } {
+        protected _getTargetRect(target: HTMLElement): { targetRect: IPopupClientRect, transformedRect?: IPopupClientRect } {
             let targetRect = target.getBoundingClientRect() as { left: number, top: number, bottom: number, right: number, width: number, height: number };
             if (target === this) {
                 targetRect = {

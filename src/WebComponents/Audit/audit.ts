@@ -115,7 +115,7 @@
             if (this._updating)
                 await this._updating;
 
-            let done: () => void;
+            let done: (value: any) => void;
             this._updating = new Promise((resolve) => done = resolve);
 
             this._setGroups(persistentObject.__audit_groups__ || (persistentObject.__audit_groups__ = []));
@@ -180,7 +180,7 @@
                 this.set(`groups.${this.groups.length - 1}.entries.${logEntry.entryIndex}.busy`, false);
             }
 
-            done();
+            done(null);
         }
 
         private _getInData(poIn: Vidyano.PersistentObject): any {

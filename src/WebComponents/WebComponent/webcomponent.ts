@@ -976,7 +976,7 @@ namespace Vidyano.WebComponents {
 const webComponentsReady = new Promise(resolve => {
     const handler = () => {
         window.removeEventListener("WebComponentsReady", handler);
-        resolve();
+        resolve(null);
     };
 
     window.addEventListener("WebComponentsReady", handler);

@@ -3,12 +3,6 @@
     unobserve: (target: HTMLElement) => void;
 }
 
-declare class ResizeObserver implements IResizeObserver {
-    constructor(observer: (entries: { target: HTMLElement; contentRect: ClientRect }[]) => void);
-    observe: (target: HTMLElement) => void;
-    unobserve: (target: HTMLElement) => void;
-}
-
 namespace Vidyano.WebComponents {
     "use strict";
 
@@ -24,7 +18,13 @@ namespace Vidyano.WebComponents {
         return function (id) { return cancel(id); };
     })();
 
-    let observer: IResizeObserver;
+    let observer = new ResizeObserver(entries => {
+        entries.forEach(e => {
+            const tracker = <SizeTracker>Array.from(e.target.children).find(e => e instanceof SizeTracker);
+            if (tracker)
+                tracker["_triggerSizeChanged"](e.contentRect);
+        });
+    });
 
     @WebComponent.register({
         properties: {
@@ -44,10 +44,6 @@ namespace Vidyano.WebComponents {
             bubbles: {
                 type: Boolean,
                 reflectToAttribute: true
-            },
-            noResizeObserver: {
-                type: Boolean,
-                readOnly: true
             }
         }
     })
@@ -59,7 +55,6 @@ namespace Vidyano.WebComponents {
         private _scrollListener: EventListener;
         private _isActive: boolean;
         readonly size: ISize; private _setSize: (size: ISize) => void;
-        readonly noResizeObserver: boolean; private _setNoResizeObserver: (noResizeObserver: boolean) => void;
         deferred: boolean;
         triggerZero: boolean;
         bubbles: boolean;
@@ -88,29 +83,12 @@ namespace Vidyano.WebComponents {
             if (!this._isActive) {
                 this.deferred = false;
 
-                if (observer)
-                    observer.observe(this.parentElement);
-                else {
-                    this._setNoResizeObserver(true);
-                    this.$.resizeObserverShim["render"]();
-                    this.$.root = <HTMLElement>Polymer.dom(this.root).querySelector("#root");
-                    this.$.expand = <HTMLElement>Polymer.dom(this.root).querySelector("#expand");
-                    this.$.expandChild = <HTMLElement>Polymer.dom(this.root).querySelector("#expandChild");
-                    this.$.contract = <HTMLElement>Polymer.dom(this.root).querySelector("#contract");
-                }
+                observer.observe(this.parentElement);
 
                 this._isActive = true;
             }
 
-            if (this.noResizeObserver) {
-                if (!this._scrollListener) {
-                    this._resetTriggers(this.$.root);
-                    this.$.root.addEventListener("scroll", this._scrollListener = this._onScroll.bind(this), true);
-
-                    this._triggerSizeChanged();
-                }
-            }
-            else if (this._resizeLast) {
+            if (this._resizeLast) {
                 this._setSize(this._resizeLast);
                 this.fire("sizechanged", this._resizeLast, { onNode: this, bubbles: !!this.bubbles });
             }

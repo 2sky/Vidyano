@@ -874,7 +874,7 @@ namespace Vidyano.WebComponents {
         }
 
         private _refreshForUpdate() {
-            document.location.reload(true);
+            document.location.reload();
         }
 
         private _refreshForUpdateDismiss() {
