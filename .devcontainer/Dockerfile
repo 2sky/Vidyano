@@ -5,6 +5,7 @@
 
 FROM mcr.microsoft.com/vscode/devcontainers/dotnetcore:0-3.1
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sL https://deb.nodesource.com/setup_10.x |  bash -
 RUN apt-get install -y nodejs git  && \
     apt-get install dos2unix && \
