@@ -6,10 +6,11 @@
 
 For instructions about _using_ Vidyano to develop applications, please refer to [www.vidyano.com](http://www.vidyano.com)
 
-# What is Vidyano Web²
-This repository contains the complete code for our next generation web client, **Vidyano Web²**. It provides an out of the box, scaffolded, modern Single Page Application (SPA) that interacts with a Vidyano backend.
+# Legacy Repo
+This repository is only for informational purposes as all development has been moved to the Web3 client at https://github.com/Vidyano/vidyano
 
-You can play around with a live demo at [demo.vidyano.com](https://demo.vidyano.com)
+# What is Vidyano Web²
+This legacy repository contains the complete code for our next generation web client, **Vidyano Web²**. It provides an out of the box, scaffolded, modern Single Page Application (SPA) that interacts with a Vidyano backend.
 
 ## Table of Contents
 *The following is a table of contents for the documentation found in the docs folder of this repository.*
@@ -62,4 +63,4 @@ Big thanks to BrowserStack for providing this testing environment to us.
 
 ## Copyright and license
 
-Code and documentation copyright 2011-2020 2sky NV. Code released under the MIT license available [here](./LICENSE)
+Code and documentation copyright 2011-2024 2sky NV. Code released under the MIT license available [here](./LICENSE)
